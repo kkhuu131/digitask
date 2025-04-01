@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { supabase } from "../lib/supabase";
-import { usePetStore } from "./petStore";
 import { useDigimonStore } from "./petStore";
 
 export interface Task {

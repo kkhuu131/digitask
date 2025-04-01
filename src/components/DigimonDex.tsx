@@ -69,10 +69,11 @@ const DigimonDex = () => {
         
       if (toError) throw toError;
       
-      setEvolutionPaths({
+      setEvolutionPaths((prev: any) => ({
+        ...prev,
         evolvesFrom: evolvesFrom || [],
         evolvesTo: evolvesTo || []
-      });
+      }));
     } catch (err) {
       console.error("Error fetching evolution paths:", err);
     }
@@ -177,7 +178,9 @@ const DigimonDex = () => {
               />
               <div className="text-center">
                 <p className="text-sm font-medium">{selectedDigimon.stage} Type</p>
-                <p className="text-sm text-gray-500">{selectedDigimon.type || "Unknown"} / {selectedDigimon.attribute || "Unknown"}</p>
+                <p className="text-sm text-gray-500">
+                  {(selectedDigimon as any)?.type || "Unknown"} / {(selectedDigimon as any)?.attribute || "Unknown"}
+                </p>
               </div>
             </div>
             
@@ -198,11 +201,11 @@ const DigimonDex = () => {
             </div>
             
             {/* Evolution Paths */}
-            {evolutionPaths.evolvesFrom && evolutionPaths.evolvesFrom.length > 0 && (
+            {(evolutionPaths as any).evolvesFrom && (evolutionPaths as any).evolvesFrom.length > 0 && (
               <div className="mb-4">
                 <h4 className="font-semibold mb-2">Evolves From</h4>
                 <div className="grid grid-cols-3 gap-2">
-                  {evolutionPaths.evolvesFrom.map((path: any) => {
+                  {(evolutionPaths as any).evolvesFrom.map((path: any) => {
                     const discovered = isDiscovered(path.from_digimon.id);
                     
                     return (
@@ -242,11 +245,11 @@ const DigimonDex = () => {
               </div>
             )}
             
-            {evolutionPaths.evolvesTo && evolutionPaths.evolvesTo.length > 0 && (
+            {(evolutionPaths as any).evolvesTo && (evolutionPaths as any).evolvesTo.length > 0 && (
               <div>
                 <h4 className="font-semibold mb-2">Evolves To</h4>
                 <div className="grid grid-cols-3 gap-2">
-                  {evolutionPaths.evolvesTo.map((path: any) => {
+                  {(evolutionPaths as any).evolvesTo.map((path: any) => {
                     const discovered = isDiscovered(path.to_digimon.id);
                     
                     return (

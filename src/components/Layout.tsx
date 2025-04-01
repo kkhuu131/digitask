@@ -21,7 +21,7 @@ const Layout = ({ children }: LayoutProps) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex-shrink-0 flex items-center">
-              <Link to="/" className="text-xl font-bold text-primary-600">Produc-Ti-Pet</Link>
+              <Link to="/" className="text-xl font-bold text-primary-600">Digitask</Link>
             </div>
             
             {user && (
@@ -71,7 +71,7 @@ const Layout = ({ children }: LayoutProps) => {
       <footer className="bg-white border-t border-gray-200 mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="py-4 text-center text-sm text-gray-500">
-            &copy; {new Date().getFullYear()} Produc-Ti-Pet. All rights reserved.
+            &copy; {new Date().getFullYear()} Digitask. All rights reserved.
           </div>
         </div>
       </footer>

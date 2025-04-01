@@ -165,10 +165,10 @@ export const useDigimonStore = create<DigimonState>((set, get) => ({
 
       const evolutionOptions = evolutionPaths.map((path) => ({
         id: path.id,
-        digimon_id: path.digimon.id,
-        name: path.digimon.name,
-        stage: path.digimon.stage,
-        sprite_url: path.digimon.sprite_url,
+        digimon_id: (path.digimon as any).id,
+        name: (path.digimon as any).name,
+        stage: (path.digimon as any).stage,
+        sprite_url: (path.digimon as any).sprite_url,
         level_required: path.level_required,
       }));
 
@@ -209,19 +209,15 @@ export const useDigimonStore = create<DigimonState>((set, get) => ({
       }
 
       // Create a new Digimon for the user
-      const { data: newDigimon, error } = await supabase
-        .from("user_digimon")
-        .insert({
-          user_id: userData.user.id,
-          digimon_id: digimonId,
-          name: name || "Unnamed Digimon", // Use provided name or default
-          current_level: 1,
-          experience_points: 0,
-          health: 100,
-          happiness: 100,
-        })
-        .select()
-        .single();
+      const { error } = await supabase.from("user_digimon").insert({
+        user_id: userData.user.id,
+        digimon_id: digimonId,
+        name: name || "Unnamed Digimon", // Use provided name or default
+        current_level: 1,
+        experience_points: 0,
+        health: 100,
+        happiness: 100,
+      });
 
       if (error) throw error;
 
@@ -244,18 +240,16 @@ export const useDigimonStore = create<DigimonState>((set, get) => ({
 
       set({ loading: true, error: null });
 
-      const { data: updatedUserDigimon, error } = await supabase
+      const { error } = await supabase
         .from("user_digimon")
         .update({
           ...stats,
           last_updated_at: new Date().toISOString(),
         })
-        .eq("id", userDigimon.id)
-        .select()
-        .single();
+        .eq("id", userDigimon.id);
 
       if (error) throw error;
-      set({ userDigimon: updatedUserDigimon, loading: false });
+      set({ loading: false });
     } catch (error) {
       set({ error: (error as Error).message, loading: false });
     }
@@ -300,10 +294,10 @@ export const useDigimonStore = create<DigimonState>((set, get) => ({
     }
   },
 
-  checkEvolution: async () => {
+  checkEvolution: async (): Promise<boolean> => {
     try {
       const { userDigimon, evolutionOptions } = get();
-      if (!userDigimon) return;
+      if (!userDigimon) return false;
 
       // Check if any evolution options are available based on level
       const availableEvolutions = evolutionOptions.filter(
@@ -358,7 +352,7 @@ export const useDigimonStore = create<DigimonState>((set, get) => ({
       set({ loading: true, error: null });
 
       // Update the user's Digimon
-      const { data: updatedUserDigimon, error } = await supabase
+      const { error } = await supabase
         .from("user_digimon")
         .update({
           digimon_id: toDigimonId,
@@ -366,9 +360,7 @@ export const useDigimonStore = create<DigimonState>((set, get) => ({
           experience_points: 0,
           last_updated_at: new Date().toISOString(),
         })
-        .eq("id", userDigimon.id)
-        .select()
-        .single();
+        .eq("id", userDigimon.id);
 
       if (error) throw error;
 

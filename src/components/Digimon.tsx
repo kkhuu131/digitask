@@ -126,8 +126,8 @@ const Digimon = ({ userDigimon, digimonData, evolutionOptions }: DigimonProps) =
       
       <div className="mt-4 text-sm text-gray-500">
         <p>Stage: {digimonData.stage}</p>
-        <p>Type: {digimonData.type || "Unknown"}</p>
-        <p>Attribute: {digimonData.attribute || "Unknown"}</p>
+        <p>Type: {(digimonData as any)?.type || "Unknown"}</p>
+        <p>Attribute: {(digimonData as any)?.attribute || "Unknown"}</p>
         <p>Stats: HP {digimonData.hp} | ATK {digimonData.atk} | DEF {digimonData.def} | SPD {digimonData.spd}</p>
       </div>
       
