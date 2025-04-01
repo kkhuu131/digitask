@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 
 const ResetPassword = () => {
@@ -9,14 +9,27 @@ const ResetPassword = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Check if we have a hash fragment in the URL (from the reset link)
   useEffect(() => {
+    // Log the URL for debugging
+    console.log("Current URL:", window.location.href);
+    
+    // Check for token in hash or query params
     const hashParams = new URLSearchParams(window.location.hash.substring(1));
-    if (!hashParams.get("access_token")) {
+    const queryParams = new URLSearchParams(location.search);
+    
+    const accessToken = hashParams.get("access_token") || queryParams.get("access_token");
+    const refreshToken = hashParams.get("refresh_token") || queryParams.get("refresh_token");
+    const type = hashParams.get("type") || queryParams.get("type");
+    
+    console.log("Token info:", { accessToken: !!accessToken, type });
+    
+    if (!accessToken) {
       setError("Invalid or expired password reset link. Please request a new one.");
     }
-  }, []);
+  }, [location]);
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,7 +56,7 @@ const ResetPassword = () => {
       
       // Redirect to home after successful password reset
       setTimeout(() => {
-        navigate("/");
+        navigate("/login");
       }, 3000);
       
     } catch (err) {

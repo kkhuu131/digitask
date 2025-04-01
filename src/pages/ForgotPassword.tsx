@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
+import { supabase } from "../lib/supabase";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { resetPassword, error, loading } = useAuthStore();
+  const [success, setSuccess] = useState(false);
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -13,6 +15,28 @@ const ForgotPassword = () => {
     
     if (!useAuthStore.getState().error) {
       setIsSubmitted(true);
+    }
+  };
+
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // Make sure the redirectTo URL is absolute and includes the path
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      
+      if (error) throw error;
+      
+      setSuccess(true);
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setLoading(false);
     }
   };
   
