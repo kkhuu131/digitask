@@ -21,7 +21,6 @@ const ResetPassword = () => {
     const queryParams = new URLSearchParams(location.search);
     
     const accessToken = hashParams.get("access_token") || queryParams.get("access_token");
-    const refreshToken = hashParams.get("refresh_token") || queryParams.get("refresh_token");
     const type = hashParams.get("type") || queryParams.get("type");
     
     console.log("Token info:", { accessToken: !!accessToken, type });
