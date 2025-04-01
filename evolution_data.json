@@ -1,0 +1,8330 @@
+{
+  "1": {
+    "evolvesFrom": [],
+    "evolvesTo": [
+      {
+        "name": "Tsumemon",
+        "level_required": 5
+      },
+      {
+        "name": "Pagumon",
+        "level_required": 5
+      },
+      {
+        "name": "Arcadiamon In-Tr.",
+        "level_required": 8
+      }
+    ]
+  },
+  "2": {
+    "evolvesFrom": [],
+    "evolvesTo": [
+      {
+        "name": "Tanemon",
+        "level_required": 5
+      },
+      {
+        "name": "Yokomon",
+        "level_required": 3
+      },
+      {
+        "name": "Motimon",
+        "level_required": 3
+      }
+    ]
+  },
+  "3": {
+    "evolvesFrom": [],
+    "evolvesTo": [
+      {
+        "name": "Tsunomon",
+        "level_required": 5
+      },
+      {
+        "name": "Nyaromon",
+        "level_required": 3
+      }
+    ]
+  },
+  "4": {
+    "evolvesFrom": [],
+    "evolvesTo": [
+      {
+        "name": "Koromon",
+        "level_required": 3
+      },
+      {
+        "name": "Wanyamon",
+        "level_required": 5
+      }
+    ]
+  },
+  "5": {
+    "evolvesFrom": [],
+    "evolvesTo": [
+      {
+        "name": "Tokomon",
+        "level_required": 5
+      },
+      {
+        "name": "Bukamon",
+        "level_required": 3
+      }
+    ]
+  },
+  "6": {
+    "evolvesFrom": [
+      {
+        "name": "Botamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Agumon",
+        "level_required": 9
+      },
+      {
+        "name": "Guilmon",
+        "level_required": 7
+      },
+      {
+        "name": "ToyAgumon",
+        "level_required": 8
+      },
+      {
+        "name": "Hackmon",
+        "level_required": 9
+      },
+      {
+        "name": "Dracomon",
+        "level_required": 6
+      },
+      {
+        "name": "Shoutmon",
+        "level_required": 8
+      }
+    ]
+  },
+  "7": {
+    "evolvesFrom": [
+      {
+        "name": "Pabumon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Lalamon",
+        "level_required": 9
+      },
+      {
+        "name": "Palmon",
+        "level_required": 8
+      },
+      {
+        "name": "Renamon",
+        "level_required": 7
+      },
+      {
+        "name": "FanBeemon",
+        "level_required": 6
+      }
+    ]
+  },
+  "8": {
+    "evolvesFrom": [
+      {
+        "name": "Punimon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Gabumon",
+        "level_required": 7
+      },
+      {
+        "name": "Gabumon (Blk)",
+        "level_required": 6
+      },
+      {
+        "name": "Goblimon",
+        "level_required": 7
+      },
+      {
+        "name": "Veemon",
+        "level_required": 6
+      },
+      {
+        "name": "Zubamon",
+        "level_required": 10
+      },
+      {
+        "name": "Monodramon",
+        "level_required": 8
+      }
+    ]
+  },
+  "9": {
+    "evolvesFrom": [
+      {
+        "name": "Kuramon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Agumon (Blk)",
+        "level_required": 8
+      },
+      {
+        "name": "Keramon",
+        "level_required": 9
+      },
+      {
+        "name": "DemiDevimon",
+        "level_required": 8
+      },
+      {
+        "name": "Dracmon",
+        "level_required": 8
+      }
+    ]
+  },
+  "10": {
+    "evolvesFrom": [
+      {
+        "name": "Poyomon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Patamon",
+        "level_required": 7
+      },
+      {
+        "name": "Falcomon",
+        "level_required": 9
+      },
+      {
+        "name": "Hawkmon",
+        "level_required": 7
+      },
+      {
+        "name": "Lucemon",
+        "level_required": 30
+      },
+      {
+        "name": "Sistermon Blanc",
+        "level_required": 7
+      }
+    ]
+  },
+  "11": {
+    "evolvesFrom": [
+      {
+        "name": "Punimon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Armadillomon",
+        "level_required": 7
+      },
+      {
+        "name": "Terriermon",
+        "level_required": 8
+      },
+      {
+        "name": "Salamon",
+        "level_required": 7
+      },
+      {
+        "name": "Lunamon",
+        "level_required": 8
+      }
+    ]
+  },
+  "12": {
+    "evolvesFrom": [
+      {
+        "name": "Kuramon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Impmon",
+        "level_required": 7
+      },
+      {
+        "name": "Gazimon",
+        "level_required": 9
+      },
+      {
+        "name": "Lopmon",
+        "level_required": 8
+      },
+      {
+        "name": "Chuumon",
+        "level_required": 6
+      }
+    ]
+  },
+  "13": {
+    "evolvesFrom": [
+      {
+        "name": "Pabumon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Elecmon",
+        "level_required": 7
+      },
+      {
+        "name": "Biyomon",
+        "level_required": 8
+      },
+      {
+        "name": "Wormmon",
+        "level_required": 8
+      },
+      {
+        "name": "Mushroomon",
+        "level_required": 8
+      }
+    ]
+  },
+  "14": {
+    "evolvesFrom": [
+      {
+        "name": "Poyomon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Otamamon",
+        "level_required": 7
+      },
+      {
+        "name": "Gomamon",
+        "level_required": 8
+      },
+      {
+        "name": "Syakomon",
+        "level_required": 7
+      },
+      {
+        "name": "Betamon",
+        "level_required": 8
+      }
+    ]
+  },
+  "15": {
+    "evolvesFrom": [
+      {
+        "name": "Pabumon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Gotsumon",
+        "level_required": 8
+      },
+      {
+        "name": "Solarmon",
+        "level_required": 6
+      },
+      {
+        "name": "Tentomon",
+        "level_required": 9
+      },
+      {
+        "name": "Hagurumon",
+        "level_required": 7
+      }
+    ]
+  },
+  "16": {
+    "evolvesFrom": [
+      {
+        "name": "Botamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Gaomon",
+        "level_required": 9
+      },
+      {
+        "name": "Kudamon",
+        "level_required": 8
+      },
+      {
+        "name": "Dorumon",
+        "level_required": 8
+      },
+      {
+        "name": "Ryudamon",
+        "level_required": 8
+      }
+    ]
+  },
+  "17": {
+    "evolvesFrom": [
+      {
+        "name": "Koromon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Greymon",
+        "level_required": 16
+      },
+      {
+        "name": "GeoGreymon",
+        "level_required": 15
+      },
+      {
+        "name": "Sukamon",
+        "level_required": 12
+      },
+      {
+        "name": "Tyrannomon",
+        "level_required": 14
+      },
+      {
+        "name": "Meramon",
+        "level_required": 14
+      },
+      {
+        "name": "Agunimon",
+        "level_required": 15
+      }
+    ]
+  },
+  "18": {
+    "evolvesFrom": [
+      {
+        "name": "Tsumemon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Growlmon",
+        "level_required": 15
+      },
+      {
+        "name": "Greymon (Blue)",
+        "level_required": 16
+      },
+      {
+        "name": "Cyclonemon",
+        "level_required": 14
+      },
+      {
+        "name": "Tankmon",
+        "level_required": 14
+      },
+      {
+        "name": "Tyrannomon",
+        "level_required": 14
+      },
+      {
+        "name": "Monochromon",
+        "level_required": 14
+      }
+    ]
+  },
+  "19": {
+    "evolvesFrom": [
+      {
+        "name": "Nyaromon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Ankylomon",
+        "level_required": 15
+      },
+      {
+        "name": "Geremon",
+        "level_required": 12
+      },
+      {
+        "name": "GoldNumemon",
+        "level_required": 18
+      },
+      {
+        "name": "Cyclonemon",
+        "level_required": 14
+      },
+      {
+        "name": "Tankmon",
+        "level_required": 14
+      },
+      {
+        "name": "Golemon",
+        "level_required": 14
+      }
+    ]
+  },
+  "20": {
+    "evolvesFrom": [
+      {
+        "name": "Pagumon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "IceDevimon",
+        "level_required": 15
+      },
+      {
+        "name": "Wizardmon",
+        "level_required": 14
+      },
+      {
+        "name": "Ogremon",
+        "level_required": 14
+      },
+      {
+        "name": "Socerimon",
+        "level_required": 16
+      },
+      {
+        "name": "Bakemon",
+        "level_required": 13
+      },
+      {
+        "name": "BlackGatomon",
+        "level_required": 16
+      }
+    ]
+  },
+  "21": {
+    "evolvesFrom": [
+      {
+        "name": "Yokomon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Garurumon",
+        "level_required": 15
+      },
+      {
+        "name": "Garurumon (Blk)",
+        "level_required": 15
+      },
+      {
+        "name": "Geremon",
+        "level_required": 12
+      },
+      {
+        "name": "Sukamon",
+        "level_required": 12
+      },
+      {
+        "name": "Nanimon",
+        "level_required": 12
+      },
+      {
+        "name": "Leomon",
+        "level_required": 16
+      }
+    ]
+  },
+  "22": {
+    "evolvesFrom": [
+      {
+        "name": "Bukamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "ShellNumemon",
+        "level_required": 14
+      },
+      {
+        "name": "Gekomon",
+        "level_required": 14
+      },
+      {
+        "name": "Seadramon",
+        "level_required": 14
+      },
+      {
+        "name": "Numemon",
+        "level_required": 12
+      },
+      {
+        "name": "Coelamon",
+        "level_required": 14
+      },
+      {
+        "name": "Raremon",
+        "level_required": 12
+      }
+    ]
+  },
+  "23": {
+    "evolvesFrom": [
+      {
+        "name": "Wanyamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Ogremon",
+        "level_required": 14
+      },
+      {
+        "name": "GaoGamon",
+        "level_required": 15
+      },
+      {
+        "name": "Gargomon",
+        "level_required": 15
+      },
+      {
+        "name": "Togemon",
+        "level_required": 16
+      },
+      {
+        "name": "Leomon",
+        "level_required": 16
+      },
+      {
+        "name": "Sangloupmon",
+        "level_required": 15
+      }
+    ]
+  },
+  "24": {
+    "evolvesFrom": [
+      {
+        "name": "Pagumon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "GaoGamon",
+        "level_required": 15
+      },
+      {
+        "name": "Garurumon (Blk)",
+        "level_required": 15
+      },
+      {
+        "name": "Kurisarimon",
+        "level_required": 16
+      },
+      {
+        "name": "Dorugamon",
+        "level_required": 14
+      },
+      {
+        "name": "Nanimon",
+        "level_required": 12
+      },
+      {
+        "name": "Leomon",
+        "level_required": 16
+      }
+    ]
+  },
+  "25": {
+    "evolvesFrom": [
+      {
+        "name": "Tsunomon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Garurumon",
+        "level_required": 15
+      },
+      {
+        "name": "Dorugamon",
+        "level_required": 14
+      },
+      {
+        "name": "Numemon",
+        "level_required": 12
+      },
+      {
+        "name": "Veedramon",
+        "level_required": 16
+      },
+      {
+        "name": "Frigimon",
+        "level_required": 14
+      },
+      {
+        "name": "Lobomon",
+        "level_required": 15
+      }
+    ]
+  },
+  "26": {
+    "evolvesFrom": [
+      {
+        "name": "Tsunomon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Garurumon (Blk)",
+        "level_required": 15
+      },
+      {
+        "name": "Vegiemon",
+        "level_required": 12
+      },
+      {
+        "name": "Frigimon",
+        "level_required": 14
+      },
+      {
+        "name": "Reppamon",
+        "level_required": 16
+      },
+      {
+        "name": "Raremon",
+        "level_required": 12
+      }
+    ]
+  },
+  "27": {
+    "evolvesFrom": [
+      {
+        "name": "Koromon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "GeoGreymon",
+        "level_required": 15
+      },
+      {
+        "name": "Growlmon",
+        "level_required": 15
+      },
+      {
+        "name": "Greymon (Blue)",
+        "level_required": 16
+      },
+      {
+        "name": "Tyrannomon",
+        "level_required": 14
+      },
+      {
+        "name": "Meramon",
+        "level_required": 14
+      },
+      {
+        "name": "Agunimon",
+        "level_required": 15
+      }
+    ]
+  },
+  "28": {
+    "evolvesFrom": [
+      {
+        "name": "Wanyamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Angemon",
+        "level_required": 16
+      },
+      {
+        "name": "GoldNumemon",
+        "level_required": 18
+      },
+      {
+        "name": "Peckmon",
+        "level_required": 14
+      },
+      {
+        "name": "Reppamon",
+        "level_required": 16
+      },
+      {
+        "name": "Lobomon",
+        "level_required": 15
+      }
+    ]
+  },
+  "29": {
+    "evolvesFrom": [
+      {
+        "name": "Tsumemon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Wizardmon",
+        "level_required": 14
+      },
+      {
+        "name": "Kurisarimon",
+        "level_required": 16
+      },
+      {
+        "name": "Bakemon",
+        "level_required": 13
+      },
+      {
+        "name": "PlatinumSukamon",
+        "level_required": 20
+      },
+      {
+        "name": "Arcadiamon Champion",
+        "level_required": 16
+      }
+    ]
+  },
+  "30": {
+    "evolvesFrom": [
+      {
+        "name": "Motimon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Ankylomon",
+        "level_required": 15
+      },
+      {
+        "name": "Clockmon",
+        "level_required": 14
+      },
+      {
+        "name": "Starmon",
+        "level_required": 14
+      },
+      {
+        "name": "Tankmon",
+        "level_required": 14
+      },
+      {
+        "name": "Icemon",
+        "level_required": 15
+      },
+      {
+        "name": "Golemon",
+        "level_required": 14
+      }
+    ]
+  },
+  "31": {
+    "evolvesFrom": [
+      {
+        "name": "Tsunomon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Ogremon",
+        "level_required": 14
+      },
+      {
+        "name": "GaoGamon",
+        "level_required": 15
+      },
+      {
+        "name": "Growlmon",
+        "level_required": 15
+      },
+      {
+        "name": "Greymon (Blue)",
+        "level_required": 16
+      },
+      {
+        "name": "Nanimon",
+        "level_required": 12
+      },
+      {
+        "name": "Coredramon (Green)",
+        "level_required": 14
+      }
+    ]
+  },
+  "32": {
+    "evolvesFrom": [
+      {
+        "name": "Bukamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Ankylomon",
+        "level_required": 15
+      },
+      {
+        "name": "Ikkakumon",
+        "level_required": 15
+      },
+      {
+        "name": "Socerimon",
+        "level_required": 16
+      },
+      {
+        "name": "Frigimon",
+        "level_required": 14
+      },
+      {
+        "name": "Icemon",
+        "level_required": 15
+      },
+      {
+        "name": "Strikedramon",
+        "level_required": 15
+      }
+    ]
+  },
+  "33": {
+    "evolvesFrom": [
+      {
+        "name": "Bukamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Ikkakumon",
+        "level_required": 15
+      },
+      {
+        "name": "ShellNumemon",
+        "level_required": 14
+      },
+      {
+        "name": "Gekomon",
+        "level_required": 14
+      },
+      {
+        "name": "Seadramon",
+        "level_required": 14
+      },
+      {
+        "name": "Coelamon",
+        "level_required": 14
+      }
+    ]
+  },
+  "34": {
+    "evolvesFrom": [
+      {
+        "name": "Motimon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Clockmon",
+        "level_required": 14
+      },
+      {
+        "name": "Geremon",
+        "level_required": 12
+      },
+      {
+        "name": "Starmon",
+        "level_required": 14
+      },
+      {
+        "name": "Meramon",
+        "level_required": 14
+      },
+      {
+        "name": "Guardromon (Gold)",
+        "level_required": 14
+      },
+      {
+        "name": "Golemon",
+        "level_required": 14
+      }
+    ]
+  },
+  "35": {
+    "evolvesFrom": [
+      {
+        "name": "Nyaromon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Gargomon",
+        "level_required": 15
+      },
+      {
+        "name": "Ikkakumon",
+        "level_required": 15
+      },
+      {
+        "name": "Gatomon",
+        "level_required": 16
+      },
+      {
+        "name": "Rapidmon (Armor)",
+        "level_required": 50
+      },
+      {
+        "name": "Unimon",
+        "level_required": 13
+      }
+    ]
+  },
+  "36": {
+    "evolvesFrom": [
+      {
+        "name": "Motimon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Kabuterimon",
+        "level_required": 14
+      },
+      {
+        "name": "Kuwagamon",
+        "level_required": 14
+      },
+      {
+        "name": "Sunflowmon",
+        "level_required": 14
+      },
+      {
+        "name": "Stingmon",
+        "level_required": 14
+      },
+      {
+        "name": "Waspmon",
+        "level_required": 14
+      }
+    ]
+  },
+  "37": {
+    "evolvesFrom": [
+      {
+        "name": "Koromon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Clockmon",
+        "level_required": 14
+      },
+      {
+        "name": "Guardromon",
+        "level_required": 14
+      },
+      {
+        "name": "Greymon",
+        "level_required": 16
+      },
+      {
+        "name": "Sukamon",
+        "level_required": 12
+      },
+      {
+        "name": "Starmon",
+        "level_required": 14
+      },
+      {
+        "name": "Guardromon (Gold)",
+        "level_required": 14
+      }
+    ]
+  },
+  "38": {
+    "evolvesFrom": [
+      {
+        "name": "Wanyamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Guardromon",
+        "level_required": 14
+      },
+      {
+        "name": "Cyclonemon",
+        "level_required": 14
+      },
+      {
+        "name": "Dorugamon",
+        "level_required": 14
+      },
+      {
+        "name": "Waspmon",
+        "level_required": 14
+      },
+      {
+        "name": "Raptordramon",
+        "level_required": 15
+      }
+    ]
+  },
+  "39": {
+    "evolvesFrom": [
+      {
+        "name": "Motimon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Guardromon",
+        "level_required": 14
+      },
+      {
+        "name": "Clockmon",
+        "level_required": 14
+      },
+      {
+        "name": "GoldNumemon",
+        "level_required": 18
+      },
+      {
+        "name": "Starmon",
+        "level_required": 14
+      },
+      {
+        "name": "PlatinumSukamon",
+        "level_required": 20
+      }
+    ]
+  },
+  "40": {
+    "evolvesFrom": [
+      {
+        "name": "Tokomon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "ExVeemon",
+        "level_required": 14
+      },
+      {
+        "name": "Angemon",
+        "level_required": 16
+      },
+      {
+        "name": "Gatomon",
+        "level_required": 16
+      },
+      {
+        "name": "Birdramon",
+        "level_required": 14
+      },
+      {
+        "name": "Reppamon",
+        "level_required": 16
+      },
+      {
+        "name": "Unimon",
+        "level_required": 13
+      }
+    ]
+  },
+  "41": {
+    "evolvesFrom": [
+      {
+        "name": "Koromon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Greymon",
+        "level_required": 16
+      },
+      {
+        "name": "GeoGreymon",
+        "level_required": 15
+      },
+      {
+        "name": "PlatinumSukamon",
+        "level_required": 20
+      },
+      {
+        "name": "Zubaeagermon",
+        "level_required": 20
+      },
+      {
+        "name": "BaoHuckmon",
+        "level_required": 16
+      },
+      {
+        "name": "Monochromon",
+        "level_required": 14
+      }
+    ]
+  },
+  "42": {
+    "evolvesFrom": [
+      {
+        "name": "Tanemon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Woodmon",
+        "level_required": 14
+      },
+      {
+        "name": "Kuwagamon",
+        "level_required": 14
+      },
+      {
+        "name": "Sunflowmon",
+        "level_required": 14
+      },
+      {
+        "name": "Togemon",
+        "level_required": 16
+      },
+      {
+        "name": "Vegiemon",
+        "level_required": 12
+      },
+      {
+        "name": "MudFrigimon",
+        "level_required": 14
+      }
+    ]
+  },
+  "43": {
+    "evolvesFrom": [
+      {
+        "name": "Tsumemon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "IceDevimon",
+        "level_required": 15
+      },
+      {
+        "name": "Kyubimon",
+        "level_required": 14
+      },
+      {
+        "name": "Kurisarimon",
+        "level_required": 16
+      },
+      {
+        "name": "Devimon",
+        "level_required": 16
+      },
+      {
+        "name": "Bakemon",
+        "level_required": 13
+      }
+    ]
+  },
+  "44": {
+    "evolvesFrom": [
+      {
+        "name": "Yokomon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Aquilamon",
+        "level_required": 14
+      },
+      {
+        "name": "Kabuterimon",
+        "level_required": 14
+      },
+      {
+        "name": "Kyubimon",
+        "level_required": 14
+      },
+      {
+        "name": "Birdramon",
+        "level_required": 14
+      },
+      {
+        "name": "Airdramon",
+        "level_required": 14
+      }
+    ]
+  },
+  "45": {
+    "evolvesFrom": [
+      {
+        "name": "Tokomon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Aquilamon",
+        "level_required": 14
+      },
+      {
+        "name": "ExVeemon",
+        "level_required": 14
+      },
+      {
+        "name": "Stingmon",
+        "level_required": 14
+      },
+      {
+        "name": "Peckmon",
+        "level_required": 14
+      }
+    ]
+  },
+  "46": {
+    "evolvesFrom": [
+      {
+        "name": "Tsunomon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "ExVeemon",
+        "level_required": 14
+      },
+      {
+        "name": "Veedramon",
+        "level_required": 16
+      },
+      {
+        "name": "Flamedramon",
+        "level_required": 14
+      },
+      {
+        "name": "Magnamon",
+        "level_required": 60
+      },
+      {
+        "name": "Lobomon",
+        "level_required": 15
+      },
+      {
+        "name": "Strikedramon",
+        "level_required": 15
+      }
+    ]
+  },
+  "47": {
+    "evolvesFrom": [
+      {
+        "name": "Nyaromon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Socerimon",
+        "level_required": 16
+      },
+      {
+        "name": "Gatomon",
+        "level_required": 16
+      },
+      {
+        "name": "Veedramon",
+        "level_required": 16
+      },
+      {
+        "name": "Frigimon",
+        "level_required": 14
+      },
+      {
+        "name": "Reppamon",
+        "level_required": 16
+      },
+      {
+        "name": "BaoHuckmon",
+        "level_required": 16
+      }
+    ]
+  },
+  "48": {
+    "evolvesFrom": [
+      {
+        "name": "Bukamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "ShellNumemon",
+        "level_required": 14
+      },
+      {
+        "name": "Gekomon",
+        "level_required": 14
+      },
+      {
+        "name": "Seadramon",
+        "level_required": 14
+      },
+      {
+        "name": "Numemon",
+        "level_required": 12
+      },
+      {
+        "name": "Vegiemon",
+        "level_required": 12
+      },
+      {
+        "name": "Airdramon",
+        "level_required": 14
+      }
+    ]
+  },
+  "49": {
+    "evolvesFrom": [
+      {
+        "name": "Tokomon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Aquilamon",
+        "level_required": 14
+      },
+      {
+        "name": "Birdramon",
+        "level_required": 14
+      },
+      {
+        "name": "Peckmon",
+        "level_required": 14
+      },
+      {
+        "name": "Meramon",
+        "level_required": 14
+      },
+      {
+        "name": "Airdramon",
+        "level_required": 14
+      }
+    ]
+  },
+  "50": {
+    "evolvesFrom": [
+      {
+        "name": "Tanemon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Woodmon",
+        "level_required": 14
+      },
+      {
+        "name": "Sunflowmon",
+        "level_required": 14
+      },
+      {
+        "name": "Togemon",
+        "level_required": 16
+      },
+      {
+        "name": "Vegiemon",
+        "level_required": 12
+      }
+    ]
+  },
+  "51": {
+    "evolvesFrom": [
+      {
+        "name": "Tokomon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Angemon",
+        "level_required": 16
+      },
+      {
+        "name": "Devimon",
+        "level_required": 16
+      },
+      {
+        "name": "Lucemon FM",
+        "level_required": 55
+      }
+    ]
+  },
+  "52": {
+    "evolvesFrom": [
+      {
+        "name": "Tanemon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Woodmon",
+        "level_required": 14
+      },
+      {
+        "name": "Garurumon",
+        "level_required": 15
+      },
+      {
+        "name": "Kyubimon",
+        "level_required": 14
+      },
+      {
+        "name": "BlackGatomon",
+        "level_required": 16
+      },
+      {
+        "name": "Turuiemon",
+        "level_required": 14
+      },
+      {
+        "name": "Lekismon",
+        "level_required": 15
+      }
+    ]
+  },
+  "53": {
+    "evolvesFrom": [
+      {
+        "name": "Pagumon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Wizardmon",
+        "level_required": 14
+      },
+      {
+        "name": "Gargomon",
+        "level_required": 15
+      },
+      {
+        "name": "Devimon",
+        "level_required": 16
+      },
+      {
+        "name": "BlackGatomon",
+        "level_required": 16
+      },
+      {
+        "name": "MudFrigimon",
+        "level_required": 14
+      },
+      {
+        "name": "Turuiemon",
+        "level_required": 14
+      }
+    ]
+  },
+  "54": {
+    "evolvesFrom": [
+      {
+        "name": "Yokomon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "IceDevimon",
+        "level_required": 15
+      },
+      {
+        "name": "Kabuterimon",
+        "level_required": 14
+      },
+      {
+        "name": "Kuwagamon",
+        "level_required": 14
+      },
+      {
+        "name": "Stingmon",
+        "level_required": 14
+      },
+      {
+        "name": "Waspmon",
+        "level_required": 14
+      },
+      {
+        "name": "Hudiemon",
+        "level_required": 15
+      }
+    ]
+  },
+  "55": {
+    "evolvesFrom": [
+      {
+        "name": "Impmon"
+      },
+      {
+        "name": "DemiDevimon"
+      },
+      {
+        "name": "Wormmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Myotismon",
+        "level_required": 30
+      },
+      {
+        "name": "Cherrymon",
+        "level_required": 28
+      },
+      {
+        "name": "LadyDevimon",
+        "level_required": 30
+      },
+      {
+        "name": "Arcadiamon Ultimate",
+        "level_required": 30
+      },
+      {
+        "name": "Dragomon",
+        "level_required": 28
+      }
+    ]
+  },
+  "56": {
+    "evolvesFrom": [
+      {
+        "name": "Biyomon"
+      },
+      {
+        "name": "Falcomon"
+      },
+      {
+        "name": "Hawkmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "AeroVeedramon",
+        "level_required": 30
+      },
+      {
+        "name": "Garudamon",
+        "level_required": 30
+      },
+      {
+        "name": "Silphymon",
+        "level_required": 30
+      },
+      {
+        "name": "Crowmon",
+        "level_required": 30
+      },
+      {
+        "name": "HippoGryphonmon",
+        "level_required": 26
+      }
+    ]
+  },
+  "57": {
+    "evolvesFrom": [
+      {
+        "name": "Armadillomon"
+      },
+      {
+        "name": "Gotsumon"
+      },
+      {
+        "name": "Gomamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Meteormon",
+        "level_required": 26
+      },
+      {
+        "name": "Shakkoumon",
+        "level_required": 30
+      },
+      {
+        "name": "SkullGreymon",
+        "level_required": 28
+      },
+      {
+        "name": "MagnaAngemon",
+        "level_required": 30
+      },
+      {
+        "name": "Groundramon",
+        "level_required": 30
+      }
+    ]
+  },
+  "58": {
+    "evolvesFrom": [
+      {
+        "name": "Gomamon"
+      },
+      {
+        "name": "Syakomon"
+      },
+      {
+        "name": "Terriermon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Zudomon",
+        "level_required": 30
+      },
+      {
+        "name": "Whamon",
+        "level_required": 28
+      },
+      {
+        "name": "MachGaogamon",
+        "level_required": 26
+      },
+      {
+        "name": "Triceramon",
+        "level_required": 28
+      }
+    ]
+  },
+  "59": {
+    "evolvesFrom": [
+      {
+        "name": "Impmon"
+      },
+      {
+        "name": "Keramon"
+      },
+      {
+        "name": "Lopmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Myotismon",
+        "level_required": 30
+      },
+      {
+        "name": "SkullMeramon",
+        "level_required": 28
+      },
+      {
+        "name": "Wisemon",
+        "level_required": 28
+      },
+      {
+        "name": "Phantomon",
+        "level_required": 28
+      }
+    ]
+  },
+  "60": {
+    "evolvesFrom": [
+      {
+        "name": "Palmon"
+      },
+      {
+        "name": "Lalamon"
+      },
+      {
+        "name": "Renamon"
+      },
+      {
+        "name": "Mushroomon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Cherrymon",
+        "level_required": 28
+      },
+      {
+        "name": "Taomon",
+        "level_required": 30
+      },
+      {
+        "name": "Pumpkinmon",
+        "level_required": 26
+      }
+    ]
+  },
+  "61": {
+    "evolvesFrom": [
+      {
+        "name": "Patamon"
+      },
+      {
+        "name": "Falcomon"
+      },
+      {
+        "name": "Veemon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Paildramon",
+        "level_required": 30
+      },
+      {
+        "name": "MagnaAngemon",
+        "level_required": 30
+      },
+      {
+        "name": "RizeGreymon",
+        "level_required": 30
+      },
+      {
+        "name": "Wingdramon",
+        "level_required": 30
+      },
+      {
+        "name": "Dinobeemon",
+        "level_required": 30
+      }
+    ]
+  },
+  "62": {
+    "evolvesFrom": [
+      {
+        "name": "Kudamon"
+      },
+      {
+        "name": "Patamon"
+      },
+      {
+        "name": "Lucemon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Garudamon",
+        "level_required": 30
+      },
+      {
+        "name": "Shakkoumon",
+        "level_required": 30
+      },
+      {
+        "name": "MagnaAngemon",
+        "level_required": 30
+      },
+      {
+        "name": "SaviorHuckmon",
+        "level_required": 30
+      },
+      {
+        "name": "HippoGryphonmon",
+        "level_required": 26
+      }
+    ]
+  },
+  "63": {
+    "evolvesFrom": [
+      {
+        "name": "Impmon"
+      },
+      {
+        "name": "Gaomon"
+      },
+      {
+        "name": "Goblimon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Digitamamon",
+        "level_required": 30
+      },
+      {
+        "name": "SkullMeramon",
+        "level_required": 28
+      },
+      {
+        "name": "WereGarurumon",
+        "level_required": 28
+      },
+      {
+        "name": "SkullSatamon",
+        "level_required": 28
+      }
+    ]
+  },
+  "64": {
+    "evolvesFrom": [
+      {
+        "name": "ToyAgumon"
+      },
+      {
+        "name": "Dorumon"
+      },
+      {
+        "name": "Hagurumon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Andromon",
+        "level_required": 28
+      },
+      {
+        "name": "GrapLeomon",
+        "level_required": 26
+      },
+      {
+        "name": "Datamon",
+        "level_required": 28
+      },
+      {
+        "name": "MetalMamemon",
+        "level_required": 26
+      },
+      {
+        "name": "CatchMamemon",
+        "level_required": 26
+      }
+    ]
+  },
+  "65": {
+    "evolvesFrom": [
+      {
+        "name": "Gaomon"
+      },
+      {
+        "name": "Gazimon"
+      },
+      {
+        "name": "Goblimon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "GrapLeomon",
+        "level_required": 26
+      },
+      {
+        "name": "MachGaogamon",
+        "level_required": 26
+      },
+      {
+        "name": "WereGarurumon",
+        "level_required": 28
+      }
+    ]
+  },
+  "66": {
+    "evolvesFrom": [
+      {
+        "name": "Tentomon"
+      },
+      {
+        "name": "Biyomon"
+      },
+      {
+        "name": "Wormmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "MegaKabuterimon",
+        "level_required": 28
+      },
+      {
+        "name": "Cherrymon",
+        "level_required": 28
+      },
+      {
+        "name": "Lilamon",
+        "level_required": 30
+      }
+    ]
+  },
+  "67": {
+    "evolvesFrom": [
+      {
+        "name": "Otamamon"
+      },
+      {
+        "name": "Syakomon"
+      },
+      {
+        "name": "Betamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "ShogunGekomon",
+        "level_required": 26
+      },
+      {
+        "name": "BlackKingNumemon",
+        "level_required": 32
+      },
+      {
+        "name": "MegaSeadramon",
+        "level_required": 30
+      }
+    ]
+  },
+  "68": {
+    "evolvesFrom": [
+      {
+        "name": "Gaomon"
+      },
+      {
+        "name": "Terriermon"
+      },
+      {
+        "name": "Lopmon"
+      },
+      {
+        "name": "Sistermon Blanc"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Antylamon",
+        "level_required": 28
+      },
+      {
+        "name": "WarGrowlmon",
+        "level_required": 30
+      },
+      {
+        "name": "Rapidmon",
+        "level_required": 28
+      }
+    ]
+  },
+  "69": {
+    "evolvesFrom": [
+      {
+        "name": "Elecmon"
+      },
+      {
+        "name": "Gabumon"
+      },
+      {
+        "name": "Renamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Zudomon",
+        "level_required": 30
+      },
+      {
+        "name": "DoruGreymon",
+        "level_required": 30
+      },
+      {
+        "name": "Panjyamon",
+        "level_required": 28
+      },
+      {
+        "name": "WereGarurumon",
+        "level_required": 28
+      }
+    ]
+  },
+  "70": {
+    "evolvesFrom": [
+      {
+        "name": "Elecmon"
+      },
+      {
+        "name": "Gazimon"
+      },
+      {
+        "name": "Gabumon (Blk)"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "BlueMeramon",
+        "level_required": 28
+      },
+      {
+        "name": "MachGaogamon",
+        "level_required": 26
+      },
+      {
+        "name": "WereGarurumon (Blk)",
+        "level_required": 28
+      },
+      {
+        "name": "Pandamon",
+        "level_required": 26
+      }
+    ]
+  },
+  "71": {
+    "evolvesFrom": [
+      {
+        "name": "DemiDevimon"
+      },
+      {
+        "name": "Biyomon"
+      },
+      {
+        "name": "Renamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Taomon",
+        "level_required": 30
+      },
+      {
+        "name": "Monzaemon",
+        "level_required": 26
+      },
+      {
+        "name": "LadyDevimon",
+        "level_required": 30
+      }
+    ]
+  },
+  "72": {
+    "evolvesFrom": [
+      {
+        "name": "Agumon (Blk)"
+      },
+      {
+        "name": "Guilmon"
+      },
+      {
+        "name": "Goblimon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Gigadramon",
+        "level_required": 26
+      },
+      {
+        "name": "WarGrowlmon",
+        "level_required": 30
+      },
+      {
+        "name": "MetalGreymon",
+        "level_required": 30
+      },
+      {
+        "name": "MetalTyrannomon",
+        "level_required": 28
+      },
+      {
+        "name": "BurningGreymon",
+        "level_required": 30
+      }
+    ]
+  },
+  "73": {
+    "evolvesFrom": [
+      {
+        "name": "Gazimon"
+      },
+      {
+        "name": "Keramon"
+      },
+      {
+        "name": "DemiDevimon"
+      },
+      {
+        "name": "Arcadiamon Rookie"
+      },
+      {
+        "name": "Monodramon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Infermon",
+        "level_required": 30
+      },
+      {
+        "name": "Cyberdramon",
+        "level_required": 28
+      },
+      {
+        "name": "Taomon",
+        "level_required": 30
+      },
+      {
+        "name": "Arcadiamon Ultimate",
+        "level_required": 30
+      }
+    ]
+  },
+  "74": {
+    "evolvesFrom": [
+      {
+        "name": "Agumon"
+      },
+      {
+        "name": "ToyAgumon"
+      },
+      {
+        "name": "Hackmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "SkullGreymon",
+        "level_required": 28
+      },
+      {
+        "name": "Megadramon",
+        "level_required": 26
+      },
+      {
+        "name": "MetalGreymon",
+        "level_required": 30
+      },
+      {
+        "name": "MetalGreymon (Blue)",
+        "level_required": 30
+      }
+    ]
+  },
+  "75": {
+    "evolvesFrom": [
+      {
+        "name": "Agumon (Blk)"
+      },
+      {
+        "name": "Guilmon"
+      },
+      {
+        "name": "Goblimon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "DoruGreymon",
+        "level_required": 30
+      },
+      {
+        "name": "Knightmon",
+        "level_required": 30
+      },
+      {
+        "name": "MetalGreymon (Blue)",
+        "level_required": 30
+      },
+      {
+        "name": "Triceramon",
+        "level_required": 28
+      }
+    ]
+  },
+  "76": {
+    "evolvesFrom": [
+      {
+        "name": "Gotsumon"
+      },
+      {
+        "name": "Solarmon"
+      },
+      {
+        "name": "ToyAgumon"
+      },
+      {
+        "name": "Hagurumon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Andromon",
+        "level_required": 28
+      },
+      {
+        "name": "Knightmon",
+        "level_required": 30
+      },
+      {
+        "name": "Datamon",
+        "level_required": 28
+      },
+      {
+        "name": "Wisemon",
+        "level_required": 28
+      }
+    ]
+  },
+  "77": {
+    "evolvesFrom": [
+      {
+        "name": "Tentomon"
+      },
+      {
+        "name": "Palmon"
+      },
+      {
+        "name": "Wormmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Okuwamon",
+        "level_required": 26
+      },
+      {
+        "name": "CannonBeemon",
+        "level_required": 28
+      },
+      {
+        "name": "Cherrymon",
+        "level_required": 28
+      }
+    ]
+  },
+  "78": {
+    "evolvesFrom": [
+      {
+        "name": "Otamamon"
+      },
+      {
+        "name": "Syakomon"
+      },
+      {
+        "name": "Betamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "ShogunGekomon",
+        "level_required": 26
+      },
+      {
+        "name": "Whamon",
+        "level_required": 28
+      },
+      {
+        "name": "MegaSeadramon",
+        "level_required": 30
+      }
+    ]
+  },
+  "79": {
+    "evolvesFrom": [
+      {
+        "name": "Armadillomon"
+      },
+      {
+        "name": "Elecmon"
+      },
+      {
+        "name": "Solarmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Etemon",
+        "level_required": 26
+      },
+      {
+        "name": "SuperStarmon",
+        "level_required": 28
+      },
+      {
+        "name": "MetalMamemon",
+        "level_required": 26
+      }
+    ]
+  },
+  "80": {
+    "evolvesFrom": [
+      {
+        "name": "Armadillomon"
+      },
+      {
+        "name": "Kudamon"
+      },
+      {
+        "name": "Hagurumon"
+      },
+      {
+        "name": "Zubamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "BlackKingNumemon",
+        "level_required": 32
+      },
+      {
+        "name": "Vademon",
+        "level_required": 26
+      },
+      {
+        "name": "PlatinumNumemon",
+        "level_required": 65
+      }
+    ]
+  },
+  "81": {
+    "evolvesFrom": [
+      {
+        "name": "Agumon (Blk)"
+      },
+      {
+        "name": "Armadillomon"
+      },
+      {
+        "name": "Dorumon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "DoruGreymon",
+        "level_required": 30
+      },
+      {
+        "name": "Datamon",
+        "level_required": 28
+      },
+      {
+        "name": "Megadramon",
+        "level_required": 26
+      }
+    ]
+  },
+  "82": {
+    "evolvesFrom": [
+      {
+        "name": "Tentomon"
+      },
+      {
+        "name": "Palmon"
+      },
+      {
+        "name": "Lalamon"
+      },
+      {
+        "name": "Mushroomon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Angewomon",
+        "level_required": 30
+      },
+      {
+        "name": "Lilamon",
+        "level_required": 30
+      },
+      {
+        "name": "Lillymon",
+        "level_required": 30
+      }
+    ]
+  },
+  "83": {
+    "evolvesFrom": [
+      {
+        "name": "Otamamon"
+      },
+      {
+        "name": "Syakomon"
+      },
+      {
+        "name": "Betamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "ShogunGekomon",
+        "level_required": 26
+      },
+      {
+        "name": "Whamon",
+        "level_required": 28
+      },
+      {
+        "name": "MegaSeadramon",
+        "level_required": 30
+      },
+      {
+        "name": "Hisyaryumon",
+        "level_required": 30
+      }
+    ]
+  },
+  "84": {
+    "evolvesFrom": [
+      {
+        "name": "Agumon"
+      },
+      {
+        "name": "Guilmon"
+      },
+      {
+        "name": "Hackmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Gigadramon",
+        "level_required": 26
+      },
+      {
+        "name": "SkullGreymon",
+        "level_required": 28
+      },
+      {
+        "name": "RizeGreymon",
+        "level_required": 30
+      },
+      {
+        "name": "Groundramon",
+        "level_required": 30
+      }
+    ]
+  },
+  "85": {
+    "evolvesFrom": [
+      {
+        "name": "Agumon"
+      },
+      {
+        "name": "Elecmon"
+      },
+      {
+        "name": "ToyAgumon"
+      },
+      {
+        "name": "Chuumon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Etemon",
+        "level_required": 26
+      },
+      {
+        "name": "SuperStarmon",
+        "level_required": 28
+      },
+      {
+        "name": "Vademon",
+        "level_required": 26
+      }
+    ]
+  },
+  "86": {
+    "evolvesFrom": [
+      {
+        "name": "Gotsumon"
+      },
+      {
+        "name": "Solarmon"
+      },
+      {
+        "name": "ToyAgumon"
+      },
+      {
+        "name": "Hagurumon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "SuperStarmon",
+        "level_required": 28
+      },
+      {
+        "name": "Mamemon",
+        "level_required": 26
+      },
+      {
+        "name": "MetalMamemon",
+        "level_required": 26
+      },
+      {
+        "name": "CatchMamemon",
+        "level_required": 26
+      },
+      {
+        "name": "Crescemon",
+        "level_required": 30
+      }
+    ]
+  },
+  "87": {
+    "evolvesFrom": [
+      {
+        "name": "Tentomon"
+      },
+      {
+        "name": "Falcomon"
+      },
+      {
+        "name": "Wormmon"
+      },
+      {
+        "name": "FanBeemon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Infermon",
+        "level_required": 30
+      },
+      {
+        "name": "Okuwamon",
+        "level_required": 26
+      },
+      {
+        "name": "Paildramon",
+        "level_required": 30
+      },
+      {
+        "name": "Dinobeemon",
+        "level_required": 30
+      }
+    ]
+  },
+  "88": {
+    "evolvesFrom": [
+      {
+        "name": "Impmon"
+      },
+      {
+        "name": "Gomamon"
+      },
+      {
+        "name": "Salamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Antylamon",
+        "level_required": 28
+      },
+      {
+        "name": "Piximon",
+        "level_required": 26
+      },
+      {
+        "name": "Wisemon",
+        "level_required": 28
+      }
+    ]
+  },
+  "89": {
+    "evolvesFrom": [
+      {
+        "name": "Agumon (Blk)"
+      },
+      {
+        "name": "Armadillomon"
+      },
+      {
+        "name": "Gotsumon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Andromon",
+        "level_required": 28
+      },
+      {
+        "name": "Gigadramon",
+        "level_required": 26
+      },
+      {
+        "name": "CannonBeemon",
+        "level_required": 28
+      },
+      {
+        "name": "Knightmon",
+        "level_required": 30
+      },
+      {
+        "name": "Volcanomon",
+        "level_required": 26
+      }
+    ]
+  },
+  "90": {
+    "evolvesFrom": [
+      {
+        "name": "Agumon"
+      },
+      {
+        "name": "Agumon (Blk)"
+      },
+      {
+        "name": "Guilmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Mamemon",
+        "level_required": 26
+      },
+      {
+        "name": "Megadramon",
+        "level_required": 26
+      },
+      {
+        "name": "MetalGreymon (Blue)",
+        "level_required": 30
+      },
+      {
+        "name": "MetalTyrannomon",
+        "level_required": 28
+      }
+    ]
+  },
+  "91": {
+    "evolvesFrom": [
+      {
+        "name": "Terriermon"
+      },
+      {
+        "name": "Patamon"
+      },
+      {
+        "name": "Salamon"
+      },
+      {
+        "name": "Lunamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Angewomon",
+        "level_required": 30
+      },
+      {
+        "name": "Silphymon",
+        "level_required": 30
+      },
+      {
+        "name": "Lillymon",
+        "level_required": 30
+      },
+      {
+        "name": "Pandamon",
+        "level_required": 26
+      }
+    ]
+  },
+  "92": {
+    "evolvesFrom": [
+      {
+        "name": "DemiDevimon"
+      },
+      {
+        "name": "Lucemon"
+      },
+      {
+        "name": "Lopmon"
+      },
+      {
+        "name": "Dracmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Infermon",
+        "level_required": 30
+      },
+      {
+        "name": "Myotismon",
+        "level_required": 30
+      },
+      {
+        "name": "BlueMeramon",
+        "level_required": 28
+      },
+      {
+        "name": "MetalGreymon (Blue)",
+        "level_required": 30
+      },
+      {
+        "name": "SkullSatamon",
+        "level_required": 28
+      }
+    ]
+  },
+  "93": {
+    "evolvesFrom": [
+      {
+        "name": "Gaomon"
+      },
+      {
+        "name": "Palmon"
+      },
+      {
+        "name": "Lalamon"
+      },
+      {
+        "name": "FanBeemon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Pumpkinmon",
+        "level_required": 26
+      },
+      {
+        "name": "MachGaogamon",
+        "level_required": 26
+      },
+      {
+        "name": "Lillymon",
+        "level_required": 30
+      }
+    ]
+  },
+  "94": {
+    "evolvesFrom": [
+      {
+        "name": "Gazimon"
+      },
+      {
+        "name": "Gabumon"
+      },
+      {
+        "name": "Dorumon"
+      },
+      {
+        "name": "Monodramon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Chirinmon",
+        "level_required": 30
+      },
+      {
+        "name": "DoruGreymon",
+        "level_required": 30
+      },
+      {
+        "name": "RizeGreymon",
+        "level_required": 30
+      },
+      {
+        "name": "Grademon",
+        "level_required": 30
+      }
+    ]
+  },
+  "95": {
+    "evolvesFrom": [
+      {
+        "name": "Elecmon"
+      },
+      {
+        "name": "Gazimon"
+      },
+      {
+        "name": "Goblimon"
+      },
+      {
+        "name": "Chuumon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Meteormon",
+        "level_required": 26
+      },
+      {
+        "name": "SuperStarmon",
+        "level_required": 28
+      },
+      {
+        "name": "Digitamamon",
+        "level_required": 30
+      }
+    ]
+  },
+  "96": {
+    "evolvesFrom": [
+      {
+        "name": "Otamamon"
+      },
+      {
+        "name": "Gabumon"
+      },
+      {
+        "name": "Betamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Etemon",
+        "level_required": 26
+      },
+      {
+        "name": "BlackKingNumemon",
+        "level_required": 32
+      },
+      {
+        "name": "Monzaemon",
+        "level_required": 26
+      }
+    ]
+  },
+  "97": {
+    "evolvesFrom": [
+      {
+        "name": "Patamon"
+      },
+      {
+        "name": "Biyomon"
+      },
+      {
+        "name": "Hawkmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "AeroVeedramon",
+        "level_required": 30
+      },
+      {
+        "name": "Garudamon",
+        "level_required": 30
+      },
+      {
+        "name": "Chirinmon",
+        "level_required": 30
+      },
+      {
+        "name": "Crowmon",
+        "level_required": 30
+      },
+      {
+        "name": "BurningGreymon",
+        "level_required": 30
+      },
+      {
+        "name": "HippoGryphonmon",
+        "level_required": 26
+      }
+    ]
+  },
+  "98": {
+    "evolvesFrom": [
+      {
+        "name": "Impmon"
+      },
+      {
+        "name": "Keramon"
+      },
+      {
+        "name": "DemiDevimon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Myotismon",
+        "level_required": 30
+      },
+      {
+        "name": "Pumpkinmon",
+        "level_required": 26
+      },
+      {
+        "name": "BlueMeramon",
+        "level_required": 28
+      },
+      {
+        "name": "LadyDevimon",
+        "level_required": 30
+      },
+      {
+        "name": "Phantomon",
+        "level_required": 28
+      },
+      {
+        "name": "Matadormon",
+        "level_required": 28
+      }
+    ]
+  },
+  "99": {
+    "evolvesFrom": [
+      {
+        "name": "Gabumon"
+      },
+      {
+        "name": "Veemon"
+      },
+      {
+        "name": "Salamon"
+      },
+      {
+        "name": "Dracomon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "AeroVeedramon",
+        "level_required": 30
+      },
+      {
+        "name": "Cyberdramon",
+        "level_required": 28
+      },
+      {
+        "name": "WarGrowlmon",
+        "level_required": 30
+      },
+      {
+        "name": "MetalTyrannomon",
+        "level_required": 28
+      }
+    ]
+  },
+  "100": {
+    "evolvesFrom": [
+      {
+        "name": "Keramon"
+      },
+      {
+        "name": "Hagurumon"
+      },
+      {
+        "name": "Hackmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Etemon",
+        "level_required": 26
+      },
+      {
+        "name": "Vademon",
+        "level_required": 26
+      },
+      {
+        "name": "MetalMamemon",
+        "level_required": 26
+      },
+      {
+        "name": "CatchMamemon",
+        "level_required": 26
+      }
+    ]
+  },
+  "101": {
+    "evolvesFrom": [
+      {
+        "name": "Impmon"
+      },
+      {
+        "name": "Renamon"
+      },
+      {
+        "name": "Lopmon"
+      },
+      {
+        "name": "Chuumon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Cyberdramon",
+        "level_required": 28
+      },
+      {
+        "name": "Knightmon",
+        "level_required": 30
+      },
+      {
+        "name": "LadyDevimon",
+        "level_required": 30
+      },
+      {
+        "name": "WereGarurumon (Blk)",
+        "level_required": 28
+      }
+    ]
+  },
+  "102": {
+    "evolvesFrom": [
+      {
+        "name": "Gabumon (Blk)"
+      },
+      {
+        "name": "Palmon"
+      },
+      {
+        "name": "Betamon"
+      },
+      {
+        "name": "Lalamon"
+      },
+      {
+        "name": "Mushroomon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "MegaKabuterimon",
+        "level_required": 28
+      },
+      {
+        "name": "Digitamamon",
+        "level_required": 30
+      },
+      {
+        "name": "Lilamon",
+        "level_required": 30
+      }
+    ]
+  },
+  "103": {
+    "evolvesFrom": [
+      {
+        "name": "Kudamon"
+      },
+      {
+        "name": "Falcomon"
+      },
+      {
+        "name": "Hawkmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Antylamon",
+        "level_required": 28
+      },
+      {
+        "name": "Piximon",
+        "level_required": 26
+      },
+      {
+        "name": "Crowmon",
+        "level_required": 30
+      }
+    ]
+  },
+  "104": {
+    "evolvesFrom": [
+      {
+        "name": "Agumon"
+      },
+      {
+        "name": "Guilmon"
+      },
+      {
+        "name": "Solarmon"
+      },
+      {
+        "name": "Hawkmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "SkullMeramon",
+        "level_required": 28
+      },
+      {
+        "name": "Panjyamon",
+        "level_required": 28
+      },
+      {
+        "name": "BlueMeramon",
+        "level_required": 28
+      },
+      {
+        "name": "Mamemon",
+        "level_required": 26
+      },
+      {
+        "name": "BurningGreymon",
+        "level_required": 30
+      },
+      {
+        "name": "Volcanomon",
+        "level_required": 26
+      }
+    ]
+  },
+  "105": {
+    "evolvesFrom": [
+      {
+        "name": "Gabumon"
+      },
+      {
+        "name": "Gabumon (Blk)"
+      },
+      {
+        "name": "Gomamon"
+      },
+      {
+        "name": "Salamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Angewomon",
+        "level_required": 30
+      },
+      {
+        "name": "Zudomon",
+        "level_required": 30
+      },
+      {
+        "name": "Monzaemon",
+        "level_required": 26
+      },
+      {
+        "name": "Crescemon",
+        "level_required": 30
+      }
+    ]
+  },
+  "106": {
+    "evolvesFrom": [
+      {
+        "name": "Elecmon"
+      },
+      {
+        "name": "Gaomon"
+      },
+      {
+        "name": "Gazimon"
+      },
+      {
+        "name": "Arcadiamon Rookie"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Meteormon",
+        "level_required": 26
+      },
+      {
+        "name": "GrapLeomon",
+        "level_required": 26
+      },
+      {
+        "name": "Panjyamon",
+        "level_required": 28
+      },
+      {
+        "name": "MetalGreymon",
+        "level_required": 30
+      },
+      {
+        "name": "Grademon",
+        "level_required": 30
+      }
+    ]
+  },
+  "107": {
+    "evolvesFrom": [
+      {
+        "name": "Gabumon (Blk)"
+      },
+      {
+        "name": "Kudamon"
+      },
+      {
+        "name": "Patamon"
+      },
+      {
+        "name": "Salamon"
+      },
+      {
+        "name": "Ryudamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Chirinmon",
+        "level_required": 30
+      },
+      {
+        "name": "Piximon",
+        "level_required": 26
+      },
+      {
+        "name": "Rapidmon",
+        "level_required": 28
+      }
+    ]
+  },
+  "108": {
+    "evolvesFrom": [
+      {
+        "name": "Tentomon"
+      },
+      {
+        "name": "Dorumon"
+      },
+      {
+        "name": "Wormmon"
+      },
+      {
+        "name": "FanBeemon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "MegaKabuterimon",
+        "level_required": 28
+      },
+      {
+        "name": "Okuwamon",
+        "level_required": 26
+      },
+      {
+        "name": "CannonBeemon",
+        "level_required": 28
+      },
+      {
+        "name": "Rapidmon",
+        "level_required": 28
+      }
+    ]
+  },
+  "109": {
+    "evolvesFrom": [
+      {
+        "name": "Kabuterimon"
+      },
+      {
+        "name": "Vegiemon"
+      },
+      {
+        "name": "Waspmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "GranKuwagamon",
+        "level_required": 45
+      },
+      {
+        "name": "HerculesKabuterimon",
+        "level_required": 50
+      },
+      {
+        "name": "Magnadramon",
+        "level_required": 55
+      }
+    ]
+  },
+  "110": {
+    "evolvesFrom": [
+      {
+        "name": "Gargomon"
+      },
+      {
+        "name": "Socerimon"
+      },
+      {
+        "name": "Peckmon"
+      },
+      {
+        "name": "Turuiemon"
+      },
+      {
+        "name": "Lekismon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Kerpymon (Good)",
+        "level_required": 55
+      },
+      {
+        "name": "Dianamon",
+        "level_required": 55
+      },
+      {
+        "name": "Diaboromon",
+        "level_required": 55
+      },
+      {
+        "name": "Kerpymon (Blk)",
+        "level_required": 55
+      }
+    ]
+  },
+  "111": {
+    "evolvesFrom": [
+      {
+        "name": "Guardromon"
+      },
+      {
+        "name": "Clockmon"
+      },
+      {
+        "name": "Tankmon"
+      },
+      {
+        "name": "Guardromon (Gold)"
+      },
+      {
+        "name": "Coelamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Craniamon",
+        "level_required": 60
+      },
+      {
+        "name": "TigerVespamon",
+        "level_required": 50
+      },
+      {
+        "name": "HiAndromon",
+        "level_required": 55
+      }
+    ]
+  },
+  "112": {
+    "evolvesFrom": [
+      {
+        "name": "Ankylomon"
+      },
+      {
+        "name": "Nanimon"
+      },
+      {
+        "name": "Leomon"
+      },
+      {
+        "name": "Icemon"
+      },
+      {
+        "name": "Golemon"
+      },
+      {
+        "name": "MudFrigimon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Ebemon",
+        "level_required": 45
+      },
+      {
+        "name": "Dianamon",
+        "level_required": 55
+      },
+      {
+        "name": "MetalEtemon",
+        "level_required": 45
+      }
+    ]
+  },
+  "113": {
+    "evolvesFrom": [
+      {
+        "name": "Kurisarimon"
+      },
+      {
+        "name": "Stingmon"
+      },
+      {
+        "name": "Devimon"
+      },
+      {
+        "name": "Arcadiamon Champion"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "VenomMyotismon",
+        "level_required": 55
+      },
+      {
+        "name": "Diaboromon",
+        "level_required": 55
+      },
+      {
+        "name": "Beelzemon",
+        "level_required": 60
+      },
+      {
+        "name": "Arcadiamon Mega",
+        "level_required": 60
+      }
+    ]
+  },
+  "114": {
+    "evolvesFrom": [
+      {
+        "name": "IceDevimon"
+      },
+      {
+        "name": "Wizardmon"
+      },
+      {
+        "name": "Devimon"
+      },
+      {
+        "name": "Bakemon"
+      },
+      {
+        "name": "Sangloupmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "VenomMyotismon",
+        "level_required": 55
+      },
+      {
+        "name": "Barbamon",
+        "level_required": 60
+      },
+      {
+        "name": "Piedmon",
+        "level_required": 50
+      },
+      {
+        "name": "Arcadiamon Mega",
+        "level_required": 60
+      },
+      {
+        "name": "GranDracmon",
+        "level_required": 50
+      }
+    ]
+  },
+  "115": {
+    "evolvesFrom": [
+      {
+        "name": "Aquilamon"
+      },
+      {
+        "name": "Birdramon"
+      },
+      {
+        "name": "Veedramon"
+      },
+      {
+        "name": "Coredramon (Blue)"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "UlforceVeedramon",
+        "level_required": 60
+      },
+      {
+        "name": "Dynasmon",
+        "level_required": 60
+      },
+      {
+        "name": "Ravemon",
+        "level_required": 55
+      },
+      {
+        "name": "Goldramon",
+        "level_required": 55
+      }
+    ]
+  },
+  "116": {
+    "evolvesFrom": [
+      {
+        "name": "Geremon"
+      },
+      {
+        "name": "Sukamon"
+      },
+      {
+        "name": "Numemon"
+      },
+      {
+        "name": "PlatinumSukamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Piedmon",
+        "level_required": 50
+      },
+      {
+        "name": "PlatinumNumemon",
+        "level_required": 65
+      },
+      {
+        "name": "MetalEtemon",
+        "level_required": 45
+      },
+      {
+        "name": "KingEtemon",
+        "level_required": 45
+      },
+      {
+        "name": "PileVolcamon",
+        "level_required": 50
+      }
+    ]
+  },
+  "117": {
+    "evolvesFrom": [
+      {
+        "name": "Sunflowmon"
+      },
+      {
+        "name": "Gatomon"
+      },
+      {
+        "name": "Frigimon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Ophanimon",
+        "level_required": 55
+      },
+      {
+        "name": "Magnadramon",
+        "level_required": 55
+      },
+      {
+        "name": "Mastemon",
+        "level_required": 60
+      },
+      {
+        "name": "Valkyrimon",
+        "level_required": 50
+      }
+    ]
+  },
+  "118": {
+    "evolvesFrom": [
+      {
+        "name": "Kuwagamon"
+      },
+      {
+        "name": "Stingmon"
+      },
+      {
+        "name": "Waspmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "GranKuwagamon",
+        "level_required": 45
+      },
+      {
+        "name": "Diaboromon",
+        "level_required": 55
+      },
+      {
+        "name": "HerculesKabuterimon",
+        "level_required": 50
+      }
+    ]
+  },
+  "119": {
+    "evolvesFrom": [
+      {
+        "name": "Aquilamon"
+      },
+      {
+        "name": "Angemon"
+      },
+      {
+        "name": "Birdramon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Justimon",
+        "level_required": 50
+      },
+      {
+        "name": "Hououmon",
+        "level_required": 50
+      },
+      {
+        "name": "Ravemon",
+        "level_required": 55
+      },
+      {
+        "name": "Varodurumon",
+        "level_required": 55
+      },
+      {
+        "name": "Gryphonmon",
+        "level_required": 50
+      }
+    ]
+  },
+  "120": {
+    "evolvesFrom": [
+      {
+        "name": "Growlmon"
+      },
+      {
+        "name": "GeoGreymon"
+      },
+      {
+        "name": "Tankmon"
+      },
+      {
+        "name": "Raptordramon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "GroundLocomon",
+        "level_required": 50
+      },
+      {
+        "name": "Machinedramon",
+        "level_required": 50
+      },
+      {
+        "name": "MetalSeadramon",
+        "level_required": 50
+      },
+      {
+        "name": "Darkdramon",
+        "level_required": 50
+      },
+      {
+        "name": "Dorugoramon",
+        "level_required": 50
+      },
+      {
+        "name": "Megidramon",
+        "level_required": 55
+      }
+    ]
+  },
+  "121": {
+    "evolvesFrom": [
+      {
+        "name": "Kuwagamon"
+      },
+      {
+        "name": "Tankmon"
+      },
+      {
+        "name": "Waspmon"
+      },
+      {
+        "name": "Ginryumon"
+      },
+      {
+        "name": "Hudiemon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "GroundLocomon",
+        "level_required": 50
+      },
+      {
+        "name": "MegaGargomon",
+        "level_required": 50
+      },
+      {
+        "name": "TigerVespamon",
+        "level_required": 50
+      }
+    ]
+  },
+  "122": {
+    "evolvesFrom": [
+      {
+        "name": "Guardromon"
+      },
+      {
+        "name": "GaoGamon"
+      },
+      {
+        "name": "Leomon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "SaberLeomon",
+        "level_required": 50
+      },
+      {
+        "name": "Leopardmon",
+        "level_required": 60
+      },
+      {
+        "name": "BanchoLeomon",
+        "level_required": 55
+      },
+      {
+        "name": "PileVolcamon",
+        "level_required": 50
+      }
+    ]
+  },
+  "123": {
+    "evolvesFrom": [
+      {
+        "name": "Kurisarimon"
+      },
+      {
+        "name": "Veedramon"
+      },
+      {
+        "name": "BlackGatomon"
+      },
+      {
+        "name": "Strikedramon"
+      },
+      {
+        "name": "Turuiemon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Alphamon",
+        "level_required": 60
+      },
+      {
+        "name": "Justimon",
+        "level_required": 50
+      },
+      {
+        "name": "Titamon",
+        "level_required": 55
+      }
+    ]
+  },
+  "124": {
+    "evolvesFrom": [
+      {
+        "name": "Ankylomon"
+      },
+      {
+        "name": "Angemon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Vikemon",
+        "level_required": 50
+      },
+      {
+        "name": "ChaosGallantmon",
+        "level_required": 60
+      },
+      {
+        "name": "Kerpymon (Good)",
+        "level_required": 55
+      }
+    ]
+  },
+  "125": {
+    "evolvesFrom": [
+      {
+        "name": "IceDevimon"
+      },
+      {
+        "name": "Woodmon"
+      },
+      {
+        "name": "Kabuterimon"
+      },
+      {
+        "name": "Kuwagamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Kuzuhamon",
+        "level_required": 55
+      },
+      {
+        "name": "GranKuwagamon",
+        "level_required": 45
+      },
+      {
+        "name": "Puppetmon",
+        "level_required": 50
+      }
+    ]
+  },
+  "126": {
+    "evolvesFrom": [
+      {
+        "name": "Aquilamon"
+      },
+      {
+        "name": "Gatomon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Sakuyamon",
+        "level_required": 55
+      },
+      {
+        "name": "Dynasmon",
+        "level_required": 60
+      },
+      {
+        "name": "Hououmon",
+        "level_required": 50
+      },
+      {
+        "name": "Valkyrimon",
+        "level_required": 50
+      },
+      {
+        "name": "Gryphonmon",
+        "level_required": 50
+      }
+    ]
+  },
+  "127": {
+    "evolvesFrom": [
+      {
+        "name": "Geremon"
+      },
+      {
+        "name": "Sukamon"
+      },
+      {
+        "name": "Starmon"
+      },
+      {
+        "name": "Nanimon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Gankoomon",
+        "level_required": 60
+      },
+      {
+        "name": "Justimon",
+        "level_required": 50
+      },
+      {
+        "name": "PlatinumNumemon",
+        "level_required": 65
+      }
+    ]
+  },
+  "128": {
+    "evolvesFrom": [
+      {
+        "name": "Ankylomon"
+      },
+      {
+        "name": "Greymon"
+      },
+      {
+        "name": "GeoGreymon"
+      },
+      {
+        "name": "Monochromon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "ShineGreymon",
+        "level_required": 55
+      },
+      {
+        "name": "Titamon",
+        "level_required": 55
+      },
+      {
+        "name": "Creepymon",
+        "level_required": 60
+      }
+    ]
+  },
+  "129": {
+    "evolvesFrom": [
+      {
+        "name": "Ikkakumon"
+      },
+      {
+        "name": "Garurumon"
+      },
+      {
+        "name": "Frigimon"
+      },
+      {
+        "name": "Icemon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Vikemon",
+        "level_required": 50
+      },
+      {
+        "name": "MarineAngemon",
+        "level_required": 50
+      },
+      {
+        "name": "MetalGarurumon",
+        "level_required": 55
+      },
+      {
+        "name": "Plesiomon",
+        "level_required": 50
+      }
+    ]
+  },
+  "130": {
+    "evolvesFrom": [
+      {
+        "name": "Woodmon"
+      },
+      {
+        "name": "Kyubimon"
+      },
+      {
+        "name": "Kurisarimon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Kuzuhamon",
+        "level_required": 55
+      },
+      {
+        "name": "Sakuyamon",
+        "level_required": 55
+      },
+      {
+        "name": "Dianamon",
+        "level_required": 55
+      }
+    ]
+  },
+  "131": {
+    "evolvesFrom": [
+      {
+        "name": "Dorugamon"
+      },
+      {
+        "name": "Birdramon"
+      },
+      {
+        "name": "Reppamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Kentaurosmon",
+        "level_required": 60
+      },
+      {
+        "name": "Seraphimon",
+        "level_required": 55
+      },
+      {
+        "name": "MetalGarurumon",
+        "level_required": 55
+      }
+    ]
+  },
+  "132": {
+    "evolvesFrom": [
+      {
+        "name": "Ogremon"
+      },
+      {
+        "name": "Nanimon"
+      },
+      {
+        "name": "Vegiemon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Titamon",
+        "level_required": 55
+      },
+      {
+        "name": "Belphemon SM",
+        "level_required": 60
+      },
+      {
+        "name": "Minervamon",
+        "level_required": 55
+      }
+    ]
+  },
+  "133": {
+    "evolvesFrom": [
+      {
+        "name": "Wizardmon"
+      },
+      {
+        "name": "Ogremon"
+      },
+      {
+        "name": "Meramon"
+      },
+      {
+        "name": "Agunimon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Gankoomon",
+        "level_required": 60
+      },
+      {
+        "name": "Beelzemon",
+        "level_required": 60
+      },
+      {
+        "name": "Boltmon",
+        "level_required": 50
+      }
+    ]
+  },
+  "134": {
+    "evolvesFrom": [
+      {
+        "name": "ShellNumemon"
+      },
+      {
+        "name": "Gekomon"
+      },
+      {
+        "name": "Seadramon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Vikemon",
+        "level_required": 50
+      },
+      {
+        "name": "Plesiomon",
+        "level_required": 50
+      },
+      {
+        "name": "Leviamon",
+        "level_required": 60
+      },
+      {
+        "name": "KingEtemon",
+        "level_required": 45
+      }
+    ]
+  },
+  "135": {
+    "evolvesFrom": [
+      {
+        "name": "Garurumon"
+      },
+      {
+        "name": "Greymon (Blue)"
+      },
+      {
+        "name": "Cyclonemon"
+      },
+      {
+        "name": "Dorugamon"
+      },
+      {
+        "name": "Raptordramon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Alphamon",
+        "level_required": 60
+      },
+      {
+        "name": "Kentaurosmon",
+        "level_required": 60
+      },
+      {
+        "name": "Dorugoramon",
+        "level_required": 50
+      }
+    ]
+  },
+  "136": {
+    "evolvesFrom": [
+      {
+        "name": "Greymon (Blue)"
+      },
+      {
+        "name": "Clockmon"
+      },
+      {
+        "name": "Tankmon"
+      },
+      {
+        "name": "BlackGatomon"
+      },
+      {
+        "name": "Lobomon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Craniamon",
+        "level_required": 60
+      },
+      {
+        "name": "Leopardmon",
+        "level_required": 60
+      },
+      {
+        "name": "Crusadermon",
+        "level_required": 60
+      },
+      {
+        "name": "Durandamon",
+        "level_required": 60
+      }
+    ]
+  },
+  "137": {
+    "evolvesFrom": [
+      {
+        "name": "Guardromon"
+      },
+      {
+        "name": "Clockmon"
+      },
+      {
+        "name": "Cyclonemon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "GroundLocomon",
+        "level_required": 50
+      },
+      {
+        "name": "Machinedramon",
+        "level_required": 50
+      },
+      {
+        "name": "MetalGarurumon (Blk)",
+        "level_required": 55
+      }
+    ]
+  },
+  "138": {
+    "evolvesFrom": [
+      {
+        "name": "ExVeemon"
+      },
+      {
+        "name": "Stingmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Imperialdramon DM",
+        "level_required": 55
+      }
+    ]
+  },
+  "139": {
+    "evolvesFrom": [
+      {
+        "name": "Garurumon"
+      },
+      {
+        "name": "Meramon"
+      },
+      {
+        "name": "Leomon"
+      },
+      {
+        "name": "Icemon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "SaberLeomon",
+        "level_required": 50
+      },
+      {
+        "name": "BanchoLeomon",
+        "level_required": 55
+      },
+      {
+        "name": "MirageGaogamon",
+        "level_required": 55
+      }
+    ]
+  },
+  "140": {
+    "evolvesFrom": [
+      {
+        "name": "Woodmon"
+      },
+      {
+        "name": "Togemon"
+      },
+      {
+        "name": "Bakemon"
+      },
+      {
+        "name": "Golemon"
+      },
+      {
+        "name": "MudFrigimon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Puppetmon",
+        "level_required": 50
+      },
+      {
+        "name": "Boltmon",
+        "level_required": 50
+      },
+      {
+        "name": "Rosemon",
+        "level_required": 55
+      }
+    ]
+  },
+  "141": {
+    "evolvesFrom": [
+      {
+        "name": "Socerimon"
+      },
+      {
+        "name": "Peckmon"
+      },
+      {
+        "name": "Reppamon"
+      },
+      {
+        "name": "Unimon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Ophanimon",
+        "level_required": 55
+      },
+      {
+        "name": "Hououmon",
+        "level_required": 50
+      },
+      {
+        "name": "MarineAngemon",
+        "level_required": 50
+      }
+    ]
+  },
+  "142": {
+    "evolvesFrom": [
+      {
+        "name": "ShellNumemon"
+      },
+      {
+        "name": "GoldNumemon"
+      },
+      {
+        "name": "Numemon"
+      },
+      {
+        "name": "Raremon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "PlatinumNumemon",
+        "level_required": 65
+      },
+      {
+        "name": "PrinceMamemon",
+        "level_required": 45
+      },
+      {
+        "name": "MetalEtemon",
+        "level_required": 45
+      }
+    ]
+  },
+  "143": {
+    "evolvesFrom": [
+      {
+        "name": "Garurumon (Blk)"
+      },
+      {
+        "name": "Devimon"
+      },
+      {
+        "name": "Bakemon"
+      },
+      {
+        "name": "Meramon"
+      },
+      {
+        "name": "Coredramon (Blue)"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Creepymon",
+        "level_required": 60
+      },
+      {
+        "name": "Barbamon",
+        "level_required": 60
+      },
+      {
+        "name": "Boltmon",
+        "level_required": 50
+      },
+      {
+        "name": "Darkdramon",
+        "level_required": 50
+      }
+    ]
+  },
+  "144": {
+    "evolvesFrom": [
+      {
+        "name": "GoldNumemon"
+      },
+      {
+        "name": "Sukamon"
+      },
+      {
+        "name": "PlatinumSukamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Ebemon",
+        "level_required": 45
+      },
+      {
+        "name": "HiAndromon",
+        "level_required": 55
+      },
+      {
+        "name": "HerculesKabuterimon",
+        "level_required": 50
+      }
+    ]
+  },
+  "145": {
+    "evolvesFrom": [
+      {
+        "name": "Ikkakumon"
+      },
+      {
+        "name": "Gekomon"
+      },
+      {
+        "name": "Seadramon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Plesiomon",
+        "level_required": 50
+      },
+      {
+        "name": "MarineAngemon",
+        "level_required": 50
+      },
+      {
+        "name": "MetalSeadramon",
+        "level_required": 50
+      },
+      {
+        "name": "Neptunemon",
+        "level_required": 55
+      }
+    ]
+  },
+  "146": {
+    "evolvesFrom": [
+      {
+        "name": "Ankylomon"
+      },
+      {
+        "name": "ExVeemon"
+      },
+      {
+        "name": "Angemon"
+      },
+      {
+        "name": "Unimon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "ShineGreymon",
+        "level_required": 55
+      },
+      {
+        "name": "Seraphimon",
+        "level_required": 55
+      },
+      {
+        "name": "Crusadermon",
+        "level_required": 60
+      },
+      {
+        "name": "Valkyrimon",
+        "level_required": 50
+      },
+      {
+        "name": "Goldramon",
+        "level_required": 55
+      }
+    ]
+  },
+  "147": {
+    "evolvesFrom": [
+      {
+        "name": "Ikkakumon"
+      },
+      {
+        "name": "GaoGamon"
+      },
+      {
+        "name": "Garurumon (Blk)"
+      },
+      {
+        "name": "Togemon"
+      },
+      {
+        "name": "Lekismon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "MegaGargomon",
+        "level_required": 50
+      },
+      {
+        "name": "BanchoLeomon",
+        "level_required": 55
+      },
+      {
+        "name": "MirageGaogamon",
+        "level_required": 55
+      },
+      {
+        "name": "Merukimon",
+        "level_required": 55
+      }
+    ]
+  },
+  "148": {
+    "evolvesFrom": [
+      {
+        "name": "Starmon"
+      },
+      {
+        "name": "Tyrannomon"
+      },
+      {
+        "name": "Meramon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "WarGreymon",
+        "level_required": 55
+      },
+      {
+        "name": "Puppetmon",
+        "level_required": 50
+      },
+      {
+        "name": "PrinceMamemon",
+        "level_required": 45
+      }
+    ]
+  },
+  "149": {
+    "evolvesFrom": [
+      {
+        "name": "ShellNumemon"
+      },
+      {
+        "name": "Gekomon"
+      },
+      {
+        "name": "Seadramon"
+      },
+      {
+        "name": "Airdramon"
+      },
+      {
+        "name": "Coelamon"
+      },
+      {
+        "name": "Ginryumon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Plesiomon",
+        "level_required": 50
+      },
+      {
+        "name": "MetalSeadramon",
+        "level_required": 50
+      },
+      {
+        "name": "Leviamon",
+        "level_required": 60
+      },
+      {
+        "name": "Neptunemon",
+        "level_required": 55
+      }
+    ]
+  },
+  "150": {
+    "evolvesFrom": [
+      {
+        "name": "Greymon"
+      },
+      {
+        "name": "Cyclonemon"
+      },
+      {
+        "name": "Tyrannomon"
+      },
+      {
+        "name": "Airdramon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "UlforceVeedramon",
+        "level_required": 60
+      },
+      {
+        "name": "BlackWarGreymon",
+        "level_required": 55
+      },
+      {
+        "name": "Machinedramon",
+        "level_required": 50
+      },
+      {
+        "name": "Goldramon",
+        "level_required": 55
+      },
+      {
+        "name": "Megidramon",
+        "level_required": 55
+      }
+    ]
+  },
+  "151": {
+    "evolvesFrom": [
+      {
+        "name": "Gargomon"
+      },
+      {
+        "name": "Growlmon"
+      },
+      {
+        "name": "Veedramon"
+      },
+      {
+        "name": "Coredramon (Green)"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "ChaosGallantmon",
+        "level_required": 60
+      },
+      {
+        "name": "Gallantmon",
+        "level_required": 60
+      },
+      {
+        "name": "RustTyranomon",
+        "level_required": 55
+      },
+      {
+        "name": "Darkdramon",
+        "level_required": 50
+      },
+      {
+        "name": "Megidramon",
+        "level_required": 55
+      }
+    ]
+  },
+  "152": {
+    "evolvesFrom": [
+      {
+        "name": "Growlmon"
+      },
+      {
+        "name": "Greymon"
+      },
+      {
+        "name": "Leomon"
+      },
+      {
+        "name": "Airdramon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "WarGreymon",
+        "level_required": 55
+      },
+      {
+        "name": "Gaiomon",
+        "level_required": 50
+      },
+      {
+        "name": "RustTyranomon",
+        "level_required": 55
+      }
+    ]
+  },
+  "153": {
+    "evolvesFrom": [
+      {
+        "name": "Greymon"
+      },
+      {
+        "name": "Greymon (Blue)"
+      },
+      {
+        "name": "Tyrannomon"
+      },
+      {
+        "name": "Devimon"
+      },
+      {
+        "name": "Raremon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "WarGreymon",
+        "level_required": 55
+      },
+      {
+        "name": "Gaiomon",
+        "level_required": 50
+      },
+      {
+        "name": "BlackWarGreymon",
+        "level_required": 55
+      },
+      {
+        "name": "Kerpymon (Blk)",
+        "level_required": 55
+      }
+    ]
+  },
+  "154": {
+    "evolvesFrom": [
+      {
+        "name": "Growlmon"
+      },
+      {
+        "name": "Tyrannomon"
+      },
+      {
+        "name": "Veedramon"
+      },
+      {
+        "name": "Monochromon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "BlackWarGreymon",
+        "level_required": 55
+      },
+      {
+        "name": "Gallantmon",
+        "level_required": 60
+      },
+      {
+        "name": "RustTyranomon",
+        "level_required": 55
+      },
+      {
+        "name": "Breakdramon",
+        "level_required": 55
+      }
+    ]
+  },
+  "155": {
+    "evolvesFrom": [
+      {
+        "name": "Guardromon"
+      },
+      {
+        "name": "Geremon"
+      },
+      {
+        "name": "Starmon"
+      },
+      {
+        "name": "PlatinumSukamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Ebemon",
+        "level_required": 45
+      },
+      {
+        "name": "HiAndromon",
+        "level_required": 55
+      },
+      {
+        "name": "PrinceMamemon",
+        "level_required": 45
+      }
+    ]
+  },
+  "156": {
+    "evolvesFrom": [
+      {
+        "name": "Kyubimon"
+      },
+      {
+        "name": "Numemon"
+      },
+      {
+        "name": "Frigimon"
+      },
+      {
+        "name": "Turuiemon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "SaberLeomon",
+        "level_required": 50
+      },
+      {
+        "name": "Sakuyamon",
+        "level_required": 55
+      },
+      {
+        "name": "Minervamon",
+        "level_required": 55
+      }
+    ]
+  },
+  "157": {
+    "evolvesFrom": [
+      {
+        "name": "Aquilamon"
+      },
+      {
+        "name": "Birdramon"
+      },
+      {
+        "name": "Peckmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Kuzuhamon",
+        "level_required": 55
+      },
+      {
+        "name": "Minervamon",
+        "level_required": 55
+      },
+      {
+        "name": "Ravemon",
+        "level_required": 55
+      },
+      {
+        "name": "Varodurumon",
+        "level_required": 55
+      },
+      {
+        "name": "Ouryumon",
+        "level_required": 50
+      }
+    ]
+  },
+  "158": {
+    "evolvesFrom": [
+      {
+        "name": "ExVeemon"
+      },
+      {
+        "name": "GeoGreymon"
+      },
+      {
+        "name": "Dorugamon"
+      },
+      {
+        "name": "Agunimon"
+      },
+      {
+        "name": "BaoHuckmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Gaiomon",
+        "level_required": 50
+      },
+      {
+        "name": "ShineGreymon",
+        "level_required": 55
+      },
+      {
+        "name": "Slayerdramon",
+        "level_required": 55
+      }
+    ]
+  },
+  "159": {
+    "evolvesFrom": [
+      {
+        "name": "Kabuterimon"
+      },
+      {
+        "name": "Sunflowmon"
+      },
+      {
+        "name": "Vegiemon"
+      },
+      {
+        "name": "Hudiemon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Lilithmon",
+        "level_required": 60
+      },
+      {
+        "name": "Rosemon",
+        "level_required": 55
+      },
+      {
+        "name": "Lotosmon",
+        "level_required": 55
+      }
+    ]
+  },
+  "160": {
+    "evolvesFrom": [
+      {
+        "name": "Gargomon"
+      },
+      {
+        "name": "Reppamon"
+      },
+      {
+        "name": "Waspmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "MegaGargomon",
+        "level_required": 50
+      },
+      {
+        "name": "TigerVespamon",
+        "level_required": 50
+      },
+      {
+        "name": "MetalGarurumon (Blk)",
+        "level_required": 55
+      }
+    ]
+  },
+  "161": {
+    "evolvesFrom": [
+      {
+        "name": "Sunflowmon"
+      },
+      {
+        "name": "Gatomon"
+      },
+      {
+        "name": "Togemon"
+      },
+      {
+        "name": "Hudiemon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Magnadramon",
+        "level_required": 55
+      },
+      {
+        "name": "Rosemon",
+        "level_required": 55
+      },
+      {
+        "name": "Lotosmon",
+        "level_required": 55
+      }
+    ]
+  },
+  "162": {
+    "evolvesFrom": [
+      {
+        "name": "Lucemon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Lucemon SM",
+        "level_required": 70
+      }
+    ]
+  },
+  "163": {
+    "evolvesFrom": [
+      {
+        "name": "IceDevimon"
+      },
+      {
+        "name": "Kyubimon"
+      },
+      {
+        "name": "Bakemon"
+      },
+      {
+        "name": "BlackGatomon"
+      },
+      {
+        "name": "Sistermon Ciel"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Mastemon",
+        "level_required": 60
+      },
+      {
+        "name": "Lilithmon",
+        "level_required": 60
+      },
+      {
+        "name": "Lotosmon",
+        "level_required": 55
+      }
+    ]
+  },
+  "164": {
+    "evolvesFrom": [
+      {
+        "name": "Ogremon"
+      },
+      {
+        "name": "GaoGamon"
+      },
+      {
+        "name": "Garurumon"
+      },
+      {
+        "name": "Lobomon"
+      },
+      {
+        "name": "Strikedramon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "MirageGaogamon",
+        "level_required": 55
+      },
+      {
+        "name": "MetalGarurumon",
+        "level_required": 55
+      },
+      {
+        "name": "MetalGarurumon (Blk)",
+        "level_required": 55
+      }
+    ]
+  },
+  "165": {
+    "evolvesFrom": [
+      {
+        "name": "Garurumon (Blk)"
+      },
+      {
+        "name": "BlackGatomon"
+      },
+      {
+        "name": "Sangloupmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "BanchoLeomon",
+        "level_required": 55
+      },
+      {
+        "name": "Minervamon",
+        "level_required": 55
+      },
+      {
+        "name": "MetalGarurumon (Blk)",
+        "level_required": 55
+      },
+      {
+        "name": "Merukimon",
+        "level_required": 55
+      }
+    ]
+  },
+  "166": {
+    "evolvesFrom": [
+      {
+        "name": "Wizardmon"
+      },
+      {
+        "name": "Clockmon"
+      },
+      {
+        "name": "Socerimon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "VenomMyotismon",
+        "level_required": 55
+      },
+      {
+        "name": "Piedmon",
+        "level_required": 50
+      },
+      {
+        "name": "Belphemon SM",
+        "level_required": 60
+      }
+    ]
+  },
+  "167": {
+    "evolvesFrom": [
+      {
+        "name": "Cyberdramon"
+      },
+      {
+        "name": "DoruGreymon"
+      },
+      {
+        "name": "Grademon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Alphamon Ouryuken",
+        "level_required": 60
+      }
+    ]
+  },
+  "168": {
+    "evolvesFrom": [
+      {
+        "name": "AeroVeedramon"
+      },
+      {
+        "name": "Megadramon"
+      },
+      {
+        "name": "Wingdramon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "169": {
+    "evolvesFrom": [
+      {
+        "name": "Meteormon"
+      },
+      {
+        "name": "Vademon"
+      },
+      {
+        "name": "MetalMamemon"
+      },
+      {
+        "name": "Dragomon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "170": {
+    "evolvesFrom": [
+      {
+        "name": "Paildramon"
+      },
+      {
+        "name": "Imperialdramon FM"
+      },
+      {
+        "name": "Dinobeemon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Imperialdramon PM",
+        "level_required": 70
+      },
+      {
+        "name": "Imperialdramon FM",
+        "level_required": 0
+      }
+    ]
+  },
+  "171": {
+    "evolvesFrom": [
+      {
+        "name": "Imperialdramon DM"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Imperialdramon DM",
+        "level_required": 0
+      }
+    ]
+  },
+  "172": {
+    "evolvesFrom": [
+      {
+        "name": "Shakkoumon"
+      },
+      {
+        "name": "Zudomon"
+      },
+      {
+        "name": "ShogunGekomon"
+      },
+      {
+        "name": "Groundramon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "173": {
+    "evolvesFrom": [
+      {
+        "name": "Infermon"
+      },
+      {
+        "name": "Myotismon"
+      },
+      {
+        "name": "Wisemon"
+      },
+      {
+        "name": "Phantomon"
+      },
+      {
+        "name": "Matadormon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "174": {
+    "evolvesFrom": [
+      {
+        "name": "Mamemon"
+      },
+      {
+        "name": "MetalGreymon"
+      },
+      {
+        "name": "MetalGreymon (Blue)"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Omnimon",
+        "level_required": 60
+      }
+    ]
+  },
+  "175": {
+    "evolvesFrom": [
+      {
+        "name": "Slayerdramon"
+      },
+      {
+        "name": "Breakdramon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "176": {
+    "evolvesFrom": [
+      {
+        "name": "Angewomon"
+      },
+      {
+        "name": "Piximon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "177": {
+    "evolvesFrom": [
+      {
+        "name": "MetalGreymon"
+      },
+      {
+        "name": "MetalGreymon (Blue)"
+      },
+      {
+        "name": "RizeGreymon"
+      },
+      {
+        "name": "Hisyaryumon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "178": {
+    "evolvesFrom": [
+      {
+        "name": "Shakkoumon"
+      },
+      {
+        "name": "WarGrowlmon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "179": {
+    "evolvesFrom": [
+      {
+        "name": "SuperStarmon"
+      },
+      {
+        "name": "SkullMeramon"
+      },
+      {
+        "name": "Volcanomon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "180": {
+    "evolvesFrom": [
+      {
+        "name": "Cherrymon"
+      },
+      {
+        "name": "Taomon"
+      },
+      {
+        "name": "Crowmon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "181": {
+    "evolvesFrom": [
+      {
+        "name": "MegaKabuterimon"
+      },
+      {
+        "name": "Okuwamon"
+      },
+      {
+        "name": "Cherrymon"
+      },
+      {
+        "name": "Dinobeemon"
+      },
+      {
+        "name": "Triceramon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "182": {
+    "evolvesFrom": [
+      {
+        "name": "Gigadramon"
+      },
+      {
+        "name": "CannonBeemon"
+      },
+      {
+        "name": "Datamon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "183": {
+    "evolvesFrom": [
+      {
+        "name": "Andromon"
+      },
+      {
+        "name": "Knightmon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "184": {
+    "evolvesFrom": [
+      {
+        "name": "Antylamon"
+      },
+      {
+        "name": "Shakkoumon"
+      },
+      {
+        "name": "Crescemon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "185": {
+    "evolvesFrom": [
+      {
+        "name": "GrapLeomon"
+      },
+      {
+        "name": "Panjyamon"
+      },
+      {
+        "name": "Monzaemon"
+      },
+      {
+        "name": "Triceramon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "186": {
+    "evolvesFrom": [
+      {
+        "name": "Silphymon"
+      },
+      {
+        "name": "Taomon"
+      },
+      {
+        "name": "Monzaemon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "187": {
+    "evolvesFrom": [
+      {
+        "name": "SaviorHuckmon"
+      },
+      {
+        "name": "Duramon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "188": {
+    "evolvesFrom": [
+      {
+        "name": "SkullGreymon"
+      },
+      {
+        "name": "MagnaAngemon"
+      },
+      {
+        "name": "RizeGreymon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "ShineGreymon BM",
+        "level_required": 60
+      }
+    ]
+  },
+  "189": {
+    "evolvesFrom": [
+      {
+        "name": "Garudamon"
+      },
+      {
+        "name": "Cyberdramon"
+      },
+      {
+        "name": "SuperStarmon"
+      },
+      {
+        "name": "CatchMamemon"
+      },
+      {
+        "name": "Pandamon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "190": {
+    "evolvesFrom": [
+      {
+        "name": "Chirinmon"
+      },
+      {
+        "name": "DoruGreymon"
+      },
+      {
+        "name": "Crescemon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "191": {
+    "evolvesFrom": [
+      {
+        "name": "Chirinmon"
+      },
+      {
+        "name": "MagnaAngemon"
+      },
+      {
+        "name": "HippoGryphonmon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "192": {
+    "evolvesFrom": [
+      {
+        "name": "CannonBeemon"
+      },
+      {
+        "name": "MachGaogamon"
+      },
+      {
+        "name": "Rapidmon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "193": {
+    "evolvesFrom": [
+      {
+        "name": "Andromon"
+      },
+      {
+        "name": "CannonBeemon"
+      },
+      {
+        "name": "Rapidmon"
+      },
+      {
+        "name": "Grademon"
+      },
+      {
+        "name": "Duramon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "194": {
+    "evolvesFrom": [
+      {
+        "name": "Cyberdramon"
+      },
+      {
+        "name": "SkullGreymon"
+      },
+      {
+        "name": "Digitamamon"
+      },
+      {
+        "name": "Phantomon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "195": {
+    "evolvesFrom": [
+      {
+        "name": "Antylamon"
+      },
+      {
+        "name": "Meteormon"
+      },
+      {
+        "name": "Taomon"
+      },
+      {
+        "name": "Crescemon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "196": {
+    "evolvesFrom": [
+      {
+        "name": "Antylamon"
+      },
+      {
+        "name": "Infermon"
+      },
+      {
+        "name": "Okuwamon"
+      },
+      {
+        "name": "Arcadiamon Ultimate"
+      },
+      {
+        "name": "SkullSatamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Armageddemon",
+        "level_required": 70
+      }
+    ]
+  },
+  "197": {
+    "evolvesFrom": [
+      {
+        "name": "SkullGreymon"
+      },
+      {
+        "name": "BlueMeramon"
+      },
+      {
+        "name": "Arcadiamon Ultimate"
+      },
+      {
+        "name": "SkullSatamon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "198": {
+    "evolvesFrom": [
+      {
+        "name": "WarGrowlmon"
+      },
+      {
+        "name": "MetalTyrannomon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Gallantmon CM",
+        "level_required": 80
+      }
+    ]
+  },
+  "199": {
+    "evolvesFrom": [
+      {
+        "name": "AeroVeedramon"
+      },
+      {
+        "name": "Silphymon"
+      },
+      {
+        "name": "Wingdramon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "200": {
+    "evolvesFrom": [
+      {
+        "name": "GrapLeomon"
+      },
+      {
+        "name": "Knightmon"
+      },
+      {
+        "name": "Leopardmon LM"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Leopardmon LM",
+        "level_required": 0
+      }
+    ]
+  },
+  "201": {
+    "evolvesFrom": [
+      {
+        "name": "Leopardmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Leopardmon",
+        "level_required": 0
+      }
+    ]
+  },
+  "202": {
+    "evolvesFrom": [
+      {
+        "name": "Andromon"
+      },
+      {
+        "name": "Vademon"
+      },
+      {
+        "name": "MetalMamemon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "203": {
+    "evolvesFrom": [
+      {
+        "name": "Myotismon"
+      },
+      {
+        "name": "BlueMeramon"
+      },
+      {
+        "name": "Phantomon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "204": {
+    "evolvesFrom": [
+      {
+        "name": "GrapLeomon"
+      },
+      {
+        "name": "Panjyamon"
+      },
+      {
+        "name": "MachGaogamon"
+      },
+      {
+        "name": "WereGarurumon (Blk)"
+      },
+      {
+        "name": "Pandamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Chaosmon",
+        "level_required": 60
+      },
+      {
+        "name": "Chaosmon VA",
+        "level_required": 60
+      }
+    ]
+  },
+  "205": {
+    "evolvesFrom": [
+      {
+        "name": "Myotismon"
+      },
+      {
+        "name": "Etemon"
+      },
+      {
+        "name": "Wisemon"
+      },
+      {
+        "name": "Matadormon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Apocalymon",
+        "level_required": 99
+      }
+    ]
+  },
+  "206": {
+    "evolvesFrom": [
+      {
+        "name": "Cherrymon"
+      },
+      {
+        "name": "Pumpkinmon"
+      },
+      {
+        "name": "Mamemon"
+      },
+      {
+        "name": "CatchMamemon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Apocalymon",
+        "level_required": 99
+      }
+    ]
+  },
+  "207": {
+    "evolvesFrom": [
+      {
+        "name": "GoldNumemon"
+      },
+      {
+        "name": "Etemon"
+      },
+      {
+        "name": "SuperStarmon"
+      },
+      {
+        "name": "BlackKingNumemon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "208": {
+    "evolvesFrom": [
+      {
+        "name": "Megadramon"
+      },
+      {
+        "name": "MetalGreymon (Blue)"
+      },
+      {
+        "name": "MetalTyrannomon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Omnimon Zwart",
+        "level_required": 60
+      }
+    ]
+  },
+  "209": {
+    "evolvesFrom": [
+      {
+        "name": "BlackKingNumemon"
+      },
+      {
+        "name": "Mamemon"
+      },
+      {
+        "name": "MetalMamemon"
+      },
+      {
+        "name": "CatchMamemon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "210": {
+    "evolvesFrom": [
+      {
+        "name": "ShogunGekomon"
+      },
+      {
+        "name": "Whamon"
+      },
+      {
+        "name": "MegaSeadramon"
+      },
+      {
+        "name": "Zudomon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "211": {
+    "evolvesFrom": [
+      {
+        "name": "MegaKabuterimon"
+      },
+      {
+        "name": "Okuwamon"
+      },
+      {
+        "name": "Vademon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "TyrantKabuterimon",
+        "level_required": 55
+      }
+    ]
+  },
+  "212": {
+    "evolvesFrom": [
+      {
+        "name": "Infermon"
+      },
+      {
+        "name": "SkullMeramon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Beelzemon BM",
+        "level_required": 80
+      }
+    ]
+  },
+  "213": {
+    "evolvesFrom": [
+      {
+        "name": "Digitamamon"
+      },
+      {
+        "name": "Wisemon"
+      },
+      {
+        "name": "Belphemon RM"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Belphemon RM",
+        "level_required": 0
+      }
+    ]
+  },
+  "214": {
+    "evolvesFrom": [
+      {
+        "name": "Garudamon"
+      },
+      {
+        "name": "Silphymon"
+      },
+      {
+        "name": "Piximon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "215": {
+    "evolvesFrom": [
+      {
+        "name": "MegaKabuterimon"
+      },
+      {
+        "name": "Angewomon"
+      },
+      {
+        "name": "Lillymon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "216": {
+    "evolvesFrom": [
+      {
+        "name": "SkullMeramon"
+      },
+      {
+        "name": "Pumpkinmon"
+      },
+      {
+        "name": "BlueMeramon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "217": {
+    "evolvesFrom": [
+      {
+        "name": "Angewomon"
+      },
+      {
+        "name": "LadyDevimon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "218": {
+    "evolvesFrom": [
+      {
+        "name": "Zudomon"
+      },
+      {
+        "name": "Piximon"
+      },
+      {
+        "name": "Whamon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "219": {
+    "evolvesFrom": [
+      {
+        "name": "Digitamamon"
+      },
+      {
+        "name": "Monzaemon"
+      },
+      {
+        "name": "Crowmon"
+      },
+      {
+        "name": "WereGarurumon (Blk)"
+      },
+      {
+        "name": "Hisyaryumon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "220": {
+    "evolvesFrom": [
+      {
+        "name": "Panjyamon"
+      },
+      {
+        "name": "MachGaogamon"
+      },
+      {
+        "name": "WereGarurumon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "MirageGaogamon BM",
+        "level_required": 60
+      }
+    ]
+  },
+  "221": {
+    "evolvesFrom": [
+      {
+        "name": "Gigadramon"
+      },
+      {
+        "name": "Datamon"
+      },
+      {
+        "name": "Megadramon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Chaosdramon",
+        "level_required": 50
+      },
+      {
+        "name": "Apocalymon",
+        "level_required": 99
+      }
+    ]
+  },
+  "222": {
+    "evolvesFrom": [
+      {
+        "name": "Meteormon"
+      },
+      {
+        "name": "Etemon"
+      },
+      {
+        "name": "BlackKingNumemon"
+      },
+      {
+        "name": "Volcanomon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "223": {
+    "evolvesFrom": [
+      {
+        "name": "Zudomon"
+      },
+      {
+        "name": "Chirinmon"
+      },
+      {
+        "name": "WereGarurumon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Omnimon",
+        "level_required": 60
+      }
+    ]
+  },
+  "224": {
+    "evolvesFrom": [
+      {
+        "name": "Datamon"
+      },
+      {
+        "name": "Rapidmon"
+      },
+      {
+        "name": "WereGarurumon"
+      },
+      {
+        "name": "WereGarurumon (Blk)"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Omnimon Zwart",
+        "level_required": 60
+      }
+    ]
+  },
+  "225": {
+    "evolvesFrom": [
+      {
+        "name": "Gigadramon"
+      },
+      {
+        "name": "Whamon"
+      },
+      {
+        "name": "MegaSeadramon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Apocalymon",
+        "level_required": 99
+      }
+    ]
+  },
+  "226": {
+    "evolvesFrom": [
+      {
+        "name": "WarGrowlmon"
+      },
+      {
+        "name": "MetalGreymon"
+      },
+      {
+        "name": "MetalTyrannomon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "227": {
+    "evolvesFrom": [
+      {
+        "name": "ShogunGekomon"
+      },
+      {
+        "name": "MegaSeadramon"
+      },
+      {
+        "name": "Dragomon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "228": {
+    "evolvesFrom": [
+      {
+        "name": "Lilamon"
+      },
+      {
+        "name": "LadyDevimon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "229": {
+    "evolvesFrom": [
+      {
+        "name": "AeroVeedramon"
+      },
+      {
+        "name": "Garudamon"
+      },
+      {
+        "name": "Crowmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Ravemon BM",
+        "level_required": 60
+      }
+    ]
+  },
+  "230": {
+    "evolvesFrom": [
+      {
+        "name": "Knightmon"
+      },
+      {
+        "name": "MagnaAngemon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "231": {
+    "evolvesFrom": [
+      {
+        "name": "Pumpkinmon"
+      },
+      {
+        "name": "Lilamon"
+      },
+      {
+        "name": "Lillymon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Rosemon BM",
+        "level_required": 60
+      }
+    ]
+  },
+  "232": {
+    "evolvesFrom": [
+      {
+        "name": "Lilamon"
+      },
+      {
+        "name": "Lillymon"
+      },
+      {
+        "name": "LadyDevimon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "233": {
+    "evolvesFrom": [
+      {
+        "name": "Imperialdramon DM"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "234": {
+    "evolvesFrom": [
+      {
+        "name": "WarGreymon"
+      },
+      {
+        "name": "MetalGarurumon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "235": {
+    "evolvesFrom": [
+      {
+        "name": "BlackWarGreymon"
+      },
+      {
+        "name": "MetalGarurumon (Blk)"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "236": {
+    "evolvesFrom": [
+      {
+        "name": "Belphemon SM"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Belphemon SM",
+        "level_required": 0
+      }
+    ]
+  },
+  "237": {
+    "evolvesFrom": [
+      {
+        "name": "Lucemon FM"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "238": {
+    "evolvesFrom": [
+      {
+        "name": "Veemon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "239": {
+    "evolvesFrom": [
+      {
+        "name": "Veemon"
+      },
+      {
+        "name": "Guardromon (Gold)"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "240": {
+    "evolvesFrom": [
+      {
+        "name": "Terriermon"
+      },
+      {
+        "name": "Guardromon (Gold)"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "241": {
+    "evolvesFrom": [
+      {
+        "name": "Antylamon"
+      },
+      {
+        "name": "MetalGreymon (Blue)"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "242": {
+    "evolvesFrom": [
+      {
+        "name": "Beelzemon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "243": {
+    "evolvesFrom": [
+      {
+        "name": "Gigadramon"
+      },
+      {
+        "name": "BlueMeramon"
+      },
+      {
+        "name": "WarGrowlmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Chaosmon",
+        "level_required": 60
+      }
+    ]
+  },
+  "244": {
+    "evolvesFrom": [
+      {
+        "name": "BanchoLeomon"
+      },
+      {
+        "name": "Darkdramon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "245": {
+    "evolvesFrom": [
+      {
+        "name": "Angewomon"
+      },
+      {
+        "name": "Silphymon"
+      },
+      {
+        "name": "MagnaAngemon"
+      },
+      {
+        "name": "SaviorHuckmon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "246": {
+    "evolvesFrom": [
+      {
+        "name": "ShineGreymon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "247": {
+    "evolvesFrom": [
+      {
+        "name": "MirageGaogamon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "248": {
+    "evolvesFrom": [
+      {
+        "name": "Ravemon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "249": {
+    "evolvesFrom": [
+      {
+        "name": "Rosemon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "250": {
+    "evolvesFrom": [
+      {
+        "name": "Kuramon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Arcadiamon Rookie",
+        "level_required": 6
+      }
+    ]
+  },
+  "251": {
+    "evolvesFrom": [
+      {
+        "name": "Arcadiamon In-Tr."
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Arcadiamon Champion",
+        "level_required": 16
+      },
+      {
+        "name": "Kurisarimon",
+        "level_required": 16
+      },
+      {
+        "name": "Leomon",
+        "level_required": 16
+      }
+    ]
+  },
+  "252": {
+    "evolvesFrom": [
+      {
+        "name": "Tsunomon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Zubaeagermon",
+        "level_required": 20
+      },
+      {
+        "name": "BaoHuckmon",
+        "level_required": 16
+      },
+      {
+        "name": "GoldNumemon",
+        "level_required": 18
+      },
+      {
+        "name": "Ginryumon",
+        "level_required": 14
+      }
+    ]
+  },
+  "253": {
+    "evolvesFrom": [
+      {
+        "name": "Pagumon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Raremon",
+        "level_required": 12
+      },
+      {
+        "name": "Sukamon",
+        "level_required": 12
+      },
+      {
+        "name": "Nanimon",
+        "level_required": 12
+      },
+      {
+        "name": "BlackGatomon",
+        "level_required": 16
+      }
+    ]
+  },
+  "254": {
+    "evolvesFrom": [
+      {
+        "name": "Tsumemon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Arcadiamon Champion",
+        "level_required": 16
+      },
+      {
+        "name": "Sangloupmon",
+        "level_required": 15
+      },
+      {
+        "name": "Raremon",
+        "level_required": 12
+      },
+      {
+        "name": "Sistermon Ciel",
+        "level_required": 14
+      },
+      {
+        "name": "Devimon",
+        "level_required": 16
+      }
+    ]
+  },
+  "255": {
+    "evolvesFrom": [
+      {
+        "name": "Koromon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Coredramon (Blue)",
+        "level_required": 14
+      },
+      {
+        "name": "Coredramon (Green)",
+        "level_required": 14
+      },
+      {
+        "name": "Veedramon",
+        "level_required": 16
+      },
+      {
+        "name": "Ginryumon",
+        "level_required": 14
+      }
+    ]
+  },
+  "256": {
+    "evolvesFrom": [
+      {
+        "name": "Tanemon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Guardromon (Gold)",
+        "level_required": 14
+      },
+      {
+        "name": "Raptordramon",
+        "level_required": 15
+      },
+      {
+        "name": "Stingmon",
+        "level_required": 14
+      },
+      {
+        "name": "Waspmon",
+        "level_required": 14
+      },
+      {
+        "name": "Togemon",
+        "level_required": 16
+      }
+    ]
+  },
+  "257": {
+    "evolvesFrom": [
+      {
+        "name": "Yokomon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "MudFrigimon",
+        "level_required": 14
+      },
+      {
+        "name": "Woodmon",
+        "level_required": 14
+      },
+      {
+        "name": "Sunflowmon",
+        "level_required": 14
+      },
+      {
+        "name": "Vegiemon",
+        "level_required": 12
+      }
+    ]
+  },
+  "258": {
+    "evolvesFrom": [
+      {
+        "name": "Tsunomon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Coredramon (Blue)",
+        "level_required": 14
+      },
+      {
+        "name": "Strikedramon",
+        "level_required": 15
+      },
+      {
+        "name": "Raptordramon",
+        "level_required": 15
+      },
+      {
+        "name": "Kurisarimon",
+        "level_required": 16
+      },
+      {
+        "name": "Dorugamon",
+        "level_required": 14
+      }
+    ]
+  },
+  "259": {
+    "evolvesFrom": [
+      {
+        "name": "Nyaromon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Sangloupmon",
+        "level_required": 15
+      },
+      {
+        "name": "Lekismon",
+        "level_required": 15
+      },
+      {
+        "name": "Sistermon Ciel",
+        "level_required": 14
+      },
+      {
+        "name": "Gatomon",
+        "level_required": 16
+      }
+    ]
+  },
+  "260": {
+    "evolvesFrom": [
+      {
+        "name": "Gotsumon"
+      },
+      {
+        "name": "Gomamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Meteormon",
+        "level_required": 26
+      },
+      {
+        "name": "Panjyamon",
+        "level_required": 28
+      },
+      {
+        "name": "Zudomon",
+        "level_required": 30
+      }
+    ]
+  },
+  "261": {
+    "evolvesFrom": [
+      {
+        "name": "Agumon"
+      },
+      {
+        "name": "Guilmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "BurningGreymon",
+        "level_required": 30
+      },
+      {
+        "name": "Matadormon",
+        "level_required": 28
+      },
+      {
+        "name": "SkullMeramon",
+        "level_required": 28
+      },
+      {
+        "name": "RizeGreymon",
+        "level_required": 30
+      }
+    ]
+  },
+  "262": {
+    "evolvesFrom": [
+      {
+        "name": "Arcadiamon Rookie"
+      },
+      {
+        "name": "Keramon"
+      },
+      {
+        "name": "Dracmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Arcadiamon Ultimate",
+        "level_required": 30
+      },
+      {
+        "name": "SkullSatamon",
+        "level_required": 28
+      },
+      {
+        "name": "Infermon",
+        "level_required": 30
+      }
+    ]
+  },
+  "263": {
+    "evolvesFrom": [
+      {
+        "name": "Gabumon"
+      },
+      {
+        "name": "Kudamon"
+      },
+      {
+        "name": "Veemon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "KendoGarurumon",
+        "level_required": 30
+      },
+      {
+        "name": "Knightmon",
+        "level_required": 30
+      },
+      {
+        "name": "WereGarurumon",
+        "level_required": 28
+      }
+    ]
+  },
+  "264": {
+    "evolvesFrom": [
+      {
+        "name": "Biyomon"
+      },
+      {
+        "name": "Hawkmon"
+      },
+      {
+        "name": "Betamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Wingdramon",
+        "level_required": 30
+      },
+      {
+        "name": "MegaSeadramon",
+        "level_required": 30
+      },
+      {
+        "name": "Megadramon",
+        "level_required": 26
+      },
+      {
+        "name": "MetalGreymon",
+        "level_required": 30
+      }
+    ]
+  },
+  "265": {
+    "evolvesFrom": [
+      {
+        "name": "ToyAgumon"
+      },
+      {
+        "name": "Solarmon"
+      },
+      {
+        "name": "FanBeemon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Grademon",
+        "level_required": 30
+      },
+      {
+        "name": "Duramon",
+        "level_required": 40
+      },
+      {
+        "name": "Andromon",
+        "level_required": 28
+      },
+      {
+        "name": "Rapidmon (Armor)",
+        "level_required": 50
+      },
+      {
+        "name": "Magnamon",
+        "level_required": 60
+      }
+    ]
+  },
+  "266": {
+    "evolvesFrom": [
+      {
+        "name": "Dracomon"
+      },
+      {
+        "name": "Monodramon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Wingdramon",
+        "level_required": 30
+      },
+      {
+        "name": "AeroVeedramon",
+        "level_required": 30
+      },
+      {
+        "name": "BlueMeramon",
+        "level_required": 28
+      }
+    ]
+  },
+  "267": {
+    "evolvesFrom": [
+      {
+        "name": "Goblimon"
+      },
+      {
+        "name": "Dracomon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Groundramon",
+        "level_required": 30
+      },
+      {
+        "name": "Triceramon",
+        "level_required": 28
+      },
+      {
+        "name": "WarGrowlmon",
+        "level_required": 30
+      }
+    ]
+  },
+  "268": {
+    "evolvesFrom": [
+      {
+        "name": "Armadillomon"
+      },
+      {
+        "name": "Gotsumon"
+      },
+      {
+        "name": "Solarmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Volcanomon",
+        "level_required": 26
+      },
+      {
+        "name": "Meteormon",
+        "level_required": 26
+      },
+      {
+        "name": "Pumpkinmon",
+        "level_required": 26
+      }
+    ]
+  },
+  "269": {
+    "evolvesFrom": [
+      {
+        "name": "Gaomon"
+      },
+      {
+        "name": "Dracmon"
+      },
+      {
+        "name": "Lunamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "KendoGarurumon",
+        "level_required": 30
+      },
+      {
+        "name": "Matadormon",
+        "level_required": 28
+      },
+      {
+        "name": "Myotismon",
+        "level_required": 30
+      },
+      {
+        "name": "WereGarurumon (Blk)",
+        "level_required": 28
+      }
+    ]
+  },
+  "270": {
+    "evolvesFrom": [
+      {
+        "name": "Otamamon"
+      },
+      {
+        "name": "Syakomon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Dragomon",
+        "level_required": 28
+      },
+      {
+        "name": "Andromon",
+        "level_required": 28
+      },
+      {
+        "name": "MegaSeadramon",
+        "level_required": 30
+      },
+      {
+        "name": "Hisyaryumon",
+        "level_required": 30
+      }
+    ]
+  },
+  "271": {
+    "evolvesFrom": [
+      {
+        "name": "Gomamon"
+      },
+      {
+        "name": "Veemon"
+      },
+      {
+        "name": "Monodramon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "SaviorHuckmon",
+        "level_required": 30
+      },
+      {
+        "name": "Cyberdramon",
+        "level_required": 28
+      },
+      {
+        "name": "WereGarurumon",
+        "level_required": 28
+      }
+    ]
+  },
+  "272": {
+    "evolvesFrom": [
+      {
+        "name": "Hackmon"
+      },
+      {
+        "name": "Zubamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "KendoGarurumon",
+        "level_required": 30
+      },
+      {
+        "name": "Duramon",
+        "level_required": 40
+      },
+      {
+        "name": "Phantomon",
+        "level_required": 28
+      }
+    ]
+  },
+  "273": {
+    "evolvesFrom": [
+      {
+        "name": "Palmon"
+      },
+      {
+        "name": "Mushroomon"
+      },
+      {
+        "name": "Lopmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Pandamon",
+        "level_required": 26
+      },
+      {
+        "name": "Meteormon",
+        "level_required": 26
+      },
+      {
+        "name": "Pumpkinmon",
+        "level_required": 26
+      }
+    ]
+  },
+  "274": {
+    "evolvesFrom": [
+      {
+        "name": "Renamon"
+      },
+      {
+        "name": "Lopmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Antylamon",
+        "level_required": 28
+      },
+      {
+        "name": "Cyberdramon",
+        "level_required": 28
+      },
+      {
+        "name": "Monzaemon",
+        "level_required": 26
+      }
+    ]
+  },
+  "275": {
+    "evolvesFrom": [
+      {
+        "name": "Hackmon"
+      },
+      {
+        "name": "Zubamon"
+      },
+      {
+        "name": "Salamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "KendoGarurumon",
+        "level_required": 30
+      },
+      {
+        "name": "SaviorHuckmon",
+        "level_required": 30
+      },
+      {
+        "name": "RizeGreymon",
+        "level_required": 30
+      }
+    ]
+  },
+  "276": {
+    "evolvesFrom": [
+      {
+        "name": "Wormmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Lillymon",
+        "level_required": 30
+      },
+      {
+        "name": "CannonBeemon",
+        "level_required": 28
+      },
+      {
+        "name": "Lilamon",
+        "level_required": 30
+      }
+    ]
+  },
+  "277": {
+    "evolvesFrom": [
+      {
+        "name": "Agumon (Blk)"
+      },
+      {
+        "name": "Hackmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Triceramon",
+        "level_required": 28
+      },
+      {
+        "name": "SkullGreymon",
+        "level_required": 28
+      },
+      {
+        "name": "MetalTyrannomon",
+        "level_required": 28
+      }
+    ]
+  },
+  "278": {
+    "evolvesFrom": [
+      {
+        "name": "Terriermon"
+      },
+      {
+        "name": "Patamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "HippoGryphonmon",
+        "level_required": 26
+      },
+      {
+        "name": "Piximon",
+        "level_required": 26
+      },
+      {
+        "name": "MagnaAngemon",
+        "level_required": 30
+      }
+    ]
+  },
+  "279": {
+    "evolvesFrom": [
+      {
+        "name": "Dorumon"
+      },
+      {
+        "name": "FanBeemon"
+      },
+      {
+        "name": "Monodramon"
+      },
+      {
+        "name": "Ryudamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Grademon",
+        "level_required": 30
+      },
+      {
+        "name": "Duramon",
+        "level_required": 40
+      },
+      {
+        "name": "Gigadramon",
+        "level_required": 26
+      },
+      {
+        "name": "DoruGreymon",
+        "level_required": 30
+      }
+    ]
+  },
+  "280": {
+    "evolvesFrom": [
+      {
+        "name": "Otamamon"
+      },
+      {
+        "name": "Gabumon (Blk)"
+      },
+      {
+        "name": "Chuumon"
+      },
+      {
+        "name": "Dracmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "SkullSatamon",
+        "level_required": 28
+      },
+      {
+        "name": "Dragomon",
+        "level_required": 28
+      },
+      {
+        "name": "Phantomon",
+        "level_required": 28
+      },
+      {
+        "name": "BlackKingNumemon",
+        "level_required": 32
+      },
+      {
+        "name": "MetalGreymon (Blue)",
+        "level_required": 30
+      }
+    ]
+  },
+  "281": {
+    "evolvesFrom": [
+      {
+        "name": "Renamon"
+      },
+      {
+        "name": "Lunamon"
+      },
+      {
+        "name": "Sistermon Blanc"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Crescemon",
+        "level_required": 30
+      },
+      {
+        "name": "Antylamon",
+        "level_required": 28
+      },
+      {
+        "name": "MachGaogamon",
+        "level_required": 26
+      }
+    ]
+  },
+  "282": {
+    "evolvesFrom": [
+      {
+        "name": "IceDevimon"
+      },
+      {
+        "name": "Arcadiamon Champion"
+      },
+      {
+        "name": "Kurisarimon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Arcadiamon Mega",
+        "level_required": 60
+      },
+      {
+        "name": "Diaboromon",
+        "level_required": 55
+      },
+      {
+        "name": "Creepymon",
+        "level_required": 60
+      }
+    ]
+  },
+  "283": {
+    "evolvesFrom": [
+      {
+        "name": "Airdramon"
+      },
+      {
+        "name": "ExVeemon"
+      },
+      {
+        "name": "Coredramon (Blue)"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Slayerdramon",
+        "level_required": 55
+      },
+      {
+        "name": "UlforceVeedramon",
+        "level_required": 60
+      },
+      {
+        "name": "Dynasmon",
+        "level_required": 60
+      }
+    ]
+  },
+  "284": {
+    "evolvesFrom": [
+      {
+        "name": "Agunimon"
+      },
+      {
+        "name": "Growlmon"
+      },
+      {
+        "name": "Birdramon"
+      },
+      {
+        "name": "Meramon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "KaiserGreymon",
+        "level_required": 55
+      }
+    ]
+  },
+  "285": {
+    "evolvesFrom": [
+      {
+        "name": "Lobomon"
+      },
+      {
+        "name": "Sangloupmon"
+      },
+      {
+        "name": "Zubaeagermon"
+      },
+      {
+        "name": "BaoHuckmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "MagnaGarurumon",
+        "level_required": 50
+      }
+    ]
+  },
+  "286": {
+    "evolvesFrom": [
+      {
+        "name": "Guardromon"
+      },
+      {
+        "name": "Starmon"
+      },
+      {
+        "name": "PlatinumSukamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Justimon",
+        "level_required": 50
+      },
+      {
+        "name": "Puppetmon",
+        "level_required": 50
+      },
+      {
+        "name": "PrinceMamemon",
+        "level_required": 45
+      }
+    ]
+  },
+  "287": {
+    "evolvesFrom": [
+      {
+        "name": "Ankylomon"
+      },
+      {
+        "name": "Coredramon (Green)"
+      },
+      {
+        "name": "GeoGreymon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Breakdramon",
+        "level_required": 55
+      },
+      {
+        "name": "Megidramon",
+        "level_required": 55
+      },
+      {
+        "name": "Vikemon",
+        "level_required": 50
+      }
+    ]
+  },
+  "288": {
+    "evolvesFrom": [
+      {
+        "name": "Guardromon (Gold)"
+      },
+      {
+        "name": "Dorugamon"
+      },
+      {
+        "name": "Raptordramon"
+      },
+      {
+        "name": "Leomon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Durandamon",
+        "level_required": 60
+      },
+      {
+        "name": "Dorugoramon",
+        "level_required": 50
+      },
+      {
+        "name": "Alphamon",
+        "level_required": 60
+      },
+      {
+        "name": "TigerVespamon",
+        "level_required": 50
+      },
+      {
+        "name": "Ouryumon",
+        "level_required": 50
+      }
+    ]
+  },
+  "289": {
+    "evolvesFrom": [
+      {
+        "name": "Starmon"
+      },
+      {
+        "name": "Frigimon"
+      },
+      {
+        "name": "Lekismon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Kerpymon (Good)",
+        "level_required": 55
+      },
+      {
+        "name": "Kentaurosmon",
+        "level_required": 60
+      },
+      {
+        "name": "Dianamon",
+        "level_required": 55
+      }
+    ]
+  },
+  "290": {
+    "evolvesFrom": [
+      {
+        "name": "Arcadiamon Champion"
+      },
+      {
+        "name": "Ogremon"
+      },
+      {
+        "name": "Devimon"
+      },
+      {
+        "name": "Raremon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "GranDracmon",
+        "level_required": 50
+      },
+      {
+        "name": "Diaboromon",
+        "level_required": 55
+      },
+      {
+        "name": "Creepymon",
+        "level_required": 60
+      }
+    ]
+  },
+  "291": {
+    "evolvesFrom": [
+      {
+        "name": "Angemon"
+      },
+      {
+        "name": "Strikedramon"
+      },
+      {
+        "name": "BaoHuckmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Slayerdramon",
+        "level_required": 55
+      },
+      {
+        "name": "Valkyrimon",
+        "level_required": 50
+      },
+      {
+        "name": "Jesmon",
+        "level_required": 60
+      }
+    ]
+  },
+  "292": {
+    "evolvesFrom": [
+      {
+        "name": "IceDevimon"
+      },
+      {
+        "name": "Coelamon"
+      },
+      {
+        "name": "Raremon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Neptunemon",
+        "level_required": 55
+      },
+      {
+        "name": "Ebemon",
+        "level_required": 45
+      },
+      {
+        "name": "Leviamon",
+        "level_required": 60
+      }
+    ]
+  },
+  "293": {
+    "evolvesFrom": [
+      {
+        "name": "ExVeemon"
+      },
+      {
+        "name": "Stingmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Imperialdramon DM",
+        "level_required": 55
+      },
+      {
+        "name": "GranKuwagamon",
+        "level_required": 45
+      }
+    ]
+  },
+  "294": {
+    "evolvesFrom": [
+      {
+        "name": "Guardromon (Gold)"
+      },
+      {
+        "name": "Zubaeagermon"
+      },
+      {
+        "name": "Raptordramon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Durandamon",
+        "level_required": 60
+      },
+      {
+        "name": "TigerVespamon",
+        "level_required": 50
+      },
+      {
+        "name": "Jesmon",
+        "level_required": 60
+      }
+    ]
+  },
+  "295": {
+    "evolvesFrom": [
+      {
+        "name": "Ikkakumon"
+      },
+      {
+        "name": "Greymon (Blue)"
+      },
+      {
+        "name": "Coredramon (Green)"
+      },
+      {
+        "name": "Monochromon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Breakdramon",
+        "level_required": 55
+      },
+      {
+        "name": "GranKuwagamon",
+        "level_required": 45
+      },
+      {
+        "name": "SaberLeomon",
+        "level_required": 50
+      }
+    ]
+  },
+  "296": {
+    "evolvesFrom": [
+      {
+        "name": "Garurumon (Blk)"
+      },
+      {
+        "name": "MudFrigimon"
+      },
+      {
+        "name": "Gatomon"
+      },
+      {
+        "name": "Sistermon Ciel"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "KingEtemon",
+        "level_required": 45
+      },
+      {
+        "name": "Justimon",
+        "level_required": 50
+      },
+      {
+        "name": "BanchoLeomon",
+        "level_required": 55
+      }
+    ]
+  },
+  "297": {
+    "evolvesFrom": [
+      {
+        "name": "Aquilamon"
+      },
+      {
+        "name": "Angemon"
+      },
+      {
+        "name": "Birdramon"
+      },
+      {
+        "name": "Unimon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Varodurumon",
+        "level_required": 55
+      },
+      {
+        "name": "Gryphonmon",
+        "level_required": 50
+      },
+      {
+        "name": "Seraphimon",
+        "level_required": 55
+      }
+    ]
+  },
+  "298": {
+    "evolvesFrom": [
+      {
+        "name": "Wizardmon"
+      },
+      {
+        "name": "Zubaeagermon"
+      },
+      {
+        "name": "Bakemon"
+      },
+      {
+        "name": "Raremon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "VenomMyotismon",
+        "level_required": 55
+      },
+      {
+        "name": "Titamon",
+        "level_required": 55
+      },
+      {
+        "name": "Barbamon",
+        "level_required": 60
+      }
+    ]
+  },
+  "299": {
+    "evolvesFrom": [
+      {
+        "name": "Golemon"
+      },
+      {
+        "name": "Tankmon"
+      },
+      {
+        "name": "Meramon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "PileVolcamon",
+        "level_required": 50
+      },
+      {
+        "name": "Gankoomon",
+        "level_required": 60
+      },
+      {
+        "name": "MetalEtemon",
+        "level_required": 45
+      }
+    ]
+  },
+  "300": {
+    "evolvesFrom": [
+      {
+        "name": "Sangloupmon"
+      },
+      {
+        "name": "Bakemon"
+      },
+      {
+        "name": "Agunimon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "GranDracmon",
+        "level_required": 50
+      },
+      {
+        "name": "VenomMyotismon",
+        "level_required": 55
+      },
+      {
+        "name": "Piedmon",
+        "level_required": 50
+      }
+    ]
+  },
+  "301": {
+    "evolvesFrom": [
+      {
+        "name": "Arcadiamon Ultimate"
+      },
+      {
+        "name": "Infermon"
+      },
+      {
+        "name": "Myotismon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Arcadiamon Ultra",
+        "level_required": 70
+      }
+    ]
+  },
+  "302": {
+    "evolvesFrom": [
+      {
+        "name": "Garudamon"
+      },
+      {
+        "name": "HippoGryphonmon"
+      },
+      {
+        "name": "Crowmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Chaosmon VA",
+        "level_required": 60
+      }
+    ]
+  },
+  "303": {
+    "evolvesFrom": [
+      {
+        "name": "BurningGreymon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Susanomon",
+        "level_required": 60
+      }
+    ]
+  },
+  "304": {
+    "evolvesFrom": [
+      {
+        "name": "Machinedramon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "305": {
+    "evolvesFrom": [
+      {
+        "name": "Etemon"
+      },
+      {
+        "name": "ShogunGekomon"
+      },
+      {
+        "name": "Pandamon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "306": {
+    "evolvesFrom": [
+      {
+        "name": "Myotismon"
+      },
+      {
+        "name": "SkullSatamon"
+      },
+      {
+        "name": "Matadormon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "307": {
+    "evolvesFrom": [
+      {
+        "name": "Garudamon"
+      },
+      {
+        "name": "Silphymon"
+      },
+      {
+        "name": "HippoGryphonmon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "308": {
+    "evolvesFrom": [
+      {
+        "name": "AeroVeedramon"
+      },
+      {
+        "name": "MagnaAngemon"
+      },
+      {
+        "name": "Megadramon"
+      },
+      {
+        "name": "Hisyaryumon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "309": {
+    "evolvesFrom": [
+      {
+        "name": "Wingdramon"
+      },
+      {
+        "name": "SaviorHuckmon"
+      },
+      {
+        "name": "RizeGreymon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Examon",
+        "level_required": 60
+      }
+    ]
+  },
+  "310": {
+    "evolvesFrom": [
+      {
+        "name": "HerculesKabuterimon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "311": {
+    "evolvesFrom": [
+      {
+        "name": "Grademon"
+      },
+      {
+        "name": "Duramon"
+      },
+      {
+        "name": "Knightmon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "312": {
+    "evolvesFrom": [
+      {
+        "name": "Gigadramon"
+      },
+      {
+        "name": "Grademon"
+      },
+      {
+        "name": "DoruGreymon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "313": {
+    "evolvesFrom": [
+      {
+        "name": "Dragomon"
+      },
+      {
+        "name": "Whamon"
+      },
+      {
+        "name": "MegaSeadramon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "314": {
+    "evolvesFrom": [
+      {
+        "name": "Etemon"
+      },
+      {
+        "name": "GrapLeomon"
+      },
+      {
+        "name": "Volcanomon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "315": {
+    "evolvesFrom": [
+      {
+        "name": "Groundramon"
+      },
+      {
+        "name": "Triceramon"
+      },
+      {
+        "name": "MetalTyrannomon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Examon",
+        "level_required": 60
+      }
+    ]
+  },
+  "316": {
+    "evolvesFrom": [
+      {
+        "name": "KendoGarurumon"
+      },
+      {
+        "name": "MagnaGarurumon (SV)"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "MagnaGarurumon (SV)",
+        "level_required": 0
+      },
+      {
+        "name": "Susanomon",
+        "level_required": 60
+      }
+    ]
+  },
+  "317": {
+    "evolvesFrom": [
+      {
+        "name": "MagnaGarurumon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "MagnaGarurumon",
+        "level_required": 0
+      }
+    ]
+  },
+  "318": {
+    "evolvesFrom": [
+      {
+        "name": "Groundramon"
+      },
+      {
+        "name": "Megadramon"
+      },
+      {
+        "name": "WarGrowlmon"
+      },
+      {
+        "name": "Gigadramon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "319": {
+    "evolvesFrom": [
+      {
+        "name": "MachGaogamon"
+      },
+      {
+        "name": "WereGarurumon (Blk)"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "320": {
+    "evolvesFrom": [
+      {
+        "name": "Diaboromon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "321": {
+    "evolvesFrom": [
+      {
+        "name": "Arcadiamon Mega"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "322": {
+    "evolvesFrom": [
+      {
+        "name": "Alphamon"
+      },
+      {
+        "name": "Ouryumon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "323": {
+    "evolvesFrom": [
+      {
+        "name": "Varodurumon"
+      },
+      {
+        "name": "BanchoLeomon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "324": {
+    "evolvesFrom": [
+      {
+        "name": "KaiserGreymon"
+      },
+      {
+        "name": "MagnaGarurumon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "325": {
+    "evolvesFrom": [
+      {
+        "name": "Gallantmon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "326": {
+    "evolvesFrom": [
+      {
+        "name": "Koromon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "OmniShoutmon",
+        "level_required": 60
+      }
+    ]
+  },
+  "327": {
+    "evolvesFrom": [
+      {
+        "name": "Shoutmon"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "328": {
+    "evolvesFrom": [
+      {
+        "name": "Tokomon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Sistermon B (Awake.)",
+        "level_required": 60
+      },
+      {
+        "name": "Sistermon Ciel",
+        "level_required": 14
+      },
+      {
+        "name": "Gargomon",
+        "level_required": 15
+      },
+      {
+        "name": "Lekismon",
+        "level_required": 15
+      }
+    ]
+  },
+  "329": {
+    "evolvesFrom": [
+      {
+        "name": "Sistermon Blanc"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "330": {
+    "evolvesFrom": [
+      {
+        "name": "Sistermon Blanc"
+      },
+      {
+        "name": "Dracmon"
+      },
+      {
+        "name": "Lunamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Sistermon C (Awake.)",
+        "level_required": 60
+      },
+      {
+        "name": "Pandamon",
+        "level_required": 26
+      },
+      {
+        "name": "LadyDevimon",
+        "level_required": 30
+      }
+    ]
+  },
+  "331": {
+    "evolvesFrom": [
+      {
+        "name": "Sistermon Ciel"
+      }
+    ],
+    "evolvesTo": []
+  },
+  "332": {
+    "evolvesFrom": [],
+    "evolvesTo": []
+  },
+  "333": {
+    "evolvesFrom": [],
+    "evolvesTo": []
+  },
+  "334": {
+    "evolvesFrom": [],
+    "evolvesTo": []
+  },
+  "335": {
+    "evolvesFrom": [],
+    "evolvesTo": []
+  },
+  "336": {
+    "evolvesFrom": [],
+    "evolvesTo": []
+  },
+  "337": {
+    "evolvesFrom": [
+      {
+        "name": "Wanyamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Ginryumon",
+        "level_required": 14
+      },
+      {
+        "name": "Raptordramon",
+        "level_required": 15
+      },
+      {
+        "name": "Reppamon",
+        "level_required": 16
+      }
+    ]
+  },
+  "338": {
+    "evolvesFrom": [
+      {
+        "name": "Ryudamon"
+      },
+      {
+        "name": "Zubamon"
+      },
+      {
+        "name": "Dracomon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Hisyaryumon",
+        "level_required": 30
+      },
+      {
+        "name": "CannonBeemon",
+        "level_required": 28
+      },
+      {
+        "name": "MegaSeadramon",
+        "level_required": 30
+      }
+    ]
+  },
+  "339": {
+    "evolvesFrom": [
+      {
+        "name": "Ginryumon"
+      },
+      {
+        "name": "Seadramon"
+      },
+      {
+        "name": "Coelamon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Ouryumon",
+        "level_required": 50
+      },
+      {
+        "name": "Gaiomon",
+        "level_required": 50
+      },
+      {
+        "name": "Goldramon",
+        "level_required": 55
+      },
+      {
+        "name": "Minervamon",
+        "level_required": 55
+      }
+    ]
+  },
+  "340": {
+    "evolvesFrom": [
+      {
+        "name": "Hisyaryumon"
+      },
+      {
+        "name": "Grademon"
+      },
+      {
+        "name": "Crowmon"
+      }
+    ],
+    "evolvesTo": [
+      {
+        "name": "Alphamon Ouryuken",
+        "level_required": 60
+      }
+    ]
+  },
+  "341": {
+    "evolvesFrom": [
+      {
+        "name": "MetalSeadramon"
+      },
+      {
+        "name": "Puppetmon"
+      },
+      {
+        "name": "Machinedramon"
+      },
+      {
+        "name": "Piedmon"
+      }
+    ],
+    "evolvesTo": []
+  }
+}
