@@ -13,6 +13,7 @@ import CreatePet from './pages/CreatePet';
 import DigimonDexPage from './pages/DigimonDexPage';
 import Layout from './components/Layout';
 import Debug from './pages/Debug';
+import ResetPassword from "./pages/ResetPassword";
 
 // Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -54,6 +55,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         
         <Route path="/" element={
           <ProtectedRoute>
