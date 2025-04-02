@@ -99,7 +99,8 @@ export const useBattleStore = create<BattleState>((set, get) => ({
 
       console.log("Found user Digimon:", userDigimon.id);
 
-      // Fetch battles where the user's Digimon was involved
+      // Fetch only battles where the user's Digimon was the initiator (user_digimon_id)
+      // This means the user queued for this battle
       const { data, error } = await supabase
         .from("battles")
         .select(
@@ -115,9 +116,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
           )
         `
         )
-        .or(
-          `user_digimon_id.eq.${userDigimon.id},opponent_digimon_id.eq.${userDigimon.id}`
-        )
+        .eq("user_digimon_id", userDigimon.id) // Only get battles where user was the initiator
         .order("created_at", { ascending: false })
         .limit(10);
 

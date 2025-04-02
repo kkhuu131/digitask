@@ -1,12 +1,9 @@
 import { Battle } from "../store/battleStore";
-import { useDigimonStore } from "../store/petStore";
-
 interface BattleHistoryProps {
   battles: Battle[];
 }
 
 const BattleHistory: React.FC<BattleHistoryProps> = ({ battles }) => {
-  const { userDigimon } = useDigimonStore();
   
   if (battles.length === 0) {
     return (
@@ -19,12 +16,9 @@ const BattleHistory: React.FC<BattleHistoryProps> = ({ battles }) => {
   return (
     <div className="space-y-4">
       {battles.map((battle) => {
-        // Determine if the user's Digimon was in this battle
-        const isUserDigimon = userDigimon?.id === battle.user_digimon?.id;
-        
-        // Determine which Digimon is the player's and which is the opponent's
-        const playerDigimon = isUserDigimon ? battle.user_digimon : battle.opponent_digimon;
-        const opponentDigimon = isUserDigimon ? battle.opponent_digimon : battle.user_digimon;
+        // Since we're only showing user-initiated battles, the user's Digimon is always the initiator
+        const playerDigimon = battle.user_digimon;
+        const opponentDigimon = battle.opponent_digimon;
         
         // Determine if the player won
         const playerWon = battle.winner_digimon_id === playerDigimon?.id;
