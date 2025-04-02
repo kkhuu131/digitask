@@ -57,6 +57,7 @@ export interface DigimonState {
   fetchDiscoveredDigimon: () => Promise<void>;
   addDiscoveredDigimon: (digimonId: number) => Promise<void>;
   subscribeToDigimonUpdates: () => RealtimeChannel | undefined;
+  checkDigimonHealth: () => Promise<void>;
 }
 
 export const useDigimonStore = create<DigimonState>((set, get) => ({
@@ -444,5 +445,40 @@ export const useDigimonStore = create<DigimonState>((set, get) => ({
       .subscribe();
 
     return subscription;
+  },
+
+  checkDigimonHealth: async () => {
+    try {
+      const { userDigimon } = get();
+      if (!userDigimon) return;
+
+      // If health is 0, the Digimon has died
+      if (userDigimon.health <= 0) {
+        // Delete the current Digimon
+        const { data: user } = await supabase.auth.getUser();
+        if (!user.user) throw new Error("User not authenticated");
+
+        const { error } = await supabase
+          .from("user_digimon")
+          .delete()
+          .eq("user_id", user.user.id);
+
+        if (error) throw error;
+
+        // Reset the store state
+        set({
+          userDigimon: null,
+          digimonData: null,
+          evolutionOptions: [],
+          error:
+            "Your Digimon has died due to neglect. You'll need to start with a new one.",
+        });
+
+        // You could also show a modal or redirect to a "Digimon died" page
+        // window.location.href = "/digimon-died";
+      }
+    } catch (error) {
+      set({ error: (error as Error).message });
+    }
   },
 }));

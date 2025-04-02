@@ -6,7 +6,7 @@ const TaskForm = () => {
   const [description, setDescription] = useState("");
   const [isDaily, setIsDaily] = useState(true);
   const [dueDate, setDueDate] = useState<string>("");
-  const [dueTime, setDueTime] = useState<string>("23:59"); // Default to end of day
+  const [dueTime, setDueTime] = useState<string>("12:00"); // Default to noon instead of end of day
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const handleSubmit = async (e: React.FormEvent) => {
@@ -14,32 +14,39 @@ const TaskForm = () => {
     
     if (!description.trim()) return;
     
-    setIsSubmitting(true);
-    
     try {
-      // Combine date and time for non-daily tasks
-      let dueDateTimeISO = null;
-      if (dueDate && !isDaily) {
-        const dateTimeString = `${dueDate}T${dueTime}`;
-        dueDateTimeISO = new Date(dateTimeString).toISOString();
+      setIsSubmitting(true);
+      
+      let dueDateTime = null;
+      
+      // If it's not a daily task and has a due date/time
+      if (!isDaily && dueDate && dueTime) {
+        // Create a proper ISO string with the correct timezone
+        const localDueDate = new Date(`${dueDate}T${dueTime}`);
+        
+        // Log for debugging
+        console.log(`Creating task with date: ${dueDate}`);
+        console.log(`Creating task with time: ${dueTime}`);
+        console.log(`Combined local date: ${localDueDate.toString()}`);
+        
+        dueDateTime = localDueDate.toISOString();
+        console.log(`Final ISO string: ${dueDateTime}`);
       }
       
-      const newTask = {
+      await createTask({
         description,
         is_daily: isDaily,
-        due_date: dueDateTimeISO,
-      };
-      
-      await createTask(newTask);
+        due_date: dueDateTime,
+      });
       
       // Reset form
       setDescription("");
-      setIsDaily(true);
       setDueDate("");
-      setDueTime("23:59");
+      setDueTime("");
+      setIsDaily(false);
+      setIsSubmitting(false);
     } catch (error) {
       console.error("Error creating task:", error);
-    } finally {
       setIsSubmitting(false);
     }
   };

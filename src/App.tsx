@@ -34,7 +34,6 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 function App() {
   const { loading: authLoading, checkSession } = useAuthStore();
   const { userDigimon, fetchUserDigimon } = useDigimonStore();
-  const { checkOverdueTasks } = useTaskStore();
   const [appLoading, setAppLoading] = useState(true);
   
   useEffect(() => {
@@ -43,14 +42,17 @@ function App() {
       
       if (useAuthStore.getState().user) {
         await fetchUserDigimon();
-        await checkOverdueTasks();
+        await useTaskStore.getState().fetchTasks();
+        await useTaskStore.getState().checkOverdueTasks();
+        await useTaskStore.getState().checkDailyQuota();
+        await useDigimonStore.getState().checkDigimonHealth();
       }
       
       setAppLoading(false);
     };
     
     initApp();
-  }, [checkSession, fetchUserDigimon, checkOverdueTasks]);
+  }, [checkSession, fetchUserDigimon]);
   
   // Add this useEffect to set up the subscription
   useEffect(() => {

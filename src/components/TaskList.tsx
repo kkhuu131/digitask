@@ -1,161 +1,164 @@
-import { useEffect } from "react";
-import { useTaskStore, Task } from "../store/taskStore";
-import { format, isPast, isToday } from "date-fns";
-import { FaCheck, FaTrash, FaClock } from "react-icons/fa";
+import { useState } from "react";
+import { useTaskStore } from "../store/taskStore";
+import TaskItem from "./TaskItem";
 
 const TaskList = () => {
-  const { tasks, fetchTasks, completeTask, deleteTask, loading } = useTaskStore();
+  const { tasks, completeTask, deleteTask } = useTaskStore();
+  const [filter, setFilter] = useState<"all" | "active" | "completed">("all");
   
-  useEffect(() => {
-    fetchTasks();
-  }, [fetchTasks]);
+  // Make sure the TaskItem component is being used correctly
+  const filteredTasks = tasks.filter((task) => {
+    if (filter === "active") return !task.is_completed;
+    if (filter === "completed") return task.is_completed;
+    return true;
+  });
   
-  // Group tasks by status and date
-  const todayTasks = tasks.filter(task => 
-    (task.is_daily || (task.due_date && isToday(new Date(task.due_date)))) && !task.is_completed
-  );
+  // Group tasks by date
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
   
-  const upcomingTasks = tasks.filter(task => 
-    !task.is_daily && task.due_date && !isToday(new Date(task.due_date)) && !isPast(new Date(task.due_date)) && !task.is_completed
-  );
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
   
-  const overdueTasks = tasks.filter(task => 
-    !task.is_daily && task.due_date && isPast(new Date(task.due_date)) && !isToday(new Date(task.due_date)) && !task.is_completed
-  );
+  const dailyTasks = filteredTasks.filter((task) => task.is_daily);
   
-  const completedTasks = tasks.filter(task => task.is_completed);
+  const overdueTasks = filteredTasks.filter((task) => {
+    if (task.is_daily || task.is_completed || !task.due_date) return false;
+    return new Date(task.due_date) < new Date();
+  });
   
-  if (loading) {
-    return <div className="text-center py-4">Loading tasks...</div>;
-  }
+  const todayTasks = filteredTasks.filter((task) => {
+    if (task.is_daily || task.is_completed || !task.due_date) return false;
+    const dueDate = new Date(task.due_date);
+    return dueDate >= today && dueDate < tomorrow && !overdueTasks.includes(task);
+  });
   
-  if (tasks.length === 0) {
-    return (
-      <div className="text-center py-8 text-gray-500">
-        <p>No tasks yet. Add some tasks to take care of your pet!</p>
-      </div>
-    );
-  }
+  const futureTasks = filteredTasks.filter((task) => {
+    if (task.is_daily || task.is_completed || !task.due_date) return false;
+    return new Date(task.due_date) >= tomorrow && !overdueTasks.includes(task);
+  });
   
-  const TaskItem = ({ task }: { task: Task }) => {
-    const handleComplete = () => {
-      if (!task.is_completed) {
-        completeTask(task.id);
-      }
-    };
-    
-    const handleDelete = () => {
-      deleteTask(task.id);
-    };
-    
-    return (
-      <div className={`flex items-center justify-between p-3 rounded-lg mb-2 ${
-        task.is_completed 
-          ? "bg-gray-100" 
-          : task.is_daily 
-            ? "bg-blue-50" 
-            : task.due_date && isPast(new Date(task.due_date)) && !isToday(new Date(task.due_date))
-              ? "bg-red-50"
-              : "bg-white border border-gray-200"
-      }`}>
-        <div className="flex items-center">
-          <button
-            onClick={handleComplete}
-            disabled={task.is_completed}
-            className={`mr-3 p-1 rounded-full ${
-              task.is_completed 
-                ? "bg-green-100 text-green-500 cursor-default" 
-                : "bg-white border border-gray-300 hover:bg-gray-100"
-            }`}
-          >
-            <FaCheck className={task.is_completed ? "opacity-100" : "opacity-0"} size={12} />
-          </button>
-          
-          <div>
-            <p className={`text-sm font-medium ${task.is_completed ? "line-through text-gray-500" : ""}`}>
-              {task.description}
-            </p>
-            <div className="flex items-center text-xs text-gray-500 mt-1">
-              {task.is_daily ? (
-                <span className="flex items-center">
-                  <FaClock className="mr-1" size={10} />
-                  Daily
-                </span>
-              ) : task.due_date ? (
-                <span className="flex items-center">
-                  <FaClock className="mr-1" size={10} />
-                  {format(new Date(task.due_date), "MMM d, yyyy")}
-                </span>
-              ) : null}
-              
-              {task.completed_at && (
-                <span className="ml-2">
-                  Completed: {format(new Date(task.completed_at), "MMM d, h:mm a")}
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
-        
-        <button
-          onClick={handleDelete}
-          className="p-1 text-gray-400 hover:text-red-500"
-          title="Delete task"
-        >
-          <FaTrash size={14} />
-        </button>
-      </div>
-    );
-  };
+  const completedTasks = filteredTasks.filter((task) => task.is_completed);
   
   return (
-    <div className="space-y-6">
-      {overdueTasks.length > 0 && (
-        <div>
-          <h3 className="text-lg font-semibold mb-3 text-red-600">Overdue</h3>
-          <div>
-            {overdueTasks.map(task => (
-              <TaskItem key={task.id} task={task} />
-            ))}
-          </div>
-        </div>
-      )}
+    <div>
+      <div className="flex space-x-2 mb-4">
+        <button
+          className={`px-3 py-1 text-sm rounded-full ${
+            filter === "all" ? "bg-primary-100 text-primary-800" : "bg-gray-100"
+          }`}
+          onClick={() => setFilter("all")}
+        >
+          All
+        </button>
+        <button
+          className={`px-3 py-1 text-sm rounded-full ${
+            filter === "active" ? "bg-primary-100 text-primary-800" : "bg-gray-100"
+          }`}
+          onClick={() => setFilter("active")}
+        >
+          Active
+        </button>
+        <button
+          className={`px-3 py-1 text-sm rounded-full ${
+            filter === "completed" ? "bg-primary-100 text-primary-800" : "bg-gray-100"
+          }`}
+          onClick={() => setFilter("completed")}
+        >
+          Completed
+        </button>
+      </div>
       
-      {todayTasks.length > 0 && (
-        <div>
-          <h3 className="text-lg font-semibold mb-3">Today</h3>
-          <div>
-            {todayTasks.map(task => (
-              <TaskItem key={task.id} task={task} />
-            ))}
-          </div>
+      {filteredTasks.length === 0 ? (
+        <div className="text-center py-8 text-gray-500">
+          No tasks found. Add some tasks to get started!
         </div>
-      )}
-      
-      {upcomingTasks.length > 0 && (
+      ) : (
         <div>
-          <h3 className="text-lg font-semibold mb-3">Upcoming</h3>
-          <div>
-            {upcomingTasks.map(task => (
-              <TaskItem key={task.id} task={task} />
-            ))}
-          </div>
-        </div>
-      )}
-      
-      {completedTasks.length > 0 && (
-        <div>
-          <h3 className="text-lg font-semibold mb-3 text-gray-500">Completed</h3>
-          <div>
-            {completedTasks.slice(0, 5).map(task => (
-              <TaskItem key={task.id} task={task} />
-            ))}
-            {completedTasks.length > 5 && (
-              <p className="text-center text-sm text-gray-500 mt-2">
-                + {completedTasks.length - 5} more completed tasks
-              </p>
-            )}
-          </div>
+          {/* Overdue Tasks */}
+          {overdueTasks.length > 0 && (
+            <div className="mb-4">
+              <h3 className="text-sm font-medium text-red-600 mb-2">Overdue</h3>
+              <div className="bg-red-50 border border-red-100 rounded-lg overflow-hidden">
+                {overdueTasks.map((task) => (
+                  <TaskItem
+                    key={task.id}
+                    task={task}
+                    onComplete={completeTask}
+                    onDelete={deleteTask}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+          
+          {/* Daily Tasks */}
+          {dailyTasks.length > 0 && (
+            <div className="mb-4">
+              <h3 className="text-sm font-medium text-gray-600 mb-2">Daily</h3>
+              <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                {dailyTasks.map((task) => (
+                  <TaskItem
+                    key={task.id}
+                    task={task}
+                    onComplete={completeTask}
+                    onDelete={deleteTask}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+          
+          {/* Today's Tasks */}
+          {todayTasks.length > 0 && (
+            <div className="mb-4">
+              <h3 className="text-sm font-medium text-gray-600 mb-2">Today</h3>
+              <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                {todayTasks.map((task) => (
+                  <TaskItem
+                    key={task.id}
+                    task={task}
+                    onComplete={completeTask}
+                    onDelete={deleteTask}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+          
+          {/* Future Tasks */}
+          {futureTasks.length > 0 && (
+            <div className="mb-4">
+              <h3 className="text-sm font-medium text-gray-600 mb-2">Upcoming</h3>
+              <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                {futureTasks.map((task) => (
+                  <TaskItem
+                    key={task.id}
+                    task={task}
+                    onComplete={completeTask}
+                    onDelete={deleteTask}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+          
+          {/* Completed Tasks */}
+          {completedTasks.length > 0 && filter !== "active" && (
+            <div>
+              <h3 className="text-sm font-medium text-gray-600 mb-2">Completed</h3>
+              <div className="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
+                {completedTasks.map((task) => (
+                  <TaskItem
+                    key={task.id}
+                    task={task}
+                    onComplete={completeTask}
+                    onDelete={deleteTask}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

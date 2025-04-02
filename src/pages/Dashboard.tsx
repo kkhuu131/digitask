@@ -7,7 +7,7 @@ import TaskList from "../components/TaskList";
 
 const Dashboard = () => {
   const { userDigimon, digimonData, evolutionOptions, fetchUserDigimon, error: digimonError } = useDigimonStore();
-  const { fetchTasks, error: taskError } = useTaskStore();
+  const { fetchTasks, error: taskError, tasks } = useTaskStore();
   
   useEffect(() => {
     fetchUserDigimon();
@@ -23,6 +23,19 @@ const Dashboard = () => {
       localStorage.setItem('lastDailyTaskReset', today);
     }
   }, [fetchUserDigimon, fetchTasks]);
+  
+  const today = new Date().toDateString();
+  
+  // Count completed tasks for today
+  const completedToday = tasks.filter(task => {
+    if (!task.is_completed || !task.completed_at) return false;
+    
+    const completedDate = new Date(task.completed_at).toDateString();
+    return completedDate === today;
+  }).length;
+  
+  const DAILY_QUOTA = 3; // Should match the quota in taskStore.ts
+  const quotaPercentage = Math.min(100, (completedToday / DAILY_QUOTA) * 100);
   
   if (!userDigimon || !digimonData) {
     return (
@@ -69,10 +82,37 @@ const Dashboard = () => {
           </div>
         </div>
         
+        <div className="card mb-6">
+          <h3 className="text-lg font-semibold mb-2">Daily Quota</h3>
+          <div className="flex justify-between text-sm mb-1">
+            <span>Tasks Completed Today</span>
+            <span>{completedToday}/{DAILY_QUOTA}</span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-2.5">
+            <div 
+              className="h-2.5 rounded-full" 
+              style={{ 
+                width: `${quotaPercentage}%`,
+                backgroundColor: quotaPercentage >= 100 ? '#10b981' : quotaPercentage >= 66 ? '#f59e0b' : '#ef4444'
+              }}
+            ></div>
+          </div>
+          <p className="text-xs text-gray-500 mt-2">
+            Complete at least {DAILY_QUOTA} tasks daily to keep your Digimon happy and healthy.
+          </p>
+        </div>
+        
         <div className="card">
           <h2 className="text-xl font-bold mb-4">Your Tasks</h2>
           <TaskList />
         </div>
+        
+        <button 
+          onClick={() => useTaskStore.getState().debugOverdueTasks()}
+          className="text-xs text-gray-500 underline"
+        >
+          Debug Overdue Tasks
+        </button>
       </div>
     </div>
   );
