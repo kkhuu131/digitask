@@ -116,12 +116,29 @@ export const useDigimonStore = create<DigimonState>((set, get) => ({
     try {
       set({ loading: true, error: null });
 
+      // Get the current user
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) {
+        set({
+          userDigimon: null,
+          digimonData: null,
+          evolutionOptions: [],
+          loading: false,
+        });
+        return;
+      }
+
+      console.log("Fetching Digimon for user:", userData.user.id);
+
       // Get the user's Digimon
       const { data: userDigimonList, error: userDigimonError } = await supabase
         .from("user_digimon")
-        .select("*");
+        .select("*")
+        .eq("user_id", userData.user.id);
 
       if (userDigimonError) throw userDigimonError;
+
+      console.log("User Digimon data:", userDigimonList);
 
       // If user has no Digimon, return early
       if (!userDigimonList || userDigimonList.length === 0) {
@@ -175,6 +192,8 @@ export const useDigimonStore = create<DigimonState>((set, get) => ({
         sprite_url: (path.digimon as any).sprite_url,
         level_required: path.level_required,
       }));
+
+      console.log("Setting user Digimon data:", userDigimon.name);
 
       set({
         userDigimon,

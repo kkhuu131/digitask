@@ -1,20 +1,35 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
+import { useDigimonStore } from "../store/petStore";
+import { useTaskStore } from "../store/taskStore";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { signIn, error, loading } = useAuthStore();
+  const { signIn, error, loading, user } = useAuthStore();
   const navigate = useNavigate();
+  
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     await signIn(email, password);
     
-    // If no error, navigate to dashboard
-    if (!useAuthStore.getState().error) {
-      navigate("/");
+    // If login was successful, fetch the user's Digimon data
+    if (useAuthStore.getState().user) {
+      try {
+        // Fetch user Digimon data
+        await useDigimonStore.getState().fetchUserDigimon();
+        // Fetch tasks
+        await useTaskStore.getState().fetchTasks();
+      } catch (error) {
+        console.error("Error fetching user data after login:", error);
+      }
     }
   };
   

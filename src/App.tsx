@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { useAuthStore } from './store/authStore';
 import { useDigimonStore } from './store/petStore';
 import { useTaskStore } from './store/taskStore';
+import { supabase } from './lib/supabase';
 
 // Pages
 import Login from './pages/Login';
@@ -32,32 +33,38 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 function App() {
-  const { loading: authLoading, checkSession } = useAuthStore();
+  const { loading: authLoading, checkSession, user } = useAuthStore();
   const { userDigimon, fetchUserDigimon } = useDigimonStore();
   const [appLoading, setAppLoading] = useState(true);
   
+  // Initial app loading
   useEffect(() => {
     const initApp = async () => {
-      await checkSession();
-      
-      if (useAuthStore.getState().user) {
-        await fetchUserDigimon();
-        await useTaskStore.getState().fetchTasks();
-        await useTaskStore.getState().checkOverdueTasks();
-        await useTaskStore.getState().checkDailyQuota();
-        await useDigimonStore.getState().checkDigimonHealth();
+      try {
+        await checkSession();
+        
+        if (useAuthStore.getState().user) {
+          await fetchUserDigimon();
+          await useTaskStore.getState().fetchTasks();
+          await useTaskStore.getState().checkOverdueTasks();
+          await useTaskStore.getState().checkDailyQuota();
+          await useDigimonStore.getState().checkDigimonHealth();
+        }
+      } catch (error) {
+        console.error("Error initializing app:", error);
+      } finally {
+        // Always set loading to false, even if there are errors
+        setAppLoading(false);
       }
-      
-      setAppLoading(false);
     };
     
     initApp();
   }, [checkSession, fetchUserDigimon]);
   
-  // Add this useEffect to set up the subscription
+  // Set up Digimon subscription
   useEffect(() => {
     // Only set up subscription if user is logged in
-    if (useAuthStore.getState().user) {
+    if (user) {
       const subscription = useDigimonStore.getState().subscribeToDigimonUpdates();
       
       // Clean up subscription when component unmounts
@@ -67,6 +74,33 @@ function App() {
         }
       };
     }
+  }, [user]);
+  
+  // Auth state change listener
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        console.log("Auth state change:", event);
+        
+        if (event === 'SIGNED_IN') {
+          // User signed in - session will be handled by checkSession in the first useEffect
+          console.log("User signed in");
+        } else if (event === 'SIGNED_OUT') {
+          // User signed out
+          useAuthStore.setState({ user: null, loading: false });
+          useDigimonStore.setState({ 
+            userDigimon: null, 
+            digimonData: null, 
+            evolutionOptions: [] 
+          });
+          useTaskStore.setState({ tasks: [] });
+        }
+      }
+    );
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
   
   // Show a loading indicator while the app is initializing
@@ -94,7 +128,16 @@ function App() {
         <Route path="/" element={
           <ProtectedRoute>
             <Layout>
-              {userDigimon ? <Dashboard /> : <CreatePet />}
+              {appLoading ? (
+                <div className="flex items-center justify-center py-12">
+                  <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500 mx-auto mb-4"></div>
+                    <p className="text-gray-600">Loading your Digimon...</p>
+                  </div>
+                </div>
+              ) : (
+                userDigimon ? <Dashboard /> : <CreatePet />
+              )}
             </Layout>
           </ProtectedRoute>
         } />

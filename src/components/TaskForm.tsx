@@ -97,7 +97,7 @@ const TaskForm = () => {
           <label htmlFor="due_date" className="block text-sm font-medium text-gray-700">
             Due Date
           </label>
-          <div className="mt-1 flex space-x-2">
+          <div className="mt-1 mb-4 flex space-x-2">
             <input
               type="date"
               id="due_date"

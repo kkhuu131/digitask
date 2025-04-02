@@ -45,9 +45,17 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     try {
       set({ loading: true, error: null });
 
+      // Get the current user
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) {
+        set({ tasks: [], loading: false });
+        return;
+      }
+
       const { data: tasks, error } = await supabase
         .from("tasks")
         .select("*")
+        .eq("user_id", userData.user.id)
         .order("due_date", { ascending: true });
 
       if (error) throw error;
