@@ -123,6 +123,7 @@ const DigimonDex = () => {
                   <img 
                     src={digimon.sprite_url} 
                     alt={discovered ? digimon.name : "Unknown Digimon"} 
+                    style={{ imageRendering: "pixelated" }} 
                     className={`w-full h-full object-contain ${!discovered ? "opacity-0" : ""}`}
                     onError={(e) => {
                       (e.target as HTMLImageElement).src = "/assets/pet/egg.svg";
@@ -133,6 +134,7 @@ const DigimonDex = () => {
                       <img 
                         src={digimon.sprite_url} 
                         alt="Unknown Digimon"
+                        style={{ imageRendering: "pixelated" }} 
                         className="w-full h-full object-contain silhouette"
                         onError={(e) => {
                           (e.target as HTMLImageElement).src = "/assets/pet/egg.svg";
@@ -169,6 +171,7 @@ const DigimonDex = () => {
             
             <div className="flex flex-col items-center mb-6">
               <img 
+                style={{ imageRendering: "pixelated" }} 
                 src={selectedDigimon.sprite_url} 
                 alt={selectedDigimon.name} 
                 className="w-32 h-32 object-contain mb-2"
@@ -258,6 +261,7 @@ const DigimonDex = () => {
                           <img 
                             src={path.to_digimon.sprite_url} 
                             alt={discovered ? path.to_digimon.name : "Unknown Digimon"} 
+                            style={{ imageRendering: "pixelated" }} 
                             className={`w-full h-full object-contain ${!discovered ? "opacity-0" : ""}`}
                             onError={(e) => {
                               (e.target as HTMLImageElement).src = "/assets/pet/egg.svg";
@@ -267,6 +271,7 @@ const DigimonDex = () => {
                             <div className="absolute inset-0 flex items-center justify-center">
                               <img 
                                 src={path.to_digimon.sprite_url} 
+                                style={{ imageRendering: "pixelated" }} 
                                 alt="Unknown Digimon"
                                 className="w-full h-full object-contain silhouette"
                                 onError={(e) => {

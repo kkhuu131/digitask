@@ -16,16 +16,17 @@ const ResetPassword = () => {
     // Log the URL for debugging
     console.log("Current URL:", window.location.href);
     
-    // Check for token in hash or query params
-    const hashParams = new URLSearchParams(window.location.hash.substring(1));
-    const queryParams = new URLSearchParams(location.search);
+    // Check for token in hash
+    const hashFragment = window.location.hash;
     
-    const accessToken = hashParams.get("access_token") || queryParams.get("access_token");
-    const type = hashParams.get("type") || queryParams.get("type");
-    
-    console.log("Token info:", { accessToken: !!accessToken, type });
-    
-    if (!accessToken) {
+    // If there's a hash fragment that contains "access_token", consider it valid
+    // This is a more reliable check than parsing and looking for specific params
+    if (hashFragment && hashFragment.includes('access_token=')) {
+      console.log("Found access token in URL");
+      // Clear any previous errors
+      setError(null);
+    } else {
+      console.log("No access token found in URL");
       setError("Invalid or expired password reset link. Please request a new one.");
     }
   }, [location]);

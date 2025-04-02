@@ -78,6 +78,7 @@ const DigimonSelection = ({ onSelect }: DigimonSelectionProps) => {
                 <img
                   src={digimon.sprite_url}
                   alt={digimon.name}
+                  style={{ imageRendering: "pixelated" }} 
                   className="w-24 h-24 object-contain mb-2"
                   onError={(e) => {
                     // Fallback if image doesn't load

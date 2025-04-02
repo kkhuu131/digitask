@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { useAuthStore } from '../store/authStore';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { useDigimonStore } from "../store/petStore";
 
 interface LayoutProps {
   children: ReactNode;
@@ -8,11 +9,17 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
   const { user, signOut } = useAuthStore();
+  const { userDigimon } = useDigimonStore();
   const navigate = useNavigate();
+  const location = useLocation();
   
   const handleSignOut = async () => {
     await signOut();
     navigate('/login');
+  };
+  
+  const isActive = (path: string) => {
+    return location.pathname === path;
   };
   
   return (
@@ -21,16 +28,39 @@ const Layout = ({ children }: LayoutProps) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex-shrink-0 flex items-center">
-              <Link to="/" className="text-xl font-bold text-primary-600">Digitask</Link>
+              <Link to="/" className="flex items-center">
+                <img 
+                  src="/assets/digimon/dot050.png" 
+                  alt="Digitask Logo" 
+                  className="h-8 w-8 mr-2"
+                  style={{ imageRendering: "pixelated" }}
+                />
+                <span className="text-xl font-bold text-primary-600">Digitask</span>
+              </Link>
             </div>
             
-            {user && (
-              <div className="hidden md:flex space-x-4">
-                <Link to="/" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">
+            {userDigimon && (
+              <div className="ml-6 flex space-x-4">
+                <Link
+                  to="/"
+                  className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+                    isActive("/")
+                      ? "border-primary-500 text-gray-900"
+                      : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                  }`}
+                >
                   Dashboard
                 </Link>
-                <Link to="/digimon-dex" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">
-                  Digimon Dex
+                
+                <Link
+                  to="/digimon-dex"
+                  className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+                    isActive("/digimon-dex")
+                      ? "border-primary-500 text-gray-900"
+                      : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                  }`}
+                >
+                  DigiDex
                 </Link>
               </div>
             )}

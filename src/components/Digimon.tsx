@@ -55,7 +55,8 @@ const Digimon = ({ userDigimon, digimonData, evolutionOptions }: DigimonProps) =
           <img 
             src={digimonData.sprite_url} 
             alt={digimonData.name} 
-            className="max-w-full max-h-full"
+            className="scale-[3] w-auto h-auto"
+            style={{ imageRendering: "pixelated" }} 
             onError={(e) => {
               // Fallback if image doesn't load
               (e.target as HTMLImageElement).src = "/assets/pet/egg.svg";
@@ -173,7 +174,8 @@ const Digimon = ({ userDigimon, digimonData, evolutionOptions }: DigimonProps) =
                       <div className="relative w-24 h-24 mb-2">
                         <img 
                           src={option.sprite_url} 
-                          alt={discovered ? option.name : "Unknown Digimon"} 
+                          alt={discovered ? option.name : "Unknown Digimon"}
+                          style={{ imageRendering: "pixelated" }} 
                           className={`w-full h-full object-contain ${!discovered ? "opacity-0" : ""}`}
                           onError={(e) => {
                             (e.target as HTMLImageElement).src = "/assets/pet/egg.svg";
@@ -184,6 +186,7 @@ const Digimon = ({ userDigimon, digimonData, evolutionOptions }: DigimonProps) =
                             <img 
                               src={option.sprite_url} 
                               alt="Unknown Digimon"
+                              style={{ imageRendering: "pixelated" }} 
                               className="w-full h-full object-contain brightness-0"
                               onError={(e) => {
                                 (e.target as HTMLImageElement).src = "/assets/pet/egg.svg";
