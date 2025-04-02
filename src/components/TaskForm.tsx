@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useTaskStore } from "../store/taskStore";
-import { format } from "date-fns";
 
 const TaskForm = () => {
   const { createTask } = useTaskStore();
   const [description, setDescription] = useState("");
   const [isDaily, setIsDaily] = useState(true);
-  const [dueDate, setDueDate] = useState("");
+  const [dueDate, setDueDate] = useState<string>("");
+  const [dueTime, setDueTime] = useState<string>("23:59"); // Default to end of day
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const handleSubmit = async (e: React.FormEvent) => {
@@ -17,16 +17,26 @@ const TaskForm = () => {
     setIsSubmitting(true);
     
     try {
-      await createTask({
+      // Combine date and time for non-daily tasks
+      let dueDateTimeISO = null;
+      if (dueDate && !isDaily) {
+        const dateTimeString = `${dueDate}T${dueTime}`;
+        dueDateTimeISO = new Date(dateTimeString).toISOString();
+      }
+      
+      const newTask = {
         description,
         is_daily: isDaily,
-        due_date: isDaily ? null : dueDate || null,
-      });
+        due_date: dueDateTimeISO,
+      };
+      
+      await createTask(newTask);
       
       // Reset form
       setDescription("");
       setIsDaily(true);
       setDueDate("");
+      setDueTime("23:59");
     } catch (error) {
       console.error("Error creating task:", error);
     } finally {
@@ -56,31 +66,48 @@ const TaskForm = () => {
       <div className="mb-4">
         <div className="flex items-center">
           <input
+            id="is_daily"
+            name="is_daily"
             type="checkbox"
-            id="isDaily"
-            className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
             checked={isDaily}
             onChange={(e) => setIsDaily(e.target.checked)}
+            className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
           />
-          <label htmlFor="isDaily" className="ml-2 block text-sm text-gray-700">
+          <label htmlFor="is_daily" className="ml-2 block text-sm text-gray-700">
             Daily recurring task
           </label>
+          <div className="relative ml-1 group">
+            <span className="cursor-help text-gray-400">ⓘ</span>
+            <div className="absolute left-0 bottom-full mb-2 hidden group-hover:block bg-gray-800 text-white text-xs rounded p-2 w-64">
+              Daily tasks reset each day and can be completed again. They provide less XP (10 vs 15) but can be done repeatedly for consistent pet care.
+            </div>
+          </div>
         </div>
       </div>
       
       {!isDaily && (
-        <div className="mb-4">
-          <label htmlFor="dueDate" className="block text-sm font-medium text-gray-700 mb-1">
+        <div className="mt-4">
+          <label htmlFor="due_date" className="block text-sm font-medium text-gray-700">
             Due Date
           </label>
-          <input
-            type="date"
-            id="dueDate"
-            className="input"
-            value={dueDate}
-            onChange={(e) => setDueDate(e.target.value)}
-            min={format(new Date(), "yyyy-MM-dd")}
-          />
+          <div className="mt-1 flex space-x-2">
+            <input
+              type="date"
+              id="due_date"
+              name="due_date"
+              value={dueDate}
+              onChange={(e) => setDueDate(e.target.value)}
+              className="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md"
+            />
+            <input
+              type="time"
+              id="due_time"
+              name="due_time"
+              value={dueTime}
+              onChange={(e) => setDueTime(e.target.value)}
+              className="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md"
+            />
+          </div>
         </div>
       )}
       
