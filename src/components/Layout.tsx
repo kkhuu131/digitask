@@ -62,6 +62,17 @@ const Layout = ({ children }: LayoutProps) => {
                 >
                   DigiDex
                 </Link>
+                
+                <Link
+                  to="/battle"
+                  className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+                    isActive("/battle")
+                      ? "border-primary-500 text-gray-900"
+                      : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                  }`}
+                >
+                  Battle
+                </Link>
               </div>
             )}
             
@@ -69,6 +80,12 @@ const Layout = ({ children }: LayoutProps) => {
               {user && (
                 <>
                   <span className="text-sm text-gray-700 hidden md:inline">{user.email}</span>
+                  <Link
+                    to="/profile"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Profile Settings
+                  </Link>
                   <button
                     onClick={handleSignOut}
                     className="btn-outline text-sm"
@@ -88,6 +105,9 @@ const Layout = ({ children }: LayoutProps) => {
               </Link>
               <Link to="/digimon-dex" className="flex-1 px-3 py-2 rounded-md text-sm font-medium text-center text-gray-700 hover:bg-gray-100">
                 Digimon Dex
+              </Link>
+              <Link to="/battle" className="flex-1 px-3 py-2 rounded-md text-sm font-medium text-center text-gray-700 hover:bg-gray-100">
+                Battle
               </Link>
             </div>
           )}

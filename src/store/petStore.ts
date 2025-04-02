@@ -58,6 +58,7 @@ export interface DigimonState {
   addDiscoveredDigimon: (digimonId: number) => Promise<void>;
   subscribeToDigimonUpdates: () => RealtimeChannel | undefined;
   checkDigimonHealth: () => Promise<void>;
+  checkLevelUp: () => Promise<void>;
 }
 
 export const useDigimonStore = create<DigimonState>((set, get) => ({
@@ -498,6 +499,57 @@ export const useDigimonStore = create<DigimonState>((set, get) => ({
       }
     } catch (error) {
       set({ error: (error as Error).message });
+    }
+  },
+
+  checkLevelUp: async () => {
+    try {
+      const { userDigimon } = get();
+      if (!userDigimon) return;
+
+      // Calculate XP needed for next level (20 base + 10 per level)
+      const xpNeeded = 20 + (userDigimon.current_level - 1) * 10;
+
+      // Check if Digimon has enough XP to level up
+      if (userDigimon.experience_points >= xpNeeded) {
+        console.log(
+          `Digimon leveling up! Current XP: ${userDigimon.experience_points}, Needed: ${xpNeeded}`
+        );
+
+        // Calculate new level and remaining XP
+        const newLevel = userDigimon.current_level + 1;
+        const remainingXP = userDigimon.experience_points - xpNeeded;
+
+        // Update Digimon stats
+        const { error } = await supabase
+          .from("user_digimon")
+          .update({
+            current_level: newLevel,
+            experience_points: remainingXP,
+          })
+          .eq("id", userDigimon.id);
+
+        if (error) throw error;
+
+        // Update local state
+        set({
+          userDigimon: {
+            ...userDigimon,
+            current_level: newLevel,
+            experience_points: remainingXP,
+          },
+        });
+
+        // Check if there's enough XP for another level up
+        if (remainingXP > 0) {
+          await get().checkLevelUp();
+        }
+
+        // Check if Digimon can digivolve at this level
+        await get().checkEvolution();
+      }
+    } catch (error) {
+      console.error("Error checking level up:", error);
     }
   },
 }));
