@@ -208,7 +208,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
         .eq("id", userDigimonData.user_id)
         .single();
 
-      // Find a random opponent - just exclude the current Digimon
+      // Find a random opponent - exclude the current user's Digimon
       const { data: opponents, error: opponentsError } = await supabase
         .from("user_digimon")
         .select(
@@ -217,8 +217,10 @@ export const useBattleStore = create<BattleState>((set, get) => ({
           digimon:digimon_id (name, sprite_url, hp, atk, def, spd)
         `
         )
-        .neq("id", userDigimonId)
+        .neq("user_id", userDigimonData.user_id) // Filter by user_id to exclude all of the current user's Digimon
         .limit(100);
+
+      console.log("opponents", opponents);
 
       if (opponentsError) throw opponentsError;
 

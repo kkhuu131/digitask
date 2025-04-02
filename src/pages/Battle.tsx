@@ -15,6 +15,7 @@ const Battle = () => {
     clearCurrentBattle 
   } = useBattleStore();
   const [showBattleAnimation, setShowBattleAnimation] = useState(false);
+  const [noRealOpponents, setNoRealOpponents] = useState(false);
 
   useEffect(() => {
     // If we have a current battle result but aren't showing the animation,
@@ -31,6 +32,15 @@ const Battle = () => {
     
     loadBattleData();
   }, []);
+
+  useEffect(() => {
+    // Check if the current battle is against a dummy opponent
+    if (currentBattle && currentBattle.opponent_digimon?.id.startsWith("dummy-")) {
+      setNoRealOpponents(true);
+    } else {
+      setNoRealOpponents(false);
+    }
+  }, [currentBattle]);
 
   const handleQueueForBattle = async () => {
     if (!userDigimon) return;
@@ -95,6 +105,15 @@ const Battle = () => {
             {error && (
               <div className="mt-4 bg-red-50 border-l-4 border-red-500 p-4">
                 <p className="text-sm text-red-700">{error}</p>
+              </div>
+            )}
+            
+            {noRealOpponents && (
+              <div className="mt-4 bg-yellow-50 border-l-4 border-yellow-400 p-4">
+                <p className="text-sm text-yellow-700">
+                  No real opponents found. You battled against a wild Digimon instead. 
+                  Invite friends to join the game for real battles!
+                </p>
               </div>
             )}
           </div>

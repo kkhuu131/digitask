@@ -46,11 +46,11 @@ const BattleHistory: React.FC<BattleHistoryProps> = ({ battles }) => {
             }`}
           >
             <div className="flex items-center">
-              <div className="w-12 h-12 flex-shrink-0">
+              <div className="w-12 h-12 flex items-center justify-center">
                 <img 
                   src={playerDigimon?.digimon?.sprite_url} 
                   alt={playerDigimon?.name} 
-                  className="scale-[2]"
+                  className="scale-[1]"
                   style={{ imageRendering: "pixelated" }} 
                 />
               </div>
@@ -58,7 +58,6 @@ const BattleHistory: React.FC<BattleHistoryProps> = ({ battles }) => {
               <div className="mx-2 flex-grow">
                 <div className="flex justify-between">
                   <span className="text-sm font-medium">{playerDigimon?.name}</span>
-                  <span className="text-xs text-gray-500">Lv. {playerDigimon?.current_level}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className={`text-xs ${playerWon ? 'text-green-600' : 'text-red-600'} font-medium`}>
@@ -70,11 +69,11 @@ const BattleHistory: React.FC<BattleHistoryProps> = ({ battles }) => {
               
               <div className="text-sm mx-1">vs</div>
               
-              <div className="w-12 h-12 flex-shrink-0">
+              <div className="w-12 h-12 flex items-center justify-center">
                 <img 
                   src={opponentDigimon?.digimon?.sprite_url} 
                   alt={opponentDigimon?.name} 
-                  className="scale-[2]"
+                  className="scale-[1]"
                   style={{ 
                     imageRendering: "pixelated",
                     transform: "scaleX(-1)" // Flip horizontally

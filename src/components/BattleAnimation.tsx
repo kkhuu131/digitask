@@ -23,6 +23,19 @@ const BattleAnimation: React.FC<BattleAnimationProps> = ({ battle, onComplete })
   // Determine if the player won
   const playerWon = isUserDigimon ? isUserWinner : !isUserWinner;
   
+  // Get player and opponent usernames
+  const playerUsername = playerDigimon?.profile?.display_name || 
+                         playerDigimon?.profile?.username || 
+                         'Your';
+  
+  const opponentUsername = opponentDigimon?.profile?.display_name || 
+                           opponentDigimon?.profile?.username || 
+                           'Wild';
+  
+  // Format the Digimon names with usernames
+  const playerDigimonFullName = `${playerUsername}'s ${playerDigimon?.name}`;
+  const opponentDigimonFullName = `${opponentUsername}'s ${opponentDigimon?.name}`;
+  
   useEffect(() => {
     // Animation sequence timing
     const timings = [
@@ -72,7 +85,9 @@ const BattleAnimation: React.FC<BattleAnimationProps> = ({ battle, onComplete })
                   />
                 </div>
                 <p className="font-semibold">{playerDigimon?.name}</p>
-                <p className="text-sm text-gray-600">Lv. {playerDigimon?.current_level}</p>
+                <p className="text-sm text-gray-600">
+                  Lv. {playerDigimon?.current_level}
+                </p>
               </div>
               
               <div className="text-2xl font-bold mx-4">VS</div>
@@ -91,7 +106,7 @@ const BattleAnimation: React.FC<BattleAnimationProps> = ({ battle, onComplete })
                 </div>
                 <p className="font-semibold mt-2">{opponentDigimon?.name}</p>
                 <p className="text-sm text-gray-600">
-                  {opponentDigimon?.profile?.display_name || opponentDigimon?.profile?.username || 'Wild'}'s Lv. {opponentDigimon?.current_level}
+                  Lv. {opponentDigimon?.current_level}
                 </p>
               </div>
             </div>
@@ -99,8 +114,8 @@ const BattleAnimation: React.FC<BattleAnimationProps> = ({ battle, onComplete })
             <div className="mb-8">
               <p className="text-lg">
                 {playerWon 
-                  ? "Your Digimon won the battle!" 
-                  : "Your Digimon was defeated!"}
+                  ? `${playerUsername}'s ${playerDigimon?.name} won the battle!` 
+                  : `${playerUsername}'s ${playerDigimon?.name} was defeated!`}
               </p>
               <p className="text-sm text-gray-600 mt-2">
                 {playerWon 
@@ -193,12 +208,12 @@ const BattleAnimation: React.FC<BattleAnimationProps> = ({ battle, onComplete })
             {/* Battle info */}
             <div className="absolute top-4 left-4 right-4 flex justify-between">
               <div className="bg-white bg-opacity-80 rounded-lg p-2">
-                <p className="font-bold">{playerDigimon?.name}</p>
+                <p className="font-bold">{playerUsername}'s {playerDigimon?.name}</p>
                 <p className="text-sm">Lv. {playerDigimon?.current_level}</p>
               </div>
               
               <div className="bg-white bg-opacity-80 rounded-lg p-2">
-                <p className="font-bold">{opponentDigimon?.name}</p>
+                <p className="font-bold">{opponentUsername}'s {opponentDigimon?.name}</p>
                 <p className="text-sm">Lv. {opponentDigimon?.current_level}</p>
               </div>
             </div>
@@ -207,12 +222,12 @@ const BattleAnimation: React.FC<BattleAnimationProps> = ({ battle, onComplete })
             <div className="absolute bottom-4 left-4 right-4">
               <div className="bg-white bg-opacity-90 rounded-lg p-3 text-center">
                 {step === 0 && <p>Battle start!</p>}
-                {step === 1 && <p>{playerDigimon?.name} attacks!</p>}
-                {step === 2 && <p>{opponentDigimon?.name} attacks!</p>}
-                {step === 3 && <p>{playerDigimon?.name} attacks again!</p>}
-                {step === 4 && <p>{opponentDigimon?.name} attacks again!</p>}
-                {step === 5 && <p>{playerWon ? playerDigimon?.name : opponentDigimon?.name} prepares a final attack!</p>}
-                {step === 6 && <p>{playerWon ? opponentDigimon?.name : playerDigimon?.name} is defeated!</p>}
+                {step === 1 && <p>{playerDigimonFullName} attacks!</p>}
+                {step === 2 && <p>{opponentDigimonFullName} attacks!</p>}
+                {step === 3 && <p>{playerDigimonFullName} attacks again!</p>}
+                {step === 4 && <p>{opponentDigimonFullName} attacks again!</p>}
+                {step === 5 && <p>{playerWon ? playerDigimonFullName : opponentDigimonFullName} prepares a final attack!</p>}
+                {step === 6 && <p>{playerWon ? opponentDigimonFullName : playerDigimonFullName} is defeated!</p>}
               </div>
             </div>
           </div>
