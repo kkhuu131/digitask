@@ -217,6 +217,7 @@ const DigimonDex = () => {
                           <img 
                             src={path.from_digimon.sprite_url} 
                             alt={discovered ? path.from_digimon.name : "Unknown Digimon"} 
+                            style={{ imageRendering: "pixelated" }} 
                             className={`w-full h-full object-contain ${!discovered ? "opacity-0" : ""}`}
                             onError={(e) => {
                               (e.target as HTMLImageElement).src = "/assets/pet/egg.svg";

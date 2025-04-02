@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useDigimonStore, UserDigimon, Digimon as DigimonType, EvolutionOption } from "../store/petStore";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface DigimonProps {
   userDigimon: UserDigimon;
@@ -13,13 +13,24 @@ const Digimon = ({ userDigimon, digimonData, evolutionOptions }: DigimonProps) =
   const [evolutionError, setEvolutionError] = useState<string | null>(null);
   const { evolveDigimon, discoveredDigimon } = useDigimonStore();
   
-  // Calculate experience percentage
-  const expNeeded = userDigimon.current_level * 20;
-  const expPercentage = (userDigimon.experience_points / expNeeded) * 100;
+  // Add a local state to track XP and level
+  const [currentXP, setCurrentXP] = useState(userDigimon.experience_points);
+  const [currentLevel, setCurrentLevel] = useState(userDigimon.current_level);
+  const [xpForNextLevel, setXpForNextLevel] = useState(userDigimon.current_level * 20);
   
-  // Calculate health and happiness percentages
-  const healthPercentage = (userDigimon.health / 100) * 100;
-  const happinessPercentage = (userDigimon.happiness / 100) * 100;
+  // Update local state when userDigimon changes
+  useEffect(() => {
+    setCurrentXP(userDigimon.experience_points);
+    setCurrentLevel(userDigimon.current_level);
+    setXpForNextLevel(userDigimon.current_level * 20);
+  }, [userDigimon]);
+  
+  // Calculate percentages for health and happiness bars
+  const healthPercentage = Math.max(0, Math.min(100, (userDigimon.health / 100) * 100));
+  const happinessPercentage = Math.max(0, Math.min(100, (userDigimon.happiness / 100) * 100));
+  
+  // Calculate XP percentage
+  const xpPercentage = Math.max(0, Math.min(100, (currentXP / xpForNextLevel) * 100));
   
   const handleEvolve = async (toDigimonId: number) => {
     try {
@@ -113,13 +124,13 @@ const Digimon = ({ userDigimon, digimonData, evolutionOptions }: DigimonProps) =
         
         <div>
           <div className="flex justify-between text-sm mb-1">
-            <span>Level {userDigimon.current_level}</span>
-            <span>{userDigimon.experience_points}/{expNeeded} XP</span>
+            <span>Level {currentLevel}</span>
+            <span>{currentXP}/{xpForNextLevel} XP</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2.5">
             <div 
-              className="bg-secondary-500 h-2.5 rounded-full" 
-              style={{ width: `${expPercentage}%` }}
+              className="h-2.5 rounded-full bg-purple-500" 
+              style={{ width: `${xpPercentage}%` }}
             ></div>
           </div>
         </div>

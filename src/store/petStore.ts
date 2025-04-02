@@ -1,5 +1,7 @@
 import { create } from "zustand";
 import { supabase } from "../lib/supabase";
+import { useAuthStore } from "./authStore";
+import { RealtimeChannel } from "@supabase/supabase-js";
 
 export interface UserDigimon {
   id: string;
@@ -54,6 +56,7 @@ export interface DigimonState {
   getStarterDigimon: () => Promise<Digimon[]>;
   fetchDiscoveredDigimon: () => Promise<void>;
   addDiscoveredDigimon: (digimonId: number) => Promise<void>;
+  subscribeToDigimonUpdates: () => RealtimeChannel | undefined;
 }
 
 export const useDigimonStore = create<DigimonState>((set, get) => ({
@@ -233,25 +236,40 @@ export const useDigimonStore = create<DigimonState>((set, get) => ({
     }
   },
 
-  updateDigimonStats: async (stats) => {
+  updateDigimonStats: async (updates) => {
     try {
-      const { userDigimon } = get();
-      if (!userDigimon) throw new Error("No Digimon found");
-
       set({ loading: true, error: null });
 
-      const { error } = await supabase
+      const { data: user } = await supabase.auth.getUser();
+      if (!user.user) throw new Error("User not authenticated");
+
+      const { data, error } = await supabase
         .from("user_digimon")
-        .update({
-          ...stats,
-          last_updated_at: new Date().toISOString(),
-        })
-        .eq("id", userDigimon.id);
+        .update(updates)
+        .eq("user_id", user.user.id)
+        .select()
+        .single();
 
       if (error) throw error;
-      set({ loading: false });
+
+      // Fix the type issue by ensuring userDigimon is not null
+      set((state) => {
+        if (!state.userDigimon) return { ...state, loading: false };
+
+        return {
+          ...state,
+          userDigimon: {
+            ...state.userDigimon,
+            ...updates,
+          },
+          loading: false,
+        };
+      });
+
+      return data;
     } catch (error) {
       set({ error: (error as Error).message, loading: false });
+      return null;
     }
   },
 
@@ -392,5 +410,39 @@ export const useDigimonStore = create<DigimonState>((set, get) => ({
       set({ error: (error as Error).message, loading: false });
       return [];
     }
+  },
+
+  subscribeToDigimonUpdates: () => {
+    const { user } = useAuthStore.getState();
+    if (!user) return undefined;
+
+    const subscription = supabase
+      .channel("digimon-updates")
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "user_digimon",
+          filter: `user_id=eq.${user.id}`,
+        },
+        (payload) => {
+          // Fix the type issue by ensuring userDigimon is not null
+          set((state) => {
+            if (!state.userDigimon) return state;
+
+            return {
+              ...state,
+              userDigimon: {
+                ...state.userDigimon,
+                ...payload.new,
+              },
+            };
+          });
+        }
+      )
+      .subscribe();
+
+    return subscription;
   },
 }));

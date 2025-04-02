@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './store/authStore';
 import { useDigimonStore } from './store/petStore';
@@ -18,9 +18,9 @@ import AuthCallback from "./pages/AuthCallback";
 
 // Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user, loading } = useAuthStore();
+  const { user, loading: authLoading } = useAuthStore();
   
-  if (loading) {
+  if (authLoading) {
     return <div className="flex items-center justify-center h-screen">Loading...</div>;
   }
   
@@ -32,22 +32,52 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 function App() {
-  const { checkSession } = useAuthStore();
-  const { userDigimon, fetchUserDigimon, fetchDiscoveredDigimon } = useDigimonStore();
+  const { loading: authLoading, checkSession } = useAuthStore();
+  const { userDigimon, fetchUserDigimon } = useDigimonStore();
   const { checkOverdueTasks } = useTaskStore();
+  const [appLoading, setAppLoading] = useState(true);
   
   useEffect(() => {
-    checkSession();
-  }, [checkSession]);
+    const initApp = async () => {
+      await checkSession();
+      
+      if (useAuthStore.getState().user) {
+        await fetchUserDigimon();
+        await checkOverdueTasks();
+      }
+      
+      setAppLoading(false);
+    };
+    
+    initApp();
+  }, [checkSession, fetchUserDigimon, checkOverdueTasks]);
   
+  // Add this useEffect to set up the subscription
   useEffect(() => {
-    const { user } = useAuthStore.getState();
-    if (user) {
-      fetchUserDigimon();
-      fetchDiscoveredDigimon();
-      checkOverdueTasks();
+    // Only set up subscription if user is logged in
+    if (useAuthStore.getState().user) {
+      const subscription = useDigimonStore.getState().subscribeToDigimonUpdates();
+      
+      // Clean up subscription when component unmounts
+      return () => {
+        if (subscription) {
+          subscription.unsubscribe();
+        }
+      };
     }
-  }, [fetchUserDigimon, fetchDiscoveredDigimon, checkOverdueTasks, useAuthStore.getState().user]);
+  }, []);
+  
+  // Show a loading indicator while the app is initializing
+  if (appLoading || authLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading Digitask...</p>
+        </div>
+      </div>
+    );
+  }
   
   return (
     <Router>
