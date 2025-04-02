@@ -79,7 +79,7 @@ function App() {
   // Auth state change listener
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      async (event) => {
         console.log("Auth state change:", event);
         
         if (event === 'SIGNED_IN') {
