@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useDigimonStore } from '../store/petStore';
+import { useBattleStore } from "../store/battleStore";
 
 const Debug = () => {
   const [status, setStatus] = useState<string>('Checking connection...');
   const { userDigimon, fetchUserDigimon } = useDigimonStore();
+  const { resetDailyBattleLimit } = useBattleStore();
   
   useEffect(() => {
     const checkConnection = async () => {
@@ -275,6 +277,16 @@ const Debug = () => {
       >
         Force Delete Digimon
       </button>
+      
+      <div className="card mt-6">
+        <h2 className="text-xl font-bold mb-4">Battle Debug</h2>
+        <button 
+          className="btn-primary bg-blue-600 hover:bg-blue-700 mt-2"
+          onClick={() => resetDailyBattleLimit()}
+        >
+          Reset Daily Battle Limit
+        </button>
+      </div>
     </div>
   );
 };

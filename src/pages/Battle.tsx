@@ -12,7 +12,9 @@ const Battle = () => {
     battleHistory, 
     loading, 
     error, 
-    clearCurrentBattle 
+    clearCurrentBattle,
+    dailyBattlesRemaining,
+    checkDailyBattleLimit
   } = useBattleStore();
   const [showBattleAnimation, setShowBattleAnimation] = useState(false);
   const [noRealOpponents, setNoRealOpponents] = useState(false);
@@ -30,10 +32,11 @@ const Battle = () => {
   useEffect(() => {
     const loadBattleData = async () => {
       await useBattleStore.getState().fetchBattleHistory();
+      checkDailyBattleLimit();
     };
     
     loadBattleData();
-  }, []);
+  }, [checkDailyBattleLimit]);
 
   useEffect(() => {
     // Check if the current battle is against a dummy opponent
@@ -96,12 +99,22 @@ const Battle = () => {
               </div>
             </div>
             
+            <div className="mb-4 bg-blue-50 border-l-4 border-blue-400 p-3">
+              <p className="text-sm">
+                <span className="font-medium">Daily Battles:</span> {dailyBattlesRemaining} remaining
+              </p>
+              <p className="text-xs text-gray-600 mt-1">
+                Your battle limit resets at midnight.
+              </p>
+            </div>
+            
             <button 
               onClick={handleQueueForBattle}
-              disabled={loading}
-              className="btn-primary w-full"
+              disabled={loading || dailyBattlesRemaining <= 0}
+              className={`btn-primary w-full ${dailyBattlesRemaining <= 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
-              {loading ? "Finding Opponent..." : "Queue"}
+              {loading ? "Finding Opponent..." : 
+               dailyBattlesRemaining <= 0 ? "Daily Limit Reached" : "Queue"}
             </button>
             
             {error && (

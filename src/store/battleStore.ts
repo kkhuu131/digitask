@@ -75,9 +75,12 @@ interface BattleState {
   currentBattle: Battle | null;
   loading: boolean;
   error: string | null;
+  dailyBattlesRemaining: number;
   fetchBattleHistory: () => Promise<void>;
   queueForBattle: (userDigimonId: string) => Promise<void>;
   clearCurrentBattle: () => void;
+  checkDailyBattleLimit: () => number;
+  resetDailyBattleLimit: () => void;
 }
 
 export const useBattleStore = create<BattleState>((set, get) => ({
@@ -85,6 +88,34 @@ export const useBattleStore = create<BattleState>((set, get) => ({
   currentBattle: null,
   loading: false,
   error: null,
+  dailyBattlesRemaining: 5,
+
+  checkDailyBattleLimit: () => {
+    const lastBattleDate = localStorage.getItem("lastBattleDate");
+    const today = new Date().toDateString();
+
+    if (lastBattleDate !== today) {
+      localStorage.setItem("dailyBattlesUsed", "0");
+      localStorage.setItem("lastBattleDate", today);
+    }
+
+    const dailyBattlesUsed = parseInt(
+      localStorage.getItem("dailyBattlesUsed") || "0",
+      10
+    );
+    const DAILY_BATTLE_LIMIT = 5;
+    const remaining = Math.max(0, DAILY_BATTLE_LIMIT - dailyBattlesUsed);
+
+    set({ dailyBattlesRemaining: remaining });
+
+    return remaining;
+  },
+
+  resetDailyBattleLimit: () => {
+    localStorage.setItem("dailyBattlesUsed", "0");
+    localStorage.setItem("lastBattleDate", new Date().toDateString());
+    set({ dailyBattlesRemaining: 5 });
+  },
 
   fetchBattleHistory: async () => {
     try {
@@ -187,6 +218,8 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       } else {
         set({ battleHistory: data || [], loading: false });
       }
+
+      get().checkDailyBattleLimit();
     } catch (error) {
       console.error("Error fetching battle history:", error);
       set({ error: (error as Error).message, loading: false });
@@ -195,6 +228,16 @@ export const useBattleStore = create<BattleState>((set, get) => ({
 
   queueForBattle: async (userDigimonId: string) => {
     try {
+      const remainingBattles = get().checkDailyBattleLimit();
+      if (remainingBattles <= 0) {
+        set({
+          error:
+            "You've reached your daily battle limit of 5 battles. Try again tomorrow!",
+          loading: false,
+        });
+        return;
+      }
+
       set({ loading: true, error: null });
       console.log("Queueing for battle with Digimon ID:", userDigimonId);
 
@@ -242,7 +285,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       let opponentProfile = null;
 
       // 2% chance to create a dummy opponent
-      if (!opponents || opponents.length === 0 || Math.random() < 0.99) {
+      if (!opponents || opponents.length === 0 || Math.random() < 0.05) {
         console.log("No opponents found, creating a dummy opponent");
 
         const randomId = Math.floor(Math.random() * 341) + 1;
@@ -497,6 +540,25 @@ export const useBattleStore = create<BattleState>((set, get) => ({
 
       // Refresh battle history
       await get().fetchBattleHistory();
+
+      // After a successful battle, increment the daily battle counter
+      const dailyBattlesUsed = parseInt(
+        localStorage.getItem("dailyBattlesUsed") || "0",
+        10
+      );
+      localStorage.setItem(
+        "dailyBattlesUsed",
+        (dailyBattlesUsed + 1).toString()
+      );
+
+      // Update the remaining battles count
+      const DAILY_BATTLE_LIMIT = 5;
+      set({
+        dailyBattlesRemaining: Math.max(
+          0,
+          DAILY_BATTLE_LIMIT - (dailyBattlesUsed + 1)
+        ),
+      });
     } catch (error) {
       console.error("Error queueing for battle:", error);
       set({ error: (error as Error).message, loading: false });
