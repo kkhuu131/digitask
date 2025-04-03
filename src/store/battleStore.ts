@@ -241,13 +241,17 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       let opponent;
       let opponentProfile = null;
 
-      if (!opponents || opponents.length === 0) {
+      // 2% chance to create a dummy opponent
+      if (!opponents || opponents.length === 0 || Math.random() < 0.99) {
         console.log("No opponents found, creating a dummy opponent");
+
+        const randomId = Math.floor(Math.random() * 341) + 1;
 
         // Get a random Digimon from the database
         const { data: randomDigimon } = await supabase
           .from("digimon")
           .select("*")
+          .eq("digimon_id", randomId)
           .limit(1)
           .single();
 

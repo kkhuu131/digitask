@@ -30,7 +30,7 @@ const BattleAnimation: React.FC<BattleAnimationProps> = ({ battle, onComplete })
   
   const opponentUsername = opponentDigimon?.profile?.display_name || 
                            opponentDigimon?.profile?.username || 
-                           'Wild';
+                           'Gragas';
   
   // Get the display names for both Digimon
   const getDisplayName = (digimon: any) => {
@@ -55,7 +55,9 @@ const BattleAnimation: React.FC<BattleAnimationProps> = ({ battle, onComplete })
   
   // Format the Digimon names with usernames
   const playerDigimonFullName = `${playerUsername}'s ${playerDigimonDisplayName}`;
-  const opponentDigimonFullName = `${opponentUsername}'s ${opponentDigimonDisplayName}`;
+  const opponentDigimonFullName = opponentUsername === "Wild"
+  ? `Wild ${opponentDigimonDisplayName}`
+  : `${opponentUsername}'s ${opponentDigimonDisplayName}`;
   
   // Use the detailed information if available
   const playerDetails = battle.user_digimon_details;
@@ -223,7 +225,10 @@ const BattleAnimation: React.FC<BattleAnimationProps> = ({ battle, onComplete })
               </div>
               
               <div className="bg-white bg-opacity-80 rounded-lg p-2">
-                <p className="font-bold">{opponentUsername}'s {opponentDigimonDisplayName}</p>
+                <p className="font-bold">{opponentUsername === "Wild"
+                    ? `Wild ${opponentDigimonDisplayName}`
+                    : `${opponentUsername}'s ${opponentDigimonDisplayName}`}
+                </p>
                 <p className="text-sm">Lv. {opponentDigimon?.current_level}</p>
               </div>
             </div>

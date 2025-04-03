@@ -1,9 +1,12 @@
 import { Battle } from "../store/battleStore";
+import { useDigimonStore } from "../store/petStore";
 interface BattleHistoryProps {
   battles: Battle[];
 }
 
 const BattleHistory: React.FC<BattleHistoryProps> = ({ battles }) => {
+  const { getDigimonDisplayName } = useDigimonStore();
+  const userDigimonDisplayName = getDigimonDisplayName();
   
   if (battles.length === 0) {
     return (
@@ -56,7 +59,7 @@ const BattleHistory: React.FC<BattleHistoryProps> = ({ battles }) => {
               <div className="mx-2 flex-grow">
                 <div className="flex justify-between">
                   <span className="text-sm font-medium">
-                    {playerDetails?.name || playerDigimon?.name}
+                    {userDigimonDisplayName}
                   </span>
                   <span className="text-xs text-gray-500">
                     Lv. {playerDetails?.level || playerDigimon?.current_level}
