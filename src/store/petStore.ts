@@ -390,7 +390,6 @@ export const useDigimonStore = create<DigimonState>((set, get) => ({
         .from("user_digimon")
         .update({
           digimon_id: toDigimonId,
-          // Don't update the name field - keep it as is (null or custom)
         })
         .eq("id", userDigimon.id);
 
@@ -625,7 +624,7 @@ export const useDigimonStore = create<DigimonState>((set, get) => ({
         }
 
         // Check if Digimon can digivolve at this level
-        await get().checkEvolution();
+        // await get().checkEvolution();
 
         return true;
       } else {

@@ -242,7 +242,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       let opponentProfile = null;
 
       // 2% chance to create a dummy opponent
-      if (!opponents || opponents.length === 0 || Math.random() < 0.99) {
+      if (!opponents || opponents.length === 0 || Math.random() < 0.05) {
         console.log("No opponents found, creating a dummy opponent");
 
         const randomId = Math.floor(Math.random() * 341) + 1;
