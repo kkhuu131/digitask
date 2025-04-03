@@ -8,7 +8,7 @@ interface LayoutProps {
 }
 
 const Layout = ({ children }: LayoutProps) => {
-  const { user, signOut } = useAuthStore();
+  const { user, userProfile, signOut } = useAuthStore();
   const { userDigimon } = useDigimonStore();
   const navigate = useNavigate();
   const location = useLocation();
@@ -79,7 +79,7 @@ const Layout = ({ children }: LayoutProps) => {
             <div className="flex items-center space-x-4">
               {user && (
                 <>
-                  <span className="text-sm text-gray-700 hidden md:inline">{user.email}</span>
+                  <span className="text-sm text-gray-700 hidden md:inline">{userProfile?.username}</span>
                   <Link
                     to="/profile"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"

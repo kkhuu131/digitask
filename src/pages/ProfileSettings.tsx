@@ -68,6 +68,8 @@ const ProfileSettings = () => {
       </div>
     );
   }
+
+  const { user } = useAuthStore.getState();
   
   return (
     <div className="max-w-2xl mx-auto">
@@ -90,6 +92,19 @@ const ProfileSettings = () => {
             <p className="text-xs text-gray-500 mt-1">
               This is how your name will appear to other users.
             </p>
+          </div>
+
+          <div className="mb-6">
+            <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
+              Email
+            </label>
+            <input
+              type="text"
+              id="email"
+              value={user?.email}
+              className="w-full px-3 py-2 border border-gray-300 bg-gray-100 rounded-md text-gray-500"
+              disabled
+            />
           </div>
           
           {error && (
