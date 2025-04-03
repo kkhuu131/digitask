@@ -79,8 +79,8 @@ interface BattleState {
   fetchBattleHistory: () => Promise<void>;
   queueForBattle: (userDigimonId: string) => Promise<void>;
   clearCurrentBattle: () => void;
-  checkDailyBattleLimit: () => number;
-  resetDailyBattleLimit: () => void;
+  checkDailyBattleLimit: () => Promise<number>;
+  resetDailyBattleLimit: () => Promise<void>;
 }
 
 export const useBattleStore = create<BattleState>((set, get) => ({
@@ -90,31 +90,76 @@ export const useBattleStore = create<BattleState>((set, get) => ({
   error: null,
   dailyBattlesRemaining: 5,
 
-  checkDailyBattleLimit: () => {
-    const lastBattleDate = localStorage.getItem("lastBattleDate");
-    const today = new Date().toDateString();
+  checkDailyBattleLimit: async () => {
+    try {
+      // Get the current user
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) {
+        console.log("No user found, can't check battle limit");
+        set({ dailyBattlesRemaining: 0 });
+        return 0;
+      }
 
-    if (lastBattleDate !== today) {
-      localStorage.setItem("dailyBattlesUsed", "0");
-      localStorage.setItem("lastBattleDate", today);
+      const userId = userData.user.id;
+      const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD format
+
+      // Check if we have a battle_limits record for today
+      const { data: limitData, error: limitError } = await supabase
+        .from("battle_limits")
+        .select("*")
+        .eq("user_id", userId)
+        .eq("date", today)
+        .single();
+
+      if (limitError && limitError.code !== "PGRST116") {
+        // PGRST116 is "no rows returned"
+        console.error("Error checking battle limit:", limitError);
+        // Default to 0 remaining in case of error
+        set({ dailyBattlesRemaining: 0 });
+        return 0;
+      }
+
+      const DAILY_BATTLE_LIMIT = 5;
+
+      if (!limitData) {
+        // No record for today, user hasn't battled yet
+        set({ dailyBattlesRemaining: DAILY_BATTLE_LIMIT });
+        return DAILY_BATTLE_LIMIT;
+      }
+
+      // Calculate remaining battles
+      const remaining = Math.max(
+        0,
+        DAILY_BATTLE_LIMIT - limitData.battles_used
+      );
+      set({ dailyBattlesRemaining: remaining });
+      return remaining;
+    } catch (error) {
+      console.error("Error checking daily battle limit:", error);
+      set({ dailyBattlesRemaining: 0 });
+      return 0;
     }
-
-    const dailyBattlesUsed = parseInt(
-      localStorage.getItem("dailyBattlesUsed") || "0",
-      10
-    );
-    const DAILY_BATTLE_LIMIT = 5;
-    const remaining = Math.max(0, DAILY_BATTLE_LIMIT - dailyBattlesUsed);
-
-    set({ dailyBattlesRemaining: remaining });
-
-    return remaining;
   },
 
-  resetDailyBattleLimit: () => {
-    localStorage.setItem("dailyBattlesUsed", "0");
-    localStorage.setItem("lastBattleDate", new Date().toDateString());
-    set({ dailyBattlesRemaining: 5 });
+  resetDailyBattleLimit: async () => {
+    try {
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) return;
+
+      const userId = userData.user.id;
+      const today = new Date().toISOString().split("T")[0];
+
+      // Delete today's record if it exists
+      await supabase
+        .from("battle_limits")
+        .delete()
+        .eq("user_id", userId)
+        .eq("date", today);
+
+      set({ dailyBattlesRemaining: 5 });
+    } catch (error) {
+      console.error("Error resetting battle limit:", error);
+    }
   },
 
   fetchBattleHistory: async () => {
@@ -228,8 +273,35 @@ export const useBattleStore = create<BattleState>((set, get) => ({
 
   queueForBattle: async (userDigimonId: string) => {
     try {
-      const remainingBattles = get().checkDailyBattleLimit();
-      if (remainingBattles <= 0) {
+      // Get the current user
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) {
+        set({ error: "User not authenticated", loading: false });
+        return;
+      }
+
+      const userId = userData.user.id;
+      const today = new Date().toISOString().split("T")[0];
+      const DAILY_BATTLE_LIMIT = 5;
+
+      // Start a transaction to handle the battle limit check and update atomically
+      const { data: limitCheck, error: limitError } = await supabase.rpc(
+        "check_and_increment_battle_limit",
+        {
+          p_user_id: userId,
+          p_date: today,
+          p_limit: DAILY_BATTLE_LIMIT,
+        }
+      );
+
+      if (limitError) {
+        console.error("Error checking battle limit:", limitError);
+        set({ error: "Error checking battle limit", loading: false });
+        return;
+      }
+
+      // If the function returns false, the user has reached their limit
+      if (!limitCheck) {
         set({
           error:
             "You've reached your daily battle limit of 5 battles. Try again tomorrow!",
@@ -238,8 +310,9 @@ export const useBattleStore = create<BattleState>((set, get) => ({
         return;
       }
 
+      // If we get here, the battle limit has been checked and incremented successfully
+      // Continue with the battle logic
       set({ loading: true, error: null });
-      console.log("Queueing for battle with Digimon ID:", userDigimonId);
 
       // Get the user's Digimon data
       const { data: userDigimonData, error: userDigimonError } = await supabase
@@ -541,24 +614,8 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       // Refresh battle history
       await get().fetchBattleHistory();
 
-      // After a successful battle, increment the daily battle counter
-      const dailyBattlesUsed = parseInt(
-        localStorage.getItem("dailyBattlesUsed") || "0",
-        10
-      );
-      localStorage.setItem(
-        "dailyBattlesUsed",
-        (dailyBattlesUsed + 1).toString()
-      );
-
-      // Update the remaining battles count
-      const DAILY_BATTLE_LIMIT = 5;
-      set({
-        dailyBattlesRemaining: Math.max(
-          0,
-          DAILY_BATTLE_LIMIT - (dailyBattlesUsed + 1)
-        ),
-      });
+      // Update the remaining battles count - we already know it's been decremented by 1
+      await get().checkDailyBattleLimit(); // Refresh the count from the database
     } catch (error) {
       console.error("Error queueing for battle:", error);
       set({ error: (error as Error).message, loading: false });
