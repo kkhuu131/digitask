@@ -35,8 +35,7 @@ const DigimonSelection = ({ onSelect }: DigimonSelectionProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedDigimon) {
-      const name = digimonName.trim() || 
-        (selectedDigimon ? starterDigimon.find(d => d.id === selectedDigimon)?.name || "" : "");
+      const name = digimonName.trim() || "";
       console.log("Creating Digimon:", { id: selectedDigimon, name });
       onSelect(selectedDigimon, name);
     }

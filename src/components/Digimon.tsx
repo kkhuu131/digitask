@@ -8,10 +8,10 @@ interface DigimonProps {
   evolutionOptions: EvolutionOption[];
 }
 
-const Digimon = ({ userDigimon, digimonData, evolutionOptions }: DigimonProps) => {
+const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOptions }) => {
   const [showEvolutionModal, setShowEvolutionModal] = useState(false);
   const [evolutionError, setEvolutionError] = useState<string | null>(null);
-  const { evolveDigimon, discoveredDigimon } = useDigimonStore();
+  const { evolveDigimon, discoveredDigimon, getDigimonDisplayName } = useDigimonStore();
   
   // Add a local state to track XP and level
   const [currentXP, setCurrentXP] = useState(userDigimon.experience_points);
@@ -52,9 +52,15 @@ const Digimon = ({ userDigimon, digimonData, evolutionOptions }: DigimonProps) =
     return discoveredDigimon.includes(digimonId);
   };
   
+  if (!userDigimon || !digimonData) {
+    return <div>Loading Digimon...</div>;
+  }
+  
+  const displayName = getDigimonDisplayName();
+  
   return (
     <div className="card flex flex-col items-center">
-      <h2 className="text-2xl font-bold text-center mb-1">{userDigimon.name}</h2>
+      <h2 className="text-2xl font-bold text-center mb-1">{displayName}</h2>
       <p className="text-sm text-gray-500 mb-4">{digimonData.name} - {digimonData.stage}</p>
       
       <div className="relative mb-6">

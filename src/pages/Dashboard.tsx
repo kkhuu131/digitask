@@ -5,7 +5,7 @@ import Digimon from "../components/Digimon";
 import TaskForm from "../components/TaskForm";
 import TaskList from "../components/TaskList";
 
-const Dashboard = () => {
+const Dashboard: React.FC = () => {
   const { userDigimon, digimonData, evolutionOptions, fetchUserDigimon, error: digimonError } = useDigimonStore();
   const { fetchTasks, error: taskError, tasks } = useTaskStore();
   

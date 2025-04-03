@@ -5,7 +5,7 @@ import BattleHistory from "../components/BattleHistory";
 import BattleAnimation from "../components/BattleAnimation";
 
 const Battle = () => {
-  const { userDigimon, digimonData } = useDigimonStore();
+  const { userDigimon, digimonData, getDigimonDisplayName } = useDigimonStore();
   const { 
     queueForBattle, 
     currentBattle, 
@@ -16,6 +16,8 @@ const Battle = () => {
   } = useBattleStore();
   const [showBattleAnimation, setShowBattleAnimation] = useState(false);
   const [noRealOpponents, setNoRealOpponents] = useState(false);
+
+  const playerDigimonDisplayName = getDigimonDisplayName();
 
   useEffect(() => {
     // If we have a current battle result but aren't showing the animation,
@@ -80,7 +82,7 @@ const Battle = () => {
                   style={{ imageRendering: "pixelated" }} 
                 />
               </div>
-              <h3 className="text-lg font-semibold">{userDigimon.name}</h3>
+              <h3 className="text-lg font-semibold">{playerDigimonDisplayName}</h3>
               <p className="text-sm text-gray-500">{digimonData.name} - Level {userDigimon.current_level}</p>
             </div>
             

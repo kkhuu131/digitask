@@ -159,16 +159,23 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       // Update the task status
       const { error } = await supabase
         .from("tasks")
-        .update({ completed: true, completed_at: new Date().toISOString() })
+        .update({
+          is_completed: true,
+          completed_at: new Date().toISOString(),
+        })
         .eq("id", taskId);
 
       if (error) throw error;
 
       // Calculate points based on task difficulty
       const points = calculateTaskPoints(task.difficulty);
+      console.log(`Task completed: ${task.description}, Points: ${points}`);
 
       // Feed the Digimon with the points
       await useDigimonStore.getState().feedDigimon(points);
+
+      // Explicitly check for level up after feeding
+      await useDigimonStore.getState().checkLevelUp();
 
       // If the task was overdue, explicitly check Digimon health
       const dueDate = new Date(task.due_date);

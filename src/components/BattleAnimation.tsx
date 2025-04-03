@@ -11,7 +11,7 @@ interface BattleAnimationProps {
 const BattleAnimation: React.FC<BattleAnimationProps> = ({ battle, onComplete }) => {
   const [step, setStep] = useState(0);
   const [showResults, setShowResults] = useState(false);
-  const { userDigimon } = useDigimonStore();
+  const { userDigimon, getDigimonDisplayName } = useDigimonStore();
   
   const isUserWinner = battle.winner_digimon_id === battle.user_digimon?.id;
   const isUserDigimon = userDigimon?.id === battle.user_digimon?.id;
@@ -32,9 +32,30 @@ const BattleAnimation: React.FC<BattleAnimationProps> = ({ battle, onComplete })
                            opponentDigimon?.profile?.username || 
                            'Wild';
   
+  // Get the display names for both Digimon
+  const getDisplayName = (digimon: any) => {
+    if (!digimon) return "Unknown";
+    
+    // If it's the user's current Digimon, use the helper function
+    if (digimon.id === userDigimon?.id) {
+      return getDigimonDisplayName();
+    }
+    
+    // For other Digimon, implement the same logic
+    if (!digimon.name || digimon.name === "") {
+      return digimon.digimon?.name || digimon.digimon_details?.name || "Unknown";
+    }
+    
+    return digimon.name;
+  };
+  
+  // Get display names for both Digimon
+  const playerDigimonDisplayName = getDisplayName(playerDigimon);
+  const opponentDigimonDisplayName = getDisplayName(opponentDigimon);
+  
   // Format the Digimon names with usernames
-  const playerDigimonFullName = `${playerUsername}'s ${playerDigimon?.name}`;
-  const opponentDigimonFullName = `${opponentUsername}'s ${opponentDigimon?.name}`;
+  const playerDigimonFullName = `${playerUsername}'s ${playerDigimonDisplayName}`;
+  const opponentDigimonFullName = `${opponentUsername}'s ${opponentDigimonDisplayName}`;
   
   // Use the detailed information if available
   const playerDetails = battle.user_digimon_details;
@@ -83,13 +104,13 @@ const BattleAnimation: React.FC<BattleAnimationProps> = ({ battle, onComplete })
                 <div className="w-32 h-32 mx-auto flex items-center justify-center">
                   <img 
                     src={playerDetails?.sprite_url || playerDigimon?.digimon?.sprite_url} 
-                    alt={playerDetails?.name || playerDigimon?.name} 
+                    alt={playerDigimonDisplayName} 
                     className="my-auto mx-auto"
                     style={{ imageRendering: "pixelated", transform: "scale(-3, 3)" }} 
                   />
                 </div>
                 <p className="font-semibold">
-                  {playerDetails?.name || playerDigimon?.name}
+                  {playerDigimonDisplayName}
                 </p>
                 <p className="text-sm text-gray-600">
                   Lv. {playerDetails?.level || playerDigimon?.current_level}
@@ -102,7 +123,7 @@ const BattleAnimation: React.FC<BattleAnimationProps> = ({ battle, onComplete })
                 <div className="w-32 h-32 mx-auto flex items-center justify-center">
                   <img 
                     src={opponentDetails?.sprite_url || opponentDigimon?.digimon?.sprite_url} 
-                    alt={opponentDetails?.name || opponentDigimon?.name} 
+                    alt={opponentDigimonDisplayName} 
                     className="scale-[3] my-auto mx-auto"
                     style={{ 
                       imageRendering: "pixelated",
@@ -111,7 +132,7 @@ const BattleAnimation: React.FC<BattleAnimationProps> = ({ battle, onComplete })
                   />
                 </div>
                 <p className="font-semibold mt-2">
-                  {opponentDetails?.name || opponentDigimon?.name}
+                  {opponentDigimonDisplayName}
                 </p>
                 <p className="text-sm text-gray-600">
                   Lv. {opponentDetails?.level || opponentDigimon?.current_level}
@@ -122,8 +143,8 @@ const BattleAnimation: React.FC<BattleAnimationProps> = ({ battle, onComplete })
             <div className="mb-8">
               <p className="text-lg">
                 {playerWon 
-                  ? `${playerUsername}'s ${playerDigimon?.name} won the battle!` 
-                  : `${playerUsername}'s ${playerDigimon?.name} was defeated!`}
+                  ? `${playerUsername}'s ${playerDigimonDisplayName} won the battle!` 
+                  : `${playerUsername}'s ${playerDigimonDisplayName} was defeated!`}
               </p>
               <p className="text-sm text-gray-600 mt-2">
                 {playerWon 
@@ -161,7 +182,7 @@ const BattleAnimation: React.FC<BattleAnimationProps> = ({ battle, onComplete })
             >
               <img 
                 src={playerDetails?.sprite_url || playerDigimon?.digimon?.sprite_url} 
-                alt={playerDetails?.name || playerDigimon?.name} 
+                alt={playerDigimonDisplayName} 
                 className="my-auto mx-auto"
                 style={{ 
                   imageRendering: "pixelated", transform: "scale(-3, 3)"
@@ -185,7 +206,7 @@ const BattleAnimation: React.FC<BattleAnimationProps> = ({ battle, onComplete })
             >
               <img 
                 src={opponentDetails?.sprite_url || opponentDigimon?.digimon?.sprite_url} 
-                alt={opponentDetails?.name || opponentDigimon?.name} 
+                alt={opponentDigimonDisplayName} 
                 className="my-auto mx-auto"
                 style={{ 
                   imageRendering: "pixelated",
@@ -194,34 +215,15 @@ const BattleAnimation: React.FC<BattleAnimationProps> = ({ battle, onComplete })
               />
             </motion.div>
             
-            {/* Attack effects
-            <AnimatePresence>
-              {(isPlayerAttacking || isOpponentAttacking) && (
-                <motion.div 
-                  className="absolute"
-                  initial={{ opacity: 0, scale: 0 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                  style={{
-                    bottom: "25%",
-                    left: isOpponentAttacking ? "25%" : "65%",
-                  }}
-                >
-                  <div className="text-4xl">💥</div>
-                </motion.div>
-              )}
-            </AnimatePresence> */}
-            
             {/* Battle info */}
             <div className="absolute top-4 left-4 right-4 flex justify-between">
               <div className="bg-white bg-opacity-80 rounded-lg p-2">
-                <p className="font-bold">{playerUsername}'s {playerDigimon?.name}</p>
+                <p className="font-bold">{playerUsername}'s {playerDigimonDisplayName}</p>
                 <p className="text-sm">Lv. {playerDigimon?.current_level}</p>
               </div>
               
               <div className="bg-white bg-opacity-80 rounded-lg p-2">
-                <p className="font-bold">{opponentUsername}'s {opponentDigimon?.name}</p>
+                <p className="font-bold">{opponentUsername}'s {opponentDigimonDisplayName}</p>
                 <p className="text-sm">Lv. {opponentDigimon?.current_level}</p>
               </div>
             </div>

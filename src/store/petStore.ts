@@ -48,7 +48,7 @@ export interface DigimonState {
   loading: boolean;
   error: string | null;
   fetchUserDigimon: () => Promise<void>;
-  createUserDigimon: (name: string, digimonId: number) => Promise<void>;
+  createUserDigimon: (name: string | null, digimonId: number) => Promise<void>;
   updateDigimonStats: (stats: Partial<UserDigimon>) => Promise<void>;
   feedDigimon: (taskPoints: number) => Promise<void>;
   checkEvolution: () => Promise<boolean>;
@@ -58,7 +58,8 @@ export interface DigimonState {
   addDiscoveredDigimon: (digimonId: number) => Promise<void>;
   subscribeToDigimonUpdates: () => RealtimeChannel | undefined;
   checkDigimonHealth: () => Promise<void>;
-  checkLevelUp: () => Promise<void>;
+  checkLevelUp: () => Promise<boolean | undefined>;
+  getDigimonDisplayName: () => string;
 }
 
 export const useDigimonStore = create<DigimonState>((set, get) => ({
@@ -214,7 +215,7 @@ export const useDigimonStore = create<DigimonState>((set, get) => ({
     }
   },
 
-  createUserDigimon: async (name: string, digimonId: number) => {
+  createUserDigimon: async (name: string | null, digimonId: number) => {
     try {
       set({ loading: true, error: null });
 
@@ -236,7 +237,7 @@ export const useDigimonStore = create<DigimonState>((set, get) => ({
       const { error } = await supabase.from("user_digimon").insert({
         user_id: userData.user.id,
         digimon_id: digimonId,
-        name: name || "Unnamed Digimon", // Use provided name or default
+        name: name,
         current_level: 1,
         experience_points: 0,
         health: 100,
@@ -294,42 +295,52 @@ export const useDigimonStore = create<DigimonState>((set, get) => ({
     }
   },
 
-  feedDigimon: async (taskPoints) => {
+  feedDigimon: async (taskPoints: number) => {
     try {
       const { userDigimon } = get();
-      if (!userDigimon) throw new Error("No Digimon found");
+      if (!userDigimon) return;
+
+      console.log(`Feeding Digimon with ${taskPoints} points`);
+
+      // Calculate happiness and health gains
+      const happinessGain = Math.min(taskPoints / 2, 10); // Cap happiness gain at 10
+      const healthGain = Math.min(taskPoints / 3, 5); // Cap health gain at 5
 
       // Calculate new stats
-      const newHealth = Math.min(100, userDigimon.health + taskPoints * 5);
-      const newHappiness = Math.min(
-        100,
-        userDigimon.happiness + taskPoints * 5
+      const newHappiness = Math.min(100, userDigimon.happiness + happinessGain);
+      const newHealth = Math.min(100, userDigimon.health + healthGain);
+      const newXP = userDigimon.experience_points + taskPoints;
+
+      console.log(
+        `Current XP: ${userDigimon.experience_points}, New XP: ${newXP}`
       );
-      const newExperiencePoints =
-        userDigimon.experience_points + taskPoints * 10;
 
-      // Level up if enough experience
-      let newLevel = userDigimon.current_level;
-      const expNeeded = newLevel * 20; // Simple formula: level * 20 exp needed to level up
+      // Update Digimon stats
+      await supabase
+        .from("user_digimon")
+        .update({
+          happiness: newHappiness,
+          health: newHealth,
+          experience_points: newXP,
+          last_fed_tasks_at: new Date().toISOString(),
+        })
+        .eq("id", userDigimon.id);
 
-      if (newExperiencePoints >= expNeeded) {
-        newLevel += 1;
-      }
-
-      await get().updateDigimonStats({
-        health: newHealth,
-        happiness: newHappiness,
-        experience_points: newExperiencePoints,
-        current_level: newLevel,
-        last_fed_tasks_at: new Date().toISOString(),
+      // Update local state
+      set({
+        userDigimon: {
+          ...userDigimon,
+          happiness: newHappiness,
+          health: newHealth,
+          experience_points: newXP,
+          last_fed_tasks_at: new Date().toISOString(),
+        },
       });
 
-      // Check if Digimon can evolve after leveling up
-      if (newLevel > userDigimon.current_level) {
-        await get().checkEvolution();
-      }
+      // Check for level up after gaining XP
+      await get().checkLevelUp();
     } catch (error) {
-      set({ error: (error as Error).message });
+      console.error("Error feeding Digimon:", error);
     }
   },
 
@@ -367,48 +378,33 @@ export const useDigimonStore = create<DigimonState>((set, get) => ({
     }
   },
 
-  evolveDigimon: async (toDigimonId) => {
+  evolveDigimon: async (toDigimonId: number) => {
     try {
-      const { userDigimon, evolutionOptions } = get();
-      if (!userDigimon) throw new Error("No Digimon found");
-
-      // Find the evolution option for the target Digimon
-      const evolutionOption = evolutionOptions.find(
-        (option) => option.digimon_id === toDigimonId
-      );
-
-      // Check if the evolution option exists and if the user's Digimon meets the level requirement
-      if (!evolutionOption) {
-        throw new Error("Invalid evolution target");
-      }
-
-      if (userDigimon.current_level < evolutionOption.level_required) {
-        throw new Error(
-          `Your Digimon needs to be at least level ${evolutionOption.level_required} to evolve to ${evolutionOption.name}`
-        );
-      }
-
       set({ loading: true, error: null });
 
-      // Update the user's Digimon
+      const { userDigimon } = get();
+      if (!userDigimon) throw new Error("No Digimon found");
+
+      // Update the Digimon's species while preserving the custom name (if any)
       const { error } = await supabase
         .from("user_digimon")
         .update({
           digimon_id: toDigimonId,
-          // Reset experience points after evolving
-          experience_points: 0,
-          last_updated_at: new Date().toISOString(),
+          // Don't update the name field - keep it as is (null or custom)
         })
         .eq("id", userDigimon.id);
 
       if (error) throw error;
 
-      // Mark the new evolution as discovered
+      // Add the new Digimon to discovered list
       await get().addDiscoveredDigimon(toDigimonId);
 
-      // Fetch the updated Digimon data and evolution options
+      // Refresh Digimon data
       await get().fetchUserDigimon();
+
+      set({ loading: false });
     } catch (error) {
+      console.error("Error evolving Digimon:", error);
       set({ error: (error as Error).message, loading: false });
     }
   },
@@ -577,8 +573,14 @@ export const useDigimonStore = create<DigimonState>((set, get) => ({
       const { userDigimon } = get();
       if (!userDigimon) return;
 
+      console.log("Checking for level up...");
+      console.log(
+        `Current level: ${userDigimon.current_level}, XP: ${userDigimon.experience_points}`
+      );
+
       // Calculate XP needed for next level (20 base + 10 per level)
       const xpNeeded = 20 + (userDigimon.current_level - 1) * 10;
+      console.log(`XP needed for next level: ${xpNeeded}`);
 
       // Check if Digimon has enough XP to level up
       if (userDigimon.experience_points >= xpNeeded) {
@@ -589,6 +591,7 @@ export const useDigimonStore = create<DigimonState>((set, get) => ({
         // Calculate new level and remaining XP
         const newLevel = userDigimon.current_level + 1;
         const remainingXP = userDigimon.experience_points - xpNeeded;
+        console.log(`New level: ${newLevel}, Remaining XP: ${remainingXP}`);
 
         // Update Digimon stats
         const { error } = await supabase
@@ -599,7 +602,12 @@ export const useDigimonStore = create<DigimonState>((set, get) => ({
           })
           .eq("id", userDigimon.id);
 
-        if (error) throw error;
+        if (error) {
+          console.error("Error updating level:", error);
+          throw error;
+        }
+
+        console.log("Level up successful!");
 
         // Update local state
         set({
@@ -612,14 +620,31 @@ export const useDigimonStore = create<DigimonState>((set, get) => ({
 
         // Check if there's enough XP for another level up
         if (remainingXP > 0) {
+          console.log("Checking for additional level ups with remaining XP...");
           await get().checkLevelUp();
         }
 
         // Check if Digimon can digivolve at this level
         await get().checkEvolution();
+
+        return true;
+      } else {
+        console.log("Not enough XP for level up");
+        return false;
       }
     } catch (error) {
       console.error("Error checking level up:", error);
+      return false;
     }
+  },
+
+  getDigimonDisplayName: () => {
+    const { userDigimon, digimonData } = get();
+    if (!userDigimon || !digimonData) return "Unknownmon";
+
+    if (userDigimon.name != "") return userDigimon.name;
+
+    // Otherwise, use the species name
+    return digimonData.name;
   },
 }));
