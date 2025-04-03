@@ -143,84 +143,47 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     }
   },
 
-  completeTask: async (id: string): Promise<void> => {
+  completeTask: async (taskId: string) => {
     try {
       set({ loading: true, error: null });
 
+      // Get the task to check if it's overdue
+      const { data: task } = await supabase
+        .from("tasks")
+        .select("*")
+        .eq("id", taskId)
+        .single();
+
+      if (!task) throw new Error("Task not found");
+
+      // Update the task status
       const { error } = await supabase
         .from("tasks")
-        .update({
-          is_completed: true,
-          completed_at: new Date().toISOString(),
-        })
-        .eq("id", id);
+        .update({ completed: true, completed_at: new Date().toISOString() })
+        .eq("id", taskId);
 
       if (error) throw error;
 
-      // Update local state immediately
-      set((state) => {
-        const updatedPenalizedTasks = state.penalizedTasks.filter(
-          (taskId) => taskId !== id
-        );
-        localStorage.setItem(
-          "penalizedTasks",
-          JSON.stringify(updatedPenalizedTasks)
-        );
+      // Calculate points based on task difficulty
+      const points = calculateTaskPoints(task.difficulty);
 
-        return {
-          tasks: state.tasks.map((task) =>
-            task.id === id
-              ? {
-                  ...task,
-                  is_completed: true,
-                  completed_at: new Date().toISOString(),
-                }
-              : task
-          ),
-          penalizedTasks: updatedPenalizedTasks,
-          loading: false,
-        };
-      });
+      // Feed the Digimon with the points
+      await useDigimonStore.getState().feedDigimon(points);
 
-      // Calculate XP gain
-      const task = get().tasks.find((t) => t.id === id);
-      const xpGain = task?.is_daily ? 10 : 15; // Daily tasks give less XP
-
-      // Update the Digimon's XP and stats immediately
-      const { userDigimon } = useDigimonStore.getState();
-      if (userDigimon) {
-        // Calculate new XP and potential level up
-        const currentXP = userDigimon.experience_points;
-        const currentLevel = userDigimon.current_level;
-        const newXP = currentXP + xpGain;
-
-        // XP needed for next level = current level * 20
-        const xpForNextLevel = currentLevel * 20;
-        const leveledUp = newXP >= xpForNextLevel;
-
-        // Calculate new level and remaining XP if leveled up
-        const newLevel = leveledUp ? currentLevel + 1 : currentLevel;
-        const remainingXP = leveledUp ? newXP - xpForNextLevel : newXP;
-
-        // Update happiness and health
-        const newHappiness = Math.min(100, userDigimon.happiness + 5);
-        const newHealth = Math.min(100, userDigimon.health + 3);
-
-        // Update the Digimon stats
-        await useDigimonStore.getState().updateDigimonStats({
-          experience_points: leveledUp ? remainingXP : newXP,
-          current_level: newLevel,
-          happiness: newHappiness,
-          health: newHealth,
-        });
-
-        // Show a toast or notification for XP gain and level up
-        if (leveledUp) {
-          // You could implement a toast notification system here
-          console.log(`Level Up! Your Digimon is now level ${newLevel}!`);
-        }
+      // If the task was overdue, explicitly check Digimon health
+      const dueDate = new Date(task.due_date);
+      const now = new Date();
+      if (dueDate < now) {
+        console.log("Completed an overdue task, checking Digimon health");
+        await useDigimonStore.getState().checkDigimonHealth();
       }
+
+      // Refresh the task list
+      await get().fetchTasks();
+
+      set({ loading: false });
     } catch (error) {
+      console.error("Error completing task:", error);
       set({ error: (error as Error).message, loading: false });
     }
   },
@@ -470,3 +433,16 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     });
   },
 }));
+
+const calculateTaskPoints = (difficulty: string): number => {
+  switch (difficulty) {
+    case "easy":
+      return 5;
+    case "medium":
+      return 10;
+    case "hard":
+      return 15;
+    default:
+      return 5;
+  }
+};

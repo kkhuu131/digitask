@@ -36,6 +36,10 @@ const BattleAnimation: React.FC<BattleAnimationProps> = ({ battle, onComplete })
   const playerDigimonFullName = `${playerUsername}'s ${playerDigimon?.name}`;
   const opponentDigimonFullName = `${opponentUsername}'s ${opponentDigimon?.name}`;
   
+  // Use the detailed information if available
+  const playerDetails = battle.user_digimon_details;
+  const opponentDetails = battle.opponent_digimon_details;
+  
   useEffect(() => {
     // Animation sequence timing
     const timings = [
@@ -78,15 +82,17 @@ const BattleAnimation: React.FC<BattleAnimationProps> = ({ battle, onComplete })
               <div className="text-center mx-4">
                 <div className="w-32 h-32 mx-auto flex items-center justify-center">
                   <img 
-                    src={playerDigimon?.digimon?.sprite_url} 
-                    alt={playerDigimon?.name} 
+                    src={playerDetails?.sprite_url || playerDigimon?.digimon?.sprite_url} 
+                    alt={playerDetails?.name || playerDigimon?.name} 
                     className="my-auto mx-auto"
                     style={{ imageRendering: "pixelated", transform: "scale(-3, 3)" }} 
                   />
                 </div>
-                <p className="font-semibold">{playerDigimon?.name}</p>
+                <p className="font-semibold">
+                  {playerDetails?.name || playerDigimon?.name}
+                </p>
                 <p className="text-sm text-gray-600">
-                  Lv. {playerDigimon?.current_level}
+                  Lv. {playerDetails?.level || playerDigimon?.current_level}
                 </p>
               </div>
               
@@ -95,8 +101,8 @@ const BattleAnimation: React.FC<BattleAnimationProps> = ({ battle, onComplete })
               <div className="text-center mx-4 ">
                 <div className="w-32 h-32 mx-auto flex items-center justify-center">
                   <img 
-                    src={opponentDigimon?.digimon?.sprite_url} 
-                    alt={opponentDigimon?.name} 
+                    src={opponentDetails?.sprite_url || opponentDigimon?.digimon?.sprite_url} 
+                    alt={opponentDetails?.name || opponentDigimon?.name} 
                     className="scale-[3] my-auto mx-auto"
                     style={{ 
                       imageRendering: "pixelated",
@@ -104,9 +110,11 @@ const BattleAnimation: React.FC<BattleAnimationProps> = ({ battle, onComplete })
                     }} 
                   />
                 </div>
-                <p className="font-semibold mt-2">{opponentDigimon?.name}</p>
+                <p className="font-semibold mt-2">
+                  {opponentDetails?.name || opponentDigimon?.name}
+                </p>
                 <p className="text-sm text-gray-600">
-                  Lv. {opponentDigimon?.current_level}
+                  Lv. {opponentDetails?.level || opponentDigimon?.current_level}
                 </p>
               </div>
             </div>
@@ -152,8 +160,8 @@ const BattleAnimation: React.FC<BattleAnimationProps> = ({ battle, onComplete })
               }}
             >
               <img 
-                src={playerDigimon?.digimon?.sprite_url} 
-                alt={playerDigimon?.name} 
+                src={playerDetails?.sprite_url || playerDigimon?.digimon?.sprite_url} 
+                alt={playerDetails?.name || playerDigimon?.name} 
                 className="my-auto mx-auto"
                 style={{ 
                   imageRendering: "pixelated", transform: "scale(-3, 3)"
@@ -176,8 +184,8 @@ const BattleAnimation: React.FC<BattleAnimationProps> = ({ battle, onComplete })
               }}
             >
               <img 
-                src={opponentDigimon?.digimon?.sprite_url} 
-                alt={opponentDigimon?.name} 
+                src={opponentDetails?.sprite_url || opponentDigimon?.digimon?.sprite_url} 
+                alt={opponentDetails?.name || opponentDigimon?.name} 
                 className="my-auto mx-auto"
                 style={{ 
                   imageRendering: "pixelated",

@@ -38,7 +38,9 @@ function App() {
   const { loading: authLoading, checkSession, user } = useAuthStore();
   const { userDigimon, fetchUserDigimon } = useDigimonStore();
   const [appLoading, setAppLoading] = useState(true);
-  const [needsEmailConfirmation, setNeedsEmailConfirmation] = useState(false);
+  const [needsEmailConfirmation, _setNeedsEmailConfirmation] = useState(false);
+  const [_isAuthenticated, setIsAuthenticated] = useState(false);
+  const [_loading, setLoading] = useState(true);
   
   // Initial app loading
   useEffect(() => {
@@ -109,14 +111,19 @@ function App() {
   // Update the useEffect that checks auth
   useEffect(() => {
     const checkAuth = async () => {
-      await checkSession();
-      
-      // Check if user needs email confirmation
-      if (user && !user.email_confirmed_at) {
-        setNeedsEmailConfirmation(true);
+      const { data } = await supabase.auth.getSession();
+      if (data.session) {
+        setIsAuthenticated(true);
+        
+        // Fetch the user's Digimon
+        await useDigimonStore.getState().fetchUserDigimon();
+        
+        // Check Digimon health
+        await useDigimonStore.getState().checkDigimonHealth();
       } else {
-        setNeedsEmailConfirmation(false);
+        setIsAuthenticated(false);
       }
+      setLoading(false);
     };
     
     checkAuth();

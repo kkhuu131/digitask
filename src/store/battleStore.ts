@@ -8,6 +8,20 @@ export interface Battle {
   opponent_digimon_id: string;
   winner_digimon_id: string;
   created_at: string;
+  user_digimon_details?: {
+    name: string;
+    level: number;
+    digimon_id: number;
+    sprite_url: string;
+    digimon_name: string;
+  };
+  opponent_digimon_details?: {
+    name: string;
+    level: number;
+    digimon_id: number;
+    sprite_url: string;
+    digimon_name: string;
+  };
   user_digimon?: {
     id: string;
     name: string;
@@ -345,6 +359,21 @@ export const useBattleStore = create<BattleState>((set, get) => ({
           created_at: new Date().toISOString(),
           user_digimon: userDigimonWithProfile,
           opponent_digimon: opponentWithProfile,
+          // Add the detailed information
+          user_digimon_details: {
+            name: userDigimonData.name,
+            level: userDigimonData.current_level,
+            digimon_id: userDigimonData.digimon_id,
+            sprite_url: userDigimonData.digimon.sprite_url,
+            digimon_name: userDigimonData.digimon.name,
+          },
+          opponent_digimon_details: {
+            name: opponent.name,
+            level: opponent.current_level,
+            digimon_id: opponent.digimon_id,
+            sprite_url: opponent.digimon.sprite_url,
+            digimon_name: opponent.digimon.name,
+          },
         };
 
         // Award XP for battle and check for level up
@@ -377,13 +406,28 @@ export const useBattleStore = create<BattleState>((set, get) => ({
         return;
       }
 
-      // Create battle record
+      // Create battle record with detailed Digimon information
       const { data: battle, error: battleError } = await supabase
         .from("battles")
         .insert({
           user_digimon_id: userDigimonId,
           opponent_digimon_id: opponent.id,
           winner_digimon_id: winnerId,
+          // Store additional information about the Digimon at battle time
+          user_digimon_details: {
+            name: userDigimonData.name,
+            level: userDigimonData.current_level,
+            digimon_id: userDigimonData.digimon_id,
+            sprite_url: userDigimonData.digimon.sprite_url,
+            digimon_name: userDigimonData.digimon.name,
+          },
+          opponent_digimon_details: {
+            name: opponent.name,
+            level: opponent.current_level,
+            digimon_id: opponent.digimon_id,
+            sprite_url: opponent.digimon.sprite_url,
+            digimon_name: opponent.digimon.name,
+          },
         })
         .select(
           `

@@ -20,6 +20,10 @@ const BattleHistory: React.FC<BattleHistoryProps> = ({ battles }) => {
         const playerDigimon = battle.user_digimon;
         const opponentDigimon = battle.opponent_digimon;
         
+        // Use the detailed information if available
+        const playerDetails = battle.user_digimon_details;
+        const opponentDetails = battle.opponent_digimon_details;
+        
         // Determine if the player won
         const playerWon = battle.winner_digimon_id === playerDigimon?.id;
         
@@ -42,8 +46,8 @@ const BattleHistory: React.FC<BattleHistoryProps> = ({ battles }) => {
             <div className="flex items-center">
               <div className="w-12 h-12 flex items-center justify-center">
                 <img 
-                  src={playerDigimon?.digimon?.sprite_url} 
-                  alt={playerDigimon?.name} 
+                  src={playerDetails?.sprite_url || playerDigimon?.digimon?.sprite_url} 
+                  alt={playerDetails?.name || playerDigimon?.name} 
                   className="scale-[1]"
                   style={{ imageRendering: "pixelated" }} 
                 />
@@ -51,7 +55,12 @@ const BattleHistory: React.FC<BattleHistoryProps> = ({ battles }) => {
               
               <div className="mx-2 flex-grow">
                 <div className="flex justify-between">
-                  <span className="text-sm font-medium">{playerDigimon?.name}</span>
+                  <span className="text-sm font-medium">
+                    {playerDetails?.name || playerDigimon?.name}
+                  </span>
+                  <span className="text-xs text-gray-500">
+                    Lv. {playerDetails?.level || playerDigimon?.current_level}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className={`text-xs ${playerWon ? 'text-green-600' : 'text-red-600'} font-medium`}>
@@ -65,8 +74,8 @@ const BattleHistory: React.FC<BattleHistoryProps> = ({ battles }) => {
               
               <div className="w-12 h-12 flex items-center justify-center">
                 <img 
-                  src={opponentDigimon?.digimon?.sprite_url} 
-                  alt={opponentDigimon?.name} 
+                  src={opponentDetails?.sprite_url || opponentDigimon?.digimon?.sprite_url} 
+                  alt={opponentDetails?.name || opponentDigimon?.name} 
                   className="scale-[1]"
                   style={{ 
                     imageRendering: "pixelated",
@@ -76,9 +85,12 @@ const BattleHistory: React.FC<BattleHistoryProps> = ({ battles }) => {
               </div>
               
               <div className="ml-2 flex-grow-0">
-                <div className="text-sm font-medium">{opponentDigimon?.name}</div>
+                <div className="text-sm font-medium">
+                  {opponentDetails?.name || opponentDigimon?.name}
+                </div>
                 <div className="text-xs text-gray-500">
                   {opponentDigimon?.profile?.display_name || opponentDigimon?.profile?.username || 'Wild'}
+                  {' '}Lv. {opponentDetails?.level || opponentDigimon?.current_level}
                 </div>
               </div>
             </div>

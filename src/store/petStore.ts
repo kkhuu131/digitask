@@ -470,20 +470,81 @@ export const useDigimonStore = create<DigimonState>((set, get) => ({
   checkDigimonHealth: async () => {
     try {
       const { userDigimon } = get();
-      if (!userDigimon) return;
+      if (!userDigimon) {
+        console.log("No Digimon to check health for");
+        return;
+      }
 
-      // If health is 0, the Digimon has died
+      console.log(
+        "Checking Digimon health:",
+        userDigimon.health,
+        "for Digimon ID:",
+        userDigimon.id
+      );
+
+      // If health is 0 or less, the Digimon should die
       if (userDigimon.health <= 0) {
+        console.log("Digimon health is 0 or below, triggering death");
+
         // Delete the current Digimon
         const { data: user } = await supabase.auth.getUser();
-        if (!user.user) throw new Error("User not authenticated");
+        if (!user.user) {
+          console.log("User not authenticated, can't delete Digimon");
+          throw new Error("User not authenticated");
+        }
 
-        const { error } = await supabase
+        console.log(
+          "Attempting to delete Digimon with ID:",
+          userDigimon.id,
+          "for user:",
+          user.user.id
+        );
+
+        // First, delete all battles that reference this Digimon
+        console.log("Deleting battles that reference this Digimon...");
+
+        // Delete battles where this Digimon is the user's Digimon
+        const { error: userBattlesError } = await supabase
+          .from("battles")
+          .delete()
+          .eq("user_digimon_id", userDigimon.id);
+
+        if (userBattlesError) {
+          console.error("Error deleting user battles:", userBattlesError);
+          throw userBattlesError;
+        }
+
+        // Delete battles where this Digimon is the opponent's Digimon
+        const { error: opponentBattlesError } = await supabase
+          .from("battles")
+          .delete()
+          .eq("opponent_digimon_id", userDigimon.id);
+
+        if (opponentBattlesError) {
+          console.error(
+            "Error deleting opponent battles:",
+            opponentBattlesError
+          );
+          throw opponentBattlesError;
+        }
+
+        console.log(
+          "Successfully deleted all battles referencing this Digimon"
+        );
+
+        // Now try to delete the Digimon
+        const { error: deleteError, data: deleteData } = await supabase
           .from("user_digimon")
           .delete()
-          .eq("user_id", user.user.id);
+          .eq("id", userDigimon.id)
+          .select();
 
-        if (error) throw error;
+        if (deleteError) {
+          console.error("Error deleting Digimon:", deleteError);
+          throw deleteError;
+        }
+
+        console.log("Digimon deleted successfully, response:", deleteData);
 
         // Reset the store state
         set({
@@ -494,10 +555,19 @@ export const useDigimonStore = create<DigimonState>((set, get) => ({
             "Your Digimon has died due to neglect. You'll need to start with a new one.",
         });
 
-        // You could also show a modal or redirect to a "Digimon died" page
-        // window.location.href = "/digimon-died";
+        console.log("Store state reset after Digimon death");
+
+        // Force a page refresh to ensure the UI updates
+        window.location.href = "/";
+
+        return;
+      } else {
+        console.log("Digimon health is above 0, it's still alive");
       }
+
+      // If we get here, the Digimon is still alive, so we don't need to do anything
     } catch (error) {
+      console.error("Error checking Digimon health:", error);
       set({ error: (error as Error).message });
     }
   },
