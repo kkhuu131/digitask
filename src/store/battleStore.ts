@@ -230,7 +230,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
           digimon:digimon_id (name, sprite_url, hp, atk, def, spd)
         `
         )
-        .neq("user_id", userDigimonData.user_id) // Filter by user_id to exclude all of the current user's Digimon
+        .neq("user_id", userDigimonData.user_id)
         .limit(100);
 
       console.log("opponents", opponents);

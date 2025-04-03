@@ -46,58 +46,71 @@ const BattleHistory: React.FC<BattleHistoryProps> = ({ battles }) => {
               playerWon ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'
             }`}
           >
-            <div className="flex items-center">
-              <div className="w-12 h-12 flex items-center justify-center">
-                <img 
-                  src={playerDetails?.sprite_url || playerDigimon?.digimon?.sprite_url} 
-                  alt={playerDetails?.name || playerDigimon?.name} 
-                  className="scale-[1]"
-                  style={{ imageRendering: "pixelated" }} 
-                />
+            {/* Victory/Defeat at the top */}
+            <div className="text-center text-sm font-bold">
+              <span className={playerWon ? 'text-green-600' : 'text-red-600'}>
+                {playerWon ? 'Victory' : 'Defeat'}
+              </span>
+            </div>
+
+            {/* Digimon Details Section */}
+            <div className="flex items-center justify-between">
+              {/* Player Digimon */}
+              <div className="flex items-center w-full">
+                <div className="w-12 h-12 flex items-center justify-center">
+                  <img 
+                    src={playerDetails?.sprite_url || playerDigimon?.digimon?.sprite_url} 
+                    alt={playerDetails?.name || playerDigimon?.name} 
+                    className="scale-[1]"
+                    style={{ imageRendering: "pixelated", transform: "scaleX(-1)" }} 
+                  />
+                </div>
+
+                <div className="ml-2 flex flex-col">
+                  <div className="flex items-end">
+                    <span className="text-sm font-medium">
+                      {userDigimonDisplayName}{" "}
+                      <span className="text-xs text-gray-500">Lv.{playerDetails?.level || playerDigimon?.current_level}</span>
+                    </span>
+                  </div>
+                </div>
               </div>
-              
-              <div className="mx-2 flex-grow">
-                <div className="flex justify-between">
-                  <span className="text-sm font-medium">
-                    {userDigimonDisplayName}
-                  </span>
+
+              {/* "vs" Text */}
+              <div className="w-16 flex justify-center text-sm font-bold text-gray-700">vs</div>
+
+              {/* Opponent Digimon */}
+              <div className="flex items-center w-full justify-end">
+                <div className="text-right mr-2 flex flex-col">
+                  <div className="flex items-end">
+                    <span className="text-sm font-medium">
+                      {opponentDetails?.name || opponentDigimon?.name}{" "}
+                      <span className="text-xs text-gray-500">Lv.{opponentDetails?.level || opponentDigimon?.current_level}</span>
+                    </span>
+                  </div>
                   <span className="text-xs text-gray-500">
-                    Lv. {playerDetails?.level || playerDigimon?.current_level}
+                    {opponentDigimon?.profile?.display_name || opponentDigimon?.profile?.username || 'Wild'}
                   </span>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className={`text-xs ${playerWon ? 'text-green-600' : 'text-red-600'} font-medium`}>
-                    {playerWon ? 'Victory' : 'Defeat'}
-                  </span>
-                  <span className="text-xs text-gray-500">{formattedDate}</span>
-                </div>
-              </div>
-              
-              <div className="text-sm mx-1">vs</div>
-              
-              <div className="w-12 h-12 flex items-center justify-center">
-                <img 
-                  src={opponentDetails?.sprite_url || opponentDigimon?.digimon?.sprite_url} 
-                  alt={opponentDetails?.name || opponentDigimon?.name} 
-                  className="scale-[1]"
-                  style={{ 
-                    imageRendering: "pixelated",
-                    transform: "scaleX(-1)" // Flip horizontally
-                  }} 
-                />
-              </div>
-              
-              <div className="ml-2 flex-grow-0">
-                <div className="text-sm font-medium">
-                  {opponentDetails?.name || opponentDigimon?.name}
-                </div>
-                <div className="text-xs text-gray-500">
-                  {opponentDigimon?.profile?.display_name || opponentDigimon?.profile?.username || 'Wild'}
-                  {' '}Lv. {opponentDetails?.level || opponentDigimon?.current_level}
+
+                <div className="w-12 h-12 flex items-center justify-center">
+                  <img 
+                    src={opponentDetails?.sprite_url || opponentDigimon?.digimon?.sprite_url} 
+                    alt={opponentDetails?.name || opponentDigimon?.name} 
+                    style={{ 
+                      imageRendering: "pixelated",
+                    }} 
+                  />
                 </div>
               </div>
             </div>
+
+            {/* Date at the bottom */}
+            <div className="text-center text-xs text-gray-500 mt-2">
+              {formattedDate}
+            </div>
           </div>
+
         );
       })}
     </div>
