@@ -242,7 +242,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       let opponentProfile = null;
 
       // 2% chance to create a dummy opponent
-      if (!opponents || opponents.length === 0 || Math.random() < 0.05) {
+      if (!opponents || opponents.length === 0 || Math.random() < 0.99) {
         console.log("No opponents found, creating a dummy opponent");
 
         const randomId = Math.floor(Math.random() * 341) + 1;
@@ -289,6 +289,11 @@ export const useBattleStore = create<BattleState>((set, get) => ({
 
         opponentProfile = profile;
       }
+
+      // Add the opponent's Digimon to the discovered Digimon list
+      await useDigimonStore
+        .getState()
+        .addDiscoveredDigimon(opponent.digimon_id);
 
       console.log("Selected opponent:", opponent.name);
 
