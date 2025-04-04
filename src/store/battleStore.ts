@@ -88,7 +88,6 @@ interface BattleState {
   queueForBattle: (userDigimonId: string) => Promise<void>;
   clearCurrentBattle: () => void;
   checkDailyBattleLimit: () => Promise<number>;
-  resetDailyBattleLimit: () => Promise<void>;
 }
 
 export const useBattleStore = create<BattleState>((set, get) => ({
@@ -109,14 +108,12 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       }
 
       const userId = userData.user.id;
-      const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD format
 
       // Check if we have a battle_limits record for today
       const { data: limitData, error: limitError } = await supabase
         .from("battle_limits")
         .select("*")
         .eq("user_id", userId)
-        .eq("date", today)
         .single();
 
       if (limitError && limitError.code !== "PGRST116") {
@@ -146,27 +143,6 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       console.error("Error checking daily battle limit:", error);
       set({ dailyBattlesRemaining: 0 });
       return 0;
-    }
-  },
-
-  resetDailyBattleLimit: async () => {
-    try {
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) return;
-
-      const userId = userData.user.id;
-      const today = new Date().toISOString().split("T")[0];
-
-      // Delete today's record if it exists
-      await supabase
-        .from("battle_limits")
-        .delete()
-        .eq("user_id", userId)
-        .eq("date", today);
-
-      set({ dailyBattlesRemaining: 5 });
-    } catch (error) {
-      console.error("Error resetting battle limit:", error);
     }
   },
 
@@ -288,18 +264,9 @@ export const useBattleStore = create<BattleState>((set, get) => ({
         return;
       }
 
-      const userId = userData.user.id;
-      const today = new Date().toISOString().split("T")[0];
-      const DAILY_BATTLE_LIMIT = 5;
-
       // Start a transaction to handle the battle limit check and update atomically
       const { data: limitCheck, error: limitError } = await supabase.rpc(
-        "check_and_increment_battle_limit",
-        {
-          p_user_id: userId,
-          p_date: today,
-          p_limit: DAILY_BATTLE_LIMIT,
-        }
+        "check_and_increment_battle_limit"
       );
 
       if (limitError) {

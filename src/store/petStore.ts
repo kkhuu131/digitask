@@ -206,8 +206,6 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         level_required: path.level_required,
       }));
 
-      console.log("Setting user Digimon data:", userDigimon.name);
-
       set({
         userDigimon,
         digimonData,
@@ -385,7 +383,6 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
       const { userDigimon } = get();
       if (!userDigimon) {
-        console.log("No Digimon to feed");
         set({ loading: false });
         return;
       }
@@ -396,8 +393,6 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         set({ loading: false });
         return;
       }
-
-      console.log(`Feeding Digimon with ${taskPoints} points`);
 
       // Calculate new stats
       const newHealth = Math.ceil(
@@ -435,8 +430,6 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         },
         loading: false,
       });
-
-      console.log("Digimon fed successfully");
     } catch (error) {
       console.error("Error in feedDigimon:", error);
       set({ error: (error as Error).message, loading: false });
@@ -545,8 +538,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
           table: "user_digimon",
           filter: `user_id=eq.${userData.user.id} AND is_active=eq.true`,
         },
-        async (payload) => {
-          console.log("Digimon updated:", payload);
+        async () => {
           // Refresh the Digimon data
           await get().fetchUserDigimon();
         }
@@ -563,37 +555,16 @@ export const useDigimonStore = create<PetState>((set, get) => ({
     try {
       const { userDigimon, digimonData } = get();
       if (!userDigimon) {
-        console.log("No Digimon to check health for");
         return;
       }
 
-      console.log(
-        "Checking Digimon health:",
-        userDigimon.health,
-        "for Digimon ID:",
-        userDigimon.id
-      );
-
       // If health is 0 or less, the Digimon should die
       if (userDigimon.health <= 0) {
-        console.log("Digimon health is 0 or below, triggering death");
-
         // Delete the current Digimon
         const { data: user } = await supabase.auth.getUser();
         if (!user.user) {
-          console.log("User not authenticated, can't delete Digimon");
           throw new Error("User not authenticated");
         }
-
-        console.log(
-          "Attempting to delete Digimon with ID:",
-          userDigimon.id,
-          "for user:",
-          user.user.id
-        );
-
-        // First, delete all battles that reference this Digimon
-        console.log("Deleting battles that reference this Digimon...");
 
         // Delete battles where this Digimon is the user's Digimon
         const { error: userBattlesError } = await supabase
@@ -620,12 +591,8 @@ export const useDigimonStore = create<PetState>((set, get) => ({
           throw opponentBattlesError;
         }
 
-        console.log(
-          "Successfully deleted all battles referencing this Digimon"
-        );
-
         // Now try to delete the Digimon
-        const { error: deleteError, data: deleteData } = await supabase
+        const { error: deleteError } = await supabase
           .from("user_digimon")
           .delete()
           .eq("id", userDigimon.id)
@@ -635,8 +602,6 @@ export const useDigimonStore = create<PetState>((set, get) => ({
           console.error("Error deleting Digimon:", deleteError);
           throw deleteError;
         }
-
-        console.log("Digimon deleted successfully, response:", deleteData);
 
         // Add a notification about the Digimon's death
         useNotificationStore.getState().addNotification({
@@ -655,16 +620,12 @@ export const useDigimonStore = create<PetState>((set, get) => ({
           error: "Your Digimon has died due to neglect.",
         });
 
-        console.log("Store state reset after Digimon death");
-
         // Use a small timeout before redirecting to ensure notification is processed
         setTimeout(() => {
           window.location.href = "/";
         }, 100);
 
         return;
-      } else {
-        console.log("Digimon health is above 0, it's still alive");
       }
 
       // If we get here, the Digimon is still alive, so we don't need to do anything
@@ -679,25 +640,14 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       const { userDigimon } = get();
       if (!userDigimon) return;
 
-      console.log("Checking for level up...");
-      console.log(
-        `Current level: ${userDigimon.current_level}, XP: ${userDigimon.experience_points}`
-      );
-
       // Calculate XP needed for next level (20 base + 10 per level)
       const xpNeeded = 20 + (userDigimon.current_level - 1) * 10;
-      console.log(`XP needed for next level: ${xpNeeded}`);
 
       // Check if Digimon has enough XP to level up
       if (userDigimon.experience_points >= xpNeeded) {
-        console.log(
-          `Digimon leveling up! Current XP: ${userDigimon.experience_points}, Needed: ${xpNeeded}`
-        );
-
         // Calculate new level and remaining XP
         const newLevel = userDigimon.current_level + 1;
         const remainingXP = userDigimon.experience_points - xpNeeded;
-        console.log(`New level: ${newLevel}, Remaining XP: ${remainingXP}`);
 
         // Update Digimon stats
         const { error } = await supabase
@@ -713,8 +663,6 @@ export const useDigimonStore = create<PetState>((set, get) => ({
           throw error;
         }
 
-        console.log("Level up successful!");
-
         // Update local state
         set({
           userDigimon: {
@@ -726,7 +674,6 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
         // Check if there's enough XP for another level up
         if (remainingXP > 0) {
-          console.log("Checking for additional level ups with remaining XP...");
           await get().checkLevelUp();
         }
 
@@ -735,7 +682,6 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
         return true;
       } else {
-        console.log("Not enough XP for level up");
         return false;
       }
     } catch (error) {

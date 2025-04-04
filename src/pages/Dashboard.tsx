@@ -7,7 +7,7 @@ import TaskList from "../components/TaskList";
 
 const Dashboard: React.FC = () => {
   const { userDigimon, digimonData, evolutionOptions, fetchUserDigimon, error: digimonError } = useDigimonStore();
-  const { fetchTasks, error: taskError, tasks } = useTaskStore();
+  const { fetchTasks, dailyQuota, error: taskError} = useTaskStore();
   
   useEffect(() => {
     fetchUserDigimon();
@@ -24,18 +24,11 @@ const Dashboard: React.FC = () => {
     }
   }, [fetchUserDigimon, fetchTasks]);
   
-  const today = new Date().toDateString();
-  
-  // Count completed tasks for today
-  const completedToday = tasks.filter(task => {
-    if (!task.is_completed || !task.completed_at) return false;
-    
-    const completedDate = new Date(task.completed_at).toDateString();
-    return completedDate === today;
-  }).length;
-  
-  const DAILY_QUOTA = 3; // Should match the quota in taskStore.ts
-  const quotaPercentage = Math.min(100, (completedToday / DAILY_QUOTA) * 100);
+  const DAILY_QUOTA_REQUIREMENT = 3.0; // Should match the quota in taskStore.ts
+
+  console.log(dailyQuota?.completed_today);
+
+  const quotaPercentage = Math.min(100, ((dailyQuota?.completed_today || 0) / DAILY_QUOTA_REQUIREMENT) * 100);
   
   if (!userDigimon || !digimonData) {
     return (
@@ -86,7 +79,7 @@ const Dashboard: React.FC = () => {
           <h3 className="text-lg font-semibold mb-2">Daily Quota</h3>
           <div className="flex justify-between text-sm mb-1">
             <span>Tasks Completed Today</span>
-            <span>{completedToday}/{DAILY_QUOTA}</span>
+            <span>{dailyQuota?.completed_today}/{DAILY_QUOTA_REQUIREMENT}</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2.5">
             <div 
@@ -98,7 +91,7 @@ const Dashboard: React.FC = () => {
             ></div>
           </div>
           <p className="text-xs text-gray-500 mt-2">
-            Complete at least {DAILY_QUOTA} tasks daily to keep your Digimon happy and healthy.
+            Complete at least {DAILY_QUOTA_REQUIREMENT} tasks daily to keep your Digimon happy and healthy.
           </p>
         </div>
         

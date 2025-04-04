@@ -53,13 +53,11 @@ function App() {
         if (useAuthStore.getState().user) {
           await useTaskStore.getState().initializeStore();
           await fetchUserDigimon();
-          await useTaskStore.getState().checkDailyQuota();
           await useDigimonStore.getState().checkDigimonHealth();
         }
       } catch (error) {
         console.error("Error initializing app:", error);
       } finally {
-        // Always set loading to false, even if there are errors
         setAppLoading(false);
       }
     };

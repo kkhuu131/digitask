@@ -1,14 +1,12 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useDigimonStore } from '../store/petStore';
-import { useBattleStore } from "../store/battleStore";
 import { useTaskStore } from '../store/taskStore';
 import { useNotificationStore } from '../store/notificationStore';
 
 const Debug = () => {
   const [status, setStatus] = useState<string>('Checking connection...');
   const { userDigimon, fetchUserDigimon } = useDigimonStore();
-  const { resetDailyBattleLimit } = useBattleStore();
   
   useEffect(() => {
     const checkConnection = async () => {
@@ -284,7 +282,19 @@ const Debug = () => {
         <h2 className="text-xl font-bold mb-4">Battle Debug</h2>
         <button 
           className="btn-primary bg-blue-600 hover:bg-blue-700 mt-2"
-          onClick={() => resetDailyBattleLimit()}
+          onClick={async() => {
+
+            const { data, error } = await supabase.rpc('reset_all_battle_limits');
+
+            if (error) {
+              console.error('Error resetting battle limits:', error);
+              alert('❌ Error resetting battle limits. Check console.');
+            } else {
+              console.log('Battle limits reset:', data);
+              alert('✅ Daily battle limits reset!');
+            }
+
+          }}
         >
           Reset Daily Battle Limit
         </button>
