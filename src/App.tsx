@@ -38,7 +38,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 function App() {
   const { loading: authLoading, checkSession } = useAuthStore();
-  const { userDigimon, fetchUserDigimon, subscribeToDigimonUpdates } = useDigimonStore();
+  const { userDigimon, fetchUserDigimon } = useDigimonStore();
   const [appLoading, setAppLoading] = useState(true);
   const [needsEmailConfirmation, _setNeedsEmailConfirmation] = useState(false);
   const [_isAuthenticated, setIsAuthenticated] = useState(false);
@@ -67,20 +67,28 @@ function App() {
   
   // Set up Digimon subscription
   useEffect(() => {
-    let unsubscribe: (() => void) | undefined;
+    let unsubscribeDigimon: (() => void) | undefined;
+    let unsubscribeQuota: (() => void) | undefined;
 
-    const subscribe = async () => {
-      unsubscribe = await subscribeToDigimonUpdates();
+    const setupSubscriptions = async () => {
+      // Set up Digimon subscription
+      unsubscribeDigimon = await useDigimonStore.getState().subscribeToDigimonUpdates();
+      
+      // Set up Quota subscription
+      unsubscribeQuota = await useTaskStore.getState().subscribeToQuotaUpdates();
     };
 
-    subscribe();
+    setupSubscriptions();
 
     return () => {
-      if (unsubscribe) {
-        unsubscribe(); // Cleanup function to remove subscription
+      if (unsubscribeDigimon) {
+        unsubscribeDigimon();
+      }
+      if (unsubscribeQuota) {
+        unsubscribeQuota();
       }
     };
-  }, [subscribeToDigimonUpdates]);
+  }, []);
 
   // Auth state change listener
   useEffect(() => {

@@ -12,21 +12,9 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     fetchUserDigimon();
     fetchTasks();
-    
-    // Check if we need to reset daily tasks
-    const lastResetDate = localStorage.getItem('lastDailyTaskReset');
-    const today = new Date().toDateString();
-    
-    if (lastResetDate !== today) {
-      // It's a new day, reset daily tasks
-      useTaskStore.getState().resetDailyTasks();
-      localStorage.setItem('lastDailyTaskReset', today);
-    }
   }, [fetchUserDigimon, fetchTasks]);
   
   const DAILY_QUOTA_REQUIREMENT = 3.0; // Should match the quota in taskStore.ts
-
-  console.log(dailyQuota?.completed_today);
 
   const quotaPercentage = Math.min(100, ((dailyQuota?.completed_today || 0) / DAILY_QUOTA_REQUIREMENT) * 100);
   
@@ -79,7 +67,7 @@ const Dashboard: React.FC = () => {
           <h3 className="text-lg font-semibold mb-2">Daily Quota</h3>
           <div className="flex justify-between text-sm mb-1">
             <span>Tasks Completed Today</span>
-            <span>{dailyQuota?.completed_today}/{DAILY_QUOTA_REQUIREMENT}</span>
+            <span>{dailyQuota?.completed_today || 0}/{DAILY_QUOTA_REQUIREMENT}</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2.5">
             <div 

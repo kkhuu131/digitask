@@ -108,39 +108,6 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         tasks: [...state.tasks, data],
         loading: false,
       }));
-
-      const { dailyQuota } = get();
-      if (
-        dailyQuota &&
-        dailyQuota.penalized_tasks &&
-        dailyQuota.penalized_tasks.includes(data.id)
-      ) {
-        const updatedPenalizedTasks = dailyQuota.penalized_tasks.filter(
-          (id) => id !== data.id
-        );
-
-        await supabase
-          .from("daily_quotas")
-          .update({ penalized_tasks: updatedPenalizedTasks })
-          .eq("id", dailyQuota.id);
-
-        set((state) => ({
-          dailyQuota: state.dailyQuota
-            ? {
-                ...state.dailyQuota,
-                penalized_tasks: updatedPenalizedTasks,
-              }
-            : null,
-          penalizedTasks: updatedPenalizedTasks,
-        }));
-      }
-
-      if (isTaskOverdue(data)) {
-        console.log(
-          "Newly created task is already overdue, checking penalties"
-        );
-        await get().checkOverdueTasks();
-      }
     } catch (error) {
       set({ error: (error as Error).message, loading: false });
     }
@@ -176,98 +143,57 @@ export const useTaskStore = create<TaskState>((set, get) => ({
 
       if (error) throw error;
 
-      const { dailyQuota } = get();
-      if (
-        dailyQuota &&
-        dailyQuota.penalized_tasks &&
-        dailyQuota.penalized_tasks.includes(id)
-      ) {
-        const updatedPenalizedTasks = dailyQuota.penalized_tasks.filter(
-          (taskId) => taskId !== id
-        );
-
-        await supabase
-          .from("daily_quotas")
-          .update({ penalized_tasks: updatedPenalizedTasks })
-          .eq("id", dailyQuota.id);
-
-        set((state) => ({
-          dailyQuota: state.dailyQuota
-            ? {
-                ...state.dailyQuota,
-                penalized_tasks: updatedPenalizedTasks,
-              }
-            : null,
-          penalizedTasks: updatedPenalizedTasks,
-          tasks: state.tasks.filter((task) => task.id !== id),
-          loading: false,
-        }));
-      } else {
-        set((state) => ({
-          tasks: state.tasks.filter((task) => task.id !== id),
-          loading: false,
-        }));
-      }
+      set((state) => ({
+        tasks: state.tasks.filter((task) => task.id !== id),
+        loading: false,
+      }));
     } catch (error) {
       set({ error: (error as Error).message, loading: false });
     }
   },
 
-  completeTask: async (taskId: string) => {
+  completeTask: async (taskId) => {
     try {
-      const { data: user } = await supabase.auth.getUser();
-
       set({ loading: true, error: null });
 
-      const { data: task } = await supabase
-        .from("tasks")
-        .select("*")
-        .eq("id", taskId)
-        .single();
-
-      if (!task) throw new Error("Task not found");
-
-      const { data: userDigimon } = await supabase
-        .from("user_digimon")
-        .select("*")
-        .eq("user_id", user?.user?.id)
-        .eq("is_active", true)
-        .single();
-
-      if (userDigimon) {
-        const { error } = await supabase
-          .from("tasks")
-          .update({
-            is_completed: true,
-            completed_at: new Date().toISOString(),
-          })
-          .eq("id", taskId);
-
-        if (error) throw error;
-
-        set((state) => {
-          const updatedPenalizedTasks = state.penalizedTasks.filter(
-            (id) => id !== taskId
-          );
-
-          return { ...state, penalizedTasks: updatedPenalizedTasks };
-        });
-
-        const points = calculateTaskPoints(task);
-        console.log(`Task completed: ${task.description}, Points: ${points}`);
-
-        await useDigimonStore.getState().feedDigimon(points);
-        await useDigimonStore.getState().checkLevelUp();
-
-        if (isTaskOverdue(task)) {
-          await useDigimonStore.getState().checkDigimonHealth();
-        }
-
-        await get().fetchTasks();
-        await get().fetchDailyQuota();
-
-        set({ loading: false });
+      // Find the task in the current state
+      const task = get().tasks.find((t) => t.id === taskId);
+      if (!task) {
+        throw new Error("Task not found");
       }
+
+      // Update the task in the database
+      const { data: updatedTask, error } = await supabase
+        .from("tasks")
+        .update({
+          is_completed: true,
+          completed_at: new Date().toISOString(),
+        })
+        .eq("id", taskId)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Update the local state
+      set((state) => ({
+        tasks: state.tasks.map((t) => (t.id === taskId ? updatedTask : t)),
+      }));
+
+      // Calculate points based on task type
+      const points = calculateTaskPoints(task);
+
+      // Update Digimon stats
+      await useDigimonStore.getState().feedDigimon(points);
+
+      // If it's a daily task, increment the daily quota
+      if (task.is_daily) {
+        // The increment happens server-side via a trigger
+        // We just need to refresh the quota data
+        await get().fetchDailyQuota();
+      }
+
+      set({ loading: false });
     } catch (error) {
       console.error("Error completing task:", error);
       set({ error: (error as Error).message, loading: false });
@@ -276,88 +202,51 @@ export const useTaskStore = create<TaskState>((set, get) => ({
 
   checkOverdueTasks: async () => {
     try {
-      const { tasks, dailyQuota, penalizedTasks } = get();
+      const { tasks } = get();
+      const { dailyQuota } = get();
 
-      if (!dailyQuota) {
-        await get().fetchDailyQuota();
-        return;
-      }
+      // Get the stored penalized tasks from the database
+      const storedPenalizedTasks = dailyQuota?.penalized_tasks || [];
 
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) return;
-
-      const { data: userDigimon } = await supabase
-        .from("user_digimon")
-        .select("*")
-        .eq("user_id", userData.user.id)
-        .eq("is_active", true)
-        .single();
-
-      if (!userDigimon) {
-        console.log("No active Digimon found, skipping overdue check");
-        return;
-      }
-
-      const now = new Date();
-      const newOverdueTasks = tasks.filter(
+      // Find overdue tasks that haven't been penalized yet
+      const overdueTasks = tasks.filter(
         (task) =>
+          !task.is_daily &&
           !task.is_completed &&
           task.due_date &&
-          new Date(task.due_date) < now &&
-          !penalizedTasks.includes(task.id)
+          isTaskOverdue(task) &&
+          !storedPenalizedTasks.includes(task.id)
       );
 
-      if (newOverdueTasks.length > 0) {
-        console.log(`Found ${newOverdueTasks.length} new overdue tasks`);
+      if (overdueTasks.length > 0) {
+        console.log(`Found ${overdueTasks.length} new overdue tasks`);
 
-        const healthPenalty = Math.min(
-          userDigimon.health,
-          newOverdueTasks.length * 5
-        );
-        const happinessPenalty = Math.min(
-          userDigimon.happiness,
-          newOverdueTasks.length * 10
-        );
-
-        const newHealth = userDigimon.health - healthPenalty;
-        const newHappiness = userDigimon.happiness - happinessPenalty;
-
-        console.log(`New health: ${newHealth}, new happiness: ${newHappiness}`);
-
-        const { error } = await supabase
-          .from("user_digimon")
-          .update({
-            health: newHealth,
-            happiness: newHappiness,
-          })
-          .eq("id", userDigimon.id);
-
-        if (error) {
-          console.error("Error updating Digimon stats:", error);
-          return;
+        // Apply penalties for each overdue task
+        for (const task of overdueTasks) {
+          // Add to penalized tasks in state
+          set((state) => ({
+            penalizedTasks: [...state.penalizedTasks, task.id],
+          }));
         }
 
-        const updatedPenalizedTasks = [
-          ...penalizedTasks,
-          ...newOverdueTasks.map((task) => task.id),
-        ];
+        // Update the penalized tasks in the database
+        if (dailyQuota) {
+          const newPenalizedTasks = [
+            ...storedPenalizedTasks,
+            ...overdueTasks.map((t) => t.id),
+          ];
 
-        await supabase
-          .from("daily_quotas")
-          .update({ penalized_tasks: updatedPenalizedTasks })
-          .eq("id", dailyQuota.id);
+          const { error } = await supabase
+            .from("daily_quotas")
+            .update({
+              penalized_tasks: newPenalizedTasks,
+            })
+            .eq("id", dailyQuota.id);
 
-        set((state) => ({
-          dailyQuota: state.dailyQuota
-            ? {
-                ...state.dailyQuota,
-                penalized_tasks: updatedPenalizedTasks,
-              }
-            : null,
-          penalizedTasks: updatedPenalizedTasks,
-        }));
-
-        await useDigimonStore.getState().checkDigimonHealth();
+          if (error) {
+            console.error("Error updating penalized tasks:", error);
+          }
+        }
       }
     } catch (error) {
       console.error("Error checking overdue tasks:", error);
@@ -368,50 +257,22 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     try {
       set({ loading: true, error: null });
 
-      const today = new Date().toISOString().split("T")[0];
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) return;
 
-      const { data: completedDailyTasks, error: fetchError } = await supabase
+      // Reset all daily tasks to uncompleted
+      const { error } = await supabase
         .from("tasks")
-        .select("*")
-        .eq("is_daily", true)
-        .eq("is_completed", true);
+        .update({ is_completed: false })
+        .eq("user_id", userData.user.id)
+        .eq("is_daily", true);
 
-      if (fetchError) throw fetchError;
+      if (error) throw error;
 
-      if (!completedDailyTasks || completedDailyTasks.length === 0) {
-        set({ loading: false });
-        return;
-      }
+      // Refresh tasks
+      await get().fetchTasks();
 
-      const { error: updateError } = await supabase
-        .from("tasks")
-        .update({
-          is_completed: false,
-          completed_at: null,
-          due_date: today,
-        })
-        .eq("is_daily", true)
-        .eq("is_completed", true);
-
-      if (updateError) throw updateError;
-
-      set((state) => ({
-        tasks: state.tasks.map((task) =>
-          task.is_daily && task.is_completed
-            ? {
-                ...task,
-                is_completed: false,
-                completed_at: null,
-                due_date: today,
-              }
-            : task
-        ),
-        loading: false,
-      }));
-
-      console.log(
-        `Reset ${completedDailyTasks.length} daily tasks with due date set to today`
-      );
+      set({ loading: false });
     } catch (error) {
       set({ error: (error as Error).message, loading: false });
     }
@@ -422,11 +283,13 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       const { data: userData } = await supabase.auth.getUser();
       if (!userData.user) return;
 
-      // Try to get today's quota record
+      // Get the user's daily quota
       const { data: quota, error } = await supabase
         .from("daily_quotas")
         .select("*")
         .eq("user_id", userData.user.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
         .single();
 
       if (error && error.code !== "PGRST116") {
@@ -435,70 +298,32 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       }
 
       if (quota) {
-        const penalized_tasks = quota.penalized_tasks || [];
         set({
           dailyQuota: quota,
-          penalizedTasks: penalized_tasks,
+          penalizedTasks: quota.penalized_tasks || [],
         });
       } else {
-        // No quota for today - check if we need to create a new one or update an existing one
-        const nextReset = new Date();
-        nextReset.setDate(nextReset.getDate() + 1);
-        nextReset.setHours(0, 0, 0, 0);
-
-        // First check if there's any existing quota for this user
-        const { data: existingQuota } = await supabase
+        // Create a new quota record if none exists
+        const { data: newQuota, error: createError } = await supabase
           .from("daily_quotas")
-          .select("*")
-          .eq("user_id", userData.user.id)
-          .order("created_at", { ascending: false })
-          .limit(1)
+          .insert({
+            user_id: userData.user.id,
+            completed_today: 0,
+            consecutive_days_missed: 0,
+            penalized_tasks: [],
+          })
+          .select()
           .single();
 
-        if (existingQuota) {
-          // Update the existing quota for today
-          const { data: updatedQuota, error: updateError } = await supabase
-            .from("daily_quotas")
-            .update({
-              completed_today: 0,
-              updated_at: new Date().toISOString(),
-            })
-            .eq("id", existingQuota.id)
-            .select()
-            .single();
-
-          if (updateError) {
-            console.error("Error updating daily quota:", updateError);
-            return;
-          }
-
-          set({
-            dailyQuota: updatedQuota,
-            penalizedTasks: updatedQuota.penalized_tasks || [],
-          });
-        } else {
-          // Create a new quota record
-          const { data: newQuota, error: createError } = await supabase
-            .from("daily_quotas")
-            .insert({
-              user_id: userData.user.id,
-              completed_today: 0,
-              consecutive_days_missed: 0,
-              penalized_tasks: [],
-            })
-            .select()
-            .single();
-
-          if (createError) {
-            console.error("Error creating daily quota:", createError);
-            return;
-          }
-
-          set({
-            dailyQuota: newQuota,
-            penalizedTasks: [],
-          });
+        if (createError) {
+          console.error("Error creating daily quota:", createError);
+          return;
         }
+
+        set({
+          dailyQuota: newQuota,
+          penalizedTasks: [],
+        });
       }
     } catch (error) {
       console.error("Error in fetchDailyQuota:", error);
@@ -557,7 +382,11 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         },
         async (payload) => {
           console.log("Daily quota changed:", payload);
-          get().dailyQuota = payload.new as DailyQuota;
+          // Update the state with the new quota data
+          set({
+            dailyQuota: payload.new as DailyQuota,
+            penalizedTasks: (payload.new as DailyQuota).penalized_tasks || [],
+          });
         }
       )
       .subscribe();
