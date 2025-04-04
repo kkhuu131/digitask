@@ -199,18 +199,29 @@ function App() {
       if (data.session) {
         setIsAuthenticated(true);
         
-        // Fetch the daily quota first to get penalized tasks
-        await useTaskStore.getState().fetchDailyQuota();
-        
-        // Then fetch tasks
-        await useTaskStore.getState().fetchTasks();
-        
-        // Fetch the user's Digimon
-        await useDigimonStore.getState().fetchUserDigimon();
-        await useDigimonStore.getState().fetchAllUserDigimon();
-        
-        // Check Digimon health
-        await useDigimonStore.getState().checkDigimonHealth();
+        try {
+          // Fetch the daily quota first to get penalized tasks
+          await useTaskStore.getState().fetchDailyQuota();
+          
+          // Then fetch tasks
+          await useTaskStore.getState().fetchTasks();
+          
+          // Fetch the user's Digimon
+          await useDigimonStore.getState().fetchUserDigimon();
+          await useDigimonStore.getState().fetchAllUserDigimon();
+          
+          // Check Digimon health
+          await useDigimonStore.getState().checkDigimonHealth();
+          
+          // Check if all Digimon are dead
+          const { isDigimonDead } = useDigimonStore.getState();
+          if (isDigimonDead) {
+            console.log("All Digimon are dead, redirecting to create pet page");
+            window.location.href = "/create-pet";
+          }
+        } catch (error) {
+          console.error("Error during app initialization:", error);
+        }
       } else {
         setIsAuthenticated(false);
       }
