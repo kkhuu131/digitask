@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useDigimonStore, UserDigimon, Digimon as DigimonType, EvolutionOption } from "../store/petStore";
 import { useState, useEffect } from "react";
+import { Link } from 'react-router-dom';
 
 interface DigimonProps {
   userDigimon: UserDigimon;
@@ -77,9 +78,9 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
               <p className="text-sm text-primary-700">
                 This is your active Digimon. You have {totalDigimon} Digimon total.
                 <br />
-                <a href="/your-digimon" className="font-medium underline">
+                <Link to="/your-digimon" className="font-medium underline">
                   View all your Digimon
-                </a>
+                </Link>
               </p>
             </div>
           </div>

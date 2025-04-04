@@ -133,13 +133,13 @@ const Battle = () => {
               </div>
             )}
             
-            {totalDigimon > 1 && (
-              <div className="text-sm text-gray-600 mb-4">
+            {/* {totalDigimon > 1 && (
+              <div className="text-sm text-gray-600 my-4">
                 This is your active Digimon. You can switch your active Digimon in the 
                 <a href="/your-digimon" className="text-primary-600 hover:text-primary-500 mx-1">Your Digimon</a> 
                 section.
               </div>
-            )}
+            )} */}
           </div>
           
           <div className="card">
