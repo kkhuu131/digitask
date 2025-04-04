@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Battle } from "../store/battleStore";
 import { useDigimonStore } from "../store/petStore";
@@ -56,46 +56,90 @@ const BattleAnimation: React.FC<BattleAnimationProps> = ({ battle, onComplete })
   // Format the Digimon names with usernames
   const playerDigimonFullName = `${playerUsername}'s ${playerDigimonDisplayName}`;
   const opponentDigimonFullName = opponentUsername === "Wild"
-  ? `Wild ${opponentDigimonDisplayName}`
-  : `${opponentUsername}'s ${opponentDigimonDisplayName}`;
+    ? `Wild ${opponentDigimonDisplayName}`
+    : `${opponentUsername}'s ${opponentDigimonDisplayName}`;
   
   // Use the detailed information if available
   const playerDetails = battle.user_digimon_details;
   const opponentDetails = battle.opponent_digimon_details;
+
+  const battleTurns = battle.turns || [];
+  const totalTurns = battleTurns.length;
+
+  const maxSteps = 1 + totalTurns + 1;
   
   useEffect(() => {
     // Animation sequence timing
-    const timings = [
-      2000,  // Initial pause
-      2000,  // Player attack
-      2000,  // Opponent attack
-      2000,  // Player attack
-      2000,  // Opponent attack
-      2000,  // Final attack from winner
-      3000,  // Defeat animation
-    ];
+    const baseTimings = [2000]; // Initial pause
     
-    // Progress through animation steps
+    // Add timing for each turn
+    if (battleTurns.length > 0) {
+      battleTurns.forEach(() => baseTimings.push(2000));
+    } else {
+      // Fallback to old animation if no turns data
+      baseTimings.push(2000, 2000, 2000, 2000, 2000);
+    }
+    
+    // Add final defeat animation timing
+    baseTimings.push(3000);
+
     const timer = setTimeout(() => {
-      if (step < timings.length - 1) {
+      if (step < baseTimings.length - 1) {
         setStep(step + 1);
       } else {
         setShowResults(true);
       }
-    }, timings[step]);
+    }, baseTimings[step]);
     
     return () => clearTimeout(timer);
-  }, [step]);
+  }, [step, battleTurns.length]);
   
-  // Determine which Digimon is attacking in the current step
-  const isPlayerAttacking = step === 1 || step === 3 || (step === 5 && playerWon);
-  const isOpponentAttacking = step === 2 || step === 4 || (step === 5 && !playerWon);
+  const getCurrentTurn = () => {
+    if (step === 0 || step >= totalTurns + 1) {
+      return null; // No turn for intro or defeat
+    }
+    return battleTurns[step - 1]; // Adjust for intro step
+  };
+
+  const currentTurn = getCurrentTurn();
+
+  // Determine if player is attacking in current turn
+  const isPlayerAttacking = currentTurn ? 
+    (isUserDigimon ? 
+      currentTurn.attacker === "user" : 
+      currentTurn.attacker === "opponent") : 
+    false;
+  
+  // Determine if opponent is attacking in current turn
+  const isOpponentAttacking = currentTurn ? 
+    (isUserDigimon ? 
+      currentTurn.attacker === "opponent" : 
+      currentTurn.attacker === "user") : 
+    false;
+  
+  // For the final step (defeat animation)
+  const isFinalStep = step === maxSteps - 1;
+  
+  // Calculate HP percentages for both Digimon - use values directly since they're already percentages
+  const playerHPPercent = currentTurn ? 
+    Math.max(0, Math.min(100, currentTurn.remainingUserHP)) : 100;
+  
+  const opponentHPPercent = currentTurn ? 
+    Math.max(0, Math.min(100, currentTurn.remainingOpponentHP)) : 100;
+  
+  // Fix for health bars at the final step
+  const finalPlayerHP = playerWon ? playerHPPercent : 0;
+  const finalOpponentHP = playerWon ? 0 : opponentHPPercent;
+  
+  // Use the appropriate HP values based on the current step
+  const displayPlayerHP = isFinalStep ? finalPlayerHP : playerHPPercent;
+  const displayOpponentHP = isFinalStep ? finalOpponentHP : opponentHPPercent;
   
   return (
     <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 max-w-4xl w-full max-h-[90vh] overflow-hidden">
         {showResults ? (
-          // Results screen
+          // Results screen (reverted to original)
           <div className="text-center">
             <h2 className="text-3xl font-bold mb-6">
               {playerWon ? "Victory!" : "Defeat!"}
@@ -128,7 +172,7 @@ const BattleAnimation: React.FC<BattleAnimationProps> = ({ battle, onComplete })
                     alt={opponentDigimonDisplayName} 
                     className="scale-[3] my-auto mx-auto"
                     style={{ 
-                      imageRendering: "pixelated",
+                      imageRendering: "pixelated", 
                       opacity: playerWon ? 0.5 : 1
                     }} 
                   />
@@ -168,14 +212,52 @@ const BattleAnimation: React.FC<BattleAnimationProps> = ({ battle, onComplete })
             {/* Battle arena */}
             <div className="absolute bottom-0 left-0 right-0 h-1/4 bg-gradient-to-t from-green-300 to-green-200"></div>
             
+            {/* Battle info */}
+            <div className="absolute top-4 left-4 right-4 flex justify-between">
+              <div className="bg-white bg-opacity-80 rounded-lg p-2 w-1/3">
+                <p className="font-bold">{playerUsername}'s {playerDigimonDisplayName}</p>
+                <p className="text-sm">Lv. {playerDigimon?.current_level}</p>
+                
+                {/* Player HP bar - with fixed HP for final step */}
+                <div className="mt-2 w-full bg-gray-200 rounded-full h-2.5">
+                  <div 
+                    className="bg-green-600 h-2.5 rounded-full" 
+                    style={{ 
+                      width: `${displayPlayerHP}%`,
+                      transition: "width 0.5s ease-in-out"
+                    }}
+                  ></div>
+                </div>
+              </div>
+              
+              <div className="bg-white bg-opacity-80 rounded-lg p-2 w-1/3">
+                <p className="font-bold">{opponentUsername === "Wild"
+                    ? `Wild ${opponentDigimonDisplayName}`
+                    : `${opponentUsername}'s ${opponentDigimonDisplayName}`}
+                </p>
+                <p className="text-sm">Lv. {opponentDigimon?.current_level}</p>
+                
+                {/* Opponent HP bar - with fixed HP for final step */}
+                <div className="mt-2 w-full bg-gray-200 rounded-full h-2.5">
+                  <div 
+                    className="bg-green-600 h-2.5 rounded-full" 
+                    style={{ 
+                      width: `${displayOpponentHP}%`,
+                      transition: "width 0.5s ease-in-out"
+                    }}
+                  ></div>
+                </div>
+              </div>
+            </div>
+            
             {/* Player Digimon (now on the left) */}
             <motion.div
               className="absolute bottom-[25%] left-[20%] w-32 h-32 flex flex-col items-center"
               animate={{
                 x: isPlayerAttacking ? [0, 150, 0] : 0,
-                y: step === 6 && !playerWon ? [0, 20] : 0,
-                rotate: step === 6 && !playerWon ? 90 : 0,
-                opacity: step === 6 && !playerWon ? 0.5 : 1,
+                y: isFinalStep && !playerWon ? [0, 20] : 0,
+                rotate: isFinalStep && !playerWon ? 90 : 0,
+                opacity: isFinalStep && !playerWon ? 0.5 : 1,
               }}
               transition={{
                 duration: isPlayerAttacking ? 0.5 : 0.8,
@@ -197,9 +279,9 @@ const BattleAnimation: React.FC<BattleAnimationProps> = ({ battle, onComplete })
               className="absolute bottom-[25%] right-[20%] w-32 h-32 flex flex-col items-center"
               animate={{
                 x: isOpponentAttacking ? [0, -150, 0] : 0,
-                y: step === 6 && playerWon ? [0, 20] : 0,
-                rotate: step === 6 && playerWon ? 90 : 0,
-                opacity: step === 6 && playerWon ? 0.5 : 1,
+                y: isFinalStep && playerWon ? [0, 20] : 0,
+                rotate: isFinalStep && playerWon ? 90 : 0,
+                opacity: isFinalStep && playerWon ? 0.5 : 1,
               }}
               transition={{
                 duration: isOpponentAttacking ? 0.5 : 0.8,
@@ -217,32 +299,41 @@ const BattleAnimation: React.FC<BattleAnimationProps> = ({ battle, onComplete })
               />
             </motion.div>
             
-            {/* Battle info */}
-            <div className="absolute top-4 left-4 right-4 flex justify-between">
-              <div className="bg-white bg-opacity-80 rounded-lg p-2">
-                <p className="font-bold">{playerUsername}'s {playerDigimonDisplayName}</p>
-                <p className="text-sm">Lv. {playerDigimon?.current_level}</p>
-              </div>
-              
-              <div className="bg-white bg-opacity-80 rounded-lg p-2">
-                <p className="font-bold">{opponentUsername === "Wild"
-                    ? `Wild ${opponentDigimonDisplayName}`
-                    : `${opponentUsername}'s ${opponentDigimonDisplayName}`}
-                </p>
-                <p className="text-sm">Lv. {opponentDigimon?.current_level}</p>
-              </div>
-            </div>
-            
             {/* Battle narration */}
             <div className="absolute bottom-4 left-4 right-4">
               <div className="bg-white bg-opacity-90 rounded-lg p-3 text-center">
                 {step === 0 && <p>Battle start!</p>}
-                {step === 1 && <p>{playerDigimonFullName} attacks!</p>}
-                {step === 2 && <p>{opponentDigimonFullName} attacks!</p>}
-                {step === 3 && <p>{playerDigimonFullName} attacks again!</p>}
-                {step === 4 && <p>{opponentDigimonFullName} attacks again!</p>}
-                {step === 5 && <p>{playerWon ? playerDigimonFullName : opponentDigimonFullName} prepares a final attack!</p>}
-                {step === 6 && <p>{playerWon ? opponentDigimonFullName : playerDigimonFullName} is defeated!</p>}
+                
+                {currentTurn && isPlayerAttacking && (
+                  <p>
+                    {playerDigimonFullName} attacks for {currentTurn.damage} damage!
+                  </p>
+                )}
+                
+                {currentTurn && isOpponentAttacking && (
+                  <p>
+                    {opponentDigimonFullName} attacks for {currentTurn.damage} damage!
+                  </p>
+                )}
+                
+                {isFinalStep && (
+                  <p>
+                    {playerWon 
+                      ? `${opponentDigimonFullName} is defeated!` 
+                      : `${playerDigimonFullName} is defeated!`}
+                  </p>
+                )}
+                
+                {/* Fallback for when no turns data is available */}
+                {!currentTurn && !isFinalStep && step > 0 && (
+                  <>
+                    {step === 1 && <p>{playerDigimonFullName} attacks!</p>}
+                    {step === 2 && <p>{opponentDigimonFullName} attacks!</p>}
+                    {step === 3 && <p>{playerDigimonFullName} attacks again!</p>}
+                    {step === 4 && <p>{opponentDigimonFullName} attacks again!</p>}
+                    {step === 5 && <p>{playerWon ? playerDigimonFullName : opponentDigimonFullName} prepares a final attack!</p>}
+                  </>
+                )}
               </div>
             </div>
           </div>

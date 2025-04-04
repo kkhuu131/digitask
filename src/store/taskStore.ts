@@ -200,7 +200,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         .from("user_digimon")
         .select("*")
         .eq("user_id", user?.user?.id)
-        .eq("is_active", true) // Only get the active Digimon
+        .eq("is_active", true)
         .single();
 
       if (digimonError) throw digimonError;
@@ -231,8 +231,8 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         return { ...state, penalizedTasks: updatedPenalizedTasks };
       });
 
-      // Calculate points based on task difficulty
-      const points = calculateTaskPoints(task.difficulty);
+      // Calculate points
+      const points = calculateTaskPoints(task);
       console.log(`Task completed: ${task.description}, Points: ${points}`);
 
       // Feed the Digimon with the points
@@ -241,9 +241,8 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       // Explicitly check for level up after feeding
       await useDigimonStore.getState().checkLevelUp();
 
-      // Check if the task is overdue using our new function
+      // Check if the task is overdue
       if (isTaskOverdue(task)) {
-        console.log("Completed an overdue task, checking Digimon health");
         await useDigimonStore.getState().checkDigimonHealth();
       }
 
@@ -358,6 +357,9 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     try {
       set({ loading: true, error: null });
 
+      // Get today's date in ISO format (YYYY-MM-DD)
+      const today = new Date().toISOString().split("T")[0];
+
       // Get all completed daily tasks
       const { data: completedDailyTasks, error: fetchError } = await supabase
         .from("tasks")
@@ -373,12 +375,13 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         return;
       }
 
-      // Reset all completed daily tasks
+      // Reset all completed daily tasks and update due_date to today
       const { error: updateError } = await supabase
         .from("tasks")
         .update({
           is_completed: false,
           completed_at: null,
+          due_date: today,
         })
         .eq("is_daily", true)
         .eq("is_completed", true);
@@ -389,13 +392,20 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       set((state) => ({
         tasks: state.tasks.map((task) =>
           task.is_daily && task.is_completed
-            ? { ...task, is_completed: false, completed_at: null }
+            ? {
+                ...task,
+                is_completed: false,
+                completed_at: null,
+                due_date: today,
+              }
             : task
         ),
         loading: false,
       }));
 
-      console.log(`Reset ${completedDailyTasks.length} daily tasks`);
+      console.log(
+        `Reset ${completedDailyTasks.length} daily tasks with due date set to today`
+      );
     } catch (error) {
       set({ error: (error as Error).message, loading: false });
     }
@@ -505,17 +515,9 @@ export const useTaskStore = create<TaskState>((set, get) => ({
   },
 }));
 
-const calculateTaskPoints = (difficulty: string): number => {
-  switch (difficulty) {
-    case "easy":
-      return 5;
-    case "medium":
-      return 10;
-    case "hard":
-      return 15;
-    default:
-      return 5;
-  }
+const calculateTaskPoints = (task: Task): number => {
+  if (task.is_daily) return 15;
+  return 20;
 };
 
 // Update the logic for checking if a task is overdue

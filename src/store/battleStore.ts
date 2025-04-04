@@ -68,6 +68,12 @@ export interface Battle {
       spd: number;
     };
   };
+  turns?: {
+    attacker: string;
+    damage: number;
+    remainingUserHP: number;
+    remainingOpponentHP: number;
+  }[];
 }
 
 interface BattleState {
@@ -357,7 +363,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       let opponent;
       let opponentProfile = null;
 
-      // 2% chance to create a dummy opponent
+      // chance to create a dummy opponent
       if (!opponents || opponents.length === 0 || Math.random() < 0.05) {
         console.log("No opponents found, creating a dummy opponent");
 
@@ -427,51 +433,82 @@ export const useBattleStore = create<BattleState>((set, get) => ({
         },
       };
 
-      // Simple battle simulation
-      const userStats = {
-        hp: userDigimonData.digimon.hp,
-        atk: userDigimonData.digimon.atk,
-        def: userDigimonData.digimon.def,
-        spd: userDigimonData.digimon.spd,
-        level: userDigimonData.current_level,
-      };
+      function simulateBattle(userDigimonData: any, opponent: any) {
+        function statModifier(stat: number, level: number) {
+          return stat * (1 + (level - 50) / 50);
+        }
 
-      const opponentStats = {
-        hp: opponent.digimon.hp,
-        atk: opponent.digimon.atk,
-        def: opponent.digimon.def,
-        spd: opponent.digimon.spd,
-        level: opponent.current_level,
-      };
+        let userMaxHP = statModifier(
+          userDigimonData.digimon.hp,
+          userDigimonData.current_level
+        );
+        let opponentMaxHP = statModifier(
+          opponent.digimon.hp,
+          opponent.current_level
+        );
 
-      // Apply level multipliers
-      const userMultiplier = 1 + userStats.level * 0.1;
-      const opponentMultiplier = 1 + opponentStats.level * 0.1;
+        let userHP = statModifier(
+          userDigimonData.digimon.hp,
+          userDigimonData.current_level
+        );
+        let opponentHP = statModifier(
+          opponent.digimon.hp,
+          opponent.current_level
+        );
 
-      // Calculate battle power
-      const userPower =
-        (userStats.hp * 0.5 +
-          userStats.atk * 1.2 +
-          userStats.def * 0.8 +
-          userStats.spd * 1.0) *
-        userMultiplier;
-      const opponentPower =
-        (opponentStats.hp * 0.5 +
-          opponentStats.atk * 1.2 +
-          opponentStats.def * 0.8 +
-          opponentStats.spd * 1.0) *
-        opponentMultiplier;
+        const turns = [];
+        let attacker =
+          userDigimonData.digimon.spd >= opponent.digimon.spd
+            ? "user"
+            : "opponent";
 
-      // Add some randomness
-      const userRoll = userPower * (0.8 + Math.random() * 0.4); // 80% to 120% of power
-      const opponentRoll = opponentPower * (0.8 + Math.random() * 0.4);
+        while (userHP > 0 && opponentHP > 0) {
+          const attackPower = statModifier(
+            attacker === "user"
+              ? userDigimonData.digimon.atk
+              : opponent.digimon.atk,
+            attacker === "user"
+              ? userDigimonData.current_level
+              : opponent.current_level
+          );
+          const defense = statModifier(
+            attacker === "user"
+              ? opponent.digimon.def
+              : userDigimonData.digimon.def,
+            attacker === "user"
+              ? opponent.current_level
+              : userDigimonData.current_level
+          );
 
-      console.log(
-        `Rolls: ${userRoll.toFixed(2)} vs ${opponentRoll.toFixed(2)}`
-      );
+          const damage = Math.max(1, Math.round(attackPower * 1.5 - defense));
+
+          if (attacker === "user") {
+            opponentHP -= damage;
+          } else {
+            userHP -= damage;
+          }
+
+          turns.push({
+            attacker,
+            damage,
+            remainingUserHP: (userHP / userMaxHP) * 100,
+            remainingOpponentHP: (opponentHP / opponentMaxHP) * 100,
+          });
+
+          // Swap turns
+          attacker = attacker === "user" ? "opponent" : "user";
+        }
+
+        console.log("turns", turns);
+
+        return {
+          winnerId: userHP > 0 ? userDigimonData.id : opponent.id,
+          turns,
+        };
+      }
 
       // Determine winner
-      const winnerId = userRoll >= opponentRoll ? userDigimonId : opponent.id;
+      const { winnerId, turns } = simulateBattle(userDigimonData, opponent);
 
       // If this is a dummy opponent, don't create a battle record
       if (opponent.id.startsWith("dummy-")) {
@@ -499,6 +536,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
             sprite_url: opponent.digimon.sprite_url,
             digimon_name: opponent.digimon.name,
           },
+          turns,
         };
 
         // Award XP for battle and check for level up
@@ -582,6 +620,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
           ...battle.opponent_digimon,
           profile: opponentProfile,
         },
+        turns: turns,
       };
 
       // Award XP for battle and check for level up
