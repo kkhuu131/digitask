@@ -5,7 +5,7 @@ import BattleHistory from "../components/BattleHistory";
 import BattleAnimation from "../components/BattleAnimation";
 
 const Battle = () => {
-  const { userDigimon, digimonData, getDigimonDisplayName, allUserDigimon } = useDigimonStore();
+  const { userDigimon, digimonData, getDigimonDisplayName } = useDigimonStore();
   const { 
     queueForBattle, 
     currentBattle, 
@@ -20,7 +20,6 @@ const Battle = () => {
   const [noRealOpponents, setNoRealOpponents] = useState(false);
 
   const playerDigimonDisplayName = getDigimonDisplayName();
-  const totalDigimon = allUserDigimon.length;
 
   useEffect(() => {
     // If we have a current battle result but aren't showing the animation,

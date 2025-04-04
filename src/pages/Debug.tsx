@@ -3,6 +3,7 @@ import { supabase } from '../lib/supabase';
 import { useDigimonStore } from '../store/petStore';
 import { useBattleStore } from "../store/battleStore";
 import { useTaskStore } from '../store/taskStore';
+import { useNotificationStore } from '../store/notificationStore';
 
 const Debug = () => {
   const [status, setStatus] = useState<string>('Checking connection...');
@@ -295,6 +296,22 @@ const Debug = () => {
       >
         Force Check Overdue Tasks
       </button>
+      
+      <div className="card mt-6">
+        <h2 className="text-xl font-bold mb-4">Notification Debug</h2>
+        <button 
+          className="btn-primary bg-red-600 hover:bg-red-700 mt-2"
+          onClick={() => {
+            useNotificationStore.getState().addNotification({
+              message: "Your Digimon has died due to neglect. You'll need to create a new one.",
+              type: "error",
+              persistent: true
+            });
+          }}
+        >
+          Test Death Notification
+        </button>
+      </div>
     </div>
   );
 };

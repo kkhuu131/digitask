@@ -4,6 +4,7 @@ import { useAuthStore } from './store/authStore';
 import { useDigimonStore } from './store/petStore';
 import { useTaskStore } from './store/taskStore';
 import { supabase } from './lib/supabase';
+import NotificationCenter from './components/NotificationCenter';
 
 // Pages
 import Login from './pages/Login';
@@ -261,6 +262,8 @@ function App() {
         
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      
+      <NotificationCenter />
     </Router>
   );
 }

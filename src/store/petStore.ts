@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { supabase } from "../lib/supabase";
+import { useNotificationStore } from "./notificationStore";
 
 export interface UserDigimon {
   id: string;
@@ -560,7 +561,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
   checkDigimonHealth: async () => {
     try {
-      const { userDigimon } = get();
+      const { userDigimon, digimonData } = get();
       if (!userDigimon) {
         console.log("No Digimon to check health for");
         return;
@@ -637,19 +638,29 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
         console.log("Digimon deleted successfully, response:", deleteData);
 
+        // Add a notification about the Digimon's death
+        useNotificationStore.getState().addNotification({
+          message: `Your Digimon ${
+            userDigimon.name || digimonData?.name || "Unknown"
+          } has died due to neglect.`,
+          type: "error",
+          persistent: true,
+        });
+
         // Reset the store state
         set({
           userDigimon: null,
           digimonData: null,
           evolutionOptions: [],
-          error:
-            "Your Digimon has died due to neglect. You'll need to start with a new one.",
+          error: "Your Digimon has died due to neglect.",
         });
 
         console.log("Store state reset after Digimon death");
 
-        // Force a page refresh to ensure the UI updates
-        window.location.href = "/";
+        // Use a small timeout before redirecting to ensure notification is processed
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 100);
 
         return;
       } else {
