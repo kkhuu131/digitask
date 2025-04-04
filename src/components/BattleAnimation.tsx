@@ -128,8 +128,19 @@ const BattleAnimation: React.FC<BattleAnimationProps> = ({ battle, onComplete })
     Math.max(0, Math.min(100, currentTurn.remainingOpponentHP)) : 100;
   
   // Fix for health bars at the final step
-  const finalPlayerHP = playerWon ? playerHPPercent : 0;
-  const finalOpponentHP = playerWon ? 0 : opponentHPPercent;
+  const finalPlayerHP = playerWon ? 
+    // Keep the last known HP value for the winner
+    (battleTurns.length > 0 ? 
+      battleTurns[battleTurns.length - 1].remainingUserHP : 
+      100) : 
+    0;
+
+  const finalOpponentHP = playerWon ? 
+    0 : 
+    // Keep the last known HP value for the winner
+    (battleTurns.length > 0 ? 
+      battleTurns[battleTurns.length - 1].remainingOpponentHP : 
+      100);
   
   // Use the appropriate HP values based on the current step
   const displayPlayerHP = isFinalStep ? finalPlayerHP : playerHPPercent;
@@ -302,27 +313,46 @@ const BattleAnimation: React.FC<BattleAnimationProps> = ({ battle, onComplete })
             {/* Battle narration */}
             <div className="absolute bottom-4 left-4 right-4">
               <div className="bg-white bg-opacity-90 rounded-lg p-3 text-center">
-                {step === 0 && <p>Battle start!</p>}
-                
-                {currentTurn && isPlayerAttacking && (
-                  <p>
-                    {playerDigimonFullName} attacks for {currentTurn.damage} damage!
-                  </p>
-                )}
-                
-                {currentTurn && isOpponentAttacking && (
-                  <p>
-                    {opponentDigimonFullName} attacks for {currentTurn.damage} damage!
-                  </p>
-                )}
-                
-                {isFinalStep && (
-                  <p>
-                    {playerWon 
-                      ? `${opponentDigimonFullName} is defeated!` 
-                      : `${playerDigimonFullName} is defeated!`}
-                  </p>
-                )}
+              {step === 0 && <p>Battle start!</p>}
+              {currentTurn && isPlayerAttacking && (
+                <>
+                  {currentTurn.didMiss ? (
+                    <p>{playerDigimonFullName} misses the attack!</p>
+                  ) : currentTurn.isCriticalHit ? (
+                    <p>
+                      {playerDigimonFullName} attacks critically for {currentTurn.damage} damage!
+                    </p>
+                  ) : (
+                    <p>
+                      {playerDigimonFullName} attacks for {currentTurn.damage} damage!
+                    </p>
+                  )}
+                </>
+              )}
+
+              {currentTurn && isOpponentAttacking && (
+                <>
+                  {currentTurn.didMiss ? (
+                    <p>{opponentDigimonFullName} misses the attack!</p>
+                  ) : currentTurn.isCriticalHit ? (
+                    <p>
+                      {opponentDigimonFullName} attacks critically for {currentTurn.damage} damage!
+                    </p>
+                  ) : (
+                    <p>
+                      {opponentDigimonFullName} attacks for {currentTurn.damage} damage!
+                    </p>
+                  )}
+                </>
+              )}
+
+              {isFinalStep && (
+                <p>
+                  {playerWon
+                    ? `${opponentDigimonFullName} is defeated!`
+                    : `${playerDigimonFullName} is defeated!`}
+                </p>
+              )}
                 
                 {/* Fallback for when no turns data is available */}
                 {!currentTurn && !isFinalStep && step > 0 && (

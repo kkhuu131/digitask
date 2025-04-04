@@ -71,6 +71,8 @@ export interface Battle {
   turns?: {
     attacker: string;
     damage: number;
+    isCriticalHit: boolean;
+    didMiss: boolean;
     remainingUserHP: number;
     remainingOpponentHP: number;
   }[];
@@ -480,7 +482,27 @@ export const useBattleStore = create<BattleState>((set, get) => ({
               : userDigimonData.current_level
           );
 
-          const damage = Math.max(1, Math.round(attackPower * 1.5 - defense));
+          const baseDamage = 50;
+
+          const damageMultiplier = 0.5 + Math.random();
+
+          const isCriticalHit = Math.random() < 0.15; // 15% chance
+          const criticalMultiplier = isCriticalHit ? 3 : 1;
+
+          // Miss chance
+          const didMiss = Math.random() < 0.07; // 7% chance to miss
+
+          const damage = didMiss
+            ? 0
+            : Math.max(
+                1,
+                Math.round(
+                  (attackPower / (attackPower + defense / 2)) *
+                    baseDamage *
+                    damageMultiplier *
+                    criticalMultiplier
+                )
+              );
 
           if (attacker === "user") {
             opponentHP -= damage;
@@ -491,6 +513,8 @@ export const useBattleStore = create<BattleState>((set, get) => ({
           turns.push({
             attacker,
             damage,
+            isCriticalHit,
+            didMiss,
             remainingUserHP: (userHP / userMaxHP) * 100,
             remainingOpponentHP: (opponentHP / opponentMaxHP) * 100,
           });
