@@ -447,17 +447,3 @@ const calculateTaskPoints = (task: Task): number => {
   if (task.is_daily) return 15;
   return 20;
 };
-
-const isTaskOverdue = (task: Task): boolean => {
-  if (!task.due_date) return false;
-
-  const dueDate = new Date(task.due_date);
-  const now = new Date();
-
-  console.log(`Checking if task "${task.description}" is overdue`);
-  console.log(`Due date: ${dueDate.toLocaleString()}`);
-  console.log(`Current time: ${now.toLocaleString()}`);
-  console.log(`Is overdue: ${dueDate < now}`);
-
-  return dueDate < now;
-};

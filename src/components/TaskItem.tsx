@@ -73,10 +73,10 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onComplete, onDelete }) => {
   };
 
   // Check if task is overdue
-  const isOverdue = () => {
-    if (task.is_completed || task.is_daily || !task.due_date) return false;
-    return new Date(task.due_date) < new Date();
-  };
+  // const isOverdue = () => {
+  //   if (task.is_completed || task.is_daily || !task.due_date) return false;
+  //   return new Date(task.due_date) < new Date();
+  // };
 
   const debugInfo = () => {
     if (!task.due_date) return null;

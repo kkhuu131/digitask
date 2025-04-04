@@ -1,9 +1,9 @@
 import { useEffect, useState, useMemo } from "react";
-import { useTaskStore, Task } from "../store/taskStore";
+import { useTaskStore } from "../store/taskStore";
 import TaskItem from "./TaskItem";
 
 const TaskList = () => {
-  const { tasks, loading, completeTask, deleteTask, checkOverdueTasks } = useTaskStore();
+  const { tasks, completeTask, deleteTask } = useTaskStore();
   const [filter, setFilter] = useState<"all" | "active" | "completed">("all");
   const [, forceUpdate] = useState({});
   
