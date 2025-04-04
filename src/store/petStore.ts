@@ -249,6 +249,12 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         loading: false,
       });
 
+      // Fetch discovered Digimon
+      await get().fetchDiscoveredDigimon();
+
+      // Mark current Digimon as discovered if not already
+      await get().addDiscoveredDigimon(userDigimon.digimon_id);
+
       // Get evolution options
       const { data: evolutionPaths, error: evolutionError } = await supabase
         .from("evolution_paths")
@@ -594,8 +600,6 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       return () => {};
     }
 
-    console.log("Setting up Digimon subscription for user:", userData.user.id);
-
     const subscription = supabase
       .channel("digimon_changes")
       .on(
@@ -607,14 +611,11 @@ export const useDigimonStore = create<PetState>((set, get) => ({
           filter: `user_id=eq.${userData.user.id}`,
         },
         async (payload) => {
-          console.log("Digimon data changed:", payload);
-
           // If it's a DELETE event and our current Digimon was deleted
           if (
             payload.eventType === "DELETE" &&
             get().userDigimon?.id === payload.old.id
           ) {
-            console.log("Current Digimon was deleted");
             set({ userDigimon: null, digimonData: null, evolutionOptions: [] });
 
             // Show notification about Digimon death
