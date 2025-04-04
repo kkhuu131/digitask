@@ -1,7 +1,5 @@
 import { create } from "zustand";
 import { supabase } from "../lib/supabase";
-import { useAuthStore } from "./authStore";
-import { RealtimeChannel } from "@supabase/supabase-js";
 
 export interface UserDigimon {
   id: string;
@@ -15,6 +13,8 @@ export interface UserDigimon {
   created_at: string;
   last_updated_at: string;
   last_fed_tasks_at: string;
+  is_active: boolean;
+  digimon?: Digimon;
 }
 
 export interface Digimon {
@@ -40,30 +40,34 @@ export interface EvolutionOption {
   level_required: number;
 }
 
-export interface DigimonState {
+export interface PetState {
   userDigimon: UserDigimon | null;
+  allUserDigimon: UserDigimon[];
   digimonData: Digimon | null;
   evolutionOptions: EvolutionOption[];
-  discoveredDigimon: number[]; // Array of digimon_id values the user has discovered
+  discoveredDigimon: number[];
   loading: boolean;
   error: string | null;
   fetchUserDigimon: () => Promise<void>;
-  createUserDigimon: (name: string | null, digimonId: number) => Promise<void>;
-  updateDigimonStats: (stats: Partial<UserDigimon>) => Promise<void>;
+  fetchAllUserDigimon: () => Promise<void>;
+  createUserDigimon: (name: string, digimonId: number) => Promise<void>;
+  updateDigimonStats: (updates: Partial<UserDigimon>) => Promise<void>;
   feedDigimon: (taskPoints: number) => Promise<void>;
   checkEvolution: () => Promise<boolean>;
   evolveDigimon: (toDigimonId: number) => Promise<void>;
   getStarterDigimon: () => Promise<Digimon[]>;
   fetchDiscoveredDigimon: () => Promise<void>;
   addDiscoveredDigimon: (digimonId: number) => Promise<void>;
-  subscribeToDigimonUpdates: () => RealtimeChannel | undefined;
+  subscribeToDigimonUpdates: () => Promise<() => void>;
   checkDigimonHealth: () => Promise<void>;
   checkLevelUp: () => Promise<boolean | undefined>;
   getDigimonDisplayName: () => string;
+  setActiveDigimon: (digimonId: string) => Promise<void>;
 }
 
-export const useDigimonStore = create<DigimonState>((set, get) => ({
+export const useDigimonStore = create<PetState>((set, get) => ({
   userDigimon: null,
+  allUserDigimon: [],
   digimonData: null,
   evolutionOptions: [],
   discoveredDigimon: [],
@@ -121,49 +125,55 @@ export const useDigimonStore = create<DigimonState>((set, get) => ({
       // Get the current user
       const { data: userData } = await supabase.auth.getUser();
       if (!userData.user) {
-        set({
-          userDigimon: null,
-          digimonData: null,
-          evolutionOptions: [],
-          loading: false,
-        });
+        set({ userDigimon: null, digimonData: null, loading: false });
         return;
       }
 
-      console.log("Fetching Digimon for user:", userData.user.id);
-
-      // Get the user's Digimon
-      const { data: userDigimonList, error: userDigimonError } = await supabase
+      // Fetch the active Digimon for this user
+      const { data: userDigimon, error: digimonError } = await supabase
         .from("user_digimon")
         .select("*")
-        .eq("user_id", userData.user.id);
+        .eq("user_id", userData.user.id)
+        .eq("is_active", true)
+        .single();
 
-      if (userDigimonError) throw userDigimonError;
+      // If no active Digimon is found or there's an error, handle it gracefully
+      if (digimonError || !userDigimon) {
+        // Check if we have any Digimon at all
+        const { data: anyDigimon, error: anyDigimonError } = await supabase
+          .from("user_digimon")
+          .select("*")
+          .eq("user_id", userData.user.id)
+          .limit(1);
 
-      console.log("User Digimon data:", userDigimonList);
+        if (anyDigimonError) throw anyDigimonError;
 
-      // If user has no Digimon, return early
-      if (!userDigimonList || userDigimonList.length === 0) {
-        set({
-          userDigimon: null,
-          digimonData: null,
-          evolutionOptions: [],
-          loading: false,
-        });
+        // If we have at least one Digimon but none is active, set the first one as active
+        if (anyDigimon && anyDigimon.length > 0) {
+          const { error: updateError } = await supabase
+            .from("user_digimon")
+            .update({ is_active: true })
+            .eq("id", anyDigimon[0].id);
+
+          if (updateError) throw updateError;
+
+          // Retry fetching with the newly activated Digimon
+          return await get().fetchUserDigimon();
+        }
+
+        // If no Digimon at all, return null values
+        set({ userDigimon: null, digimonData: null, loading: false });
         return;
       }
 
-      // Use the first Digimon in the list
-      const userDigimon = userDigimonList[0];
-
       // Get the Digimon data
-      const { data: digimonData, error: digimonError } = await supabase
+      const { data: digimonData, error: digimonDataError } = await supabase
         .from("digimon")
         .select("*")
         .eq("id", userDigimon.digimon_id)
         .single();
 
-      if (digimonError) throw digimonError;
+      if (digimonDataError) throw digimonDataError;
 
       // Fetch discovered Digimon
       await get().fetchDiscoveredDigimon();
@@ -205,44 +215,117 @@ export const useDigimonStore = create<DigimonState>((set, get) => ({
       });
     } catch (error) {
       console.error("Error fetching user Digimon:", error);
-      set({
-        error: (error as Error).message,
-        loading: false,
-        userDigimon: null,
-        digimonData: null,
-        evolutionOptions: [],
-      });
+      set({ error: (error as Error).message, loading: false });
     }
   },
 
-  createUserDigimon: async (name: string | null, digimonId: number) => {
+  fetchAllUserDigimon: async () => {
     try {
       set({ loading: true, error: null });
 
       // Get the current user
       const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) throw new Error("User not authenticated");
-
-      // Check if user already has a Digimon
-      const { data: existingDigimon } = await supabase
-        .from("user_digimon")
-        .select("*")
-        .eq("user_id", userData.user.id);
-
-      if (existingDigimon && existingDigimon.length > 0) {
-        throw new Error("You already have a Digimon");
+      if (!userData.user) {
+        set({ allUserDigimon: [], loading: false });
+        return;
       }
 
-      // Create a new Digimon for the user
-      const { error } = await supabase.from("user_digimon").insert({
-        user_id: userData.user.id,
-        digimon_id: digimonId,
-        name: name,
-        current_level: 1,
-        experience_points: 0,
-        health: 100,
-        happiness: 100,
+      // Fetch all Digimon for this user with their related Digimon data
+      const { data: userDigimonList, error: digimonError } = await supabase
+        .from("user_digimon")
+        .select(
+          `
+          *,
+          digimon:digimon_id (*)
+        `
+        )
+        .eq("user_id", userData.user.id)
+        .order("created_at", { ascending: false });
+
+      if (digimonError) throw digimonError;
+
+      set({
+        allUserDigimon: userDigimonList || [],
+        loading: false,
       });
+    } catch (error) {
+      console.error("Error fetching all user Digimon:", error);
+      set({ error: (error as Error).message, loading: false });
+    }
+  },
+
+  setActiveDigimon: async (digimonId: string) => {
+    try {
+      set({ loading: true, error: null });
+
+      // Get the current user
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) {
+        set({ loading: false });
+        return;
+      }
+
+      // Update the selected Digimon to be active
+      const { error: updateError } = await supabase
+        .from("user_digimon")
+        .update({ is_active: true })
+        .eq("id", digimonId)
+        .eq("user_id", userData.user.id);
+
+      if (updateError) {
+        throw updateError;
+      }
+
+      // Fetch the updated Digimon data
+      await get().fetchUserDigimon();
+      await get().fetchAllUserDigimon();
+
+      set({ loading: false });
+    } catch (error) {
+      console.error("Error setting active Digimon:", error);
+      set({ error: (error as Error).message, loading: false });
+    }
+  },
+
+  createUserDigimon: async (name: string, digimonId: number) => {
+    try {
+      set({ loading: true, error: null });
+
+      // Get the current user
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) {
+        set({ error: "User not authenticated", loading: false });
+        return;
+      }
+
+      // Count existing Digimon for this user
+      const { count, error: countError } = await supabase
+        .from("user_digimon")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", userData.user.id);
+
+      if (countError) {
+        throw countError;
+      }
+
+      // Set is_active to true if this is the first Digimon
+      const isActive = count === 0;
+
+      // Create the new Digimon
+      const { error } = await supabase
+        .from("user_digimon")
+        .insert({
+          user_id: userData.user.id,
+          digimon_id: digimonId,
+          name: name,
+          health: 100,
+          happiness: 100,
+          experience_points: 0,
+          current_level: 1,
+          is_active: isActive,
+        })
+        .select()
+        .single();
 
       if (error) throw error;
 
@@ -253,7 +336,7 @@ export const useDigimonStore = create<DigimonState>((set, get) => ({
       await get().fetchUserDigimon();
       set({ loading: false });
     } catch (error) {
-      console.error("Error creating Digimon:", error);
+      console.error("Error creating user Digimon:", error);
       set({ error: (error as Error).message, loading: false });
     }
   },
@@ -297,50 +380,65 @@ export const useDigimonStore = create<DigimonState>((set, get) => ({
 
   feedDigimon: async (taskPoints: number) => {
     try {
+      set({ loading: true, error: null });
+
       const { userDigimon } = get();
-      if (!userDigimon) return;
+      if (!userDigimon) {
+        console.log("No Digimon to feed");
+        set({ loading: false });
+        return;
+      }
+
+      // Get the current user
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) {
+        set({ loading: false });
+        return;
+      }
 
       console.log(`Feeding Digimon with ${taskPoints} points`);
 
-      // Calculate happiness and health gains
-      const happinessGain = Math.min(taskPoints / 2, 10); // Cap happiness gain at 10
-      const healthGain = Math.min(taskPoints / 3, 5); // Cap health gain at 5
-
       // Calculate new stats
-      const newHappiness = Math.min(100, userDigimon.happiness + happinessGain);
-      const newHealth = Math.min(100, userDigimon.health + healthGain);
+      const newHealth = Math.ceil(
+        Math.min(100, userDigimon.health + taskPoints * 0.5)
+      );
+      const newHappiness = Math.ceil(
+        Math.min(100, userDigimon.happiness + taskPoints * 0.5)
+      );
       const newXP = userDigimon.experience_points + taskPoints;
 
-      console.log(
-        `Current XP: ${userDigimon.experience_points}, New XP: ${newXP}`
-      );
-
-      // Update Digimon stats
-      await supabase
+      // Update the Digimon in the database
+      const { error } = await supabase
         .from("user_digimon")
         .update({
-          happiness: newHappiness,
           health: newHealth,
+          happiness: newHappiness,
           experience_points: newXP,
           last_fed_tasks_at: new Date().toISOString(),
         })
-        .eq("id", userDigimon.id);
+        .eq("id", userDigimon.id); // Make sure we're using the ID to identify the record
+
+      if (error) {
+        console.error("Error feeding Digimon:", error);
+        throw error;
+      }
 
       // Update local state
       set({
         userDigimon: {
           ...userDigimon,
-          happiness: newHappiness,
           health: newHealth,
+          happiness: newHappiness,
           experience_points: newXP,
           last_fed_tasks_at: new Date().toISOString(),
         },
+        loading: false,
       });
 
-      // Check for level up after gaining XP
-      await get().checkLevelUp();
+      console.log("Digimon fed successfully");
     } catch (error) {
-      console.error("Error feeding Digimon:", error);
+      console.error("Error in feedDigimon:", error);
+      set({ error: (error as Error).message, loading: false });
     }
   },
 
@@ -428,38 +526,36 @@ export const useDigimonStore = create<DigimonState>((set, get) => ({
     }
   },
 
-  subscribeToDigimonUpdates: () => {
-    const { user } = useAuthStore.getState();
-    if (!user) return undefined;
+  subscribeToDigimonUpdates: async () => {
+    // Get the current user
+    const { data: userData } = await supabase.auth.getUser();
+    if (!userData.user) {
+      return () => {}; // Return empty function if no user
+    }
 
-    const subscription = supabase
-      .channel("digimon-updates")
+    // Subscribe to changes on the user's active Digimon
+    const subscription = await supabase
+      .channel("user_digimon_changes")
       .on(
         "postgres_changes",
         {
           event: "UPDATE",
           schema: "public",
           table: "user_digimon",
-          filter: `user_id=eq.${user.id}`,
+          filter: `user_id=eq.${userData.user.id} AND is_active=eq.true`,
         },
-        (payload) => {
-          // Fix the type issue by ensuring userDigimon is not null
-          set((state) => {
-            if (!state.userDigimon) return state;
-
-            return {
-              ...state,
-              userDigimon: {
-                ...state.userDigimon,
-                ...payload.new,
-              },
-            };
-          });
+        async (payload) => {
+          console.log("Digimon updated:", payload);
+          // Refresh the Digimon data
+          await get().fetchUserDigimon();
         }
       )
       .subscribe();
 
-    return subscription;
+    // Return a cleanup function
+    return () => {
+      supabase.removeChannel(subscription);
+    };
   },
 
   checkDigimonHealth: async () => {

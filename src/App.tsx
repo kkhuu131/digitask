@@ -18,6 +18,7 @@ import ResetPassword from "./pages/ResetPassword";
 import AuthCallback from "./pages/AuthCallback";
 import Battle from './pages/Battle';
 import ProfileSettings from './pages/ProfileSettings';
+import UserDigimonPage from './pages/UserDigimonPage';
 
 // Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -35,8 +36,8 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 function App() {
-  const { loading: authLoading, checkSession, user } = useAuthStore();
-  const { userDigimon, fetchUserDigimon } = useDigimonStore();
+  const { loading: authLoading, checkSession } = useAuthStore();
+  const { userDigimon, fetchUserDigimon, subscribeToDigimonUpdates } = useDigimonStore();
   const [appLoading, setAppLoading] = useState(true);
   const [needsEmailConfirmation, _setNeedsEmailConfirmation] = useState(false);
   const [_isAuthenticated, setIsAuthenticated] = useState(false);
@@ -49,9 +50,8 @@ function App() {
         await checkSession();
         
         if (useAuthStore.getState().user) {
+          await useTaskStore.getState().initializeStore();
           await fetchUserDigimon();
-          await useTaskStore.getState().fetchTasks();
-          await useTaskStore.getState().checkOverdueTasks();
           await useTaskStore.getState().checkDailyQuota();
           await useDigimonStore.getState().checkDigimonHealth();
         }
@@ -68,19 +68,21 @@ function App() {
   
   // Set up Digimon subscription
   useEffect(() => {
-    // Only set up subscription if user is logged in
-    if (user) {
-      const subscription = useDigimonStore.getState().subscribeToDigimonUpdates();
-      
-      // Clean up subscription when component unmounts
-      return () => {
-        if (subscription) {
-          subscription.unsubscribe();
-        }
-      };
-    }
-  }, [user]);
-  
+    let unsubscribe: (() => void) | undefined;
+
+    const subscribe = async () => {
+      unsubscribe = await subscribeToDigimonUpdates();
+    };
+
+    subscribe();
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe(); // Cleanup function to remove subscription
+      }
+    };
+  }, [subscribeToDigimonUpdates]);
+
   // Auth state change listener
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -127,6 +129,24 @@ function App() {
     };
     
     checkAuth();
+  }, []);
+  
+  // Add this useEffect to periodically check for overdue tasks
+  useEffect(() => {
+    // Only run if user is logged in
+    if (!useAuthStore.getState().user) return;
+    
+    // Check every minute
+    const intervalId = setInterval(() => {
+      useTaskStore.getState().checkOverdueTasks();
+    },  60 * 1000);
+    ``
+    // Run once immediately
+    useTaskStore.getState().checkOverdueTasks();
+    
+    return () => {
+      clearInterval(intervalId);
+    };
   }, []);
   
   // Show a loading indicator while the app is initializing
@@ -227,6 +247,14 @@ function App() {
           <ProtectedRoute>
             <Layout>
               <ProfileSettings />
+            </Layout>
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/your-digimon" element={
+          <ProtectedRoute>
+            <Layout>
+              {userDigimon ? <UserDigimonPage /> : <CreatePet />}
             </Layout>
           </ProtectedRoute>
         } />

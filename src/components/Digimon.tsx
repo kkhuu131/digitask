@@ -11,7 +11,7 @@ interface DigimonProps {
 const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOptions }) => {
   const [showEvolutionModal, setShowEvolutionModal] = useState(false);
   const [evolutionError, setEvolutionError] = useState<string | null>(null);
-  const { evolveDigimon, discoveredDigimon, getDigimonDisplayName } = useDigimonStore();
+  const { evolveDigimon, discoveredDigimon, getDigimonDisplayName, allUserDigimon } = useDigimonStore();
   
   // Add a local state to track XP and level
   const [currentXP, setCurrentXP] = useState(userDigimon.experience_points);
@@ -58,10 +58,33 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
   
   const displayName = getDigimonDisplayName();
   
+  const totalDigimon = allUserDigimon.length;
+  
   return (
     <div className="card flex flex-col items-center">
       <h2 className="text-2xl font-bold text-center mb-1">{displayName}</h2>
       <p className="text-sm text-gray-500 mb-4">{digimonData.name} - {digimonData.stage}</p>
+      
+      {totalDigimon > 1 && (
+        <div className="bg-primary-50 border-l-4 border-primary-500 p-3 mb-4">
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-primary-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <p className="text-sm text-primary-700">
+                This is your active Digimon. You have {totalDigimon} Digimon total.
+                <br />
+                <a href="/your-digimon" className="font-medium underline">
+                  View all your Digimon
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
       
       <div className="relative mb-6">
         <motion.div
@@ -99,7 +122,7 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
         <div>
           <div className="flex justify-between text-sm mb-1">
             <span>Health</span>
-            <span>{userDigimon.health}/100</span>
+            <span>{(userDigimon.health).toFixed(0)}/100</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2.5">
             <div 
@@ -115,7 +138,7 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
         <div>
           <div className="flex justify-between text-sm mb-1">
             <span>Happiness</span>
-            <span>{userDigimon.happiness}/100</span>
+            <span>{userDigimon.happiness.toFixed(0)}/100</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2.5">
             <div 
@@ -131,7 +154,7 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
         <div>
           <div className="flex justify-between text-sm mb-1">
             <span>Level {currentLevel}</span>
-            <span>{currentXP}/{xpForNextLevel} XP</span>
+            <span>{currentXP.toFixed(0)}/{xpForNextLevel.toFixed(0)} XP</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2.5">
             <div 

@@ -5,7 +5,7 @@ import BattleHistory from "../components/BattleHistory";
 import BattleAnimation from "../components/BattleAnimation";
 
 const Battle = () => {
-  const { userDigimon, digimonData, getDigimonDisplayName } = useDigimonStore();
+  const { userDigimon, digimonData, getDigimonDisplayName, allUserDigimon } = useDigimonStore();
   const { 
     queueForBattle, 
     currentBattle, 
@@ -20,6 +20,7 @@ const Battle = () => {
   const [noRealOpponents, setNoRealOpponents] = useState(false);
 
   const playerDigimonDisplayName = getDigimonDisplayName();
+  const totalDigimon = allUserDigimon.length;
 
   useEffect(() => {
     // If we have a current battle result but aren't showing the animation,
@@ -129,6 +130,14 @@ const Battle = () => {
                   No real opponents found. You battled against a wild Digimon instead. 
                   Invite friends to join the game for real battles!
                 </p>
+              </div>
+            )}
+            
+            {totalDigimon > 1 && (
+              <div className="text-sm text-gray-600 mb-4">
+                This is your active Digimon. You can switch your active Digimon in the 
+                <a href="/your-digimon" className="text-primary-600 hover:text-primary-500 mx-1">Your Digimon</a> 
+                section.
               </div>
             )}
           </div>

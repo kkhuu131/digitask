@@ -13,9 +13,9 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onComplete, onDelete }) => {
     
     const date = new Date(dateString);
     
-    // Log the raw date for debugging
-    console.log(`Raw date string: ${dateString}`);
-    console.log(`Parsed date: ${date.toString()}`);
+    // // Log the raw date for debugging
+    // console.log(`Raw date string: ${dateString}`);
+    // console.log(`Parsed date: ${date.toString()}`);
     
     const now = new Date();
     const today = new Date(now);

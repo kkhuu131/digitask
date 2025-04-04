@@ -29,17 +29,30 @@ interface TaskState {
   checkDailyQuota: () => Promise<void>;
   penalizedTasks: string[];
   debugOverdueTasks: () => void;
+  initializeStore: () => Promise<void>;
+  forceCheckOverdueTasks: () => Promise<void>;
 }
 
 export const useTaskStore = create<TaskState>((set, get) => ({
   tasks: [],
   loading: false,
   error: null,
+  penalizedTasks: JSON.parse(localStorage.getItem("penalizedTasks") || "[]"),
   lastQuotaCheck: localStorage.getItem("lastQuotaCheck"),
   consecutiveDaysMissed: parseInt(
     localStorage.getItem("consecutiveDaysMissed") || "0"
   ),
-  penalizedTasks: JSON.parse(localStorage.getItem("penalizedTasks") || "[]"),
+
+  initializeStore: async () => {
+    const penalizedTasks = JSON.parse(
+      localStorage.getItem("penalizedTasks") || "[]"
+    );
+    set({ penalizedTasks });
+
+    await get().fetchTasks();
+
+    await get().checkOverdueTasks();
+  },
 
   fetchTasks: async () => {
     try {
@@ -60,6 +73,9 @@ export const useTaskStore = create<TaskState>((set, get) => ({
 
       if (error) throw error;
       set({ tasks: tasks || [], loading: false });
+
+      // Check for overdue tasks after fetching
+      await get().checkOverdueTasks();
     } catch (error) {
       set({ error: (error as Error).message, loading: false });
     }
@@ -99,6 +115,14 @@ export const useTaskStore = create<TaskState>((set, get) => ({
           loading: false,
         };
       });
+
+      // Check if the newly created task is already overdue
+      if (isTaskOverdue(data)) {
+        console.log(
+          "Newly created task is already overdue, checking penalties"
+        );
+        await get().checkOverdueTasks();
+      }
     } catch (error) {
       set({ error: (error as Error).message, loading: false });
     }
@@ -134,10 +158,23 @@ export const useTaskStore = create<TaskState>((set, get) => ({
 
       if (error) throw error;
 
-      set((state) => ({
-        tasks: state.tasks.filter((task) => task.id !== id),
-        loading: false,
-      }));
+      set((state) => {
+        const updatedPenalizedTasks = state.penalizedTasks.filter(
+          (taskId) => taskId !== id
+        );
+
+        // Update localStorage
+        localStorage.setItem(
+          "penalizedTasks",
+          JSON.stringify(updatedPenalizedTasks)
+        );
+
+        return {
+          tasks: state.tasks.filter((task) => task.id !== id),
+          penalizedTasks: updatedPenalizedTasks,
+          loading: false,
+        };
+      });
     } catch (error) {
       set({ error: (error as Error).message, loading: false });
     }
@@ -145,6 +182,8 @@ export const useTaskStore = create<TaskState>((set, get) => ({
 
   completeTask: async (taskId: string) => {
     try {
+      const { data: user } = await supabase.auth.getUser();
+
       set({ loading: true, error: null });
 
       // Get the task to check if it's overdue
@@ -155,6 +194,16 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         .single();
 
       if (!task) throw new Error("Task not found");
+
+      // Get the user's active Digimon
+      const { error: digimonError } = await supabase
+        .from("user_digimon")
+        .select("*")
+        .eq("user_id", user?.user?.id)
+        .eq("is_active", true) // Only get the active Digimon
+        .single();
+
+      if (digimonError) throw digimonError;
 
       // Update the task status
       const { error } = await supabase
@@ -167,6 +216,21 @@ export const useTaskStore = create<TaskState>((set, get) => ({
 
       if (error) throw error;
 
+      // Remove from penalized tasks if it was there
+      set((state) => {
+        const updatedPenalizedTasks = state.penalizedTasks.filter(
+          (id) => id !== taskId
+        );
+
+        // Update localStorage
+        localStorage.setItem(
+          "penalizedTasks",
+          JSON.stringify(updatedPenalizedTasks)
+        );
+
+        return { ...state, penalizedTasks: updatedPenalizedTasks };
+      });
+
       // Calculate points based on task difficulty
       const points = calculateTaskPoints(task.difficulty);
       console.log(`Task completed: ${task.description}, Points: ${points}`);
@@ -177,10 +241,8 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       // Explicitly check for level up after feeding
       await useDigimonStore.getState().checkLevelUp();
 
-      // If the task was overdue, explicitly check Digimon health
-      const dueDate = new Date(task.due_date);
-      const now = new Date();
-      if (dueDate < now) {
+      // Check if the task is overdue using our new function
+      if (isTaskOverdue(task)) {
         console.log("Completed an overdue task, checking Digimon health");
         await useDigimonStore.getState().checkDigimonHealth();
       }
@@ -197,101 +259,98 @@ export const useTaskStore = create<TaskState>((set, get) => ({
 
   checkOverdueTasks: async () => {
     try {
-      set({ loading: true, error: null });
-
       const { tasks, penalizedTasks } = get();
-      const now = new Date();
-      const yesterday = new Date(now);
-      yesterday.setDate(yesterday.getDate() - 1);
+      console.log("Running checkOverdueTasks");
+      console.log("Total tasks:", tasks.length);
+      console.log("Already penalized tasks:", penalizedTasks.length);
 
-      // Find daily tasks that should have been completed yesterday
-      const overdueDailyTasks = tasks.filter((task) => {
-        if (!task.is_daily || task.is_completed) return false;
+      // Filter for incomplete tasks that are overdue AND haven't been penalized yet
+      const newOverdueTasks = tasks.filter((task) => {
+        const isOverdue = isTaskOverdue(task);
+        const isIncomplete = !task.is_completed;
+        const isNotPenalized = !penalizedTasks.includes(task.id);
 
-        // If the task has never been completed, or was completed before yesterday
-        const taskDate = task.completed_at ? new Date(task.completed_at) : null;
-        if (!taskDate) return true;
+        console.log(`Task ${task.id}: "${task.description}"`);
+        console.log(`- Due date: ${task.due_date}`);
+        console.log(`- Is overdue: ${isOverdue}`);
+        console.log(`- Is incomplete: ${isIncomplete}`);
+        console.log(`- Is not penalized: ${isNotPenalized}`);
 
-        return taskDate < yesterday && !task.is_completed;
+        return isIncomplete && isOverdue && isNotPenalized;
       });
 
-      // Find non-daily tasks with due dates in the past
-      const overdueNonDailyTasks = tasks.filter((task) => {
-        if (task.is_daily || task.is_completed || !task.due_date) return false;
-
-        // Compare the full timestamp, not just the date
-        const dueDate = new Date(task.due_date);
-        const now = new Date();
-
-        // Detailed logging for debugging
-        console.log(`Task: "${task.description}"`);
-        console.log(`Due date string: ${task.due_date}`);
-        console.log(`Parsed due date: ${dueDate.toString()}`);
-        console.log(`Current time: ${now.toString()}`);
-        console.log(`Is overdue: ${dueDate < now}`);
-        console.log(
-          `Time difference (ms): ${now.getTime() - dueDate.getTime()}`
-        );
-
-        return dueDate < now;
-      });
-
-      // Filter out tasks that have already been penalized
-      const newOverdueTasks = [
-        ...overdueDailyTasks,
-        ...overdueNonDailyTasks,
-      ].filter((task) => !penalizedTasks.includes(task.id));
+      console.log(
+        `Found ${newOverdueTasks.length} new overdue tasks to penalize`
+      );
 
       if (newOverdueTasks.length > 0) {
-        // Decrease digimon health and happiness based on NEW overdue tasks only
+        // Get the Digimon
         const { userDigimon } = useDigimonStore.getState();
-        if (userDigimon) {
-          const healthDecrease = Math.min(
-            userDigimon.health,
-            newOverdueTasks.length * 5
-          );
-          const happinessDecrease = Math.min(
-            userDigimon.happiness,
-            newOverdueTasks.length * 5
-          );
+        console.log("Active Digimon:", userDigimon?.id);
 
-          await useDigimonStore.getState().updateDigimonStats({
-            health: userDigimon.health - healthDecrease,
-            happiness: userDigimon.happiness - happinessDecrease,
-          });
-
-          // Log which tasks caused penalties
-          console.log(
-            `Applied penalties for ${newOverdueTasks.length} newly overdue tasks`
-          );
-          newOverdueTasks.forEach((task) => {
-            console.log(`- Task "${task.description}" is overdue`);
-          });
+        if (!userDigimon) {
+          console.log("No Digimon to penalize");
+          return;
         }
 
-        // Reset daily tasks
-        for (const task of overdueDailyTasks) {
-          await get().updateTask(task.id, {
-            is_completed: false,
-            completed_at: null,
-          });
+        // Calculate penalty based on number of overdue tasks
+        const healthPenalty = Math.min(newOverdueTasks.length * 5, 20);
+        const happinessPenalty = Math.min(newOverdueTasks.length * 5, 20);
+
+        console.log(
+          `Applying penalties: Health -${healthPenalty}, Happiness -${happinessPenalty}`
+        );
+        console.log(
+          `Current health: ${userDigimon.health}, happiness: ${userDigimon.happiness}`
+        );
+
+        // Update Digimon stats
+        const newHealth = Math.max(0, userDigimon.health - healthPenalty);
+        const newHappiness = Math.max(
+          0,
+          userDigimon.happiness - happinessPenalty
+        );
+
+        console.log(`New health: ${newHealth}, new happiness: ${newHappiness}`);
+
+        const { error } = await supabase
+          .from("user_digimon")
+          .update({
+            health: newHealth,
+            happiness: newHappiness,
+          })
+          .eq("id", userDigimon.id);
+
+        if (error) {
+          console.error("Error updating Digimon stats:", error);
+          return;
         }
 
-        // Add the newly penalized tasks to the tracking array
+        console.log("Successfully updated Digimon stats in database");
+
+        // Mark these tasks as penalized
         const updatedPenalizedTasks = [
           ...penalizedTasks,
           ...newOverdueTasks.map((task) => task.id),
         ];
-        set({ penalizedTasks: updatedPenalizedTasks });
+
+        console.log("Updating penalized tasks list:", updatedPenalizedTasks);
+
+        // Store in localStorage for persistence
         localStorage.setItem(
           "penalizedTasks",
           JSON.stringify(updatedPenalizedTasks)
         );
-      }
 
-      set({ loading: false });
+        // Update state
+        set({ penalizedTasks: updatedPenalizedTasks });
+        console.log("State updated with new penalized tasks");
+
+        // Check if Digimon health is critical
+        await useDigimonStore.getState().checkDigimonHealth();
+      }
     } catch (error) {
-      set({ error: (error as Error).message, loading: false });
+      console.error("Error checking overdue tasks:", error);
     }
   },
 
@@ -439,6 +498,11 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       }
     });
   },
+
+  forceCheckOverdueTasks: async () => {
+    console.log("Manually triggering overdue task check");
+    await get().checkOverdueTasks();
+  },
 }));
 
 const calculateTaskPoints = (difficulty: string): number => {
@@ -452,4 +516,35 @@ const calculateTaskPoints = (difficulty: string): number => {
     default:
       return 5;
   }
+};
+
+// Update the logic for checking if a task is overdue
+const isTaskOverdue = (task: Task): boolean => {
+  // If there's no due date, it can't be overdue
+  if (!task.due_date) return false;
+
+  // For daily tasks, they're only overdue if the due date is before today's date
+  if (task.is_daily) {
+    const dueDate = new Date(task.due_date);
+    const today = new Date();
+
+    // Reset time components to compare just the dates
+    const dueDateOnly = new Date(
+      dueDate.getFullYear(),
+      dueDate.getMonth(),
+      dueDate.getDate()
+    );
+    const todayOnly = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
+
+    return dueDateOnly < todayOnly;
+  }
+
+  // For one-time tasks, they're overdue if the due date is before the current time
+  const dueDate = new Date(task.due_date);
+  const now = new Date();
+  return dueDate < now;
 };

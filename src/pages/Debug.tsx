@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useDigimonStore } from '../store/petStore';
 import { useBattleStore } from "../store/battleStore";
+import { useTaskStore } from '../store/taskStore';
 
 const Debug = () => {
   const [status, setStatus] = useState<string>('Checking connection...');
@@ -287,6 +288,13 @@ const Debug = () => {
           Reset Daily Battle Limit
         </button>
       </div>
+      
+      <button 
+        onClick={() => useTaskStore.getState().forceCheckOverdueTasks()}
+        className="btn-primary mt-4"
+      >
+        Force Check Overdue Tasks
+      </button>
     </div>
   );
 };
