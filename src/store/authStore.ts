@@ -34,14 +34,26 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       set({ loading: true, error: null });
 
+      // Validate inputs before making API calls
+      if (!email || !password || !username) {
+        throw new Error("Email, password, and username are required");
+      }
+
       // Check if username is available
       const { data: existingUsers, error: checkError } = await supabase
         .from("profiles")
         .select("username")
         .eq("username", username);
 
+      if (checkError) {
+        console.error("Error checking username availability:", checkError);
+        throw new Error(
+          "Unable to verify username availability. Please try again."
+        );
+      }
+
       // Only check for duplicates if the query was successful
-      if (!checkError && existingUsers && existingUsers.length > 0) {
+      if (existingUsers && existingUsers.length > 0) {
         throw new Error("Username is already taken");
       }
 
@@ -87,7 +99,9 @@ export const useAuthStore = create<AuthState>((set) => ({
       }
     } catch (error) {
       set({
-        error: (error as Error).message,
+        error:
+          (error as Error).message ||
+          "An unknown error occurred during sign up",
         loading: false,
       });
     }

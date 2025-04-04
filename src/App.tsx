@@ -138,22 +138,86 @@ function App() {
     checkAuth();
   }, []);
   
-  // Add this useEffect to periodically check for overdue tasks
+  // Keep only this one
   useEffect(() => {
     // Only run if user is logged in
     if (!useAuthStore.getState().user) return;
     
-    // Check every minute
+    console.log("Setting up overdue task check interval");
+    
+    // Check every 30 seconds instead of every minute
     const intervalId = setInterval(() => {
+      console.log("Running scheduled overdue task check");
       useTaskStore.getState().checkOverdueTasks();
-    },  60 * 1000);
-    ``
+      
+      // Also refresh the task list to update UI
+      useTaskStore.getState().fetchTasks();
+    }, 30 * 1000);
+    
     // Run once immediately
     useTaskStore.getState().checkOverdueTasks();
     
     return () => {
+      console.log("Clearing overdue task check interval");
       clearInterval(intervalId);
     };
+  }, []);
+  
+  // Add this effect to listen for Digimon death
+  useEffect(() => {
+    const handleDigimonDeath = () => {
+      console.log("Digimon death event received, navigating to create pet");
+      window.location.href = "/create-pet"; // Force navigation
+    };
+    
+    window.addEventListener('digimon-died', handleDigimonDeath);
+    
+    return () => {
+      window.removeEventListener('digimon-died', handleDigimonDeath);
+    };
+  }, []);
+  
+  // Add this to the useEffect in App.tsx
+  useEffect(() => {
+    // Check for overdue tasks every minute
+    const overdueCheckInterval = setInterval(() => {
+      if (useAuthStore.getState().user) {
+        useTaskStore.getState().checkOverdueTasks();
+      }
+    }, 60000); // Check every minute
+    
+    return () => {
+      clearInterval(overdueCheckInterval);
+    };
+  }, []);
+  
+  // Add this to the useEffect that runs on app initialization
+  useEffect(() => {
+    const initializeApp = async () => {
+      // Check auth
+      const { data } = await supabase.auth.getSession();
+      if (data.session) {
+        setIsAuthenticated(true);
+        
+        // Fetch the daily quota first to get penalized tasks
+        await useTaskStore.getState().fetchDailyQuota();
+        
+        // Then fetch tasks
+        await useTaskStore.getState().fetchTasks();
+        
+        // Fetch the user's Digimon
+        await useDigimonStore.getState().fetchUserDigimon();
+        await useDigimonStore.getState().fetchAllUserDigimon();
+        
+        // Check Digimon health
+        await useDigimonStore.getState().checkDigimonHealth();
+      } else {
+        setIsAuthenticated(false);
+      }
+      setLoading(false);
+    };
+    
+    initializeApp();
   }, []);
   
   // Show a loading indicator while the app is initializing

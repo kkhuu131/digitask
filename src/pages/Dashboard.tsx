@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useDigimonStore } from "../store/petStore";
 import { useTaskStore } from "../store/taskStore";
 import Digimon from "../components/Digimon";
@@ -6,13 +7,22 @@ import TaskForm from "../components/TaskForm";
 import TaskList from "../components/TaskList";
 
 const Dashboard: React.FC = () => {
-  const { userDigimon, digimonData, evolutionOptions, fetchUserDigimon, error: digimonError } = useDigimonStore();
+  const { userDigimon, digimonData, evolutionOptions, fetchUserDigimon, error: digimonError, isDigimonDead, resetDeadState } = useDigimonStore();
   const { fetchTasks, dailyQuota, error: taskError} = useTaskStore();
+  const navigate = useNavigate();
   
   useEffect(() => {
     fetchUserDigimon();
     fetchTasks();
   }, [fetchUserDigimon, fetchTasks]);
+  
+  useEffect(() => {
+    if (isDigimonDead) {
+      console.log("Digimon is dead, navigating to create pet page");
+      resetDeadState();
+      navigate("/create-pet");
+    }
+  }, [isDigimonDead, navigate, resetDeadState]);
   
   const DAILY_QUOTA_REQUIREMENT = 3.0; // Should match the quota in taskStore.ts
 
@@ -88,12 +98,37 @@ const Dashboard: React.FC = () => {
           <TaskList />
         </div>
         
-        <button 
-          onClick={() => useTaskStore.getState().debugOverdueTasks()}
-          className="text-xs text-gray-500 underline"
-        >
-          Debug Overdue Tasks
-        </button>
+        {process.env.NODE_ENV === 'development' && (
+          <div className="mt-4 text-xs text-gray-500">
+            <button 
+              onClick={() => useTaskStore.getState().debugOverdueTasks()}
+              className="underline mr-2"
+            >
+              Debug Overdue Tasks
+            </button>
+            
+            <button 
+              onClick={() => useDigimonStore.getState().fetchUserDigimon()}
+              className="underline mr-2"
+            >
+              Refresh Digimon Data
+            </button>
+            
+            <button 
+              onClick={() => useDigimonStore.getState().testPenalty()}
+              className="underline mr-2"
+            >
+              Test Penalty
+            </button>
+            
+            <button 
+              onClick={() => useDigimonStore.getState().debugHealth()}
+              className="underline"
+            >
+              Debug Health
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

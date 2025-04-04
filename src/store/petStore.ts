@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { supabase } from "../lib/supabase";
 import { useNotificationStore } from "./notificationStore";
+import { useTaskStore } from "./taskStore";
 
 export interface UserDigimon {
   id: string;
@@ -64,6 +65,15 @@ export interface PetState {
   checkLevelUp: () => Promise<boolean | undefined>;
   getDigimonDisplayName: () => string;
   setActiveDigimon: (digimonId: string) => Promise<void>;
+  applyPenalty: (
+    healthPenalty: number,
+    happinessPenalty: number
+  ) => Promise<void>;
+  testPenalty: () => Promise<void>;
+  debugHealth: () => void;
+  isDigimonDead: boolean;
+  resetDeadState: () => void;
+  handleDigimonDeath: () => Promise<void>;
 }
 
 export const useDigimonStore = create<PetState>((set, get) => ({
@@ -74,6 +84,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
   discoveredDigimon: [],
   loading: false,
   error: null,
+  isDigimonDead: false,
 
   fetchDiscoveredDigimon: async () => {
     try {
@@ -521,31 +532,54 @@ export const useDigimonStore = create<PetState>((set, get) => ({
   },
 
   subscribeToDigimonUpdates: async () => {
-    // Get the current user
     const { data: userData } = await supabase.auth.getUser();
     if (!userData.user) {
-      return () => {}; // Return empty function if no user
+      return () => {};
     }
 
-    // Subscribe to changes on the user's active Digimon
-    const subscription = await supabase
-      .channel("user_digimon_changes")
+    console.log("Setting up Digimon subscription for user:", userData.user.id);
+
+    const subscription = supabase
+      .channel("digimon_changes")
       .on(
         "postgres_changes",
         {
-          event: "UPDATE",
+          event: "*", // Listen for all events (INSERT, UPDATE, DELETE)
           schema: "public",
           table: "user_digimon",
-          filter: `user_id=eq.${userData.user.id} AND is_active=eq.true`,
+          filter: `user_id=eq.${userData.user.id}`,
         },
-        async () => {
-          // Refresh the Digimon data
+        async (payload) => {
+          console.log("Digimon data changed:", payload);
+
+          // If it's a DELETE event and our current Digimon was deleted
+          if (
+            payload.eventType === "DELETE" &&
+            get().userDigimon?.id === payload.old.id
+          ) {
+            console.log("Current Digimon was deleted");
+            set({ userDigimon: null, digimonData: null, evolutionOptions: [] });
+
+            // Show notification about Digimon death
+            useNotificationStore.getState().addNotification({
+              message:
+                "Your Digimon has died due to neglect. You'll need to create a new one.",
+              type: "error",
+              persistent: true,
+            });
+
+            // Dispatch a custom event
+            window.dispatchEvent(new CustomEvent("digimon-died"));
+
+            return;
+          }
+
+          // For other events, refresh the Digimon data
           await get().fetchUserDigimon();
         }
       )
       .subscribe();
 
-    // Return a cleanup function
     return () => {
       supabase.removeChannel(subscription);
     };
@@ -618,7 +652,11 @@ export const useDigimonStore = create<PetState>((set, get) => ({
           digimonData: null,
           evolutionOptions: [],
           error: "Your Digimon has died due to neglect.",
+          isDigimonDead: true,
         });
+
+        // Dispatch a custom event
+        window.dispatchEvent(new CustomEvent("digimon-died"));
 
         // Use a small timeout before redirecting to ensure notification is processed
         setTimeout(() => {
@@ -698,5 +736,210 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
     // Otherwise, use the species name
     return digimonData.name;
+  },
+
+  applyPenalty: async (healthPenalty: number, happinessPenalty: number) => {
+    try {
+      const { userDigimon } = get();
+      if (!userDigimon) return;
+
+      console.log(
+        `Applying penalty: -${healthPenalty} health, -${happinessPenalty} happiness`
+      );
+
+      // Calculate new health and happiness values
+      const newHealth = Math.max(0, userDigimon.health - healthPenalty);
+      const newHappiness = Math.max(
+        0,
+        userDigimon.happiness - happinessPenalty
+      );
+
+      // Update the database
+      const { error } = await supabase
+        .from("user_digimon")
+        .update({
+          health: newHealth,
+          happiness: newHappiness,
+          last_updated_at: new Date().toISOString(),
+        })
+        .eq("id", userDigimon.id)
+        .eq("is_active", true); // Only update if this is the active Digimon
+
+      if (error) {
+        console.error("Error updating Digimon stats:", error);
+        return;
+      }
+
+      // Update the local state
+      set((state) => ({
+        userDigimon: state.userDigimon
+          ? {
+              ...state.userDigimon,
+              health: newHealth,
+              happiness: newHappiness,
+            }
+          : null,
+      }));
+
+      // If health is now 0, handle Digimon death
+      if (newHealth <= 0) {
+        await get().handleDigimonDeath();
+      }
+    } catch (error) {
+      console.error("Error applying penalty:", error);
+    }
+  },
+
+  testPenalty: async () => {
+    console.log("Testing penalty application");
+    await get().applyPenalty(10, 15);
+    await get().fetchUserDigimon();
+  },
+
+  debugHealth: () => {
+    const { userDigimon } = get();
+    if (!userDigimon) {
+      console.log("No Digimon found to debug");
+      return;
+    }
+
+    console.log("=== DIGIMON HEALTH DEBUG ===");
+    console.log(`Digimon ID: ${userDigimon.id}`);
+    console.log(`Health: ${userDigimon.health}`);
+    console.log(`Happiness: ${userDigimon.happiness}`);
+    console.log(`Is health exactly 0? ${userDigimon.health === 0}`);
+    console.log(`Is health <= 0? ${userDigimon.health <= 0}`);
+    console.log(`Health type: ${typeof userDigimon.health}`);
+
+    // Check for potential floating point issues
+    if (userDigimon.health < 1 && userDigimon.health > 0) {
+      console.log(
+        "WARNING: Health is between 0 and 1, possible floating point issue"
+      );
+      console.log(`Health exact value: ${userDigimon.health}`);
+    }
+  },
+
+  resetDeadState: () => {
+    set({ isDigimonDead: false });
+  },
+
+  handleDigimonDeath: async () => {
+    const { userDigimon, allUserDigimon } = get();
+
+    if (!userDigimon || userDigimon.health > 0) return;
+
+    console.log("Handling Digimon death");
+
+    try {
+      // Get the current user
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData?.user) {
+        console.error("No authenticated user found");
+        return;
+      }
+
+      // Get all overdue tasks that might not be in the penalized list yet
+      const { data: overdueTasks } = await supabase
+        .from("tasks")
+        .select("id")
+        .eq("user_id", userData.user.id)
+        .eq("is_completed", false)
+        .eq("is_daily", false)
+        .not("due_date", "is", null)
+        .lt("due_date", new Date().toISOString());
+
+      if (overdueTasks && overdueTasks.length > 0) {
+        // Get the current daily quota
+        const { data: quotaData } = await supabase
+          .from("daily_quotas")
+          .select("*")
+          .eq("user_id", userData.user.id)
+          .single();
+
+        if (quotaData) {
+          // Add all overdue task IDs to the penalized tasks list
+          const currentPenalized = quotaData.penalized_tasks || [];
+          const overdueIds = overdueTasks.map((t) => t.id);
+
+          // Create a set to remove duplicates
+          const allPenalizedSet = new Set([...currentPenalized, ...overdueIds]);
+          const allPenalized = Array.from(allPenalizedSet);
+
+          // Update the penalized tasks in the database
+          await supabase
+            .from("daily_quotas")
+            .update({ penalized_tasks: allPenalized })
+            .eq("user_id", userData.user.id);
+
+          // Update the local state in taskStore
+          const taskStore = useTaskStore.getState();
+          if (taskStore.setPenalizedTasks) {
+            taskStore.setPenalizedTasks(allPenalized);
+          }
+        }
+      }
+
+      // Mark the current Digimon as dead in the database
+      await supabase
+        .from("user_digimon")
+        .update({ is_active: false, health: 0 })
+        .eq("id", userDigimon.id);
+
+      // Show a notification about the Digimon's death
+      useNotificationStore.getState().addNotification({
+        message: `Your Digimon ${
+          userDigimon.name || userDigimon.digimon?.name || "Digimon"
+        } has died due to neglect.`,
+        type: "error",
+        persistent: true,
+      });
+
+      // Find another Digimon to make active
+      const otherDigimon = allUserDigimon.find(
+        (d) => d.id !== userDigimon.id && d.health > 0
+      );
+
+      if (otherDigimon) {
+        console.log(`Switching to another Digimon: ${otherDigimon.id}`);
+
+        // Make the other Digimon active
+        await supabase
+          .from("user_digimon")
+          .update({ is_active: true })
+          .eq("id", otherDigimon.id);
+
+        // Update the local state
+        set({
+          userDigimon: { ...otherDigimon, is_active: true },
+          isDigimonDead: false,
+        });
+
+        // Show notification about switching Digimon
+        useNotificationStore.getState().addNotification({
+          message: `Your active Digimon is now ${
+            otherDigimon.name ||
+            otherDigimon.digimon?.name ||
+            "your other Digimon"
+          }.`,
+          type: "info",
+        });
+
+        // Refresh Digimon data to ensure everything is up to date
+        await get().fetchUserDigimon();
+        await get().fetchAllUserDigimon();
+      } else {
+        // No other Digimon available, set isDigimonDead to true
+        set({ isDigimonDead: true });
+
+        // Show notification about needing to create a new Digimon
+        useNotificationStore.getState().addNotification({
+          message: "You'll need to create a new Digimon.",
+          type: "info",
+        });
+      }
+    } catch (error) {
+      console.error("Error handling Digimon death:", error);
+    }
   },
 }));

@@ -42,6 +42,8 @@ interface TaskState {
   fetchDailyQuota: () => Promise<void>;
   checkDailyQuota: () => Promise<void>;
   subscribeToQuotaUpdates: () => Promise<() => void>;
+  lastOverdueCheck: number;
+  setPenalizedTasks: (taskIds: string[]) => void;
 }
 
 export const useTaskStore = create<TaskState>((set, get) => ({
@@ -50,6 +52,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
   error: null,
   penalizedTasks: [],
   dailyQuota: null,
+  lastOverdueCheck: Date.now(),
 
   initializeStore: async () => {
     await get().fetchTasks();
@@ -108,6 +111,18 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         tasks: [...state.tasks, data],
         loading: false,
       }));
+
+      // Check if the newly created task is already overdue
+      if (
+        !data.is_daily &&
+        data.due_date &&
+        new Date(data.due_date) < new Date()
+      ) {
+        console.log(
+          "Newly created task is already overdue, checking penalties..."
+        );
+        await get().checkOverdueTasks();
+      }
     } catch (error) {
       set({ error: (error as Error).message, loading: false });
     }
@@ -202,52 +217,78 @@ export const useTaskStore = create<TaskState>((set, get) => ({
 
   checkOverdueTasks: async () => {
     try {
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) return;
+
+      // First, ensure we have the latest penalized tasks list
+      await get().fetchDailyQuota();
+      const { penalizedTasks } = get();
+
       const { tasks } = get();
-      const { dailyQuota } = get();
+      const now = new Date();
+      let penaltyApplied = false;
 
-      // Get the stored penalized tasks from the database
-      const storedPenalizedTasks = dailyQuota?.penalized_tasks || [];
+      // Find tasks that have become overdue
+      const newlyOverdueTasks = tasks.filter((task) => {
+        if (task.is_daily || task.is_completed || !task.due_date) return false;
 
-      // Find overdue tasks that haven't been penalized yet
-      const overdueTasks = tasks.filter(
-        (task) =>
-          !task.is_daily &&
-          !task.is_completed &&
-          task.due_date &&
-          isTaskOverdue(task) &&
-          !storedPenalizedTasks.includes(task.id)
-      );
+        const dueDate = new Date(task.due_date);
+        return dueDate < now && !penalizedTasks.includes(task.id);
+      });
 
-      if (overdueTasks.length > 0) {
-        console.log(`Found ${overdueTasks.length} new overdue tasks`);
+      if (newlyOverdueTasks.length > 0) {
+        console.log(`Found ${newlyOverdueTasks.length} newly overdue tasks`);
 
-        // Apply penalties for each overdue task
-        for (const task of overdueTasks) {
-          // Add to penalized tasks in state
-          set((state) => ({
-            penalizedTasks: [...state.penalizedTasks, task.id],
-          }));
+        // Get the current daily quota
+        const { data: quotaData } = await supabase
+          .from("daily_quotas")
+          .select("*")
+          .eq("user_id", userData.user.id)
+          .single();
+
+        if (quotaData) {
+          // Create a set of all penalized tasks to avoid duplicates
+          const allPenalizedSet = new Set([
+            ...(quotaData.penalized_tasks || []),
+            ...newlyOverdueTasks.map((t) => t.id),
+          ]);
+          const allPenalized = Array.from(allPenalizedSet);
+
+          // Update the database with all penalized tasks first
+          await supabase
+            .from("daily_quotas")
+            .update({ penalized_tasks: allPenalized })
+            .eq("user_id", userData.user.id);
+
+          // Update local state
+          set({ penalizedTasks: allPenalized });
         }
 
-        // Update the penalized tasks in the database
-        if (dailyQuota) {
-          const newPenalizedTasks = [
-            ...storedPenalizedTasks,
-            ...overdueTasks.map((t) => t.id),
-          ];
+        // Apply penalties for each overdue task
+        for (const task of newlyOverdueTasks) {
+          console.log(`Applying penalty for overdue task: ${task.description}`);
 
-          const { error } = await supabase
-            .from("daily_quotas")
-            .update({
-              penalized_tasks: newPenalizedTasks,
-            })
-            .eq("id", dailyQuota.id);
+          // Apply health and happiness penalties to the Digimon
+          await useDigimonStore.getState().applyPenalty(10, 15);
+          penaltyApplied = true;
+        }
 
-          if (error) {
-            console.error("Error updating penalized tasks:", error);
+        // After applying penalties, check if the Digimon has died
+        if (penaltyApplied) {
+          // Fetch the updated Digimon data to check health
+          await useDigimonStore.getState().fetchUserDigimon();
+
+          // Check if the Digimon has died and handle it
+          const { userDigimon } = useDigimonStore.getState();
+          if (userDigimon && userDigimon.health <= 0) {
+            console.log("Digimon has died due to overdue tasks");
+            await useDigimonStore.getState().handleDigimonDeath();
           }
         }
       }
+
+      // Update the last check timestamp
+      set({ lastOverdueCheck: Date.now() });
     } catch (error) {
       console.error("Error checking overdue tasks:", error);
     }
@@ -395,8 +436,13 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       supabase.removeChannel(subscription);
     };
   },
+
+  setPenalizedTasks: (taskIds: string[]) => {
+    set({ penalizedTasks: taskIds });
+  },
 }));
 
+// Move these helper functions to a separate utility file
 const calculateTaskPoints = (task: Task): number => {
   if (task.is_daily) return 15;
   return 20;
@@ -405,25 +451,13 @@ const calculateTaskPoints = (task: Task): number => {
 const isTaskOverdue = (task: Task): boolean => {
   if (!task.due_date) return false;
 
-  if (task.is_daily) {
-    const dueDate = new Date(task.due_date);
-    const today = new Date();
-
-    const dueDateOnly = new Date(
-      dueDate.getFullYear(),
-      dueDate.getMonth(),
-      dueDate.getDate()
-    );
-    const todayOnly = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate()
-    );
-
-    return dueDateOnly < todayOnly;
-  }
-
   const dueDate = new Date(task.due_date);
   const now = new Date();
+
+  console.log(`Checking if task "${task.description}" is overdue`);
+  console.log(`Due date: ${dueDate.toLocaleString()}`);
+  console.log(`Current time: ${now.toLocaleString()}`);
+  console.log(`Is overdue: ${dueDate < now}`);
+
   return dueDate < now;
 };

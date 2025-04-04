@@ -1,17 +1,31 @@
-import { useState } from "react";
-import { useTaskStore } from "../store/taskStore";
+import { useEffect, useState, useMemo } from "react";
+import { useTaskStore, Task } from "../store/taskStore";
 import TaskItem from "./TaskItem";
 
 const TaskList = () => {
-  const { tasks, completeTask, deleteTask } = useTaskStore();
+  const { tasks, loading, completeTask, deleteTask, checkOverdueTasks } = useTaskStore();
   const [filter, setFilter] = useState<"all" | "active" | "completed">("all");
+  const [, forceUpdate] = useState({});
   
-  // Make sure the TaskItem component is being used correctly
-  const filteredTasks = tasks.filter((task) => {
-    if (filter === "active") return !task.is_completed;
-    if (filter === "completed") return task.is_completed;
-    return true;
-  });
+  // Add a timer to check for newly overdue tasks and update the UI
+  useEffect(() => {
+    // Force UI update every minute to refresh task status
+    const intervalId = setInterval(() => {
+      console.log("Forcing task list UI update");
+      forceUpdate({});
+    }, 30 * 1000);
+    
+    return () => clearInterval(intervalId);
+  }, []);
+  
+  // Use useMemo for expensive calculations
+  const filteredTasks = useMemo(() => {
+    return tasks.filter((task) => {
+      if (filter === "active") return !task.is_completed;
+      if (filter === "completed") return task.is_completed;
+      return true;
+    });
+  }, [tasks, filter]);
   
   // Group tasks by date
   const today = new Date();

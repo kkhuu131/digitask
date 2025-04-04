@@ -26,17 +26,34 @@ export const useNotificationStore = create<NotificationState>((set) => {
 
     addNotification: (notification) => {
       const id = Date.now().toString();
+
       set((state) => {
+        // Check if a similar notification already exists
+        const existingSimilar = state.notifications.find(
+          (n) =>
+            n.message === notification.message && n.type === notification.type
+        );
+
+        // If a similar notification exists, don't add a new one
+        if (existingSimilar) {
+          return state;
+        }
+
         const updatedNotifications = [
           ...state.notifications,
           { ...notification, id },
         ];
+
+        // Limit the number of notifications to prevent overflow
+        const limitedNotifications = updatedNotifications.slice(-5);
+
         // Save to localStorage
         localStorage.setItem(
           "notifications",
-          JSON.stringify(updatedNotifications)
+          JSON.stringify(limitedNotifications)
         );
-        return { notifications: updatedNotifications };
+
+        return { notifications: limitedNotifications };
       });
 
       // Auto-dismiss non-persistent notifications after 5 seconds

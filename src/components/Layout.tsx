@@ -110,17 +110,37 @@ const Layout = ({ children }: LayoutProps) => {
           
           {/* Mobile navigation */}
           {user && (
-            <div className="md:hidden py-2 flex space-x-2 border-t">
-              <Link to="/" className="flex-1 px-3 py-2 rounded-md text-sm font-medium text-center text-gray-700 hover:bg-gray-100">
+            <div className="md:hidden py-2 flex overflow-x-auto space-x-2 border-t">
+              <Link 
+                to="/" 
+                className={`flex-shrink-0 px-3 py-2 rounded-md text-sm font-medium text-center whitespace-nowrap ${
+                  isActive("/") ? "bg-primary-100 text-primary-700" : "text-gray-700 hover:bg-gray-100"
+                }`}
+              >
                 Dashboard
               </Link>
-              <Link to="/digimon-dex" className="flex-1 px-3 py-2 rounded-md text-sm font-medium text-center text-gray-700 hover:bg-gray-100">
-                Digimon Dex
+              <Link 
+                to="/digimon-dex" 
+                className={`flex-shrink-0 px-3 py-2 rounded-md text-sm font-medium text-center whitespace-nowrap ${
+                  isActive("/digimon-dex") ? "bg-primary-100 text-primary-700" : "text-gray-700 hover:bg-gray-100"
+                }`}
+              >
+                DigiDex
               </Link>
-              <Link to="/battle" className="flex-1 px-3 py-2 rounded-md text-sm font-medium text-center text-gray-700 hover:bg-gray-100">
+              <Link 
+                to="/battle" 
+                className={`flex-shrink-0 px-3 py-2 rounded-md text-sm font-medium text-center whitespace-nowrap ${
+                  isActive("/battle") ? "bg-primary-100 text-primary-700" : "text-gray-700 hover:bg-gray-100"
+                }`}
+              >
                 Battle
               </Link>
-              <Link to="/your-digimon" className="flex-1 px-3 py-2 rounded-md text-sm font-medium text-center text-gray-700 hover:bg-gray-100">
+              <Link 
+                to="/your-digimon" 
+                className={`flex-shrink-0 px-3 py-2 rounded-md text-sm font-medium text-center whitespace-nowrap ${
+                  isActive("/your-digimon") ? "bg-primary-100 text-primary-700" : "text-gray-700 hover:bg-gray-100"
+                }`}
+              >
                 Your Digimon
               </Link>
             </div>
