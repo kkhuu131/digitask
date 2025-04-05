@@ -133,7 +133,7 @@ const UserDigimonPage = () => {
                     <div>
                       <div className="flex justify-between text-xs mb-1">
                         <span>HP</span>
-                        <span>{digimon.health}/100</span>
+                        <span>{digimon.health}%</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div 

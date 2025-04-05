@@ -123,7 +123,7 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
         <div>
           <div className="flex justify-between text-sm mb-1">
             <span>Health</span>
-            <span>{(userDigimon.health).toFixed(0)}/100</span>
+            <span>{(userDigimon.health).toFixed(0)}%</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2.5">
             <div 
@@ -139,7 +139,7 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
         <div>
           <div className="flex justify-between text-sm mb-1">
             <span>Happiness</span>
-            <span>{userDigimon.happiness.toFixed(0)}/100</span>
+            <span>{userDigimon.happiness.toFixed(0)}%</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2.5">
             <div 

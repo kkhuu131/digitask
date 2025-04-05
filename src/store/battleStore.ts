@@ -323,6 +323,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
         `
         )
         .neq("user_id", userDigimonData.user_id)
+        .eq("is_active", true)
         .limit(100);
 
       console.log("opponents", opponents);
@@ -334,7 +335,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       let opponentProfile = null;
 
       // chance to create a dummy opponent
-      if (!opponents || opponents.length === 0 || Math.random() < 0.05) {
+      if (!opponents || opponents.length === 0 || Math.random() < 0.25) {
         console.log("No opponents found, creating a dummy opponent");
 
         const randomId = Math.floor(Math.random() * 341) + 1;
