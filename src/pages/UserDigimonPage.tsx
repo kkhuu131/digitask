@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDigimonStore } from "../store/petStore";
 import { motion } from "framer-motion";
+import MilestoneProgress from "../components/MilestoneProgress"
 
 const UserDigimonPage = () => {
   const { 
@@ -18,7 +19,7 @@ const UserDigimonPage = () => {
   }, [fetchAllUserDigimon]);
 
   const handleSwitchDigimon = async (digimonId: string) => {
-    if (digimonId === userDigimon?.id) return; // Already active
+    if (digimonId === userDigimon?.id) return;
     
     setSwitchingDigimon(true);
     await setActiveDigimon(digimonId);
@@ -159,8 +160,10 @@ const UserDigimonPage = () => {
               </p>
             </div>
           )}
+
         </div>
       </div>
+      <MilestoneProgress />
     </div>
   );
 };

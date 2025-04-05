@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { supabase } from "../lib/supabase";
 import { useDigimonStore } from "./petStore";
+import { DAILY_QUOTA_MILESTONE, useMilestoneStore } from "./milestoneStore";
 
 export interface Task {
   id: string;
@@ -195,6 +196,9 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         tasks: state.tasks.map((t) => (t.id === taskId ? updatedTask : t)),
       }));
 
+      // Increment the tasks completed count for milestones
+      await useMilestoneStore.getState().incrementTasksCompleted(1);
+
       // Calculate points based on task type
       const points = calculateTaskPoints(task);
 
@@ -373,6 +377,13 @@ export const useTaskStore = create<TaskState>((set, get) => ({
   checkDailyQuota: async () => {
     try {
       await get().fetchDailyQuota();
+
+      // If daily quota is met
+      const dailyQuota = get().dailyQuota;
+      if (dailyQuota && dailyQuota.completed_today >= DAILY_QUOTA_MILESTONE) {
+        // Increment the daily quota streak for milestones
+        await useMilestoneStore.getState().incrementDailyQuotaStreak();
+      }
     } catch (error) {
       console.error("Error in checkDailyQuota:", error);
     }

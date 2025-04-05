@@ -220,6 +220,16 @@ const Debug = () => {
       >
         Check RLS Policies
       </button>
+
+      {/* Create a new Digimon */}
+      <button
+        className="btn-primary mt-2"
+        onClick={async () => {
+          await useDigimonStore.getState().createUserDigimon("", 52);
+        }}
+      >
+        Create New Digimon
+      </button>
       
       <button 
         className="btn-primary bg-red-600 hover:bg-red-700 mt-2"

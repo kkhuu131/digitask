@@ -163,6 +163,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
         .from("user_digimon")
         .select("id")
         .eq("user_id", userData.data.user.id)
+        .eq("is_active", true)
         .single();
 
       if (!userDigimon) {
@@ -476,10 +477,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
             baseCritMultiplier: number = 1.5
           ) {
             const SPModifier = 0.01 * SP;
-            console.log("SPModifier", SPModifier);
-            console.log("baseCritMultiplier", baseCritMultiplier);
             const critMultiplier = baseCritMultiplier + SPModifier;
-            console.log("critMultiplier", critMultiplier);
 
             return critMultiplier;
           }

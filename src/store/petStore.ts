@@ -381,6 +381,14 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         throw countError;
       }
 
+      const MAX_DIGIMON = 3;
+
+      if (count && count >= MAX_DIGIMON) {
+        console.log("WARNING!!: You can only have up to 3 Digimon");
+        set({ loading: false });
+        return;
+      }
+
       // Set is_active to true if this is the first Digimon
       const isActive = count === 0;
 
