@@ -74,6 +74,7 @@ export interface PetState {
   isDigimonDead: boolean;
   resetDeadState: () => void;
   handleDigimonDeath: () => Promise<void>;
+  releaseDigimon: (digimonId: string) => Promise<boolean>;
 }
 
 export const useDigimonStore = create<PetState>((set, get) => ({
@@ -948,6 +949,51 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       }
     } catch (error) {
       console.error("Error handling Digimon death:", error);
+    }
+  },
+
+  releaseDigimon: async (digimonId: string) => {
+    try {
+      set({ loading: true, error: null });
+
+      const { userDigimon } = get();
+
+      // Don't allow releasing the active Digimon
+      if (userDigimon && digimonId === userDigimon.id) {
+        set({
+          error:
+            "You cannot release your active Digimon. Please switch to another Digimon first.",
+          loading: false,
+        });
+        return false;
+      }
+
+      // Delete the Digimon from the database
+      const { error } = await supabase
+        .from("user_digimon")
+        .delete()
+        .eq("id", digimonId);
+
+      if (error) throw error;
+
+      // Refresh the user's Digimon list
+      await get().fetchAllUserDigimon();
+
+      // Show success notification
+      useNotificationStore.getState().addNotification({
+        message: "Digimon released successfully.",
+        type: "success",
+      });
+
+      set({ loading: false });
+      return true;
+    } catch (error) {
+      console.error("Error releasing Digimon:", error);
+      set({
+        error: (error as Error).message,
+        loading: false,
+      });
+      return false;
     }
   },
 }));

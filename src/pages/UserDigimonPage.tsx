@@ -8,11 +8,14 @@ const UserDigimonPage = () => {
     allUserDigimon, 
     userDigimon, 
     fetchAllUserDigimon, 
-    setActiveDigimon, 
+    setActiveDigimon,
+    releaseDigimon,
     loading, 
     error 
   } = useDigimonStore();
   const [switchingDigimon, setSwitchingDigimon] = useState(false);
+  const [digimonToRelease, setDigimonToRelease] = useState<string | null>(null);
+  const [releasingDigimon, setReleasingDigimon] = useState(false);
 
   useEffect(() => {
     fetchAllUserDigimon();
@@ -24,6 +27,23 @@ const UserDigimonPage = () => {
     setSwitchingDigimon(true);
     await setActiveDigimon(digimonId);
     setSwitchingDigimon(false);
+  };
+  
+  const handleReleaseClick = (digimonId: string) => {
+    setDigimonToRelease(digimonId);
+  };
+  
+  const handleConfirmRelease = async () => {
+    if (!digimonToRelease) return;
+    
+    setReleasingDigimon(true);
+    await releaseDigimon(digimonToRelease);
+    setReleasingDigimon(false);
+    setDigimonToRelease(null);
+  };
+  
+  const handleCancelRelease = () => {
+    setDigimonToRelease(null);
   };
 
   if (loading && allUserDigimon.length === 0) {
@@ -37,6 +57,34 @@ const UserDigimonPage = () => {
 
   return (
     <div className="max-w-4xl mx-auto">
+      {/* Confirmation Dialog */}
+      {digimonToRelease && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+            <h3 className="text-xl font-bold mb-4">Release Digimon</h3>
+            <p className="mb-6">
+              Are you sure you want to release this Digimon? This action cannot be undone.
+            </p>
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={handleCancelRelease}
+                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                disabled={releasingDigimon}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmRelease}
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                disabled={releasingDigimon}
+              >
+                {releasingDigimon ? "Releasing..." : "Release"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="card mb-6">
         <h1 className="text-2xl font-bold mb-4">Your Digimon</h1>
         <p className="text-gray-600 mb-6">
@@ -55,92 +103,89 @@ const UserDigimonPage = () => {
             const isActive = digimon.id === userDigimon?.id;
             
             return (
-              <div 
-                key={digimon.id} 
-                className={`border rounded-lg p-4 ${
-                  isActive 
-                    ? "border-primary-500 bg-primary-50" 
-                    : "border-gray-200 hover:border-gray-300"
-                }`}
-              >
-                <div className="flex flex-col items-center">
-                  <div className="relative mb-3">
+              <div key={digimon.id} className="border rounded-lg overflow-hidden bg-white">
+                <div className="p-4">
+                  <div className="flex justify-between items-start mb-2">
+                    <h3 className="text-lg font-semibold">
+                      {digimon.name || digimon.digimon?.name}
+                    </h3>
+                    <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                      Lv. {digimon.current_level}
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center justify-center my-4">
                     <motion.div
-                      animate={isActive ? { y: [0, -5, 0] } : {}}
+                      animate={{y: [0, -5, 0] }}
                       transition={{ repeat: Infinity, duration: 2 }}
                       className="w-24 h-24 flex items-center justify-center"
                     >
                       <img 
                         src={digimon.digimon?.sprite_url} 
-                        alt={digimon.digimon?.name} 
+                        alt={digimon.name || digimon.digimon?.name} 
                         className="scale-[2]"
-                        style={{ imageRendering: "pixelated" }} 
+                        style={{ imageRendering: "pixelated" }}
                       />
                     </motion.div>
+                  </div>
+                  
+                  <div className="space-y-2 mb-4">
+                    <div>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span>HP</span>
+                        <span>{digimon.health}/100</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div 
+                          className="bg-green-600 h-2 rounded-full" 
+                          style={{ width: `${digimon.health}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span>XP</span>
+                        <span>{digimon.experience_points}/{digimon.current_level * 20}</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div 
+                          className="bg-blue-600 h-2 rounded-full" 
+                          style={{ 
+                            width: `${Math.min(100, (digimon.experience_points / (digimon.current_level * 20)) * 100)}%` 
+                          }}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-col space-y-2">
+                    {!isActive && (
+                      <button
+                        onClick={() => handleSwitchDigimon(digimon.id)}
+                        disabled={switchingDigimon}
+                        className="btn-primary text-sm w-full"
+                      >
+                        {switchingDigimon ? "Switching..." : "Make Active"}
+                      </button>
+                    )}
                     
                     {isActive && (
-                      <div className="absolute -top-2 -right-2 bg-primary-500 text-white text-xs rounded-full px-2 py-1">
-                        Active
+                      <div className="text-center text-md text-primary-600 font-medium">
+                        Currently Active
                       </div>
                     )}
-                  </div>
-                  
-                  <h3 className="font-semibold text-lg">
-                    {digimon.name || digimon.digimon?.name}
-                  </h3>
-                  <p className="text-sm text-gray-500 mb-2">
-                    {digimon.digimon?.name} - Level {digimon.current_level}
-                  </p>
-                  
-                  <div className="w-full space-y-2 mb-4">
-                    <div>
-                      <div className="flex justify-between text-xs mb-1">
-                        <span>Health</span>
-                        <span>{digimon.health.toFixed(0)}/100</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-1.5">
-                        <div 
-                          className="h-1.5 rounded-full" 
-                          style={{ 
-                            width: `${Math.max(0, Math.min(100, (digimon.health / 100) * 100))}%`,
-                            backgroundColor: digimon.health > 60 ? '#10b981' : digimon.health > 30 ? '#f59e0b' : '#ef4444'
-                          }}
-                        ></div>
-                      </div>
-                    </div>
                     
-                    <div>
-                      <div className="flex justify-between text-xs mb-1">
-                        <span>Happiness</span>
-                        <span>{digimon.happiness.toFixed(0)}/100</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-1.5">
-                        <div 
-                          className="h-1.5 rounded-full" 
-                          style={{ 
-                            width: `${Math.max(0, Math.min(100, (digimon.happiness / 100) * 100))}%`,
-                            backgroundColor: digimon.happiness > 60 ? '#10b981' : digimon.happiness > 30 ? '#f59e0b' : '#ef4444'
-                          }}
-                        ></div>
-                      </div>
-                    </div>
+                    {/* Release button - only show for non-active Digimon */}
+                    {!isActive && (
+                      <button
+                        onClick={() => handleReleaseClick(digimon.id)}
+                        className="text-sm w-full py-2 px-4 border border-red-300 text-red-600 rounded-md hover:bg-red-50"
+                      >
+                        Release
+                      </button>
+                    )}
                   </div>
-                  
-                  {!isActive && (
-                    <button
-                      onClick={() => handleSwitchDigimon(digimon.id)}
-                      disabled={switchingDigimon}
-                      className="btn-primary text-sm w-full"
-                    >
-                      {switchingDigimon ? "Switching..." : "Make Active"}
-                    </button>
-                  )}
-                  
-                  {isActive && (
-                    <div className="text-center text-sm text-primary-600 font-medium">
-                      Currently Active
-                    </div>
-                  )}
                 </div>
               </div>
             );
@@ -160,7 +205,6 @@ const UserDigimonPage = () => {
               </p>
             </div>
           )}
-
         </div>
       </div>
       <MilestoneProgress />
