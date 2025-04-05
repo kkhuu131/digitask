@@ -200,11 +200,10 @@ export const useTaskStore = create<TaskState>((set, get) => ({
 
       // Update Digimon stats
       await useDigimonStore.getState().feedDigimon(points);
+      await useDigimonStore.getState().checkLevelUp();
 
       // If it's a daily task, increment the daily quota
       if (task.is_daily) {
-        // The increment happens server-side via a trigger
-        // We just need to refresh the quota data
         await get().fetchDailyQuota();
       }
 
