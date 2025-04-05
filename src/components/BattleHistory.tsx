@@ -84,7 +84,7 @@ const BattleHistory: React.FC<BattleHistoryProps> = ({ battles }) => {
                 <div className="text-right mr-2 flex flex-col">
                   <div className="flex items-end">
                     <span className="text-sm font-medium">
-                      {opponentDetails?.name || opponentDigimon?.name}{" "}
+                      {opponentDetails?.name || opponentDetails?.digimon_name}{" "}
                       <span className="text-xs text-gray-500">Lv.{opponentDetails?.level || opponentDigimon?.current_level}</span>
                     </span>
                   </div>

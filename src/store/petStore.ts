@@ -682,7 +682,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       if (!userDigimon) return;
 
       // Calculate XP needed for next level (20 base + 10 per level)
-      const xpNeeded = 20 + (userDigimon.current_level - 1) * 10;
+      const xpNeeded = 20 + (userDigimon.current_level - 1) * 20;
 
       // Check if Digimon has enough XP to level up
       if (userDigimon.experience_points >= xpNeeded) {
@@ -717,9 +717,6 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         if (remainingXP > 0) {
           await get().checkLevelUp();
         }
-
-        // Check if Digimon can digivolve at this level
-        // await get().checkEvolution();
 
         return true;
       } else {

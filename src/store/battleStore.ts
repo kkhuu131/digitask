@@ -295,7 +295,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
         .select(
           `
           *,
-          digimon:digimon_id (name, sprite_url, hp, atk, def, spd)
+          digimon:digimon_id (name, sprite_url, hp, sp, atk, def, int, spd)
         `
         )
         .eq("id", userDigimonId)
@@ -318,7 +318,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
         .select(
           `
           *,
-          digimon:digimon_id (name, sprite_url, hp, atk, def, spd)
+          digimon:digimon_id (name, sprite_url, hp, sp, atk, def, int, spd)
         `
         )
         .neq("user_id", userDigimonData.user_id)
@@ -404,7 +404,13 @@ export const useBattleStore = create<BattleState>((set, get) => ({
 
       function simulateBattle(userDigimonData: any, opponent: any) {
         function statModifier(stat: number, level: number) {
-          return stat * (1 + (level - 50) / 50);
+          if (level <= 50) {
+            // From level 1 to 50, scale stat from 1x to 3x
+            return stat * (1 + (level - 1) * (2 / 49));
+          } else {
+            // From level 50 to 99, scale stat from 3x to 6x
+            return stat * 3 * (1 + (level - 50) * (1 / 49));
+          }
         }
 
         let userMaxHP = statModifier(
@@ -434,8 +440,11 @@ export const useBattleStore = create<BattleState>((set, get) => ({
         while (userHP > 0 && opponentHP > 0) {
           const attackPower = statModifier(
             attacker === "user"
-              ? userDigimonData.digimon.atk
-              : opponent.digimon.atk,
+              ? Math.max(
+                  userDigimonData.digimon.atk,
+                  userDigimonData.digimon.int
+                )
+              : Math.max(opponent.digimon.atk, opponent.digimon.int),
             attacker === "user"
               ? userDigimonData.current_level
               : opponent.current_level
@@ -449,12 +458,36 @@ export const useBattleStore = create<BattleState>((set, get) => ({
               : userDigimonData.current_level
           );
 
-          const baseDamage = 50;
+          const sp = statModifier(
+            attacker === "user"
+              ? opponent.digimon.sp
+              : userDigimonData.digimon.sp,
+            attacker === "user"
+              ? opponent.current_level
+              : userDigimonData.current_level
+          );
+
+          const baseDamage = 200;
 
           const damageMultiplier = 0.5 + Math.random();
 
-          const isCriticalHit = Math.random() < 0.15; // 15% chance
-          const criticalMultiplier = isCriticalHit ? 3 : 1;
+          function calculateCritMultiplier(
+            SP: number,
+            baseCritMultiplier: number = 1.5
+          ) {
+            const SPModifier = 0.01 * SP;
+            console.log("SPModifier", SPModifier);
+            console.log("baseCritMultiplier", baseCritMultiplier);
+            const critMultiplier = baseCritMultiplier + SPModifier;
+            console.log("critMultiplier", critMultiplier);
+
+            return critMultiplier;
+          }
+
+          const isCriticalHit = Math.random() < 0.15;
+          const criticalMultiplier = isCriticalHit
+            ? calculateCritMultiplier(sp, 1.5)
+            : 1;
 
           // Miss chance
           const didMiss = Math.random() < 0.07; // 7% chance to miss
@@ -533,7 +566,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
         // Award XP for battle and check for level up
         if (winnerId === userDigimonId) {
           // Award more XP for winning
-          const newXP = userDigimonData.experience_points + 15;
+          const newXP = userDigimonData.experience_points + 20;
           await useDigimonStore.getState().updateDigimonStats({
             experience_points: newXP,
           });
@@ -542,7 +575,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
           await useDigimonStore.getState().checkLevelUp();
         } else {
           // Award some XP even for losing
-          const newXP = userDigimonData.experience_points + 5;
+          const newXP = userDigimonData.experience_points + 10;
           await useDigimonStore.getState().updateDigimonStats({
             experience_points: newXP,
           });
