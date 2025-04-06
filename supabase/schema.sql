@@ -127,6 +127,22 @@ CREATE TABLE public.user_discovered_digimon (
   CONSTRAINT user_discovered_digimon_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
 );
 
+-- Create a table for team battles
+CREATE TABLE public.team_battles (
+  id uuid NOT NULL DEFAULT extensions.uuid_generate_v4(),
+  user_id uuid NOT NULL,
+  opponent_id uuid NULL,
+  winner_id uuid NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  user_team jsonb NOT NULL,
+  opponent_team jsonb NOT NULL,
+  turns jsonb NULL,
+  CONSTRAINT team_battles_pkey PRIMARY KEY (id),
+  CONSTRAINT team_battles_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS team_battles_user_id_idx ON public.team_battles USING btree (user_id);
+CREATE INDEX IF NOT EXISTS team_battles_opponent_id_idx ON public.team_battles USING btree (opponent_id);
+
 -- Functions in the public schema
 
 CREATE OR REPLACE FUNCTION public.update_completed_today() RETURNS trigger AS $$
