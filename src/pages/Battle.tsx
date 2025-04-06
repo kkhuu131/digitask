@@ -78,10 +78,6 @@ const Battle = () => {
     }
   };
 
-  const toggleBattleMode = () => {
-    setBattleMode(prev => prev === 'single' ? 'team' : 'single');
-  };
-
   if (!userDigimon || !digimonData) {
     return (
       <div className="text-center py-12">
