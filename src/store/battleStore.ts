@@ -104,6 +104,8 @@ export interface Battle {
 export interface TeamBattle {
   id: string;
   user_team: {
+    current_level: number;
+    experience_points: number;
     id: string;
     name: string;
     level: number;
@@ -119,6 +121,8 @@ export interface TeamBattle {
     };
   }[];
   opponent_team: {
+    current_level: number;
+    experience_points: number;
     id: string;
     name: string;
     level: number;
@@ -1021,6 +1025,8 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       const simulatedTeamBattle = {
         id: "simulated-" + Date.now(),
         user_team: userTeamData.map((d) => ({
+          current_level: d.current_level,
+          experience_points: d.experience_points,
           id: d.id,
           name: d.name,
           level: d.current_level,
@@ -1036,6 +1042,8 @@ export const useBattleStore = create<BattleState>((set, get) => ({
           },
         })),
         opponent_team: opponentTeamData.map((d) => ({
+          current_level: d.current_level,
+          experience_points: d.experience_points,
           id: d.id,
           name: d.name,
           level: d.current_level,
