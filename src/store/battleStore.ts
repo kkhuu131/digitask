@@ -870,6 +870,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
         `
         )
         .eq("user_id", userData.user.id)
+        .eq("is_on_team", true)
         .limit(3);
 
       if (userDigimonError) throw userDigimonError;
