@@ -84,7 +84,7 @@ const DigimonCard = ({ digimon, isTeam, onSwap }: DigimonCardProps) => {
   });
 
   // Calculate EXP needed for next level
-  const expForNextLevel = digimon.current_level * 100;
+  const expForNextLevel = digimon.current_level * 20;
 
   // Content based on team status
   const content = isTeam ? (
@@ -125,14 +125,6 @@ const DigimonCard = ({ digimon, isTeam, onSwap }: DigimonCardProps) => {
       {content}
       <p className="text-xs mt-1 truncate w-full text-center">{digimon.name}</p>
       <p className="text-xs text-gray-500">Lv.{digimon.current_level}</p>
-      
-      {/* HP Bar */}
-      <ProgressBar 
-        value={digimon.health} 
-        maxValue={100} 
-        color="bg-green-500" 
-        label="HP"
-      />
       
       {/* EXP Bar */}
       <ProgressBar 
