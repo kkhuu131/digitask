@@ -2,21 +2,16 @@ import { useState, useEffect } from "react";
 import { useDigimonStore } from "../store/petStore";
 import { useBattleStore } from "../store/battleStore";
 import BattleHistory from "../components/BattleHistory";
-import BattleAnimation from "../components/BattleAnimation";
 import TeamBattleAnimation from "../components/TeamBattleAnimation";
 
 const Battle = () => {
-  const { userDigimon, digimonData, allUserDigimon, getDigimonDisplayName } = useDigimonStore();
+  const { userDigimon, digimonData, allUserDigimon, } = useDigimonStore();
   const { 
-    queueForBattle,
     queueForTeamBattle,
-    currentBattle, 
     currentTeamBattle,
-    battleHistory,
     teamBattleHistory,
     loading, 
     error, 
-    clearCurrentBattle,
     clearCurrentTeamBattle,
     dailyBattlesRemaining,
     checkDailyBattleLimit
@@ -24,33 +19,26 @@ const Battle = () => {
   
   const [showBattleAnimation, setShowBattleAnimation] = useState(false);
   const [noRealOpponents, setNoRealOpponents] = useState(false);
-  const [battleMode, setBattleMode] = useState<'single' | 'team'>('single');
-
-  const playerDigimonDisplayName = getDigimonDisplayName();
-  const hasTeam = allUserDigimon.length > 1;
 
   useEffect(() => {
     // If we have a current battle result but aren't showing the animation,
     // that means we just got a battle result and should show the animation
-    if ((currentBattle || currentTeamBattle) && !showBattleAnimation) {
+    if ((currentTeamBattle) && !showBattleAnimation) {
       setShowBattleAnimation(true);
     }
-  }, [currentBattle, currentTeamBattle, showBattleAnimation]);
+  }, [currentTeamBattle, showBattleAnimation]);
 
   useEffect(() => {
     // Check if the current battle is against a dummy opponent
-    if (currentBattle && currentBattle.opponent_digimon?.id.startsWith("dummy-")) {
-      setNoRealOpponents(true);
-    } else if (currentTeamBattle && currentTeamBattle.opponent_team.some(d => d.id.startsWith("dummy-"))) {
+  if (currentTeamBattle && currentTeamBattle.opponent_team.some(d => d.id.startsWith("dummy-"))) {
       setNoRealOpponents(true);
     } else {
       setNoRealOpponents(false);
     }
-  }, [currentBattle, currentTeamBattle]);
+  }, [currentTeamBattle]);
 
   useEffect(() => {
     const loadBattleData = async () => {
-      await useBattleStore.getState().fetchBattleHistory();
       await useBattleStore.getState().fetchTeamBattleHistory();
       checkDailyBattleLimit();
     };
@@ -61,21 +49,12 @@ const Battle = () => {
   const handleQueueForBattle = async () => {
     if (!userDigimon) return;
     
-    if (battleMode === 'single') {
-      await queueForBattle(userDigimon.id);
-    } else {
-      // For team battles, we need all user Digimon
-      await queueForTeamBattle();
-    }
+    await queueForTeamBattle();
   };
 
   const handleBattleComplete = () => {
     setShowBattleAnimation(false);
-    if (battleMode === 'single') {
-      clearCurrentBattle();
-    } else {
-      clearCurrentTeamBattle();
-    }
+    clearCurrentTeamBattle();
   };
 
   if (!userDigimon || !digimonData) {
@@ -89,79 +68,18 @@ const Battle = () => {
   return (
     <div className="max-w-4xl mx-auto">
       {showBattleAnimation ? (
-        battleMode === 'single' && currentBattle ? (
-          <BattleAnimation 
-            battle={currentBattle}
-            onComplete={handleBattleComplete} 
-          />
-        ) : currentTeamBattle ? (
-          <TeamBattleAnimation 
-            teamBattle={currentTeamBattle}
-            onComplete={handleBattleComplete} 
-          />
-        ) : null
+        currentTeamBattle ?
+          (
+            <TeamBattleAnimation 
+              teamBattle={currentTeamBattle}
+              onComplete={handleBattleComplete} 
+            />
+          )
+        : null
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="card">
             <h2 className="text-xl font-bold mb-4">Battle Arena</h2>
-            
-            {/* Battle Mode Toggle */}
-            <div className="mb-4 flex justify-center">
-              <div className="inline-flex rounded-md shadow-sm" role="group">
-                <button
-                  type="button"
-                  onClick={() => setBattleMode('single')}
-                  className={`px-4 py-2 text-sm font-medium rounded-l-lg ${
-                    battleMode === 'single' 
-                      ? 'bg-primary-600 text-white' 
-                      : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-                  }`}
-                >
-                  1v1 Battle
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setBattleMode('team')}
-                  disabled={!hasTeam}
-                  className={`px-4 py-2 text-sm font-medium rounded-r-lg ${
-                    battleMode === 'team' 
-                      ? 'bg-primary-600 text-white' 
-                      : hasTeam 
-                        ? 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50' 
-                        : 'bg-gray-100 text-gray-400 border border-gray-300 cursor-not-allowed'
-                  }`}
-                >
-                  Team Battle
-                </button>
-              </div>
-            </div>
-            
-            {battleMode === 'single' ? (
-              // Single Battle UI
-              <div className="text-center">
-                <div className="w-32 h-32 mx-auto mb-4 flex items-center justify-center">
-                  <img 
-                    src={digimonData.sprite_url} 
-                    alt={digimonData.name} 
-                    className="scale-[3]"
-                    style={{ imageRendering: "pixelated" }} 
-                  />
-                </div>
-                <h3 className="text-lg font-semibold">{playerDigimonDisplayName}</h3>
-                <p className="text-sm text-gray-500">{digimonData.name} - Level {userDigimon.current_level}</p>
-                
-                <div className="mb-6 mt-4">
-                  <h4 className="font-semibold mb-2">Battle Stats</h4>
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <div>HP: {digimonData.hp}</div>
-                    <div>ATK: {digimonData.atk}</div>
-                    <div>DEF: {digimonData.def}</div>
-                    <div>SPD: {digimonData.spd}</div>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              // Team Battle UI
               <div>
                 <h3 className="text-lg font-semibold text-center mb-4">Your Team</h3>
                 <div className="flex justify-center space-x-4 mb-6">
@@ -205,7 +123,6 @@ const Battle = () => {
                   </div>
                 )}
               </div>
-            )}
             
             <div className="mb-4 bg-blue-50 border-l-4 border-blue-400 p-3">
               <p className="text-sm">
@@ -218,9 +135,9 @@ const Battle = () => {
             
             <button 
               onClick={handleQueueForBattle}
-              disabled={loading || dailyBattlesRemaining <= 0 || (battleMode === 'team' && allUserDigimon.length < 2)}
+              disabled={loading || dailyBattlesRemaining <= 0 || allUserDigimon.length < 2}
               className={`btn-primary w-full ${
-                (dailyBattlesRemaining <= 0 || (battleMode === 'team' && allUserDigimon.length < 2)) 
+                (dailyBattlesRemaining <= 0 || allUserDigimon.length < 2) 
                   ? 'opacity-50 cursor-not-allowed' 
                   : ''
               }`}
@@ -229,7 +146,7 @@ const Battle = () => {
                 ? "Finding Opponent..." 
                 : dailyBattlesRemaining <= 0 
                   ? "Daily Limit Reached" 
-                  : battleMode === 'team' && allUserDigimon.length < 2
+                  : allUserDigimon.length < 2
                     ? "Need More Digimon"
                     : "Queue for Battle"}
             </button>
@@ -253,7 +170,6 @@ const Battle = () => {
           <div className="card">
             <h2 className="text-xl font-bold mb-4">Battle History</h2>
             <BattleHistory 
-              battles={battleHistory} 
               teamBattles={teamBattleHistory} 
             />
           </div>

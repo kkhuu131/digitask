@@ -10,8 +10,8 @@ interface TeamBattleAnimationProps {
 const DEFAULT_MAX_HP = 100; // Fallback if stats are missing
 const VERTICAL_RANGE_START = 10; // Start positioning at 10% from the top
 const VERTICAL_RANGE_END = 50;   // End positioning at 50% from the top
-const TURN_DURATION = 2000; // Duration for each turn animation + pause
-const FINAL_MESSAGE_DURATION = 2500; // How long to show "Victory/Defeat" before results confirmation
+const TURN_DURATION = 1200; // Duration for each turn animation + pause
+const FINAL_MESSAGE_DURATION = 2000; // How long to show "Victory/Defeat" before results confirmation
 
 const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({ 
   teamBattle, 

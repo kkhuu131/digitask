@@ -151,8 +151,50 @@ export interface TeamBattle {
   created_at: string;
 }
 
+export interface TeamBattleHistory {
+  user_id: string;
+  opponent_id: string;
+  winner_id: string;
+  id: string;
+  user_team: {
+    current_level: number;
+    experience_points: number;
+    digimon: {
+      name: string;
+      sprite_url: string;
+    };
+    digimon_id: number;
+    happiness: number;
+    name: string;
+    id: string;
+  }[];
+  opponent_team: {
+    current_level: number;
+    experience_points: number;
+    digimon: {
+      name: string;
+      sprite_url: string;
+    };
+    digimon_id: number;
+    happiness: number;
+    name: string;
+    id: string;
+  }[];
+  turns?: {
+    attacker: any;
+    target: any;
+    damage: number;
+    isCriticalHit: boolean;
+    didMiss: boolean;
+    remainingHP: {
+      [key: string]: number;
+    };
+  }[];
+  created_at: string;
+}
+
 interface BattleState {
-  teamBattleHistory: TeamBattle[];
+  teamBattleHistory: TeamBattleHistory[];
   battleHistory: Battle[];
   currentBattle: Battle | null;
   currentTeamBattle: TeamBattle | null;
@@ -879,9 +921,10 @@ export const useBattleStore = create<BattleState>((set, get) => ({
 
       // Add the opponent's Digimon to the discovered Digimon list
       for (const digimon of opponentTeamData) {
+        console.log("digimon", digimon);
         await useDigimonStore
           .getState()
-          .addDiscoveredDigimon(digimon.digimon.digimon_id);
+          .addDiscoveredDigimon(digimon.digimon.id);
       }
 
       console.log("Selected opponent:", opponentProfile?.username);
@@ -1023,7 +1066,6 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       );
 
       const simulatedTeamBattle = {
-        id: "simulated-" + Date.now(),
         user_team: userTeamData.map((d) => ({
           current_level: d.current_level,
           experience_points: d.experience_points,
@@ -1060,8 +1102,21 @@ export const useBattleStore = create<BattleState>((set, get) => ({
         })),
         turns,
         winner_id: winnerId,
-        created_at: new Date().toISOString(),
       };
+
+      const { error: TeamBattleError } = await supabase
+        .from("team_battles")
+        .insert({
+          user_id: userData.user.id,
+          opponent_id: opponent.id,
+          winner_id: winnerId,
+          user_team: userTeamData,
+          opponent_team: opponentTeamData,
+          created_at: new Date().toISOString(),
+          turns: turns,
+        });
+
+      if (TeamBattleError) throw TeamBattleError;
 
       let xpGain = 5;
 
