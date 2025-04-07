@@ -45,6 +45,7 @@ interface TaskState {
   subscribeToQuotaUpdates: () => Promise<() => void>;
   lastOverdueCheck: number;
   setPenalizedTasks: (taskIds: string[]) => void;
+  completeDailyQuota: () => Promise<void>;
 }
 
 export const useTaskStore = create<TaskState>((set, get) => ({
@@ -449,6 +450,28 @@ export const useTaskStore = create<TaskState>((set, get) => ({
 
   setPenalizedTasks: (taskIds: string[]) => {
     set({ penalizedTasks: taskIds });
+  },
+
+  completeDailyQuota: async () => {
+    try {
+      set({ loading: true, error: null });
+
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) {
+        set({ loading: false });
+        return;
+      }
+
+      // ... existing code to update daily quota ...
+
+      // After successfully completing the daily quota, update the milestone
+      // This will now fetch the updated milestone data after the database trigger runs
+      await useMilestoneStore.getState().incrementDailyQuotaStreak();
+
+      // ... rest of the function ...
+    } catch (error) {
+      // ... error handling ...
+    }
   },
 }));
 

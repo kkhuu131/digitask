@@ -95,28 +95,15 @@ export const useMilestoneStore = create<MilestoneState>((set, get) => ({
 
   incrementDailyQuotaStreak: async () => {
     try {
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) return;
+      // Fetch the updated milestone data from the database
+      // The actual increment is now handled by the database trigger
+      await get().fetchMilestones();
 
-      // Increment the streak in the database
-      const { error } = await supabase
-        .from("user_milestones")
-        .update({
-          daily_quota_streak: get().dailyQuotaStreak + 1,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("user_id", userData.user.id);
-
-      if (error) throw error;
-
-      // Update local state
-      set((state) => ({
-        dailyQuotaStreak: state.dailyQuotaStreak + 1,
-        canClaimDigimon: get().checkCanClaimDigimon(),
-      }));
-
-      // Check if milestone reached
-      if (get().dailyQuotaStreak % DAILY_QUOTA_MILESTONE === 0) {
+      // Check if milestone reached and show notification
+      if (
+        get().dailyQuotaStreak % DAILY_QUOTA_MILESTONE === 0 &&
+        get().dailyQuotaStreak > 0
+      ) {
         useNotificationStore.getState().addNotification({
           message: `You've completed your daily quota ${DAILY_QUOTA_MILESTONE} times! You can claim a new Digimon.`,
           type: "success",
@@ -124,7 +111,7 @@ export const useMilestoneStore = create<MilestoneState>((set, get) => ({
         });
       }
     } catch (error) {
-      console.error("Error incrementing daily quota streak:", error);
+      console.error("Error updating daily quota streak:", error);
     }
   },
 
