@@ -399,7 +399,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         .insert({
           user_id: userData.user.id,
           digimon_id: digimonId,
-          name: "",
+          name: name,
           health: 100,
           happiness: 100,
           experience_points: 0,
