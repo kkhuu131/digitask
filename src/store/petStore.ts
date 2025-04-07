@@ -16,6 +16,7 @@ export interface UserDigimon {
   last_updated_at: string;
   last_fed_tasks_at: string;
   is_active: boolean;
+  is_on_team: boolean;
   digimon?: Digimon;
 }
 
@@ -75,6 +76,11 @@ export interface PetState {
   resetDeadState: () => void;
   handleDigimonDeath: () => Promise<void>;
   releaseDigimon: (digimonId: string) => Promise<boolean>;
+  setTeamMember: (digimonId: string, isOnTeam: boolean) => Promise<void>;
+  swapTeamMember: (
+    teamDigimonId: string,
+    reserveDigimonId: string
+  ) => Promise<void>;
 }
 
 export const useDigimonStore = create<PetState>((set, get) => ({
@@ -382,7 +388,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         throw countError;
       }
 
-      const MAX_DIGIMON = 3;
+      const MAX_DIGIMON = 9;
 
       if (count && count >= MAX_DIGIMON) {
         console.log("WARNING!!: You can only have up to 3 Digimon");
@@ -994,6 +1000,82 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         loading: false,
       });
       return false;
+    }
+  },
+
+  setTeamMember: async (digimonId: string, isOnTeam: boolean) => {
+    try {
+      set({ loading: true, error: null });
+
+      // Get the current user
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) {
+        set({ loading: false });
+        return;
+      }
+
+      // Count current team members
+      const { data: teamCount, error: countError } = await supabase
+        .from("user_digimon")
+        .select("id")
+        .eq("user_id", userData.user.id)
+        .eq("is_on_team", true);
+
+      if (countError) throw countError;
+
+      // If trying to add to team but already at max, show error
+      if (isOnTeam && teamCount && teamCount.length >= 3) {
+        set({
+          error: "You can only have 3 Digimon on your team. Remove one first.",
+          loading: false,
+        });
+        return;
+      }
+
+      // Update the Digimon's team status
+      const { error: updateError } = await supabase
+        .from("user_digimon")
+        .update({ is_on_team: isOnTeam })
+        .eq("id", digimonId)
+        .eq("user_id", userData.user.id);
+
+      if (updateError) throw updateError;
+
+      // Refresh Digimon data
+      await get().fetchAllUserDigimon();
+      set({ loading: false });
+    } catch (error) {
+      console.error("Error setting team member:", error);
+      set({ error: (error as Error).message, loading: false });
+    }
+  },
+
+  swapTeamMember: async (teamDigimonId: string, reserveDigimonId: string) => {
+    try {
+      set({ loading: true, error: null });
+
+      // Get the current user
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) {
+        set({ loading: false });
+        return;
+      }
+
+      // Start a transaction to swap the two Digimon
+      const { error } = await supabase.rpc("swap_team_members", {
+        team_digimon_id: teamDigimonId,
+        reserve_digimon_id: reserveDigimonId,
+        user_id_param: userData.user.id,
+      });
+
+      if (error) throw error;
+
+      // Refresh Digimon data
+      await get().fetchAllUserDigimon();
+      set({ loading: false });
+    } catch (error) {
+      console.error("Error swapping team members:", error);
+      set({ error: (error as Error).message, loading: false });
     }
   },
 }));

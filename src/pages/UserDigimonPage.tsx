@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useDigimonStore } from "../store/petStore";
 import { motion } from "framer-motion";
 import MilestoneProgress from "../components/MilestoneProgress"
@@ -88,8 +88,8 @@ const UserDigimonPage = () => {
       <div className="card mb-6">
         <h1 className="text-2xl font-bold mb-4">Your Digimon</h1>
         <p className="text-gray-600 mb-6">
-          You can have up to 3 Digimon, but only one can be active at a time. 
-          The active Digimon will gain experience from completed tasks and participate in battles.
+          You can have up to 9 Digimon total, with 3 on your battle team. 
+          Only one Digimon can be active at a time to gain experience from completed tasks.
         </p>
 
         {error && (
@@ -98,8 +98,11 @@ const UserDigimonPage = () => {
           </div>
         )}
 
+        <h2 className="text-xl font-semibold mb-4">Digimon Details</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {allUserDigimon.map((digimon) => {
+          {[...allUserDigimon]
+            .sort((a, b) => b.current_level - a.current_level)
+            .map((digimon) => {
             const isActive = digimon.id === userDigimon?.id;
             
             return (
@@ -109,9 +112,16 @@ const UserDigimonPage = () => {
                     <h3 className="text-lg font-semibold">
                       {digimon.name || digimon.digimon?.name}
                     </h3>
-                    <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                      Lv. {digimon.current_level}
-                    </span>
+                    <div className="flex space-x-2">
+                      <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                        Lv. {digimon.current_level}
+                      </span>
+                      {digimon.is_on_team && (
+                        <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+                          Team
+                        </span>
+                      )}
+                    </div>
                   </div>
                   
                   <div className="flex items-center justify-center my-4">
@@ -191,7 +201,7 @@ const UserDigimonPage = () => {
             );
           })}
           
-          {allUserDigimon.length < 3 && (
+          {allUserDigimon.length < 9 && (
             <div className="border border-dashed border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center text-gray-400">
               <div className="w-24 h-24 flex items-center justify-center mb-3">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -201,7 +211,7 @@ const UserDigimonPage = () => {
               <p className="text-center">
                 Digimon slot available
                 <br />
-                <span className="text-xs">More ways to get Digimon coming soon!</span>
+                <span className="text-xs">{9 - allUserDigimon.length} slots remaining</span>
               </p>
             </div>
           )}

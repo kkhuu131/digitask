@@ -111,6 +111,7 @@ CREATE TABLE public.user_digimon (
   last_updated_at timestamp with time zone NULL DEFAULT now(),
   last_fed_tasks_at timestamp with time zone NULL DEFAULT now(),
   is_active boolean NULL DEFAULT false,
+  is_on_team BOOLEAN NOT NULL DEFAULT false,
   CONSTRAINT user_digimon_pkey PRIMARY KEY (id),
   CONSTRAINT user_digimon_digimon_id_fkey FOREIGN KEY (digimon_id) REFERENCES digimon(id),
   CONSTRAINT user_digimon_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
@@ -313,3 +314,39 @@ END;
 $$ LANGUAGE c;
 
 -- Add other cron jobs as needed...
+
+-- Create a function to swap team members atomically
+CREATE OR REPLACE FUNCTION public.swap_team_members(
+  team_digimon_id UUID,
+  reserve_digimon_id UUID,
+  user_id_param UUID
+) RETURNS void AS $$
+BEGIN
+  -- Verify both Digimon belong to the user
+  IF NOT EXISTS (
+    SELECT 1 FROM user_digimon 
+    WHERE id IN (team_digimon_id, reserve_digimon_id) 
+    AND user_id = user_id_param
+    HAVING COUNT(*) = 2
+  ) THEN
+    RAISE EXCEPTION 'One or both Digimon do not belong to this user';
+  END IF;
+  
+  -- Verify one is on team and one is not
+  IF NOT EXISTS (
+    SELECT 1 FROM user_digimon WHERE id = team_digimon_id AND is_on_team = true
+  ) THEN
+    RAISE EXCEPTION 'First Digimon is not on team';
+  END IF;
+  
+  IF EXISTS (
+    SELECT 1 FROM user_digimon WHERE id = reserve_digimon_id AND is_on_team = true
+  ) THEN
+    RAISE EXCEPTION 'Second Digimon is already on team';
+  END IF;
+  
+  -- Perform the swap
+  UPDATE user_digimon SET is_on_team = false WHERE id = team_digimon_id;
+  UPDATE user_digimon SET is_on_team = true WHERE id = reserve_digimon_id;
+END;
+$$ LANGUAGE plpgsql;
