@@ -376,6 +376,9 @@ export const useBattleStore = create<BattleState>((set, get) => ({
 
   queueForBattle: async (userDigimonId: string) => {
     try {
+      console.log("queueForBattle", userDigimonId);
+      set({ loading: true, error: null });
+
       // Get the current user
       const { data: userData } = await supabase.auth.getUser();
       if (!userData.user) {
@@ -656,25 +659,26 @@ export const useBattleStore = create<BattleState>((set, get) => ({
         };
 
         // Award XP for battle and check for level up
+        let xpGain = 5;
+
         if (winnerId === userDigimonId) {
-          // Award more XP for winning
-          const newXP = userDigimonData.experience_points + 20;
-          await useDigimonStore.getState().updateDigimonStats({
-            experience_points: newXP,
-          });
-
-          // Check for level up
-          await useDigimonStore.getState().checkLevelUp();
-        } else {
-          // Award some XP even for losing
-          const newXP = userDigimonData.experience_points + 10;
-          await useDigimonStore.getState().updateDigimonStats({
-            experience_points: newXP,
-          });
-
-          // Check for level up
-          await useDigimonStore.getState().checkLevelUp();
+          xpGain += 10;
         }
+
+        const { error: updateError } = await supabase
+          .from("user_digimon")
+          .update({
+            experience_points: userDigimonData.experience_points + xpGain,
+          })
+          .eq("id", userDigimonId);
+
+        if (updateError) {
+          console.error("Error updating XP:", updateError);
+          throw updateError;
+        }
+
+        // Check for level up
+        await useDigimonStore.getState().checkLevelUp();
 
         // Update state with battle result
         set({
@@ -740,25 +744,26 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       };
 
       // Award XP for battle and check for level up
+      let xpGain = 5;
+
       if (winnerId === userDigimonId) {
-        // Award more XP for winning
-        const newXP = userDigimonData.experience_points + 15;
-        await useDigimonStore.getState().updateDigimonStats({
-          experience_points: newXP,
-        });
-
-        // Check for level up
-        await useDigimonStore.getState().checkLevelUp();
-      } else {
-        // Award some XP even for losing
-        const newXP = userDigimonData.experience_points + 5;
-        await useDigimonStore.getState().updateDigimonStats({
-          experience_points: newXP,
-        });
-
-        // Check for level up
-        await useDigimonStore.getState().checkLevelUp();
+        xpGain += 10;
       }
+
+      const { error: updateError } = await supabase
+        .from("user_digimon")
+        .update({
+          experience_points: userDigimonData.experience_points + xpGain,
+        })
+        .eq("id", userDigimonId);
+
+      if (updateError) {
+        console.error("Error updating XP:", updateError);
+        throw updateError;
+      }
+
+      // Check for level up
+      await useDigimonStore.getState().checkLevelUp();
 
       // Update state with battle result
       set({
@@ -1050,7 +1055,26 @@ export const useBattleStore = create<BattleState>((set, get) => ({
         created_at: new Date().toISOString(),
       };
 
-      // Update state with battle result
+      let xpGain = 5;
+
+      if (winnerId === userTeamData[0].id) {
+        xpGain += 10;
+      }
+
+      for (const digimon of userTeamData) {
+        const { error: updateError } = await supabase
+          .from("user_digimon")
+          .update({
+            experience_points: digimon.experience_points + xpGain,
+          })
+          .eq("id", digimon.id);
+
+        if (updateError) {
+          console.error("Error updating XP:", updateError);
+          throw updateError;
+        }
+      }
+
       set({
         currentTeamBattle: simulatedTeamBattle as TeamBattle,
         loading: false,
