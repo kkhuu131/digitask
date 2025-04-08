@@ -221,15 +221,31 @@ const Debug = () => {
         Check RLS Policies
       </button>
 
-      {/* Create a new Digimon */}
-      <button
-        className="btn-primary mt-2"
-        onClick={async () => {
-          await useDigimonStore.getState().createUserDigimon("", 52);
-        }}
-      >
-        Create New Digimon
-      </button>
+      {/* Create a new Digimon and let user select id*/}
+      <div className="mt-4 p-4 border rounded">
+        <h2 className="text-xl font-bold mb-4">Create New Digimon</h2>
+        <div className="flex items-center space-x-2">
+          <select 
+            id="digimonId" 
+            className="p-2 border rounded"
+            defaultValue="52"
+          >
+            {Array.from({ length: 341 }, (_, i) => i + 1).map(id => (
+              <option key={id} value={id}>{id}</option>
+            ))}
+          </select>
+          <button
+            className="btn-primary"
+            onClick={async () => {
+              const selectElement = document.getElementById('digimonId') as HTMLSelectElement;
+              const selectedId = parseInt(selectElement.value, 10);
+              await useDigimonStore.getState().createUserDigimon("", selectedId);
+            }}
+          >
+            Create New Digimon
+          </button>
+        </div>
+      </div>
       
       <button 
         className="btn-primary bg-red-600 hover:bg-red-700 mt-2"

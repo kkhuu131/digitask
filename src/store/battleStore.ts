@@ -957,10 +957,10 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       };
 
       // Award XP for battle and check for level up
-      let xpGain = 5;
+      let xpGain = 10;
 
       if (winnerId === userDigimonId) {
-        xpGain += 10;
+        xpGain += 20;
       }
 
       const { error: updateError } = await supabase
@@ -1311,10 +1311,10 @@ export const useBattleStore = create<BattleState>((set, get) => ({
 
       if (TeamBattleError) throw TeamBattleError;
 
-      let xpGain = 5;
+      let xpGain = 10;
 
       if (winnerId === userTeamData[0].user_id) {
-        xpGain += 10;
+        xpGain += 20;
       }
 
       for (const digimon of userTeamData) {
