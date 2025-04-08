@@ -532,7 +532,7 @@ const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({
                 <div className="flex flex-row justify-center space-x-4 mb-4">
                   {userTeam.map((fighter) => {
                     // Calculate XP gain - more for winning
-                    const xpGain = playerWon ? 15 : 5;
+                    const xpGain = playerWon ? 30 : 10;
                     const currentXP = fighter.experience_points || 0;
                     const newXP = currentXP + xpGain;
                     
