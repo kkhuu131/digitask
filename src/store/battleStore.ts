@@ -2,6 +2,151 @@ import { create } from "zustand";
 import { supabase } from "../lib/supabase";
 import { useDigimonStore } from "./petStore";
 
+type DigimonType = "Vaccine" | "Virus" | "Data" | "Free";
+
+const TypeAdvantageMap: Record<DigimonType, Record<DigimonType, number>> = {
+  Vaccine: {
+    Virus: 2.0,
+    Data: 0.5,
+    Vaccine: 1.0,
+    Free: 1.0,
+  },
+  Virus: {
+    Data: 2.0,
+    Vaccine: 0.5,
+    Virus: 1.0,
+    Free: 1.0,
+  },
+  Data: {
+    Vaccine: 2.0,
+    Virus: 0.5,
+    Data: 1.0,
+    Free: 1.0,
+  },
+  Free: {
+    Vaccine: 1.0,
+    Virus: 1.0,
+    Data: 1.0,
+    Free: 1.0,
+  },
+};
+
+type DigimonAttribute =
+  | "Plant"
+  | "Water"
+  | "Fire"
+  | "Electric"
+  | "Wind"
+  | "Earth"
+  | "Dark"
+  | "Light"
+  | "Neutral";
+
+const AttributeAdvantageMap: Record<
+  DigimonAttribute,
+  Record<DigimonAttribute, number>
+> = {
+  Plant: {
+    Plant: 1.0,
+    Water: 1.5,
+    Fire: 1.0,
+    Electric: 1.0,
+    Wind: 1.0,
+    Earth: 1.0,
+    Dark: 1.0,
+    Light: 1.0,
+    Neutral: 1.0,
+  },
+  Water: {
+    Plant: 1.0,
+    Water: 1.0,
+    Fire: 1.5,
+    Electric: 1.0,
+    Wind: 1.0,
+    Earth: 1.0,
+    Dark: 1.0,
+    Light: 1.0,
+    Neutral: 1.0,
+  },
+  Fire: {
+    Plant: 1.5,
+    Water: 1.0,
+    Fire: 1.0,
+    Electric: 1.0,
+    Wind: 1.0,
+    Earth: 1.0,
+    Dark: 1.0,
+    Light: 1.0,
+    Neutral: 1.0,
+  },
+  Electric: {
+    Plant: 1.0,
+    Water: 1.0,
+    Fire: 1.0,
+    Electric: 1.0,
+    Wind: 1.5,
+    Earth: 1.0,
+    Dark: 1.0,
+    Light: 1.0,
+    Neutral: 1.0,
+  },
+  Wind: {
+    Plant: 1.0,
+    Water: 1.0,
+    Fire: 1.0,
+    Electric: 1.0,
+    Wind: 1.0,
+    Earth: 1.5,
+    Dark: 1.0,
+    Light: 1.0,
+    Neutral: 1.0,
+  },
+  Earth: {
+    Plant: 1.0,
+    Water: 1.0,
+    Fire: 1.0,
+    Electric: 1.5,
+    Wind: 1.0,
+    Earth: 1.0,
+    Dark: 1.0,
+    Light: 1.0,
+    Neutral: 1.0,
+  },
+  Dark: {
+    Plant: 1.0,
+    Water: 1.0,
+    Fire: 1.0,
+    Electric: 1.0,
+    Wind: 1.0,
+    Earth: 1.0,
+    Dark: 1.0,
+    Light: 1.5,
+    Neutral: 1.0,
+  },
+  Light: {
+    Plant: 1.0,
+    Water: 1.0,
+    Fire: 1.0,
+    Electric: 1.0,
+    Wind: 1.0,
+    Earth: 1.0,
+    Dark: 1.5,
+    Light: 1.0,
+    Neutral: 1.0,
+  },
+  Neutral: {
+    Plant: 1.0,
+    Water: 1.0,
+    Fire: 1.0,
+    Electric: 1.0,
+    Wind: 1.0,
+    Earth: 1.0,
+    Dark: 1.0,
+    Light: 1.0,
+    Neutral: 1.0,
+  },
+};
+
 function statModifier(stat: number, level: number) {
   if (level <= 50) {
     // From level 1 to 50, scale stat from 1/3x to 1x
@@ -19,10 +164,10 @@ function calculateCritMultiplier(SP: number, baseCritMultiplier: number = 1.5) {
   return critMultiplier;
 }
 
-const baseDamage = 200;
+const baseDamage = 175;
 const missChance = 0.07;
-const criticalHitChance = 0.15;
-const baseCritMultiplier = 1.5;
+const criticalHitChance = 0.125;
+const baseCritMultiplier = 1.3;
 
 export interface Battle {
   id: string;
@@ -888,7 +1033,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
         .select(
           `
           *,
-          digimon:digimon_id (name, sprite_url, hp, sp, atk, def, int, spd)
+          digimon:digimon_id (name, sprite_url, hp, sp, atk, def, int, spd, type, attribute)
         `
         )
         .eq("user_id", userData.user.id)
@@ -933,7 +1078,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
           .select(
             `
           *,
-          digimon:digimon_id (name, sprite_url, hp, sp, atk, def, int, spd)
+          digimon:digimon_id (name, sprite_url, hp, sp, atk, def, int, spd, type, attribute)
         `
           )
           .eq("user_id", opponent.id)
@@ -964,6 +1109,20 @@ export const useBattleStore = create<BattleState>((set, get) => ({
           };
         }
 
+        function getAttributeDamageMultiplier(
+          attacker: DigimonAttribute,
+          defender: DigimonAttribute
+        ): number {
+          return AttributeAdvantageMap[attacker][defender] ?? 1.0;
+        }
+
+        function getTypeDamageMultiplier(
+          attacker: DigimonType,
+          defender: DigimonType
+        ): number {
+          return TypeAdvantageMap[attacker][defender] ?? 1.0;
+        }
+
         for (const digimon of [...userTeamData, ...opponentTeamData]) {
           const stats = modifyStats(digimon);
           Object.assign(digimon.digimon, {
@@ -981,11 +1140,6 @@ export const useBattleStore = create<BattleState>((set, get) => ({
           return team.filter((digimon: any) => digimon.digimon.current_hp > 0);
         };
 
-        console.log(
-          "getAliveDigimon(userTeamData)",
-          getAliveDigimon(userTeamData)
-        );
-
         const allCombatants = [
           ...getAliveDigimon(userTeamData).map((d: any) => ({
             digimon: d.digimon,
@@ -1000,8 +1154,6 @@ export const useBattleStore = create<BattleState>((set, get) => ({
         ];
 
         allCombatants.sort((a, b) => b.digimon.spd - a.digimon.spd);
-
-        console.log("allCombatants", allCombatants);
 
         while (
           getAliveDigimon(userTeamData).length > 0 &&
@@ -1029,8 +1181,20 @@ export const useBattleStore = create<BattleState>((set, get) => ({
             const defense = target.digimon.def;
             const sp = target.digimon.sp;
 
-            const damageMultiplier = 0.5 + Math.random();
+            const damageMultiplier = 0.8 + Math.random() * 0.4;
             const isCriticalHit = Math.random() < criticalHitChance;
+
+            console.log("attacker", attacker.attribute);
+            console.log("target", target.digimon.attribute);
+
+            const typeMultiplier = getTypeDamageMultiplier(
+              attacker.type,
+              target.digimon.type
+            );
+            const attributeMultiplier = getAttributeDamageMultiplier(
+              attacker.attribute,
+              target.digimon.attribute
+            );
 
             const didMiss = Math.random() < missChance;
 
@@ -1042,7 +1206,9 @@ export const useBattleStore = create<BattleState>((set, get) => ({
                     (attackPower / (attackPower + defense / 2)) *
                       baseDamage *
                       damageMultiplier *
-                      (isCriticalHit ? calculateCritMultiplier(sp) : 1)
+                      (isCriticalHit ? calculateCritMultiplier(sp) : 1) *
+                      typeMultiplier *
+                      attributeMultiplier
                   )
                 );
 
