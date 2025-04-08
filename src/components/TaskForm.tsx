@@ -155,7 +155,7 @@ const TaskForm = () => {
           <div className="relative ml-1 group">
             <span className="cursor-help text-gray-400">ⓘ</span>
             <div className="absolute left-0 bottom-full mb-2 hidden group-hover:block bg-gray-800 text-white text-xs rounded p-2 w-64">
-              Daily tasks reset each day and can be completed again. They provide less XP (10 vs 15) but can be done repeatedly for consistent pet care.
+              Daily tasks reset each day and can be completed again. They provide less XP (20 vs 30) but can be done repeatedly for consistent pet care.
             </div>
           </div>
         </div>

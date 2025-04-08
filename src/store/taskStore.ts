@@ -477,6 +477,6 @@ export const useTaskStore = create<TaskState>((set, get) => ({
 
 // Move these helper functions to a separate utility file
 const calculateTaskPoints = (task: Task): number => {
-  if (task.is_daily) return 15;
-  return 20;
+  if (task.is_daily) return 50;
+  return 75;
 };
