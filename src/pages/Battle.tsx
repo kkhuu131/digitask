@@ -58,6 +58,9 @@ const Battle = () => {
   const handleBattleComplete = () => {
     setShowBattleAnimation(false);
     clearCurrentTeamBattle();
+    
+    // Refresh all user Digimon data to update XP and levels in the UI
+    useDigimonStore.getState().fetchAllUserDigimon();
   };
 
   if (!userDigimon || !digimonData) {
@@ -84,8 +87,6 @@ const Battle = () => {
           <div className="card">
             <h2 className="text-xl font-bold mb-4">Battle Arena</h2>
             
-            <DigimonTeamManager />
-            
             <div className="mb-4 bg-blue-50 border-l-4 border-blue-400 p-3">
               <p className="text-sm">
                 <span className="font-medium">Daily Battles:</span> {dailyBattlesRemaining} remaining
@@ -110,7 +111,7 @@ const Battle = () => {
                   ? "Daily Limit Reached" 
                   : teamDigimon.length < 2
                     ? "Need 2+ Team Digimon"
-                    : "Queue for Battle"}
+                    : "Queue"}
             </button>
             
             {error && (
@@ -127,6 +128,10 @@ const Battle = () => {
                 </p>
               </div>
             )}
+
+            <div className="mt-4">
+              <DigimonTeamManager />
+            </div>
           </div>
           
           <div className="card">

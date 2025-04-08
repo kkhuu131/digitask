@@ -221,7 +221,7 @@ const DigimonTeamManager = () => {
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="mb-6">
-        <h3 className="text-lg font-semibold mb-2">Battle Team</h3>
+        <h3 className="text-lg font-semibold mb-2">Team</h3>
         <div className="flex justify-center space-x-6 mb-6">
           {teamDigimon.map((digimon) => (
             <DigimonCard 
@@ -242,7 +242,7 @@ const DigimonTeamManager = () => {
           ))}
         </div>
         
-        <h3 className="text-lg font-semibold mb-2">Reserve Digimon</h3>
+        <h3 className="text-lg font-semibold mb-2">Reserve</h3>
         <div className="grid grid-cols-3 gap-4">
           {reserveDigimon.map((digimon) => (
             <DigimonCard 

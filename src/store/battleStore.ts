@@ -193,6 +193,12 @@ export interface TeamBattleHistory {
     };
   }[];
   created_at: string;
+  user?: {
+    username: string;
+  };
+  opponent?: {
+    username: string;
+  };
 }
 
 interface BattleState {
@@ -404,7 +410,9 @@ export const useBattleStore = create<BattleState>((set, get) => ({
           created_at,
           user_team,
           opponent_team,
-          turns
+          turns,
+          user:profiles!team_battles_user_id_fkey1(username),
+          opponent:profiles!team_battles_opponent_id_fkey(username)
         `
         )
         .eq("user_id", userData.user.id)
@@ -413,7 +421,19 @@ export const useBattleStore = create<BattleState>((set, get) => ({
 
       if (error) throw error;
 
-      set({ teamBattleHistory: data || [], loading: false });
+      // Add a type assertion to tell TypeScript about the actual structure
+      const transformedData =
+        data?.map((battle) => ({
+          ...battle,
+          user: { username: (battle.user as any)?.username || "You" },
+          opponent: {
+            username: (battle.opponent as any)?.username || "Opponent",
+          },
+        })) || [];
+
+      console.log("Transformed battle data:", transformedData);
+
+      set({ teamBattleHistory: transformedData || [], loading: false });
 
       get().checkDailyBattleLimit();
     } catch (error) {

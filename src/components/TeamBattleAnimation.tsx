@@ -44,7 +44,6 @@ const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({
 
   // --- State Initialization ---
   useEffect(() => {
-    console.log("Battle Data Changed - Initializing HP and State");
     const initialHp: { [id: string]: number } = {};
     userTeam.forEach(fighter => {
       initialHp[fighter.id] = fighter.stats?.hp ?? DEFAULT_MAX_HP; 
@@ -72,7 +71,6 @@ const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({
   useEffect(() => {
     // Update HP based on the outcome of the turn being animated (currentTurn)
     if (step > 0 && currentTurn && currentTurn.remainingHP) {
-      // console.log(`Step ${step}: Updating HP based on current turn (index ${step - 1}) results:`, currentTurn.remainingHP);
       setHpState(prevHp => {
         const newHp = { ...prevHp };
         Object.keys(currentTurn.remainingHP).forEach(id => {
@@ -99,10 +97,7 @@ const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({
   const advanceStep = () => {
      // Only advance if we are not yet on the final message step
     if (step < maxSteps - 1) { 
-      console.log(`Advancing step from ${step} to ${step + 1}`);
       setStep(prevStep => prevStep + 1);
-    } else {
-        console.log("AdvanceStep called on final message step, should not happen via main timer.");
     }
   };
 
@@ -118,20 +113,16 @@ const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({
 
     // Set next timer only if we are *before* the final message step and not showing results yet
     if (!showResults && step < maxSteps - 1) { 
-      console.log(`Setting timer to advance from step ${step} in ${TURN_DURATION}ms`);
       advanceStepTimeoutRef.current = setTimeout(advanceStep, TURN_DURATION); 
     }
 
     // Cleanup
     return () => {
       if (advanceStepTimeoutRef.current) {
-        // console.log(`Clearing advance step timer associated with step ${step}`);
         clearTimeout(advanceStepTimeoutRef.current);
         advanceStepTimeoutRef.current = null;
       }
     };
-  // Depend only on step and showResults for this timer logic
-  // eslint-disable-next-line react-hooks/exhaustive-deps 
   }, [step, showResults]); 
 
   // 2. Timer to show results after final message
@@ -144,9 +135,7 @@ const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({
 
     // If we're at the final message step and not already showing results screen
     if (isFinalMessageStep && !showResultsScreen) {
-      console.log(`Final message step. Setting timer to show results screen in ${FINAL_MESSAGE_DURATION}ms`);
       showResultsTimeoutRef.current = setTimeout(() => {
-        console.log("Timer fired: Showing results screen");
         setShowResultsScreen(true);
       }, FINAL_MESSAGE_DURATION);
     }
@@ -190,13 +179,11 @@ const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({
       // If HP is 0 or less and not already disintegrating, mark for disintegration
       if (currentHp <= 0 && !wasAlreadyDisintegrating) {
         newlyDead[fighter.id] = true;
-        console.log(`Digimon ${fighter.id} (${getDisplayName(fighter)}) marked for disintegration`);
       }
     });
     
     // If we found newly dead Digimon, update the disintegrating state
     if (Object.keys(newlyDead).length > 0) {
-      console.log("Setting disintegrating Digimon:", newlyDead);
       setDisintegratingDigimon(prev => ({...prev, ...newlyDead}));
     }
   }, [hpState]); // Only depend on hpState changes to detect deaths
