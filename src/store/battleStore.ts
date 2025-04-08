@@ -106,6 +106,7 @@ export interface TeamBattle {
   user_team: {
     current_level: number;
     experience_points: number;
+    user_id: string;
     id: string;
     name: string;
     level: number;
@@ -123,6 +124,7 @@ export interface TeamBattle {
   opponent_team: {
     current_level: number;
     experience_points: number;
+    user_id: string;
     id: string;
     name: string;
     level: number;
@@ -1049,12 +1051,12 @@ export const useBattleStore = create<BattleState>((set, get) => ({
 
         if (userAlive > 0) {
           return {
-            winnerId: userTeamData[0].id,
+            winnerId: userTeamData[0].user_id,
             turns,
           };
         } else {
           return {
-            winnerId: opponentTeamData[0].id,
+            winnerId: opponentTeamData[0].user_id,
             turns,
           };
         }
@@ -1068,6 +1070,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
 
       const simulatedTeamBattle = {
         user_team: userTeamData.map((d) => ({
+          user_id: d.user_id,
           current_level: d.current_level,
           experience_points: d.experience_points,
           id: d.id,
@@ -1085,6 +1088,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
           },
         })),
         opponent_team: opponentTeamData.map((d) => ({
+          user_id: d.user_id,
           current_level: d.current_level,
           experience_points: d.experience_points,
           id: d.id,
@@ -1105,6 +1109,8 @@ export const useBattleStore = create<BattleState>((set, get) => ({
         winner_id: winnerId,
       };
 
+      console.log("winnerId", winnerId);
+
       const { error: TeamBattleError } = await supabase
         .from("team_battles")
         .insert({
@@ -1121,7 +1127,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
 
       let xpGain = 5;
 
-      if (winnerId === userTeamData[0].id) {
+      if (winnerId === userTeamData[0].user_id) {
         xpGain += 10;
       }
 

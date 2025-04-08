@@ -28,8 +28,6 @@ const BattleHistory: React.FC<BattleHistoryProps> = ({ teamBattles = [] }) => {
         
         // Team battle
         const teamBattle = battle as TeamBattleHistory & { type: 'team' };
-        console.log("teamBattle", teamBattle);
-        
         // Determine if the player won
         const playerWon = teamBattle.winner_id === (teamBattle.user_id || '');
         

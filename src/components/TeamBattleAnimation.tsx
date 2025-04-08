@@ -10,7 +10,7 @@ interface TeamBattleAnimationProps {
 const DEFAULT_MAX_HP = 100; // Fallback if stats are missing
 const VERTICAL_RANGE_START = 10; // Start positioning at 10% from the top
 const VERTICAL_RANGE_END = 50;   // End positioning at 50% from the top
-const TURN_DURATION = 1200; // Duration for each turn animation + pause
+const TURN_DURATION = 1000; // Duration for each turn animation + pause
 const FINAL_MESSAGE_DURATION = 2000; // How long to show "Victory/Defeat" before results confirmation
 
 const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({ 
@@ -31,7 +31,7 @@ const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({
   const userTeam = teamBattle.user_team || [];
   const opponentTeam = teamBattle.opponent_team || [];
   const battleTurns = teamBattle.turns || [];
-  const playerWon = teamBattle.winner_id === userTeam[0]?.id;
+  const playerWon = teamBattle.winner_id === userTeam[0]?.user_id;
   const totalTurns = battleTurns.length;
   // step 0: Intro
   // step 1 to totalTurns: Turn animations
@@ -550,10 +550,17 @@ const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({
                     const newXP = currentXP + xpGain;
                     
                     // Calculate level progress
-                    const currentLevel = fighter.current_level || 1;
+                    let currentLevel = fighter.current_level || 1;
                     const xpForNextLevel = currentLevel * 20;
                     const prevLevelProgress = (currentXP % xpForNextLevel) / xpForNextLevel * 100;
-                    const newLevelProgress = (newXP % xpForNextLevel) / xpForNextLevel * 100;
+                    
+                    // Check if leveled up
+                    const didLevelUp = newXP >= currentXP + xpForNextLevel - (currentXP % xpForNextLevel);
+                    const newLevelProgress = didLevelUp 
+                      ? ((newXP - currentXP - (xpForNextLevel - (currentXP % xpForNextLevel))) / ((currentLevel + 1) * 20)) * 100
+                      : (newXP % xpForNextLevel) / xpForNextLevel * 100;
+                    
+                    const newLevel = didLevelUp ? currentLevel + 1 : currentLevel;
                     
                     return (
                       <div key={fighter.id} className="flex flex-col items-center w-1/3 max-w-[150px]">
@@ -568,9 +575,34 @@ const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({
                         
                         <div className="w-full">
                           <div className="flex justify-center items-center mb-1">
-                            <span className="text-green-300 font-medium text-sm text-center">
-                              Lv. {currentLevel} {getDisplayName(fighter)}
-                            </span>
+                            {didLevelUp ? (
+                              <div className="relative flex justify-center w-full">
+                                {/* Old level text that fades out */}
+                                <motion.span 
+                                  className="text-green-300 font-medium text-sm text-center absolute"
+                                  initial={{ opacity: 1 }}
+                                  animate={{ opacity: 0 }}
+                                  transition={{ duration: 0.2, delay: 1.3 }}
+                                >
+                                  Lv. {currentLevel} {getDisplayName(fighter)}
+                                </motion.span>
+                                
+                                {/* New level text that fades in */}
+                                <motion.span 
+                                  className="text-green-300 font-medium text-sm text-center"
+                                  initial={{ opacity: 0 }}
+                                  animate={{ opacity: 1 }}
+                                  transition={{ duration: 0.2, delay: 1.5 }}
+                                >
+                                  Lv. {newLevel} {getDisplayName(fighter)}
+                                </motion.span>
+                              </div>
+                            ) : (
+                              // Regular level text (no animation)
+                              <span className="text-green-300 font-medium text-sm text-center">
+                                Lv. {currentLevel} {getDisplayName(fighter)}
+                              </span>
+                            )}
                           </div>
                           
                           {/* XP Bar */}
@@ -582,12 +614,41 @@ const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({
                             ></div>
                             
                             {/* XP Gain Animation */}
-                            <motion.div 
-                              className="absolute h-full bg-blue-400" 
-                              initial={{ width: `${prevLevelProgress}%` }}
-                              animate={{ width: `${newLevelProgress}%` }}
-                              transition={{ duration: 1, delay: 0.5 }}
-                            ></motion.div>
+                            {didLevelUp ? (
+                              <>
+                                {/* First animation: fill to 100% */}
+                                <motion.div 
+                                  className="absolute h-full bg-blue-400" 
+                                  initial={{ width: `${prevLevelProgress}%` }}
+                                  animate={{ width: "100%" }}
+                                  transition={{ duration: 0.8, delay: 0.5 }}
+                                ></motion.div>
+                                
+                                {/* Second animation: reset and fill to new progress */}
+                                <motion.div 
+                                  className="absolute h-full bg-yellow-400" 
+                                  initial={{ width: "0%" }}
+                                  animate={{ width: `${newLevelProgress}%` }}
+                                  transition={{ duration: 0.6, delay: 1.4 }}
+                                ></motion.div>
+                                
+                                {/* Level up flash effect */}
+                                <motion.div
+                                  className="absolute inset-0 bg-white"
+                                  initial={{ opacity: 0 }}
+                                  animate={{ opacity: [0, 0.7, 0] }}
+                                  transition={{ duration: 0.5, delay: 1.3 }}
+                                ></motion.div>
+                              </>
+                            ) : (
+                              // Normal XP gain (no level up)
+                              <motion.div 
+                                className="absolute h-full bg-blue-400" 
+                                initial={{ width: `${prevLevelProgress}%` }}
+                                animate={{ width: `${newLevelProgress}%` }}
+                                transition={{ duration: 1, delay: 0.5 }}
+                              ></motion.div>
+                            )}
                             
                             {/* XP Text */}
                             <div className="absolute inset-0 flex items-center justify-center">
