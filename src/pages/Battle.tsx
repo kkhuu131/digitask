@@ -61,6 +61,9 @@ const Battle = () => {
     
     // Refresh all user Digimon data to update XP and levels in the UI
     useDigimonStore.getState().fetchAllUserDigimon();
+    
+    // Refresh the daily battle limit to update the counter
+    checkDailyBattleLimit();
   };
 
   if (!userDigimon || !digimonData) {
