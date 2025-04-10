@@ -1319,20 +1319,6 @@ export const useBattleStore = create<BattleState>((set, get) => ({
         }
       }
 
-      // for (const digimon of userTeamData) {
-      //   const { error: updateError } = await supabase
-      //     .from("user_digimon")
-      //     .update({
-      //       experience_points: digimon.experience_points + xpGain,
-      //     })
-      //     .eq("id", digimon.id);
-
-      //   if (updateError) {
-      //     console.error("Error updating XP:", updateError);
-      //     throw updateError;
-      //   }
-      // }
-
       set({
         currentTeamBattle: simulatedTeamBattle as TeamBattle,
         loading: false,

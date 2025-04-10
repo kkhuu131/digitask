@@ -649,7 +649,11 @@ const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({
                     );
                   })}
                 </div>
-                
+                <div className="w-full flex justify-center items-center my-8">
+                  <p className="text-green-300 text-sm">
+                    Your reserve Digimon also gained XP!
+                  </p>
+                </div>
               </div>
               {/* Return button */}
               <div className="flex justify-center mt-4">

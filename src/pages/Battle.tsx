@@ -58,6 +58,8 @@ const Battle = () => {
   const handleBattleComplete = () => {
     setShowBattleAnimation(false);
     clearCurrentTeamBattle();
+    // Fetch the battle history after clearing the current battle
+    useBattleStore.getState().fetchTeamBattleHistory();
     
     // Refresh all user Digimon data to update XP and levels in the UI
     useDigimonStore.getState().fetchAllUserDigimon();
