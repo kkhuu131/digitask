@@ -27,6 +27,7 @@ const MilestoneProgress = () => {
   const handleClaimDigimon = async () => {
     if (canClaimDigimon && !hasMaxDigimon) {
       await claimDigimon();
+      fetchMilestones();
     }
   };
   

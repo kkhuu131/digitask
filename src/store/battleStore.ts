@@ -576,8 +576,6 @@ export const useBattleStore = create<BattleState>((set, get) => ({
           },
         })) || [];
 
-      console.log("Transformed battle data:", transformedData);
-
       set({ teamBattleHistory: transformedData || [], loading: false });
 
       get().checkDailyBattleLimit();
@@ -721,8 +719,6 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       await useDigimonStore
         .getState()
         .addDiscoveredDigimon(opponent.digimon_id);
-
-      console.log("Selected opponent:", opponent.name);
 
       // Add profiles to the Digimon objects
       const userDigimonWithProfile = {
@@ -1089,13 +1085,10 @@ export const useBattleStore = create<BattleState>((set, get) => ({
 
       // Add the opponent's Digimon to the discovered Digimon list
       for (const digimon of opponentTeamData) {
-        console.log("digimon", digimon);
         await useDigimonStore
           .getState()
           .addDiscoveredDigimon(digimon.digimon.id);
       }
-
-      console.log("Selected opponent:", opponentProfile?.username);
 
       function simulateTeamBattle(userTeamData: any, opponentTeamData: any) {
         function modifyStats(digimon: any) {
@@ -1130,9 +1123,6 @@ export const useBattleStore = create<BattleState>((set, get) => ({
             current_hp: stats.hp,
           });
         }
-
-        console.log("userTeamData", userTeamData);
-        console.log("opponentTeamData", opponentTeamData);
 
         const turns = [];
 
@@ -1183,9 +1173,6 @@ export const useBattleStore = create<BattleState>((set, get) => ({
 
             const damageMultiplier = 0.8 + Math.random() * 0.4;
             const isCriticalHit = Math.random() < criticalHitChance;
-
-            console.log("attacker", attacker.attribute);
-            console.log("target", target.digimon.attribute);
 
             const typeMultiplier = getTypeDamageMultiplier(
               attacker.type,
@@ -1295,8 +1282,6 @@ export const useBattleStore = create<BattleState>((set, get) => ({
         winner_id: winnerId,
       };
 
-      console.log("winnerId", winnerId);
-
       const { error: TeamBattleError } = await supabase
         .from("team_battles")
         .insert({
@@ -1317,7 +1302,10 @@ export const useBattleStore = create<BattleState>((set, get) => ({
         xpGain += 20;
       }
 
-      for (const digimon of userTeamData) {
+      const allUserDigimon = useDigimonStore.getState().allUserDigimon;
+
+      // Update each Digimon with the XP gain
+      for (const digimon of allUserDigimon) {
         const { error: updateError } = await supabase
           .from("user_digimon")
           .update({
@@ -1330,6 +1318,20 @@ export const useBattleStore = create<BattleState>((set, get) => ({
           throw updateError;
         }
       }
+
+      // for (const digimon of userTeamData) {
+      //   const { error: updateError } = await supabase
+      //     .from("user_digimon")
+      //     .update({
+      //       experience_points: digimon.experience_points + xpGain,
+      //     })
+      //     .eq("id", digimon.id);
+
+      //   if (updateError) {
+      //     console.error("Error updating XP:", updateError);
+      //     throw updateError;
+      //   }
+      // }
 
       set({
         currentTeamBattle: simulatedTeamBattle as TeamBattle,
