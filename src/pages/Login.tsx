@@ -33,6 +33,24 @@ const Login = () => {
     }
   };
   
+  const handleDemoLogin = async () => {
+    // Use a dedicated demo account
+    const demoEmail = "digitaskdemo@gmail.com";
+    const demoPassword = "Th!$I5@P4ssw0rD4D3mO";
+    
+    await signIn(demoEmail, demoPassword);
+    
+    // If login was successful, fetch the user's Digimon data
+    if (useAuthStore.getState().user) {
+      try {
+        await useDigimonStore.getState().fetchUserDigimon();
+        await useTaskStore.getState().fetchTasks();
+      } catch (error) {
+        console.error("Error fetching user data after demo login:", error);
+      }
+    }
+  };
+  
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
@@ -102,6 +120,17 @@ const Login = () => {
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
             >
               {loading ? "Signing in..." : "Sign in"}
+            </button>
+          </div>
+          
+          <div>
+            <button
+              type="button"
+              onClick={handleDemoLogin}
+              disabled={loading}
+              className="group relative w-full flex justify-center py-2 px-4 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+            >
+              Try Demo Account
             </button>
           </div>
           
