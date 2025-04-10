@@ -14,7 +14,7 @@ const MilestoneProgress = () => {
   } = useMilestoneStore();
   
   const { allUserDigimon } = useDigimonStore();
-  const hasMaxDigimon = allUserDigimon.length >= 3;
+  const hasMaxDigimon = allUserDigimon.length >= 9;
   
   useEffect(() => {
     fetchMilestones();

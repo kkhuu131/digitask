@@ -223,16 +223,16 @@ export const useMilestoneStore = create<MilestoneState>((set, get) => ({
         return false;
       }
 
-      // Check if user already has 3 Digimon
+      // Check if user already has max Digimon
       const { data: userDigimonCount } = await supabase
         .from("user_digimon")
         .select("count")
         .eq("user_id", userData.user.id);
 
-      if (userDigimonCount && userDigimonCount[0]?.count >= 3) {
+      if (userDigimonCount && userDigimonCount[0]?.count >= 9) {
         set({
           loading: false,
-          error: "You already have the maximum number of Digimon (3).",
+          error: "You already have the maximum number of Digimon (9).",
         });
         return false;
       }

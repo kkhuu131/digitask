@@ -15,8 +15,13 @@ interface NotificationState {
 }
 
 export const useNotificationStore = create<NotificationState>((set) => {
-  // Load initial notifications from localStorage
-  const savedNotifications = localStorage.getItem("notifications");
+  // Check if localStorage is available (browser environment)
+  const isLocalStorageAvailable = typeof localStorage !== "undefined";
+
+  // Load initial notifications from localStorage if available
+  const savedNotifications = isLocalStorageAvailable
+    ? localStorage.getItem("notifications")
+    : null;
   const initialNotifications = savedNotifications
     ? JSON.parse(savedNotifications)
     : [];
@@ -47,11 +52,13 @@ export const useNotificationStore = create<NotificationState>((set) => {
         // Limit the number of notifications to prevent overflow
         const limitedNotifications = updatedNotifications.slice(-5);
 
-        // Save to localStorage
-        localStorage.setItem(
-          "notifications",
-          JSON.stringify(limitedNotifications)
-        );
+        // Only try to save to localStorage if it's available
+        if (isLocalStorageAvailable) {
+          localStorage.setItem(
+            "notifications",
+            JSON.stringify(limitedNotifications)
+          );
+        }
 
         return { notifications: limitedNotifications };
       });
@@ -63,10 +70,13 @@ export const useNotificationStore = create<NotificationState>((set) => {
             const filteredNotifications = state.notifications.filter(
               (n) => n.id !== id
             );
-            localStorage.setItem(
-              "notifications",
-              JSON.stringify(filteredNotifications)
-            );
+            // Only try to save to localStorage if it's available
+            if (isLocalStorageAvailable) {
+              localStorage.setItem(
+                "notifications",
+                JSON.stringify(filteredNotifications)
+              );
+            }
             return { notifications: filteredNotifications };
           });
         }, 5000);
@@ -78,16 +88,22 @@ export const useNotificationStore = create<NotificationState>((set) => {
         const filteredNotifications = state.notifications.filter(
           (n) => n.id !== id
         );
-        localStorage.setItem(
-          "notifications",
-          JSON.stringify(filteredNotifications)
-        );
+        // Only try to save to localStorage if it's available
+        if (isLocalStorageAvailable) {
+          localStorage.setItem(
+            "notifications",
+            JSON.stringify(filteredNotifications)
+          );
+        }
         return { notifications: filteredNotifications };
       });
     },
 
     clearNotifications: () => {
-      localStorage.removeItem("notifications");
+      // Only try to save to localStorage if it's available
+      if (isLocalStorageAvailable) {
+        localStorage.removeItem("notifications");
+      }
       set({ notifications: [] });
     },
   };
