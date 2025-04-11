@@ -123,8 +123,8 @@ const DigimonCard = ({ digimon, isTeam, onSwap }: DigimonCardProps) => {
       `}
     >
       {content}
-      <p className="text-xs mt-1 truncate w-full text-center">{digimon.name}</p>
-      <p className="text-xs text-gray-500">Lv.{digimon.current_level}</p>
+      <p className="text-xs truncate w-full text-center">{digimon.name || digimon.digimon?.name}</p>
+      <p className="text-xs text-gray-500 mt-1">Lv.{digimon.current_level}</p>
       
       {/* EXP Bar */}
       <ProgressBar 

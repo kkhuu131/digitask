@@ -157,7 +157,7 @@ const AttributeAdvantageMap: Record<
  * @param level99Stat The stat value at level 99
  * @returns The interpolated stat value at the target level
  */
-function statModifier(
+export default function statModifier(
   level: number,
   level1Stat: number,
   level50Stat: number,

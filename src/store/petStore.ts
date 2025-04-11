@@ -32,6 +32,18 @@ export interface Digimon {
   def: number;
   int: number;
   spd: number;
+  hp_level1: number;
+  sp_level1: number;
+  atk_level1: number;
+  def_level1: number;
+  int_level1: number;
+  spd_level1: number;
+  hp_level99: number;
+  sp_level99: number;
+  atk_level99: number;
+  def_level99: number;
+  int_level99: number;
+  spd_level99: number;
 }
 
 export interface EvolutionOption {

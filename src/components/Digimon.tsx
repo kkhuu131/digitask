@@ -170,7 +170,6 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
         <p>Stage: {digimonData.stage}</p>
         <p>Type: {(digimonData as any)?.type || "Unknown"}</p>
         <p>Attribute: {(digimonData as any)?.attribute || "Unknown"}</p>
-        <p>Stats: HP {digimonData.hp} | ATK {digimonData.atk} | DEF {digimonData.def} | SPD {digimonData.spd}</p>
       </div>
       
       {evolutionOptions.length > 0 && (
