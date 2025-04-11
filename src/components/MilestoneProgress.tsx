@@ -1,33 +1,80 @@
 import { useEffect } from "react";
 import { useMilestoneStore, DAILY_QUOTA_MILESTONE, TASKS_COMPLETED_MILESTONE } from "../store/milestoneStore";
 import { useDigimonStore } from "../store/petStore";
+import { useLocation } from "react-router-dom";
+import { useTaskStore } from "../store/taskStore";
 
 const MilestoneProgress = () => {
   const { 
     dailyQuotaStreak, 
     tasksCompletedCount, 
-    canClaimDigimon, 
     loading, 
     error, 
     fetchMilestones,
-    claimDigimon
+    claimDigimon,
+    checkCanClaimDigimon
   } = useMilestoneStore();
   
   const { allUserDigimon } = useDigimonStore();
+  const { tasks, dailyQuota } = useTaskStore();
   const hasMaxDigimon = allUserDigimon.length >= 9;
+  const location = useLocation();
   
+  // Calculate if user should be able to claim based on current values
+  const shouldBeAbleToClaimDigimon = 
+    (dailyQuotaStreak >= DAILY_QUOTA_MILESTONE || 
+     tasksCompletedCount >= TASKS_COMPLETED_MILESTONE) && 
+    !hasMaxDigimon;
+  
+  // Fetch milestones on initial load
   useEffect(() => {
     fetchMilestones();
   }, [fetchMilestones]);
+  
+  // Refresh when the location changes (user navigates between tabs)
+  useEffect(() => {
+    fetchMilestones();
+  }, [location.pathname, fetchMilestones]);
+  
+  // Force a refresh of the canClaimDigimon state whenever milestone values change
+  useEffect(() => {
+    checkCanClaimDigimon();
+  }, [dailyQuotaStreak, tasksCompletedCount, checkCanClaimDigimon]);
+  
+  // Add a focus event listener to refresh data when tab becomes active
+  useEffect(() => {
+    const handleFocus = () => {
+      fetchMilestones();
+    };
+    
+    window.addEventListener('focus', handleFocus);
+    
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [fetchMilestones]);
+  
+  // Refresh milestones when tasks or daily quota changes
+  useEffect(() => {
+    fetchMilestones();
+  }, [
+    // When completed tasks count changes
+    tasks.filter(task => task.is_completed).length,
+    // When daily quota changes
+    dailyQuota?.completed_today,
+    fetchMilestones
+  ]);
   
   // Calculate percentages for progress bars
   const dailyQuotaPercentage = Math.min(100, (dailyQuotaStreak / DAILY_QUOTA_MILESTONE) * 100);
   const tasksCompletedPercentage = Math.min(100, (tasksCompletedCount / TASKS_COMPLETED_MILESTONE) * 100);
   
   const handleClaimDigimon = async () => {
-    if (canClaimDigimon && !hasMaxDigimon) {
+    // Double-check that user can claim before proceeding
+    if (shouldBeAbleToClaimDigimon) {
       await claimDigimon();
-      fetchMilestones();
+      // Force refresh milestones after claiming
+      await fetchMilestones();
     }
   };
   
@@ -80,20 +127,20 @@ const MilestoneProgress = () => {
           </p>
         </div>
         
-        {/* Claim Button */}
+        {/* Claim Button - Use shouldBeAbleToClaimDigimon instead of canClaimDigimon */}
         <div className="mt-4">
           <button
             onClick={handleClaimDigimon}
-            disabled={!canClaimDigimon || loading || hasMaxDigimon}
+            disabled={!shouldBeAbleToClaimDigimon || loading}
             className={`w-full py-2 px-4 rounded-md text-white font-medium ${
-              canClaimDigimon && !hasMaxDigimon
+              shouldBeAbleToClaimDigimon && !loading
                 ? "bg-primary-600 hover:bg-primary-700"
                 : "bg-gray-400 cursor-not-allowed"
             }`}
           >
             {loading ? "Processing..." : 
-             hasMaxDigimon ? "Maximum Digimon Reached (3)" :
-             canClaimDigimon ? "Claim New Digimon" : "Reach a Milestone to Claim"}
+             hasMaxDigimon ? "Maximum Digimon Reached (9)" :
+             shouldBeAbleToClaimDigimon ? "Claim New Digimon" : "Reach a Milestone to Claim"}
           </button>
         </div>
       </div>

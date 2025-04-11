@@ -506,6 +506,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
         `
           )
           .eq("user_id", opponent.id)
+          .order("current_level", { ascending: false })
           .limit(3);
 
       if (opponentDigimonError) throw opponentDigimonError;
