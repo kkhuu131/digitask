@@ -1,13 +1,9 @@
-import { Battle, TeamBattleHistory } from "../store/battleStore";
+import { TeamBattleHistory } from "../store/battleStore";
 interface BattleHistoryProps {
-  battles?: Battle[];
   teamBattles?: TeamBattleHistory[];
 }
 
 const BattleHistory: React.FC<BattleHistoryProps> = ({ teamBattles = [] }) => {
-
-  // Remove console.log for production
-  // console.log(teamBattles);
   
   if (teamBattles.length === 0) {
     return (

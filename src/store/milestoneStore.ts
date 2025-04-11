@@ -204,17 +204,20 @@ export const useMilestoneStore = create<MilestoneState>((set, get) => ({
       }
 
       // Get available starter Digimon
-      const starterDigimon = await useDigimonStore
-        .getState()
-        .getStarterDigimon();
-      if (!starterDigimon || starterDigimon.length === 0) {
-        set({ loading: false, error: "No Digimon available to claim." });
-        return false;
-      }
+      const starterDigimon = [1, 2, 3, 4, 5];
 
-      // Randomly select a Digimon from the starters
-      const randomIndex = Math.floor(Math.random() * starterDigimon.length);
-      const selectedDigimon = starterDigimon[randomIndex];
+      // NX Digimon id's 337-341
+      const NXDigimon = [337, 338, 339, 340, 341];
+
+      let selectedDigimon: number;
+
+      if (Math.random() < 0.03) {
+        const randomIndex = Math.floor(Math.random() * NXDigimon.length);
+        selectedDigimon = NXDigimon[randomIndex];
+      } else {
+        const randomIndex = Math.floor(Math.random() * starterDigimon.length);
+        selectedDigimon = starterDigimon[randomIndex];
+      }
 
       // Create the Digimon for the user (not active by default)
       const { data: userData } = await supabase.auth.getUser();
@@ -242,7 +245,7 @@ export const useMilestoneStore = create<MilestoneState>((set, get) => ({
         .from("user_digimon")
         .insert({
           user_id: userData.user.id,
-          digimon_id: selectedDigimon.id,
+          digimon_id: selectedDigimon,
           name: "",
           health: 100,
           happiness: 100,
@@ -270,7 +273,7 @@ export const useMilestoneStore = create<MilestoneState>((set, get) => ({
 
       // Show success notification
       useNotificationStore.getState().addNotification({
-        message: `You've claimed a new ${selectedDigimon.name}! Check your Digimon collection.`,
+        message: `You've claimed a new Digimon! Check your collection.`,
         type: "success",
       });
 

@@ -295,6 +295,157 @@ async function saveToDatabase(digimonList, evolutionData) {
   console.log(`Inserted ${evolutionPaths.length} evolution paths`);
 }
 
+async function scrapeDetailedStats(detailUrl) {
+  try {
+    const fullUrl = formatUrl(detailUrl);
+    console.log(`Fetching detailed stats from ${fullUrl}`);
+    const { data } = await axios.get(fullUrl);
+    const $ = cheerio.load(data);
+
+    // Initialize stats objects
+    const level1Stats = {
+      hp_level1: 0,
+      sp_level1: 0,
+      atk_level1: 0,
+      def_level1: 0,
+      int_level1: 0,
+      spd_level1: 0,
+    };
+
+    const level99Stats = {
+      hp_level99: 0,
+      sp_level99: 0,
+      atk_level99: 0,
+      def_level99: 0,
+      int_level99: 0,
+      spd_level99: 0,
+    };
+
+    // Find the level 1 stats row
+    $('b:contains("Lv. 01")').each((_, element) => {
+      const row = $(element).closest("tr");
+      const cells = row.find("td");
+
+      if (cells.length >= 7) {
+        // The cells are in order: Level, HP, SP, ATK, DEF, INT, SPD
+        level1Stats.hp_level1 = parseInt($(cells[1]).text().trim()) || 0;
+        level1Stats.sp_level1 = parseInt($(cells[2]).text().trim()) || 0;
+        level1Stats.atk_level1 = parseInt($(cells[3]).text().trim()) || 0;
+        level1Stats.def_level1 = parseInt($(cells[4]).text().trim()) || 0;
+        level1Stats.int_level1 = parseInt($(cells[5]).text().trim()) || 0;
+        level1Stats.spd_level1 = parseInt($(cells[6]).text().trim()) || 0;
+      }
+    });
+
+    // Find the level 99 stats row
+    $('b:contains("Lv. 99")').each((_, element) => {
+      const row = $(element).closest("tr");
+      const cells = row.find("td");
+
+      if (cells.length >= 7) {
+        // The cells are in order: Level, HP, SP, ATK, DEF, INT, SPD
+        level99Stats.hp_level99 = parseInt($(cells[1]).text().trim()) || 0;
+        level99Stats.sp_level99 = parseInt($(cells[2]).text().trim()) || 0;
+        level99Stats.atk_level99 = parseInt($(cells[3]).text().trim()) || 0;
+        level99Stats.def_level99 = parseInt($(cells[4]).text().trim()) || 0;
+        level99Stats.int_level99 = parseInt($(cells[5]).text().trim()) || 0;
+        level99Stats.spd_level99 = parseInt($(cells[6]).text().trim()) || 0;
+      }
+    });
+
+    // Log what we found for debugging
+    console.log(`Level 1 stats for ${detailUrl}:`, level1Stats);
+    console.log(`Level 99 stats for ${detailUrl}:`, level99Stats);
+
+    // Return combined stats
+    return {
+      ...level1Stats,
+      ...level99Stats,
+    };
+  } catch (error) {
+    console.error(`Error scraping detailed stats:`, error);
+    return {
+      hp_level1: 0,
+      sp_level1: 0,
+      atk_level1: 0,
+      def_level1: 0,
+      int_level1: 0,
+      spd_level1: 0,
+      hp_level99: 0,
+      sp_level99: 0,
+      atk_level99: 0,
+      def_level99: 0,
+      int_level99: 0,
+      spd_level99: 0,
+    };
+  }
+}
+async function addDetailedStats(digimonList) {
+  const enhancedDigimonList = [];
+
+  for (const digimon of digimonList) {
+    try {
+      console.log(`Fetching detailed stats for ${digimon.name}...`);
+
+      // Get level 1 and 99 stats from detail page
+      const additionalStats = await scrapeDetailedStats(digimon.detail_url);
+
+      // Update the database with just the new stats
+      const { error: updateError } = await supabase
+        .from("digimon")
+        .update({
+          ...additionalStats,
+        })
+        .eq("digimon_id", digimon.digimon_id);
+
+      if (updateError) {
+        console.error(`Error updating stats for ${digimon.name}:`, updateError);
+      } else {
+        console.log(`Updated stats for ${digimon.name}`);
+      }
+
+      enhancedDigimonList.push({
+        ...digimon,
+        ...additionalStats,
+      });
+
+      // Add a small delay to avoid overwhelming the server
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    } catch (error) {
+      console.error(`Error processing ${digimon.name}:`, error);
+      enhancedDigimonList.push(digimon); // Keep the original data
+    }
+  }
+
+  return enhancedDigimonList;
+}
+
+// Add this function to update just the stats
+async function updateStatsOnly() {
+  try {
+    console.log("Starting to update Digimon stats...");
+
+    // Get existing Digimon data
+    const { data: digimonList, error } = await supabase
+      .from("digimon")
+      .select("*");
+
+    if (error) {
+      console.error("Error fetching Digimon:", error);
+      return;
+    }
+
+    console.log(`Found ${digimonList.length} Digimon to update`);
+
+    // Update stats for all Digimon
+    await addDetailedStats(digimonList);
+
+    console.log("Stats update complete!");
+  } catch (error) {
+    console.error("Error in stats update process:", error);
+  }
+}
+
 async function main() {
   try {
     // Scrape basic Digimon data
@@ -350,8 +501,42 @@ async function testScraper() {
   }
 }
 
+async function debugPageStructure(detailUrl) {
+  try {
+    const fullUrl = formatUrl(detailUrl);
+    console.log(`Analyzing page structure of ${fullUrl}`);
+    const { data } = await axios.get(fullUrl);
+    const $ = cheerio.load(data);
+
+    // Find all instances of Lv. 01 and Lv. 99
+    console.log("=== Level 1 Sections ===");
+    $('b:contains("Lv. 01")').each((i, el) => {
+      console.log(`Found Lv. 01 instance ${i + 1}:`);
+      console.log($(el).parent().parent().html());
+    });
+
+    console.log("\n=== Level 99 Sections ===");
+    $('b:contains("Lv. 99")').each((i, el) => {
+      console.log(`Found Lv. 99 instance ${i + 1}:`);
+      console.log($(el).parent().parent().html());
+    });
+  } catch (error) {
+    console.error("Error debugging page structure:", error);
+  }
+}
+
+// Add this to your main function or create a test function
+async function testDetailScraping() {
+  // Test with a specific Digimon
+  await debugPageStructure("/digimon-search/?request=164"); // WereGarurumon
+  const stats = await scrapeDetailedStats("/digimon-search/?request=164");
+  console.log("Extracted stats:", stats);
+}
+
 // Comment out the test function
 // testScraper();
 
 // Run the main scraper
-main();
+// main();
+
+updateStatsOnly();
