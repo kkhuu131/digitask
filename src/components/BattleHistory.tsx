@@ -14,7 +14,7 @@ const BattleHistory: React.FC<BattleHistoryProps> = ({ teamBattles = [] }) => {
   }
   
   return (
-    <div className="max-h-[600px] md:max-h-[500px] lg:max-h-[700px] overflow-y-auto pr-2 pb-4">
+    <div className="max-h-[700px] md:max-h-[700px] lg:max-h-[700px] overflow-y-auto pr-2 pb-4">
       <div className="space-y-4">
         {teamBattles.map((battle) => {
           // Format the date

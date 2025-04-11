@@ -20,6 +20,7 @@ import AuthCallback from "./pages/AuthCallback";
 import Battle from './pages/Battle';
 import ProfileSettings from './pages/ProfileSettings';
 import UserDigimonPage from './pages/UserDigimonPage';
+import Tutorial from './pages/Tutorial';
 
 // Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -285,7 +286,11 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/debug" element={<Debug />} />
+        {
+          process.env.NODE_ENV === 'development' && (
+            <Route path="/debug" element={<Debug />} />
+          )
+        }
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -337,6 +342,14 @@ function App() {
           <ProtectedRoute>
             <Layout>
               {userDigimon ? <UserDigimonPage /> : <CreatePet />}
+            </Layout>
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/tutorial" element={
+          <ProtectedRoute>
+            <Layout>
+              <Tutorial />
             </Layout>
           </ProtectedRoute>
         } />

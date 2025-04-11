@@ -40,7 +40,7 @@ const Layout = ({ children }: LayoutProps) => {
             </div>
             
             {userDigimon && (
-              <div className="ml-6 flex space-x-4">
+              <div className="hidden md:flex ml-6 space-x-4">
                 <Link
                   to="/"
                   className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
@@ -83,6 +83,16 @@ const Layout = ({ children }: LayoutProps) => {
                   }`}
                 >
                   Your Digimon
+                </Link>
+                <Link
+                  to="/tutorial"
+                  className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+                    isActive("/tutorial")
+                      ? "border-primary-500 text-gray-900"
+                      : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                  }`}
+                >
+                  Tutorial
                 </Link>
               </div>
             )}
@@ -142,6 +152,14 @@ const Layout = ({ children }: LayoutProps) => {
                 }`}
               >
                 Your Digimon
+              </Link>
+              <Link
+                to="/tutorial"
+                className={`flex-shrink-0 px-3 py-2 rounded-md text-sm font-medium text-center whitespace-nowrap ${
+                  isActive("/tutorial") ? "bg-primary-100 text-primary-700" : "text-gray-700 hover:bg-gray-100"
+                }`}
+              >
+                Tutorial
               </Link>
             </div>
           )}

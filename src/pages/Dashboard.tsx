@@ -65,7 +65,12 @@ const Dashboard: React.FC = () => {
             </div>
             <div className="ml-3">
               <p className="text-sm text-blue-700">
-                <span className="font-medium">Daily tasks</span> reset each day and can be completed again.
+                <span className="font-medium">Daily tasks and quotas</span> get reset each day at {(() => {
+                  const resetTime = new Date();
+                  resetTime.setUTCHours(8, 0, 0, 0);
+                  
+                  return resetTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                })()} (8:00 UTC).
                 <br />
                 <span className="font-medium">One-time tasks</span> include specific due dates and times.
               </p>

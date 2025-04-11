@@ -97,7 +97,14 @@ const Battle = () => {
                 <span className="font-medium">Daily Battles:</span> {dailyBattlesRemaining} remaining
               </p>
               <p className="text-xs text-gray-600 mt-1">
-                Your battle limit resets at midnight.
+                Your battle limit resets at {(() => {
+                  // Create a date object for 8:00 UTC
+                  const resetTime = new Date();
+                  resetTime.setUTCHours(8, 0, 0, 0);
+                  
+                  // Format the time in the user's local timezone
+                  return resetTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                })()} local time
               </p>
             </div>
             

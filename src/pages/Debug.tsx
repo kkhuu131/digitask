@@ -228,7 +228,7 @@ const Debug = () => {
           <select 
             id="digimonId" 
             className="p-2 border rounded"
-            defaultValue="52"
+            defaultValue="18"
           >
             {Array.from({ length: 341 }, (_, i) => i + 1).map(id => (
               <option key={id} value={id}>{id}</option>
