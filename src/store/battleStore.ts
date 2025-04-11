@@ -192,7 +192,7 @@ function calculateCritMultiplier(SP: number) {
   return critMultiplier;
 }
 
-const baseDamage = 175;
+const baseDamage = 250;
 const missChance = 0.07;
 const criticalHitChance = 0.125;
 const baseCritMultiplier = 1.3;

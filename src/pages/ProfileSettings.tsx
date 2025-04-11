@@ -70,6 +70,21 @@ const ProfileSettings = () => {
   }
 
   const { user } = useAuthStore.getState();
+
+  if (user?.email === "digitaskdemo@gmail.com") {
+    return (
+      <div className="max-w-2xl mx-auto">
+        <div className="card">
+          <h2 className="text-xl font-bold mb-6">Profile Settings</h2>
+          <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 mb-4">
+            <p className="text-sm text-yellow-700">
+              Profile settings are disabled for the demo account.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
   
   return (
     <div className="max-w-2xl mx-auto">

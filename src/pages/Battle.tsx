@@ -6,7 +6,7 @@ import TeamBattleAnimation from "../components/TeamBattleAnimation";
 import DigimonTeamManager from "../components/DigimonTeamManager";
 
 const Battle = () => {
-  const { userDigimon, digimonData, allUserDigimon } = useDigimonStore();
+  const { userDigimon, digimonData, allUserDigimon, fetchAllUserDigimon } = useDigimonStore();
   const { 
     queueForTeamBattle,
     currentTeamBattle,
@@ -17,6 +17,10 @@ const Battle = () => {
     dailyBattlesRemaining,
     checkDailyBattleLimit
   } = useBattleStore();
+
+  useEffect(() => {
+    fetchAllUserDigimon();
+  }, []);
   
   const [showBattleAnimation, setShowBattleAnimation] = useState(false);
   const [noRealOpponents, setNoRealOpponents] = useState(false);
