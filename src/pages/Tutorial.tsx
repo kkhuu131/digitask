@@ -58,13 +58,30 @@ const Tutorial = () => {
                   This guide will walk you through all the features and mechanics of Digitask to help you get started.
                 </p>
               </div>
-              <div className="md:w-1/2 flex justify-center">
-                <img 
-                  src="/assets/digimon/dot050.png" 
-                  alt="Digitask Logo" 
-                  className="h-48 w-48 object-contain"
-                  style={{ imageRendering: "pixelated" }}
-                />
+              <div className="md:w-1/2 flex justify-center flex-wrap gap-4">
+                {(() => {
+                  // Define all available Digimon images
+                  const allDigimonImages = [
+                    "dot002.png","dot003.png", "dot004.png", "dot005.png", "dot006.png", "dot009.png", "dot010.png", "dot011.png",
+                    "dot012.png", "dot013.png", "dot014.png", "dot015.png", "dot016.png", "dot019.png", "dot020.png", "dot021.png",
+                    "dot022.png", "dot023.png", "dot024.png", "dot025.png", "dot026.png", "dot027.png", "dot030.png", "dot031.png",
+                  ];
+                  
+                  // Shuffle array and pick 6 random images
+                  const shuffled = [...allDigimonImages].sort(() => 0.5 - Math.random());
+                  const selectedImages = shuffled.slice(0, 5);
+                  
+                  // Return the random images
+                  return selectedImages.map((image, index) => (
+                    <img 
+                      key={index}
+                      src={`/assets/digimon/${image}`}
+                      alt={`Digimon ${index + 1}`} 
+                      className="h-20 w-20 object-contain"
+                      style={{ imageRendering: "pixelated" }}
+                    />
+                  ));
+                })()}
               </div>
             </div>
           </motion.div>

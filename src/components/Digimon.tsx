@@ -1,6 +1,6 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useDigimonStore, UserDigimon, Digimon as DigimonType, EvolutionOption } from "../store/petStore";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from 'react-router-dom';
 
 interface DigimonProps {
@@ -19,16 +19,89 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
   const [currentLevel, setCurrentLevel] = useState(userDigimon.current_level);
   const [xpForNextLevel, setXpForNextLevel] = useState(userDigimon.current_level * 20);
   
+  // Add state for health and happiness to track changes
+  const [health, setHealth] = useState(userDigimon.health);
+  const [happiness, setHappiness] = useState(userDigimon.happiness);
+  
+  // Animation states
+  const [isLevelingUp, setIsLevelingUp] = useState(false);
+  const [isStatIncreasing, setIsStatIncreasing] = useState(false);
+  const [showHeart, setShowHeart] = useState(false);
+  const [lookDirection, setLookDirection] = useState(2.5);
+  
+  // Refs to track previous values
+  const prevLevelRef = useRef(userDigimon.current_level);
+  const prevHealthRef = useRef(userDigimon.health);
+  const prevHappinessRef = useRef(userDigimon.happiness);
+  const prevXPRef = useRef(userDigimon.experience_points);
+  
   // Update local state when userDigimon changes
   useEffect(() => {
+    // Check for level up
+    if (userDigimon.current_level > prevLevelRef.current) {
+      triggerLevelUpAnimation();
+    }
+    // Check for health or happiness increase
+    else if (userDigimon.health > prevHealthRef.current || 
+        userDigimon.happiness > prevHappinessRef.current) {
+      triggerStatIncreaseAnimation();
+    }
+    // Check for XP increase (but not when leveling up, to avoid double animation)
+    else if (userDigimon.experience_points > prevXPRef.current) {
+      triggerStatIncreaseAnimation();
+    }
+    
+    // Update all state values
     setCurrentXP(userDigimon.experience_points);
     setCurrentLevel(userDigimon.current_level);
     setXpForNextLevel(userDigimon.current_level * 20);
+    setHealth(userDigimon.health);
+    setHappiness(userDigimon.happiness);
+    
+    // Update refs for next comparison
+    prevLevelRef.current = userDigimon.current_level;
+    prevHealthRef.current = userDigimon.health;
+    prevHappinessRef.current = userDigimon.happiness;
+    prevXPRef.current = userDigimon.experience_points;
   }, [userDigimon]);
   
+  // Function to trigger level up animation
+  const triggerLevelUpAnimation = () => {
+    setIsLevelingUp(true);
+    setShowHeart(true);
+    
+    // Look left and right sequence
+    setTimeout(() => setLookDirection(-2.5), 200);
+    setTimeout(() => setLookDirection(2.5), 400);
+    setTimeout(() => setLookDirection(-2.5), 600);
+    setTimeout(() => setLookDirection(2.5), 800);
+    
+    // End animations
+    setTimeout(() => {
+      setIsLevelingUp(false);
+      setShowHeart(false);
+    }, 1500);
+  };
+  
+  // Function to trigger stat increase animation
+  const triggerStatIncreaseAnimation = () => {
+    setIsStatIncreasing(true);
+    setShowHeart(true);
+    
+    // Look left and right sequence
+    setTimeout(() => setLookDirection(-2.5), 200);
+    setTimeout(() => setLookDirection(2.5), 400);
+    
+    // End animations
+    setTimeout(() => {
+      setIsStatIncreasing(false);
+      setShowHeart(false);
+    }, 1000);
+  };
+  
   // Calculate percentages for health and happiness bars
-  const healthPercentage = Math.max(0, Math.min(100, (userDigimon.health / 100) * 100));
-  const happinessPercentage = Math.max(0, Math.min(100, (userDigimon.happiness / 100) * 100));
+  const healthPercentage = Math.max(0, Math.min(100, (health / 100) * 100));
+  const happinessPercentage = Math.max(0, Math.min(100, (happiness / 100) * 100));
   
   // Calculate XP percentage
   const xpPercentage = Math.max(0, Math.min(100, (currentXP / xpForNextLevel) * 100));
@@ -61,6 +134,28 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
   
   const totalDigimon = allUserDigimon.length;
   
+  // Animation variants
+  const levelUpVariants = {
+    hop: {
+      y: [0, -20, 0, -15, 0, -10, 0],
+      transition: { duration: 1.2, times: [0, 0.2, 0.4, 0.6, 0.8, 0.9, 1] }
+    },
+    statIncrease: {
+      y: [0, -10, 0, -7, 0],
+      transition: { duration: 0.8, times: [0, 0.25, 0.5, 0.75, 1] }
+    }
+  };
+  
+  const heartVariants = {
+    initial: { opacity: 0, scale: 0, y: 0 },
+    animate: { 
+      opacity: [0, 1, 1, 0],
+      scale: [0, 1.2, 1, 0],
+      y: -30,
+      transition: { duration: 1 }
+    }
+  };
+  
   return (
     <div className="card flex flex-col items-center">
       <h2 className="text-2xl font-bold text-center mb-1">{displayName}</h2>
@@ -89,21 +184,50 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
       
       <div className="relative mb-6">
         <motion.div
-          animate={{ y: [0, -10, 0] }}
-          transition={{ repeat: Infinity, duration: 2 }}
+          animate={
+            isLevelingUp 
+              ? "hop" 
+              : isStatIncreasing 
+                ? "statIncrease" 
+                : { y: [0, -10, 0] }
+          }
+          variants={levelUpVariants}
+          transition={
+            !isLevelingUp && !isStatIncreasing 
+              ? { repeat: Infinity, duration: 2 } 
+              : undefined
+          }
           className="w-40 h-40 flex items-center justify-center"
         >
-          <img 
+          <motion.img 
             src={digimonData.sprite_url} 
             alt={digimonData.name} 
-            className="scale-[3] w-auto h-auto"
-            style={{ imageRendering: "pixelated" }} 
+            className="w-auto h-auto"
+            style={{ 
+              imageRendering: "pixelated",
+              transform: `scale(${lookDirection}, 2.5)`,
+            }}
             onError={(e) => {
               // Fallback if image doesn't load
               (e.target as HTMLImageElement).src = "/assets/pet/egg.svg";
             }}
           />
         </motion.div>
+        
+        {/* Heart animation */}
+        <AnimatePresence>
+          {showHeart && (
+            <motion.div
+              className="absolute top-0 left-1/2 transform -translate-x-1/2"
+              variants={heartVariants}
+              initial="initial"
+              animate="animate"
+              exit={{ opacity: 0 }}
+            >
+              <span className="text-3xl">❤️</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
         
         {/* Mood indicator */}
         <div className="absolute bottom-0 right-0 bg-white rounded-full p-1 shadow-md">
@@ -123,7 +247,7 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
         <div>
           <div className="flex justify-between text-sm mb-1">
             <span>Health</span>
-            <span>{(userDigimon.health).toFixed(0)}%</span>
+            <span>{(health).toFixed(0)}%</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2.5">
             <div 
@@ -139,7 +263,7 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
         <div>
           <div className="flex justify-between text-sm mb-1">
             <span>Happiness</span>
-            <span>{userDigimon.happiness.toFixed(0)}%</span>
+            <span>{happiness.toFixed(0)}%</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2.5">
             <div 
