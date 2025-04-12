@@ -115,15 +115,11 @@ const UserDigimonPage = () => {
       setEvolutionError(null);
       setEvolvingDigimon(true);
       
-      // First make this the active Digimon if it's not already
-      if (userDigimon?.id !== digimonId) {
-        await setActiveDigimon(digimonId);
-      }
+      // Directly evolve the Digimon without making it active
+      await evolveDigimon(toDigimonId, digimonId);
       
-      // Then evolve it
-      await evolveDigimon(toDigimonId);
-      
-      // Refresh evolution data
+      // After evolution, explicitly refresh the data to update the UI
+      await fetchAllUserDigimon();
       await fetchAllEvolutionPaths();
       
       setEvolvingDigimon(false);

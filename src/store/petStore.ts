@@ -69,7 +69,10 @@ export interface PetState {
   updateDigimonStats: (updates: Partial<UserDigimon>) => Promise<void>;
   feedDigimon: (taskPoints: number) => Promise<void>;
   checkEvolution: () => Promise<boolean>;
-  evolveDigimon: (toDigimonId: number) => Promise<void>;
+  evolveDigimon: (
+    toDigimonId: number,
+    specificDigimonId?: string
+  ) => Promise<void>;
   getStarterDigimon: () => Promise<Digimon[]>;
   fetchDiscoveredDigimon: () => Promise<void>;
   addDiscoveredDigimon: (digimonId: number) => Promise<void>;
@@ -571,12 +574,22 @@ export const useDigimonStore = create<PetState>((set, get) => ({
     }
   },
 
-  evolveDigimon: async (toDigimonId: number) => {
+  evolveDigimon: async (toDigimonId: number, specificDigimonId?: string) => {
     try {
       set({ loading: true, error: null });
 
-      const { userDigimon } = get();
-      if (!userDigimon) throw new Error("No Digimon found");
+      // Determine which Digimon to evolve
+      let digimonIdToEvolve: string;
+
+      if (specificDigimonId) {
+        // If a specific Digimon ID was provided, use that
+        digimonIdToEvolve = specificDigimonId;
+      } else if (get().userDigimon) {
+        // Otherwise, use the active Digimon
+        digimonIdToEvolve = get().userDigimon?.id || "";
+      } else {
+        throw new Error("No Digimon found to evolve");
+      }
 
       // Update the Digimon's species while preserving the custom name (if any)
       const { error } = await supabase
@@ -584,15 +597,21 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         .update({
           digimon_id: toDigimonId,
         })
-        .eq("id", userDigimon.id);
+        .eq("id", digimonIdToEvolve);
 
       if (error) throw error;
 
       // Add the new Digimon to discovered list
       await get().addDiscoveredDigimon(toDigimonId);
 
-      // Refresh Digimon data
-      await get().fetchUserDigimon();
+      // Always refresh all user Digimon to update the UI
+      await get().fetchAllUserDigimon();
+
+      // If we evolved the active Digimon, refresh its data too
+      const { userDigimon } = get();
+      if (userDigimon && digimonIdToEvolve === userDigimon.id) {
+        await get().fetchUserDigimon();
+      }
 
       set({ loading: false });
     } catch (error) {
