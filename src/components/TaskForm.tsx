@@ -1,5 +1,3 @@
-
-
 import { useState, useEffect } from "react";
 import { useTaskStore } from "../store/taskStore";
 import Select from 'react-select';
@@ -16,8 +14,12 @@ const TaskForm = () => {
 
   // Set minimum date to today when component mounts
   useEffect(() => {
+    // Get today's date in local timezone
     const today = new Date();
-    const formattedDate = today.toISOString().split('T')[0];
+    
+    // Format as YYYY-MM-DD for the date input
+    const formattedDate = today.toLocaleDateString('en-CA'); // en-CA uses YYYY-MM-DD format
+    
     setMinDate(formattedDate);
     
     // If no date is selected yet, default to today
@@ -26,7 +28,7 @@ const TaskForm = () => {
     }
     
     // Update minimum time if date is today
-    updateMinTime(dueDate);
+    updateMinTime(formattedDate);
   }, []);
   
   // Update minimum time whenever date changes
@@ -36,7 +38,8 @@ const TaskForm = () => {
 
   // Function to update minimum time based on selected date
   const updateMinTime = (selectedDate: string) => {
-    const today = new Date().toISOString().split('T')[0];
+    // Get today's date in YYYY-MM-DD format in local timezone
+    const today = new Date().toLocaleDateString('en-CA');
     
     if (selectedDate === today) {
       // If date is today, minimum time should be current time rounded up to next 5 minutes
@@ -97,8 +100,11 @@ const TaskForm = () => {
       
       // If it's not a daily task and has a due date/time
       if (!isDaily && dueDate && dueTime) {
-        // Create a proper ISO string with the correct timezone
-        const localDueDate = new Date(`${dueDate}T${dueTime}`);
+        // Create a proper date object in local timezone
+        const [year, month, day] = dueDate.split('-').map(Number);
+        const [hours, minutes] = dueTime.split(':').map(Number);
+        
+        const localDueDate = new Date(year, month - 1, day, hours, minutes);
         dueDateTime = localDueDate.toISOString();
       }
       
