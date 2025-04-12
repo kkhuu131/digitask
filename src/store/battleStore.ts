@@ -457,7 +457,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
         .select(
           `
           *,
-          digimon:digimon_id (name, sprite_url, type, attribute, hp, sp, atk, def, int, spd, hp_level1, sp_level1, atk_level1, def_level1, int_level1, spd_level1, hp_level99, sp_level99, atk_level99, def_level99, int_level99, spd_level99)
+          digimon:digimon_id (name, stage, sprite_url, type, attribute, hp, sp, atk, def, int, spd, hp_level1, sp_level1, atk_level1, def_level1, int_level1, spd_level1, hp_level99, sp_level99, atk_level99, def_level99, int_level99, spd_level99)
         `
         )
         .eq("user_id", userData.user.id)
@@ -482,6 +482,129 @@ export const useBattleStore = create<BattleState>((set, get) => ({
           exclude_user: userData.user.id,
         }
       );
+
+      const wildEncounterChance = Math.max(
+        0.05,
+        0.33 - opponents.length * 0.01
+      );
+
+      // Chance to fight a team of up to 2-3 wild Digimon that match user Digimon level and stage
+      if (Math.random() < wildEncounterChance) {
+        const wildDigimonTeam = [];
+
+        for (const digimon of userTeamData) {
+          const { data: digimonData, error } = await supabase.rpc(
+            "get_random_digimon_by_stage",
+            {
+              stage_param: digimon.digimon.stage,
+            }
+          );
+
+          if (error) throw error;
+
+          const wildDigimon = digimonData[0];
+
+          wildDigimonTeam.push({
+            digimon: wildDigimon,
+            current_level: Math.max(1, digimon.current_level - 1),
+            digimon_id: wildDigimon.id,
+            name: wildDigimon.name,
+            user_id: "simulated_wild_digimon",
+            experience_points: 0,
+            id: "dummy-" + Math.random().toString(36).substring(2, 15),
+          });
+        }
+
+        // Determine winner
+        const { winnerId, turns } = simulateTeamBattle(
+          userTeamData,
+          wildDigimonTeam
+        );
+
+        const simulatedTeamBattle = {
+          user_team: userTeamData.map((d) => ({
+            user_id: d.user_id,
+            current_level: d.current_level,
+            experience_points: d.experience_points,
+            id: d.id,
+            name: d.name,
+            level: d.current_level,
+            digimon_id: d.digimon_id,
+            sprite_url: d.digimon.sprite_url,
+            digimon_name: d.digimon.name,
+            profile: {
+              username: userProfile?.username ?? "You",
+              display_name: userProfile?.display_name ?? "You",
+            },
+            stats: {
+              hp: d.digimon.hp,
+            },
+          })),
+          opponent_team: wildDigimonTeam.map((d) => ({
+            id: d.id,
+            user_id: d.user_id,
+            current_level: d.current_level,
+            experience_points: d.experience_points,
+            name: d.name,
+            level: d.current_level,
+            digimon_id: d.digimon_id,
+            sprite_url: d.digimon.sprite_url,
+            digimon_name: d.digimon.name,
+            profile: {
+              username: "Wild Encounter",
+              display_name: "Wild Encounter",
+            },
+            stats: {
+              hp: d.digimon.hp,
+            },
+          })),
+          turns,
+          winner_id: winnerId,
+        };
+
+        const { error: TeamBattleError } = await supabase
+          .from("team_battles")
+          .insert({
+            user_id: userData.user.id,
+            winner_id: winnerId,
+            user_team: userTeamData,
+            opponent_team: wildDigimonTeam,
+            created_at: new Date().toISOString(),
+            turns: turns,
+          });
+
+        if (TeamBattleError) throw TeamBattleError;
+
+        let xpGain = 10;
+
+        if (winnerId === userTeamData[0].user_id) {
+          xpGain += 20;
+        }
+
+        const allUserDigimon = useDigimonStore.getState().allUserDigimon;
+
+        // Update each Digimon with the XP gain
+        for (const digimon of allUserDigimon) {
+          const { error: updateError } = await supabase
+            .from("user_digimon")
+            .update({
+              experience_points: digimon.experience_points + xpGain,
+            })
+            .eq("id", digimon.id);
+
+          if (updateError) {
+            console.error("Error updating XP:", updateError);
+            throw updateError;
+          }
+        }
+
+        set({
+          currentTeamBattle: simulatedTeamBattle as TeamBattle,
+          loading: false,
+        });
+
+        return;
+      }
 
       if (opponentsError) throw opponentsError;
 

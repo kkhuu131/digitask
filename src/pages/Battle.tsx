@@ -37,6 +37,7 @@ const Battle = () => {
 
   useEffect(() => {
     // Check if the current battle is against a dummy opponent
+    console.log(currentTeamBattle);
     if (currentTeamBattle && currentTeamBattle.opponent_team.some(d => d.id.startsWith("dummy-"))) {
       setNoRealOpponents(true);
     } else {

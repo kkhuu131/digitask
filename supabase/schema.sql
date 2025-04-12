@@ -59,6 +59,18 @@ CREATE TABLE public.digimon (
   int integer NULL,
   spd integer NULL,
   detail_url text NULL,
+  hp_level1 integer NULL DEFAULT 0,
+  sp_level1 integer NULL DEFAULT 0,
+  atk_level1 integer NULL DEFAULT 0,
+  def_level1 integer NULL DEFAULT 0,
+  int_level1 integer NULL DEFAULT 0,
+  spd_level1 integer NULL DEFAULT 0,
+  hp_level99 integer NULL DEFAULT 0,
+  sp_level99 integer NULL DEFAULT 0,
+  atk_level99 integer NULL DEFAULT 0,
+  def_level99 integer NULL DEFAULT 0,
+  int_level99 integer NULL DEFAULT 0,
+  spd_level99 integer NULL DEFAULT 0,
   CONSTRAINT digimon_pkey PRIMARY KEY (id)
 );
 
@@ -98,6 +110,23 @@ CREATE TABLE public.tasks (
   CONSTRAINT tasks_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
 );
 
+CREATE TABLE public.team_battles (
+  id uuid NOT NULL DEFAULT extensions.uuid_generate_v4(),
+  user_id uuid NOT NULL,
+  opponent_id uuid NULL,
+  winner_id uuid NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  user_team jsonb NOT NULL,
+  opponent_team jsonb NOT NULL,
+  turns jsonb NULL,
+  CONSTRAINT team_battles_pkey PRIMARY KEY (id),
+  CONSTRAINT team_battles_opponent_id_fkey FOREIGN KEY (opponent_id) REFERENCES profiles(id),
+  CONSTRAINT team_battles_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE,
+  CONSTRAINT team_battles_user_id_fkey1 FOREIGN KEY (user_id) REFERENCES profiles(id)
+);
+CREATE INDEX IF NOT EXISTS team_battles_user_id_idx ON public.team_battles USING btree (user_id);
+CREATE INDEX IF NOT EXISTS team_battles_opponent_id_idx ON public.team_battles USING btree (opponent_id);
+
 CREATE TABLE public.user_digimon (
   id uuid NOT NULL DEFAULT extensions.uuid_generate_v4(),
   user_id uuid NOT NULL,
@@ -111,7 +140,7 @@ CREATE TABLE public.user_digimon (
   last_updated_at timestamp with time zone NULL DEFAULT now(),
   last_fed_tasks_at timestamp with time zone NULL DEFAULT now(),
   is_active boolean NULL DEFAULT false,
-  is_on_team BOOLEAN NOT NULL DEFAULT false,
+  is_on_team boolean NOT NULL DEFAULT false,
   CONSTRAINT user_digimon_pkey PRIMARY KEY (id),
   CONSTRAINT user_digimon_digimon_id_fkey FOREIGN KEY (digimon_id) REFERENCES digimon(id),
   CONSTRAINT user_digimon_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
@@ -128,225 +157,57 @@ CREATE TABLE public.user_discovered_digimon (
   CONSTRAINT user_discovered_digimon_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
 );
 
--- Create a table for team battles
-CREATE TABLE public.team_battles (
+CREATE TABLE public.user_milestones (
   id uuid NOT NULL DEFAULT extensions.uuid_generate_v4(),
   user_id uuid NOT NULL,
-  opponent_id uuid NULL,
-  winner_id uuid NOT NULL,
+  daily_quota_streak integer NOT NULL DEFAULT 0,
+  tasks_completed_count integer NOT NULL DEFAULT 0,
+  last_digimon_claimed_at timestamp with time zone NULL,
   created_at timestamp with time zone NOT NULL DEFAULT now(),
-  user_team jsonb NOT NULL,
-  opponent_team jsonb NOT NULL,
-  turns jsonb NULL,
-  CONSTRAINT team_battles_pkey PRIMARY KEY (id),
-  CONSTRAINT team_battles_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
+  updated_at timestamp with time zone NULL DEFAULT now(),
+  CONSTRAINT user_milestones_pkey PRIMARY KEY (id),
+  CONSTRAINT user_milestones_user_id_key UNIQUE (user_id),
+  CONSTRAINT user_milestones_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
 );
-CREATE INDEX IF NOT EXISTS team_battles_user_id_idx ON public.team_battles USING btree (user_id);
-CREATE INDEX IF NOT EXISTS team_battles_opponent_id_idx ON public.team_battles USING btree (opponent_id);
+CREATE INDEX IF NOT EXISTS idx_user_milestones_user_id ON public.user_milestones USING btree (user_id);
 
--- Functions in the public schema
+-- Functions
 
-CREATE OR REPLACE FUNCTION public.update_completed_today() RETURNS trigger AS $$
+CREATE OR REPLACE FUNCTION public.get_random_digimon_by_stage(stage_param text)
+RETURNS TABLE(id integer, digimon_id integer, request_id integer, name text, stage text, type text, attribute text, sprite_url text, hp integer, sp integer, atk integer, def integer, "int" integer, spd integer, hp_level1 integer, sp_level1 integer, atk_level1 integer, def_level1 integer, int_level1 integer, spd_level1 integer, hp_level99 integer, sp_level99 integer, atk_level99 integer, def_level99 integer, int_level99 integer, spd_level99 integer)
+AS $$
 BEGIN
-  IF NEW.is_completed = TRUE AND (OLD.is_completed = FALSE OR OLD.is_completed IS NULL) THEN
-    DECLARE
-      quota_id UUID;
-    BEGIN
-      SELECT id INTO quota_id FROM daily_quotas 
-      WHERE user_id = NEW.user_id;
-      
-      IF quota_id IS NULL THEN
-        INSERT INTO daily_quotas (
-          user_id, 
-          completed_today, 
-          consecutive_days_missed
-        ) VALUES (
-          NEW.user_id, 
-          1, 
-          0
-        );
-      ELSE
-        UPDATE daily_quotas 
-        SET completed_today = completed_today + 1,
-            updated_at = NOW()
-        WHERE id = quota_id;
-      END IF;
-    END;
-  END IF;
-  
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE FUNCTION public.update_updated_at_column() RETURNS trigger AS $$
-BEGIN
-   NEW.updated_at = NOW();
-   RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE FUNCTION public.update_profiles_updated_at() RETURNS trigger AS $$
-BEGIN
-  NEW.updated_at = NOW();
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE FUNCTION public.check_and_increment_battle_limit(p_user_id uuid, p_date date, p_limit integer) RETURNS boolean AS $$
-DECLARE
-  v_current_count INTEGER;
-  v_limit_id UUID;
-BEGIN
-  SELECT id, battles_used INTO v_limit_id, v_current_count
-  FROM battle_limits
-  WHERE user_id = p_user_id AND date = p_date
-  FOR UPDATE;
-  
-  IF v_limit_id IS NULL THEN
-    IF p_limit > 0 THEN
-      INSERT INTO battle_limits (user_id, date, battles_used, last_battle_at)
-      VALUES (p_user_id, p_date, 1, NOW());
-      RETURN TRUE;
-    ELSE
-      RETURN FALSE; -- Edge case: limit is 0
-    END IF;
-  END IF;
-  
-  IF v_current_count >= p_limit THEN
-    RETURN FALSE;
-  END IF;
-  
-  UPDATE battle_limits
-  SET battles_used = battles_used + 1,
-      last_battle_at = NOW()
-  WHERE id = v_limit_id;
-  
-  RETURN TRUE;
-END;
-$$ LANGUAGE plpgsql;
-
--- Add a trigger function to update milestone progress when daily quota is completed
-CREATE OR REPLACE FUNCTION public.update_milestone_on_daily_quota() RETURNS trigger AS $$
-BEGIN
-  -- If the daily quota has been completed (reached 3 tasks)
-  IF NEW.completed_today >= 3 AND (OLD.completed_today < 3 OR OLD.completed_today IS NULL) THEN
-    -- Check if user has a milestone record
-    DECLARE
-      milestone_id UUID;
-    BEGIN
-      SELECT id INTO milestone_id FROM user_milestones 
-      WHERE user_id = NEW.user_id;
-      
-      IF milestone_id IS NULL THEN
-        -- Create milestone record if it doesn't exist
-        INSERT INTO user_milestones (
-          user_id, 
-          daily_quota_streak,
-          tasks_completed_count
-        ) VALUES (
-          NEW.user_id, 
-          1,
-          0
-        );
-      ELSE
-        -- Increment the daily quota streak
-        UPDATE user_milestones 
-        SET daily_quota_streak = daily_quota_streak + 1,
-            updated_at = NOW()
-        WHERE id = milestone_id;
-      END IF;
-    END;
-  END IF;
-  
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
--- Create the trigger on the daily_quotas table
-DROP TRIGGER IF EXISTS trigger_update_milestone_on_daily_quota ON public.daily_quotas;
-CREATE TRIGGER trigger_update_milestone_on_daily_quota
-AFTER UPDATE OF completed_today ON public.daily_quotas
-FOR EACH ROW
-EXECUTE FUNCTION public.update_milestone_on_daily_quota();
-
--- Functions in the cron schema
-
-CREATE FUNCTION cron.schedule(schedule text, command text) RETURNS bigint AS $$
-BEGIN
-  RETURN cron_schedule(schedule, command);
-END;
-$$ LANGUAGE c;
-
-CREATE FUNCTION cron.unschedule(job_id bigint) RETURNS boolean AS $$
-BEGIN
-  RETURN cron_unschedule(job_id);
-END;
-$$ LANGUAGE c;
-
-CREATE FUNCTION cron.job_cache_invalidate() RETURNS trigger AS $$
-BEGIN
-  RETURN cron_job_cache_invalidate();
-END;
-$$ LANGUAGE c;
-
-CREATE FUNCTION cron.schedule(job_name text, schedule text, command text) RETURNS bigint AS $$
-BEGIN
-  RETURN cron_schedule_named(job_name, schedule, command);
-END;
-$$ LANGUAGE c;
-
-CREATE FUNCTION cron.unschedule(job_name text) RETURNS boolean AS $$
-BEGIN
-  RETURN cron_unschedule_named(job_name);
-END;
-$$ LANGUAGE c;
-
-CREATE FUNCTION cron.alter_job(job_id bigint, schedule text DEFAULT NULL::text, command text DEFAULT NULL::text, database text DEFAULT NULL::text, username text DEFAULT NULL::text, active boolean DEFAULT NULL::boolean) RETURNS void AS $$
-BEGIN
-  cron_alter_job(job_id, schedule, command, database, username, active);
-END;
-$$ LANGUAGE c;
-
-CREATE FUNCTION cron.schedule_in_database(job_name text, schedule text, command text, database text, username text DEFAULT NULL::text, active boolean DEFAULT true) RETURNS bigint AS $$
-BEGIN
-  RETURN cron_schedule_named(job_name, schedule, command, database, username, active);
-END;
-$$ LANGUAGE c;
-
--- Add other cron jobs as needed...
-
--- Create a function to swap team members atomically
-CREATE OR REPLACE FUNCTION public.swap_team_members(
-  team_digimon_id UUID,
-  reserve_digimon_id UUID,
-  user_id_param UUID
-) RETURNS void AS $$
-BEGIN
-  -- Verify both Digimon belong to the user
-  IF NOT EXISTS (
-    SELECT 1 FROM user_digimon 
-    WHERE id IN (team_digimon_id, reserve_digimon_id) 
-    AND user_id = user_id_param
-    HAVING COUNT(*) = 2
-  ) THEN
-    RAISE EXCEPTION 'One or both Digimon do not belong to this user';
-  END IF;
-  
-  -- Verify one is on team and one is not
-  IF NOT EXISTS (
-    SELECT 1 FROM user_digimon WHERE id = team_digimon_id AND is_on_team = true
-  ) THEN
-    RAISE EXCEPTION 'First Digimon is not on team';
-  END IF;
-  
-  IF EXISTS (
-    SELECT 1 FROM user_digimon WHERE id = reserve_digimon_id AND is_on_team = true
-  ) THEN
-    RAISE EXCEPTION 'Second Digimon is already on team';
-  END IF;
-  
-  -- Perform the swap
-  UPDATE user_digimon SET is_on_team = false WHERE id = team_digimon_id;
-  UPDATE user_digimon SET is_on_team = true WHERE id = reserve_digimon_id;
+  RETURN QUERY
+  SELECT
+    d.id,
+    d.digimon_id,
+    d.request_id,
+    d.name,
+    d.stage,
+    d.type,
+    d.attribute,
+    d.sprite_url,
+    d.hp,
+    d.sp,
+    d.atk,
+    d.def,
+    d."int",
+    d.spd,
+    d.hp_level1,
+    d.sp_level1,
+    d.atk_level1,
+    d.def_level1,
+    d.int_level1,
+    d.spd_level1,
+    d.hp_level99,
+    d.sp_level99,
+    d.atk_level99,
+    d.def_level99,
+    d.int_level99,
+    d.spd_level99
+  FROM public.digimon d
+  WHERE d.stage = stage_param
+  ORDER BY RANDOM()
+  LIMIT 1;
 END;
 $$ LANGUAGE plpgsql;

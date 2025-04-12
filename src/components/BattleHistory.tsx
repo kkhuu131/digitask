@@ -85,7 +85,7 @@ const BattleHistory: React.FC<BattleHistoryProps> = ({ teamBattles = [] }) => {
                     ))}
                   </div>
                   <span className="text-xs text-gray-600 mt-1">
-                    {teamBattle.opponent?.username || "Opponent"}
+                    {teamBattle.opponent_id ? (teamBattle.opponent?.username || "Opponent") : "Wild Encounter"}
                   </span>
                 </div>
               </div>
