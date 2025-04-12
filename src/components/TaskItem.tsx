@@ -93,42 +93,72 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onComplete, onDelete }) => {
     );
   };
 
+  // Get the appropriate color for the task category label
+  const getCategoryColor = () => {
+    if (task.is_daily) return "bg-blue-100 text-blue-800";
+    if (isTaskOverdue && !task.is_completed) return "bg-red-100 text-red-800";
+    return "bg-gray-100 text-gray-800";
+  };
+
   return (
     <div 
-      className="flex items-center justify-between p-3 border-b last:border-b-0"
+      className="flex items-center p-3 border-b last:border-b-0 hover:bg-gray-50 transition-colors"
       role="listitem"
     >
-      <div className="flex-1">
-        <p className={`${task.is_completed ? 'line-through text-gray-500' : ''}`}>
-          {task.description}
-        </p>
-        <div className={`text-xs ${isTaskOverdue ? 'text-red-500 font-medium' : 'text-gray-500'}`}
-             aria-live="polite">
-          {task.is_daily ? "Daily task" : formatDueDate(task.due_date)}
-          {isTaskOverdue && !task.is_completed && " (Overdue)"}
-        </div>
-        {process.env.NODE_ENV === 'development' && debugInfo()}
+      {/* Circle Checkbox - now centered with items-center */}
+      <div className="flex-shrink-0 mr-3">
+        <button
+          onClick={() => !task.is_completed && onComplete(task.id)}
+          className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
+            task.is_completed 
+              ? "bg-green-500 border-green-500" 
+              : "border-gray-300 hover:border-green-500"
+          }`}
+          title={task.is_completed ? "Task completed" : "Mark as complete"}
+          aria-label={`${task.is_completed ? "Task completed" : "Mark as complete"}: ${task.description}`}
+          disabled={task.is_completed}
+        >
+          {task.is_completed && (
+            <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path>
+            </svg>
+          )}
+        </button>
       </div>
       
-      <div className="flex space-x-2">
-        {!task.is_completed && (
+      {/* Task Content */}
+      <div className="flex-1">
+        <div className="flex items-start justify-between">
+          <p className={`${task.is_completed ? 'line-through text-gray-500' : 'text-gray-800'}`}>
+            {task.description}
+          </p>
+          
           <button
-            onClick={() => onComplete(task.id)}
-            className="p-1 text-green-600 hover:bg-green-100 rounded"
-            title="Complete task"
-            aria-label={`Complete task: ${task.description}`}
+            onClick={() => onDelete(task.id)}
+            className="ml-2 p-1 text-gray-400 hover:text-red-500 rounded"
+            title="Delete task"
+            aria-label={`Delete task: ${task.description}`}
           >
-            ✓
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
           </button>
-        )}
-        <button
-          onClick={() => onDelete(task.id)}
-          className="p-1 text-red-600 hover:bg-red-100 rounded"
-          title="Delete task"
-          aria-label={`Delete task: ${task.description}`}
-        >
-          ×
-        </button>
+        </div>
+        
+        <div className="flex items-center mt-1">
+          {/* only show the category if task is daily or overdue */}
+          {(task.is_daily || isTaskOverdue) && (
+            <span className={`text-xs px-2 py-0.5 rounded-full ${getCategoryColor()}`}>
+              {task.is_daily ? "Daily" : isTaskOverdue && !task.is_completed ? "Overdue" : "Task"}
+            </span>
+          )}
+          
+          <span className="text-xs text-gray-500 ml-2">
+            {!task.is_daily && formatDueDate(task.due_date)}
+          </span>
+        </div>
+        
+        {process.env.NODE_ENV === 'development' && debugInfo()}
       </div>
     </div>
   );

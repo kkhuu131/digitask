@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { useTaskStore } from "../store/taskStore";
+import { Task, useTaskStore } from "../store/taskStore";
 import TaskItem from "./TaskItem";
 
 const TaskList = () => {
@@ -34,25 +34,54 @@ const TaskList = () => {
   const tomorrow = new Date(today);
   tomorrow.setDate(tomorrow.getDate() + 1);
   
-  const dailyTasks = filteredTasks.filter((task) => task.is_daily);
+  // Sort function for tasks by due date (most recent first)
+  const sortByDueDate = (a: Task, b: Task) => {
+    // If no due date, put at the bottom
+    if (!a.due_date && !b.due_date) return 0;
+    if (!a.due_date) return 1;
+    if (!b.due_date) return -1;
+    
+    // Sort by due date (most recent first)
+    return new Date(a.due_date).getTime() - new Date(b.due_date).getTime();
+  };
   
-  const overdueTasks = filteredTasks.filter((task) => {
-    if (task.is_daily || task.is_completed || !task.due_date) return false;
-    return new Date(task.due_date) < new Date();
-  });
+  // Only show active daily tasks in the Daily section
+  const dailyTasks = filteredTasks
+    .filter((task) => task.is_daily && !task.is_completed)
+    .sort((a, b) => a.description.localeCompare(b.description)); // Sort alphabetically
   
-  const todayTasks = filteredTasks.filter((task) => {
-    if (task.is_daily || task.is_completed || !task.due_date) return false;
-    const dueDate = new Date(task.due_date);
-    return dueDate >= today && dueDate < tomorrow && !overdueTasks.includes(task);
-  });
+  const overdueTasks = filteredTasks
+    .filter((task) => {
+      if (task.is_daily || task.is_completed || !task.due_date) return false;
+      return new Date(task.due_date) < new Date();
+    })
+    .sort(sortByDueDate); // Sort by due date (most recent first)
   
-  const futureTasks = filteredTasks.filter((task) => {
-    if (task.is_daily || task.is_completed || !task.due_date) return false;
-    return new Date(task.due_date) >= tomorrow && !overdueTasks.includes(task);
-  });
+  const todayTasks = filteredTasks
+    .filter((task) => {
+      if (task.is_daily || task.is_completed || !task.due_date) return false;
+      const dueDate = new Date(task.due_date);
+      return dueDate >= today && dueDate < tomorrow && !overdueTasks.includes(task);
+    })
+    .sort(sortByDueDate); // Sort by due date (most recent first)
   
-  const completedTasks = filteredTasks.filter((task) => task.is_completed);
+  const futureTasks = filteredTasks
+    .filter((task) => {
+      if (task.is_daily || task.is_completed || !task.due_date) return false;
+      return new Date(task.due_date) >= tomorrow && !overdueTasks.includes(task);
+    })
+    .sort(sortByDueDate); // Sort by due date (most recent first)
+  
+  const completedTasks = filteredTasks
+    .filter((task) => task.is_completed)
+    .sort((a, b) => {
+      // Sort completed tasks by completion date (most recent first)
+      // If no completion date, fall back to due date
+      if (a.completed_at && b.completed_at) {
+        return new Date(b.completed_at).getTime() - new Date(a.completed_at).getTime();
+      }
+      return sortByDueDate(a, b);
+    });
   
   return (
     <div>
@@ -106,12 +135,12 @@ const TaskList = () => {
             </div>
           )}
           
-          {/* Daily Tasks */}
-          {dailyTasks.length > 0 && (
+          {/* Today's Tasks */}
+          {todayTasks.length > 0 && (
             <div className="mb-4">
-              <h3 className="text-sm font-medium text-gray-600 mb-2">Daily</h3>
+              <h3 className="text-sm font-medium text-gray-600 mb-2">Today</h3>
               <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                {dailyTasks.map((task) => (
+                {todayTasks.map((task) => (
                   <TaskItem
                     key={task.id}
                     task={task}
@@ -123,12 +152,12 @@ const TaskList = () => {
             </div>
           )}
           
-          {/* Today's Tasks */}
-          {todayTasks.length > 0 && (
+          {/* Daily Tasks - now only showing active ones */}
+          {dailyTasks.length > 0 && (
             <div className="mb-4">
-              <h3 className="text-sm font-medium text-gray-600 mb-2">Today</h3>
+              <h3 className="text-sm font-medium text-gray-600 mb-2">Daily</h3>
               <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                {todayTasks.map((task) => (
+                {dailyTasks.map((task) => (
                   <TaskItem
                     key={task.id}
                     task={task}

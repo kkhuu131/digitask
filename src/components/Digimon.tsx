@@ -1,8 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useDigimonStore, UserDigimon, Digimon as DigimonType, EvolutionOption } from "../store/petStore";
 import { useState, useEffect, useRef } from "react";
-import { Link } from 'react-router-dom';
-
 interface DigimonProps {
   userDigimon: UserDigimon;
   digimonData: DigimonType;
@@ -12,7 +10,7 @@ interface DigimonProps {
 const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOptions }) => {
   const [showEvolutionModal, setShowEvolutionModal] = useState(false);
   const [evolutionError, setEvolutionError] = useState<string | null>(null);
-  const { evolveDigimon, discoveredDigimon, getDigimonDisplayName, allUserDigimon } = useDigimonStore();
+  const { evolveDigimon, discoveredDigimon, getDigimonDisplayName } = useDigimonStore();
   
   // Add a local state to track XP and level
   const [currentXP, setCurrentXP] = useState(userDigimon.experience_points);
@@ -132,8 +130,6 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
   
   const displayName = getDigimonDisplayName();
   
-  const totalDigimon = allUserDigimon.length;
-  
   // Animation variants
   const levelUpVariants = {
     hop: {
@@ -159,9 +155,9 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
   return (
     <div className="card flex flex-col items-center">
       <h2 className="text-2xl font-bold text-center mb-1">{displayName}</h2>
-      <p className="text-sm text-gray-500 mb-4">{digimonData.name} - {digimonData.stage}</p>
+      <p className="text-sm text-gray-500 mb-2">{digimonData.name}</p>
       
-      {totalDigimon > 1 && (
+      {/* {totalDigimon > 1 && (
         <div className="bg-primary-50 border-l-4 border-primary-500 p-3 mb-4">
           <div className="flex items-center">
             <div className="flex-shrink-0">
@@ -180,9 +176,9 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
             </div>
           </div>
         </div>
-      )}
+      )} */}
       
-      <div className="relative mb-6">
+      <div className="relative mb-2">
         <motion.div
           animate={
             isLevelingUp 

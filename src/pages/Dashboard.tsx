@@ -45,6 +45,25 @@ const Dashboard: React.FC = () => {
           digimonData={digimonData} 
           evolutionOptions={evolutionOptions} 
         />
+        <div className="card my-6">
+          <h3 className="text-lg font-semibold mb-2">Daily Quota</h3>
+          <div className="flex justify-between text-sm mb-1">
+            <span>Tasks Completed Today</span>
+            <span>{dailyQuota?.completed_today || 0}/{DAILY_QUOTA_REQUIREMENT}</span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-2.5 my-2">
+            <div 
+              className="h-2.5 rounded-full" 
+              style={{ 
+                width: `${quotaPercentage}%`,
+                backgroundColor: quotaPercentage >= 100 ? '#10b981' : quotaPercentage >= 66 ? '#f59e0b' : '#ef4444'
+              }}
+            ></div>
+          </div>
+          <p className="text-xs text-gray-500 mt-2">
+            Complete at least {DAILY_QUOTA_REQUIREMENT} tasks daily to keep your Digimon happy and healthy.
+          </p>
+        </div>
       </div>
       
       <div className="lg:col-span-2">
@@ -76,26 +95,6 @@ const Dashboard: React.FC = () => {
               </p>
             </div>
           </div>
-        </div>
-        
-        <div className="card mb-6">
-          <h3 className="text-lg font-semibold mb-2">Daily Quota</h3>
-          <div className="flex justify-between text-sm mb-1">
-            <span>Tasks Completed Today</span>
-            <span>{dailyQuota?.completed_today || 0}/{DAILY_QUOTA_REQUIREMENT}</span>
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-2.5">
-            <div 
-              className="h-2.5 rounded-full" 
-              style={{ 
-                width: `${quotaPercentage}%`,
-                backgroundColor: quotaPercentage >= 100 ? '#10b981' : quotaPercentage >= 66 ? '#f59e0b' : '#ef4444'
-              }}
-            ></div>
-          </div>
-          <p className="text-xs text-gray-500 mt-2">
-            Complete at least {DAILY_QUOTA_REQUIREMENT} tasks daily to keep your Digimon happy and healthy.
-          </p>
         </div>
         
         <div className="card">
