@@ -120,13 +120,59 @@ const UserDigimonPage = () => {
       
       // After evolution, explicitly refresh the data to update the UI
       await fetchAllUserDigimon();
-      await fetchAllEvolutionPaths();
+      
+      // Fetch evolution paths for the newly evolved Digimon
+      await fetchEvolutionPathsForDigimon(toDigimonId);
       
       setEvolvingDigimon(false);
       setShowEvolutionModal(null);
     } catch (error) {
       setEvolutionError((error as Error).message);
       setEvolvingDigimon(false);
+    }
+  };
+
+  // Add a new function to fetch evolution paths for a specific Digimon ID
+  const fetchEvolutionPathsForDigimon = async (digimonId: number) => {
+    try {
+      const { data: evolutionPaths, error } = await supabase
+        .from("evolution_paths")
+        .select(`
+          id,
+          from_digimon_id,
+          to_digimon_id,
+          level_required,
+          digimon:to_digimon_id (id, digimon_id, name, stage, sprite_url)
+        `)
+        .eq("from_digimon_id", digimonId);
+
+      if (error) throw error;
+
+      // Update the evolution data for this specific Digimon ID
+      if (evolutionPaths.length > 0) {
+        const newEvolutions: EvolutionOption[] = evolutionPaths.map(path => ({
+          id: path.id,
+          digimon_id: (path.digimon as any).id,
+          name: (path.digimon as any).name,
+          stage: (path.digimon as any).stage,
+          sprite_url: (path.digimon as any).sprite_url,
+          level_required: path.level_required,
+        }));
+        
+        // Update the evolution data state
+        setEvolutionData(prevData => ({
+          ...prevData,
+          [digimonId]: newEvolutions
+        }));
+      } else {
+        // If no evolutions, set an empty array for this Digimon ID
+        setEvolutionData(prevData => ({
+          ...prevData,
+          [digimonId]: []
+        }));
+      }
+    } catch (error) {
+      console.error("Error fetching evolution paths for Digimon:", error);
     }
   };
 

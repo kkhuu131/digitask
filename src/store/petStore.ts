@@ -424,7 +424,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
           health: 100,
           happiness: 100,
           experience_points: 0,
-          current_level: 1,
+          current_level: 50,
           is_active: isActive,
         })
         .select()
