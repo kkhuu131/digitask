@@ -23,6 +23,8 @@ const UserDigimonPage = () => {
   const [showEvolutionModal, setShowEvolutionModal] = useState<string | null>(null);
   const [evolutionError, setEvolutionError] = useState<string | null>(null);
   const [evolvingDigimon, setEvolvingDigimon] = useState(false);
+  const [editingName, setEditingName] = useState<string | null>(null);
+  const [newName, setNewName] = useState<string>("");
 
   useEffect(() => {
     fetchAllUserDigimon();
@@ -179,6 +181,54 @@ const UserDigimonPage = () => {
   // Check if a Digimon has been discovered
   const isDiscovered = (digimonId: number) => {
     return discoveredDigimon.includes(digimonId);
+  };
+
+  // Add function to handle name editing
+  const handleEditName = (digimonId: string, currentName: string, speciesName: string) => {
+    setEditingName(digimonId);
+    // If the current name is empty or matches the species name, start with empty field
+    setNewName(currentName === speciesName ? "" : currentName);
+  };
+
+  // Add function to save the new name
+  const handleSaveName = async (digimonId: string) => {
+    try {
+      // If name is empty or just whitespace, set it to empty string (will show species name)
+      const nameToSave = newName.trim() || "";
+      
+      // Update the name in the database
+      const { error } = await supabase
+        .from("user_digimon")
+        .update({ name: nameToSave })
+        .eq("id", digimonId);
+        
+      if (error) throw error;
+      
+      // Refresh the Digimon data
+      await fetchAllUserDigimon();
+      
+      // Exit edit mode
+      setEditingName(null);
+    } catch (error) {
+      console.error("Error updating Digimon name:", error);
+    }
+  };
+
+  // Add function to cancel editing
+  const handleCancelEdit = () => {
+    setEditingName(null);
+    setNewName("");
+  };
+
+  // Add keyboard event handlers for the input field
+  const handleKeyDown = (e: React.KeyboardEvent, digimonId: string) => {
+    if (e.key === 'Enter') {
+      // Enter key pressed - save the name
+      handleSaveName(digimonId);
+    } else if (e.key === 'Escape') {
+      // Escape key pressed - cancel editing
+      handleCancelEdit();
+    }
   };
 
   if (loading && allUserDigimon.length === 0) {
@@ -351,11 +401,62 @@ const UserDigimonPage = () => {
             return (
               <div key={digimon.id} className="border rounded-lg overflow-hidden bg-white">
                 <div className="p-4">
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-lg font-semibold">
-                      {digimon.name || digimon.digimon?.name}
-                    </h3>
-                    <div className="flex space-x-2">
+                  <div className="flex flex-col mb-2">
+                    {/* Name editing section */}
+                    <div className="flex items-center justify-between">
+                      {editingName === digimon.id ? (
+                        <div className="flex items-center w-full">
+                          <input
+                            type="text"
+                            value={newName}
+                            onChange={(e) => setNewName(e.target.value)}
+                            onKeyDown={(e) => handleKeyDown(e, digimon.id)}
+                            className="flex-1 min-w-0 px-2 py-1 border border-gray-300 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            maxLength={20}
+                            placeholder={digimon.digimon?.name || "Enter nickname"}
+                            autoFocus
+                          />
+                          <div className="flex-shrink-0 flex ml-1">
+                            <button
+                              onClick={() => handleSaveName(digimon.id)}
+                              className="p-1 bg-green-100 text-green-600 hover:bg-green-200 rounded-md"
+                              title="Save name (or press Enter)"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                              </svg>
+                            </button>
+                            <button
+                              onClick={handleCancelEdit}
+                              className="p-1 bg-red-100 text-red-600 hover:bg-red-200 rounded-md ml-1"
+                              title="Cancel (or press Escape)"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <h3 className="text-lg font-semibold">
+                            {digimon.name || digimon.digimon?.name}
+                          </h3>
+                          <button
+                            onClick={() => handleEditName(digimon.id, digimon.name, digimon.digimon?.name || "")}
+                            className="p-1 text-gray-500 hover:text-gray-700"
+                            title="Edit name"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                            </svg>
+                          </button>
+                        </>
+                      )}
+                    </div>
+                    
+                    {/* Tags row - moved below the name */}
+                    <div className="flex space-x-2 mt-1">
                       <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
                         Lv. {digimon.current_level}
                       </span>
