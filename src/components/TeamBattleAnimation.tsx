@@ -320,6 +320,11 @@ const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({
                       }}
                       animate={animationProps}
                     >
+                      {/* Level display - positioned to the left of user Digimon */}
+                      <div className="absolute right-full mr-1 bg-gray-800 bg-opacity-70 px-1 rounded text-xs text-white font-medium">
+                        Lv.{fighter.current_level || 1}
+                      </div>
+                      
                       {/* Disintegration effect for dead Digimon */}
                       {isDisintegrating ? (
                         <div className="relative w-14 h-14">
@@ -444,6 +449,11 @@ const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({
                       }}
                       animate={animationProps}
                     >
+                      {/* Level display - positioned to the right of opponent Digimon */}
+                      <div className="absolute left-full ml-1 bg-gray-800 bg-opacity-70 px-1 rounded text-xs text-white font-medium">
+                        Lv.{fighter.current_level || 1}
+                      </div>
+                      
                       {/* Disintegration effect for dead Digimon */}
                       {isDisintegrating ? (
                         <div className="relative w-14 h-14">
