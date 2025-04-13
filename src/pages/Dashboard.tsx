@@ -8,7 +8,7 @@ import TaskList from "../components/TaskList";
 
 const Dashboard: React.FC = () => {
   const { userDigimon, digimonData, evolutionOptions, fetchUserDigimon, error: digimonError, isDigimonDead, resetDeadState } = useDigimonStore();
-  const { fetchTasks, dailyQuota, error: taskError} = useTaskStore();
+  const { fetchTasks, dailyQuota, error: taskError, getExpMultiplier } = useTaskStore();
   const navigate = useNavigate();
   
   useEffect(() => {
@@ -27,6 +27,8 @@ const Dashboard: React.FC = () => {
   const DAILY_QUOTA_REQUIREMENT = 3.0; // Should match the quota in taskStore.ts
 
   const quotaPercentage = Math.min(100, ((dailyQuota?.completed_today || 0) / DAILY_QUOTA_REQUIREMENT) * 100);
+  const streak = dailyQuota?.current_streak || 0;
+  const expMultiplier = getExpMultiplier();
   
   if (!userDigimon || !digimonData) {
     return (
@@ -46,7 +48,19 @@ const Dashboard: React.FC = () => {
           evolutionOptions={evolutionOptions} 
         />
         <div className="card my-6">
-          <h3 className="text-lg font-semibold mb-2">Daily Quota</h3>
+          <div className="flex justify-between items-center mb-2">
+            <h3 className="text-lg font-semibold">Daily Quota</h3>
+            {streak > 0 && (
+              <div className="flex items-center bg-amber-100 text-amber-800 px-2 py-1 rounded-full text-sm">
+                <span className="mr-1">🔥</span>
+                <span>x{streak} day streak</span>
+                {streak > 1 && (
+                  <span className="ml-1 text-xs font-semibold">(×{expMultiplier.toFixed(1)} XP)</span>
+                )}
+              </div>
+            )}
+          </div>
+          
           <div className="flex justify-between text-sm mb-1">
             <span>Tasks Completed Today</span>
             <span>{dailyQuota?.completed_today || 0}/{DAILY_QUOTA_REQUIREMENT}</span>

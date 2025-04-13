@@ -22,6 +22,7 @@ interface DailyQuota {
   penalized_tasks: string[];
   created_at: string;
   updated_at: string;
+  current_streak: number;
 }
 
 interface TaskState {
@@ -46,6 +47,7 @@ interface TaskState {
   lastOverdueCheck: number;
   setPenalizedTasks: (taskIds: string[]) => void;
   completeDailyQuota: () => Promise<void>;
+  getExpMultiplier: () => number;
 }
 
 export const useTaskStore = create<TaskState>((set, get) => ({
@@ -472,6 +474,18 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     } catch (error) {
       // ... error handling ...
     }
+  },
+
+  getExpMultiplier: () => {
+    const { dailyQuota } = get();
+    if (!dailyQuota) return 1.0;
+
+    const streak = dailyQuota.current_streak;
+    if (streak <= 1) return 1.0;
+
+    // Add 0.1 (10%) for each streak day beyond the first
+    // Cap at 3.0 (300%)
+    return Math.min(1.0 + (streak - 1) * 0.1, 3.0);
   },
 }));
 

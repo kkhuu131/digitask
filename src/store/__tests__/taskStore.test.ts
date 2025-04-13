@@ -65,13 +65,14 @@ const mockTasks = [
 ];
 
 const mockDailyQuota = {
-  id: "quota1",
-  user_id: "user1",
-  completed_today: 0,
+  id: "test-id",
+  user_id: "test-user",
+  completed_today: 1,
   consecutive_days_missed: 0,
   penalized_tasks: [],
-  created_at: "2023-01-01T00:00:00Z",
-  updated_at: "2023-01-01T00:00:00Z",
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
+  current_streak: 0,
 };
 
 describe("useTaskStore", () => {

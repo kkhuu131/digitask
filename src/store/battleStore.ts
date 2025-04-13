@@ -509,9 +509,11 @@ export const useBattleStore = create<BattleState>((set, get) => ({
             current_level: Math.max(1, digimon.current_level - 1),
             digimon_id: wildDigimon.id,
             name: wildDigimon.name,
-            user_id: "simulated_wild_digimon",
+            user_id: "00000000-0000-0000-0000-000000000000",
             experience_points: 0,
-            id: "dummy-" + Math.random().toString(36).substring(2, 15),
+            id: crypto.randomUUID
+              ? crypto.randomUUID()
+              : "00000000-0000-0000-0000-000000000001",
           });
         }
 
@@ -581,22 +583,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
           xpGain += 20;
         }
 
-        const allUserDigimon = useDigimonStore.getState().allUserDigimon;
-
-        // Update each Digimon with the XP gain
-        for (const digimon of allUserDigimon) {
-          const { error: updateError } = await supabase
-            .from("user_digimon")
-            .update({
-              experience_points: digimon.experience_points + xpGain,
-            })
-            .eq("id", digimon.id);
-
-          if (updateError) {
-            console.error("Error updating XP:", updateError);
-            throw updateError;
-          }
-        }
+        await useDigimonStore.getState().feedAllDigimon(xpGain);
 
         set({
           currentTeamBattle: simulatedTeamBattle as TeamBattle,
@@ -884,22 +871,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
         xpGain += 20;
       }
 
-      const allUserDigimon = useDigimonStore.getState().allUserDigimon;
-
-      // Update each Digimon with the XP gain
-      for (const digimon of allUserDigimon) {
-        const { error: updateError } = await supabase
-          .from("user_digimon")
-          .update({
-            experience_points: digimon.experience_points + xpGain,
-          })
-          .eq("id", digimon.id);
-
-        if (updateError) {
-          console.error("Error updating XP:", updateError);
-          throw updateError;
-        }
-      }
+      await useDigimonStore.getState().feedAllDigimon(xpGain);
 
       set({
         currentTeamBattle: simulatedTeamBattle as TeamBattle,

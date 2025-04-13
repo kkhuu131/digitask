@@ -96,6 +96,7 @@ export interface PetState {
     teamDigimonId: string,
     reserveDigimonId: string
   ) => Promise<void>;
+  feedAllDigimon: (taskPoints: number) => Promise<void>;
 }
 
 export const useDigimonStore = create<PetState>((set, get) => ({
@@ -498,14 +499,16 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         return;
       }
 
+      // Get the XP multiplier from taskStore
+      const expMultiplier = useTaskStore.getState().getExpMultiplier();
+
+      // Apply the multiplier to the task points
+      const multipliedPoints = Math.round(taskPoints * expMultiplier);
+
       // Calculate new stats
-      const newHealth = Math.ceil(
-        Math.min(100, userDigimon.health + taskPoints * 0.5)
-      );
-      const newHappiness = Math.ceil(
-        Math.min(100, userDigimon.happiness + taskPoints * 0.5)
-      );
-      const newXP = userDigimon.experience_points + taskPoints;
+      const newHealth = Math.ceil(Math.min(100, userDigimon.health + 5));
+      const newHappiness = Math.ceil(Math.min(100, userDigimon.happiness + 5));
+      const newXP = userDigimon.experience_points + multipliedPoints;
 
       // Update the Digimon in the database
       const { error } = await supabase
@@ -539,6 +542,8 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       set({ error: (error as Error).message, loading: false });
     }
   },
+
+  // Feed allUserDigimon
 
   checkEvolution: async (): Promise<boolean> => {
     try {
@@ -1106,6 +1111,88 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       set({ loading: false });
     } catch (error) {
       console.error("Error swapping team members:", error);
+      set({ error: (error as Error).message, loading: false });
+    }
+  },
+
+  feedAllDigimon: async (taskPoints: number) => {
+    try {
+      set({ loading: true, error: null });
+
+      console.log("Feeding all Digimon");
+
+      const { allUserDigimon } = get();
+      if (allUserDigimon.length === 0) {
+        set({ loading: false });
+        return;
+      }
+
+      // Get the current user
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) {
+        set({ loading: false });
+        return;
+      }
+
+      // Get the XP multiplier from taskStore
+      const expMultiplier = useTaskStore.getState().getExpMultiplier();
+
+      // Apply the multiplier to the task points
+      const multipliedPoints = Math.round(taskPoints * expMultiplier);
+
+      // Update all Digimon in the database
+      const updates = allUserDigimon.map(async (digimon) => {
+        // Calculate new stats
+        const newXP = digimon.experience_points + multipliedPoints;
+
+        console.log(`Feeding Digimon ${digimon.id} with ${newXP} XP`);
+
+        // Update the Digimon in the database
+        const { error } = await supabase
+          .from("user_digimon")
+          .update({
+            experience_points: newXP,
+          })
+          .eq("id", digimon.id);
+
+        if (error) {
+          console.error(`Error feeding Digimon ${digimon.id}:`, error);
+          throw error;
+        }
+
+        // Return the updated Digimon data
+        return {
+          ...digimon,
+          experience_points: newXP,
+        };
+      });
+
+      // Wait for all updates to complete
+      const updatedDigimon = await Promise.all(updates);
+
+      // Update local state
+      set({
+        allUserDigimon: updatedDigimon,
+        loading: false,
+      });
+
+      // If the active Digimon was updated, update that state too
+      const { userDigimon } = get();
+      if (userDigimon) {
+        const updatedActiveDigimon = updatedDigimon.find(
+          (d) => d.id === userDigimon.id
+        );
+        if (updatedActiveDigimon) {
+          set({
+            userDigimon: updatedActiveDigimon,
+          });
+        }
+      }
+
+      // Check for level ups after feeding
+      await get().checkLevelUp();
+    } catch (error) {
+      console.error("Error in feedAllDigimon:", error);
       set({ error: (error as Error).message, loading: false });
     }
   },
