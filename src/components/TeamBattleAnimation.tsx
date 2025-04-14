@@ -21,7 +21,23 @@ const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({
   const [step, setStep] = useState(0);
   const [showResults, setShowResults] = useState(false);
   const [showResultsScreen, setShowResultsScreen] = useState(false);
-  const [hpState, setHpState] = useState<{ [id: string]: number }>({});
+  const [hpState, setHpState] = useState<{ [id: string]: number }>(() => {
+    const initialHp: { [id: string]: number } = {};
+    
+    // Initialize user team HP based on health percentage
+    teamBattle.user_team?.forEach(fighter => {
+      const maxHp = fighter.stats?.hp ?? DEFAULT_MAX_HP;
+      const healthPercentage = fighter.health !== undefined ? fighter.health / 100 : 1;
+      initialHp[fighter.id] = maxHp * healthPercentage;
+    });
+    
+    // Initialize opponent team HP at full
+    teamBattle.opponent_team?.forEach(fighter => {
+      initialHp[fighter.id] = fighter.stats?.hp ?? DEFAULT_MAX_HP;
+    });
+    
+    return initialHp;
+  });
   const [disintegratingDigimon, setDisintegratingDigimon] = useState<{[id: string]: boolean}>({});
   
   // Use separate refs for different timed actions for clarity and safety
@@ -45,18 +61,12 @@ const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({
 
   // --- State Initialization ---
   useEffect(() => {
-    const initialHp: { [id: string]: number } = {};
-    userTeam.forEach(fighter => {
-      initialHp[fighter.id] = fighter.stats?.hp ?? DEFAULT_MAX_HP; 
-    });
-    opponentTeam.forEach(fighter => {
-      initialHp[fighter.id] = fighter.stats?.hp ?? DEFAULT_MAX_HP;
-    });
+    // Don't reset HP state here, as it's already set correctly in the useState initialization
     
-    setHpState(initialHp);
-    setStep(0); 
+    setStep(0);
     setShowResults(false);
     setShowResultsScreen(false);
+    setDisintegratingDigimon({});
 
     // Clear ALL timers when battle changes
     if (advanceStepTimeoutRef.current) clearTimeout(advanceStepTimeoutRef.current);
@@ -82,17 +92,8 @@ const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({
         const changed = Object.keys(newHp).some(id => newHp[id] !== prevHp[id]);
         return changed ? newHp : prevHp;
       });
-    } else if (step === 0) {
-        // Reset HP on step 0
-        const initialHp: { [id: string]: number } = {};
-        userTeam.forEach(fighter => initialHp[fighter.id] = fighter.stats?.hp ?? DEFAULT_MAX_HP);
-        opponentTeam.forEach(fighter => initialHp[fighter.id] = fighter.stats?.hp ?? DEFAULT_MAX_HP);
-        setHpState(prevHp => {
-            const changed = Object.keys(initialHp).some(id => initialHp[id] !== prevHp[id]) || Object.keys(prevHp).length !== Object.keys(initialHp).length;
-            return changed ? initialHp : prevHp;
-        });
     }
-  }, [step, currentTurn?.remainingHP, userTeam, opponentTeam]); 
+  }, [step, currentTurn?.remainingHP]); // Remove userTeam and opponentTeam from dependencies
 
   // --- Step Advancement Logic ---
   const advanceStep = () => {
@@ -685,7 +686,7 @@ const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({
               <div className="flex flex-col space-y-2 w-1/2 pr-2">
                 {userTeam.map((fighter) => {
                   const maxHp = fighter.stats?.hp ?? DEFAULT_MAX_HP; 
-                  const currentHp = hpState[fighter.id] ?? maxHp; 
+                  const currentHp = hpState[fighter.id] ?? 0; // Default to 0 if not set yet
                   const hpPercentage = maxHp > 0 ? Math.max(0, (currentHp / maxHp) * 100) : 0; 
                   
                   return (
@@ -718,7 +719,7 @@ const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({
               <div className="flex flex-col space-y-2 w-1/2 pl-2">
                 {opponentTeam.map((fighter) => {
                   const maxHp = fighter.stats?.hp ?? DEFAULT_MAX_HP;
-                  const currentHp = hpState[fighter.id] ?? maxHp;
+                  const currentHp = hpState[fighter.id] ?? 0; // Default to 0 if not set yet
                   const hpPercentage = maxHp > 0 ? Math.max(0, (currentHp / maxHp) * 100) : 0;
                   
                   return (

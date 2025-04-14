@@ -209,6 +209,7 @@ export interface TeamBattle {
     digimon_id: number;
     sprite_url: string;
     digimon_name: string;
+    health: number;
     profile: {
       username: string;
       display_name: string;
@@ -524,6 +525,8 @@ export const useBattleStore = create<BattleState>((set, get) => ({
         );
 
         const simulatedTeamBattle = {
+          id: crypto.randomUUID ? crypto.randomUUID() : "temp-id-" + Date.now(),
+          created_at: new Date().toISOString(),
           user_team: userTeamData.map((d) => ({
             user_id: d.user_id,
             current_level: d.current_level,
@@ -534,6 +537,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
             digimon_id: d.digimon_id,
             sprite_url: d.digimon.sprite_url,
             digimon_name: d.digimon.name,
+            health: d.health,
             profile: {
               username: userProfile?.username ?? "You",
               display_name: userProfile?.display_name ?? "You",
@@ -552,6 +556,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
             digimon_id: d.digimon_id,
             sprite_url: d.digimon.sprite_url,
             digimon_name: d.digimon.name,
+            health: 100,
             profile: {
               username: "Wild Encounter",
               display_name: "Wild Encounter",
@@ -687,9 +692,10 @@ export const useBattleStore = create<BattleState>((set, get) => ({
 
         for (const digimon of [...userTeamData, ...opponentTeamData]) {
           const stats = modifyStats(digimon);
+          console.log(digimon);
           Object.assign(digimon.digimon, {
             ...stats,
-            current_hp: stats.hp,
+            current_hp: stats.hp * ((digimon.health || 100) / 100.0),
           });
         }
 
@@ -811,6 +817,8 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       );
 
       const simulatedTeamBattle = {
+        id: crypto.randomUUID ? crypto.randomUUID() : "temp-id-" + Date.now(),
+        created_at: new Date().toISOString(),
         user_team: userTeamData.map((d) => ({
           user_id: d.user_id,
           current_level: d.current_level,
@@ -821,6 +829,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
           digimon_id: d.digimon_id,
           sprite_url: d.digimon.sprite_url,
           digimon_name: d.digimon.name,
+          health: d.health,
           profile: {
             username: userProfile?.username ?? "You",
             display_name: userProfile?.display_name ?? "You",
@@ -839,6 +848,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
           digimon_id: d.digimon_id,
           sprite_url: d.digimon.sprite_url,
           digimon_name: d.digimon.name,
+          health: 100,
           profile: {
             username: opponentProfile?.username ?? "Unknown",
             display_name: opponentProfile?.display_name ?? "Unknown",

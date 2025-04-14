@@ -95,9 +95,22 @@ const Tutorial = () => {
           >
             <h2 className="text-2xl font-bold mb-4">Task System</h2>
             <p className="mb-4">
-              Only your active Digimon will benefit from tasks.
+              You can set 1 active Digimon at a time. Only your active Digimon will be affected from tasks.
+            </p>
+            <ul className="list-disc pl-5 mb-4">
+                  <li>Keep your Digimon happy and healthy</li>
+                  <li>Earn experience points for your Digimon</li>
+                  <li>Build a streak for increased experience points</li>
+                  <li>Progress toward milestones that award new Digimon</li>
+                </ul>
+                <p className="text-yellow-600 font-medium mb-4">
+                  WARNING: Missing your daily quota or any task will decrease your Digimon's health and happiness!
+                </p>
+            <p className="mb-4">
+              There are two types of tasks: daily and regular.
             </p>
             <div className="flex flex-col md:flex-row gap-6 mb-6">
+              
               <div className="md:w-1/2">
                 <h3 className="text-xl font-semibold mb-2">Daily Tasks</h3>
                 <p className="mb-4">
@@ -108,28 +121,13 @@ const Tutorial = () => {
                   
                   // Format the time in the user's local timezone
                   return resetTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                })()} (8:00 UTC) and contribute to your daily quota. Complete your daily quota to:
-                </p>
-                <ul className="list-disc pl-5 mb-4">
-                  <li>Keep your Digimon happy and healthy</li>
-                  <li>Build a streak for milestone rewards</li>
-                  <li>Earn experience points for your Digimon</li>
-                </ul>
-                <p className="text-yellow-600 font-medium">
-                  WARNING: Missing your daily quota will decrease your Digimon's happiness!
+                })()} (8:00 UTC) and need to be completed before the next day.
                 </p>
               </div>
               <div className="md:w-1/2">
                 <h3 className="text-xl font-semibold mb-2">Regular Tasks</h3>
                 <p className="mb-4">
-                  Regular tasks have due dates and provide larger rewards when completed:
-                </p>
-                <ul className="list-disc pl-5 mb-4">
-                  <li>More experience points for your Digimon</li>
-                  <li>Progress toward task completion milestones</li>
-                </ul>
-                <p className="text-yellow-600 font-medium">
-                  WARNING: Overdue tasks will decrease your Digimon's health!
+                  Regular tasks have due dates and provide larger rewards when completed.
                 </p>
               </div>
             </div>
@@ -137,7 +135,8 @@ const Tutorial = () => {
               <h3 className="text-lg font-semibold mb-2">Task Management Tips</h3>
               <ul className="list-disc pl-5">
                 <li>Set realistic due dates for your tasks</li>
-                <li>Stay consistent to complete your daily quota</li>
+                <li>Stay consistent to complete your daily quota to build a streak</li>
+                <li>You can cancel any task at no penalty</li>
               </ul>
             </div>
           </motion.div>
@@ -150,6 +149,9 @@ const Tutorial = () => {
             transition={{ duration: 0.5 }}
           >
             <h2 className="text-2xl font-bold mb-4">Digimon Care</h2>
+            <p className="mb-4">
+              Currently, you only need to worry about your active Digimon's health and happiness.
+            </p>
             <div className="flex flex-col md:flex-row gap-6 mb-6">
               <div className="md:w-1/2">
                 <h3 className="text-xl font-semibold mb-2">Health</h3>
@@ -157,7 +159,7 @@ const Tutorial = () => {
                   Your Digimon's health represents their physical condition:
                 </p>
                 <ul className="list-disc pl-5 mb-4">
-                  <li>Decreases when tasks become overdue</li>
+                  <li>Decreases when you miss tasks</li>
                   <li>If health reaches zero, your Digimon will die forever</li>
                 </ul>
                 <div className="w-full bg-gray-200 rounded-full h-5 mb-4">
@@ -207,7 +209,6 @@ const Tutorial = () => {
                 <ul className="list-disc pl-5 mb-4">
                   <li>Completing tasks (daily and regular)</li>
                   <li>Winning battles</li>
-                  <li>Meeting milestones</li>
                 </ul>
                 <p className="mb-4">
                   As your Digimon gains XP, they will level up, becoming stronger and unlocking evolution potential.
@@ -277,8 +278,8 @@ const Tutorial = () => {
                 <ul className="list-disc pl-5 mb-4">
                   <li>Select up to 3 Digimon for your battle team</li>
                   <li>Battles are turn-based with automatic actions</li>
-                  <li>Type advantages and attributes affect damage</li>
                   <li>All your Digimon (including reserves) gain XP from battles</li>
+                  <li>Wins give more XP than losses</li>
                 </ul>
               </div>
               <div className="md:w-1/2">
@@ -323,13 +324,10 @@ const Tutorial = () => {
             <h2 className="text-2xl font-bold mb-4">Milestones & Rewards</h2>
             <div className="flex flex-col md:flex-row gap-6 mb-6">
               <div className="md:w-1/2">
-                <h3 className="text-xl font-semibold mb-2">Daily Quota Streak</h3>
-                <p className="mb-4">
-                  Building a streak of completed daily quotas:
-                </p>
+                <h3 className="text-xl font-semibold mb-2">Daily Quota Completion</h3>
                 <ul className="list-disc pl-5 mb-4">
                   <li>Complete your daily quota for 3 days to earn a new Digimon</li>
-                  <li>Streaks reset when you claim your reward</li>
+                  <li>Progress reset when you claim your reward</li>
                 </ul>
                 <div className="w-full bg-gray-200 rounded-full h-5 mb-4">
                   <div className="bg-blue-500 h-5 rounded-full" style={{ width: "66%" }}></div>
