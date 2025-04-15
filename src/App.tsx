@@ -21,6 +21,7 @@ import Battle from './pages/Battle';
 import ProfileSettings from './pages/ProfileSettings';
 import UserDigimonPage from './pages/UserDigimonPage';
 import Tutorial from './pages/Tutorial';
+import LandingPage from './pages/LandingPage';
 
 // Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -31,7 +32,22 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   }
   
   if (!user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/landing" />;
+  }
+  
+  return <>{children}</>;
+};
+
+// Public route that redirects to dashboard if user is logged in
+const PublicRoute = ({ children }: { children: React.ReactNode }) => {
+  const { user, loading } = useAuthStore();
+  
+  if (loading) {
+    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  }
+  
+  if (user) {
+    return <Navigate to="/" />;
   }
   
   return <>{children}</>;
@@ -291,7 +307,16 @@ function App() {
             <Route path="/debug" element={<Debug />} />
           )
         }
-        <Route path="/login" element={<Login />} />
+        <Route path="/landing" element={
+          <PublicRoute>
+            <LandingPage />
+          </PublicRoute>
+        } />
+        <Route path="/login" element={
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
+        } />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
@@ -354,7 +379,7 @@ function App() {
           </ProtectedRoute>
         } />
         
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<Navigate to="/landing" replace />} />
       </Routes>
       
       <NotificationCenter />
