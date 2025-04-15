@@ -247,10 +247,13 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2.5">
             <div 
-              className="h-2.5 rounded-full" 
+              className={`h-2.5 rounded-full ${
+                healthPercentage >= 60 ? 'bg-green-500' : 
+                healthPercentage >= 30 ? 'bg-yellow-500' : 
+                'bg-red-500'
+              }`}
               style={{ 
                 width: `${healthPercentage}%`,
-                backgroundColor: healthPercentage > 60 ? '#10b981' : healthPercentage > 30 ? '#f59e0b' : '#ef4444'
               }}
             ></div>
           </div>
@@ -263,10 +266,13 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2.5">
             <div 
-              className="h-2.5 rounded-full" 
+              className={`h-2.5 rounded-full ${
+                happinessPercentage >= 60 ? 'bg-green-500' : 
+                happinessPercentage >= 30 ? 'bg-yellow-500' : 
+                'bg-red-500'
+              }`}
               style={{ 
                 width: `${happinessPercentage}%`,
-                backgroundColor: happinessPercentage > 60 ? '#10b981' : happinessPercentage > 30 ? '#f59e0b' : '#ef4444'
               }}
             ></div>
           </div>

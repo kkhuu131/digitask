@@ -3,6 +3,7 @@ import { supabase } from "../lib/supabase";
 import { useNotificationStore } from "./notificationStore";
 import { useTaskStore } from "./taskStore";
 import { StatCategory } from "../utils/categoryDetection";
+import { getDailyStatCap } from "../utils/statCaps";
 
 export interface UserDigimon {
   id: string;
@@ -24,6 +25,8 @@ export interface UserDigimon {
   def_bonus: number;
   int_bonus: number;
   spd_bonus: number;
+  daily_stat_gains: number;
+  last_stat_reset: string;
   digimon?: Digimon;
 }
 
@@ -108,6 +111,12 @@ export interface PetState {
     statCategory: StatCategory,
     amount: number
   ) => Promise<boolean>;
+  checkStatCap: () => Promise<{
+    canGain: boolean;
+    remaining: number;
+    cap: number;
+  }>;
+  checkStatReset: () => Promise<boolean>;
 }
 
 export const useDigimonStore = create<PetState>((set, get) => ({
@@ -1217,6 +1226,22 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         return false;
       }
 
+      // Check if we've reached the daily stat cap
+      const { canGain, remaining } = await get().checkStatCap();
+
+      if (!canGain) {
+        // We've reached the cap, notify the user but don't increase stats
+        useNotificationStore.getState().addNotification({
+          message:
+            "You've reached your stat gain limit for today. You can still complete tasks, but no more stats will be gained until tomorrow.",
+          type: "info",
+        });
+        return true; // Return true so task completion continues
+      }
+
+      // Adjust the amount if it would exceed the remaining points
+      const adjustedAmount = Math.min(amount, remaining);
+
       // Map the stat category to the corresponding bonus field
       const bonusField = `${statCategory.toLowerCase()}_bonus`;
 
@@ -1226,12 +1251,18 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         0;
 
       // Calculate the new bonus value
-      const newBonus = currentBonus + amount;
+      const newBonus = currentBonus + adjustedAmount;
+
+      // Calculate the new daily stat gains
+      const newDailyGains = activeDigimon.daily_stat_gains + adjustedAmount;
 
       // Update the Digimon in the database
       const { error } = await supabase
         .from("user_digimon")
-        .update({ [bonusField]: newBonus })
+        .update({
+          [bonusField]: newBonus,
+          daily_stat_gains: newDailyGains,
+        })
         .eq("id", activeDigimon.id);
 
       if (error) throw error;
@@ -1239,22 +1270,114 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       // Update the local state
       set((state) => ({
         userDigimon: state.userDigimon
-          ? { ...state.userDigimon, [bonusField]: newBonus }
+          ? {
+              ...state.userDigimon,
+              [bonusField]: newBonus,
+              daily_stat_gains: newDailyGains,
+            }
           : null,
         allUserDigimon: state.allUserDigimon.map((digimon) =>
           digimon.id === activeDigimon.id
-            ? { ...digimon, [bonusField]: newBonus }
+            ? {
+                ...digimon,
+                [bonusField]: newBonus,
+                daily_stat_gains: newDailyGains,
+              }
             : digimon
         ),
       }));
 
+      // If we've reached the cap after this increase, notify the user
+      if (newDailyGains >= (await get().checkStatCap()).cap) {
+        useNotificationStore.getState().addNotification({
+          message:
+            "You've reached your stat gain limit for today. You can still complete tasks, but no more stats will be gained until tomorrow.",
+          type: "info",
+        });
+      }
+
       console.log(
-        `Increased ${statCategory} by ${amount}. New value: ${newBonus}`
+        `Increased ${statCategory} by ${adjustedAmount}. New value: ${newBonus}`
       );
       return true;
     } catch (error) {
       console.error(`Error increasing ${statCategory}:`, error);
       return false;
     }
+  },
+
+  checkStatCap: async () => {
+    const activeDigimon = get().userDigimon;
+    if (!activeDigimon || !activeDigimon.digimon)
+      return { canGain: false, remaining: 0, cap: 0 };
+
+    // Get the cap based on the Digimon's stage
+    const cap = getDailyStatCap(activeDigimon.digimon.stage);
+
+    // Check if we need to reset the daily stats (if it's a new day)
+    await get().checkStatReset();
+
+    // Calculate remaining points
+    const remaining = Math.max(0, cap - activeDigimon.daily_stat_gains);
+
+    return {
+      canGain: remaining > 0,
+      remaining,
+      cap,
+    };
+  },
+
+  checkStatReset: async () => {
+    const activeDigimon = get().userDigimon;
+    if (!activeDigimon) return false;
+
+    const lastReset = new Date(activeDigimon.last_stat_reset);
+    const now = new Date();
+
+    // Check if the last reset was on a different day
+    const isNewDay =
+      lastReset.getFullYear() !== now.getFullYear() ||
+      lastReset.getMonth() !== now.getMonth() ||
+      lastReset.getDate() !== now.getDate();
+
+    if (isNewDay) {
+      // Reset the daily stat gains
+      const { error } = await supabase
+        .from("user_digimon")
+        .update({
+          daily_stat_gains: 0,
+          last_stat_reset: now.toISOString(),
+        })
+        .eq("id", activeDigimon.id);
+
+      if (error) {
+        console.error("Error resetting daily stat gains:", error);
+        return false;
+      }
+
+      // Update local state
+      set((state) => ({
+        userDigimon: state.userDigimon
+          ? {
+              ...state.userDigimon,
+              daily_stat_gains: 0,
+              last_stat_reset: now.toISOString(),
+            }
+          : null,
+        allUserDigimon: state.allUserDigimon.map((digimon) =>
+          digimon.id === activeDigimon.id
+            ? {
+                ...digimon,
+                daily_stat_gains: 0,
+                last_stat_reset: now.toISOString(),
+              }
+            : digimon
+        ),
+      }));
+
+      return true;
+    }
+
+    return false;
   },
 }));

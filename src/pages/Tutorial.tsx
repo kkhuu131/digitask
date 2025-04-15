@@ -95,17 +95,59 @@ const Tutorial = () => {
           >
             <h2 className="text-2xl font-bold mb-4">Task System</h2>
             <p className="mb-4">
-              You can set 1 active Digimon at a time. Only your active Digimon will be affected from tasks.
+              You set your own tasks. You can set 1 active Digimon at a time. Only your active Digimon will be affected from tasks.
             </p>
             <ul className="list-disc pl-5 mb-4">
-                  <li>Keep your Digimon happy and healthy</li>
-                  <li>Earn experience points for your Digimon</li>
-                  <li>Build a streak for increased experience points</li>
-                  <li>Progress toward milestones that award new Digimon</li>
-                </ul>
-                <p className="text-yellow-600 font-medium mb-4">
-                  WARNING: Missing your daily quota or any task will decrease your Digimon's health and happiness!
-                </p>
+              <li>Keep your Digimon happy and healthy</li>
+              <li>Earn experience points for your Digimon</li>
+              <li>Complete your daily quota of 3 tasks</li>
+              <li>Build a streak for increased experience points</li>
+            </ul>
+            <p className="text-yellow-600 font-medium mb-4">
+              WARNING: Missing your daily quota or any task will decrease your Digimon's health and happiness!
+            </p>
+            
+            {/* Condensed section about task categories and stat bonuses */}
+            <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
+              <h3 className="text-lg font-semibold mb-2">Task Categories & Stat Bonuses</h3>
+              <p className="mb-3">
+                Assign categories to tasks to boost your Digimon's corresponding stats. Each Digimon has a daily stat gain limit based on their evolution stage.
+              </p>
+              
+              {/* Accordion for Categories */}
+              <details className="mb-3 bg-white rounded shadow-sm">
+                <summary className="p-3 cursor-pointer font-medium hover:bg-gray-50">
+                  View Stat Categories
+                </summary>
+                <div className="p-3 py-4 border-t">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-md">
+                    <div><span className="text-red-600 font-medium">HP:</span> Exercise, sleep</div>
+                    <div><span className="text-blue-600 font-medium">SP:</span> Meditation, breaks</div>
+                    <div><span className="text-orange-600 font-medium">ATK:</span> Work, productivity</div>
+                    <div><span className="text-green-600 font-medium">DEF:</span> Self-care</div>
+                    <div><span className="text-purple-600 font-medium">INT:</span> Learning, reading</div>
+                    <div><span className="text-yellow-600 font-medium">SPD:</span> Errands, chores</div>
+                  </div>
+                </div>
+              </details>
+              
+              {/* Accordion for Daily Caps */}
+              <details className="bg-white rounded shadow-sm">
+                <summary className="p-3 cursor-pointer font-medium hover:bg-gray-50">
+                  View Daily Stat Caps
+                </summary>
+                <div className="p-3 py-4 border-t">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-md">
+                    <div><span className="font-medium">Baby/In-Training:</span> 5</div>
+                    <div><span className="font-medium">Rookie:</span> 8</div>
+                    <div><span className="font-medium">Champion:</span> 12</div>
+                    <div><span className="font-medium">Ultimate:</span> 15</div>
+                    <div><span className="font-medium">Mega:</span> 20</div>
+                  </div>
+                </div>
+              </details>
+            </div>
+            
             <p className="mb-4">
               There are two types of tasks: daily and regular.
             </p>
@@ -150,7 +192,7 @@ const Tutorial = () => {
           >
             <h2 className="text-2xl font-bold mb-4">Digimon Care</h2>
             <p className="mb-4">
-              Currently, you only need to worry about your active Digimon's health and happiness.
+              Currently, you only need to worry about your <b>active</b> Digimon's health and happiness.
             </p>
             <div className="flex flex-col md:flex-row gap-6 mb-6">
               <div className="md:w-1/2">

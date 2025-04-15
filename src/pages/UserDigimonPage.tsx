@@ -508,7 +508,11 @@ const UserDigimonPage = () => {
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2.5">
                       <div 
-                        className="bg-green-600 h-2.5 rounded-full" 
+                        className={`h-2.5 rounded-full ${
+                          selectedDetailDigimon.health >= 60 ? 'bg-green-500' : 
+                          selectedDetailDigimon.health >= 30 ? 'bg-yellow-500' : 
+                          'bg-red-500'
+                        }`} 
                         style={{ width: `${selectedDetailDigimon.health}%` }}
                       ></div>
                     </div>
@@ -521,7 +525,11 @@ const UserDigimonPage = () => {
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2.5">
                       <div 
-                        className="bg-yellow-500 h-2.5 rounded-full" 
+                        className={`h-2.5 rounded-full ${
+                          selectedDetailDigimon.happiness >= 60 ? 'bg-green-500' : 
+                          selectedDetailDigimon.happiness >= 30 ? 'bg-yellow-500' : 
+                          'bg-red-500'
+                        }`} 
                         style={{ width: `${selectedDetailDigimon.happiness}%` }}
                       ></div>
                     </div>
@@ -808,7 +816,11 @@ const UserDigimonPage = () => {
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div 
-                          className="bg-green-600 h-2 rounded-full" 
+                          className={`h-2 rounded-full ${
+                            digimon.health >= 60 ? 'bg-green-500' : 
+                            digimon.health >= 30 ? 'bg-yellow-500' : 
+                            'bg-red-500'
+                          }`} 
                           style={{ width: `${digimon.health}%` }}
                         ></div>
                       </div>

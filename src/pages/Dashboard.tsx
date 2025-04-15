@@ -5,6 +5,7 @@ import { useTaskStore } from "../store/taskStore";
 import Digimon from "../components/Digimon";
 import TaskForm from "../components/TaskForm";
 import TaskList from "../components/TaskList";
+import StatProgressMeter from "@/components/StatProgressMeter";
 
 const Dashboard: React.FC = () => {
   const { userDigimon, digimonData, evolutionOptions, fetchUserDigimon, error: digimonError, isDigimonDead, resetDeadState } = useDigimonStore();
@@ -41,12 +42,41 @@ const Dashboard: React.FC = () => {
   
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {/* Beta Notice Banner */}
+      <div className="lg:col-span-3 bg-indigo-50 border-l-4 border-indigo-500 p-4 rounded-r-md shadow-sm">
+        <div className="flex">
+          <div className="flex-shrink-0">
+            <svg className="h-5 w-5 text-indigo-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+            </svg>
+          </div>
+          <div className="ml-3 flex justify-between items-center w-full">
+            <div>
+              <p className="text-sm text-indigo-800">
+                <span className="font-medium">Digitask is in beta!</span> New features and improvements are actively being developed.
+              </p>
+            </div>
+            <a 
+              href="https://forms.gle/HrgybGG7BL1xj5wg6" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-sm bg-indigo-100 hover:bg-indigo-200 text-indigo-800 px-3 py-1 rounded-full transition-colors"
+            >
+              Report Bug or Suggestion
+            </a>
+          </div>
+        </div>
+      </div>
+      
       <div className="lg:col-span-1">
         <Digimon 
           userDigimon={userDigimon} 
           digimonData={digimonData} 
           evolutionOptions={evolutionOptions} 
         />
+        <div className="card my-6">
+          <StatProgressMeter />
+        </div>
         <div className="card my-6">
           <div className="flex justify-between items-center mb-2">
             <h3 className="text-lg font-semibold">Daily Quota</h3>
@@ -67,10 +97,13 @@ const Dashboard: React.FC = () => {
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2.5 my-2">
             <div 
-              className="h-2.5 rounded-full" 
+              className={`h-2.5 rounded-full ${
+                quotaPercentage >= 100 ? 'bg-green-500' : 
+                quotaPercentage >= 66 ? 'bg-yellow-500' : 
+                'bg-red-500'
+              }`}
               style={{ 
-                width: `${quotaPercentage}%`,
-                backgroundColor: quotaPercentage >= 100 ? '#10b981' : quotaPercentage >= 66 ? '#f59e0b' : '#ef4444'
+                width: `${quotaPercentage}%`
               }}
             ></div>
           </div>
@@ -112,8 +145,42 @@ const Dashboard: React.FC = () => {
         </div>
         
         <div className="card">
-          <h2 className="text-xl font-bold mb-4">Your Tasks</h2>
+          <h2 className="text-xl font-bold">Your Tasks</h2>
           <TaskList />
+        </div>
+        
+        <div className="lg:col-span-3 mt-8">
+          <div className="card">
+            <h2 className="text-xl font-bold mb-4">Roadmap & Upcoming Features</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                <div className="flex items-center mb-2">
+                  <h3 className="font-semibold text-blue-800">Stat Requirements for Evolution</h3>
+                </div>
+                <p className="text-sm text-blue-700">
+                  Adding stat thresholds needed for Digimon to evolve to higher forms.
+                </p>
+              </div>
+
+              <div className="bg-purple-50 p-4 rounded-lg border border-purple-100">
+                <div className="flex items-center mb-2">
+                  <h3 className="font-semibold text-purple-800">Battle Rewards</h3>
+                </div>
+                <p className="text-sm text-purple-700">
+                  Participating or winning in battles will give you more rewards (items?).
+                </p>
+              </div>
+              
+              <div className="bg-green-50 p-4 rounded-lg border border-green-100">
+                <div className="flex items-center mb-2">
+                  <h3 className="font-semibold text-green-800">Digimon Abilities</h3>
+                </div>
+                <p className="text-sm text-green-700">
+                  Unique abilities for each Digimon to gain advantages in battles.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
         
         {process.env.NODE_ENV === 'development' && (

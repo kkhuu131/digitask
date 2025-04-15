@@ -84,7 +84,8 @@ const TaskList = () => {
     });
   
   return (
-    <div>
+    <div className="bg-white rounded-lg shadow-md p-4">
+      
       <div className="flex space-x-2 mb-4">
         <button
           className={`px-3 py-1 text-sm rounded-full ${
