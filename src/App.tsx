@@ -307,7 +307,7 @@ function App() {
             <Route path="/debug" element={<Debug />} />
           )
         }
-        <Route path="/landing" element={
+        <Route path="/" element={
           <PublicRoute>
             <LandingPage />
           </PublicRoute>
@@ -379,7 +379,7 @@ function App() {
           </ProtectedRoute>
         } />
         
-        <Route path="*" element={<Navigate to="/landing" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       
       <NotificationCenter />
