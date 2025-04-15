@@ -110,7 +110,9 @@ const LandingPage: React.FC = () => {
               <p className="text-indigo-200">The Digimon Productivity App</p>
             </div>
             <div>
-              <p className="text-indigo-200">© 2025 Digitask. All rights reserved.</p>
+              <p className="text-indigo-200">
+                Fan project. Digimon™ is owned by Bandai/Toei Animation.
+              </p>
             </div>
           </div>
         </div>

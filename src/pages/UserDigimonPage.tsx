@@ -9,6 +9,8 @@ interface UserDigimon {
   user_id: string;
   digimon_id: number;
   name: string;
+  type?: string;
+  attribute?: string;
   current_level: number;
   experience_points: number;
   health: number;
@@ -28,6 +30,8 @@ interface UserDigimon {
     name: string;
     stage: string;
     sprite_url: string;
+    type?: string;
+    attribute?: string;
     hp?: number;
     sp?: number;
     atk?: number;
@@ -470,14 +474,57 @@ const UserDigimonPage = () => {
                 </div>
                 
                 <div className="text-center mb-4">
-                  <h4 className="text-xl font-semibold">
-                    {selectedDetailDigimon.name || "No Nickname"}
-                  </h4>
-                  <p className="text-gray-600">
-                    {selectedDetailDigimon.digimon?.name}
-                  </p>
-                  <p className="text-gray-600">
-                    Stage: {selectedDetailDigimon.digimon?.stage}
+                  {editingName === selectedDetailDigimon.id ? (
+                    <div className="flex items-center justify-center mb-2">
+                      <input
+                        type="text"
+                        value={newName}
+                        onChange={(e) => setNewName(e.target.value)}
+                        onKeyDown={(e) => handleKeyDown(e, selectedDetailDigimon.id)}
+                        className="px-2 py-1 border border-gray-300 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        maxLength={20}
+                        placeholder={selectedDetailDigimon.digimon?.name || "Enter nickname"}
+                        autoFocus
+                      />
+                      <div className="flex ml-1">
+                        <button
+                          onClick={() => handleSaveName(selectedDetailDigimon.id)}
+                          className="p-1 bg-green-100 text-green-600 hover:bg-green-200 rounded-md"
+                          title="Save name (or press Enter)"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                        </button>
+                        <button
+                          onClick={handleCancelEdit}
+                          className="p-1 bg-red-100 text-red-600 hover:bg-red-200 rounded-md ml-1"
+                          title="Cancel (or press Escape)"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center mb-2">
+                      <h4 className="text-xl font-semibold mr-1">
+                        {selectedDetailDigimon.name || selectedDetailDigimon.digimon?.name}
+                      </h4>
+                      <button
+                        onClick={() => handleEditName(selectedDetailDigimon.id, selectedDetailDigimon.name, selectedDetailDigimon.digimon?.name || "")}
+                        className="p-1 text-gray-500 hover:text-gray-700"
+                        title="Edit name"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        </svg>
+                      </button>
+                    </div>
+                  )}
+                  <p className="text-gray-600 w-3/4 mx-auto text-center">
+                    {selectedDetailDigimon.digimon?.name} is a {selectedDetailDigimon.digimon?.attribute} {selectedDetailDigimon.digimon?.type}, {selectedDetailDigimon.digimon?.stage} level Digimon.
                   </p>
                   <div className="flex justify-center space-x-2 mt-2">
                     <span className="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded">
@@ -716,65 +763,9 @@ const UserDigimonPage = () => {
                   <div className="flex flex-col mb-2">
                     {/* Name section */}
                     <div className="flex items-center justify-between">
-                      {editingName === digimon.id ? (
-                        <div className="flex items-center w-full">
-                          <input
-                            type="text"
-                            value={newName}
-                            onChange={(e) => setNewName(e.target.value)}
-                            onKeyDown={(e) => handleKeyDown(e, digimon.id)}
-                            className="flex-1 min-w-0 px-2 py-1 border border-gray-300 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-500"
-                            maxLength={20}
-                            placeholder={digimon.digimon?.name || "Enter nickname"}
-                            autoFocus
-                            onClick={(e) => e.stopPropagation()}
-                          />
-                          <div className="flex-shrink-0 flex ml-1">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleSaveName(digimon.id);
-                              }}
-                              className="p-1 bg-green-100 text-green-600 hover:bg-green-200 rounded-md"
-                              title="Save name (or press Enter)"
-                            >
-                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                              </svg>
-                            </button>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleCancelEdit();
-                              }}
-                              className="p-1 bg-red-100 text-red-600 hover:bg-red-200 rounded-md ml-1"
-                              title="Cancel (or press Escape)"
-                            >
-                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                              </svg>
-                            </button>
-                          </div>
-                        </div>
-                      ) : (
-                        <>
-                          <h3 className="text-lg font-semibold">
-                            {digimon.name || digimon.digimon?.name}
-                          </h3>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleEditName(digimon.id, digimon.name, digimon.digimon?.name || "");
-                            }}
-                            className="p-1 text-gray-500 hover:text-gray-700"
-                            title="Edit name"
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                            </svg>
-                          </button>
-                        </>
-                      )}
+                      <h3 className="text-lg font-semibold">
+                        {digimon.name || digimon.digimon?.name}
+                      </h3>
                     </div>
                     
                     {/* Tags row */}

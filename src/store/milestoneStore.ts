@@ -162,8 +162,14 @@ export const useMilestoneStore = create<MilestoneState>((set, get) => ({
 
       const updates =
         type === "daily_quota"
-          ? { daily_quota_streak: 0 }
-          : { tasks_completed_count: 0 };
+          ? {
+              daily_quota_streak:
+                get().dailyQuotaStreak - DAILY_QUOTA_MILESTONE,
+            }
+          : {
+              tasks_completed_count:
+                get().tasksCompletedCount - TASKS_COMPLETED_MILESTONE,
+            };
 
       // Reset the progress in the database
       const { error } = await supabase

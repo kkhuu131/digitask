@@ -155,9 +155,6 @@ const TaskForm = () => {
       
       // Reset form
       setDescription("");
-      setDueDate("");
-      setDueTime("");
-      setIsDaily(false);
       setCategory(null);
       setDetectedCategory(null);
       setShowCategorySelector(false);
