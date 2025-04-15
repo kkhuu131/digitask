@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 import { useTaskStore } from "../store/taskStore";
 import Select from 'react-select';
+import { 
+  StatCategory, 
+  detectCategory, 
+  categoryDescriptions, 
+  categoryIcons 
+} from "../utils/categoryDetection";
 
 const TaskForm = () => {
   const { createTask } = useTaskStore();
@@ -11,6 +17,9 @@ const TaskForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [minDate, setMinDate] = useState<string>("");
   const [minTime, setMinTime] = useState<string>("");
+  const [category, setCategory] = useState<StatCategory | null>(null);
+  const [detectedCategory, setDetectedCategory] = useState<StatCategory | null>(null);
+  const [showCategorySelector, setShowCategorySelector] = useState(false);
 
   // Set minimum date to today when component mounts
   useEffect(() => {
@@ -88,6 +97,35 @@ const TaskForm = () => {
   
   const timeOptions = generateTimeOptions(minTime);
   
+  // Add a new effect to detect category when description changes
+  useEffect(() => {
+    if (description.trim().length > 2) {
+      const detected = detectCategory(description);
+      setDetectedCategory(detected);
+      
+      // If we detect a category, set it as the selected category
+      if (detected) {
+        setCategory(detected);
+        setShowCategorySelector(false);
+      } else {
+        // If we can't detect a category and the description is substantial,
+        // show the category selector
+        if (description.trim().length > 5) {
+          setShowCategorySelector(true);
+        }
+      }
+    } else {
+      setDetectedCategory(null);
+      setShowCategorySelector(false);
+    }
+  }, [description]);
+
+  // Create category options for the dropdown
+  const categoryOptions = Object.entries(categoryDescriptions).map(([value, description]) => ({
+    value: value as StatCategory,
+    label: `${categoryIcons[value as StatCategory]} ${value} - ${description}`
+  }));
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
   
@@ -112,6 +150,7 @@ const TaskForm = () => {
         description,
         is_daily: isDaily,
         due_date: dueDateTime,
+        category, // Add the category
       });
       
       // Reset form
@@ -119,6 +158,9 @@ const TaskForm = () => {
       setDueDate("");
       setDueTime("");
       setIsDaily(false);
+      setCategory(null);
+      setDetectedCategory(null);
+      setShowCategorySelector(false);
       setIsSubmitting(false);
     } catch (error) {
       console.error("Error creating task:", error);
@@ -143,6 +185,30 @@ const TaskForm = () => {
           placeholder="What do you need to do?"
           required
         />
+        
+        {/* Show detected category */}
+        {detectedCategory && (
+          <div className="mt-1 text-sm text-gray-600">
+            <span className="font-medium">Detected category:</span> {categoryIcons[detectedCategory]} {detectedCategory}
+          </div>
+        )}
+        
+        {/* Show category selector if we couldn't detect one */}
+        {showCategorySelector && !detectedCategory && (
+          <div className="mt-3">
+            <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
+              Couldn't detect a category - what should this task improve?
+            </label>
+            <Select
+              id="category"
+              options={categoryOptions}
+              value={categoryOptions.find(opt => opt.value === category)}
+              onChange={(selected) => setCategory(selected?.value || null)}
+              placeholder="Select a category"
+              className="mt-1"
+            />
+          </div>
+        )}
       </div>
       
       <div className="mb-4">

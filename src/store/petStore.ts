@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { supabase } from "../lib/supabase";
 import { useNotificationStore } from "./notificationStore";
 import { useTaskStore } from "./taskStore";
+import { StatCategory } from "../utils/categoryDetection";
 
 export interface UserDigimon {
   id: string;
@@ -17,6 +18,12 @@ export interface UserDigimon {
   last_fed_tasks_at: string;
   is_active: boolean;
   is_on_team: boolean;
+  hp_bonus: number;
+  sp_bonus: number;
+  atk_bonus: number;
+  def_bonus: number;
+  int_bonus: number;
+  spd_bonus: number;
   digimon?: Digimon;
 }
 
@@ -97,6 +104,10 @@ export interface PetState {
     reserveDigimonId: string
   ) => Promise<void>;
   feedAllDigimon: (taskPoints: number) => Promise<void>;
+  increaseStat: (
+    statCategory: StatCategory,
+    amount: number
+  ) => Promise<boolean>;
 }
 
 export const useDigimonStore = create<PetState>((set, get) => ({
@@ -1194,6 +1205,56 @@ export const useDigimonStore = create<PetState>((set, get) => ({
     } catch (error) {
       console.error("Error in feedAllDigimon:", error);
       set({ error: (error as Error).message, loading: false });
+    }
+  },
+
+  increaseStat: async (statCategory: StatCategory, amount: number) => {
+    try {
+      // Get the active Digimon
+      const activeDigimon = get().userDigimon;
+      if (!activeDigimon) {
+        console.log("No active Digimon to increase stats for");
+        return false;
+      }
+
+      // Map the stat category to the corresponding bonus field
+      const bonusField = `${statCategory.toLowerCase()}_bonus`;
+
+      // Get the current bonus value
+      const currentBonus =
+        (activeDigimon[bonusField as keyof typeof activeDigimon] as number) ||
+        0;
+
+      // Calculate the new bonus value
+      const newBonus = currentBonus + amount;
+
+      // Update the Digimon in the database
+      const { error } = await supabase
+        .from("user_digimon")
+        .update({ [bonusField]: newBonus })
+        .eq("id", activeDigimon.id);
+
+      if (error) throw error;
+
+      // Update the local state
+      set((state) => ({
+        userDigimon: state.userDigimon
+          ? { ...state.userDigimon, [bonusField]: newBonus }
+          : null,
+        allUserDigimon: state.allUserDigimon.map((digimon) =>
+          digimon.id === activeDigimon.id
+            ? { ...digimon, [bonusField]: newBonus }
+            : digimon
+        ),
+      }));
+
+      console.log(
+        `Increased ${statCategory} by ${amount}. New value: ${newBonus}`
+      );
+      return true;
+    } catch (error) {
+      console.error(`Error increasing ${statCategory}:`, error);
+      return false;
     }
   },
 }));

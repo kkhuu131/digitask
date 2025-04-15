@@ -1,8 +1,53 @@
 import { useState, useEffect } from "react";
 import { useDigimonStore, EvolutionOption } from "../store/petStore";
-import { motion } from "framer-motion";
 import MilestoneProgress from "../components/MilestoneProgress"
 import { supabase } from "../lib/supabase";
+import statModifier from "../store/battleStore";
+
+interface UserDigimon {
+  id: string;
+  user_id: string;
+  digimon_id: number;
+  name: string;
+  current_level: number;
+  experience_points: number;
+  health: number;
+  happiness: number;
+  created_at: string;
+  last_updated_at: string;
+  is_active: boolean;
+  is_on_team: boolean;
+  hp_bonus: number;
+  sp_bonus: number;
+  atk_bonus: number;
+  def_bonus: number;
+  int_bonus: number;
+  spd_bonus: number;
+  digimon?: {
+    id: number;
+    name: string;
+    stage: string;
+    sprite_url: string;
+    hp?: number;
+    sp?: number;
+    atk?: number;
+    def?: number;
+    int?: number;
+    spd?: number;
+    hp_level1?: number;
+    sp_level1?: number;
+    atk_level1?: number;
+    def_level1?: number;
+    int_level1?: number;
+    spd_level1?: number;
+    hp_level99?: number;
+    sp_level99?: number;
+    atk_level99?: number;
+    def_level99?: number;
+    int_level99?: number;
+    spd_level99?: number;
+  };
+}
 
 const UserDigimonPage = () => {
   const { 
@@ -25,6 +70,7 @@ const UserDigimonPage = () => {
   const [evolvingDigimon, setEvolvingDigimon] = useState(false);
   const [editingName, setEditingName] = useState<string | null>(null);
   const [newName, setNewName] = useState<string>("");
+  const [selectedDetailDigimon, setSelectedDetailDigimon] = useState<UserDigimon | null>(null);
 
   useEffect(() => {
     fetchAllUserDigimon();
@@ -231,6 +277,28 @@ const UserDigimonPage = () => {
     }
   };
 
+  // Add function to handle opening the detail modal
+  const handleShowDetailModal = (digimonId: string) => {
+    const digimon = allUserDigimon.find(d => d.id === digimonId);
+    if (digimon) {
+      setSelectedDetailDigimon(digimon);
+    }
+  };
+
+  // Add function to close the detail modal
+  const handleCloseDetailModal = () => {
+    setSelectedDetailDigimon(null);
+  };
+
+  // Add a helper function to calculate age in days
+  const calculateAgeDays = (createdAt: string): number => {
+    const creationDate = new Date(createdAt);
+    const today = new Date();
+    const diffTime = Math.abs(today.getTime() - creationDate.getTime());
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
   if (loading && allUserDigimon.length === 0) {
     return (
       <div className="text-center py-12">
@@ -373,6 +441,244 @@ const UserDigimonPage = () => {
         </div>
       )}
 
+      {/* Digimon Detail Modal */}
+      {selectedDetailDigimon && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-start mb-4">
+              <h3 className="text-2xl font-bold">Digimon Details</h3>
+              <button 
+                onClick={handleCloseDetailModal}
+                className="p-1 text-gray-500 hover:text-gray-700"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Left column - Image and basic info */}
+              <div className="flex flex-col items-center">
+                <div className="w-32 h-32 mt-4 mb-8">
+                  <img 
+                    src={selectedDetailDigimon.digimon?.sprite_url} 
+                    alt={selectedDetailDigimon.name || selectedDetailDigimon.digimon?.name} 
+                    className="w-full h-full object-contain"
+                    style={{ imageRendering: "pixelated" }}
+                  />
+                </div>
+                
+                <div className="text-center mb-4">
+                  <h4 className="text-xl font-semibold">
+                    {selectedDetailDigimon.name || "No Nickname"}
+                  </h4>
+                  <p className="text-gray-600">
+                    {selectedDetailDigimon.digimon?.name}
+                  </p>
+                  <p className="text-gray-600">
+                    Stage: {selectedDetailDigimon.digimon?.stage}
+                  </p>
+                  <div className="flex justify-center space-x-2 mt-2">
+                    <span className="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                      Lv. {selectedDetailDigimon.current_level}
+                    </span>
+                    {selectedDetailDigimon.is_on_team && (
+                      <span className="text-sm bg-green-100 text-green-800 px-2 py-1 rounded">
+                        Team
+                      </span>
+                    )}
+                    {selectedDetailDigimon.is_active && (
+                      <span className="text-sm bg-purple-100 text-purple-800 px-2 py-1 rounded">
+                        Active
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm text-gray-500 mt-2">
+                    Age: {calculateAgeDays(selectedDetailDigimon.created_at)} days
+                  </p>
+                </div>
+                
+                {/* Status bars */}
+                <div className="w-full space-y-3 mb-4">
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span>Health</span>
+                      <span>{selectedDetailDigimon.health}%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2.5">
+                      <div 
+                        className="bg-green-600 h-2.5 rounded-full" 
+                        style={{ width: `${selectedDetailDigimon.health}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span>Happiness</span>
+                      <span>{selectedDetailDigimon.happiness}%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2.5">
+                      <div 
+                        className="bg-yellow-500 h-2.5 rounded-full" 
+                        style={{ width: `${selectedDetailDigimon.happiness}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span>Experience</span>
+                      <span>{selectedDetailDigimon.experience_points}/{selectedDetailDigimon.current_level * 20}</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2.5">
+                      <div 
+                        className="bg-blue-600 h-2.5 rounded-full" 
+                        style={{ 
+                          width: `${Math.min(100, (selectedDetailDigimon.experience_points / (selectedDetailDigimon.current_level * 20)) * 100)}%` 
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Right column - Stats and evolution */}
+              <div>
+                <h4 className="text-lg font-semibold mb-3">Stats</h4>
+                <div className="grid grid-cols-2 gap-3 mb-6">
+                  <div className="bg-gray-50 p-2 rounded">
+                    <span className="text-sm font-medium">HP</span>
+                    <p className="text-lg">
+                      {statModifier(
+                        selectedDetailDigimon.current_level,
+                        selectedDetailDigimon.digimon?.hp_level1 ?? 0,
+                        selectedDetailDigimon.digimon?.hp ?? 0,
+                        selectedDetailDigimon.digimon?.hp_level99 ?? 0
+                      )}+{selectedDetailDigimon.hp_bonus ?? 0}
+                    </p>
+                  </div>
+                  <div className="bg-gray-50 p-2 rounded">
+                    <span className="text-sm font-medium">SP</span>
+                    <p className="text-lg">{statModifier(selectedDetailDigimon.current_level, selectedDetailDigimon.digimon?.sp_level1 ?? 0, selectedDetailDigimon.digimon?.sp ?? 0, selectedDetailDigimon.digimon?.sp_level99 ?? 0)}+{selectedDetailDigimon.sp_bonus ?? 0}</p>
+                  </div>
+                  <div className="bg-gray-50 p-2 rounded">
+                    <span className="text-sm font-medium">ATK</span>
+                    <p className="text-lg">{statModifier(selectedDetailDigimon.current_level, selectedDetailDigimon.digimon?.atk_level1 ?? 0, selectedDetailDigimon.digimon?.atk ?? 0, selectedDetailDigimon.digimon?.atk_level99 ?? 0)}+{selectedDetailDigimon.atk_bonus ?? 0}</p>
+                  </div>
+                  <div className="bg-gray-50 p-2 rounded">
+                    <span className="text-sm font-medium">DEF</span>
+                    <p className="text-lg">{statModifier(selectedDetailDigimon.current_level, selectedDetailDigimon.digimon?.def_level1 ?? 0, selectedDetailDigimon.digimon?.def ?? 0, selectedDetailDigimon.digimon?.def_level99 ?? 0)}+{selectedDetailDigimon.def_bonus ?? 0}</p>
+                  </div>
+                  <div className="bg-gray-50 p-2 rounded">
+                    <span className="text-sm font-medium">INT</span>
+                    <p className="text-lg">{statModifier(selectedDetailDigimon.current_level, selectedDetailDigimon.digimon?.int_level1 ?? 0, selectedDetailDigimon.digimon?.int ?? 0, selectedDetailDigimon.digimon?.int_level99 ?? 0)}+{selectedDetailDigimon.int_bonus ?? 0}</p>
+                  </div>
+                  <div className="bg-gray-50 p-2 rounded">
+                    <span className="text-sm font-medium">SPD</span>
+                    <p className="text-lg">{statModifier(selectedDetailDigimon.current_level, selectedDetailDigimon.digimon?.spd_level1 ?? 0, selectedDetailDigimon.digimon?.spd ?? 0, selectedDetailDigimon.digimon?.spd_level99 ?? 0)}+{selectedDetailDigimon.spd_bonus ?? 0}</p>
+                  </div>
+                </div>
+                
+                <h4 className="text-lg font-semibold mb-3">Evolution Options</h4>
+                {evolutionData[selectedDetailDigimon.digimon_id]?.length > 0 ? (
+                  <div className="grid grid-cols-2 gap-2">
+                    {evolutionData[selectedDetailDigimon.digimon_id].map((option) => {
+                      const meetsLevelRequirement = selectedDetailDigimon.current_level >= option.level_required;
+                      const discovered = isDiscovered(option.digimon_id);
+                      
+                      return (
+                        <div 
+                          key={option.id}
+                          className={`border rounded-lg p-2 ${
+                            meetsLevelRequirement 
+                              ? "border-primary-300 bg-primary-50" 
+                              : "border-gray-300 bg-gray-50 opacity-70"
+                          }`}
+                        >
+                          <div className="flex items-center">
+                            <div className="w-10 h-10 mr-2 flex items-center justify-center">
+                              {discovered ? (
+                                <img 
+                                  src={option.sprite_url} 
+                                  alt={option.name}
+                                  style={{ imageRendering: "pixelated" }}
+                                />
+                              ) : (
+                                <div className="w-10 h-10 flex items-center justify-center">
+                                  <img 
+                                    src={option.sprite_url} 
+                                    alt="Unknown Digimon"
+                                    style={{ imageRendering: "pixelated" }} 
+                                    className="brightness-0 opacity-70"
+                                  />
+                                </div>
+                              )}
+                            </div>
+                            <div>
+                              <p className="font-medium text-sm">
+                                {discovered ? option.name : "???"}
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                {discovered ? option.stage : "Unknown"} (Lv. {option.level_required})
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <p className="text-gray-600">No evolution options available.</p>
+                )}
+                
+                <div className="mt-6 flex justify-end space-x-3">
+                  {/* Action buttons */}
+                  {!selectedDetailDigimon.is_active && (
+                    <button
+                      onClick={() => {
+                        handleSwitchDigimon(selectedDetailDigimon.id);
+                        handleCloseDetailModal();
+                      }}
+                      className="btn-primary"
+                    >
+                      Set Active
+                    </button>
+                  )}
+                  
+                  {evolutionData[selectedDetailDigimon.digimon_id]?.some(
+                    option => selectedDetailDigimon.current_level >= option.level_required
+                  ) && (
+                    <button
+                      onClick={() => {
+                        handleShowEvolutionModal(selectedDetailDigimon.id);
+                        handleCloseDetailModal();
+                      }}
+                      className="btn-secondary"
+                    >
+                      Digivolve
+                    </button>
+                  )}
+                  
+                  {!selectedDetailDigimon.is_active && (
+                    <button
+                      onClick={() => {
+                        handleReleaseClick(selectedDetailDigimon.id);
+                        handleCloseDetailModal();
+                      }}
+                      className="btn-outline text-red-600 border-red-300 hover:bg-red-50"
+                    >
+                      Release
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="card mb-6">
         <h1 className="text-2xl font-bold mb-4">Your Digimon</h1>
         <p className="text-gray-600 mb-6">
@@ -391,18 +697,16 @@ const UserDigimonPage = () => {
           {[...allUserDigimon]
             .sort((a, b) => b.current_level - a.current_level)
             .map((digimon) => {
-            const isActive = digimon.id === userDigimon?.id;
-            const hasEvolutions = evolutionData[digimon.digimon_id]?.length > 0;
-            const availableEvolutions = evolutionData[digimon.digimon_id]?.filter(
-              option => digimon.current_level >= option.level_required
-            ) || [];
-            const canEvolve = availableEvolutions.length > 0;
             
             return (
-              <div key={digimon.id} className="border rounded-lg overflow-hidden bg-white">
+              <div 
+                key={digimon.id} 
+                className="border rounded-lg overflow-hidden bg-white hover:shadow-md transition-shadow cursor-pointer"
+                onClick={() => handleShowDetailModal(digimon.id)}
+              >
                 <div className="p-4">
                   <div className="flex flex-col mb-2">
-                    {/* Name editing section */}
+                    {/* Name section */}
                     <div className="flex items-center justify-between">
                       {editingName === digimon.id ? (
                         <div className="flex items-center w-full">
@@ -415,10 +719,14 @@ const UserDigimonPage = () => {
                             maxLength={20}
                             placeholder={digimon.digimon?.name || "Enter nickname"}
                             autoFocus
+                            onClick={(e) => e.stopPropagation()}
                           />
                           <div className="flex-shrink-0 flex ml-1">
                             <button
-                              onClick={() => handleSaveName(digimon.id)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleSaveName(digimon.id);
+                              }}
                               className="p-1 bg-green-100 text-green-600 hover:bg-green-200 rounded-md"
                               title="Save name (or press Enter)"
                             >
@@ -427,7 +735,10 @@ const UserDigimonPage = () => {
                               </svg>
                             </button>
                             <button
-                              onClick={handleCancelEdit}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleCancelEdit();
+                              }}
                               className="p-1 bg-red-100 text-red-600 hover:bg-red-200 rounded-md ml-1"
                               title="Cancel (or press Escape)"
                             >
@@ -443,7 +754,10 @@ const UserDigimonPage = () => {
                             {digimon.name || digimon.digimon?.name}
                           </h3>
                           <button
-                            onClick={() => handleEditName(digimon.id, digimon.name, digimon.digimon?.name || "")}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEditName(digimon.id, digimon.name, digimon.digimon?.name || "");
+                            }}
                             className="p-1 text-gray-500 hover:text-gray-700"
                             title="Edit name"
                           >
@@ -455,7 +769,7 @@ const UserDigimonPage = () => {
                       )}
                     </div>
                     
-                    {/* Tags row - moved below the name */}
+                    {/* Tags row */}
                     <div className="flex space-x-2 mt-1">
                       <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
                         Lv. {digimon.current_level}
@@ -465,25 +779,28 @@ const UserDigimonPage = () => {
                           Team
                         </span>
                       )}
+                      {digimon.is_active && (
+                        <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
+                          Active
+                        </span>
+                      )}
                     </div>
                   </div>
                   
-                  <div className="flex items-center justify-center my-4">
-                    <motion.div
-                      animate={{y: [0, -5, 0] }}
-                      transition={{ repeat: Infinity, duration: 2 }}
-                      className="w-24 h-24 flex items-center justify-center"
-                    >
+                  {/* Add back the sprite */}
+                  <div className="flex items-center justify-center my-2">
+                    <div className="w-16 h-16 flex items-center justify-center">
                       <img 
                         src={digimon.digimon?.sprite_url} 
                         alt={digimon.name || digimon.digimon?.name} 
-                        className="scale-[2]"
+                        className="scale-[1.5]"
                         style={{ imageRendering: "pixelated" }}
                       />
-                    </motion.div>
+                    </div>
                   </div>
                   
-                  <div className="space-y-2 mb-4">
+                  {/* Simplified status bars */}
+                  <div className="space-y-2 mb-3">
                     <div>
                       <div className="flex justify-between text-xs mb-1">
                         <span>HP</span>
@@ -496,87 +813,33 @@ const UserDigimonPage = () => {
                         ></div>
                       </div>
                     </div>
-                    
-                    <div>
-                      <div className="flex justify-between text-xs mb-1">
-                        <span>XP</span>
-                        <span>{digimon.experience_points}/{digimon.current_level * 20}</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div 
-                          className="bg-blue-600 h-2 rounded-full" 
-                          style={{ 
-                            width: `${Math.min(100, (digimon.experience_points / (digimon.current_level * 20)) * 100)}%` 
-                          }}
-                        ></div>
-                      </div>
-                    </div>
                   </div>
                   
-                  <div className="flex flex-col space-y-2">
-                    <div className="flex space-x-2">
-                      {!isActive && (
-                        <button
-                          onClick={() => handleSwitchDigimon(digimon.id)}
-                          disabled={switchingDigimon}
-                          className="btn-primary text-sm flex-1 flex items-center justify-center"
-                        >
-                          {switchingDigimon ? (
-                            <span className="flex items-center">
-                              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                              </svg>
-                              Switching...
-                            </span>
-                          ) : (
-                            <span className="flex items-center">
-                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                              </svg>
-                              Make Active
-                            </span>
-                          )}
-                        </button>
-                      )}
-                      
-                      {isActive && (
-                        <div className="text-center text-md text-primary-600 font-medium flex-1 flex items-center justify-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                          Currently Active
-                        </div>
-                      )}
-                      
-                      {/* Release button as an icon button for non-active Digimon */}
-                      {!isActive && (
-                        <button
-                          onClick={() => handleReleaseClick(digimon.id)}
-                          className="p-2 border border-red-300 text-red-600 rounded-md hover:bg-red-50"
-                          title="Release Digimon"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                          </svg>
-                        </button>
-                      )}
-                    </div>
+                  {/* Age display */}
+                  <div className="text-xs text-gray-500 text-center mb-2">
+                    Age: {calculateAgeDays(digimon.created_at)} days
+                  </div>
+                  
+                  {/* Simplified action buttons */}
+                  <div className="flex justify-between">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent card click
+                        digimon.is_active ? null : handleSwitchDigimon(digimon.id);
+                      }}
+                      className={`text-sm px-3 py-1 rounded ${
+                        digimon.is_active 
+                          ? "bg-gray-100 text-gray-400 cursor-default" 
+                          : "bg-primary-100 text-primary-700 hover:bg-primary-200"
+                      }`}
+                      disabled={digimon.is_active || switchingDigimon}
+                    >
+                      {digimon.is_active ? "Active" : switchingDigimon ? "Setting..." : "Set Active"}
+                    </button>
                     
-                    {/* Evolution button */}
-                    {hasEvolutions && (
-                      <button
-                        onClick={() => handleShowEvolutionModal(digimon.id)}
-                        className={`text-sm w-full ${
-                          canEvolve ? "btn-secondary" : "btn-outline"
-                        } flex items-center justify-center`}
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                        </svg>
-                        {canEvolve ? "Digivolve" : "Evolutions"}
-                      </button>
-                    )}
+                    <div className="text-sm text-gray-500">
+                      Click for details
+                    </div>
                   </div>
                 </div>
               </div>

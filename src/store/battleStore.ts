@@ -637,42 +637,48 @@ export const useBattleStore = create<BattleState>((set, get) => ({
       function simulateTeamBattle(userTeamData: any, opponentTeamData: any) {
         function modifyStats(digimon: any) {
           return {
-            hp: statModifier(
-              digimon.current_level,
-              digimon.digimon.hp_level1,
-              digimon.digimon.hp,
-              digimon.digimon.hp_level99
-            ),
-            atk: statModifier(
-              digimon.current_level,
-              digimon.digimon.atk_level1,
-              digimon.digimon.atk,
-              digimon.digimon.atk_level99
-            ),
-            def: statModifier(
-              digimon.current_level,
-              digimon.digimon.def_level1,
-              digimon.digimon.def,
-              digimon.digimon.def_level99
-            ),
-            sp: statModifier(
-              digimon.current_level,
-              digimon.digimon.sp_level1,
-              digimon.digimon.sp,
-              digimon.digimon.sp_level99
-            ),
-            int: statModifier(
-              digimon.current_level,
-              digimon.digimon.int_level1,
-              digimon.digimon.int,
-              digimon.digimon.int_level99
-            ),
-            spd: statModifier(
-              digimon.current_level,
-              digimon.digimon.spd_level1,
-              digimon.digimon.spd,
-              digimon.digimon.spd_level99
-            ),
+            hp:
+              statModifier(
+                digimon.current_level,
+                digimon.digimon.hp_level1,
+                digimon.digimon.hp,
+                digimon.digimon.hp_level99
+              ) + (digimon.hp_bonus || 0),
+            atk:
+              statModifier(
+                digimon.current_level,
+                digimon.digimon.atk_level1,
+                digimon.digimon.atk,
+                digimon.digimon.atk_level99
+              ) + (digimon.atk_bonus || 0),
+            def:
+              statModifier(
+                digimon.current_level,
+                digimon.digimon.def_level1,
+                digimon.digimon.def,
+                digimon.digimon.def_level99
+              ) + (digimon.def_bonus || 0),
+            sp:
+              statModifier(
+                digimon.current_level,
+                digimon.digimon.sp_level1,
+                digimon.digimon.sp,
+                digimon.digimon.sp_level99
+              ) + (digimon.sp_bonus || 0),
+            int:
+              statModifier(
+                digimon.current_level,
+                digimon.digimon.int_level1,
+                digimon.digimon.int,
+                digimon.digimon.int_level99
+              ) + (digimon.int_bonus || 0),
+            spd:
+              statModifier(
+                digimon.current_level,
+                digimon.digimon.spd_level1,
+                digimon.digimon.spd,
+                digimon.digimon.spd_level99
+              ) + (digimon.spd_bonus || 0),
           };
         }
 

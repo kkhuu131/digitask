@@ -53,14 +53,15 @@ const mockUser = {
 
 const mockTasks = [
   {
-    id: "task1",
+    id: "1",
     user_id: "user1",
-    description: "Task 1",
+    description: "Test task 1",
     is_daily: false,
     due_date: null,
     is_completed: false,
-    created_at: "2023-01-01T00:00:00Z",
+    created_at: new Date().toISOString(),
     completed_at: null,
+    category: null,
   },
 ];
 
@@ -256,14 +257,15 @@ describe("useTaskStore", () => {
 
   it("should check overdue tasks", async () => {
     const overdueTask = {
-      id: "task1",
+      id: "overdue-task",
       user_id: "user1",
-      description: "Task 1",
+      description: "Overdue task",
       is_daily: false,
-      due_date: "2023-01-01T00:00:00Z",
+      due_date: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
       is_completed: false,
-      created_at: "2023-01-01T00:00:00Z",
+      created_at: new Date().toISOString(),
       completed_at: null,
+      category: null,
     };
 
     // Set initial state
@@ -291,20 +293,27 @@ describe("useTaskStore", () => {
 
   it("should reset daily tasks", async () => {
     const dailyTask = {
-      id: "task1",
+      id: "daily-task",
       user_id: "user1",
-      description: "Daily Task",
+      description: "Daily task",
       is_daily: true,
       due_date: null,
-      is_completed: true,
-      created_at: "2023-01-01T00:00:00Z",
-      completed_at: "2023-01-01T00:00:00Z",
+      is_completed: false,
+      created_at: new Date().toISOString(),
+      completed_at: null,
+      category: null,
     };
 
     const resetTask = {
-      ...dailyTask,
-      is_completed: false,
-      completed_at: null,
+      id: "reset-task",
+      user_id: "user1",
+      description: "Daily task to reset",
+      is_daily: true,
+      due_date: null,
+      is_completed: true,
+      created_at: new Date().toISOString(),
+      completed_at: new Date().toISOString(),
+      category: null,
     };
 
     // Set initial state

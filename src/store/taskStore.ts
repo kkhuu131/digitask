@@ -2,6 +2,8 @@ import { create } from "zustand";
 import { supabase } from "../lib/supabase";
 import { useDigimonStore } from "./petStore";
 import { DAILY_QUOTA_MILESTONE, useMilestoneStore } from "./milestoneStore";
+import { useNotificationStore } from "./notificationStore";
+import { StatCategory, getStatBoostValue } from "../utils/categoryDetection";
 
 export interface Task {
   id: string;
@@ -12,6 +14,7 @@ export interface Task {
   is_completed: boolean;
   created_at: string;
   completed_at: string | null;
+  category: StatCategory | null;
 }
 
 interface DailyQuota {
@@ -92,43 +95,42 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     }
   },
 
-  createTask: async (task) => {
+  createTask: async (task: Partial<Task>) => {
     try {
       set({ loading: true, error: null });
 
-      const { data: user } = await supabase.auth.getUser();
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) {
+        set({ loading: false, error: "User not authenticated" });
+        return;
+      }
 
-      if (!user.user) throw new Error("User not authenticated");
-
-      const { data, error } = await supabase
+      // Create the task
+      const { data: newTask, error } = await supabase
         .from("tasks")
         .insert({
-          ...task,
-          user_id: user.user.id,
+          user_id: userData.user.id,
+          description: task.description || "",
+          is_daily: task.is_daily || false,
+          due_date: task.due_date || null,
+          category: task.category || null,
         })
-        .select()
+        .select("*")
         .single();
 
       if (error) throw error;
 
+      // Update local state
       set((state) => ({
-        tasks: [...state.tasks, data],
+        tasks: [...state.tasks, newTask as Task],
         loading: false,
       }));
-
-      // Check if the newly created task is already overdue
-      if (
-        !data.is_daily &&
-        data.due_date &&
-        new Date(data.due_date) < new Date()
-      ) {
-        console.log(
-          "Newly created task is already overdue, checking penalties..."
-        );
-        await get().checkOverdueTasks();
-      }
     } catch (error) {
-      set({ error: (error as Error).message, loading: false });
+      console.error("Error creating task:", error);
+      set({
+        error: (error as Error).message,
+        loading: false,
+      });
     }
   },
 
@@ -171,53 +173,81 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     }
   },
 
-  completeTask: async (taskId) => {
+  completeTask: async (taskId: string) => {
     try {
       set({ loading: true, error: null });
 
       // Find the task in the current state
       const task = get().tasks.find((t) => t.id === taskId);
       if (!task) {
-        throw new Error("Task not found");
+        set({ loading: false, error: "Task not found" });
+        return;
       }
 
       // Update the task in the database
-      const { data: updatedTask, error } = await supabase
+      const { error } = await supabase
         .from("tasks")
         .update({
           is_completed: true,
           completed_at: new Date().toISOString(),
         })
-        .eq("id", taskId)
-        .select()
-        .single();
+        .eq("id", taskId);
 
       if (error) throw error;
 
-      // Update the local state
+      // Update local state
       set((state) => ({
-        tasks: state.tasks.map((t) => (t.id === taskId ? updatedTask : t)),
+        tasks: state.tasks.map((t) =>
+          t.id === taskId
+            ? {
+                ...t,
+                is_completed: true,
+                completed_at: new Date().toISOString(),
+              }
+            : t
+        ),
+        loading: false,
       }));
 
-      // Increment the tasks completed count for milestones
-      await useMilestoneStore.getState().incrementTasksCompleted(1);
+      // Feed the active Digimon
+      await useDigimonStore.getState().feedDigimon(task.is_daily ? 50 : 75);
 
-      // Calculate points based on task type
-      const points = calculateTaskPoints(task);
-
-      // Update Digimon stats
-      await useDigimonStore.getState().feedDigimon(points);
-      await useDigimonStore.getState().checkLevelUp();
-
-      // If it's a daily task, increment the daily quota
-      if (task.is_daily) {
-        await get().fetchDailyQuota();
+      // Increase the corresponding stat if the task has a category
+      if (task.category) {
+        const boostValue = getStatBoostValue(task.is_daily);
+        await useDigimonStore
+          .getState()
+          .increaseStat(task.category, boostValue);
       }
 
-      set({ loading: false });
+      // Check for level up
+      await useDigimonStore.getState().checkLevelUp();
+
+      // Increment tasks completed milestone
+      await useMilestoneStore.getState().incrementTasksCompleted();
+
+      // Show completion notification with stat boost if applicable
+      if (task.category) {
+        const boostValue = getStatBoostValue(task.is_daily);
+        useNotificationStore.getState().addNotification({
+          message: `✅ Completed "${task.description}"!\n→ ${task.category} +${boostValue}!`,
+          type: "success",
+        });
+      } else {
+        useNotificationStore.getState().addNotification({
+          message: `✅ Completed "${task.description}"!`,
+          type: "success",
+        });
+      }
+
+      // Check daily quota
+      await get().checkDailyQuota();
     } catch (error) {
       console.error("Error completing task:", error);
-      set({ error: (error as Error).message, loading: false });
+      set({
+        error: (error as Error).message,
+        loading: false,
+      });
     }
   },
 
@@ -488,9 +518,3 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     return Math.min(1.0 + (streak - 1) * 0.1, 3.0);
   },
 }));
-
-// Move these helper functions to a separate utility file
-const calculateTaskPoints = (task: Task): number => {
-  if (task.is_daily) return 50;
-  return 75;
-};

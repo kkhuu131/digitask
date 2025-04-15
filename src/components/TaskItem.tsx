@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Task } from "../store/taskStore";
+import { categoryIcons } from "../utils/categoryDetection";
 
 interface TaskItemProps {
   task: Task;
@@ -93,13 +94,6 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onComplete, onDelete }) => {
     );
   };
 
-  // Get the appropriate color for the task category label
-  const getCategoryColor = () => {
-    if (task.is_daily) return "bg-blue-100 text-blue-800";
-    if (isTaskOverdue && !task.is_completed) return "bg-red-100 text-red-800";
-    return "bg-gray-100 text-gray-800";
-  };
-
   return (
     <div 
       className="flex items-center p-3 border-b last:border-b-0 hover:bg-gray-50 transition-colors"
@@ -145,11 +139,25 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onComplete, onDelete }) => {
           </button>
         </div>
         
-        <div className="flex items-center mt-1">
-          {/* only show the category if task is daily or overdue */}
-          {(task.is_daily || isTaskOverdue) && (
-            <span className={`text-xs px-2 py-0.5 rounded-full ${getCategoryColor()}`}>
-              {task.is_daily ? "Daily" : isTaskOverdue && !task.is_completed ? "Overdue" : "Task"}
+        <div className="flex items-center mt-1 flex-wrap gap-1">
+          {/* Category tag */}
+          {task.category && (
+            <span className="text-xs px-2 py-0.5 rounded-full bg-purple-100 text-purple-800">
+              {categoryIcons[task.category]} {task.category}
+            </span>
+          )}
+          
+          {/* Task type label */}
+          {task.is_daily && (
+            <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-800">
+              Daily
+            </span>
+          )}
+          
+          {/* Overdue label */}
+          {isTaskOverdue && !task.is_completed && !task.is_daily && (
+            <span className="text-xs px-2 py-0.5 rounded-full bg-red-100 text-red-800">
+              Overdue
             </span>
           )}
           

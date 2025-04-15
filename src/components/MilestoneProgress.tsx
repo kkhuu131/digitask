@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useMilestoneStore, DAILY_QUOTA_MILESTONE, TASKS_COMPLETED_MILESTONE } from "../store/milestoneStore";
 import { useDigimonStore } from "../store/petStore";
 import { useLocation } from "react-router-dom";
@@ -69,12 +69,29 @@ const MilestoneProgress = () => {
   const dailyQuotaPercentage = Math.min(100, (dailyQuotaStreak / DAILY_QUOTA_MILESTONE) * 100);
   const tasksCompletedPercentage = Math.min(100, (tasksCompletedCount / TASKS_COMPLETED_MILESTONE) * 100);
   
+  // Improve the claim button functionality
+  const [isClaimingDigimon, setIsClaimingDigimon] = useState(false);
+
   const handleClaimDigimon = async () => {
-    // Double-check that user can claim before proceeding
-    if (shouldBeAbleToClaimDigimon) {
-      await claimDigimon();
-      // Force refresh milestones after claiming
-      await fetchMilestones();
+    // Prevent multiple clicks
+    if (isClaimingDigimon) return;
+    
+    try {
+      // Double-check that user can claim before proceeding
+      if (shouldBeAbleToClaimDigimon) {
+        setIsClaimingDigimon(true);
+        const success = await claimDigimon();
+        
+        if (success) {
+          // Force refresh milestones and Digimon data after claiming
+          await fetchMilestones();
+          await useDigimonStore.getState().fetchAllUserDigimon();
+        }
+      }
+    } catch (error) {
+      console.error("Error claiming Digimon:", error);
+    } finally {
+      setIsClaimingDigimon(false);
     }
   };
   
@@ -131,14 +148,14 @@ const MilestoneProgress = () => {
         <div className="mt-4">
           <button
             onClick={handleClaimDigimon}
-            disabled={!shouldBeAbleToClaimDigimon || loading}
+            disabled={!shouldBeAbleToClaimDigimon || isClaimingDigimon}
             className={`w-full py-2 px-4 rounded-md text-white font-medium ${
-              shouldBeAbleToClaimDigimon && !loading
+              shouldBeAbleToClaimDigimon && !isClaimingDigimon
                 ? "bg-primary-600 hover:bg-primary-700"
                 : "bg-gray-400 cursor-not-allowed"
             }`}
           >
-            {loading ? "Processing..." : 
+            {isClaimingDigimon ? "Claiming..." : 
              hasMaxDigimon ? "Maximum Digimon Reached (9)" :
              shouldBeAbleToClaimDigimon ? "Claim New Digimon" : "Reach a Milestone to Claim"}
           </button>
