@@ -124,6 +124,27 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
     return discoveredDigimon.includes(digimonId);
   };
   
+  // Add this new function to handle sprite clicks
+  const handleSpriteClick = () => {
+    // Trigger animation
+    setIsStatIncreasing(true);
+    
+    // Random chance (1/5) to show heart
+    if (Math.random() < 0.2) {
+      setShowHeart(true);
+    }
+    
+    // Look left and right sequence
+    setTimeout(() => setLookDirection(-2.5), 200);
+    setTimeout(() => setLookDirection(2.5), 400);
+    
+    // End animations
+    setTimeout(() => {
+      setIsStatIncreasing(false);
+      setShowHeart(false);
+    }, 1000);
+  };
+  
   if (!userDigimon || !digimonData) {
     return <div>Loading Digimon...</div>;
   }
@@ -198,11 +219,12 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
           <motion.img 
             src={digimonData.sprite_url} 
             alt={digimonData.name} 
-            className="w-auto h-auto"
+            className="w-auto h-auto cursor-pointer"
             style={{ 
               imageRendering: "pixelated",
               transform: `scale(${lookDirection}, 2.5)`,
             }}
+            onClick={handleSpriteClick}
             onError={(e) => {
               // Fallback if image doesn't load
               (e.target as HTMLImageElement).src = "/assets/pet/egg.svg";

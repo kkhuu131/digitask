@@ -3,6 +3,7 @@ import { useDigimonStore, EvolutionOption } from "../store/petStore";
 import MilestoneProgress from "../components/MilestoneProgress"
 import { supabase } from "../lib/supabase";
 import statModifier from "../store/battleStore";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface UserDigimon {
   id: string;
@@ -75,6 +76,9 @@ const UserDigimonPage = () => {
   const [editingName, setEditingName] = useState<string | null>(null);
   const [newName, setNewName] = useState<string>("");
   const [selectedDetailDigimon, setSelectedDetailDigimon] = useState<UserDigimon | null>(null);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [showHeart, setShowHeart] = useState(false);
+  const [lookDirection, setLookDirection] = useState(2.5);
 
   useEffect(() => {
     fetchAllUserDigimon();
@@ -303,6 +307,48 @@ const UserDigimonPage = () => {
     return diffDays;
   };
 
+  // Add this function to handle sprite clicks in the modal
+  const handleModalSpriteClick = () => {
+    if (isAnimating) return; // Prevent multiple animations
+    
+    setIsAnimating(true);
+    
+    // Random chance (1/5) to show heart
+    if (Math.random() < 0.2) {
+      setShowHeart(true);
+    }
+    
+    // Look left and right sequence
+    setTimeout(() => setLookDirection(-2.5), 200);
+    setTimeout(() => setLookDirection(2.5), 400);
+    
+    // End animations
+    setTimeout(() => {
+      setIsAnimating(false);
+      setShowHeart(false);
+      setLookDirection(2.5); // Reset direction
+    }, 1000);
+  };
+
+  // Define animation variants
+  const animationVariants = {
+    hop: {
+      y: [0, -10, 0, -7, 0],
+      transition: { duration: 0.8, times: [0, 0.25, 0.5, 0.75, 1] }
+    },
+    idle: { y: 0 }
+  };
+  
+  const heartVariants = {
+    initial: { opacity: 0, scale: 0, y: 0 },
+    animate: { 
+      opacity: [0, 1, 1, 0],
+      scale: [0, 1.2, 1, 0],
+      y: -30,
+      transition: { duration: 1 }
+    }
+  };
+
   if (loading && allUserDigimon.length === 0) {
     return (
       <div className="text-center py-12">
@@ -464,13 +510,34 @@ const UserDigimonPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* Left column - Image and basic info */}
               <div className="flex flex-col items-center">
-                <div className="w-32 h-32 mt-4 mb-8">
-                  <img 
+                <div className="w-32 h-32 mt-4 mb-8 relative">
+                  <motion.img 
                     src={selectedDetailDigimon.digimon?.sprite_url} 
                     alt={selectedDetailDigimon.name || selectedDetailDigimon.digimon?.name} 
-                    className="w-full h-full object-contain"
-                    style={{ imageRendering: "pixelated" }}
+                    className="w-full h-full object-contain cursor-pointer"
+                    style={{ 
+                      imageRendering: "pixelated",
+                      transform: `scale(${lookDirection}, 2.5)`
+                    }}
+                    animate={isAnimating ? "hop" : "idle"}
+                    variants={animationVariants}
+                    onClick={handleModalSpriteClick}
                   />
+                  
+                  {/* Heart animation */}
+                  <AnimatePresence>
+                    {showHeart && (
+                      <motion.div
+                        className="absolute top-0 left-1/2 transform -translate-x-1/2"
+                        variants={heartVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit={{ opacity: 0 }}
+                      >
+                        <span className="text-3xl">❤️</span>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
                 
                 <div className="text-center mb-4">
