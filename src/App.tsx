@@ -32,7 +32,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   }
   
   if (!user) {
-    return <Navigate to="/landing" />;
+    return <Navigate to="/" />;
   }
   
   return <>{children}</>;
@@ -43,11 +43,11 @@ const PublicRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuthStore();
   
   if (loading) {
-    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+    return <div className="flex items-center justify-center h-screen">Loading...</div>;
   }
   
   if (user) {
-    return <Navigate to="/" />;
+    return <Navigate to="/dashboard" />;
   }
   
   return <>{children}</>;
@@ -322,7 +322,7 @@ function App() {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
         
-        <Route path="/" element={
+        <Route path="/dashboard" element={
           <ProtectedRoute>
             <Layout>
               {appLoading ? (

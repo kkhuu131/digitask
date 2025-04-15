@@ -31,6 +31,10 @@ const Login = () => {
         console.error("Error fetching user data after login:", error);
       }
     }
+    
+    if (useAuthStore.getState().user) {
+      navigate('/dashboard');
+    }
   };
   
   const handleDemoLogin = async () => {
@@ -48,6 +52,10 @@ const Login = () => {
       } catch (error) {
         console.error("Error fetching user data after demo login:", error);
       }
+    }
+    
+    if (useAuthStore.getState().user) {
+      navigate('/dashboard');
     }
   };
   
