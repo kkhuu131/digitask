@@ -36,6 +36,8 @@ export interface Digimon {
   name: string;
   stage: string;
   sprite_url: string;
+  type: string;
+  attribute: string;
   hp: number;
   sp: number;
   atk: number;

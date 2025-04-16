@@ -22,6 +22,7 @@ import ProfileSettings from './pages/ProfileSettings';
 import UserDigimonPage from './pages/UserDigimonPage';
 import Tutorial from './pages/Tutorial';
 import LandingPage from './pages/LandingPage';
+import PatchNotes from './pages/PatchNotes';
 
 // Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -375,6 +376,14 @@ function App() {
           <ProtectedRoute>
             <Layout>
               <Tutorial />
+            </Layout>
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/patch-notes" element={
+          <ProtectedRoute>
+            <Layout>
+              <PatchNotes />
             </Layout>
           </ProtectedRoute>
         } />

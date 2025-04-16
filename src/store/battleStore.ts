@@ -857,9 +857,9 @@ export const useBattleStore = create<BattleState>((set, get) => {
           .eq("user_id", userData.user.id)
           .eq("is_on_team", true);
 
-        if (!userTeam || userTeam.length < 2) {
+        if (!userTeam || userTeam.length < 1) {
           set({
-            error: "You need at least two Digimon on your team",
+            error: "You need at least one Digimon on your team",
             loading: false,
           });
           return;
@@ -867,54 +867,52 @@ export const useBattleStore = create<BattleState>((set, get) => {
 
         // Calculate level range for difficulty tiers
         const teamLevels = userTeam.map((d) => d.current_level);
-        const minLevel = Math.min(...teamLevels);
-        const maxLevel = Math.max(...teamLevels);
+        const avgLevel = Math.floor(
+          teamLevels.reduce((sum, level) => sum + level, 0) / teamLevels.length
+        );
 
         // Create a new array for battle options
         const battleOptions: BattleOption[] = [];
 
         // PERFORMANCE IMPROVEMENT: Get all potential opponents and their teams in one go
-        const { data: potentialOpponents } = await supabase
-          .from("profiles")
-          .select(
-            `
-          id,
-          username,
-          display_name
-        `
-          )
-          .neq("id", userData.user.id)
-          .limit(30);
+        const { data: potentialOpponents } = await supabase.rpc(
+          "get_random_users",
+          { exclude_user_id: userData.user.id }
+        );
+
+        console.log("potentialOpponents", potentialOpponents);
 
         // Prepare all opponent teams in parallel instead of sequentially
         let opponentsWithTeams: OpponentWithTeam[] = [];
         if (potentialOpponents && potentialOpponents.length > 0) {
-          const opponentPromises = potentialOpponents.map(async (opponent) => {
-            const { data: opponentTeam } = await supabase
-              .from("user_digimon")
-              .select(
-                `
+          const opponentPromises = potentialOpponents.map(
+            async (opponent: any) => {
+              const { data: opponentTeam } = await supabase
+                .from("user_digimon")
+                .select(
+                  `
               *,
               digimon:digimon_id (id, name, stage, sprite_url, type, attribute)
             `
-              )
-              .eq("user_id", opponent.id)
-              .order("current_level", { ascending: false })
-              .limit(3);
+                )
+                .eq("user_id", opponent.id)
+                .order("current_level", { ascending: false })
+                .limit(3);
 
-            if (opponentTeam && opponentTeam.length > 0) {
-              const avgLevel =
-                opponentTeam.reduce((sum, d) => sum + d.current_level, 0) /
-                opponentTeam.length;
+              if (opponentTeam && opponentTeam.length > 0) {
+                const avgLevel =
+                  opponentTeam.reduce((sum, d) => sum + d.current_level, 0) /
+                  opponentTeam.length;
 
-              return {
-                ...opponent,
-                team: opponentTeam,
-                avgLevel,
-              };
+                return {
+                  ...opponent,
+                  team: opponentTeam,
+                  avgLevel,
+                };
+              }
+              return null;
             }
-            return null;
-          });
+          );
 
           // Wait for all opponent data to be fetched
           const results = await Promise.all(opponentPromises);
@@ -924,6 +922,14 @@ export const useBattleStore = create<BattleState>((set, get) => {
         // Generate one option for each difficulty level
         const difficulties = ["easy", "medium", "hard"] as const;
 
+        const difficultyMultipliers = {
+          easy: { min: 0.5, max: 0.8 },
+          medium: { min: 0.8, max: 1.1 },
+          hard: { min: 1.1, max: 1.3 },
+        };
+
+        const usedOpponentIds = new Set();
+
         // Process all difficulties in parallel
         await Promise.all(
           difficulties.map(async (difficulty) => {
@@ -932,22 +938,27 @@ export const useBattleStore = create<BattleState>((set, get) => {
             // Find matching opponent for this difficulty
             let matchingOpponent = null;
 
-            if (opponentsWithTeams.length > 0) {
-              if (difficulty === "easy") {
-                matchingOpponent = opponentsWithTeams.find(
-                  (o) => o.avgLevel <= minLevel + 2
-                );
-              } else if (difficulty === "medium") {
-                matchingOpponent = opponentsWithTeams.find(
-                  (o) => o.avgLevel > minLevel + 2 && o.avgLevel <= maxLevel - 3
-                );
-              } else if (difficulty === "hard") {
-                matchingOpponent = opponentsWithTeams.find(
-                  (o) => o.avgLevel > maxLevel - 3
-                );
-              }
+            const { min, max } = difficultyMultipliers[difficulty];
+            const lower = Math.floor(avgLevel * min);
+            const upper = Math.floor(avgLevel * max);
 
+            const possibleOpponents = opponentsWithTeams.filter(
+              (o) =>
+                o.avgLevel >= lower &&
+                o.avgLevel <= upper &&
+                !usedOpponentIds.has(o.id)
+            );
+
+            if (possibleOpponents.length > 0) {
+              matchingOpponent =
+                possibleOpponents[
+                  Math.floor(Math.random() * possibleOpponents.length)
+                ];
+            }
+
+            if (opponentsWithTeams.length > 0) {
               if (matchingOpponent) {
+                usedOpponentIds.add(matchingOpponent.id);
                 battleOptions.push({
                   id: `${difficulty}-${matchingOpponent.id}`,
                   difficulty: difficulty,
@@ -957,7 +968,7 @@ export const useBattleStore = create<BattleState>((set, get) => {
                     display_name: matchingOpponent.display_name,
                     digimon: matchingOpponent.team.map((d: any) => ({
                       id: d.id,
-                      name: d.name,
+                      name: d.name === "" ? d.digimon.name : d.name,
                       current_level: d.current_level,
                       sprite_url: d.digimon.sprite_url,
                       type: d.digimon.type,
@@ -973,23 +984,13 @@ export const useBattleStore = create<BattleState>((set, get) => {
 
             // If no real opponent found, create a wild encounter
             if (!foundRealOpponent) {
-              // Calculate wild level based on difficulty
-              let wildLevel =
-                difficulty === "easy"
-                  ? minLevel
-                  : difficulty === "medium"
-                  ? minLevel + 2
-                  : maxLevel - 3;
+              // Calculate random wild level based on difficulty
 
-              const teamSize = Math.floor(Math.random() * 2) + 2;
+              const { min, max } = difficultyMultipliers[difficulty];
+              const lower = Math.floor(avgLevel * min);
+              const upper = Math.floor(avgLevel * max);
 
-              // Adjust level based on team size - smaller teams get higher levels
-              const levelBonus =
-                teamSize === 2
-                  ? 10 // Team of 2 gets +5 levels
-                  : 0; // Team of 3 gets no bonus
-
-              wildLevel += levelBonus;
+              const teamSize = 3;
 
               const { data: wildDigimon } = await supabase.rpc(
                 "get_random_digimon",
@@ -1012,14 +1013,22 @@ export const useBattleStore = create<BattleState>((set, get) => {
                   team: {
                     user_id: "00000000-0000-0000-0000-000000000000",
                     username: "Wild Digimon",
-                    digimon: randomDigimon.map((d: any) => ({
-                      id: d.digimon_id,
-                      name: d.name,
-                      current_level: wildLevel,
-                      sprite_url: d.sprite_url,
-                      type: d.type,
-                      attribute: d.attribute,
-                    })),
+                    digimon: randomDigimon.map((d: any) => {
+                      // Add level variance between -2 and +2 levels
+                      const adjustedLevel = Math.max(
+                        1,
+                        Math.floor(Math.random() * (upper - lower + 1)) + lower
+                      );
+
+                      return {
+                        id: d.digimon_id,
+                        name: d.name,
+                        current_level: adjustedLevel,
+                        sprite_url: d.sprite_url,
+                        type: d.type,
+                        attribute: d.attribute,
+                      };
+                    }),
                   },
                   isWild: true,
                 });

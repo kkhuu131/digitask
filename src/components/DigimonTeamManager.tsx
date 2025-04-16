@@ -91,21 +91,21 @@ const DigimonCard = ({ digimon, isTeam, onSwap }: DigimonCardProps) => {
     <motion.div
       animate={{ y: [0, -3, 0] }}
       transition={{ repeat: Infinity, duration: 2 }}
-      className="w-20 h-20 flex items-center justify-center"
+      className="w-24 h-24 flex items-center justify-center"
     >
       <img 
         src={digimon.digimon?.sprite_url} 
         alt={digimon.name} 
-        className="scale-[1.5]"
+        className="scale-[1.75]"
         style={{ imageRendering: "pixelated" }}
       />
     </motion.div>
   ) : (
-    <div className="w-16 h-16 flex items-center justify-center">
+    <div className="w-20 h-20 flex items-center justify-center">
       <img 
         src={digimon.digimon?.sprite_url} 
         alt={digimon.name} 
-        className="scale-[1.25]"
+        className="scale-[1.5]"
         style={{ imageRendering: "pixelated" }}
       />
     </div>
@@ -115,15 +115,16 @@ const DigimonCard = ({ digimon, isTeam, onSwap }: DigimonCardProps) => {
     <div 
       ref={(node) => drag(drop(node))}
       className={`
-        ${isTeam ? 'w-32 h-40' : 'w-28 h-36'}
-        border rounded-md flex flex-col items-center justify-start p-2
+        ${isTeam ? 'w-40 h-48' : 'w-36 h-44'}
+        border rounded-md flex flex-col items-center justify-start p-3
         ${isDragging ? 'opacity-50' : 'opacity-100'}
         ${isOver ? 'bg-blue-100 border border-blue-300' : 'bg-white'}
         cursor-move transition-all
       `}
     >
       {content}
-      <p className="text-xs truncate w-full text-center">{digimon.name || digimon.digimon?.name}</p>
+      <p className="text-sm truncate w-full text-center mt-1">{digimon.name || digimon.digimon?.name}</p>
+      <p className="text-xs text-gray-500 mt-1">{digimon.digimon?.type}/{digimon.digimon?.attribute}</p>
       <p className="text-xs text-gray-500 mt-1">Lv.{digimon.current_level}</p>
       
       {/* EXP Bar */}
@@ -156,7 +157,7 @@ const EmptySlot = ({ isTeam, onAddToTeam }: EmptySlotProps) => {
     <div 
       ref={drop}
       className={`
-        ${isTeam ? 'w-32 h-40' : 'w-28 h-36'}
+        ${isTeam ? 'w-40 h-48' : 'w-36 h-44'}
         border-2 border-dashed
         ${isTeam ? 'border-gray-300' : 'border-gray-200'}
         rounded-md flex items-center justify-center
@@ -164,7 +165,7 @@ const EmptySlot = ({ isTeam, onAddToTeam }: EmptySlotProps) => {
         transition-colors duration-200
       `}
     >
-      <p className={`text-xs ${isTeam ? 'text-gray-400' : 'text-gray-300'} ${isOver ? 'text-blue-500 font-medium' : ''}`}>
+      <p className={`text-sm ${isTeam ? 'text-gray-400' : 'text-gray-300'} ${isOver ? 'text-blue-500 font-medium' : ''}`}>
         Drop Here
       </p>
     </div>
@@ -222,7 +223,7 @@ const DigimonTeamManager = () => {
     <DndProvider backend={HTML5Backend}>
       <div className="mb-6">
         <h3 className="text-lg font-semibold mb-2">Team</h3>
-        <div className="flex justify-center space-x-6 mb-6">
+        <div className="flex justify-center space-x-8 mb-8">
           {teamDigimon.map((digimon) => (
             <DigimonCard 
               key={digimon.id} 
@@ -243,7 +244,7 @@ const DigimonTeamManager = () => {
         </div>
         
         <h3 className="text-lg font-semibold mb-2">Reserve</h3>
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-3 gap-4 gap-y-6">
           {reserveDigimon.map((digimon) => (
             <DigimonCard 
               key={digimon.id} 

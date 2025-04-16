@@ -92,9 +92,7 @@ const Layout = ({ children }: LayoutProps) => {
                 >
                   Battle
                 </Link>
-                
-                
-                
+              
               </div>
             )}
             
@@ -162,6 +160,7 @@ const Layout = ({ children }: LayoutProps) => {
               >
                 Tutorial
               </Link>
+              
             </div>
           )}
         </div>
