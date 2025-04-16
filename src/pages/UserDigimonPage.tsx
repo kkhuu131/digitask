@@ -78,7 +78,7 @@ const UserDigimonPage = () => {
   const [selectedDetailDigimon, setSelectedDetailDigimon] = useState<UserDigimon | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
   const [showHeart, setShowHeart] = useState(false);
-  const [lookDirection, setLookDirection] = useState(2.5);
+  const [lookDirection, setLookDirection] = useState(1);
 
   useEffect(() => {
     fetchAllUserDigimon();
@@ -319,14 +319,14 @@ const UserDigimonPage = () => {
     }
     
     // Look left and right sequence
-    setTimeout(() => setLookDirection(-2.5), 200);
-    setTimeout(() => setLookDirection(2.5), 400);
+    setTimeout(() => setLookDirection(-1), 200);
+    setTimeout(() => setLookDirection(1), 400);
     
     // End animations
     setTimeout(() => {
       setIsAnimating(false);
       setShowHeart(false);
-      setLookDirection(2.5); // Reset direction
+      setLookDirection(1); // Reset direction to neutral scale
     }, 1000);
   };
 
@@ -517,7 +517,7 @@ const UserDigimonPage = () => {
                     className="w-full h-full object-contain cursor-pointer"
                     style={{ 
                       imageRendering: "pixelated",
-                      transform: `scale(${lookDirection}, 2.5)`
+                      transform: `scale(${lookDirection}, 1)`
                     }}
                     animate={isAnimating ? "hop" : "idle"}
                     variants={animationVariants}
