@@ -183,10 +183,16 @@ const Battle = () => {
                         }`}
                       >
                         {loading ? "Starting..." : 
-                         dailyBattlesRemaining <= 0 ? "No remaining battles" : "Battle!"}
+                         dailyBattlesRemaining <= 0 ? "No remaining battles" : teamDigimon.length < 2 ? "Need 2+ Team Members" : "Battle!"}
                       </button>
                     </div>
                   ))}
+                </div>
+                
+                {/* Informational footer */}
+                <div className="text-center text-sm text-gray-500 mt-2 border-t pt-3">
+                  <p>Battles reward all your digimon with experience. Battle options refresh after each battle.</p>
+                  <p>Coming soon: Harder battles will reward more experience.</p>
                 </div>
                 
                 {battleOptions.length === 0 && !loading && (
