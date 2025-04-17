@@ -111,10 +111,10 @@ const Battle = () => {
           <div className="card">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold">Choose Your Opponent</h2>
-              
+            
               <div className="flex items-center space-x-4">
                 <div className="text-sm">
-                  <span className="font-medium">Daily Battles:</span> {dailyBattlesRemaining} remaining
+                <span className="font-medium">Daily Battles:</span> {dailyBattlesRemaining} remaining
                 </div>
               </div>
             </div>
@@ -265,13 +265,13 @@ const Battle = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="card">
               <DigimonTeamManager />
-            </div>
-            
-            <div className="card">
-              <h2 className="text-xl font-bold mb-4">Battle History</h2>
-              <BattleHistory 
-                teamBattles={teamBattleHistory} 
-              />
+          </div>
+          
+          <div className="card">
+            <h2 className="text-xl font-bold mb-4">Battle History</h2>
+            <BattleHistory 
+              teamBattles={teamBattleHistory} 
+            />
             </div>
           </div>
         </div>
@@ -280,4 +280,4 @@ const Battle = () => {
   );
 };
 
-export default Battle;
+export default Battle; 

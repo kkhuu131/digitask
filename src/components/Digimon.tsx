@@ -1,6 +1,8 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useDigimonStore, UserDigimon, Digimon as DigimonType, EvolutionOption } from "../store/petStore";
 import { useState, useEffect, useRef } from "react";
+import DigimonDetailModal from "./DigimonDetailModal";
+
 interface DigimonProps {
   userDigimon: UserDigimon;
   digimonData: DigimonType;
@@ -32,6 +34,11 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
   const prevHealthRef = useRef(userDigimon.health);
   const prevHappinessRef = useRef(userDigimon.happiness);
   const prevXPRef = useRef(userDigimon.experience_points);
+  
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  
+  // Add state to track the current digimon data
+  const [currentDigimon, setCurrentDigimon] = useState(userDigimon);
   
   // Update local state when userDigimon changes
   useEffect(() => {
@@ -145,6 +152,24 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
     }, 1000);
   };
   
+  // Handle name changes
+  const handleNameChange = (updatedDigimon: UserDigimon) => {
+    setCurrentDigimon(updatedDigimon);
+    
+    // Also update the display name
+    const displayName = updatedDigimon.name || digimonData.name;
+    const nameElement = document.querySelector('.digimon-name');
+    if (nameElement) {
+      nameElement.textContent = displayName;
+    }
+  };
+  
+  // Add a debug function to log when clicks happen
+  const handleCardClick = () => {
+    console.log("Digimon card clicked");
+    setShowDetailModal(true);
+  };
+  
   if (!userDigimon || !digimonData) {
     return <div>Loading Digimon...</div>;
   }
@@ -174,30 +199,12 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
   };
   
   return (
-    <div className="card flex flex-col items-center">
-      <h2 className="text-2xl font-bold text-center mb-1">{displayName}</h2>
+    <div 
+      className="card flex flex-col items-center hover:shadow-lg transition-shadow cursor-pointer" 
+      onClick={handleCardClick}
+    >
+      <h2 className="text-2xl font-bold text-center mb-1 digimon-name">{displayName}</h2>
       <p className="text-sm text-gray-500 mb-2">{digimonData.name}</p>
-      
-      {/* {totalDigimon > 1 && (
-        <div className="bg-primary-50 border-l-4 border-primary-500 p-3 mb-4">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-primary-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-              </svg>
-            </div>
-            <div className="ml-3">
-              <p className="text-sm text-primary-700">
-                This is your active Digimon. You have {totalDigimon} Digimon total.
-                <br />
-                <Link to="/your-digimon" className="font-medium underline">
-                  View all your Digimon
-                </Link>
-              </p>
-            </div>
-          </div>
-        </div>
-      )} */}
       
       <div className="relative mb-2">
         <motion.div
@@ -215,6 +222,11 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
               : undefined
           }
           className="w-40 h-40 flex items-center justify-center"
+          onClick={(e) => {
+            e.stopPropagation(); // Stop propagation to prevent double handling
+            console.log("Sprite container clicked");
+            setShowDetailModal(true);
+          }}
         >
           <motion.img 
             src={digimonData.sprite_url} 
@@ -224,7 +236,11 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
               imageRendering: "pixelated",
               transform: `scale(${lookDirection}, 2.5)`,
             }}
-            onClick={handleSpriteClick}
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent opening modal when clicking sprite
+              console.log("Sprite image clicked");
+              handleSpriteClick();
+            }}
             onError={(e) => {
               // Fallback if image doesn't load
               (e.target as HTMLImageElement).src = "/assets/pet/egg.svg";
@@ -314,22 +330,22 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
         </div>
       </div>
       
-      <div className="mt-4 text-sm text-gray-500">
+      <div className="mt-4 text-sm text-gray-500 text-center">
+        <p>{(digimonData as any)?.type || "Unknown"}/{(digimonData as any)?.attribute || "Unknown"}</p>
         <p>Stage: {digimonData.stage}</p>
-        <p>Type: {(digimonData as any)?.type || "Unknown"}</p>
-        <p>Attribute: {(digimonData as any)?.attribute || "Unknown"}</p>
       </div>
+
+      {
+        availableEvolutions.length > 0 && (
+          <div className="text-sm text-purple-500 font-bold mt-2">
+            Can Digivolve
+          </div>
+        )
+      }
       
-      {evolutionOptions.length > 0 && (
-        <button
-          onClick={() => setShowEvolutionModal(true)}
-          className={`mt-4 ${
-            availableEvolutions.length > 0 ? "btn-secondary" : "btn-outline"
-          }`}
-        >
-          {availableEvolutions.length > 0 ? "Digivolve" : "View Evolution Options"}
-        </button>
-      )}
+      <div className="text-sm text-gray-500 mt-2">
+        Click for details or evolution options
+      </div>
       
       {/* Evolution Modal */}
       {showEvolutionModal && (
@@ -414,6 +430,23 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
             </div>
           </div>
         </div>
+      )}
+
+      {/* Detail Modal */}
+      {showDetailModal && (
+        <DigimonDetailModal
+          selectedDigimon={currentDigimon}
+          onClose={() => {
+            console.log("Closing detail modal");
+            setShowDetailModal(false);
+          }}
+          onShowEvolution={() => {
+            setShowDetailModal(false);
+            setShowEvolutionModal(true);
+          }}
+          onNameChange={handleNameChange}
+          evolutionData={{ [userDigimon.digimon_id]: evolutionOptions }}
+        />
       )}
     </div>
   );

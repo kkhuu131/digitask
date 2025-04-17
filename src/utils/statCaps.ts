@@ -2,9 +2,9 @@ export function getDailyStatCap(stage: string): number {
   switch (stage.toLowerCase()) {
     case "baby":
     case "in-training":
-      return 3;
+      return 4;
     case "rookie":
-      return 5;
+      return 6;
     case "champion":
       return 8;
     case "ultimate":
@@ -12,6 +12,6 @@ export function getDailyStatCap(stage: string): number {
     case "mega":
       return 12;
     default:
-      return 5;
+      return 6;
   }
 }
