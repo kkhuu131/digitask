@@ -261,6 +261,14 @@ const UserDigimonPage = () => {
       // Refresh the Digimon data
       await fetchAllUserDigimon();
       
+      // Update the selected Digimon in the local state to reflect the name change immediately
+      if (selectedDetailDigimon) {
+        setSelectedDetailDigimon({
+          ...selectedDetailDigimon,
+          name: nameToSave
+        });
+      }
+      
       // Exit edit mode
       setEditingName(null);
     } catch (error) {
