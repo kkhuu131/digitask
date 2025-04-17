@@ -14,7 +14,7 @@ const PatchNotes = () => {
             <div className="flex items-center mb-2">
               <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
               <h3 className="text-lg font-medium ml-2">Battle System Improvements</h3>
-              <span className="text-sm text-gray-500 ml-auto">May 15, 2023</span>
+              <span className="text-sm text-gray-500 ml-auto">April 16, 2025</span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600">
               <li>Added tooltips to show Digimon names, types, and attributes in battle</li>
@@ -28,7 +28,7 @@ const PatchNotes = () => {
           <div className="mb-6">
             <div className="flex items-center mb-2">
               <h3 className="text-lg font-medium">Team Management</h3>
-              <span className="text-sm text-gray-500 ml-auto">May 10, 2023</span>
+              <span className="text-sm text-gray-500 ml-auto">April 12, 2025</span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600">
               <li>Added drag-and-drop team management</li>
@@ -41,7 +41,7 @@ const PatchNotes = () => {
           <div className="mb-6">
             <div className="flex items-center mb-2">
               <h3 className="text-lg font-medium">Initial Beta Release</h3>
-              <span className="text-sm text-gray-500 ml-auto">May 1, 2023</span>
+              <span className="text-sm text-gray-500 ml-auto">April 8, 2025</span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600">
               <li>Launched Digitask beta with core task management</li>
