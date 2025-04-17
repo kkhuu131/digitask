@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { supabase } from "../lib/supabase";
 import { useDigimonStore } from "./petStore";
+import { useTaskStore } from "./taskStore";
 
 function simulateTeamBattle(userTeamData: any, opponentTeamData: any) {
   function modifyStats(digimon: any) {
@@ -66,7 +67,6 @@ function simulateTeamBattle(userTeamData: any, opponentTeamData: any) {
 
   for (const digimon of [...userTeamData, ...opponentTeamData]) {
     const stats = modifyStats(digimon);
-    console.log(digimon);
     Object.assign(digimon.digimon, {
       ...stats,
       current_hp: stats.hp * ((digimon.health || 100) / 100.0),
@@ -426,6 +426,7 @@ export interface TeamBattle {
     };
   }[];
   winner_id: string;
+  xpGain: number;
   created_at: string;
 }
 
@@ -678,8 +679,6 @@ export const useBattleStore = create<BattleState>((set, get) => {
 
         opponentProfile = profile;
       } else {
-        console.log("wild - option.team.digimon", option.team.digimon);
-
         // Create wild Digimon team
         opponentTeamData = await Promise.all(
           option.team.digimon.map(async (d) => {
@@ -711,8 +710,6 @@ export const useBattleStore = create<BattleState>((set, get) => {
           username: "Wild Digimon",
           display_name: "Wild Digimon",
         };
-
-        console.log("computer - opponentTeamData", opponentTeamData);
       }
 
       // Determine winner
@@ -720,6 +717,40 @@ export const useBattleStore = create<BattleState>((set, get) => {
         userTeamData,
         opponentTeamData
       );
+
+      const BASE_XP_GAIN = {
+        easy: 40,
+        medium: 70,
+        hard: 100,
+      };
+
+      const expModifier = 0.05;
+
+      const opponentTeamAverageLevel =
+        opponentTeamData.reduce((sum, d) => sum + d.current_level, 0) /
+        opponentTeamData.length;
+
+      const userTeamAverageLevel =
+        userTeamData.reduce((sum, d) => sum + d.current_level, 0) /
+        userTeamData.length;
+
+      let xpGain =
+        BASE_XP_GAIN[option.difficulty] *
+        (1 + expModifier * (opponentTeamAverageLevel - userTeamAverageLevel));
+
+      if (winnerId !== userTeamData[0].user_id) xpGain *= 0.12;
+
+      xpGain = Math.max(xpGain, 10);
+      xpGain = Math.floor(xpGain);
+
+      // Get the XP multiplier from taskStore
+      const expMultiplier = useTaskStore.getState().getExpMultiplier();
+      xpGain = Math.round(xpGain * expMultiplier);
+
+      // console.log("xpGain", xpGain);
+
+      // Apply the XP gain to all Digimon
+      await useDigimonStore.getState().feedAllDigimon(xpGain);
 
       const simulatedTeamBattle = {
         id: crypto.randomUUID ? crypto.randomUUID() : "temp-id-" + Date.now(),
@@ -764,6 +795,7 @@ export const useBattleStore = create<BattleState>((set, get) => {
         })),
         turns,
         winner_id: winnerId,
+        xpGain: xpGain,
       };
 
       const { error: TeamBattleError } = await supabase
@@ -779,14 +811,6 @@ export const useBattleStore = create<BattleState>((set, get) => {
         });
 
       if (TeamBattleError) throw TeamBattleError;
-
-      let xpGain = 10;
-
-      if (winnerId === userTeamData[0].user_id) {
-        xpGain += 20;
-      }
-
-      await useDigimonStore.getState().feedAllDigimon(xpGain);
 
       set({
         currentTeamBattle: simulatedTeamBattle as TeamBattle,
@@ -1311,6 +1335,7 @@ export const useBattleStore = create<BattleState>((set, get) => {
             })),
             turns,
             winner_id: winnerId,
+            xpGain: 0,
           };
 
           const { error: TeamBattleError } = await supabase
@@ -1379,8 +1404,6 @@ export const useBattleStore = create<BattleState>((set, get) => {
             .addDiscoveredDigimon(digimon.digimon_id);
         }
 
-        console.log("opponentTeamData", opponentTeamData);
-
         // Determine winner
         const { winnerId, turns } = simulateTeamBattle(
           userTeamData,
@@ -1430,6 +1453,7 @@ export const useBattleStore = create<BattleState>((set, get) => {
           })),
           turns,
           winner_id: winnerId,
+          xpGain: 0,
         };
 
         const { error: TeamBattleError } = await supabase

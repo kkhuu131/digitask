@@ -864,12 +864,35 @@ const UserDigimonPage = () => {
                   {/* Add back the sprite */}
                   <div className="flex items-center justify-center my-2">
                     <div className="w-16 h-16 flex items-center justify-center">
-                      <img 
-                        src={digimon.digimon?.sprite_url} 
-                        alt={digimon.name || digimon.digimon?.name} 
-                        className="scale-[1.5]"
-                        style={{ imageRendering: "pixelated" }}
-                      />
+                      {/* Check if Digimon can evolve */}
+                      {evolutionData[digimon.digimon_id]?.some(
+                        option => digimon.current_level >= option.level_required
+                      ) ? (
+                        // If it can evolve, use motion.img with hopping animation
+                        <motion.img 
+                          src={digimon.digimon?.sprite_url} 
+                          alt={digimon.name || digimon.digimon?.name} 
+                          className="scale-[1.5]"
+                          style={{ imageRendering: "pixelated", scale: "1.5" }}
+                          animate={{
+                            y: [0, -5, 0, -3, 0, -5, 0],
+                          }}
+                          transition={{
+                            duration: 1,
+                            repeat: Infinity,
+                            repeatType: "loop",
+                            repeatDelay: 1,
+                          }}
+                        />
+                      ) : (
+                        // If it can't evolve, use regular img
+                        <img 
+                          src={digimon.digimon?.sprite_url} 
+                          alt={digimon.name || digimon.digimon?.name} 
+                          className="scale-[1.5]"
+                          style={{ imageRendering: "pixelated" }}
+                        />
+                      )}
                     </div>
                   </div>
                   

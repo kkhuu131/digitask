@@ -86,8 +86,6 @@ const Battle = () => {
     setSelectedOption(null);
   };
 
-  console.log(battleOptions);
-
   if (!userDigimon || !digimonData) {
     return (
       <div className="text-center py-12">

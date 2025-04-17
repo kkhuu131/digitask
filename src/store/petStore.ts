@@ -1141,8 +1141,6 @@ export const useDigimonStore = create<PetState>((set, get) => ({
     try {
       set({ loading: true, error: null });
 
-      console.log("Feeding all Digimon");
-
       const { allUserDigimon } = get();
       if (allUserDigimon.length === 0) {
         set({ loading: false });
@@ -1156,18 +1154,10 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         return;
       }
 
-      // Get the XP multiplier from taskStore
-      const expMultiplier = useTaskStore.getState().getExpMultiplier();
-
-      // Apply the multiplier to the task points
-      const multipliedPoints = Math.round(taskPoints * expMultiplier);
-
       // Update all Digimon in the database
       const updates = allUserDigimon.map(async (digimon) => {
         // Calculate new stats
-        const newXP = digimon.experience_points + multipliedPoints;
-
-        console.log(`Feeding Digimon ${digimon.id} with ${newXP} XP`);
+        const newXP = digimon.experience_points + taskPoints;
 
         // Update the Digimon in the database
         const { error } = await supabase
