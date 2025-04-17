@@ -19,8 +19,11 @@ const StatProgressMeter: React.FC = () => {
   
   return (
     <div>
+      <h3 className="text-lg font-semibold mb-2">Stats Gained Today</h3>
       <div className="flex justify-between text-sm mb-1">
-        <h3 className="text-lg font-semibold">Stats gained today</h3>
+        <div className="text-sm mb-1">
+          {userDigimon.name || userDigimon.digimon.name}
+        </div>
         <span>{current}/{cap}</span>
       </div>
       <div className="w-full bg-gray-200 rounded-full h-2.5">
@@ -29,6 +32,9 @@ const StatProgressMeter: React.FC = () => {
           style={{ width: `${percentage}%` }}
         ></div>
       </div>
+      <div className="text-xs text-gray-500 mt-2">
+          This is per Digimon and dependent on their stage.
+        </div>
     </div>
   );
 };

@@ -676,10 +676,16 @@ const UserDigimonPage = () => {
               
               {/* Right column - Stats and evolution */}
               <div>
-                <h4 className="text-lg font-semibold mb-3">Stats</h4>
+                <h4 className="text-lg font-semibold">Stats</h4>
                 <div className="grid grid-cols-2 gap-3 mb-6">
                   <div className="bg-gray-50 p-2 rounded">
-                    <span className="text-sm font-medium">HP</span>
+                    <span className="relative group cursor-help text-sm font-medium">
+                      {"HP"}
+                      {/* Stat tooltip */}
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 p-2 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 w-56">
+                      <div className="">HP represents the Digimon's health and determines how much damage it can take before fainting.</div>
+                      </div>
+                    </span>
                     <p className="text-lg">
                       {statModifier(
                         selectedDetailDigimon.current_level,
@@ -690,23 +696,53 @@ const UserDigimonPage = () => {
                     </p>
                   </div>
                   <div className="bg-gray-50 p-2 rounded">
-                    <span className="text-sm font-medium">SP</span>
+                  <span className="relative group cursor-help text-sm font-medium">
+                      {"SP"}
+                      {/* Stat tooltip */}
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 p-2 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 w-56">
+                      <div className="">SP represents the Digimon's critical damage multiplier.</div>
+                      </div>
+                    </span>
                     <p className="text-lg">{statModifier(selectedDetailDigimon.current_level, selectedDetailDigimon.digimon?.sp_level1 ?? 0, selectedDetailDigimon.digimon?.sp ?? 0, selectedDetailDigimon.digimon?.sp_level99 ?? 0)}+{selectedDetailDigimon.sp_bonus ?? 0}</p>
                   </div>
                   <div className="bg-gray-50 p-2 rounded">
-                    <span className="text-sm font-medium">ATK</span>
+                    <span className="relative group cursor-help text-sm font-medium">
+                      {"ATK"}
+                      {/* Stat tooltip */}
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 p-2 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 w-56">
+                      <div className="">ATK represents the Digimon's physical attack power.</div>
+                      </div>
+                    </span>
                     <p className="text-lg">{statModifier(selectedDetailDigimon.current_level, selectedDetailDigimon.digimon?.atk_level1 ?? 0, selectedDetailDigimon.digimon?.atk ?? 0, selectedDetailDigimon.digimon?.atk_level99 ?? 0)}+{selectedDetailDigimon.atk_bonus ?? 0}</p>
                   </div>
                   <div className="bg-gray-50 p-2 rounded">
-                    <span className="text-sm font-medium">DEF</span>
+                    <span className="relative group cursor-help text-sm font-medium">
+                      {"DEF"}
+                      {/* Stat tooltip */}
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 p-2 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 w-56">
+                      <div className="">DEF represents the Digimon's physical defense.</div>
+                      </div>
+                    </span>
                     <p className="text-lg">{statModifier(selectedDetailDigimon.current_level, selectedDetailDigimon.digimon?.def_level1 ?? 0, selectedDetailDigimon.digimon?.def ?? 0, selectedDetailDigimon.digimon?.def_level99 ?? 0)}+{selectedDetailDigimon.def_bonus ?? 0}</p>
                   </div>
                   <div className="bg-gray-50 p-2 rounded">
-                    <span className="text-sm font-medium">INT</span>
+                    <span className="relative group cursor-help text-sm font-medium">
+                      {"INT"}
+                      {/* Stat tooltip */}
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 p-2 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 w-56">
+                      <div className="">INT represents the Digimon's magical attack power and magical defense.</div>
+                      </div>
+                    </span>
                     <p className="text-lg">{statModifier(selectedDetailDigimon.current_level, selectedDetailDigimon.digimon?.int_level1 ?? 0, selectedDetailDigimon.digimon?.int ?? 0, selectedDetailDigimon.digimon?.int_level99 ?? 0)}+{selectedDetailDigimon.int_bonus ?? 0}</p>
                   </div>
                   <div className="bg-gray-50 p-2 rounded">
-                    <span className="text-sm font-medium">SPD</span>
+                    <span className="relative group cursor-help text-sm font-medium">
+                      {"SPD"}
+                      {/* Stat tooltip */}
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 p-2 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 w-56">
+                      <div className="">SPD represents the Digimon's speed and determines turn order.</div>
+                      </div>
+                    </span>
                     <p className="text-lg">{statModifier(selectedDetailDigimon.current_level, selectedDetailDigimon.digimon?.spd_level1 ?? 0, selectedDetailDigimon.digimon?.spd ?? 0, selectedDetailDigimon.digimon?.spd_level99 ?? 0)}+{selectedDetailDigimon.spd_bonus ?? 0}</p>
                   </div>
                 </div>

@@ -83,9 +83,6 @@ const Dashboard: React.FC = () => {
           evolutionOptions={evolutionOptions} 
         />
         <div className="card my-6">
-          <StatProgressMeter />
-        </div>
-        <div className="card my-6">
           <div className="flex justify-between items-center mb-2">
             <h3 className="text-lg font-semibold">Daily Quota</h3>
             {streak > 0 && (
@@ -118,6 +115,10 @@ const Dashboard: React.FC = () => {
           <p className="text-xs text-gray-500 mt-2">
             Complete at least {DAILY_QUOTA_REQUIREMENT} tasks daily to keep your Digimon happy and healthy.
           </p>
+        </div>
+
+        <div className="card my-6">
+          <StatProgressMeter />
         </div>
       </div>
       

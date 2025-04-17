@@ -116,8 +116,14 @@ function simulateTeamBattle(userTeamData: any, opponentTeamData: any) {
 
       const target = targets[Math.floor(Math.random() * targets.length)];
 
-      const attackPower = Math.max(attacker.atk, attacker.int);
-      const defense = target.digimon.def;
+      let attackPower = 1;
+
+      if (attacker.atk >= attacker.int) {
+        attackPower = attacker.atk / target.digimon.def;
+      } else {
+        attackPower = attacker.int / target.digimon.int;
+      }
+
       const sp = target.digimon.sp;
 
       const damageMultiplier = 0.8 + Math.random() * 0.4;
@@ -139,7 +145,7 @@ function simulateTeamBattle(userTeamData: any, opponentTeamData: any) {
         : Math.max(
             1,
             Math.round(
-              (attackPower / (attackPower + defense / 2)) *
+              attackPower *
                 baseDamage *
                 damageMultiplier *
                 (isCriticalHit ? calculateCritMultiplier(sp) : 1) *
@@ -371,10 +377,10 @@ function calculateCritMultiplier(SP: number) {
   return critMultiplier;
 }
 
-const baseDamage = 250;
+const baseDamage = 150;
 const missChance = 0.07;
 const criticalHitChance = 0.125;
-const baseCritMultiplier = 1.3;
+const baseCritMultiplier = 1.25;
 
 export interface TeamBattle {
   id: string;

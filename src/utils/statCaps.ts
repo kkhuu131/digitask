@@ -2,16 +2,16 @@ export function getDailyStatCap(stage: string): number {
   switch (stage.toLowerCase()) {
     case "baby":
     case "in-training":
-      return 5;
+      return 3;
     case "rookie":
-      return 8;
+      return 5;
     case "champion":
-      return 12;
+      return 8;
     case "ultimate":
-      return 15;
+      return 10;
     case "mega":
-      return 20;
+      return 12;
     default:
-      return 8; // Default to rookie cap if stage is unknown
+      return 5;
   }
 }
