@@ -249,6 +249,11 @@ function App() {
     initializeApp();
   }, []);
   
+  // Initialize the daily stat gains
+  useEffect(() => {
+    useDigimonStore.getState().fetchUserDailyStatGains();
+  }, []);
+  
   // Show a loading indicator while the app is initializing
   if (appLoading || authLoading) {
     return (

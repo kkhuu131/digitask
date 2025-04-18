@@ -4,6 +4,7 @@ import MilestoneProgress from "../components/MilestoneProgress"
 import { supabase } from "../lib/supabase";
 import DigimonDetailModal from "../components/DigimonDetailModal";
 import { motion } from "framer-motion";
+import { useNotificationStore } from "../store/notificationStore";
 
 const UserDigimonPage = () => {
   const { 
@@ -127,24 +128,33 @@ const UserDigimonPage = () => {
     setEvolutionError(null);
   };
 
-  const handleEvolve = async (digimonId: string, toDigimonId: number) => {
+  const handleEvolution = async (toDigimonId: number) => {
     try {
       setEvolutionError(null);
       setEvolvingDigimon(true);
       
-      // Directly evolve the Digimon without making it active
-      await evolveDigimon(toDigimonId, digimonId);
+      // Call the evolve function from the store
+      await evolveDigimon(toDigimonId, showEvolutionModal || undefined);
       
-      // After evolution, explicitly refresh the data to update the UI
-      await fetchAllUserDigimon();
-      
-      // Fetch evolution paths for the newly evolved Digimon
+      // Fetch new evolution options for the evolved Digimon
       await fetchEvolutionPathsForDigimon(toDigimonId);
       
-      setEvolvingDigimon(false);
+      // Refresh all user Digimon data
+      await fetchAllUserDigimon();
+      
+      // Close both modals after successful evolution
       setShowEvolutionModal(null);
+      setSelectedDetailDigimon(null);
+      
+      // Show success notification
+      useNotificationStore.getState().addNotification({
+        message: `Your Digimon has evolved successfully!`,
+        type: "success"
+      });
     } catch (error) {
+      console.error("Evolution error:", error);
       setEvolutionError((error as Error).message);
+    } finally {
       setEvolvingDigimon(false);
     }
   };
@@ -220,6 +230,25 @@ const UserDigimonPage = () => {
     return diffDays;
   };
 
+  // Add this useEffect to listen for digimon-evolved events
+  useEffect(() => {
+    const handleDigimonEvolved = (event: CustomEvent) => {
+      if (event.detail && event.detail.newDigimonId) {
+        // Refresh all user Digimon data
+        fetchAllUserDigimon();
+        
+        // Fetch evolution paths for the newly evolved Digimon
+        fetchEvolutionPathsForDigimon(event.detail.newDigimonId);
+      }
+    };
+
+    window.addEventListener('digimon-evolved', handleDigimonEvolved as EventListener);
+    
+    return () => {
+      window.removeEventListener('digimon-evolved', handleDigimonEvolved as EventListener);
+    };
+  }, [fetchAllUserDigimon]);
+
   if (loading && allUserDigimon.length === 0) {
     return (
       <div className="text-center py-12">
@@ -262,7 +291,10 @@ const UserDigimonPage = () => {
       {/* Evolution Modal */}
       {showEvolutionModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
+          <div 
+            className="bg-white rounded-lg p-6 max-w-md w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
             <h3 className="text-xl font-bold mb-4">Evolution Options</h3>
             
             {evolutionError && (
@@ -302,7 +334,7 @@ const UserDigimonPage = () => {
                             ? "cursor-pointer hover:bg-primary-50 hover:border-primary-300" 
                             : "opacity-60 bg-gray-100"
                         }`}
-                        onClick={() => meetsLevelRequirement && handleEvolve(showEvolutionModal, option.digimon_id)}
+                        onClick={() => meetsLevelRequirement && handleEvolution(option.digimon_id)}
                       >
                         <div className="flex flex-col items-center">
                           <div className="relative w-24 h-24 mb-2">
@@ -368,7 +400,10 @@ const UserDigimonPage = () => {
           selectedDigimon={selectedDetailDigimon}
           onClose={handleCloseDetailModal}
           onSetActive={handleSwitchDigimon}
-          onShowEvolution={handleShowEvolutionModal}
+          onShowEvolution={(digimonId) => {
+            // Set the evolution modal to show but don't close the detail modal
+            handleShowEvolutionModal(digimonId);
+          }}
           onRelease={handleReleaseClick}
           evolutionData={evolutionData}
           onNameChange={(updatedDigimon) => {
@@ -386,6 +421,7 @@ const UserDigimonPage = () => {
               });
             }, 0);
           }}
+          className="z-40" // Add a lower z-index
         />
       )}
 
@@ -410,7 +446,7 @@ const UserDigimonPage = () => {
             
             return (
               <div 
-                key={digimon.id}
+                key={digimon.id} 
                 className={`digimon-card-${digimon.id} border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer`}
                 onClick={() => handleShowDetailModal(digimon.id)}
               >

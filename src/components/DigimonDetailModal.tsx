@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { UserDigimon, useDigimonStore } from "../store/petStore";
 import { motion, AnimatePresence } from "framer-motion";
 import statModifier from "../store/battleStore";
 import { supabase } from "../lib/supabase";
+
+// Define the stat types
+type StatType = "HP" | "SP" | "ATK" | "DEF" | "INT" | "SPD";
 
 interface DigimonDetailModalProps {
   selectedDigimon: UserDigimon | null;
@@ -12,6 +15,7 @@ interface DigimonDetailModalProps {
   onRelease?: (digimonId: string) => void;
   onNameChange?: (updatedDigimon: UserDigimon) => void;
   evolutionData?: {[key: number]: any[]};
+  className?: string;
 }
 
 const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
@@ -21,7 +25,8 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
   onShowEvolution,
   onRelease,
   evolutionData = {},
-  onNameChange
+  onNameChange,
+  className = ""
 }) => {
   const { discoveredDigimon } = useDigimonStore();
   const [editingName, setEditingName] = useState<string | null>(null);
@@ -29,6 +34,161 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
   const [isAnimating, setIsAnimating] = useState(false);
   const [showHeart, setShowHeart] = useState(false);
   const [lookDirection, setLookDirection] = useState(1);
+  const [savedStats, setSavedStats] = useState<Record<string, number>>({
+    hp: 0, sp: 0, atk: 0, def: 0, int: 0, spd: 0
+  });
+  const [allocating, setAllocating] = useState(false);
+
+  useEffect(() => {
+    // Load saved stats from localStorage and database
+    const loadSavedStats = async () => {
+      // First try localStorage for immediate display
+      const localStats = localStorage.getItem("savedStats");
+      if (localStats) {
+        setSavedStats(JSON.parse(localStats));
+      }
+      
+      // Then fetch from database for accuracy
+      const { data: userData } = await supabase.auth.getUser();
+      if (userData.user) {
+        const { data: profileData } = await supabase
+          .from("profiles")
+          .select("saved_stats")
+          .eq("id", userData.user.id)
+          .single();
+          
+        if (profileData && profileData.saved_stats) {
+          setSavedStats(profileData.saved_stats);
+          localStorage.setItem("savedStats", JSON.stringify(profileData.saved_stats));
+        }
+      }
+    };
+    
+    loadSavedStats();
+  }, []);
+
+  // Function to allocate a stat point
+  const allocateStat = async (statType: StatType) => {
+    // Check for both uppercase and lowercase keys
+    const upperType = statType.toUpperCase() as StatType;
+    const lowerType = statType.toLowerCase() as StatType;
+    
+    // Get the stat value regardless of case
+    const statValue = savedStats[upperType] || savedStats[lowerType] || 0;
+    
+    if (statValue <= 0 || allocating || !selectedDigimon) return;
+    
+    try {
+      setAllocating(true);
+      
+      // Get current user
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) {
+        setAllocating(false);
+        return;
+      }
+      
+      // Make a copy of the current digimon for UI updates
+      const currentDigimon = { ...selectedDigimon };
+      
+      // Call the RPC function - use the same case as in the database (uppercase for keys, lowercase for field names)
+      const { data, error } = await supabase.rpc('allocate_stat', {
+        p_digimon_id: selectedDigimon.id,
+        p_stat_type: upperType, // Keep uppercase for the saved_stats keys
+        p_user_id: userData.user.id
+      });
+      
+      if (error) throw error;
+      
+      if (!data) {
+        throw new Error("Failed to allocate stat - no stats available");
+      }
+      
+      // Refresh saved stats
+      const { data: profileData, error: profileError } = await supabase
+        .from("profiles")
+        .select("saved_stats")
+        .eq("id", userData.user.id)
+        .single();
+        
+      if (profileError) throw profileError;
+      
+      // Update local saved stats
+      const newSavedStats = profileData?.saved_stats || {
+        HP: 0, SP: 0, ATK: 0, DEF: 0, INT: 0, SPD: 0
+      };
+      setSavedStats(newSavedStats);
+      localStorage.setItem("savedStats", JSON.stringify(newSavedStats));
+      
+      // Update the local digimon object with the new stat - use lowercase for field names
+      const statField = `${lowerType}_bonus`;
+      const currentBonus = (currentDigimon as any)[statField] || 0;
+      const updatedDigimon = {
+        ...currentDigimon,
+        [statField]: currentBonus + 1
+      };
+      
+      // Notify the parent component about the change
+      if (onNameChange) {
+        onNameChange(updatedDigimon);
+      }
+      
+      // Update the pet store's userDailyStatGains
+      useDigimonStore.getState().fetchUserDailyStatGains();
+      
+      setAllocating(false);
+    } catch (error) {
+      console.error("Error allocating stat:", error);
+      setAllocating(false);
+    }
+  };
+
+  // Update the renderStatRow function to be more compact
+  const renderStatRow = (
+    label: StatType, 
+    baseValue: number,
+    bonusValue: number
+  ) => {
+    // Check for both uppercase and lowercase keys
+    const upperLabel = label.toUpperCase();
+    const lowerLabel = label.toLowerCase();
+    
+    // Get the stat value regardless of case
+    const statValue = savedStats[upperLabel] || savedStats[lowerLabel] || 0;
+    
+    return (
+      <div className="flex items-center justify-between">
+        <div className="font-medium">{label}</div>
+        <div className="flex items-center">
+          <div className="text-right mr-2">
+            <span className="font-semibold">{baseValue}</span>
+            <span className={bonusValue > 0 ? "text-green-600 ml-1" : "text-gray-400 ml-1"}>
+              (+{bonusValue})
+            </span>
+          </div>
+          
+          {/* Allocation Button */}
+          {statValue > 0 && (
+            <button 
+              className="w-6 h-6 bg-purple-100 hover:bg-purple-200 text-purple-800 rounded-full flex items-center justify-center relative"
+              onClick={() => allocateStat(lowerLabel as StatType)}
+              disabled={allocating}
+            >
+              <span className="text-xs">+</span>
+              <span className="absolute -top-1 -right-1 bg-purple-500 text-white text-xs rounded-full w-3.5 h-3.5 flex items-center justify-center text-[10px]">
+                {statValue}
+              </span>
+            </button>
+          )}
+          
+          {/* Placeholder for when there are no stats to allocate */}
+          {statValue <= 0 && (
+            <div className="w-6"></div>
+          )}
+        </div>
+      </div>
+    );
+  };
 
   if (!selectedDigimon) return null;
 
@@ -164,7 +324,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
 
   return (
     <div 
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40 ${className}`}
       onClick={(e) => {
         // Only close if clicking the backdrop (not the modal content)
         if (e.target === e.currentTarget) {
@@ -174,7 +334,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
     >
       <div 
         className="bg-white rounded-lg p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto"
-        onClick={(e) => e.stopPropagation()} // Prevent clicks inside modal from closing it
+        onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-start mb-4">
           <h3 className="text-2xl font-bold">Digimon Details</h3>
@@ -192,7 +352,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Left column - Image and basic info */}
+          {/* Left column - Image, basic info, and now buttons */}
           <div className="flex flex-col items-center">
             <div className="w-32 h-32 mt-4 mb-8 relative">
               <motion.img 
@@ -297,8 +457,13 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
               </p>
             </div>
             
-            {/* Status bars */}
-            <div className="w-full space-y-3 mb-4">
+            {/* Description - keep as is */}
+            <p className="text-center text-gray-600 mb-4">
+              {`${selectedDigimon.digimon?.name} is a ${selectedDigimon.digimon?.attribute} ${selectedDigimon.digimon?.type}, ${selectedDigimon.digimon?.stage} level Digimon.`}
+            </p>
+            
+            {/* Status bars - keep as is */}
+            <div className="w-full space-y-4 mb-6">
               <div>
                 <div className="flex justify-between text-sm mb-1">
                   <span>Health</span>
@@ -351,165 +516,183 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
           </div>
           
           {/* Right column - Stats and evolution */}
-          <div>
-            <h4 className="text-lg font-semibold">Stats</h4>
-            <div className="grid grid-cols-2 gap-3 mb-6">
-              <div className="bg-gray-50 p-2 rounded">
-                <span className="relative group cursor-help text-sm font-medium">
-                  {"HP"}
-                  {/* Stat tooltip */}
-                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 p-2 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 w-56">
-                  <div className="">HP represents the Digimon's health and determines how much damage it can take before fainting.</div>
-                  </div>
-                </span>
-                <p className="text-lg">
-                  {statModifier(
+          <div className="flex flex-col h-full">
+            <div className="flex-grow">
+              <h4 className="text-lg font-semibold mb-2">Stats</h4>
+
+              {/* Add a section showing total available stat points if any */}
+              {Object.values(savedStats).some(val => val > 0) && (
+                <div className="mb-3 p-2 bg-purple-50 border border-purple-200 rounded-lg">
+                  <p className="text-sm text-purple-800">
+                    You have saved stat points to allocate! Click the + buttons to improve this Digimon.
+                  </p>
+                </div>
+              )}
+
+              <div className="space-y-3 mb-4">
+                {renderStatRow(
+                  "HP",
+                  statModifier(
                     selectedDigimon.current_level,
                     selectedDigimon.digimon?.hp_level1 ?? 0,
                     selectedDigimon.digimon?.hp ?? 0,
                     selectedDigimon.digimon?.hp_level99 ?? 0
-                  )}+{selectedDigimon.hp_bonus ?? 0}
-                </p>
+                  ),
+                  selectedDigimon.hp_bonus ?? 0
+                )}
+                
+                {renderStatRow(
+                  "SP",
+                  statModifier(
+                    selectedDigimon.current_level,
+                    selectedDigimon.digimon?.sp_level1 ?? 0,
+                    selectedDigimon.digimon?.sp ?? 0,
+                    selectedDigimon.digimon?.sp_level99 ?? 0
+                  ),
+                  selectedDigimon.sp_bonus ?? 0
+                )}
+                
+                {renderStatRow(
+                  "ATK",
+                  statModifier(
+                    selectedDigimon.current_level,
+                    selectedDigimon.digimon?.atk_level1 ?? 0,
+                    selectedDigimon.digimon?.atk ?? 0,
+                    selectedDigimon.digimon?.atk_level99 ?? 0
+                  ),
+                  selectedDigimon.atk_bonus ?? 0
+                )}
+                
+                {renderStatRow(
+                  "DEF",
+                  statModifier(
+                    selectedDigimon.current_level,
+                    selectedDigimon.digimon?.def_level1 ?? 0,
+                    selectedDigimon.digimon?.def ?? 0,
+                    selectedDigimon.digimon?.def_level99 ?? 0
+                  ),
+                  selectedDigimon.def_bonus ?? 0
+                )}
+
+                {renderStatRow(
+                  "INT",
+                  statModifier(
+                    selectedDigimon.current_level,
+                    selectedDigimon.digimon?.int_level1 ?? 0,
+                    selectedDigimon.digimon?.int ?? 0,
+                    selectedDigimon.digimon?.int_level99 ?? 0
+                  ),
+                  selectedDigimon.int_bonus ?? 0
+                )}
+                
+                {renderStatRow(
+                  "SPD",
+                  statModifier(
+                    selectedDigimon.current_level,
+                    selectedDigimon.digimon?.spd_level1 ?? 0,
+                    selectedDigimon.digimon?.spd ?? 0,
+                    selectedDigimon.digimon?.spd_level99 ?? 0
+                  ),
+                  selectedDigimon.spd_bonus ?? 0
+                )}
               </div>
-              <div className="bg-gray-50 p-2 rounded">
-              <span className="relative group cursor-help text-sm font-medium">
-                  {"SP"}
-                  {/* Stat tooltip */}
-                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 p-2 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 w-56">
-                  <div className="">SP represents the Digimon's critical damage multiplier.</div>
-                  </div>
-                </span>
-                <p className="text-lg">{statModifier(selectedDigimon.current_level, selectedDigimon.digimon?.sp_level1 ?? 0, selectedDigimon.digimon?.sp ?? 0, selectedDigimon.digimon?.sp_level99 ?? 0)}+{selectedDigimon.sp_bonus ?? 0}</p>
-              </div>
-              <div className="bg-gray-50 p-2 rounded">
-                <span className="relative group cursor-help text-sm font-medium">
-                  {"ATK"}
-                  {/* Stat tooltip */}
-                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 p-2 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 w-56">
-                  <div className="">ATK represents the Digimon's physical attack power.</div>
-                  </div>
-                </span>
-                <p className="text-lg">{statModifier(selectedDigimon.current_level, selectedDigimon.digimon?.atk_level1 ?? 0, selectedDigimon.digimon?.atk ?? 0, selectedDigimon.digimon?.atk_level99 ?? 0)}+{selectedDigimon.atk_bonus ?? 0}</p>
-              </div>
-              <div className="bg-gray-50 p-2 rounded">
-                <span className="relative group cursor-help text-sm font-medium">
-                  {"DEF"}
-                  {/* Stat tooltip */}
-                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 p-2 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 w-56">
-                  <div className="">DEF represents the Digimon's physical defense.</div>
-                  </div>
-                </span>
-                <p className="text-lg">{statModifier(selectedDigimon.current_level, selectedDigimon.digimon?.def_level1 ?? 0, selectedDigimon.digimon?.def ?? 0, selectedDigimon.digimon?.def_level99 ?? 0)}+{selectedDigimon.def_bonus ?? 0}</p>
-              </div>
-              <div className="bg-gray-50 p-2 rounded">
-                <span className="relative group cursor-help text-sm font-medium">
-                  {"INT"}
-                  {/* Stat tooltip */}
-                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 p-2 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 w-56">
-                  <div className="">INT represents the Digimon's magical attack power and magical defense.</div>
-                  </div>
-                </span>
-                <p className="text-lg">{statModifier(selectedDigimon.current_level, selectedDigimon.digimon?.int_level1 ?? 0, selectedDigimon.digimon?.int ?? 0, selectedDigimon.digimon?.int_level99 ?? 0)}+{selectedDigimon.int_bonus ?? 0}</p>
-              </div>
-              <div className="bg-gray-50 p-2 rounded">
-                <span className="relative group cursor-help text-sm font-medium">
-                  {"SPD"}
-                  {/* Stat tooltip */}
-                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 p-2 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 w-56">
-                  <div className="">SPD represents the Digimon's speed and determines turn order.</div>
-                  </div>
-                </span>
-                <p className="text-lg">{statModifier(selectedDigimon.current_level, selectedDigimon.digimon?.spd_level1 ?? 0, selectedDigimon.digimon?.spd ?? 0, selectedDigimon.digimon?.spd_level99 ?? 0)}+{selectedDigimon.spd_bonus ?? 0}</p>
-              </div>
-            </div>
-            
-            <h4 className="text-lg font-semibold mb-3">Evolution Options</h4>
-            {evolutions?.length > 0 ? (
-              <div className="grid grid-cols-2 gap-2">
-                {evolutions.map((option) => {
-                  const meetsLevelRequirement = selectedDigimon.current_level >= option.level_required;
-                  const discovered = isDiscovered(option.digimon_id);
-                  
-                  return (
-                    <div 
-                      key={option.id}
-                      className={`border rounded-lg p-2 ${
-                        meetsLevelRequirement 
-                          ? "border-primary-300 bg-primary-50" 
-                          : "border-gray-300 bg-gray-50 opacity-70"
-                      }`}
-                    >
-                      <div className="flex items-center">
-                        <div className="w-10 h-10 mr-2 flex items-center justify-center">
-                          {discovered ? (
-                            <img 
-                              src={option.sprite_url} 
-                              alt={option.name}
-                              style={{ imageRendering: "pixelated" }}
-                            />
-                          ) : (
-                            <div className="w-10 h-10 flex items-center justify-center">
+              
+              <h4 className="text-lg font-semibold mb-3">Evolution Options</h4>
+              {evolutions?.length > 0 ? (
+                <div className="grid grid-cols-2 gap-2">
+                  {evolutions.map((option) => {
+                    const meetsLevelRequirement = selectedDigimon.current_level >= option.level_required;
+                    const discovered = isDiscovered(option.digimon_id);
+                    
+                    return (
+                      <div 
+                        key={option.id}
+                        className={`border rounded-lg p-2 ${
+                          meetsLevelRequirement 
+                            ? "border-primary-300 bg-primary-50" 
+                            : "border-gray-300 bg-gray-50 opacity-70"
+                        }`}
+                      >
+                        <div className="flex items-center">
+                          <div className="w-10 h-10 mr-2 flex items-center justify-center">
+                            {discovered ? (
                               <img 
                                 src={option.sprite_url} 
-                                alt="Unknown Digimon"
-                                style={{ imageRendering: "pixelated" }} 
-                                className="brightness-0 opacity-70"
+                                alt={option.name}
+                                style={{ imageRendering: "pixelated" }}
                               />
-                            </div>
-                          )}
-                        </div>
-                        <div>
-                          <p className="font-medium text-sm">
-                            {discovered ? option.name : "???"}
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            {discovered ? option.stage : "Unknown"} (Lv. {option.level_required})
-                          </p>
+                            ) : (
+                              <div className="w-10 h-10 flex items-center justify-center">
+                                <img 
+                                  src={option.sprite_url} 
+                                  alt="Unknown Digimon"
+                                  style={{ imageRendering: "pixelated" }} 
+                                  className="brightness-0 opacity-70"
+                                />
+                              </div>
+                            )}
+                          </div>
+                          <div>
+                            <p className="font-medium text-sm">
+                              {discovered ? option.name : "???"}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {discovered ? option.stage : "Unknown"} (Lv. {option.level_required})
+                            </p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <p className="text-gray-600">No evolution options available.</p>
-            )}
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="text-gray-500 text-sm">No evolution options available.</p>
+              )}
+            </div>
             
-            <div className="mt-6 flex justify-end space-x-3">
-              {/* Action buttons */}
+            {/* Button container at the bottom with margin-top for spacing */}
+            <div className="flex space-x-2 w-full mt-4 mb-1">
+              {/* Set Active button - only show if not already active */}
               {!selectedDigimon.is_active && onSetActive && (
                 <button
                   onClick={() => {
                     onSetActive(selectedDigimon.id);
                     onClose();
                   }}
-                  className="btn-primary"
+                  className="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
                 >
                   Set Active
                 </button>
               )}
               
-              {onShowEvolution && evolutions?.some(
-                option => selectedDigimon.current_level >= option.level_required
-              ) && (
+              {/* Active indicator - show instead of Set Active button if already active */}
+              {selectedDigimon.is_active && (
+                <div className="flex-1 bg-blue-100 text-blue-800 py-2 px-4 rounded text-center">
+                  Active
+                </div>
+              )}
+              
+              {/* Digivolve button - only show if evolution options exist */}
+              {evolutions?.length > 0 && onShowEvolution && (
                 <button
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent event bubbling
                     onShowEvolution(selectedDigimon.id);
-                    onClose();
                   }}
-                  className="btn-secondary"
+                  className="flex-1 bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded"
                 >
                   Digivolve
                 </button>
               )}
               
+              {/* Release button - only show if NOT active */}
               {!selectedDigimon.is_active && onRelease && (
                 <button
                   onClick={() => {
                     onRelease(selectedDigimon.id);
                     onClose();
                   }}
-                  className="btn-outline text-red-600 border-red-300 hover:bg-red-50"
+                  className="flex-1 border border-red-500 text-red-500 hover:bg-red-50 py-2 px-4 rounded"
                 >
                   Release
                 </button>

@@ -1,11 +1,55 @@
 import { useEffect, useState, useMemo } from "react";
 import { Task, useTaskStore } from "../store/taskStore";
 import TaskItem from "./TaskItem";
+import { useDigimonStore } from "../store/petStore";
+import { supabase } from "../lib/supabase";
+
+// Update the state initialization to read from localStorage synchronously
+const getSavedAutoAllocateSetting = () => {
+  const savedPreference = localStorage.getItem('autoAllocateStats');
+  // If there's a saved preference, use it; otherwise use the default (false)
+  return savedPreference !== null ? savedPreference === 'true' : false;
+};
 
 const TaskList = () => {
   const { tasks, completeTask, deleteTask } = useTaskStore();
   const [filter, setFilter] = useState<"all" | "active" | "completed">("all");
   const [, forceUpdate] = useState({});
+  // Initialize with the value from localStorage
+  const [autoAllocateStats, setAutoAllocateStats] = useState(getSavedAutoAllocateSetting());
+  const { userDigimon } = useDigimonStore();
+  
+  // Keep this effect to save the preference when it changes
+  useEffect(() => {
+    localStorage.setItem('autoAllocateStats', autoAllocateStats.toString());
+  }, [autoAllocateStats]);
+  
+  // Add this effect to load saved stats from the database
+  useEffect(() => {
+    const loadSavedStats = async () => {
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) return;
+      
+      const { data: profileData } = await supabase
+        .from("profiles")
+        .select("saved_stats")
+        .eq("id", userData.user.id)
+        .single();
+        
+      if (profileData && profileData.saved_stats) {
+        // Update localStorage with the database values
+        localStorage.setItem("savedStats", JSON.stringify(profileData.saved_stats));
+      }
+    };
+    
+    loadSavedStats();
+  }, []);
+  
+  // Handle task completion with allocation preference
+  const handleCompleteTask = async (taskId: string) => {
+    // Pass the allocation preference to the completeTask function
+    await completeTask(taskId, autoAllocateStats);
+  };
   
   // Add a timer to check for newly overdue tasks and update the UI
   useEffect(() => {
@@ -86,31 +130,65 @@ const TaskList = () => {
   return (
     <div className="bg-white rounded-lg shadow-md p-4">
       
-      <div className="flex space-x-2 mb-4">
-        <button
-          className={`px-3 py-1 text-sm rounded-full ${
-            filter === "all" ? "bg-primary-100 text-primary-800" : "bg-gray-100"
-          }`}
-          onClick={() => setFilter("all")}
-        >
-          All
-        </button>
-        <button
-          className={`px-3 py-1 text-sm rounded-full ${
-            filter === "active" ? "bg-primary-100 text-primary-800" : "bg-gray-100"
-          }`}
-          onClick={() => setFilter("active")}
-        >
-          Active
-        </button>
-        <button
-          className={`px-3 py-1 text-sm rounded-full ${
-            filter === "completed" ? "bg-primary-100 text-primary-800" : "bg-gray-100"
-          }`}
-          onClick={() => setFilter("completed")}
-        >
-          Completed
-        </button>
+      <div className="flex justify-between items-center mb-4">
+        <div className="flex space-x-2">
+          <button
+            className={`px-3 py-1 text-sm rounded-full ${
+              filter === "all" ? "bg-primary-100 text-primary-800" : "bg-gray-100"
+            }`}
+            onClick={() => setFilter("all")}
+          >
+            All
+          </button>
+          <button
+            className={`px-3 py-1 text-sm rounded-full ${
+              filter === "active" ? "bg-primary-100 text-primary-800" : "bg-gray-100"
+            }`}
+            onClick={() => setFilter("active")}
+          >
+            Active
+          </button>
+          <button
+            className={`px-3 py-1 text-sm rounded-full ${
+              filter === "completed" ? "bg-primary-100 text-primary-800" : "bg-gray-100"
+            }`}
+            onClick={() => setFilter("completed")}
+          >
+            Completed
+          </button>
+        </div>
+        
+        {/* Stat Allocation Toggle */}
+        <div className="flex items-center space-x-2">
+          <span className="text-xs text-gray-500">Stat Allocation:</span>
+          <div 
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+              autoAllocateStats ? 'bg-primary-500' : 'bg-gray-300'
+            } cursor-pointer`}
+            onClick={() => setAutoAllocateStats(!autoAllocateStats)}
+          >
+            <span
+              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                autoAllocateStats ? 'translate-x-6' : 'translate-x-1'
+              }`}
+            />
+          </div>
+          <span className="text-xs font-medium">
+            {autoAllocateStats ? 
+              <span className="text-primary-600">Auto</span> : 
+              <span className="text-purple-600">Save</span>
+            }
+          </span>
+          <div className="relative group">
+            <span className="cursor-help text-gray-400 text-xs">ⓘ</span>
+            <div className="absolute right-0 top-full mt-1 hidden group-hover:block bg-gray-800 text-white text-xs rounded p-2 w-48 z-10">
+              {autoAllocateStats ? 
+                "Stats from completed tasks will be automatically applied to your active Digimon." :
+                "Stats from completed tasks will be saved for later allocation to any Digimon."
+              }
+            </div>
+          </div>
+        </div>
       </div>
       
       {filteredTasks.length === 0 ? (
@@ -119,6 +197,13 @@ const TaskList = () => {
         </div>
       ) : (
         <div>
+          {/* Active Digimon Info - only show when auto-allocate is on */}
+          {autoAllocateStats && userDigimon && (
+            <div className="mb-4 p-2 bg-primary-50 border border-primary-100 rounded-lg text-xs text-gray-600">
+              Stats will be applied to: <span className="font-medium">{userDigimon.name || userDigimon.digimon?.name}</span>
+            </div>
+          )}
+          
           {/* Overdue Tasks */}
           {overdueTasks.length > 0 && (
             <div className="mb-4">
@@ -128,7 +213,7 @@ const TaskList = () => {
                   <TaskItem
                     key={task.id}
                     task={task}
-                    onComplete={completeTask}
+                    onComplete={handleCompleteTask}
                     onDelete={deleteTask}
                   />
                 ))}
@@ -145,7 +230,7 @@ const TaskList = () => {
                   <TaskItem
                     key={task.id}
                     task={task}
-                    onComplete={completeTask}
+                    onComplete={handleCompleteTask}
                     onDelete={deleteTask}
                   />
                 ))}
@@ -162,7 +247,7 @@ const TaskList = () => {
                   <TaskItem
                     key={task.id}
                     task={task}
-                    onComplete={completeTask}
+                    onComplete={handleCompleteTask}
                     onDelete={deleteTask}
                   />
                 ))}
@@ -179,7 +264,7 @@ const TaskList = () => {
                   <TaskItem
                     key={task.id}
                     task={task}
-                    onComplete={completeTask}
+                    onComplete={handleCompleteTask}
                     onDelete={deleteTask}
                   />
                 ))}
@@ -196,7 +281,7 @@ const TaskList = () => {
                   <TaskItem
                     key={task.id}
                     task={task}
-                    onComplete={completeTask}
+                    onComplete={handleCompleteTask}
                     onDelete={deleteTask}
                   />
                 ))}

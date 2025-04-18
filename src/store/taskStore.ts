@@ -36,7 +36,7 @@ interface TaskState {
   createTask: (task: Partial<Task>) => Promise<void>;
   updateTask: (id: string, updates: Partial<Task>) => Promise<void>;
   deleteTask: (id: string) => Promise<void>;
-  completeTask: (id: string) => Promise<void>;
+  completeTask: (id: string, autoAllocate?: boolean) => Promise<void>;
   checkOverdueTasks: () => Promise<void>;
   resetDailyTasks: () => Promise<void>;
   penalizedTasks: string[];
@@ -173,7 +173,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     }
   },
 
-  completeTask: async (taskId: string) => {
+  completeTask: async (taskId: string, autoAllocate = true) => {
     try {
       set({ loading: true, error: null });
 
@@ -181,6 +181,13 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       const task = get().tasks.find((t) => t.id === taskId);
       if (!task) {
         set({ loading: false, error: "Task not found" });
+        return;
+      }
+
+      // Get current user
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) {
+        set({ loading: false, error: "User not authenticated" });
         return;
       }
 
@@ -209,15 +216,128 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         loading: false,
       }));
 
-      // Feed the active Digimon
+      // Always feed the Digimon regardless of stat allocation preference
       await useDigimonStore.getState().feedDigimon(task.is_daily ? 50 : 75);
 
-      // Increase the corresponding stat if the task has a category
-      if (task.category) {
+      // Check if we've reached the daily stat cap
+      const { canGain, remaining } = await useDigimonStore
+        .getState()
+        .checkStatCap();
+
+      if (!canGain) {
+        useNotificationStore.getState().addNotification({
+          message:
+            "You've reached your stat gain limit for today. You can still complete tasks, but no more stat points will be gained until tomorrow.",
+          type: "info",
+        });
+      } else if (task.category) {
         const boostValue = getStatBoostValue(task.is_daily);
-        await useDigimonStore
-          .getState()
-          .increaseStat(task.category, boostValue);
+
+        // Limit the boost value to the remaining stat points
+        const adjustedBoostValue = Math.min(boostValue, remaining);
+
+        if (autoAllocate) {
+          // Get current daily_stat_gains from profile
+          const { data: profileData, error: profileError } = await supabase
+            .from("profiles")
+            .select("daily_stat_gains")
+            .eq("id", userData.user.id)
+            .single();
+
+          if (profileError) {
+            console.error("Error fetching daily stat gains:", profileError);
+            throw profileError;
+          }
+
+          // Calculate new daily stat gains
+          const newDailyGains =
+            (profileData.daily_stat_gains || 0) + adjustedBoostValue;
+
+          // Update daily_stat_gains in profile
+          const { error: updateError } = await supabase
+            .from("profiles")
+            .update({
+              daily_stat_gains: newDailyGains,
+            })
+            .eq("id", userData.user.id);
+
+          if (updateError) {
+            console.error("Error updating daily stat gains:", updateError);
+            throw updateError;
+          }
+
+          // Apply stat boost to active Digimon
+          await useDigimonStore
+            .getState()
+            .increaseStat(task.category, adjustedBoostValue);
+
+          // Update the pet store's userDailyStatGains
+          useDigimonStore.getState().fetchUserDailyStatGains();
+
+          useNotificationStore.getState().addNotification({
+            message: `✅ Completed "${task.description}"!\n→ ${task.category} +${adjustedBoostValue}!`,
+            type: "success",
+          });
+        } else {
+          // Get current saved stats from the database
+          const { data: profileData, error: profileError } = await supabase
+            .from("profiles")
+            .select("saved_stats, daily_stat_gains")
+            .eq("id", userData.user.id)
+            .single();
+
+          if (profileError) {
+            console.error("Error fetching saved stats:", profileError);
+            throw profileError;
+          }
+
+          // Update saved stats
+          const savedStats = profileData.saved_stats || {
+            HP: 0,
+            SP: 0,
+            ATK: 0,
+            DEF: 0,
+            INT: 0,
+            SPD: 0,
+          };
+
+          savedStats[task.category] =
+            (savedStats[task.category] || 0) + adjustedBoostValue;
+
+          // Calculate new daily stat gains
+          const newDailyGains =
+            (profileData.daily_stat_gains || 0) + adjustedBoostValue;
+
+          // Save to database
+          const { error: updateError } = await supabase
+            .from("profiles")
+            .update({
+              saved_stats: savedStats,
+              daily_stat_gains: newDailyGains,
+            })
+            .eq("id", userData.user.id);
+
+          if (updateError) {
+            console.error("Error updating saved stats:", updateError);
+            throw updateError;
+          }
+
+          // Also update localStorage for immediate UI feedback
+          localStorage.setItem("savedStats", JSON.stringify(savedStats));
+
+          // Update the pet store's userDailyStatGains
+          useDigimonStore.getState().fetchUserDailyStatGains();
+
+          useNotificationStore.getState().addNotification({
+            message: `✅ Completed "${task.description}"!\n→ ${task.category} +${adjustedBoostValue} saved for later!`,
+            type: "success",
+          });
+        }
+      } else {
+        useNotificationStore.getState().addNotification({
+          message: `✅ Completed "${task.description}"!`,
+          type: "success",
+        });
       }
 
       // Check for level up
@@ -226,28 +346,11 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       // Increment tasks completed milestone
       await useMilestoneStore.getState().incrementTasksCompleted();
 
-      // Show completion notification with stat boost if applicable
-      if (task.category) {
-        const boostValue = getStatBoostValue(task.is_daily);
-        useNotificationStore.getState().addNotification({
-          message: `✅ Completed "${task.description}"!\n→ ${task.category} +${boostValue}!`,
-          type: "success",
-        });
-      } else {
-        useNotificationStore.getState().addNotification({
-          message: `✅ Completed "${task.description}"!`,
-          type: "success",
-        });
-      }
-
       // Check daily quota
       await get().checkDailyQuota();
     } catch (error) {
       console.error("Error completing task:", error);
-      set({
-        error: (error as Error).message,
-        loading: false,
-      });
+      set({ error: (error as Error).message, loading: false });
     }
   },
 

@@ -9,10 +9,23 @@ const PatchNotes = () => {
         
         <div className="border-b pb-2 mb-6">
           <h2 className="text-xl font-semibold mb-4">Recent Updates</h2>
-          
+
           <div className="mb-6">
             <div className="flex items-center mb-2">
               <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
+              <h3 className="text-lg font-medium ml-2">Reworked Stat Cap System</h3>
+              <span className="text-sm text-gray-500 ml-auto">April 18, 2025</span>
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+              <li>Based on suggestion, the stats gained from tasks can now be automatically applied to active Digimon or saved for later use</li>
+              <li>Stat cap isn't on a Digimon-by-Digimon basis anymore, but cumulative</li>
+              <li>The stat cap is now 2 + 2 per Digimon you own</li>
+              <li>Not heavily tested, so expect some bugs</li>
+            </ul>
+          </div>
+          
+          <div className="mb-6">
+            <div className="flex items-center mb-2">
               <h3 className="text-lg font-medium ml-2">Battle System Improvements</h3>
               <span className="text-sm text-gray-500 ml-auto">April 16, 2025</span>
             </div>
@@ -54,40 +67,24 @@ const PatchNotes = () => {
         
         <div>
           <h2 className="text-xl font-semibold mb-4">Upcoming Features</h2>
-          
           <div className="mb-6">
             <div className="flex items-center mb-2">
-              <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">In Development</span>
-              <h3 className="text-lg font-medium ml-2">Enhanced Battle Rewards</h3>
+              <span className="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">Possible?</span>
+              <h3 className="text-lg font-medium ml-2">More Digimon Mechanics</h3>
             </div>
             <p className="text-gray-600 mb-2">
-              We're working on improving the battle reward system to make battles more meaningful:
+              Hoping to introduce more mechanics from Cyber Sleuth games:
             </p>
             <ul className="list-disc pl-5 space-y-1 text-gray-600">
-              <li>Scaled experience rewards based on battle difficulty</li>
-              <li>Special item drops from battles</li>
-              <li>Battle streak bonuses</li>
+              <li>Stat-required digivolutions (e.g. require 50+ SPD for a digivolution)</li>
+              <li>Abilities?</li>
+              <li>Battle movesets?</li>
             </ul>
           </div>
           
           <div className="mb-6">
             <div className="flex items-center mb-2">
-              <span className="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">Planned</span>
-              <h3 className="text-lg font-medium ml-2">Digimon Training</h3>
-            </div>
-            <p className="text-gray-600 mb-2">
-              A new training system to improve your Digimon's stats:
-            </p>
-            <ul className="list-disc pl-5 space-y-1 text-gray-600">
-              <li>Specialized training exercises for different stats</li>
-              <li>Training mini-games</li>
-              <li>Stat-boosting items</li>
-            </ul>
-          </div>
-          
-          <div className="mb-6">
-            <div className="flex items-center mb-2">
-              <span className="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">Planned</span>
+              <span className="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">Possible?</span>
               <h3 className="text-lg font-medium ml-2">Social Features</h3>
             </div>
             <p className="text-gray-600 mb-2">

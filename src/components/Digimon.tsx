@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useDigimonStore, UserDigimon, Digimon as DigimonType, EvolutionOption } from "../store/petStore";
 import { useState, useEffect, useRef } from "react";
 import DigimonDetailModal from "./DigimonDetailModal";
+import { useNotificationStore } from "../store/notificationStore";
 
 interface DigimonProps {
   userDigimon: UserDigimon;
@@ -38,7 +39,7 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
   const [showDetailModal, setShowDetailModal] = useState(false);
   
   // Add state to track the current digimon data
-  const [currentDigimon, setCurrentDigimon] = useState(userDigimon);
+  const [currentDigimon, setCurrentDigimon] = useState<UserDigimon>(userDigimon);
   
   // Update local state when userDigimon changes
   useEffect(() => {
@@ -68,6 +69,9 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
     prevHealthRef.current = userDigimon.health;
     prevHappinessRef.current = userDigimon.happiness;
     prevXPRef.current = userDigimon.experience_points;
+    
+    // Update currentDigimon with the latest userDigimon data
+    setCurrentDigimon(userDigimon);
   }, [userDigimon]);
   
   // Function to trigger level up animation
@@ -111,12 +115,32 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
   // Calculate XP percentage
   const xpPercentage = Math.max(0, Math.min(100, (currentXP / xpForNextLevel) * 100));
   
-  const handleEvolve = async (toDigimonId: number) => {
+  const handleEvolution = async (toDigimonId: number) => {
     try {
       setEvolutionError(null);
-      await evolveDigimon(toDigimonId);
+      setShowEvolutionModal(true);
+      
+      // Call the evolve function from the store
+      await evolveDigimon(toDigimonId, userDigimon.id);
+      
+      // Close both modals after successful evolution
       setShowEvolutionModal(false);
+      setShowDetailModal(false);
+      
+      // Fetch new evolution options for the evolved Digimon
+      // We can dispatch a custom event that the parent component can listen for
+      const event = new CustomEvent('digimon-evolved', { 
+        detail: { digimonId: userDigimon.id, newDigimonId: toDigimonId } 
+      });
+      window.dispatchEvent(event);
+      
+      // Show success notification
+      useNotificationStore.getState().addNotification({
+        message: `Your Digimon has evolved successfully!`,
+        type: "success"
+      });
     } catch (error) {
+      console.error("Evolution error:", error);
       setEvolutionError((error as Error).message);
     }
   };
@@ -152,22 +176,33 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
     }, 1000);
   };
   
-  // Handle name changes
-  const handleNameChange = (updatedDigimon: UserDigimon) => {
-    setCurrentDigimon(updatedDigimon);
-    
-    // Also update the display name
-    const displayName = updatedDigimon.name || digimonData.name;
-    const nameElement = document.querySelector('.digimon-name');
-    if (nameElement) {
-      nameElement.textContent = displayName;
-    }
-  };
-  
   // Add a debug function to log when clicks happen
   const handleCardClick = () => {
     console.log("Digimon card clicked");
     setShowDetailModal(true);
+  };
+  
+  // Function to handle setting a Digimon as active
+  const handleSetActive = async () => {
+    // Use userDigimon.id instead of the parameter
+    // Rest of the function...
+  };
+  
+  // Function to handle showing the evolution modal
+  const handleShowEvolutionModal = () => {
+    // Use userDigimon.id instead of the parameter
+    setShowEvolutionModal(true);
+  };
+  
+  // Function to handle releasing a Digimon
+  const handleRelease = () => {
+    // Use userDigimon.id instead of the parameter
+    // Rest of the function...
+  };
+  
+  // Create an evolutionData object in the format expected by DigimonDetailModal
+  const evolutionData = {
+    [userDigimon.digimon_id]: evolutionOptions
   };
   
   if (!userDigimon || !digimonData) {
@@ -350,7 +385,10 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
       {/* Evolution Modal */}
       {showEvolutionModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
+          <div 
+            className="bg-white rounded-lg p-6 max-w-md w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
             <h3 className="text-xl font-bold mb-4">Evolution Options</h3>
             
             {evolutionError && (
@@ -372,7 +410,7 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
                         ? "cursor-pointer hover:bg-primary-50 hover:border-primary-300" 
                         : "opacity-60 bg-gray-100"
                     }`}
-                    onClick={() => meetsLevelRequirement && handleEvolve(option.digimon_id)}
+                    onClick={() => meetsLevelRequirement && handleEvolution(option.digimon_id)}
                   >
                     <div className="flex flex-col items-center">
                       <div className="relative w-24 h-24 mb-2">
@@ -417,13 +455,10 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
               })}
             </div>
             
-            <div className="flex justify-end">
+            <div className="flex justify-end mt-4">
               <button 
-                onClick={() => {
-                  setEvolutionError(null);
-                  setShowEvolutionModal(false);
-                }}
-                className="btn-outline"
+                onClick={() => setShowEvolutionModal(false)}
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
               >
                 Close
               </button>
@@ -436,16 +471,21 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
       {showDetailModal && (
         <DigimonDetailModal
           selectedDigimon={currentDigimon}
-          onClose={() => {
-            console.log("Closing detail modal");
-            setShowDetailModal(false);
+          onClose={() => setShowDetailModal(false)}
+          onSetActive={handleSetActive}
+          onShowEvolution={handleShowEvolutionModal}
+          onRelease={handleRelease}
+          evolutionData={evolutionData}
+          onNameChange={(updatedDigimon) => {
+            setCurrentDigimon(updatedDigimon);
+            
+            // Dispatch a custom event to notify parent components
+            const event = new CustomEvent('digimon-updated', { 
+              detail: { digimonId: updatedDigimon.id, updatedDigimon } 
+            });
+            window.dispatchEvent(event);
           }}
-          onShowEvolution={() => {
-            setShowDetailModal(false);
-            setShowEvolutionModal(true);
-          }}
-          onNameChange={handleNameChange}
-          evolutionData={{ [userDigimon.digimon_id]: evolutionOptions }}
+          className="z-40"
         />
       )}
     </div>

@@ -64,7 +64,7 @@ const Dashboard: React.FC = () => {
                 View Updates
               </Link>
               <a 
-                href="https://forms.gle/HrgybGG7BL1xj5wg6" 
+                href="https://forms.gle/4geGdXkywwAQcZDt6" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-sm bg-indigo-100 hover:bg-indigo-200 text-indigo-800 px-3 py-1 rounded-full transition-colors"
@@ -156,40 +156,6 @@ const Dashboard: React.FC = () => {
         <div className="card">
           <h2 className="text-xl font-bold">Your Tasks</h2>
           <TaskList />
-        </div>
-        
-        <div className="lg:col-span-3 mt-8">
-          <div className="card">
-            <h2 className="text-xl font-bold mb-4">Roadmap & Upcoming Features</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
-                <div className="flex items-center mb-2">
-                  <h3 className="font-semibold text-blue-800">Stat Requirements for Evolution</h3>
-                </div>
-                <p className="text-sm text-blue-700">
-                  Adding stat thresholds needed for Digimon to evolve to higher forms.
-                </p>
-              </div>
-
-              <div className="bg-purple-50 p-4 rounded-lg border border-purple-100">
-                <div className="flex items-center mb-2">
-                  <h3 className="font-semibold text-purple-800">Battle Rewards</h3>
-                </div>
-                <p className="text-sm text-purple-700">
-                  Participating or winning in battles will give you more rewards (items?).
-                </p>
-              </div>
-              
-              <div className="bg-green-50 p-4 rounded-lg border border-green-100">
-                <div className="flex items-center mb-2">
-                  <h3 className="font-semibold text-green-800">Digimon Abilities</h3>
-                </div>
-                <p className="text-sm text-green-700">
-                  Unique abilities for each Digimon to gain advantages in battles.
-                </p>
-              </div>
-            </div>
-          </div>
         </div>
         
         {process.env.NODE_ENV === 'development' && (
