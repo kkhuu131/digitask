@@ -601,14 +601,135 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
               {evolutions?.length > 0 ? (
                 <div className="grid grid-cols-2 gap-2">
                   {evolutions.map((option) => {
+                    // Calculate base stats for current level
+                    const baseHP = statModifier(
+                      selectedDigimon.current_level,
+                      selectedDigimon.digimon?.hp_level1 || 0,
+                      selectedDigimon.digimon?.hp || 0,
+                      selectedDigimon.digimon?.hp_level99 || 0
+                    );
+                    
+                    const baseSP = statModifier(
+                      selectedDigimon.current_level,
+                      selectedDigimon.digimon?.sp_level1 || 0,
+                      selectedDigimon.digimon?.sp || 0,
+                      selectedDigimon.digimon?.sp_level99 || 0
+                    );
+                    
+                    const baseATK = statModifier(
+                      selectedDigimon.current_level,
+                      selectedDigimon.digimon?.atk_level1 || 0,
+                      selectedDigimon.digimon?.atk || 0,
+                      selectedDigimon.digimon?.atk_level99 || 0
+                    );
+                    
+                    const baseDEF = statModifier(
+                      selectedDigimon.current_level,
+                      selectedDigimon.digimon?.def_level1 || 0,
+                      selectedDigimon.digimon?.def || 0,
+                      selectedDigimon.digimon?.def_level99 || 0
+                    );
+                    
+                    const baseINT = statModifier(
+                      selectedDigimon.current_level,
+                      selectedDigimon.digimon?.int_level1 || 0,
+                      selectedDigimon.digimon?.int || 0,
+                      selectedDigimon.digimon?.int_level99 || 0
+                    );
+                    
+                    const baseSPD = statModifier(
+                      selectedDigimon.current_level,
+                      selectedDigimon.digimon?.spd_level1 || 0,
+                      selectedDigimon.digimon?.spd || 0,
+                      selectedDigimon.digimon?.spd_level99 || 0
+                    );
+                    
+                    // Check level requirement
                     const meetsLevelRequirement = selectedDigimon.current_level >= option.level_required;
+                    
+                    // Check stat requirements
+                    let meetsStatRequirements = true;
+                    const statRequirementsList = [];
+                    
+                    if (option.stat_requirements) {
+                      const statReqs = option.stat_requirements;
+                      
+                      // Check each stat requirement and build display list
+                      if (statReqs.hp && statReqs.hp > 0) {
+                        const currentHP = baseHP + (selectedDigimon.hp_bonus || 0);
+                        if (currentHP < statReqs.hp) meetsStatRequirements = false;
+                        statRequirementsList.push({
+                          name: 'HP',
+                          current: currentHP,
+                          required: statReqs.hp,
+                          meets: currentHP >= statReqs.hp
+                        });
+                      }
+                      
+                      if (statReqs.sp && statReqs.sp > 0) {
+                        const currentSP = baseSP + (selectedDigimon.sp_bonus || 0);
+                        if (currentSP < statReqs.sp) meetsStatRequirements = false;
+                        statRequirementsList.push({
+                          name: 'SP',
+                          current: currentSP,
+                          required: statReqs.sp,
+                          meets: currentSP >= statReqs.sp
+                        });
+                      }
+                      
+                      if (statReqs.atk && statReqs.atk > 0) {
+                        const currentATK = baseATK + (selectedDigimon.atk_bonus || 0);
+                        if (currentATK < statReqs.atk) meetsStatRequirements = false;
+                        statRequirementsList.push({
+                          name: 'ATK',
+                          current: currentATK,
+                          required: statReqs.atk,
+                          meets: currentATK >= statReqs.atk
+                        });
+                      }
+                      
+                      if (statReqs.def && statReqs.def > 0) {
+                        const currentDEF = baseDEF + (selectedDigimon.def_bonus || 0);
+                        if (currentDEF < statReqs.def) meetsStatRequirements = false;
+                        statRequirementsList.push({
+                          name: 'DEF',
+                          current: currentDEF,
+                          required: statReqs.def,
+                          meets: currentDEF >= statReqs.def
+                        });
+                      }
+                      
+                      if (statReqs.int && statReqs.int > 0) {
+                        const currentINT = baseINT + (selectedDigimon.int_bonus || 0);
+                        if (currentINT < statReqs.int) meetsStatRequirements = false;
+                        statRequirementsList.push({
+                          name: 'INT',
+                          current: currentINT,
+                          required: statReqs.int,
+                          meets: currentINT >= statReqs.int
+                        });
+                      }
+                      
+                      if (statReqs.spd && statReqs.spd > 0) {
+                        const currentSPD = baseSPD + (selectedDigimon.spd_bonus || 0);
+                        if (currentSPD < statReqs.spd) meetsStatRequirements = false;
+                        statRequirementsList.push({
+                          name: 'SPD',
+                          current: currentSPD,
+                          required: statReqs.spd,
+                          meets: currentSPD >= statReqs.spd
+                        });
+                      }
+                    }
+                    
+                    const canEvolve = meetsLevelRequirement && meetsStatRequirements;
                     const discovered = isDiscovered(option.digimon_id);
                     
                     return (
                       <div 
                         key={option.id}
                         className={`border rounded-lg p-2 ${
-                          meetsLevelRequirement 
+                          canEvolve 
                             ? "border-primary-300 bg-primary-50" 
                             : "border-gray-300 bg-gray-50 opacity-70"
                         }`}
@@ -618,7 +739,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                             {discovered ? (
                               <img 
                                 src={option.sprite_url} 
-                                alt={option.name}
+                                alt={option.name} 
                                 style={{ imageRendering: "pixelated" }}
                               />
                             ) : (
@@ -632,13 +753,32 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                               </div>
                             )}
                           </div>
-                          <div>
+                          <div className="flex-1">
                             <p className="font-medium text-sm">
                               {discovered ? option.name : "???"}
                             </p>
-                            <p className="text-xs text-gray-500">
-                              {discovered ? option.stage : "Unknown"} (Lv. {option.level_required})
-                            </p>
+                            <div className="flex justify-between">
+                              <p className="text-xs text-gray-500">
+                                {discovered ? option.stage : "Unknown"}
+                              </p>
+                              {/* <p className={`text-xs ${meetsLevelRequirement ? "text-green-600" : "text-red-600"}`}>
+                                Lv. {option.level_required}
+                              </p> */}
+                            </div>
+                            
+                            {/* Add stat requirements display */}
+                            {/* {statRequirementsList.length > 0 && (
+                              <div className="mt-1 grid grid-cols-2 gap-x-2 gap-y-1">
+                                {statRequirementsList.map(stat => (
+                                  <div key={stat.name} className="flex justify-between text-xs">
+                                    <span>{stat.name}:</span>
+                                    <span className={stat.meets ? "text-green-600" : "text-red-600"}>
+                                      {stat.current}/{stat.required}
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                            )} */}
                           </div>
                         </div>
                       </div>

@@ -20,6 +20,7 @@ const PatchNotes = () => {
               <li>Based on suggestion, the stats gained from tasks can now be automatically applied to active Digimon or saved for later use</li>
               <li>Stat cap isn't on a Digimon-by-Digimon basis anymore, but cumulative</li>
               <li>The stat cap is now 2 + 2 per Digimon you own</li>
+              <li>Digivolution now requires a level check and stat check</li>
               <li>Not heavily tested, so expect some bugs</li>
             </ul>
           </div>
@@ -76,7 +77,6 @@ const PatchNotes = () => {
               Hoping to introduce more mechanics from Cyber Sleuth games:
             </p>
             <ul className="list-disc pl-5 space-y-1 text-gray-600">
-              <li>Stat-required digivolutions (e.g. require 50+ SPD for a digivolution)</li>
               <li>Abilities?</li>
               <li>Battle movesets?</li>
             </ul>

@@ -3,6 +3,7 @@ import { useDigimonStore, UserDigimon, Digimon as DigimonType, EvolutionOption }
 import { useState, useEffect, useRef } from "react";
 import DigimonDetailModal from "./DigimonDetailModal";
 import { useNotificationStore } from "../store/notificationStore";
+import statModifier from "../store/battleStore";
 
 interface DigimonProps {
   userDigimon: UserDigimon;
@@ -384,9 +385,12 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
       
       {/* Evolution Modal */}
       {showEvolutionModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          onClick={() => setShowEvolutionModal(false)}
+        >
           <div 
-            className="bg-white rounded-lg p-6 max-w-md w-full"
+            className="bg-white rounded-lg p-6 max-w-4xl w-full mx-4"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-xl font-bold mb-4">Evolution Options</h3>
@@ -397,20 +401,141 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
               </div>
             )}
             
-            <div className="grid grid-cols-2 gap-4 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
               {evolutionOptions.map((option) => {
+                // Calculate base stats for current level
+                const baseHP = statModifier(
+                  userDigimon.current_level,
+                  userDigimon.digimon?.hp_level1 || 0,
+                  userDigimon.digimon?.hp || 0,
+                  userDigimon.digimon?.hp_level99 || 0
+                );
+                
+                const baseSP = statModifier(
+                  userDigimon.current_level,
+                  userDigimon.digimon?.sp_level1 || 0,
+                  userDigimon.digimon?.sp || 0,
+                  userDigimon.digimon?.sp_level99 || 0
+                );
+                
+                const baseATK = statModifier(
+                  userDigimon.current_level,
+                  userDigimon.digimon?.atk_level1 || 0,
+                  userDigimon.digimon?.atk || 0,
+                  userDigimon.digimon?.atk_level99 || 0
+                );
+                
+                const baseDEF = statModifier(
+                  userDigimon.current_level,
+                  userDigimon.digimon?.def_level1 || 0,
+                  userDigimon.digimon?.def || 0,
+                  userDigimon.digimon?.def_level99 || 0
+                );
+                
+                const baseINT = statModifier(
+                  userDigimon.current_level,
+                  userDigimon.digimon?.int_level1 || 0,
+                  userDigimon.digimon?.int || 0,
+                  userDigimon.digimon?.int_level99 || 0
+                );
+                
+                const baseSPD = statModifier(
+                  userDigimon.current_level,
+                  userDigimon.digimon?.spd_level1 || 0,
+                  userDigimon.digimon?.spd || 0,
+                  userDigimon.digimon?.spd_level99 || 0
+                );
+                
+                // Check level requirement
                 const meetsLevelRequirement = userDigimon.current_level >= option.level_required;
+                
+                // Check stat requirements
+                let meetsStatRequirements = true;
+                const statRequirementsList = [];
+                
+                if (option.stat_requirements) {
+                  const statReqs = option.stat_requirements;
+                  
+                  // Check each stat requirement and build display list
+                  if (statReqs.hp && statReqs.hp > 0) {
+                    const currentHP = baseHP + (userDigimon.hp_bonus || 0);
+                    if (currentHP < statReqs.hp) meetsStatRequirements = false;
+                    statRequirementsList.push({
+                      name: 'HP',
+                      current: currentHP,
+                      required: statReqs.hp,
+                      meets: currentHP >= statReqs.hp
+                    });
+                  }
+                  
+                  if (statReqs.sp && statReqs.sp > 0) {
+                    const currentSP = baseSP + (userDigimon.sp_bonus || 0);
+                    if (currentSP < statReqs.sp) meetsStatRequirements = false;
+                    statRequirementsList.push({
+                      name: 'SP',
+                      current: currentSP,
+                      required: statReqs.sp,
+                      meets: currentSP >= statReqs.sp
+                    });
+                  }
+                  
+                  if (statReqs.atk && statReqs.atk > 0) {
+                    const currentATK = baseATK + (userDigimon.atk_bonus || 0);
+                    if (currentATK < statReqs.atk) meetsStatRequirements = false;
+                    statRequirementsList.push({
+                      name: 'ATK',
+                      current: currentATK,
+                      required: statReqs.atk,
+                      meets: currentATK >= statReqs.atk
+                    });
+                  }
+                  
+                  if (statReqs.def && statReqs.def > 0) {
+                    const currentDEF = baseDEF + (userDigimon.def_bonus || 0);
+                    if (currentDEF < statReqs.def) meetsStatRequirements = false;
+                    statRequirementsList.push({
+                      name: 'DEF',
+                      current: currentDEF,
+                      required: statReqs.def,
+                      meets: currentDEF >= statReqs.def
+                    });
+                  }
+                  
+                  if (statReqs.int && statReqs.int > 0) {
+                    const currentINT = baseINT + (userDigimon.int_bonus || 0);
+                    if (currentINT < statReqs.int) meetsStatRequirements = false;
+                    statRequirementsList.push({
+                      name: 'INT',
+                      current: currentINT,
+                      required: statReqs.int,
+                      meets: currentINT >= statReqs.int
+                    });
+                  }
+                  
+                  if (statReqs.spd && statReqs.spd > 0) {
+                    const currentSPD = baseSPD + (userDigimon.spd_bonus || 0);
+                    if (currentSPD < statReqs.spd) meetsStatRequirements = false;
+                    statRequirementsList.push({
+                      name: 'SPD',
+                      current: currentSPD,
+                      required: statReqs.spd,
+                      meets: currentSPD >= statReqs.spd
+                    });
+                  }
+                }
+                
+                const canEvolve = meetsLevelRequirement && meetsStatRequirements;
                 const discovered = isDiscovered(option.digimon_id);
                 
                 return (
                   <div 
                     key={option.id}
                     className={`border rounded-lg p-3 transition-all ${
-                      meetsLevelRequirement 
+                      canEvolve 
                         ? "cursor-pointer hover:bg-primary-50 hover:border-primary-300" 
                         : "opacity-60 bg-gray-100"
                     }`}
-                    onClick={() => meetsLevelRequirement && handleEvolution(option.digimon_id)}
+                    onClick={() => canEvolve && handleEvolution(option.digimon_id)}
                   >
                     <div className="flex flex-col items-center">
                       <div className="relative w-24 h-24 mb-2">
@@ -443,12 +568,31 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
                       <span className="text-xs text-gray-500">
                         {discovered ? option.stage : "Unknown Stage"}
                       </span>
+                      
+                      {/* Level requirement */}
                       <span className={`text-xs mt-1 ${
                         meetsLevelRequirement ? "text-green-600" : "text-red-600"
                       }`}>
                         Required Level: {option.level_required}
                         {!meetsLevelRequirement && ` (Current: ${userDigimon.current_level})`}
                       </span>
+                      
+                      {/* Stat requirements */}
+                      {statRequirementsList.length > 0 && (
+                        <div className="mt-2 w-full">
+                          <span className="text-xs font-medium">Stat Requirements:</span>
+                          <div className="space-y-1 mt-1">
+                            {statRequirementsList.map(stat => (
+                              <div key={stat.name} className="flex justify-between text-xs">
+                                <span>{stat.name}:</span>
+                                <span className={stat.meets ? "text-green-600" : "text-red-600"}>
+                                  {stat.current}/{stat.required}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 );

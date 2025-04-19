@@ -5,6 +5,7 @@ import { supabase } from "../lib/supabase";
 import DigimonDetailModal from "../components/DigimonDetailModal";
 import { motion } from "framer-motion";
 import { useNotificationStore } from "../store/notificationStore";
+import statModifier from "../store/battleStore";
 
 const UserDigimonPage = () => {
   const { 
@@ -24,7 +25,6 @@ const UserDigimonPage = () => {
   const [evolutionData, setEvolutionData] = useState<{[key: number]: EvolutionOption[]}>({});
   const [showEvolutionModal, setShowEvolutionModal] = useState<string | null>(null);
   const [evolutionError, setEvolutionError] = useState<string | null>(null);
-  const [evolvingDigimon, setEvolvingDigimon] = useState(false);
   const [selectedDetailDigimon, setSelectedDetailDigimon] = useState<UserDigimon | null>(null);
 
   useEffect(() => {
@@ -63,6 +63,7 @@ const UserDigimonPage = () => {
           from_digimon_id,
           to_digimon_id,
           level_required,
+          stat_requirements,
           digimon:to_digimon_id (id, digimon_id, name, stage, sprite_url)
         `)
         .in("from_digimon_id", digimonIds);
@@ -84,6 +85,7 @@ const UserDigimonPage = () => {
           stage: (path.digimon as any).stage,
           sprite_url: (path.digimon as any).sprite_url,
           level_required: path.level_required,
+          stat_requirements: path.stat_requirements || {}
         });
       });
 
@@ -123,15 +125,9 @@ const UserDigimonPage = () => {
     setEvolutionError(null);
   };
 
-  const handleCloseEvolutionModal = () => {
-    setShowEvolutionModal(null);
-    setEvolutionError(null);
-  };
-
   const handleEvolution = async (toDigimonId: number) => {
     try {
       setEvolutionError(null);
-      setEvolvingDigimon(true);
       
       // Call the evolve function from the store
       await evolveDigimon(toDigimonId, showEvolutionModal || undefined);
@@ -154,8 +150,6 @@ const UserDigimonPage = () => {
     } catch (error) {
       console.error("Evolution error:", error);
       setEvolutionError((error as Error).message);
-    } finally {
-      setEvolvingDigimon(false);
     }
   };
 
@@ -169,6 +163,7 @@ const UserDigimonPage = () => {
           from_digimon_id,
           to_digimon_id,
           level_required,
+          stat_requirements,
           digimon:to_digimon_id (id, digimon_id, name, stage, sprite_url)
         `)
         .eq("from_digimon_id", digimonId);
@@ -184,6 +179,7 @@ const UserDigimonPage = () => {
           stage: (path.digimon as any).stage,
           sprite_url: (path.digimon as any).sprite_url,
           level_required: path.level_required,
+          stat_requirements: path.stat_requirements || {}
         }));
         
         // Update the evolution data state
@@ -199,7 +195,7 @@ const UserDigimonPage = () => {
         }));
       }
     } catch (error) {
-      console.error("Error fetching evolution paths for Digimon:", error);
+      console.error("Error fetching evolution paths:", error);
     }
   };
 
@@ -289,10 +285,13 @@ const UserDigimonPage = () => {
       )}
 
       {/* Evolution Modal */}
-      {showEvolutionModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      {showEvolutionModal && selectedDetailDigimon && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          onClick={() => setShowEvolutionModal(null)}
+        >
           <div 
-            className="bg-white rounded-lg p-6 max-w-md w-full"
+            className="bg-white rounded-lg p-6 max-w-4xl w-full mx-4"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-xl font-bold mb-4">Evolution Options</h3>
@@ -303,89 +302,208 @@ const UserDigimonPage = () => {
               </div>
             )}
             
-            {evolvingDigimon && (
-              <div className="text-center py-4">
-                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary-500 mx-auto mb-2"></div>
-                <p className="text-gray-600">Evolving your Digimon...</p>
-              </div>
-            )}
-            
-            {!evolvingDigimon && (
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                {(() => {
-                  const selectedDigimon = allUserDigimon.find(d => d.id === showEvolutionModal);
-                  if (!selectedDigimon) return <p>Digimon not found</p>;
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+              {(evolutionData[selectedDetailDigimon.digimon_id] || []).map((option) => {
+                // Calculate base stats for current level
+                const baseHP = statModifier(
+                  selectedDetailDigimon.current_level,
+                  selectedDetailDigimon.digimon?.hp_level1 || 0,
+                  selectedDetailDigimon.digimon?.hp || 0,
+                  selectedDetailDigimon.digimon?.hp_level99 || 0
+                );
+                
+                const baseSP = statModifier(
+                  selectedDetailDigimon.current_level,
+                  selectedDetailDigimon.digimon?.sp_level1 || 0,
+                  selectedDetailDigimon.digimon?.sp || 0,
+                  selectedDetailDigimon.digimon?.sp_level99 || 0
+                );
+                
+                const baseATK = statModifier(
+                  selectedDetailDigimon.current_level,
+                  selectedDetailDigimon.digimon?.atk_level1 || 0,
+                  selectedDetailDigimon.digimon?.atk || 0,
+                  selectedDetailDigimon.digimon?.atk_level99 || 0
+                );
+                
+                const baseDEF = statModifier(
+                  selectedDetailDigimon.current_level,
+                  selectedDetailDigimon.digimon?.def_level1 || 0,
+                  selectedDetailDigimon.digimon?.def || 0,
+                  selectedDetailDigimon.digimon?.def_level99 || 0
+                );
+                
+                const baseINT = statModifier(
+                  selectedDetailDigimon.current_level,
+                  selectedDetailDigimon.digimon?.int_level1 || 0,
+                  selectedDetailDigimon.digimon?.int || 0,
+                  selectedDetailDigimon.digimon?.int_level99 || 0
+                );
+                
+                const baseSPD = statModifier(
+                  selectedDetailDigimon.current_level,
+                  selectedDetailDigimon.digimon?.spd_level1 || 0,
+                  selectedDetailDigimon.digimon?.spd || 0,
+                  selectedDetailDigimon.digimon?.spd_level99 || 0
+                );
+                
+                // Check level requirement
+                const meetsLevelRequirement = selectedDetailDigimon.current_level >= option.level_required;
+                
+                // Check stat requirements
+                let meetsStatRequirements = true;
+                const statRequirementsList = [];
+                
+                if (option.stat_requirements) {
+                  const statReqs = option.stat_requirements;
                   
-                  const evolutions = evolutionData[selectedDigimon.digimon_id] || [];
-                  
-                  if (evolutions.length === 0) {
-                    return <p className="col-span-2 text-center py-4">No evolution options available for this Digimon.</p>;
+                  // Check each stat requirement and build display list
+                  if (statReqs.hp && statReqs.hp > 0) {
+                    const currentHP = baseHP + (selectedDetailDigimon.hp_bonus || 0);
+                    if (currentHP < statReqs.hp) meetsStatRequirements = false;
+                    statRequirementsList.push({
+                      name: 'HP',
+                      current: currentHP,
+                      required: statReqs.hp,
+                      meets: currentHP >= statReqs.hp
+                    });
                   }
                   
-                  return evolutions.map((option) => {
-                    const meetsLevelRequirement = selectedDigimon.current_level >= option.level_required;
-                    const discovered = isDiscovered(option.digimon_id);
-                    
-                    return (
-                      <div 
-                        key={option.id}
-                        className={`border rounded-lg p-3 transition-all ${
-                          meetsLevelRequirement 
-                            ? "cursor-pointer hover:bg-primary-50 hover:border-primary-300" 
-                            : "opacity-60 bg-gray-100"
-                        }`}
-                        onClick={() => meetsLevelRequirement && handleEvolution(option.digimon_id)}
-                      >
-                        <div className="flex flex-col items-center">
-                          <div className="relative w-24 h-24 mb-2">
+                  if (statReqs.sp && statReqs.sp > 0) {
+                    const currentSP = baseSP + (selectedDetailDigimon.sp_bonus || 0);
+                    if (currentSP < statReqs.sp) meetsStatRequirements = false;
+                    statRequirementsList.push({
+                      name: 'SP',
+                      current: currentSP,
+                      required: statReqs.sp,
+                      meets: currentSP >= statReqs.sp
+                    });
+                  }
+                  
+                  if (statReqs.atk && statReqs.atk > 0) {
+                    const currentATK = baseATK + (selectedDetailDigimon.atk_bonus || 0);
+                    if (currentATK < statReqs.atk) meetsStatRequirements = false;
+                    statRequirementsList.push({
+                      name: 'ATK',
+                      current: currentATK,
+                      required: statReqs.atk,
+                      meets: currentATK >= statReqs.atk
+                    });
+                  }
+                  
+                  if (statReqs.def && statReqs.def > 0) {
+                    const currentDEF = baseDEF + (selectedDetailDigimon.def_bonus || 0);
+                    if (currentDEF < statReqs.def) meetsStatRequirements = false;
+                    statRequirementsList.push({
+                      name: 'DEF',
+                      current: currentDEF,
+                      required: statReqs.def,
+                      meets: currentDEF >= statReqs.def
+                    });
+                  }
+                  
+                  if (statReqs.int && statReqs.int > 0) {
+                    const currentINT = baseINT + (selectedDetailDigimon.int_bonus || 0);
+                    if (currentINT < statReqs.int) meetsStatRequirements = false;
+                    statRequirementsList.push({
+                      name: 'INT',
+                      current: currentINT,
+                      required: statReqs.int,
+                      meets: currentINT >= statReqs.int
+                    });
+                  }
+                  
+                  if (statReqs.spd && statReqs.spd > 0) {
+                    const currentSPD = baseSPD + (selectedDetailDigimon.spd_bonus || 0);
+                    if (currentSPD < statReqs.spd) meetsStatRequirements = false;
+                    statRequirementsList.push({
+                      name: 'SPD',
+                      current: currentSPD,
+                      required: statReqs.spd,
+                      meets: currentSPD >= statReqs.spd
+                    });
+                  }
+                }
+                
+                const canEvolve = meetsLevelRequirement && meetsStatRequirements;
+                const discovered = isDiscovered(option.digimon_id);
+                
+                return (
+                  <div 
+                    key={option.id}
+                    className={`border rounded-lg p-3 transition-all ${
+                      canEvolve 
+                        ? "cursor-pointer hover:bg-primary-50 hover:border-primary-300" 
+                        : "opacity-60 bg-gray-100"
+                    }`}
+                    onClick={() => canEvolve && handleEvolution(option.digimon_id)}
+                  >
+                    <div className="flex flex-col items-center">
+                      <div className="relative w-24 h-24 mb-2">
+                        <img 
+                          src={option.sprite_url} 
+                          alt={discovered ? option.name : "Unknown Digimon"}
+                          style={{ imageRendering: "pixelated" }} 
+                          className={`w-full h-full object-contain ${!discovered ? "opacity-0" : ""}`}
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = "/assets/pet/egg.svg";
+                          }}
+                        />
+                        {!discovered && (
+                          <div className="absolute inset-0 flex items-center justify-center">
                             <img 
                               src={option.sprite_url} 
-                              alt={discovered ? option.name : "Unknown Digimon"}
+                              alt="Unknown Digimon"
                               style={{ imageRendering: "pixelated" }} 
-                              className={`w-full h-full object-contain ${!discovered ? "opacity-0" : ""}`}
+                              className="w-full h-full object-contain brightness-0"
                               onError={(e) => {
                                 (e.target as HTMLImageElement).src = "/assets/pet/egg.svg";
                               }}
                             />
-                            {!discovered && (
-                              <div className="absolute inset-0 flex items-center justify-center">
-                                <img 
-                                  src={option.sprite_url} 
-                                  alt="Unknown Digimon"
-                                  style={{ imageRendering: "pixelated" }} 
-                                  className="w-full h-full object-contain brightness-0"
-                                  onError={(e) => {
-                                    (e.target as HTMLImageElement).src = "/assets/pet/egg.svg";
-                                  }}
-                                />
-                              </div>
-                            )}
                           </div>
-                          <span className="font-medium text-center">
-                            {discovered ? option.name : "???"}
-                          </span>
-                          <span className="text-xs text-gray-500">
-                            {discovered ? option.stage : "Unknown Stage"}
-                          </span>
-                          <span className={`text-xs mt-1 ${
-                            meetsLevelRequirement ? "text-green-600" : "text-red-600"
-                          }`}>
-                            Required Level: {option.level_required}
-                            {!meetsLevelRequirement && ` (Current: ${selectedDigimon.current_level})`}
-                          </span>
-                        </div>
+                        )}
                       </div>
-                    );
-                  });
-                })()}
-              </div>
-            )}
+                      <span className="font-medium text-center">
+                        {discovered ? option.name : "???"}
+                      </span>
+                      <span className="text-xs text-gray-500">
+                        {discovered ? option.stage : "Unknown Stage"}
+                      </span>
+                      
+                      {/* Level requirement */}
+                      <span className={`text-xs mt-1 ${
+                        meetsLevelRequirement ? "text-green-600" : "text-red-600"
+                      }`}>
+                        Required Level: {option.level_required}
+                        {!meetsLevelRequirement && ` (Current: ${selectedDetailDigimon.current_level})`}
+                      </span>
+                      
+                      {/* Stat requirements */}
+                      {statRequirementsList.length > 0 && (
+                        <div className="mt-2 w-full">
+                          <span className="text-xs font-medium">Stat Requirements:</span>
+                          <div className="space-y-1 mt-1">
+                            {statRequirementsList.map(stat => (
+                              <div key={stat.name} className="flex justify-between text-xs">
+                                <span>{stat.name}:</span>
+                                <span className={stat.meets ? "text-green-600" : "text-red-600"}>
+                                  {stat.current}/{stat.required}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
             
-            <div className="flex justify-end">
+            <div className="flex justify-end mt-4">
               <button 
-                onClick={handleCloseEvolutionModal}
-                className="btn-outline"
-                disabled={evolvingDigimon}
+                onClick={() => setShowEvolutionModal(null)}
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
               >
                 Close
               </button>

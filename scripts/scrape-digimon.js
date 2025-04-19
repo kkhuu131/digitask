@@ -161,14 +161,57 @@ async function scrapeEvolutionData(detailUrl, digimonId) {
           .replace("Level: ", "");
         const level = parseInt(levelText);
 
+        // Extract stat requirements
+        const requiresText = $(row).find("td[width='55%']").text().trim();
+        const statRequirements = {
+          hp: 0,
+          sp: 0,
+          atk: 0,
+          def: 0,
+          int: 0,
+          spd: 0,
+        };
+
+        // Parse requirements text for stats
+        if (requiresText) {
+          // Look for HP: X
+          const hpMatch = requiresText.match(/HP\s*:?\s*(\d+)/i);
+          if (hpMatch) statRequirements.hp = parseInt(hpMatch[1]);
+
+          // Look for SP: X
+          const spMatch = requiresText.match(/SP\s*:?\s*(\d+)/i);
+          if (spMatch) statRequirements.sp = parseInt(spMatch[1]);
+
+          // Look for ATK: X
+          const atkMatch = requiresText.match(/ATK\s*:?\s*(\d+)/i);
+          if (atkMatch) statRequirements.atk = parseInt(atkMatch[1]);
+
+          // Look for DEF: X
+          const defMatch = requiresText.match(/DEF\s*:?\s*(\d+)/i);
+          if (defMatch) statRequirements.def = parseInt(defMatch[1]);
+
+          // Look for INT: X
+          const intMatch = requiresText.match(/INT\s*:?\s*(\d+)/i);
+          if (intMatch) statRequirements.int = parseInt(intMatch[1]);
+
+          // Look for SPD: X
+          const spdMatch = requiresText.match(/SPD\s*:?\s*(\d+)/i);
+          if (spdMatch) statRequirements.spd = parseInt(spdMatch[1]);
+        }
+
         if (name && !isNaN(level)) {
-          evolvesTo.push({ name, level_required: level });
+          evolvesTo.push({
+            name,
+            level_required: level,
+            stat_requirements: statRequirements,
+          });
         }
       });
 
     console.log(
       `Digimon #${digimonId} - Evolves From: ${evolvesFrom.length}, Evolves To: ${evolvesTo.length}`
     );
+    ``;
     return { evolvesFrom, evolvesTo };
   } catch (error) {
     console.error(
@@ -176,6 +219,101 @@ async function scrapeEvolutionData(detailUrl, digimonId) {
       error
     );
     return { evolvesFrom: [], evolvesTo: [] };
+  }
+}
+
+async function updateEvolutionRequirements(evolutionData) {
+  console.log("Updating evolution requirements in Supabase...");
+
+  // Get existing digimon data to map names/request_ids to database IDs
+  const { data: existingDigimon, error: fetchError } = await supabase
+    .from("digimon")
+    .select("id, digimon_id, request_id, name");
+
+  if (fetchError) {
+    console.error("Error fetching existing Digimon:", fetchError);
+    return;
+  }
+
+  // Create mapping dictionaries
+  const requestIdToDbId = {};
+  const nameToDbId = {};
+
+  existingDigimon.forEach((digimon) => {
+    requestIdToDbId[digimon.request_id] = digimon.id;
+    nameToDbId[digimon.name.toLowerCase()] = digimon.id;
+  });
+
+  // Process each digimon's evolution data
+  for (const requestId in evolutionData) {
+    const fromDigimonDbId = requestIdToDbId[requestId];
+
+    if (!fromDigimonDbId) {
+      console.warn(
+        `Could not find database ID for Digimon with request_id ${requestId}`
+      );
+      continue;
+    }
+
+    const { evolvesTo } = evolutionData[requestId];
+
+    for (const evolution of evolvesTo) {
+      const toDigimonName = evolution.name.toLowerCase();
+      const toDigimonDbId = nameToDbId[toDigimonName];
+
+      if (!toDigimonDbId) {
+        console.warn(
+          `Could not find database ID for Digimon named "${evolution.name}"`
+        );
+        continue;
+      }
+
+      // Update the existing evolution path with stat requirements
+      const { error: updateError } = await supabase
+        .from("evolution_paths")
+        .update({
+          stat_requirements: evolution.stat_requirements || {},
+        })
+        .eq("from_digimon_id", fromDigimonDbId)
+        .eq("to_digimon_id", toDigimonDbId);
+
+      if (updateError) {
+        console.error(
+          `Error updating evolution path from ${fromDigimonDbId} to ${toDigimonDbId}:`,
+          updateError
+        );
+      }
+    }
+  }
+
+  console.log("Evolution requirements update complete!");
+}
+
+async function updateRequirementsOnly() {
+  try {
+    // Scrape basic Digimon data to get the request_ids
+    const digimonList = await scrapeDigimonList();
+
+    // Scrape evolution data for each Digimon
+    const evolutionData = {};
+    for (const digimon of digimonList) {
+      console.log(`Scraping evolution data for ${digimon.name}...`);
+
+      evolutionData[digimon.request_id] = await scrapeEvolutionData(
+        digimon.detail_url,
+        digimon.digimon_id
+      );
+
+      // Add a small delay to avoid overwhelming the server
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    }
+
+    // Update just the evolution requirements
+    await updateEvolutionRequirements(evolutionData);
+
+    console.log("Requirements update complete!");
+  } catch (error) {
+    console.error("Error in requirements update process:", error);
   }
 }
 
@@ -539,4 +677,6 @@ async function testDetailScraping() {
 // Run the main scraper
 // main();
 
-updateStatsOnly();
+// updateStatsOnly();
+
+updateRequirementsOnly();
