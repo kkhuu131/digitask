@@ -23,6 +23,9 @@ import UserDigimonPage from './pages/UserDigimonPage';
 import Tutorial from './pages/Tutorial';
 import LandingPage from './pages/LandingPage';
 import PatchNotes from './pages/PatchNotes';
+import ProfilePage from './pages/ProfilePage';
+import UserSearchPage from './pages/UserSearchPage';
+import LeaderboardPage from './pages/LeaderboardPage';
 
 // Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -364,6 +367,30 @@ function App() {
         <Route path="/profile" element={
           <ProtectedRoute>
             <Layout>
+              <ProfilePage />
+            </Layout>
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/profile/user/:id" element={
+          <ProtectedRoute>
+            <Layout>
+              <ProfilePage />
+            </Layout>
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/profile/name/:username" element={
+          <ProtectedRoute>
+            <Layout>
+              <ProfilePage />
+            </Layout>
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/settings" element={
+          <ProtectedRoute>
+            <Layout>
               <ProfileSettings />
             </Layout>
           </ProtectedRoute>
@@ -389,6 +416,22 @@ function App() {
           <ProtectedRoute>
             <Layout>
               <PatchNotes />
+            </Layout>
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/user-search" element={
+          <ProtectedRoute>
+            <Layout>
+              <UserSearchPage />
+            </Layout>
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/leaderboard" element={
+          <ProtectedRoute>
+            <Layout>
+              <LeaderboardPage />
             </Layout>
           </ProtectedRoute>
         } />

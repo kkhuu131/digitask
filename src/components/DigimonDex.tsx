@@ -188,17 +188,17 @@ const DigimonDex = () => {
             </div>
             
             <div className="mb-6">
-              <h4 className="font-semibold mb-2">Stats</h4>
+              <h4 className="font-semibold mb-2">Base Stats (Level 1)</h4>
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <p className="text-sm">HP: {selectedDigimon.hp}</p>
-                  <p className="text-sm">SP: {selectedDigimon.sp}</p>
-                  <p className="text-sm">ATK: {selectedDigimon.atk}</p>
+                  <p className="text-sm">HP: {selectedDigimon.hp_level1}</p>
+                  <p className="text-sm">SP: {selectedDigimon.sp_level1}</p>
+                  <p className="text-sm">ATK: {selectedDigimon.atk_level1}</p>
                 </div>
                 <div>
-                  <p className="text-sm">DEF: {selectedDigimon.def}</p>
-                  <p className="text-sm">INT: {selectedDigimon.int}</p>
-                  <p className="text-sm">SPD: {selectedDigimon.spd}</p>
+                  <p className="text-sm">DEF: {selectedDigimon.def_level1}</p>
+                  <p className="text-sm">INT: {selectedDigimon.int_level1}</p>
+                  <p className="text-sm">SPD: {selectedDigimon.spd_level1}</p>
                 </div>
               </div>
             </div>

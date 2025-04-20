@@ -13,6 +13,20 @@ const PatchNotes = () => {
           <div className="mb-6">
             <div className="flex items-center mb-2">
               <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
+              <h3 className="text-lg font-medium ml-2">Profiles and Leaderboards</h3>
+              <span className="text-sm text-gray-500 ml-auto">April 19, 2025</span>
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+              <li>Added a profile page for each user, showing their Digimon and player stats</li>
+              <li>Leaderboard page showing the top players based on battles and streaks</li>
+              <li>A page to search and view other user profiles</li>
+              <li>Avatar pictures, which can be set in the profile page and only for discovered Digimon</li>
+              <li>Friends soon?</li>
+            </ul>
+          </div>
+
+          <div className="mb-6">
+            <div className="flex items-center mb-2">
               <h3 className="text-lg font-medium ml-2">Reworked Stat Cap System</h3>
               <span className="text-sm text-gray-500 ml-auto">April 18, 2025</span>
             </div>

@@ -426,57 +426,57 @@ const UserDigimonPage = () => {
                 }
                 
                 const canEvolve = meetsLevelRequirement && meetsStatRequirements;
-                const discovered = isDiscovered(option.digimon_id);
-                
-                return (
-                  <div 
-                    key={option.id}
-                    className={`border rounded-lg p-3 transition-all ${
+                    const discovered = isDiscovered(option.digimon_id);
+                    
+                    return (
+                      <div 
+                        key={option.id}
+                        className={`border rounded-lg p-3 transition-all ${
                       canEvolve 
-                        ? "cursor-pointer hover:bg-primary-50 hover:border-primary-300" 
-                        : "opacity-60 bg-gray-100"
-                    }`}
+                            ? "cursor-pointer hover:bg-primary-50 hover:border-primary-300" 
+                            : "opacity-60 bg-gray-100"
+                        }`}
                     onClick={() => canEvolve && handleEvolution(option.digimon_id)}
-                  >
-                    <div className="flex flex-col items-center">
-                      <div className="relative w-24 h-24 mb-2">
-                        <img 
-                          src={option.sprite_url} 
-                          alt={discovered ? option.name : "Unknown Digimon"}
-                          style={{ imageRendering: "pixelated" }} 
-                          className={`w-full h-full object-contain ${!discovered ? "opacity-0" : ""}`}
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).src = "/assets/pet/egg.svg";
-                          }}
-                        />
-                        {!discovered && (
-                          <div className="absolute inset-0 flex items-center justify-center">
+                      >
+                        <div className="flex flex-col items-center">
+                          <div className="relative w-24 h-24 mb-2">
                             <img 
                               src={option.sprite_url} 
-                              alt="Unknown Digimon"
+                              alt={discovered ? option.name : "Unknown Digimon"}
                               style={{ imageRendering: "pixelated" }} 
-                              className="w-full h-full object-contain brightness-0"
+                              className={`w-full h-full object-contain ${!discovered ? "opacity-0" : ""}`}
                               onError={(e) => {
                                 (e.target as HTMLImageElement).src = "/assets/pet/egg.svg";
                               }}
                             />
+                            {!discovered && (
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <img 
+                                  src={option.sprite_url} 
+                                  alt="Unknown Digimon"
+                                  style={{ imageRendering: "pixelated" }} 
+                                  className="w-full h-full object-contain brightness-0"
+                                  onError={(e) => {
+                                    (e.target as HTMLImageElement).src = "/assets/pet/egg.svg";
+                                  }}
+                                />
+                              </div>
+                            )}
                           </div>
-                        )}
-                      </div>
-                      <span className="font-medium text-center">
-                        {discovered ? option.name : "???"}
-                      </span>
-                      <span className="text-xs text-gray-500">
-                        {discovered ? option.stage : "Unknown Stage"}
-                      </span>
+                          <span className="font-medium text-center">
+                            {discovered ? option.name : "???"}
+                          </span>
+                          <span className="text-xs text-gray-500">
+                            {discovered ? option.stage : "Unknown Stage"}
+                          </span>
                       
                       {/* Level requirement */}
-                      <span className={`text-xs mt-1 ${
-                        meetsLevelRequirement ? "text-green-600" : "text-red-600"
-                      }`}>
-                        Required Level: {option.level_required}
+                          <span className={`text-xs mt-1 ${
+                            meetsLevelRequirement ? "text-green-600" : "text-red-600"
+                          }`}>
+                            Required Level: {option.level_required}
                         {!meetsLevelRequirement && ` (Current: ${selectedDetailDigimon.current_level})`}
-                      </span>
+                          </span>
                       
                       {/* Stat requirements */}
                       {statRequirementsList.length > 0 && (
@@ -488,25 +488,25 @@ const UserDigimonPage = () => {
                                 <span>{stat.name}:</span>
                                 <span className={stat.meets ? "text-green-600" : "text-red-600"}>
                                   {stat.current}/{stat.required}
-                                </span>
-                              </div>
+                    </span>
+                  </div>
                             ))}
+                </div>
+                                </div>
+                              )}
                           </div>
                         </div>
-                      )}
-                    </div>
+                      );
+                    })}
                   </div>
-                );
-              })}
-            </div>
-            
+                
             <div className="flex justify-end mt-4">
-              <button 
+                    <button
                 onClick={() => setShowEvolutionModal(null)}
                 className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
               >
                 Close
-              </button>
+                    </button>
             </div>
           </div>
         </div>

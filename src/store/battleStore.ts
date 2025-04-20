@@ -69,7 +69,7 @@ function simulateTeamBattle(userTeamData: any, opponentTeamData: any) {
     const stats = modifyStats(digimon);
     Object.assign(digimon.digimon, {
       ...stats,
-      current_hp: stats.hp * ((digimon.health || 100) / 100.0),
+      current_hp: stats.hp,
     });
   }
 
@@ -1169,7 +1169,7 @@ export const useBattleStore = create<BattleState>((set, get) => {
           )
           .eq("user_id", userData.user.id)
           .order("created_at", { ascending: false })
-          .limit(10);
+          .limit(20);
 
         if (error) throw error;
 

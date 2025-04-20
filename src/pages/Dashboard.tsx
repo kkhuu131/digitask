@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDigimonStore } from "../store/petStore";
 import { useTaskStore } from "../store/taskStore";
 import Digimon from "../components/Digimon";
@@ -53,23 +53,17 @@ const Dashboard: React.FC = () => {
           <div className="ml-3 flex justify-between items-center w-full">
             <div>
               <p className="text-sm text-indigo-800">
-                <span className="font-medium">Digitask is in beta!</span> New features and improvements are actively being developed.
+                <span className="font-medium">Digitask is in beta! Check our the latest updates in the Patch Notes page.</span>
               </p>
             </div>
             <div className="flex space-x-2">
-              <Link 
-                to="/patch-notes" 
-                className="text-sm bg-indigo-100 hover:bg-indigo-200 text-indigo-800 px-3 py-1 rounded-full transition-colors"
-              >
-                View Updates
-              </Link>
               <a 
                 href="https://forms.gle/4geGdXkywwAQcZDt6" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-sm bg-indigo-100 hover:bg-indigo-200 text-indigo-800 px-3 py-1 rounded-full transition-colors"
               >
-                Report Bug or Suggestion
+                Bug Report
               </a>
             </div>
           </div>
