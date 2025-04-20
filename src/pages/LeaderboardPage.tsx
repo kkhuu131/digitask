@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 
@@ -13,94 +13,81 @@ interface ProfileData {
 }
 
 const LeaderboardPage = () => {
-  const [users, setUsers] = useState<ProfileData[]>([]);
+  const [allUsers, setAllUsers] = useState<ProfileData[]>([]);
   const [loading, setLoading] = useState(true);
   const [leaderboardType, setLeaderboardType] = useState<'wins'|'winrate'|'streak'>('wins');
   
+  // Fetch all data once on component mount
   useEffect(() => {
-    fetchLeaderboard();
-  }, [leaderboardType]);
-  
-  const fetchLeaderboard = async () => {
-    setLoading(true);
-    try {
-      if (leaderboardType === 'streak') {
-        const { data, error } = await supabase
-          .from("daily_quotas")
-          .select(`
-            current_streak,
-            user_id
-          `)
-          .order('current_streak', { ascending: false })
-          .limit(50);
-        
-        if (error) throw error;
-        
-        if (data && data.length > 0) {
-          // Get the user IDs from the streak data
-          const userIds = data.map(item => item.user_id);
-          
-          // Fetch the profile data for these users
-          const { data: profilesData, error: profilesError } = await supabase
-            .from("profiles")
-            .select("id, username, battles_won, battles_completed, avatar_url")
-            .in("id", userIds);
-          
-          if (profilesError) throw profilesError;
-          
-          // Combine the data
-          const transformedData = data.map(streakItem => {
-            const profile = profilesData?.find(p => p.id === streakItem.user_id);
-            if (!profile) return null;
-            
-            return {
-              id: profile.id,
-              username: profile.username,
-              battles_won: profile.battles_won || 0,
-              battles_completed: profile.battles_completed || 0,
-              current_streak: streakItem.current_streak,
-              avatar_url: profile.avatar_url
-            };
-          }).filter(Boolean) as ProfileData[];
-          
-          setUsers(transformedData);
-        } else {
-          setUsers([]);
-        }
-      } else {
-        // For wins and winrate leaderboards, we can query profiles directly
-        let query = supabase
+    const fetchAllLeaderboardData = async () => {
+      setLoading(true);
+      try {
+        // Fetch profiles for wins and winrate
+        const { data: profilesData, error: profilesError } = await supabase
           .from("profiles")
-          .select("id, username, battles_won, battles_completed, avatar_url");
+          .select("id, username, battles_won, battles_completed, avatar_url")
+          .limit(100); // Get more data to ensure we have enough for all tabs
         
-        if (leaderboardType === 'wins') {
-          query = query.order('battles_won', { ascending: false });
-        } else if (leaderboardType === 'winrate') {
-          // For winrate, we'll get all users with at least 1 battle
-          query = query.gt('battles_completed', 0);
-        }
+        if (profilesError) throw profilesError;
         
-        const { data, error } = await query.limit(50);
+        // Fetch streak data
+        const { data: streakData, error: streakError } = await supabase
+          .from("daily_quotas")
+          .select("current_streak, user_id")
+          .order('current_streak', { ascending: false })
+          .limit(100);
         
-        if (error) throw error;
+        if (streakError) throw streakError;
         
-        // Sort by win rate
-        if (leaderboardType === 'winrate' && data) {
-          data.sort((a, b) => {
-            const aRate = a.battles_completed ? a.battles_won / a.battles_completed : 0;
-            const bRate = b.battles_completed ? b.battles_won / b.battles_completed : 0;
-            return bRate - aRate;
-          });
-        }
+        // Combine the data
+        const combinedData = profilesData?.map(profile => {
+          const streakEntry = streakData?.find(s => s.user_id === profile.id);
+          return {
+            ...profile,
+            battles_won: profile.battles_won || 0,
+            battles_completed: profile.battles_completed || 0,
+            current_streak: streakEntry?.current_streak || 0
+          };
+        }) || [];
         
-        setUsers(data || []);
+        setAllUsers(combinedData);
+      } catch (err) {
+        console.error("Error fetching leaderboard data:", err);
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      console.error("Error fetching leaderboard:", err);
-    } finally {
-      setLoading(false);
+    };
+    
+    fetchAllLeaderboardData();
+  }, []);
+  
+  // Filter and sort the data based on the selected leaderboard type
+  const displayUsers = useMemo(() => {
+    if (!allUsers.length) return [];
+    
+    let filteredUsers = [...allUsers];
+    
+    if (leaderboardType === 'wins') {
+      return filteredUsers
+        .sort((a, b) => b.battles_won - a.battles_won)
+        .slice(0, 50);
+    } 
+    else if (leaderboardType === 'winrate') {
+      return filteredUsers
+        .filter(user => user.battles_completed > 0)
+        .sort((a, b) => {
+          const aRate = a.battles_completed ? a.battles_won / a.battles_completed : 0;
+          const bRate = b.battles_completed ? b.battles_won / b.battles_completed : 0;
+          return bRate - aRate;
+        })
+        .slice(0, 50);
+    } 
+    else { // streak
+      return filteredUsers
+        .sort((a, b) => (b.current_streak || 0) - (a.current_streak || 0))
+        .slice(0, 50);
     }
-  };
+  }, [allUsers, leaderboardType]);
   
   return (
     <div className="max-w-4xl mx-auto">
@@ -144,7 +131,7 @@ const LeaderboardPage = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {users.map((user, index) => (
+              {displayUsers.map((user, index) => (
                 <tr key={user.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{index + 1}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
