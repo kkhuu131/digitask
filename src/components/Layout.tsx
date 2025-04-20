@@ -160,7 +160,7 @@ const Layout = ({ children }: LayoutProps) => {
                     to="/user-search"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
-                    Find Trainers
+                    Find Players
                   </Link>
                   <Link
                     to="/leaderboard"

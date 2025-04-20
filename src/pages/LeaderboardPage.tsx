@@ -12,17 +12,6 @@ interface ProfileData {
   avatar_url?: string;
 }
 
-interface StreakLeaderboardRow {
-  current_streak: number;
-  profiles: {
-    id: string;
-    username: string;
-    battles_won: number;
-    battles_completed: number;
-    avatar_url?: string;
-  };
-}
-
 const LeaderboardPage = () => {
   const [users, setUsers] = useState<ProfileData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -37,33 +26,47 @@ const LeaderboardPage = () => {
     try {
       if (leaderboardType === 'streak') {
         const { data, error } = await supabase
-        .from("daily_quotas")
-        .select(`
-          current_streak,
-          profiles!daily_quotas_user_id_fkey (
-            id, 
-            username, 
-            battles_won, 
-            battles_completed,
-            avatar_url
-          )
-        `)
-        .order('current_streak', { ascending: false })
-        .limit(50) as unknown as { data: StreakLeaderboardRow[]; error: any };
+          .from("daily_quotas")
+          .select(`
+            current_streak,
+            user_id
+          `)
+          .order('current_streak', { ascending: false })
+          .limit(50);
         
         if (error) throw error;
         
-        // Transform the data to match our expected format
-        const transformedData = data?.map(item => ({
-          id: item.profiles.id,
-          username: item.profiles.username,
-          battles_won: item.profiles.battles_won,
-          battles_completed: item.profiles.battles_completed,
-          current_streak: item.current_streak,
-          avatar_url: item.profiles.avatar_url
-        })) as ProfileData[] || [];
-        
-        setUsers(transformedData);
+        if (data && data.length > 0) {
+          // Get the user IDs from the streak data
+          const userIds = data.map(item => item.user_id);
+          
+          // Fetch the profile data for these users
+          const { data: profilesData, error: profilesError } = await supabase
+            .from("profiles")
+            .select("id, username, battles_won, battles_completed, avatar_url")
+            .in("id", userIds);
+          
+          if (profilesError) throw profilesError;
+          
+          // Combine the data
+          const transformedData = data.map(streakItem => {
+            const profile = profilesData?.find(p => p.id === streakItem.user_id);
+            if (!profile) return null;
+            
+            return {
+              id: profile.id,
+              username: profile.username,
+              battles_won: profile.battles_won || 0,
+              battles_completed: profile.battles_completed || 0,
+              current_streak: streakItem.current_streak,
+              avatar_url: profile.avatar_url
+            };
+          }).filter(Boolean) as ProfileData[];
+          
+          setUsers(transformedData);
+        } else {
+          setUsers([]);
+        }
       } else {
         // For wins and winrate leaderboards, we can query profiles directly
         let query = supabase
