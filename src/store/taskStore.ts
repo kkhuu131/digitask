@@ -15,6 +15,7 @@ export interface Task {
   created_at: string;
   completed_at: string | null;
   category: StatCategory | null;
+  notes?: string | null;
 }
 
 interface DailyQuota {
@@ -51,6 +52,7 @@ interface TaskState {
   setPenalizedTasks: (taskIds: string[]) => void;
   completeDailyQuota: () => Promise<void>;
   getExpMultiplier: () => number;
+  editTask: (id: string, updates: Partial<Task>) => Promise<void>;
 }
 
 export const useTaskStore = create<TaskState>((set, get) => ({
@@ -99,38 +101,34 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     try {
       set({ loading: true, error: null });
 
+      // Make sure we're sending the notes field properly
+      const taskToCreate = {
+        ...task,
+        // Ensure notes is properly formatted (empty string becomes null)
+        notes: task.notes && task.notes.trim() ? task.notes.trim() : null,
+      };
+
       const { data: userData } = await supabase.auth.getUser();
       if (!userData.user) {
-        set({ loading: false, error: "User not authenticated" });
+        set({ loading: false });
         return;
       }
 
-      // Create the task
-      const { data: newTask, error } = await supabase
+      const { data, error } = await supabase
         .from("tasks")
-        .insert({
-          user_id: userData.user.id,
-          description: task.description || "",
-          is_daily: task.is_daily || false,
-          due_date: task.due_date || null,
-          category: task.category || null,
-        })
+        .insert([{ ...taskToCreate, user_id: userData.user.id }])
         .select("*")
         .single();
 
       if (error) throw error;
 
-      // Update local state
       set((state) => ({
-        tasks: [...state.tasks, newTask as Task],
+        tasks: [...state.tasks, data],
         loading: false,
       }));
     } catch (error) {
       console.error("Error creating task:", error);
-      set({
-        error: (error as Error).message,
-        loading: false,
-      });
+      set({ error: (error as Error).message, loading: false });
     }
   },
 
@@ -152,7 +150,11 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         loading: false,
       }));
     } catch (error) {
-      set({ error: (error as Error).message, loading: false });
+      console.error("Error editing task:", error);
+      set({
+        error: (error as Error).message,
+        loading: false,
+      });
     }
   },
 
@@ -376,8 +378,6 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       });
 
       if (newlyOverdueTasks.length > 0) {
-        console.log(`Found ${newlyOverdueTasks.length} newly overdue tasks`);
-
         // Get the current daily quota
         const { data: quotaData } = await supabase
           .from("daily_quotas")
@@ -404,11 +404,9 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         }
 
         // Apply penalties for each overdue task
-        for (const task of newlyOverdueTasks) {
-          console.log(`Applying penalty for overdue task: ${task.description}`);
-
+        for (const _ of newlyOverdueTasks) {
           // Apply health and happiness penalties to the Digimon
-          await useDigimonStore.getState().applyPenalty(10);
+          await useDigimonStore.getState().applyPenalty(5);
           penaltyApplied = true;
         }
 
@@ -540,7 +538,6 @@ export const useTaskStore = create<TaskState>((set, get) => ({
   },
 
   forceCheckOverdueTasks: async () => {
-    console.log("Manually triggering overdue task check");
     await get().checkOverdueTasks();
   },
 
@@ -561,8 +558,6 @@ export const useTaskStore = create<TaskState>((set, get) => ({
           filter: `user_id=eq.${userData.user.id}`,
         },
         async (payload) => {
-          console.log("Daily quota changed:", payload);
-          // Update the state with the new quota data
           set({
             dailyQuota: payload.new as DailyQuota,
             penalizedTasks: (payload.new as DailyQuota).penalized_tasks || [],
@@ -604,5 +599,31 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     if (streak <= 1) return 1.0;
 
     return Math.min(1.0 + (streak - 1) * 0.1, 3.0);
+  },
+
+  editTask: async (id, updates) => {
+    try {
+      set({ loading: true, error: null });
+
+      const { data, error } = await supabase
+        .from("tasks")
+        .update(updates)
+        .eq("id", id)
+        .select("*")
+        .single();
+
+      if (error) throw error;
+
+      set((state) => ({
+        tasks: state.tasks.map((task) => (task.id === id ? data : task)),
+        loading: false,
+      }));
+    } catch (error) {
+      console.error("Error editing task:", error);
+      set({
+        error: (error as Error).message,
+        loading: false,
+      });
+    }
   },
 }));

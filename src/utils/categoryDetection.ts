@@ -190,3 +190,11 @@ export function detectCategory(description: string): StatCategory | null {
 export function getStatBoostValue(isDaily: boolean): number {
   return isDaily ? statBoostValues.daily : statBoostValues.regular;
 }
+
+// Add this export to the file
+export const categoryOptions = Object.entries(categoryDescriptions).map(
+  ([value, description]) => ({
+    value: value as StatCategory,
+    label: `${categoryIcons[value as StatCategory]} ${value} - ${description}`,
+  })
+);

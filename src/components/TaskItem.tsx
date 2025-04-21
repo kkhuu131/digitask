@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Task } from "../store/taskStore";
 import { categoryIcons } from "../utils/categoryDetection";
+import EditTaskModal from "./EditTaskModal";
 
 interface TaskItemProps {
   task: Task;
@@ -10,6 +11,8 @@ interface TaskItemProps {
 
 const TaskItem: React.FC<TaskItemProps> = ({ task, onComplete, onDelete }) => {
   const [isTaskOverdue, setIsTaskOverdue] = useState(false);
+  const [showNotes, setShowNotes] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
     const checkOverdue = () => {
@@ -95,11 +98,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onComplete, onDelete }) => {
   };
 
   return (
-    <div 
-      className="flex items-center p-3 border-b last:border-b-0 hover:bg-gray-50 transition-colors"
-      role="listitem"
-    >
-      {/* Circle Checkbox - now centered with items-center */}
+    <div className={`border-b border-gray-200 p-4 flex ${task.is_completed ? 'bg-gray-50' : ''}`}>
       <div className="flex-shrink-0 mr-3">
         <button
           onClick={() => !task.is_completed && onComplete(task.id)}
@@ -127,16 +126,32 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onComplete, onDelete }) => {
             {task.description}
           </p>
           
-          <button
-            onClick={() => onDelete(task.id)}
-            className="ml-2 p-1 text-gray-400 hover:text-red-500 rounded"
-            title="Delete task"
-            aria-label={`Delete task: ${task.description}`}
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-          </button>
+          <div className="flex items-center">
+            {/* Edit button - only for non-completed tasks */}
+            {!task.is_completed && (
+              <button
+                onClick={() => setShowEditModal(true)}
+                className="ml-2 p-1 text-gray-400 hover:text-blue-500 rounded"
+                title="Edit task"
+                aria-label={`Edit task: ${task.description}`}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                </svg>
+              </button>
+            )}
+            
+            <button
+              onClick={() => onDelete(task.id)}
+              className="ml-2 p-1 text-gray-400 hover:text-red-500 rounded"
+              title="Delete task"
+              aria-label={`Delete task: ${task.description}`}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
         </div>
         
         <div className="flex items-center mt-1 flex-wrap gap-1">
@@ -166,8 +181,44 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onComplete, onDelete }) => {
           </span>
         </div>
         
+        {/* Notes section */}
+        {task.notes && (
+          <div className="mt-2">
+            <button 
+              onClick={() => setShowNotes(!showNotes)}
+              className="text-xs text-blue-600 hover:text-blue-800 flex items-center"
+            >
+              <svg 
+                className={`w-3 h-3 mr-1 transition-transform ${showNotes ? 'rotate-90' : ''}`} 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24" 
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+              {showNotes ? 'Hide notes' : 'Show notes'}
+            </button>
+            
+            {showNotes && (
+              <div className="mt-2 text-sm text-gray-600 bg-gray-50 p-2 rounded">
+                {task.notes}
+              </div>
+            )}
+          </div>
+        )}
+        
         {process.env.NODE_ENV === 'development' && debugInfo()}
       </div>
+      
+      {/* Edit Task Modal */}
+      {showEditModal && (
+        <EditTaskModal
+          task={task}
+          isOpen={showEditModal}
+          onClose={() => setShowEditModal(false)}
+        />
+      )}
     </div>
   );
 };

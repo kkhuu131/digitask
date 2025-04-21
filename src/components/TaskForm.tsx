@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { useTaskStore } from "../store/taskStore";
+import { Task, useTaskStore } from "../store/taskStore";
 import Select from 'react-select';
 import { 
   StatCategory, 
   detectCategory, 
   categoryDescriptions, 
-  categoryIcons 
+  categoryIcons,
 } from "../utils/categoryDetection";
 
 const TaskForm = () => {
@@ -20,6 +20,7 @@ const TaskForm = () => {
   const [category, setCategory] = useState<StatCategory | null>(null);
   const [detectedCategory, setDetectedCategory] = useState<StatCategory | null>(null);
   const [showCategorySelector, setShowCategorySelector] = useState(false);
+  const [notes, setNotes] = useState("");
 
   // Set minimum date to today when component mounts
   useEffect(() => {
@@ -110,7 +111,7 @@ const TaskForm = () => {
       } else {
         // If we can't detect a category and the description is substantial,
         // show the category selector
-        if (description.trim().length > 5) {
+        if (description.trim().length > 2) {
           setShowCategorySelector(true);
         }
       }
@@ -128,39 +129,39 @@ const TaskForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
   
-    if (!description.trim()) return;
-    
     try {
-      setIsSubmitting(true);
+      // Prepare the task object
+      const task: Partial<Task> = {
+        description: description.trim(),
+        is_daily: isDaily,
+        category: category,
+        notes: notes.trim() || null
+      };
       
-      let dueDateTime = null;
-      
-      // If it's not a daily task and has a due date/time
-      if (!isDaily && dueDate && dueTime) {
-        // Create a proper date object in local timezone
-        const [year, month, day] = dueDate.split('-').map(Number);
-        const [hours, minutes] = dueTime.split(':').map(Number);
-        
-        const localDueDate = new Date(year, month - 1, day, hours, minutes);
-        dueDateTime = localDueDate.toISOString();
+      // Add due date if this is not a daily task
+      if (!isDaily && dueDate) {
+        // Combine date and time
+        const combinedDateTime = new Date(`${dueDate}T${dueTime}`);
+        task.due_date = combinedDateTime.toISOString();
       }
       
-      await createTask({
-        description,
-        is_daily: isDaily,
-        due_date: dueDateTime,
-        category, // Add the category
-      });
+      // Create the task
+      await createTask(task);
       
       // Reset form
       setDescription("");
+      setNotes("");
+      setIsDaily(true);
+      setDueDate(minDate);
+      setDueTime("12:00");
       setCategory(null);
       setDetectedCategory(null);
       setShowCategorySelector(false);
-      setIsSubmitting(false);
     } catch (error) {
       console.error("Error creating task:", error);
+    } finally {
       setIsSubmitting(false);
     }
   };
@@ -206,6 +207,20 @@ const TaskForm = () => {
             />
           </div>
         )}
+      </div>
+      
+      <div className="mb-4">
+        <label htmlFor="notes" className="block text-sm font-medium text-gray-700">
+          Additional Notes (optional)
+        </label>
+        <textarea
+          id="notes"
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+          rows={3}
+          className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+          placeholder="Add any additional details or notes"
+        />
       </div>
       
       <div className="mb-4">
