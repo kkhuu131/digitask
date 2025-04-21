@@ -630,26 +630,6 @@ const UserDigimonPage = () => {
                     </div>
                   </div>
                   
-                  {/* Simplified status bars */}
-                  <div className="space-y-2 mb-3">
-                    <div>
-                      <div className="flex justify-between text-xs mb-1">
-                        <span>HP</span>
-                        <span>{digimon.health}%</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div 
-                          className={`h-2 rounded-full ${
-                            digimon.health >= 60 ? 'bg-green-500' : 
-                            digimon.health >= 30 ? 'bg-yellow-500' : 
-                            'bg-red-500'
-                          }`} 
-                          style={{ width: `${digimon.health}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
-                  
                   {/* Age display */}
                   <div className="text-xs text-gray-500 text-center mb-2">
                     Age: {calculateAgeDays(digimon.created_at)} days

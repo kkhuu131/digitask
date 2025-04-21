@@ -25,9 +25,7 @@ const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({
     
     // Initialize user team HP based on health percentage
     teamBattle.user_team?.forEach(fighter => {
-      const maxHp = fighter.stats?.hp ?? DEFAULT_MAX_HP;
-      const healthPercentage = fighter.health !== undefined ? fighter.health / 100 : 1;
-      initialHp[fighter.id] = maxHp * healthPercentage;
+      initialHp[fighter.id] = fighter.stats?.hp ?? DEFAULT_MAX_HP;
     });
     
     // Initialize opponent team HP at full

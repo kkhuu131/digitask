@@ -4,7 +4,7 @@ import { FaTasks, FaHeart, FaFistRaised, FaTrophy, FaQuestion } from "react-icon
 import { GiLevelEndFlag } from "react-icons/gi";
 
 const Tutorial = () => {
-  const [activeSection, setActiveSection] = useState("intro");
+  const [activeSection, setActiveSection] = useState("tasks");
 
   const sections = [
     { id: "intro", title: "Welcome", icon: <FaQuestion /> },
@@ -104,7 +104,7 @@ const Tutorial = () => {
               <li>Build a streak for increased experience points</li>
             </ul>
             <p className="text-yellow-600 font-medium mb-4">
-              WARNING: Missing your daily quota or any task will decrease your Digimon's health and happiness!
+              WARNING: Missing your daily quota or any task will decrease your Digimon's happiness!
             </p>
             
             {/* Condensed section about task categories and stat bonuses */}
@@ -192,31 +192,19 @@ const Tutorial = () => {
           >
             <h2 className="text-2xl font-bold mb-4">Digimon Care</h2>
             <p className="mb-4">
-              Currently, you only need to worry about your <b>active</b> Digimon's health and happiness.
+              Your active Digimon needs care and attention to thrive. Only your active Digimon receives experience from completed tasks.
             </p>
             <div className="flex flex-col md:flex-row gap-6 mb-6">
-              <div className="md:w-1/2">
-                <h3 className="text-xl font-semibold mb-2">Health</h3>
-                <p className="mb-4">
-                  Your Digimon's health represents their physical condition:
-                </p>
-                <ul className="list-disc pl-5 mb-4">
-                  <li>Decreases when you miss tasks</li>
-                  <li>If health reaches zero, your Digimon will die forever</li>
-                </ul>
-                <div className="w-full bg-gray-200 rounded-full h-5 mb-4">
-                  <div className="bg-red-500 h-5 rounded-full" style={{ width: "75%" }}></div>
-                </div>
-                <p className="text-sm text-gray-600">Example: 75% Health</p>
-              </div>
-              <div className="md:w-1/2">
+              <div className="md:w-full">
                 <h3 className="text-xl font-semibold mb-2">Happiness</h3>
                 <p className="mb-4">
                   Happiness represents your Digimon's emotional state:
                 </p>
                 <ul className="list-disc pl-5 mb-4">
                   <li>Decreases when you miss your daily quota</li>
+                  <li>Decreases when you miss due dates for regular tasks</li>
                   <li>Lower happiness = lower experience gain</li>
+                  <li>Complete tasks to increase happiness</li>
                 </ul>
                 <div className="w-full bg-gray-200 rounded-full h-5 mb-4">
                   <div className="bg-yellow-400 h-5 rounded-full" style={{ width: "90%" }}></div>
@@ -227,9 +215,10 @@ const Tutorial = () => {
             <div className="bg-gray-100 p-4 rounded-lg">
               <h3 className="text-lg font-semibold mb-2">Digimon Care Tips</h3>
               <ul className="list-disc pl-5">
-                <li>Complete your daily quota to maintain happiness</li>
-                <li>Don't let regular tasks become overdue to protect health</li>
-                <li>Check your Digimon's status regularly</li>
+                <li>Complete tasks regularly to keep your Digimon happy</li>
+                <li>Meet your daily quota to maintain happiness</li>
+                <li>You can have multiple Digimon, but only one can be active at a time</li>
+                <li>Switch your active Digimon from the Digimon page</li>
               </ul>
             </div>
           </motion.div>
@@ -267,7 +256,8 @@ const Tutorial = () => {
                 </p>
                 <ul className="list-disc pl-5 mb-4">
                   <li>Each evolution increases base stats</li>
-                  <li>Digimon have multiple branching evolutions. Pick the silhouette that you like the most</li>
+                  <li>Some evolutions require specific stat levels</li>
+                  <li>Digimon have multiple branching evolutions</li>
                 </ul>
                 <div className="flex justify-center space-x-4 items-center">
                   <img 
@@ -298,6 +288,7 @@ const Tutorial = () => {
               <ul className="list-disc pl-5">
                 <li>Complete tasks consistently to gain XP faster</li>
                 <li>Battle regularly to accelerate leveling</li>
+                <li>Focus on specific stat categories if aiming for a particular evolution</li>
                 <li>Check evolution requirements in your dashboard or Digidex</li>
               </ul>
             </div>
@@ -315,43 +306,37 @@ const Tutorial = () => {
               <div className="md:w-1/2">
                 <h3 className="text-xl font-semibold mb-2">Team Battles</h3>
                 <p className="mb-4">
-                  Team battles pit your Digimon team against other players:
+                  Battle against other players' Digimon teams:
                 </p>
                 <ul className="list-disc pl-5 mb-4">
-                  <li>Select up to 3 Digimon for your battle team</li>
-                  <li>Battles are turn-based with automatic actions</li>
-                  <li>All your Digimon (including reserves) gain XP from battles</li>
-                  <li>Wins give more XP than losses</li>
+                  <li>Form a team of up to 3 Digimon</li>
+                  <li>Turn-based combat system</li>
+                  <li>Win battles to earn experience</li>
+                  <li>Limited to 5 battles per day</li>
                 </ul>
               </div>
               <div className="md:w-1/2">
-                <h3 className="text-xl font-semibold mb-2">Battle Mechanics</h3>
+                <h3 className="text-xl font-semibold mb-2">Battle Stats</h3>
                 <p className="mb-4">
-                  Understanding battle mechanics can help you build better teams:
+                  Your Digimon's stats affect battle performance:
                 </p>
-                <ul className="list-disc pl-5 mb-4">
-                  <li><strong>Types:</strong> Advantages/disadvantages can make an attack double or half damage</li>
-                  <ul className="list-disc pl-5 mb-4">
-                    <li>Virus &lt; Vaccine &lt; Data &lt; Virus</li>
-                    <li>Free has not advantages or disadvantages</li>
-                    </ul>
-                  <li><strong>Attributes:</strong> Advantages make an attack do 50% more damage</li>
-                    <ul className="list-disc pl-5 mb-4">
-                    <li>Fire &lt; Water &lt; Plant &lt; Fire</li>
-                    <li>Electric &lt; Earth &lt; Wind &lt; Electric</li>
-                    <li>Light and Dark are effective against each other</li>
-                    <li>Neutral have no advantages or disadvantages</li>
-                    </ul>
+                <ul className="list-disc pl-5">
+                  <li><span className="font-medium">HP:</span> Health points in battle</li>
+                  <li><span className="font-medium">SP:</span> Special points for abilities</li>
+                  <li><span className="font-medium">ATK:</span> Physical attack power</li>
+                  <li><span className="font-medium">DEF:</span> Physical defense</li>
+                  <li><span className="font-medium">INT:</span> Special attack and defense</li>
+                  <li><span className="font-medium">SPD:</span> Determines turn order</li>
                 </ul>
               </div>
             </div>
             <div className="bg-gray-100 p-4 rounded-lg">
               <h3 className="text-lg font-semibold mb-2">Battle Tips</h3>
               <ul className="list-disc pl-5">
-                <li>Build a balanced team with different types and attributes</li>
-                <li>Consider type advantages when selecting opponents</li>
-                <li>All Digimon in your collection gain XP from battles, even if they don't participate</li>
-                <li>Battle daily to maximize XP gain and progress</li>
+                <li>Balance your team with different types of Digimon</li>
+                <li>Consider type advantages (Vaccine, Data, Virus)</li>
+                <li>Higher level Digimon have better base stats</li>
+                <li>Allocate bonus stats strategically to complement your Digimon's strengths</li>
               </ul>
             </div>
           </motion.div>

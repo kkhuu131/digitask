@@ -21,10 +21,6 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
   const [currentLevel, setCurrentLevel] = useState(userDigimon.current_level);
   const [xpForNextLevel, setXpForNextLevel] = useState(userDigimon.current_level * 20);
   
-  // Add state for health and happiness to track changes
-  const [health, setHealth] = useState(userDigimon.health);
-  const [happiness, setHappiness] = useState(userDigimon.happiness);
-  
   // Animation states
   const [isLevelingUp, setIsLevelingUp] = useState(false);
   const [isStatIncreasing, setIsStatIncreasing] = useState(false);
@@ -33,8 +29,6 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
   
   // Refs to track previous values
   const prevLevelRef = useRef(userDigimon.current_level);
-  const prevHealthRef = useRef(userDigimon.health);
-  const prevHappinessRef = useRef(userDigimon.happiness);
   const prevXPRef = useRef(userDigimon.experience_points);
   
   const [showDetailModal, setShowDetailModal] = useState(false);
@@ -48,11 +42,6 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
     if (userDigimon.current_level > prevLevelRef.current) {
       triggerLevelUpAnimation();
     }
-    // Check for health or happiness increase
-    else if (userDigimon.health > prevHealthRef.current || 
-        userDigimon.happiness > prevHappinessRef.current) {
-      triggerStatIncreaseAnimation();
-    }
     // Check for XP increase (but not when leveling up, to avoid double animation)
     else if (userDigimon.experience_points > prevXPRef.current) {
       triggerStatIncreaseAnimation();
@@ -62,13 +51,9 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
     setCurrentXP(userDigimon.experience_points);
     setCurrentLevel(userDigimon.current_level);
     setXpForNextLevel(userDigimon.current_level * 20);
-    setHealth(userDigimon.health);
-    setHappiness(userDigimon.happiness);
     
     // Update refs for next comparison
     prevLevelRef.current = userDigimon.current_level;
-    prevHealthRef.current = userDigimon.health;
-    prevHappinessRef.current = userDigimon.happiness;
     prevXPRef.current = userDigimon.experience_points;
     
     // Update currentDigimon with the latest userDigimon data
@@ -109,9 +94,8 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
     }, 1000);
   };
   
-  // Calculate percentages for health and happiness bars
-  const healthPercentage = Math.max(0, Math.min(100, (health / 100) * 100));
-  const happinessPercentage = Math.max(0, Math.min(100, (happiness / 100) * 100));
+  // Calculate percentages for happiness bar
+  const happinessPercentage = Math.max(0, Math.min(100, (userDigimon.happiness / 100) * 100));
   
   // Calculate XP percentage
   const xpPercentage = Math.max(0, Math.min(100, (currentXP / xpForNextLevel) * 100));
@@ -316,27 +300,8 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
       <div className="w-full space-y-3">
         <div>
           <div className="flex justify-between text-sm mb-1">
-            <span>Health</span>
-            <span>{(health).toFixed(0)}%</span>
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-2.5">
-            <div 
-              className={`h-2.5 rounded-full ${
-                healthPercentage >= 60 ? 'bg-green-500' : 
-                healthPercentage >= 30 ? 'bg-yellow-500' : 
-                'bg-red-500'
-              }`}
-              style={{ 
-                width: `${healthPercentage}%`,
-              }}
-            ></div>
-          </div>
-        </div>
-        
-        <div>
-          <div className="flex justify-between text-sm mb-1">
             <span>Happiness</span>
-            <span>{happiness.toFixed(0)}%</span>
+            <span>{userDigimon.happiness.toFixed(0)}%</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2.5">
             <div 

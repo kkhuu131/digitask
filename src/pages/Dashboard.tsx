@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { useDigimonStore } from "../store/petStore";
 import { useTaskStore } from "../store/taskStore";
 import Digimon from "../components/Digimon";
@@ -8,22 +7,13 @@ import TaskList from "../components/TaskList";
 import StatProgressMeter from "@/components/StatProgressMeter";
 
 const Dashboard: React.FC = () => {
-  const { userDigimon, digimonData, evolutionOptions, fetchUserDigimon, error: digimonError, isDigimonDead, resetDeadState } = useDigimonStore();
+  const { userDigimon, digimonData, evolutionOptions, fetchUserDigimon, error: digimonError } = useDigimonStore();
   const { fetchTasks, dailyQuota, error: taskError, getExpMultiplier } = useTaskStore();
-  const navigate = useNavigate();
   
   useEffect(() => {
     fetchUserDigimon();
     fetchTasks();
   }, [fetchUserDigimon, fetchTasks]);
-  
-  useEffect(() => {
-    if (isDigimonDead) {
-      console.log("Digimon is dead, navigating to create pet page");
-      resetDeadState();
-      navigate("/create-pet");
-    }
-  }, [isDigimonDead, navigate, resetDeadState]);
   
   const DAILY_QUOTA_REQUIREMENT = 3.0; // Should match the quota in taskStore.ts
 

@@ -25,76 +25,6 @@ const Debug = () => {
     fetchUserDigimon();
   }, [fetchUserDigimon]);
   
-  const handleDecreaseHealth = async () => {
-    if (!userDigimon) return;
-    
-    console.log("Decreasing health by 50 from", userDigimon.health);
-    
-    // Decrease health by 50
-    await useDigimonStore.getState().updateDigimonStats({
-      health: Math.max(0, userDigimon.health - 50)
-    });
-    
-    // Refresh the Digimon data
-    await fetchUserDigimon();
-  };
-  
-  const handleCheckHealth = async () => {
-    console.log("Checking Digimon health");
-    // Force check health
-    await useDigimonStore.getState().checkDigimonHealth();
-    // Refresh data to see any changes
-    await fetchUserDigimon();
-  };
-  
-  const handleKillDigimon = async () => {
-    if (!userDigimon) {
-      console.log("No Digimon to kill");
-      return;
-    }
-    
-    console.log("Starting kill Digimon process for:", userDigimon.id);
-    
-    try {
-      // Set health to 0
-      console.log("Setting health to 0 from", userDigimon.health);
-      
-      const { error: updateError } = await supabase
-        .from("user_digimon")
-        .update({ health: 0 })
-        .eq("id", userDigimon.id);
-        
-      if (updateError) {
-        console.error("Error updating health to 0:", updateError);
-        return;
-      }
-      
-      // Refresh Digimon data to get the updated health
-      await fetchUserDigimon();
-      
-      // Get the updated Digimon
-      const updatedDigimon = useDigimonStore.getState().userDigimon;
-      console.log("Updated Digimon health:", updatedDigimon?.health);
-      
-      // Force check health
-      console.log("Checking health after setting to 0");
-      await useDigimonStore.getState().checkDigimonHealth();
-      
-      // Check if Digimon still exists
-      await fetchUserDigimon();
-      const finalDigimon = useDigimonStore.getState().userDigimon;
-      console.log("Final Digimon state:", finalDigimon);
-      
-      if (finalDigimon) {
-        console.log("WARNING: Digimon still exists after kill attempt!");
-      } else {
-        console.log("SUCCESS: Digimon was successfully deleted");
-      }
-    } catch (error) {
-      console.error("Error in kill Digimon process:", error);
-    }
-  };
-  
   return (
     <div className="p-8">
       <h1 className="text-2xl font-bold">Debug Page</h1>
@@ -112,50 +42,6 @@ const Debug = () => {
           <br />
           SUPABASE_KEY: {import.meta.env.VITE_SUPABASE_ANON_KEY ? '✅ Set' : '❌ Missing'}
         </pre>
-      </div>
-      
-      <div className="mt-8 p-4 border rounded">
-        <h2 className="text-xl font-bold mb-4">Digimon Health Debug</h2>
-        
-        <div className="mb-4">
-          {userDigimon ? (
-            <div>
-              <p className="font-semibold">Current Digimon: {userDigimon.name}</p>
-              <p>ID: {userDigimon.id}</p>
-              <p>Health: {userDigimon.health}/100</p>
-              <p>Happiness: {userDigimon.happiness}/100</p>
-              <p>Level: {userDigimon.current_level}</p>
-              <p>XP: {userDigimon.experience_points}</p>
-            </div>
-          ) : (
-            <p className="text-red-500">No Digimon found. Create one first!</p>
-          )}
-        </div>
-        
-        <div className="flex space-x-2">
-          <button 
-            className="btn-primary"
-            onClick={handleDecreaseHealth}
-            disabled={!userDigimon}
-          >
-            Decrease Health by 50
-          </button>
-          
-          <button 
-            className="btn-primary"
-            onClick={handleCheckHealth}
-          >
-            Check Health
-          </button>
-          
-          <button 
-            className="btn-primary"
-            onClick={handleKillDigimon}
-            disabled={!userDigimon}
-          >
-            Kill Digimon
-          </button>
-        </div>
       </div>
       
       <div className="mt-8 p-4 border rounded">
@@ -191,17 +77,6 @@ const Debug = () => {
               .eq("user_id", userData.user.id);
               
             console.log("Select result:", selectData, selectError);
-            
-            // Check if we can update the user's Digimon
-            if (userDigimon) {
-              const { data: updateData, error: updateError } = await supabase
-                .from("user_digimon")
-                .update({ health: userDigimon.health })
-                .eq("id", userDigimon.id)
-                .select();
-                
-              console.log("Update result:", updateData, updateError);
-            }
             
             // Check if we can delete (but don't actually delete)
             if (userDigimon) {

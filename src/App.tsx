@@ -74,7 +74,6 @@ function App() {
         if (useAuthStore.getState().user) {
           await useTaskStore.getState().initializeStore();
           await fetchUserDigimon();
-          await useDigimonStore.getState().checkDigimonHealth();
         }
       } catch (error) {
         console.error("Error initializing app:", error);
@@ -147,9 +146,6 @@ function App() {
         
         // Fetch the user's Digimon
         await useDigimonStore.getState().fetchUserDigimon();
-        
-        // Check Digimon health
-        await useDigimonStore.getState().checkDigimonHealth();
       } else {
         setIsAuthenticated(false);
       }
@@ -231,13 +227,10 @@ function App() {
           await useDigimonStore.getState().fetchUserDigimon();
           await useDigimonStore.getState().fetchAllUserDigimon();
           
-          // Check Digimon health
-          await useDigimonStore.getState().checkDigimonHealth();
-          
-          // Check if all Digimon are dead
-          const { isDigimonDead } = useDigimonStore.getState();
-          if (isDigimonDead) {
-            console.log("All Digimon are dead, redirecting to create pet page");
+          // Check if user has no Digimon
+          const { allUserDigimon } = useDigimonStore.getState();
+          if (allUserDigimon.length === 0) {
+            console.log("User has no Digimon, redirecting to create pet page");
             window.location.href = "/create-pet";
           }
         } catch (error) {

@@ -408,7 +408,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
           console.log(`Applying penalty for overdue task: ${task.description}`);
 
           // Apply health and happiness penalties to the Digimon
-          await useDigimonStore.getState().applyPenalty(10, 15);
+          await useDigimonStore.getState().applyPenalty(10);
           penaltyApplied = true;
         }
 
@@ -416,13 +416,6 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         if (penaltyApplied) {
           // Fetch the updated Digimon data to check health
           await useDigimonStore.getState().fetchUserDigimon();
-
-          // Check if the Digimon has died and handle it
-          const { userDigimon } = useDigimonStore.getState();
-          if (userDigimon && userDigimon.health <= 0) {
-            console.log("Digimon has died due to overdue tasks");
-            await useDigimonStore.getState().handleDigimonDeath();
-          }
         }
       }
 

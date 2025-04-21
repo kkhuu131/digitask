@@ -136,7 +136,7 @@ export const categoryIcons: Record<StatCategory, string> = {
 
 // Stat boost values
 export const statBoostValues = {
-  daily: 1,
+  daily: 2,
   regular: 3,
 };
 

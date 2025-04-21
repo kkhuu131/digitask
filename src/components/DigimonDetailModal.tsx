@@ -481,23 +481,6 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
             <div className="w-full space-y-4 mb-6">
               <div>
                 <div className="flex justify-between text-sm mb-1">
-                  <span>Health</span>
-                  <span>{selectedDigimon.health}%</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2.5">
-                  <div 
-                    className={`h-2.5 rounded-full ${
-                      selectedDigimon.health >= 60 ? 'bg-green-500' : 
-                      selectedDigimon.health >= 30 ? 'bg-yellow-500' : 
-                      'bg-red-500'
-                    }`} 
-                    style={{ width: `${selectedDigimon.health}%` }}
-                  ></div>
-                </div>
-              </div>
-              
-              <div>
-                <div className="flex justify-between text-sm mb-1">
                   <span>Happiness</span>
                   <span>{selectedDigimon.happiness}%</span>
                 </div>

@@ -394,7 +394,6 @@ export interface TeamBattle {
     digimon_id: number;
     sprite_url: string;
     digimon_name: string;
-    health: number;
     profile: {
       username: string;
       display_name: string;
@@ -704,7 +703,6 @@ export const useBattleStore = create<BattleState>((set, get) => {
               name: d.name,
               current_level: d.current_level,
               experience_points: 0,
-              health: 100,
               happiness: 100,
               digimon: digimonData,
             };
@@ -771,7 +769,6 @@ export const useBattleStore = create<BattleState>((set, get) => {
           digimon_id: d.digimon_id,
           sprite_url: d.digimon.sprite_url,
           digimon_name: d.digimon.name,
-          health: d.health,
           profile: {
             username: userProfile?.username ?? "You",
             display_name: userProfile?.display_name ?? "You",
@@ -790,7 +787,6 @@ export const useBattleStore = create<BattleState>((set, get) => {
           digimon_id: d.digimon_id,
           sprite_url: d.digimon.sprite_url,
           digimon_name: d.digimon.name,
-          health: 100,
           profile: {
             username: opponentProfile?.username ?? "Unknown",
             display_name: opponentProfile?.display_name ?? "Unknown",
@@ -1311,7 +1307,6 @@ export const useBattleStore = create<BattleState>((set, get) => {
               digimon_id: d.digimon_id,
               sprite_url: d.digimon.sprite_url,
               digimon_name: d.digimon.name,
-              health: d.health,
               profile: {
                 username: userProfile?.username ?? "You",
                 display_name: userProfile?.display_name ?? "You",
@@ -1330,7 +1325,6 @@ export const useBattleStore = create<BattleState>((set, get) => {
               digimon_id: d.digimon_id,
               sprite_url: d.digimon.sprite_url,
               digimon_name: d.digimon.name,
-              health: 100,
               profile: {
                 username: "Wild Encounter",
                 display_name: "Wild Encounter",
@@ -1429,7 +1423,6 @@ export const useBattleStore = create<BattleState>((set, get) => {
             digimon_id: d.digimon_id,
             sprite_url: d.digimon.sprite_url,
             digimon_name: d.digimon.name,
-            health: d.health,
             profile: {
               username: userProfile?.username ?? "You",
               display_name: userProfile?.display_name ?? "You",
@@ -1448,7 +1441,6 @@ export const useBattleStore = create<BattleState>((set, get) => {
             digimon_id: d.digimon_id,
             sprite_url: d.digimon.sprite_url,
             digimon_name: d.digimon.name,
-            health: 100,
             profile: {
               username: opponentProfile?.username ?? "Unknown",
               display_name: opponentProfile?.display_name ?? "Unknown",

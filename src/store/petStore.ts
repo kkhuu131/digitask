@@ -11,7 +11,6 @@ export interface UserDigimon {
   name: string;
   current_level: number;
   experience_points: number;
-  health: number;
   happiness: number;
   created_at: string;
   last_updated_at: string;
@@ -96,19 +95,12 @@ export interface PetState {
   fetchDiscoveredDigimon: () => Promise<void>;
   addDiscoveredDigimon: (digimonId: number) => Promise<void>;
   subscribeToDigimonUpdates: () => Promise<() => void>;
-  checkDigimonHealth: () => Promise<void>;
   checkLevelUp: () => Promise<boolean | undefined>;
   getDigimonDisplayName: () => string;
   setActiveDigimon: (digimonId: string) => Promise<void>;
-  applyPenalty: (
-    healthPenalty: number,
-    happinessPenalty: number
-  ) => Promise<void>;
+  applyPenalty: (happinessPenalty: number) => Promise<void>;
   testPenalty: () => Promise<void>;
   debugHealth: () => void;
-  isDigimonDead: boolean;
-  resetDeadState: () => void;
-  handleDigimonDeath: () => Promise<void>;
   releaseDigimon: (digimonId: string) => Promise<boolean>;
   setTeamMember: (digimonId: string, isOnTeam: boolean) => Promise<void>;
   swapTeamMember: (
@@ -138,7 +130,6 @@ export const useDigimonStore = create<PetState>((set, get) => ({
   discoveredDigimon: [],
   loading: false,
   error: null,
-  isDigimonDead: false,
   userDailyStatGains: 0,
 
   fetchDiscoveredDigimon: async () => {
@@ -226,66 +217,52 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         .single();
 
       if (error) {
-        // If no active Digimon found, try to get any Digimon with health > 0
+        // If no active Digimon found, try to get any Digimon
         if (error.code === "PGRST116") {
-          console.log(
-            "No active Digimon found, looking for any healthy Digimon"
-          );
+          console.log("No active Digimon found, looking for any Digimon");
 
-          const { data: healthyDigimon, error: healthyError } = await supabase
-            .from("user_digimon")
-            .select(
-              `
+          const { data: anyAvailableDigimon, error: availableError } =
+            await supabase
+              .from("user_digimon")
+              .select(
+                `
               *,
               digimon:digimon_id(*)
             `
-            )
-            .eq("user_id", userData.user.id)
-            .gt("health", 0)
-            .order("created_at", { ascending: false })
-            .limit(1)
-            .single();
-
-          if (healthyError) {
-            console.error("Error fetching healthy Digimon:", healthyError);
-
-            // If no healthy Digimon, check if all Digimon are dead
-            const { data: deadDigimon } = await supabase
-              .from("user_digimon")
-              .select("id")
+              )
               .eq("user_id", userData.user.id)
-              .eq("health", 0);
+              .order("created_at", { ascending: false })
+              .limit(1)
+              .single();
 
-            if (deadDigimon && deadDigimon.length > 0) {
-              console.log("All Digimon are dead");
-              set({ isDigimonDead: true });
-            }
-
+          if (availableError) {
+            console.error("Error fetching any Digimon:", availableError);
             set({ userDigimon: null, digimonData: null, loading: false });
             return;
           }
 
-          // Found a healthy Digimon, make it active
-          if (healthyDigimon) {
+          // Found a Digimon, make it active
+          if (anyAvailableDigimon) {
             console.log(
-              "Found healthy Digimon, making it active:",
-              healthyDigimon.id
+              "Found Digimon, making it active:",
+              anyAvailableDigimon.id
             );
 
             await supabase
               .from("user_digimon")
               .update({ is_active: true })
-              .eq("id", healthyDigimon.id);
+              .eq("id", anyAvailableDigimon.id);
 
             set({
               userDigimon: {
-                ...healthyDigimon,
+                ...anyAvailableDigimon,
                 is_active: true,
-                digimon: healthyDigimon.digimon,
+                digimon: anyAvailableDigimon.digimon,
               },
-              digimonData: healthyDigimon.digimon,
+              digimonData: anyAvailableDigimon.digimon,
               loading: false,
             });
+            return;
           }
         }
 
@@ -294,12 +271,9 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         return;
       }
 
-      // Successfully found active Digimon
+      // Successfully found an active Digimon
       set({
-        userDigimon: {
-          ...userDigimon,
-          digimon: userDigimon.digimon,
-        },
+        userDigimon,
         digimonData: userDigimon.digimon,
         loading: false,
       });
@@ -342,10 +316,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       });
     } catch (error) {
       console.error("Error in fetchUserDigimon:", error);
-      set({
-        error: (error as Error).message,
-        loading: false,
-      });
+      set({ error: (error as Error).message, loading: false });
     }
   },
 
@@ -454,7 +425,6 @@ export const useDigimonStore = create<PetState>((set, get) => ({
           user_id: userData.user.id,
           digimon_id: digimonId,
           name: name,
-          health: 100,
           happiness: 100,
           experience_points: 0,
           current_level: 1,
@@ -538,15 +508,13 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       const multipliedPoints = Math.round(taskPoints * expMultiplier);
 
       // Calculate new stats
-      const newHealth = Math.ceil(Math.min(100, userDigimon.health + 5));
-      const newHappiness = Math.ceil(Math.min(100, userDigimon.happiness + 5));
+      const newHappiness = Math.ceil(Math.min(100, userDigimon.happiness + 20));
       const newXP = userDigimon.experience_points + multipliedPoints;
 
       // Update the Digimon in the database
       const { error } = await supabase
         .from("user_digimon")
         .update({
-          health: newHealth,
           happiness: newHappiness,
           experience_points: newXP,
           last_fed_tasks_at: new Date().toISOString(),
@@ -562,7 +530,6 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       set({
         userDigimon: {
           ...userDigimon,
-          health: newHealth,
           happiness: newHappiness,
           experience_points: newXP,
           last_fed_tasks_at: new Date().toISOString(),
@@ -958,39 +925,6 @@ export const useDigimonStore = create<PetState>((set, get) => ({
     };
   },
 
-  checkDigimonHealth: async () => {
-    try {
-      const { userDigimon } = get();
-
-      // If no Digimon, nothing to check
-      if (!userDigimon) {
-        // Check if user has any Digimon at all
-        const { data: userData } = await supabase.auth.getUser();
-        if (!userData.user) return;
-
-        const { data: anyDigimon } = await supabase
-          .from("user_digimon")
-          .select("count")
-          .eq("user_id", userData.user.id);
-
-        // If user has Digimon but none active, try to find a healthy one
-        if (anyDigimon && anyDigimon[0]?.count > 0) {
-          await get().fetchUserDigimon();
-        }
-
-        return;
-      }
-
-      // Check if health is 0 or less
-      if (userDigimon.health <= 0) {
-        console.log("Digimon health is 0 or less, handling death");
-        await get().handleDigimonDeath();
-      }
-    } catch (error) {
-      console.error("Error checking Digimon health:", error);
-    }
-  },
-
   checkLevelUp: async () => {
     try {
       const { userDigimon } = get();
@@ -1053,17 +987,14 @@ export const useDigimonStore = create<PetState>((set, get) => ({
     return digimonData.name;
   },
 
-  applyPenalty: async (healthPenalty: number, happinessPenalty: number) => {
+  applyPenalty: async (happinessPenalty: number) => {
     try {
       const { userDigimon } = get();
       if (!userDigimon) return;
 
-      console.log(
-        `Applying penalty: -${healthPenalty} health, -${happinessPenalty} happiness`
-      );
+      console.log(`Applying penalty: -${happinessPenalty} happiness`);
 
-      // Calculate new health and happiness values
-      const newHealth = Math.max(0, userDigimon.health - healthPenalty);
+      // Calculate new happiness value
       const newHappiness = Math.max(
         0,
         userDigimon.happiness - happinessPenalty
@@ -1073,7 +1004,6 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       const { error } = await supabase
         .from("user_digimon")
         .update({
-          health: newHealth,
           happiness: newHappiness,
           last_updated_at: new Date().toISOString(),
         })
@@ -1090,16 +1020,10 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         userDigimon: state.userDigimon
           ? {
               ...state.userDigimon,
-              health: newHealth,
               happiness: newHappiness,
             }
           : null,
       }));
-
-      // If health is now 0, handle Digimon death
-      if (newHealth <= 0) {
-        await get().handleDigimonDeath();
-      }
     } catch (error) {
       console.error("Error applying penalty:", error);
     }
@@ -1107,7 +1031,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
   testPenalty: async () => {
     console.log("Testing penalty application");
-    await get().applyPenalty(10, 15);
+    await get().applyPenalty(10);
     await get().fetchUserDigimon();
   },
 
@@ -1120,141 +1044,16 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
     console.log("=== DIGIMON HEALTH DEBUG ===");
     console.log(`Digimon ID: ${userDigimon.id}`);
-    console.log(`Health: ${userDigimon.health}`);
     console.log(`Happiness: ${userDigimon.happiness}`);
-    console.log(`Is health exactly 0? ${userDigimon.health === 0}`);
-    console.log(`Is health <= 0? ${userDigimon.health <= 0}`);
-    console.log(`Health type: ${typeof userDigimon.health}`);
+    console.log(`Is happiness exactly 0? ${userDigimon.happiness === 0}`);
+    console.log(`Happiness type: ${typeof userDigimon.happiness}`);
 
     // Check for potential floating point issues
-    if (userDigimon.health < 1 && userDigimon.health > 0) {
+    if (userDigimon.happiness < 1 && userDigimon.happiness > 0) {
       console.log(
-        "WARNING: Health is between 0 and 1, possible floating point issue"
+        "WARNING: Happiness is between 0 and 1, possible floating point issue"
       );
-      console.log(`Health exact value: ${userDigimon.health}`);
-    }
-  },
-
-  resetDeadState: () => {
-    set({ isDigimonDead: false });
-  },
-
-  handleDigimonDeath: async () => {
-    const { userDigimon, allUserDigimon } = get();
-
-    if (!userDigimon || userDigimon.health > 0) return;
-
-    console.log("Handling Digimon death");
-
-    try {
-      // Get the current user
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData?.user) {
-        console.error("No authenticated user found");
-        return;
-      }
-
-      // Get all overdue tasks that might not be in the penalized list yet
-      const { data: overdueTasks } = await supabase
-        .from("tasks")
-        .select("id")
-        .eq("user_id", userData.user.id)
-        .eq("is_completed", false)
-        .eq("is_daily", false)
-        .not("due_date", "is", null)
-        .lt("due_date", new Date().toISOString());
-
-      if (overdueTasks && overdueTasks.length > 0) {
-        // Get the current daily quota
-        const { data: quotaData } = await supabase
-          .from("daily_quotas")
-          .select("*")
-          .eq("user_id", userData.user.id)
-          .single();
-
-        if (quotaData) {
-          // Add all overdue task IDs to the penalized tasks list
-          const currentPenalized = quotaData.penalized_tasks || [];
-          const overdueIds = overdueTasks.map((t) => t.id);
-
-          // Create a set to remove duplicates
-          const allPenalizedSet = new Set([...currentPenalized, ...overdueIds]);
-          const allPenalized = Array.from(allPenalizedSet);
-
-          // Update the penalized tasks in the database
-          await supabase
-            .from("daily_quotas")
-            .update({ penalized_tasks: allPenalized })
-            .eq("user_id", userData.user.id);
-
-          // Update the local state in taskStore
-          const taskStore = useTaskStore.getState();
-          if (taskStore.setPenalizedTasks) {
-            taskStore.setPenalizedTasks(allPenalized);
-          }
-        }
-      }
-
-      // Mark the current Digimon as dead in the database
-      await supabase
-        .from("user_digimon")
-        .update({ is_active: false, health: 0 })
-        .eq("id", userDigimon.id);
-
-      // Show a notification about the Digimon's death
-      useNotificationStore.getState().addNotification({
-        message: `Your Digimon ${
-          userDigimon.name || userDigimon.digimon?.name || "Digimon"
-        } has died due to neglect.`,
-        type: "error",
-        persistent: true,
-      });
-
-      // Find another Digimon to make active
-      const otherDigimon = allUserDigimon.find(
-        (d) => d.id !== userDigimon.id && d.health > 0
-      );
-
-      if (otherDigimon) {
-        console.log(`Switching to another Digimon: ${otherDigimon.id}`);
-
-        // Make the other Digimon active
-        await supabase
-          .from("user_digimon")
-          .update({ is_active: true })
-          .eq("id", otherDigimon.id);
-
-        // Update the local state
-        set({
-          userDigimon: { ...otherDigimon, is_active: true },
-          isDigimonDead: false,
-        });
-
-        // Show notification about switching Digimon
-        useNotificationStore.getState().addNotification({
-          message: `Your active Digimon is now ${
-            otherDigimon.name ||
-            otherDigimon.digimon?.name ||
-            "your other Digimon"
-          }.`,
-          type: "info",
-        });
-
-        // Refresh Digimon data to ensure everything is up to date
-        await get().fetchUserDigimon();
-        await get().fetchAllUserDigimon();
-      } else {
-        // No other Digimon available, set isDigimonDead to true
-        set({ isDigimonDead: true });
-
-        // Show notification about needing to create a new Digimon
-        useNotificationStore.getState().addNotification({
-          message: "You'll need to create a new Digimon.",
-          type: "info",
-        });
-      }
-    } catch (error) {
-      console.error("Error handling Digimon death:", error);
+      console.log(`Happiness exact value: ${userDigimon.happiness}`);
     }
   },
 
