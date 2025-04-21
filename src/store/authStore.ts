@@ -15,6 +15,7 @@ interface AuthState {
   updateProfile: (updates: Partial<UserProfile>) => Promise<void>;
   isAdmin: boolean;
   checkAdminStatus: () => Promise<void>;
+  fetchUserProfile: () => Promise<void>;
 }
 
 export interface UserProfile {
@@ -113,6 +114,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   signIn: async (email, password) => {
     try {
       set({ loading: true, error: null });
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -120,21 +122,16 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
       if (error) throw error;
 
-      if (data.user) {
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", data.user.id)
-          .single();
+      set({
+        user: data.user,
+        loading: false,
+      });
 
-        set({
-          user: data.user,
-          userProfile: profile || null,
-          loading: false,
-        });
-      } else {
-        set({ loading: false });
-      }
+      // Fetch user profile after sign in
+      await get().fetchUserProfile();
+
+      // Check admin status after sign in
+      await get().checkAdminStatus();
     } catch (error) {
       set({
         error: (error as Error).message,
@@ -177,76 +174,26 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   checkSession: async () => {
     try {
-      set({ loading: true, error: null });
+      set({ loading: true });
+
       const { data, error } = await supabase.auth.getSession();
 
       if (error) throw error;
 
-      if (data.session?.user) {
-        // Try to get the user's profile
-        const { data: profile, error: profileError } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", data.session.user.id)
-          .single();
+      if (data.session) {
+        set({ user: data.session.user });
 
-        // If no profile exists, create one
-        if (profileError && profileError.code === "PGRST116") {
-          console.log("No profile found, creating one...");
+        // Fetch user profile
+        await get().fetchUserProfile();
 
-          // Try to get username from user metadata first
-          const userMetadata = data.session.user.user_metadata;
-          const username =
-            userMetadata?.username ||
-            data.session.user.email?.split("@")[0] ||
-            `user_${Math.floor(Math.random() * 10000)}`;
-
-          // Create the profile
-          const { error: insertError } = await supabase
-            .from("profiles")
-            .insert({
-              id: data.session.user.id,
-              username: username,
-              display_name: username, // Use the same for display_name
-            });
-
-          if (insertError) {
-            console.error("Error creating profile:", insertError);
-          }
-
-          // Fetch the newly created profile
-          const { data: newProfile } = await supabase
-            .from("profiles")
-            .select("*")
-            .eq("id", data.session.user.id)
-            .single();
-
-          set({
-            user: data.session.user,
-            userProfile: newProfile || null,
-            loading: false,
-          });
-        } else {
-          set({
-            user: data.session.user,
-            userProfile: profile || null,
-            loading: false,
-          });
-        }
-
-        // Check if user is an admin
+        // Check admin status
         await get().checkAdminStatus();
-      } else {
-        set({ user: null, userProfile: null, loading: false });
       }
+
+      set({ loading: false });
     } catch (error) {
-      console.error("Session check error:", error);
-      set({
-        error: (error as Error).message,
-        loading: false,
-        user: null,
-        userProfile: null,
-      });
+      console.error("Error checking session:", error);
+      set({ loading: false });
     }
   },
 
@@ -287,20 +234,15 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   checkAdminStatus: async () => {
     try {
-      const { user } = get();
-      if (!user) {
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) {
         set({ isAdmin: false });
         return;
       }
 
-      const { data, error } = await supabase
-        .from("admin_users")
-        .select("id")
-        .eq("user_id", user.id)
-        .single();
+      const { data, error } = await supabase.rpc("is_admin");
 
-      if (error && error.code !== "PGRST116") {
-        // PGRST116 means no rows returned
+      if (error) {
         console.error("Error checking admin status:", error);
         set({ isAdmin: false });
         return;
@@ -310,6 +252,34 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     } catch (error) {
       console.error("Error checking admin status:", error);
       set({ isAdmin: false });
+    }
+  },
+
+  fetchUserProfile: async () => {
+    try {
+      const { user } = useAuthStore.getState();
+      if (!user) {
+        throw new Error("User not logged in");
+      }
+
+      const { data: profile, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+      if (error) throw error;
+
+      set({
+        userProfile: profile || null,
+        loading: false,
+      });
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+      set({
+        error: (error as Error).message,
+        loading: false,
+      });
     }
   },
 }));

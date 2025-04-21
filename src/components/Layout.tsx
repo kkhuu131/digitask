@@ -63,7 +63,7 @@ const NavDropdown = ({
 };
 
 const Layout = ({ children }: LayoutProps) => {
-  const { user, userProfile, signOut } = useAuthStore();
+  const { user, userProfile, signOut, isAdmin } = useAuthStore();
   const { userDigimon } = useDigimonStore();
   const navigate = useNavigate();
   const location = useLocation();
@@ -188,6 +188,21 @@ const Layout = ({ children }: LayoutProps) => {
                   </Link>
                 </NavDropdown>
               </div>
+            )}
+            
+            {isAdmin && (
+              <NavDropdown 
+                label="Admin" 
+                isActive={isAnyActive(['/admin'])}
+              >
+                <Link
+                  to="/admin/reports"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => setMoreMenuOpen(false)}
+                >
+                  Reports
+                </Link>
+              </NavDropdown>
             )}
             
             <div className="flex items-center space-x-4">

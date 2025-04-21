@@ -42,12 +42,7 @@ const AdminReportsPage = () => {
       try {
         setLoading(true);
         
-        // First, check if the user is an admin
-        const { data: isAdminData, error: isAdminError } = await supabase
-          .from("admin_users")
-          .select("id")
-          .eq("user_id", user?.id)
-          .single();
+        const { data: isAdminData, error: isAdminError } = await supabase.rpc('is_admin');
         
         if (isAdminError || !isAdminData) {
           navigate('/');
@@ -402,7 +397,7 @@ const ReportRow: React.FC<ReportRowProps> = ({ report, onUpdateStatus, onRenameU
                     <textarea
                       id="admin-notes"
                       rows={3}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                      className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
                       placeholder="Add notes about this report..."
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
