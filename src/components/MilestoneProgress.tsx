@@ -3,6 +3,7 @@ import { useMilestoneStore, DAILY_QUOTA_MILESTONE, TASKS_COMPLETED_MILESTONE } f
 import { useDigimonStore } from "../store/petStore";
 import { useLocation } from "react-router-dom";
 import { useTaskStore } from "../store/taskStore";
+import DigimonSelectionModal from "./DigimonSelectionModal";
 
 const MilestoneProgress = () => {
   const { 
@@ -11,7 +12,7 @@ const MilestoneProgress = () => {
     loading, 
     error, 
     fetchMilestones,
-    claimDigimon,
+    claimSelectedDigimon,
     checkCanClaimDigimon
   } = useMilestoneStore();
   
@@ -19,6 +20,10 @@ const MilestoneProgress = () => {
   const { tasks, dailyQuota } = useTaskStore();
   const hasMaxDigimon = allUserDigimon.length >= 9;
   const location = useLocation();
+  
+  // State for the selection modal
+  const [isSelectionModalOpen, setIsSelectionModalOpen] = useState(false);
+  const [isNXChance, setIsNXChance] = useState(false);
   
   // Calculate if user should be able to claim based on current values
   const shouldBeAbleToClaimDigimon = 
@@ -69,29 +74,28 @@ const MilestoneProgress = () => {
   const dailyQuotaPercentage = Math.min(100, (dailyQuotaStreak / DAILY_QUOTA_MILESTONE) * 100);
   const tasksCompletedPercentage = Math.min(100, (tasksCompletedCount / TASKS_COMPLETED_MILESTONE) * 100);
   
-  // Improve the claim button functionality
-  const [isClaimingDigimon, setIsClaimingDigimon] = useState(false);
-
-  const handleClaimDigimon = async () => {
-    // Prevent multiple clicks
-    if (isClaimingDigimon) return;
+  // Handle opening the selection modal
+  const handleOpenSelectionModal = () => {
+    if (!shouldBeAbleToClaimDigimon) return;
     
+    // 3% chance for NX Digimon
+    const hasNXChance = Math.random() < 0.03;
+    setIsNXChance(hasNXChance);
+    setIsSelectionModalOpen(true);
+  };
+  
+  // Handle Digimon selection
+  const handleDigimonSelection = async (digimonId: number) => {
     try {
-      // Double-check that user can claim before proceeding
-      if (shouldBeAbleToClaimDigimon) {
-        setIsClaimingDigimon(true);
-        const success = await claimDigimon();
-        
-        if (success) {
-          // Force refresh milestones and Digimon data after claiming
-          await fetchMilestones();
-          await useDigimonStore.getState().fetchAllUserDigimon();
-        }
+      const success = await claimSelectedDigimon(digimonId);
+      
+      if (success) {
+        // Force refresh milestones and Digimon data after claiming
+        await fetchMilestones();
+        await useDigimonStore.getState().fetchAllUserDigimon();
       }
     } catch (error) {
       console.error("Error claiming Digimon:", error);
-    } finally {
-      setIsClaimingDigimon(false);
     }
   };
   
@@ -100,68 +104,77 @@ const MilestoneProgress = () => {
   }
   
   return (
-    <div className="card">
-      <h2 className="text-xl font-bold mb-4">Milestone Progress</h2>
-      
-      {error && (
-        <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
-          <p className="text-sm text-red-700">{error}</p>
-        </div>
-      )}
-      
-      <div className="space-y-6">
-        {/* Daily Quota Streak */}
-        <div>
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-sm font-medium">Daily Quota Streak</span>
-            <span className="text-sm text-gray-500">{dailyQuotaStreak} / {DAILY_QUOTA_MILESTONE}</span>
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-2.5">
-            <div 
-              className="bg-blue-600 h-2.5 rounded-full" 
-              style={{ width: `${dailyQuotaPercentage}%` }}
-            ></div>
-          </div>
-          <p className="text-xs text-gray-500 mt-1">
-            Complete your daily quota {DAILY_QUOTA_MILESTONE} times to claim a Digimon.
-          </p>
-        </div>
+    <>
+      <div className="card">
+        <h2 className="text-xl font-bold mb-4">Milestone Progress</h2>
         
-        {/* Tasks Completed */}
-        <div>
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-sm font-medium">Tasks Completed</span>
-            <span className="text-sm text-gray-500">{tasksCompletedCount} / {TASKS_COMPLETED_MILESTONE}</span>
+        {error && (
+          <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
+            <p className="text-sm text-red-700">{error}</p>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2.5">
-            <div 
-              className="bg-green-600 h-2.5 rounded-full" 
-              style={{ width: `${tasksCompletedPercentage}%` }}
-            ></div>
-          </div>
-          <p className="text-xs text-gray-500 mt-1">
-            Complete {TASKS_COMPLETED_MILESTONE} tasks to claim a Digimon.
-          </p>
-        </div>
+        )}
         
-        {/* Claim Button - Use shouldBeAbleToClaimDigimon instead of canClaimDigimon */}
-        <div className="mt-4">
-          <button
-            onClick={handleClaimDigimon}
-            disabled={!shouldBeAbleToClaimDigimon || isClaimingDigimon}
-            className={`w-full py-2 px-4 rounded-md text-white font-medium ${
-              shouldBeAbleToClaimDigimon && !isClaimingDigimon
-                ? "bg-primary-600 hover:bg-primary-700"
-                : "bg-gray-400 cursor-not-allowed"
-            }`}
-          >
-            {isClaimingDigimon ? "Claiming..." : 
-             hasMaxDigimon ? "Maximum Digimon Reached (9)" :
-             shouldBeAbleToClaimDigimon ? "Claim New Digimon" : "Reach a Milestone to Claim"}
-          </button>
+        <div className="space-y-6">
+          {/* Daily Quota Streak */}
+          <div>
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-sm font-medium">Daily Quota Streak</span>
+              <span className="text-sm text-gray-500">{dailyQuotaStreak} / {DAILY_QUOTA_MILESTONE}</span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-2.5">
+              <div 
+                className="bg-blue-600 h-2.5 rounded-full" 
+                style={{ width: `${dailyQuotaPercentage}%` }}
+              ></div>
+            </div>
+            <p className="text-xs text-gray-500 mt-1">
+              Complete your daily quota {DAILY_QUOTA_MILESTONE} times to claim a Digimon.
+            </p>
+          </div>
+          
+          {/* Tasks Completed */}
+          <div>
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-sm font-medium">Tasks Completed</span>
+              <span className="text-sm text-gray-500">{tasksCompletedCount} / {TASKS_COMPLETED_MILESTONE}</span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-2.5">
+              <div 
+                className="bg-green-600 h-2.5 rounded-full" 
+                style={{ width: `${tasksCompletedPercentage}%` }}
+              ></div>
+            </div>
+            <p className="text-xs text-gray-500 mt-1">
+              Complete {TASKS_COMPLETED_MILESTONE} tasks to claim a Digimon.
+            </p>
+          </div>
+          
+          {/* Claim Button */}
+          <div className="mt-4">
+            <button
+              onClick={handleOpenSelectionModal}
+              disabled={!shouldBeAbleToClaimDigimon}
+              className={`w-full py-2 px-4 rounded-md text-white font-medium ${
+                shouldBeAbleToClaimDigimon
+                  ? "bg-primary-600 hover:bg-primary-700"
+                  : "bg-gray-400 cursor-not-allowed"
+              }`}
+            >
+              {hasMaxDigimon ? "Maximum Digimon Reached (9)" :
+               shouldBeAbleToClaimDigimon ? "Choose New Digimon" : "Reach a Milestone to Claim"}
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+      
+      {/* Digimon Selection Modal */}
+      <DigimonSelectionModal
+        isOpen={isSelectionModalOpen}
+        onClose={() => setIsSelectionModalOpen(false)}
+        onSelect={handleDigimonSelection}
+        isNXChance={isNXChance}
+      />
+    </>
   );
 };
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from './store/authStore';
 import { useDigimonStore } from './store/petStore';
 import { useTaskStore } from './store/taskStore';
@@ -26,17 +26,26 @@ import PatchNotes from './pages/PatchNotes';
 import ProfilePage from './pages/ProfilePage';
 import UserSearchPage from './pages/UserSearchPage';
 import LeaderboardPage from './pages/LeaderboardPage';
+import AdminReportsPage from './pages/AdminReportsPage';
 
 // Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user, loading: authLoading } = useAuthStore();
+  const { user, loading: authLoading, isAdmin } = useAuthStore();
+  const location = useLocation();
+  
+  // If the route is an admin route, check for admin status
+  const isAdminRoute = location.pathname.startsWith('/admin');
   
   if (authLoading) {
     return <div className="flex items-center justify-center h-screen">Loading...</div>;
   }
   
   if (!user) {
-    return <Navigate to="/" />;
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+  
+  if (isAdminRoute && !isAdmin) {
+    return <Navigate to="/" replace />;
   }
   
   return <>{children}</>;
@@ -425,6 +434,14 @@ function App() {
           <ProtectedRoute>
             <Layout>
               <LeaderboardPage />
+            </Layout>
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/admin/reports" element={
+          <ProtectedRoute>
+            <Layout>
+              <AdminReportsPage />
             </Layout>
           </ProtectedRoute>
         } />

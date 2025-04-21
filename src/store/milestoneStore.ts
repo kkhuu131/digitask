@@ -22,6 +22,7 @@ interface MilestoneState {
   resetMilestoneProgress: (
     type: "daily_quota" | "tasks_completed"
   ) => Promise<void>;
+  claimSelectedDigimon: (digimonId: number) => Promise<boolean>;
   claimDigimon: () => Promise<boolean>;
   checkCanClaimDigimon: () => boolean;
 }
@@ -196,7 +197,7 @@ export const useMilestoneStore = create<MilestoneState>((set, get) => ({
     }
   },
 
-  claimDigimon: async () => {
+  claimSelectedDigimon: async (digimonId: number) => {
     try {
       set({ loading: true, error: null });
 
@@ -209,20 +210,17 @@ export const useMilestoneStore = create<MilestoneState>((set, get) => ({
         return false;
       }
 
-      // Get available starter Digimon
-      const starterDigimon = [1, 2, 3, 4, 5];
+      // Validate the selected Digimon ID
+      const validStarters = [1, 2, 3, 4, 5];
+      const validNX = [337, 338, 339, 340, 341];
+      const validDigimonIds = [...validStarters, ...validNX];
 
-      // NX Digimon id's 337-341
-      const NXDigimon = [337, 338, 339, 340, 341];
-
-      let selectedDigimon: number;
-
-      if (Math.random() < 0.03) {
-        const randomIndex = Math.floor(Math.random() * NXDigimon.length);
-        selectedDigimon = NXDigimon[randomIndex];
-      } else {
-        const randomIndex = Math.floor(Math.random() * starterDigimon.length);
-        selectedDigimon = starterDigimon[randomIndex];
+      if (!validDigimonIds.includes(digimonId)) {
+        set({
+          loading: false,
+          error: "Invalid Digimon selection.",
+        });
+        return false;
       }
 
       // Create the Digimon for the user (not active by default)
@@ -251,9 +249,8 @@ export const useMilestoneStore = create<MilestoneState>((set, get) => ({
         .from("user_digimon")
         .insert({
           user_id: userData.user.id,
-          digimon_id: selectedDigimon,
+          digimon_id: digimonId,
           name: "",
-          health: 100,
           happiness: 100,
           experience_points: 0,
           current_level: 1,
@@ -288,6 +285,31 @@ export const useMilestoneStore = create<MilestoneState>((set, get) => ({
     } catch (error) {
       console.error("Error claiming Digimon:", error);
       set({ error: (error as Error).message, loading: false });
+      return false;
+    }
+  },
+
+  claimDigimon: async () => {
+    // This can now just call claimSelectedDigimon with a random selection
+    try {
+      // Get available starter Digimon
+      const starterDigimon = [1, 2, 3, 4, 5];
+      // NX Digimon id's 337-341
+      const NXDigimon = [337, 338, 339, 340, 341];
+
+      let selectedDigimon: number;
+
+      if (Math.random() < 0.03) {
+        const randomIndex = Math.floor(Math.random() * NXDigimon.length);
+        selectedDigimon = NXDigimon[randomIndex];
+      } else {
+        const randomIndex = Math.floor(Math.random() * starterDigimon.length);
+        selectedDigimon = starterDigimon[randomIndex];
+      }
+
+      return await get().claimSelectedDigimon(selectedDigimon);
+    } catch (error) {
+      console.error("Error in legacy claimDigimon:", error);
       return false;
     }
   },

@@ -590,15 +590,9 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         return;
       }
 
-      // ... existing code to update daily quota ...
-
-      // After successfully completing the daily quota, update the milestone
-      // This will now fetch the updated milestone data after the database trigger runs
       await useMilestoneStore.getState().incrementDailyQuotaStreak();
-
-      // ... rest of the function ...
     } catch (error) {
-      // ... error handling ...
+      console.error("Error in completeDailyQuota:", error);
     }
   },
 
@@ -609,8 +603,6 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     const streak = dailyQuota.current_streak;
     if (streak <= 1) return 1.0;
 
-    // Add 0.1 (10%) for each streak day beyond the first
-    // Cap at 3.0 (300%)
     return Math.min(1.0 + (streak - 1) * 0.1, 3.0);
   },
 }));

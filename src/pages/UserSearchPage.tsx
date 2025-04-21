@@ -68,7 +68,7 @@ const UserSearchPage = () => {
                     <img 
                       src={user.avatar_url} 
                       alt={user.username} 
-                      className="w-full h-full object-contain"
+                      className="w-8 h-8 object-contain"
                       style={{ imageRendering: "pixelated" }}
                     />
                   ) : (

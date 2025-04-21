@@ -723,12 +723,12 @@ export const useBattleStore = create<BattleState>((set, get) => {
       );
 
       const BASE_XP_GAIN = {
-        easy: 40,
-        medium: 70,
+        easy: 50,
+        medium: 75,
         hard: 100,
       };
 
-      const expModifier = 0.05;
+      const expModifier = 0.03;
 
       const opponentTeamAverageLevel =
         opponentTeamData.reduce((sum, d) => sum + d.current_level, 0) /
@@ -744,7 +744,7 @@ export const useBattleStore = create<BattleState>((set, get) => {
 
       if (winnerId !== userTeamData[0].user_id) xpGain *= 0.12;
 
-      xpGain = Math.max(xpGain, 10);
+      xpGain = Math.max(xpGain, 20);
       xpGain = Math.floor(xpGain);
 
       // Get the XP multiplier from taskStore

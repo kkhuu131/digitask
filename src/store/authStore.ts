@@ -13,6 +13,8 @@ interface AuthState {
   resetPassword: (email: string) => Promise<void>;
   checkSession: () => Promise<void>;
   updateProfile: (updates: Partial<UserProfile>) => Promise<void>;
+  isAdmin: boolean;
+  checkAdminStatus: () => Promise<void>;
 }
 
 export interface UserProfile {
@@ -24,11 +26,12 @@ export interface UserProfile {
   updated_at: string;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   userProfile: null,
   loading: true,
   error: null,
+  isAdmin: false,
 
   signUp: async (email, password, username) => {
     try {
@@ -230,6 +233,9 @@ export const useAuthStore = create<AuthState>((set) => ({
             loading: false,
           });
         }
+
+        // Check if user is an admin
+        await get().checkAdminStatus();
       } else {
         set({ user: null, userProfile: null, loading: false });
       }
@@ -276,6 +282,34 @@ export const useAuthStore = create<AuthState>((set) => ({
         error: (error as Error).message,
         loading: false,
       });
+    }
+  },
+
+  checkAdminStatus: async () => {
+    try {
+      const { user } = get();
+      if (!user) {
+        set({ isAdmin: false });
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("admin_users")
+        .select("id")
+        .eq("user_id", user.id)
+        .single();
+
+      if (error && error.code !== "PGRST116") {
+        // PGRST116 means no rows returned
+        console.error("Error checking admin status:", error);
+        set({ isAdmin: false });
+        return;
+      }
+
+      set({ isAdmin: !!data });
+    } catch (error) {
+      console.error("Error checking admin status:", error);
+      set({ isAdmin: false });
     }
   },
 }));

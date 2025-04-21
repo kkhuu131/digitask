@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../lib/supabase";
+import ReportButton from '../components/ReportButton';
 
 // Add this interface at the top of the file
 interface ProfileData {
@@ -9,6 +10,7 @@ interface ProfileData {
   battles_won: number;
   battles_completed: number;
   current_streak?: number;
+  longest_streak?: number;
   avatar_url?: string;
 }
 
@@ -33,8 +35,8 @@ const LeaderboardPage = () => {
         // Fetch streak data
         const { data: streakData, error: streakError } = await supabase
           .from("daily_quotas")
-          .select("current_streak, user_id")
-          .order('current_streak', { ascending: false })
+          .select("longest_streak, current_streak, user_id")
+          .order('longest_streak', { ascending: false })
           .limit(100);
         
         if (streakError) throw streakError;
@@ -46,7 +48,8 @@ const LeaderboardPage = () => {
             ...profile,
             battles_won: profile.battles_won || 0,
             battles_completed: profile.battles_completed || 0,
-            current_streak: streakEntry?.current_streak || 0
+            current_streak: streakEntry?.current_streak || 0,
+            longest_streak: streakEntry?.longest_streak || 0
           };
         }) || [];
         
@@ -84,7 +87,7 @@ const LeaderboardPage = () => {
     } 
     else { // streak
       return filteredUsers
-        .sort((a, b) => (b.current_streak || 0) - (a.current_streak || 0))
+        .sort((a, b) => (b.longest_streak || 0) - (a.longest_streak || 0))
         .slice(0, 50);
     }
   }, [allUsers, leaderboardType]);
@@ -122,12 +125,26 @@ const LeaderboardPage = () => {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rank</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trainer</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  {leaderboardType === 'wins' ? 'Wins' : 
-                   leaderboardType === 'winrate' ? 'Win Rate' : 'Streak'}
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Battles</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Player</th>
+                {leaderboardType === 'streak' ? (
+                  <>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Best Streak
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Current Streak
+                    </th>
+                  </>
+                ) : (
+                  <>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      {leaderboardType === 'wins' ? 'Wins' : 'Win Rate'}
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Battles
+                    </th>
+                  </>
+                )}
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -148,20 +165,35 @@ const LeaderboardPage = () => {
                           <span className="text-gray-500">👤</span>
                         )}
                       </div>
-                      <Link to={`/profile/name/${user.username}`} className="text-primary-600 hover:underline">
-                        {user.username}
-                      </Link>
+                      <div className="flex items-center">
+                        <Link to={`/profile/name/${user.username}`} className="text-primary-600 hover:underline mr-2">
+                          {user.username}
+                        </Link>
+                        <ReportButton userId={user.id} username={user.username} variant="icon-only" />
+                      </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {leaderboardType === 'wins' ? user.battles_won : 
-                     leaderboardType === 'winrate' ? 
-                      `${Math.round(((user.battles_won / user.battles_completed) || 0) * 100)}%` : 
-                      user.current_streak}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {user.battles_completed || 0}
-                  </td>
+                  
+                  {leaderboardType === 'streak' ? (
+                    <>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {user.longest_streak} days
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {user.current_streak} days
+                      </td>
+                    </>
+                  ) : (
+                    <>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {leaderboardType === 'wins' ? user.battles_won : 
+                         `${Math.round(((user.battles_won / user.battles_completed) || 0) * 100)}%`}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {user.battles_completed || 0}
+                      </td>
+                    </>
+                  )}
                 </tr>
               ))}
             </tbody>
