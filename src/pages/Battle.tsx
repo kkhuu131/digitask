@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useDigimonStore } from "../store/petStore";
-import { useBattleStore } from "../store/battleStore";
+import { useBattleStore, DigimonAttribute, DigimonType } from "../store/battleStore";
 import BattleHistory from "../components/BattleHistory";
 import TeamBattleAnimation from "../components/TeamBattleAnimation";
 import DigimonTeamManager from "../components/DigimonTeamManager";
 import { useAuthStore } from "../store/authStore";
-
+import TypeAttributeIcon from "../components/TypeAttributeIcon";
 const Battle = () => {
   const { userDigimon, digimonData, allUserDigimon, fetchAllUserDigimon } = useDigimonStore();
   const { 
@@ -173,6 +173,14 @@ const Battle = () => {
             
                             {digimon.type && digimon.attribute && (
                               <div className="text-xs text-gray-500">
+                                <div className="flex justify-center mb-2">
+                                  <TypeAttributeIcon
+                                    type={digimon.type as DigimonType}
+                                    attribute={digimon.attribute as DigimonAttribute}
+                                    size="sm"
+                                    showLabel={false}
+                                  />
+                                </div>
                                 <span className="relative group cursor-help font-medium">
                                   {digimon.type}
                                   {/* Type advantage tooltip */}

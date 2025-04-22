@@ -5,7 +5,8 @@ import { supabase } from "../lib/supabase";
 import DigimonDetailModal from "../components/DigimonDetailModal";
 import { motion } from "framer-motion";
 import { useNotificationStore } from "../store/notificationStore";
-import statModifier from "../store/battleStore";
+import statModifier, { DigimonType, DigimonAttribute } from "../store/battleStore";
+import TypeAttributeIcon from '../components/TypeAttributeIcon';
 
 const UserDigimonPage = () => {
   const { 
@@ -565,9 +566,20 @@ const UserDigimonPage = () => {
             return (
               <div 
                 key={digimon.id} 
-                className={`digimon-card-${digimon.id} border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer`}
+                className={`digimon-card-${digimon.id} border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer relative`}
                 onClick={() => handleShowDetailModal(digimon.id)}
               >
+                {/* Add TypeAttributeIcon in the top right corner */}
+                {digimon.digimon?.type && digimon.digimon?.attribute && (
+                  <div className="absolute top-2 right-2 z-10 bg-white bg-opacity-75 p-1 rounded">
+                    <TypeAttributeIcon 
+                      type={digimon.digimon.type as DigimonType} 
+                      attribute={digimon.digimon.attribute as DigimonAttribute}
+                      size="md"
+                    />
+                  </div>
+                )}
+                
                 <div className="p-4">
                   <div className="flex flex-col mb-2">
                     {/* Name section */}

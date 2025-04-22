@@ -187,7 +187,7 @@ function simulateTeamBattle(userTeamData: any, opponentTeamData: any) {
   }
 }
 
-type DigimonType = "Vaccine" | "Virus" | "Data" | "Free";
+export type DigimonType = "Vaccine" | "Virus" | "Data" | "Free";
 
 const TypeAdvantageMap: Record<DigimonType, Record<DigimonType, number>> = {
   Vaccine: {
@@ -216,7 +216,7 @@ const TypeAdvantageMap: Record<DigimonType, Record<DigimonType, number>> = {
   },
 };
 
-type DigimonAttribute =
+export type DigimonAttribute =
   | "Plant"
   | "Water"
   | "Fire"

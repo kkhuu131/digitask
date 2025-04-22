@@ -2,6 +2,24 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { FaTasks, FaHeart, FaFistRaised, FaTrophy, FaQuestion } from "react-icons/fa";
 import { GiLevelEndFlag } from "react-icons/gi";
+import TypeAttributeIcon from "../components/TypeAttributeIcon";
+import { DigimonType, DigimonAttribute } from "../store/battleStore";
+
+// Define the types and attributes for iteration
+const allTypes: DigimonType[] = ['Vaccine', 'Virus', 'Data'];
+const allAttributes: DigimonAttribute[] = ['Fire', 'Water', 'Plant', 'Electric', 'Wind', 'Earth', 'Light', 'Dark', 'Neutral'];
+
+const attributeAdvantages: Record<DigimonAttribute, DigimonAttribute | null> = {
+  Fire: 'Plant',
+  Water: 'Fire',
+  Plant: 'Water',
+  Electric: 'Wind',
+  Wind: 'Earth',
+  Earth: 'Electric',
+  Light: 'Dark',
+  Dark: 'Light',
+  Neutral: null,
+};
 
 const Tutorial = () => {
   const [activeSection, setActiveSection] = useState("tasks");
@@ -15,31 +33,10 @@ const Tutorial = () => {
     { id: "milestones", title: "Milestones & Rewards", icon: <FaTrophy /> },
   ];
 
-  return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-center mb-8">How to Play</h1>
-
-      {/* Navigation Tabs */}
-      <div className="flex flex-wrap justify-center gap-2 mb-8">
-        {sections.map((section) => (
-          <button
-            key={section.id}
-            onClick={() => setActiveSection(section.id)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-full transition-colors ${
-              activeSection === section.id
-                ? "bg-primary-600 text-white"
-                : "bg-gray-200 hover:bg-gray-300 text-gray-700"
-            }`}
-          >
-            <span>{section.icon}</span>
-            <span className="hidden sm:inline">{section.title}</span>
-          </button>
-        ))}
-      </div>
-
-      {/* Content Sections */}
-      <div className="bg-white rounded-lg shadow-lg p-6">
-        {activeSection === "intro" && (
+  const renderContent = () => {
+    switch (activeSection) {
+      case "intro":
+        return (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -85,9 +82,10 @@ const Tutorial = () => {
               </div>
             </div>
           </motion.div>
-        )}
+        );
 
-        {activeSection === "tasks" && (
+      case "tasks":
+        return (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -182,9 +180,10 @@ const Tutorial = () => {
               </ul>
             </div>
           </motion.div>
-        )}
+        );
 
-        {activeSection === "digimon" && (
+      case "digimon":
+        return (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -222,9 +221,10 @@ const Tutorial = () => {
               </ul>
             </div>
           </motion.div>
-        )}
+        );
 
-        {activeSection === "evolution" && (
+      case "evolution":
+        return (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -293,56 +293,80 @@ const Tutorial = () => {
               </ul>
             </div>
           </motion.div>
-        )}
+        );
 
-        {activeSection === "battles" && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <h2 className="text-2xl font-bold mb-4">Battle System</h2>
-            <div className="flex flex-col md:flex-row gap-6 mb-6">
-              <div className="md:w-1/2">
-                <h3 className="text-xl font-semibold mb-2">Team Battles</h3>
-                <p className="mb-4">
-                  Battle against other players' Digimon teams:
-                </p>
-                <ul className="list-disc pl-5 mb-4">
-                  <li>Form a team of up to 3 Digimon</li>
-                  <li>Turn-based combat system</li>
-                  <li>Win battles to earn experience</li>
-                  <li>Limited to 5 battles per day</li>
-                </ul>
-              </div>
-              <div className="md:w-1/2">
-                <h3 className="text-xl font-semibold mb-2">Battle Stats</h3>
-                <p className="mb-4">
-                  Your Digimon's stats affect battle performance:
-                </p>
-                <ul className="list-disc pl-5">
-                  <li><span className="font-medium">HP:</span> Health points in battle</li>
-                  <li><span className="font-medium">SP:</span> Special points for abilities</li>
-                  <li><span className="font-medium">ATK:</span> Physical attack power</li>
-                  <li><span className="font-medium">DEF:</span> Physical defense</li>
-                  <li><span className="font-medium">INT:</span> Special attack and defense</li>
-                  <li><span className="font-medium">SPD:</span> Determines turn order</li>
-                </ul>
-              </div>
+      case "battles":
+        return (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <h3 className="text-xl font-semibold mb-3">Understanding Battles</h3>
+            <p className="mb-4">
+              Battles are turn-based encounters where your Digimon team faces off against opponents. Success depends on your Digimon's stats, levels, and strategic use of Type and Attribute advantages.
+            </p>
+
+            <h4 className="text-lg font-medium mb-2">Type Advantages</h4>
+            <p className="mb-3">
+              Every Digimon has a Type. Types follow a rock-paper-scissors cycle:
+            </p>
+            <div className="flex items-center justify-center space-x-2 mb-4 p-3 bg-gray-100 rounded-lg">
+              {allTypes.map((type, index) => (
+                <React.Fragment key={type}>
+                  <div className="flex flex-col items-center text-center">
+                    <TypeAttributeIcon type={type} attribute="Neutral" size="md" />
+                    <span className="text-xs mt-1">{type}</span>
+                  </div>
+                  {index < allTypes.length -1 && <span className="text-xl font-bold text-gray-500">&gt;</span>}
+                </React.Fragment>
+              ))}
+               {/* Closing the loop */}
+               <span className="text-xl font-bold text-gray-500">&gt;</span>
+               <div className="flex flex-col items-center text-center">
+                 <TypeAttributeIcon type={allTypes[0]} attribute="Neutral" size="md" />
+                 <span className="text-xs mt-1">{allTypes[0]}</span>
+               </div>
             </div>
-            <div className="bg-gray-100 p-4 rounded-lg">
-              <h3 className="text-lg font-semibold mb-2">Battle Tips</h3>
-              <ul className="list-disc pl-5">
-                <li>Balance your team with different types of Digimon</li>
-                <li>Consider type advantages (Vaccine, Data, Virus)</li>
-                <li>Higher level Digimon have better base stats</li>
-                <li>Allocate bonus stats strategically to complement your Digimon's strengths</li>
-              </ul>
+            <p className="text-sm mb-4">
+              Using an advantageous / non-advantageous Type deals 2x / 0.5 more damage. 'Free' types have no advantages or disadvantages.
+            </p>
+
+            <h4 className="text-lg font-medium mb-2">Attribute Advantages</h4>
+            <p className="mb-3">
+              Attributes add another layer of strategy. Each Attribute is strong against another specific Attribute:
+            </p>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4 p-3 bg-gray-100 rounded-lg">
+              {allAttributes.filter(attr => attr !== 'Neutral').map((attribute) => {
+                const strongAgainst = attributeAdvantages[attribute];
+                return (
+                  <div key={attribute} className="flex items-center space-x-2">
+                    <TypeAttributeIcon type="Free" attribute={attribute} size="sm" />
+                    <span className="text-sm font-medium">{attribute}</span>
+                    {strongAgainst && (
+                      <>
+                        <span className="text-gray-500">&gt;</span>
+                        <TypeAttributeIcon type="Free" attribute={strongAgainst} size="sm" />
+                        <span className="text-sm">{strongAgainst}</span>
+                      </>
+                    )}
+                  </div>
+                );
+              })}
             </div>
+             <p className="text-sm mb-4">
+               Advantages cause 1.5x damage. 'Neutral' attribute has no specific advantages or disadvantages.
+             </p>
+
+            <h4 className="text-lg font-medium mb-2">Battle Flow</h4>
+            <ul className="list-disc pl-5 mb-4">
+              <li>Battles are turn-based, with turn order determined by Digimon Speed (SPD).</li>
+              <li>DEF blocks ATK, INT blocks INT, SP is crit damage.</li>
+              <li>On attack, Digimon will use the highest of their ATK/INT stat.</li>
+              <li>Digimon will take turns randomly attacking an enemy.</li>
+              <li>Winning battles grants Experience Points (EXP) to all your Digimon, depending on the difficulty.</li>
+            </ul>
           </motion.div>
-        )}
+        );
 
-        {activeSection === "milestones" && (
+      case "milestones":
+        return (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -386,10 +410,49 @@ const Tutorial = () => {
               </ul>
             </div>
           </motion.div>
-        )}
+        );
+
+      default:
+        return <div>Select a section</div>;
+    }
+  };
+
+  return (
+    <div className="max-w-4xl mx-auto p-6">
+      <h1 className="text-3xl font-bold text-center mb-8">How to Play</h1>
+
+      {/* Navigation Tabs */}
+      <div className="flex flex-col md:flex-row gap-6">
+        {/* Sidebar */}
+        <div className="w-full md:w-1/4">
+          <ul className="space-y-2">
+            {sections.map((section) => (
+              <li key={section.id}>
+                <button
+                  onClick={() => setActiveSection(section.id)}
+                  className={`w-full text-left px-4 py-2 rounded flex items-center space-x-3 ${
+                    activeSection === section.id
+                      ? "bg-primary-500 text-white"
+                      : "hover:bg-gray-100"
+                  }`}
+                >
+                  <span className="text-lg">{section.icon}</span>
+                  <span>{section.title}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Content Area */}
+        <div className="w-full md:w-3/4 bg-white p-6 rounded-lg shadow">
+          {renderContent()}
+        </div>
       </div>
     </div>
   );
 };
+
+import React from 'react';
 
 export default Tutorial; 

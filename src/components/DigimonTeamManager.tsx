@@ -4,6 +4,9 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { motion } from 'framer-motion';
 import { useDigimonStore } from '../store/petStore';
 import { UserDigimon } from '../store/petStore';
+import { DigimonType } from '@/store/battleStore';
+import TypeAttributeIcon from './TypeAttributeIcon';
+import { DigimonAttribute } from '@/store/battleStore';
 
 // Define types for drag items
 interface DigimonDragItem {
@@ -96,7 +99,7 @@ const DigimonCard = ({ digimon, isTeam, onSwap }: DigimonCardProps) => {
       <img 
         src={digimon.digimon?.sprite_url} 
         alt={digimon.name} 
-        className="scale-[1.75]"
+        className="scale-[1.5]"
         style={{ imageRendering: "pixelated" }}
       />
     </motion.div>
@@ -115,7 +118,7 @@ const DigimonCard = ({ digimon, isTeam, onSwap }: DigimonCardProps) => {
     <div 
       ref={(node) => drag(drop(node))}
       className={`
-        ${isTeam ? 'w-40 h-52' : 'w-36 h-48'}
+        ${isTeam ? 'w-40 h-48' : 'w-40 h-48'}
         border rounded-md flex flex-col items-center justify-start p-3
         ${isDragging ? 'opacity-50' : 'opacity-100'}
         ${isOver ? 'bg-blue-100 border border-blue-300' : 'bg-white'}
@@ -125,7 +128,17 @@ const DigimonCard = ({ digimon, isTeam, onSwap }: DigimonCardProps) => {
       {content}
       <div className="w-full pb-1">
         <p className="text-sm truncate w-full text-center mt-1">{digimon.name || digimon.digimon?.name}</p>
-        <p className="text-xs text-gray-500 mt-1 text-center">{digimon.digimon?.type}/{digimon.digimon?.attribute}</p>
+        <div className="flex justify-center items-center mt-1">
+          {digimon.digimon?.type && digimon.digimon?.attribute && (
+            <TypeAttributeIcon
+              type={digimon.digimon.type as DigimonType}
+              attribute={digimon.digimon.attribute as DigimonAttribute}
+              size="sm"
+              showLabel={true}
+              className="text-xs text-gray-500"
+            />
+          )}
+        </div>
         <p className="text-xs text-gray-500 mt-1 text-center">Lv.{digimon.current_level}</p>
       </div>
       
@@ -159,7 +172,7 @@ const EmptySlot = ({ isTeam, onAddToTeam }: EmptySlotProps) => {
     <div 
       ref={drop}
       className={`
-        ${isTeam ? 'w-40 h-52' : 'w-36 h-48'}
+        ${isTeam ? 'w-40 h-48' : 'w-40 h-48'}
         border-2 border-dashed
         ${isTeam ? 'border-gray-300' : 'border-gray-200'}
         rounded-md flex items-center justify-center
@@ -225,41 +238,41 @@ const DigimonTeamManager = () => {
     <DndProvider backend={HTML5Backend}>
       <div className="mb-6">
         <h3 className="text-lg font-semibold mb-2">Team</h3>
-        <div className="flex justify-center space-x-8 mb-8">
+        <div className="grid grid-cols-3 gap-4 mb-8 justify-items-center">
           {teamDigimon.map((digimon) => (
-            <DigimonCard 
-              key={digimon.id} 
-              digimon={digimon} 
+            <DigimonCard
+              key={digimon.id}
+              digimon={digimon}
               isTeam={true}
               onSwap={handleSwap}
               onMove={handleAddToTeam}
             />
           ))}
-          
+
           {Array.from({ length: Math.max(0, 3 - teamDigimon.length) }).map((_, i) => (
-            <EmptySlot 
-              key={`empty-team-${i}`} 
+            <EmptySlot
+              key={`empty-team-${i}`}
               isTeam={true}
               onAddToTeam={handleAddToTeam}
             />
           ))}
         </div>
-        
+
         <h3 className="text-lg font-semibold mb-2">Reserve</h3>
-        <div className="grid grid-cols-3 gap-4 gap-y-6">
+        <div className="grid grid-cols-3 gap-4 gap-y-6 justify-items-center">
           {reserveDigimon.map((digimon) => (
-            <DigimonCard 
-              key={digimon.id} 
-              digimon={digimon} 
+            <DigimonCard
+              key={digimon.id}
+              digimon={digimon}
               isTeam={false}
               onSwap={handleSwap}
               onMove={handleAddToTeam}
             />
           ))}
-          
+
           {Array.from({ length: Math.max(0, 6 - reserveDigimon.length) }).map((_, i) => (
-            <EmptySlot 
-              key={`empty-reserve-${i}`} 
+            <EmptySlot
+              key={`empty-reserve-${i}`}
               isTeam={false}
               onAddToTeam={handleAddToTeam}
             />

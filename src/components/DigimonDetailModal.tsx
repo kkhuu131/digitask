@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { UserDigimon, useDigimonStore } from "../store/petStore";
 import { motion, AnimatePresence } from "framer-motion";
-import statModifier from "../store/battleStore";
+import statModifier, { DigimonAttribute, DigimonType } from "../store/battleStore";
 import { supabase } from "../lib/supabase";
+import TypeAttributeIcon from "./TypeAttributeIcon";
 
 // Define the stat types
 type StatType = "HP" | "SP" | "ATK" | "DEF" | "INT" | "SPD";
@@ -449,9 +450,6 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                   </button>
                 </div>
               )}
-              <p className="text-gray-600 w-3/4 mx-auto text-center">
-                {selectedDigimon.digimon?.name} is a {selectedDigimon.digimon?.attribute} {selectedDigimon.digimon?.type}, {selectedDigimon.digimon?.stage} level Digimon.
-              </p>
               <div className="flex justify-center space-x-2 mt-2">
                 <span className="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded">
                   Lv. {selectedDigimon.current_level}
@@ -471,12 +469,19 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                 Age: {calculateAgeDays(selectedDigimon.created_at)} days
               </p>
             </div>
-            
+
             {/* Description - keep as is */}
             <p className="text-center text-gray-600 mb-4">
               {`${selectedDigimon.digimon?.name} is a ${selectedDigimon.digimon?.attribute} ${selectedDigimon.digimon?.type}, ${selectedDigimon.digimon?.stage} level Digimon.`}
             </p>
-            
+            <div className="flex justify-center mb-4">
+              <TypeAttributeIcon
+                type={selectedDigimon.digimon?.type as DigimonType}
+                attribute={selectedDigimon.digimon?.attribute as DigimonAttribute}
+                size="md"
+                showLabel={false}
+              />
+            </div>
             {/* Status bars - keep as is */}
             <div className="w-full space-y-4 mb-6">
               <div>

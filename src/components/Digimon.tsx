@@ -3,7 +3,8 @@ import { useDigimonStore, UserDigimon, Digimon as DigimonType, EvolutionOption }
 import { useState, useEffect, useRef } from "react";
 import DigimonDetailModal from "./DigimonDetailModal";
 import { useNotificationStore } from "../store/notificationStore";
-import statModifier from "../store/battleStore";
+import statModifier, { DigimonAttribute, DigimonType as DigimonBattleType } from "../store/battleStore";
+import TypeAttributeIcon from "./TypeAttributeIcon";
 
 interface DigimonProps {
   userDigimon: UserDigimon;
@@ -219,10 +220,22 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
   };
   
   return (
-    <div 
-      className="card flex flex-col items-center hover:shadow-lg transition-shadow cursor-pointer" 
+    <div
+      className="card relative flex flex-col items-center hover:shadow-lg transition-shadow cursor-pointer"
       onClick={handleCardClick}
     >
+      {/* Add TypeAttributeIcon in the top right corner */}
+      {digimonData?.type && digimonData?.attribute && (
+        <div className="absolute top-4 right-4 z-10">
+          <TypeAttributeIcon
+            type={digimonData.type as DigimonBattleType}
+            attribute={digimonData.attribute as DigimonAttribute}
+            size="md"
+            showLabel={false}
+          />
+        </div>
+      )}
+
       <h2 className="text-2xl font-bold text-center mb-1 digimon-name">{displayName}</h2>
       <p className="text-sm text-gray-500 mb-2">{digimonData.name}</p>
       
@@ -296,6 +309,10 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
           )}
         </div>
       </div>
+
+      <div className="flex justify-between text-sm text-gray-500">
+        <p>Stage: {digimonData.stage}</p>
+      </div>
       
       <div className="w-full space-y-3">
         <div>
@@ -329,11 +346,6 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
             ></div>
           </div>
         </div>
-      </div>
-      
-      <div className="mt-4 text-sm text-gray-500 text-center">
-        <p>{(digimonData as any)?.type || "Unknown"}/{(digimonData as any)?.attribute || "Unknown"}</p>
-        <p>Stage: {digimonData.stage}</p>
       </div>
 
       {
