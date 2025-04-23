@@ -236,11 +236,12 @@ function App() {
           await useDigimonStore.getState().fetchUserDigimon();
           await useDigimonStore.getState().fetchAllUserDigimon();
           
-          // Check if user has no Digimon
+          // IMPORTANT: Don't redirect here - let the router handle it
+          // This prevents redirect loops
           const { allUserDigimon } = useDigimonStore.getState();
           if (allUserDigimon.length === 0) {
-            console.log("User has no Digimon, redirecting to create pet page");
-            window.location.href = "/create-pet";
+            console.log("User has no Digimon, but letting router handle navigation");
+            // Don't force redirect here
           }
         } catch (error) {
           console.error("Error during app initialization:", error);
@@ -446,12 +447,40 @@ function App() {
           </ProtectedRoute>
         } />
         
+        <Route 
+          path="/create-pet" 
+          element={
+            <RequireAuth allowNoDigimon={true}>
+              <CreatePet />
+            </RequireAuth>
+          } 
+        />
+        
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       
       <NotificationCenter />
     </Router>
   );
+}
+
+function RequireAuth({ children, allowNoDigimon = false }: { children: React.ReactNode, allowNoDigimon?: boolean }) {
+  const { user } = useAuthStore();
+  const { userDigimon } = useDigimonStore();
+  const location = useLocation();
+
+  if (!user) {
+    // Redirect to login if not authenticated
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  // Only check for Digimon if not on the create-pet page
+  if (!allowNoDigimon && !userDigimon) {
+    console.log("No Digimon found, redirecting to create-pet");
+    return <Navigate to="/create-pet" replace />;
+  }
+
+  return children;
 }
 
 export default App; 

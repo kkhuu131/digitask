@@ -17,9 +17,9 @@ const PatchNotes = () => {
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600">
               <li>Added icons for Digimon Types and Attributes (credit to <a href="https://www.deviantart.com/sergiogransol/art/Digimon-Icons-Official-and-Fanmade-947832465" target="_blank" rel="noopener noreferrer">SergioGranSol</a>)</li>
-              <li>De-digivolution is now possible, allowing Digimon to revert to a previously discovered Digimon</li>
-              <li>Reworked EXP system: tasks now give a percentage of EXP to non-active Digimon, battles now gives less EXP</li>
-
+              <li>De-digivolution is now possible, allowing Digimon to revert to a previously discovered Digimon, for now it will come at now costs. Future updates to this system will happen soon!</li>
+              <li>Future changes: Reworked EXP system</li>
+              <li>Fixed a bug where user's couldn't login after signing up (sorry about that!)</li>
             </ul>
           </div>
           <div className="mb-6">

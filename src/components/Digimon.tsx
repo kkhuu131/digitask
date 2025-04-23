@@ -43,7 +43,7 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
   const [devolutionError, setDevolutionError] = useState<string | null>(null);
   const [devolutionOptions, setDevolutionOptions] = useState<EvolutionOption[]>([]);
   const { devolveDigimon } = useDigimonStore();
-  
+
   // Update local state when userDigimon changes
   useEffect(() => {
     // Check for level up

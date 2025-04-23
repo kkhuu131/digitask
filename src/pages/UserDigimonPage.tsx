@@ -227,7 +227,7 @@ const UserDigimonPage = () => {
 
       // Refresh all user Digimon data
       await fetchAllUserDigimon();
-
+      
       
       
     } catch (error) {

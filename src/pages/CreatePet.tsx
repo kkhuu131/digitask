@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useDigimonStore } from "../store/petStore";
 import DigimonSelection from "../components/DigimonSelection";
 import { useAuthStore } from "../store/authStore";
+import { supabase } from "../lib/supabase";
 
 const CreatePet = () => {
   const { createUserDigimon, error, fetchUserDigimon, userDigimon } = useDigimonStore();
@@ -14,20 +15,53 @@ const CreatePet = () => {
   // Check if user already has a Digimon
   useEffect(() => {
     const checkExistingDigimon = async () => {
-      setLoading(true);
-      await fetchUserDigimon();
-      setLoading(false);
+      try {
+        setLoading(true);
+        
+        // Get current user ID
+        const { data: sessionData } = await supabase.auth.getSession();
+        const userId = sessionData.session?.user?.id;
+        
+        if (!userId) {
+          setLoading(false);
+          return;
+        }
+        
+        // Check directly from the database
+        const { data: digimonData, error } = await supabase
+          .from('user_digimon')
+          .select('id')
+          .eq('user_id', userId)
+          .limit(1);
+          
+        if (error) {
+          console.error("Error checking for Digimon:", error);
+        } else if (digimonData && digimonData.length > 0) {
+          // If we found a Digimon in the database, redirect to dashboard
+          navigate("/", { replace: true });
+          return;
+        }
+        
+        // Only fetch from store if we didn't redirect
+        await fetchUserDigimon();
+        setLoading(false);
+      } catch (error) {
+        console.error("Exception in checkExistingDigimon:", error);
+        setLoading(false);
+      }
     };
     
-    checkExistingDigimon();
-  }, [fetchUserDigimon]);
-  
-  // If user already has a Digimon, redirect to dashboard
-  useEffect(() => {
-    if (userDigimon) {
-      navigate("/");
+    // Check if we're coming from email confirmation
+    const searchParams = new URLSearchParams(window.location.search);
+    const fromAuth = searchParams.get('from') === 'auth';
+    
+    // If we're coming from auth, we've already checked for Digimon
+    if (!fromAuth) {
+      checkExistingDigimon();
+    } else {
+      setLoading(false);
     }
-  }, [userDigimon, navigate]);
+  }, [fetchUserDigimon, navigate]);
   
   useEffect(() => {
     const checkEmailConfirmation = () => {
@@ -48,7 +82,14 @@ const CreatePet = () => {
       setLoading(true);
       console.log("Creating Digimon with ID:", digimonId, "and name:", name);
       await createUserDigimon(name, digimonId);
+      
+      // Fetch the user profile to update the auth store
+      await useAuthStore.getState().fetchUserProfile();
+      
       setLoading(false);
+      
+      // Manually navigate after successful creation
+      navigate("/", { replace: true });
     } catch (err) {
       console.error("Error in handleSelectDigimon:", err);
       setCreationError((err as Error).message);
@@ -115,6 +156,20 @@ const CreatePet = () => {
         {creationError && (
           <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
             <p className="text-sm text-red-700">{creationError}</p>
+          </div>
+        )}
+        
+        {userDigimon && (
+          <div className="bg-green-50 border-l-4 border-green-500 p-4 mb-4">
+            <p className="text-sm text-green-700">
+              You already have a Digimon! 
+              <button 
+                onClick={() => navigate("/", { replace: true })}
+                className="ml-2 underline"
+              >
+                Go to Dashboard
+              </button>
+            </p>
           </div>
         )}
         

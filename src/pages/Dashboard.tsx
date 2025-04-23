@@ -5,15 +5,39 @@ import Digimon from "../components/Digimon";
 import TaskForm from "../components/TaskForm";
 import TaskList from "../components/TaskList";
 import StatProgressMeter from "@/components/StatProgressMeter";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard: React.FC = () => {
   const { userDigimon, digimonData, evolutionOptions, fetchUserDigimon, error: digimonError } = useDigimonStore();
   const { fetchTasks, dailyQuota, error: taskError, getExpMultiplier } = useTaskStore();
+  const navigate = useNavigate();
   
   useEffect(() => {
     fetchUserDigimon();
     fetchTasks();
   }, [fetchUserDigimon, fetchTasks]);
+  
+  useEffect(() => {
+    console.log("Dashboard mounted, checking for Digimon");
+    const checkUserDigimon = async () => {
+      try {
+        // Log the current user Digimon state
+        console.log("Current userDigimon state:", userDigimon);
+        
+        // If no Digimon, redirect to create-pet
+        if (!userDigimon) {
+          console.log("No Digimon found, redirecting to create-pet");
+          navigate("/create-pet");
+        } else {
+          console.log("Digimon found, staying on dashboard");
+        }
+      } catch (error) {
+        console.error("Error checking user Digimon:", error);
+      }
+    };
+    
+    checkUserDigimon();
+  }, [userDigimon, navigate]);
   
   const DAILY_QUOTA_REQUIREMENT = 3.0; // Should match the quota in taskStore.ts
 

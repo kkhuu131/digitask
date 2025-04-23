@@ -402,57 +402,43 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       // Get the current user
       const { data: userData } = await supabase.auth.getUser();
       if (!userData.user) {
-        set({ error: "User not authenticated", loading: false });
-        return;
+        throw new Error("User not authenticated");
       }
 
-      // Count existing Digimon for this user
-      const { count, error: countError } = await supabase
+      // Create the user's Digimon
+      const { data, error } = await supabase
         .from("user_digimon")
-        .select("*", { count: "exact", head: true })
-        .eq("user_id", userData.user.id);
-
-      if (countError) {
-        throw countError;
-      }
-
-      const MAX_DIGIMON = 9;
-
-      if (count && count >= MAX_DIGIMON) {
-        console.log("WARNING!!: You can only have up to 3 Digimon");
-        set({ loading: false });
-        return;
-      }
-
-      // Set is_active to true if this is the first Digimon
-      const isActive = count === 0;
-
-      // Create the new Digimon
-      const { error } = await supabase
-        .from("user_digimon")
-        .insert({
-          user_id: userData.user.id,
-          digimon_id: digimonId,
-          name: name,
-          happiness: 100,
-          experience_points: 0,
-          current_level: 1,
-          is_active: isActive,
-        })
+        .insert([
+          {
+            user_id: userData.user.id,
+            digimon_id: digimonId,
+            name: name,
+            is_active: true,
+          },
+        ])
         .select()
         .single();
 
       if (error) throw error;
 
-      // Mark the starter Digimon as discovered
-      await get().addDiscoveredDigimon(digimonId);
+      // Also fetch the user profile to update the auth store
+      const { useAuthStore } = await import("../store/authStore");
+      await useAuthStore.getState().fetchUserProfile();
 
-      // Fetch the complete Digimon data
-      await get().fetchUserDigimon();
-      set({ loading: false });
+      // Continue with the rest of the function...
+
+      set({
+        userDigimon: data,
+        loading: false,
+      });
+
+      return data;
     } catch (error) {
-      console.error("Error creating user Digimon:", error);
-      set({ error: (error as Error).message, loading: false });
+      set({
+        error: (error as Error).message,
+        loading: false,
+      });
+      throw error;
     }
   },
 
