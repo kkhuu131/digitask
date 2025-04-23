@@ -18,18 +18,12 @@ const Dashboard: React.FC = () => {
   }, [fetchUserDigimon, fetchTasks]);
   
   useEffect(() => {
-    console.log("Dashboard mounted, checking for Digimon");
     const checkUserDigimon = async () => {
       try {
-        // Log the current user Digimon state
-        console.log("Current userDigimon state:", userDigimon);
-        
         // If no Digimon, redirect to create-pet
         if (!userDigimon) {
           console.log("No Digimon found, redirecting to create-pet");
           navigate("/create-pet");
-        } else {
-          console.log("Digimon found, staying on dashboard");
         }
       } catch (error) {
         console.error("Error checking user Digimon:", error);
@@ -67,7 +61,7 @@ const Dashboard: React.FC = () => {
           <div className="ml-3 flex justify-between items-center w-full">
             <div>
               <p className="text-sm text-indigo-800">
-                <span className="font-medium">Digitask is in beta! Check our the latest updates in the Help &gt; Patch Notes page.</span>
+                <span className="font-medium">Digivolution and De-digivolution are reworked! Check out the latest updates in the Help &gt; Patch Notes page.</span>
               </p>
             </div>
             <div className="flex space-x-2">

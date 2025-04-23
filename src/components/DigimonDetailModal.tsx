@@ -42,8 +42,6 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
   });
   const [allocating, setAllocating] = useState(false);
   const [belongsToCurrentUser, setBelongsToCurrentUser] = useState(false);
-  const [canDevolve, setCanDevolve] = useState(false);
-  const { checkDevolution } = useDigimonStore();
 
   useEffect(() => {
     // Check if the Digimon belongs to the current user
@@ -86,18 +84,6 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
     
     loadSavedStats();
   }, []);
-
-  useEffect(() => {
-    // Check if digimon can devolve
-    const checkIfCanDevolve = async () => {
-      if (selectedDigimon) {
-        const canDevolve = await checkDevolution();
-        setCanDevolve(canDevolve);
-      }
-    };
-    
-    checkIfCanDevolve();
-  }, [selectedDigimon, checkDevolution]);
 
   // Function to allocate a stat point
   const allocateStat = async (statType: StatType) => {
@@ -266,7 +252,6 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
   // Add function to save the new name
   const handleSaveName = async (digimonId: string) => {
     try {
-      console.log("Saving new name:", newName, "for digimon:", digimonId);
       
       // If name is empty or just whitespace, set it to empty string (will show species name)
       const nameToSave = newName.trim() || "";
@@ -281,8 +266,6 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
         console.error("Supabase error:", error);
         throw error;
       }
-      
-      console.log("Name updated successfully");
       
       // Exit edit mode
       setEditingName(null);
@@ -416,7 +399,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
               </AnimatePresence>
             </div>
             
-            <div className="text-center mb-4">
+            <div className="text-center mb-1">
               {editingName === selectedDigimon.id ? (
                 <div className="flex items-center justify-center mb-2">
                   <input
@@ -466,7 +449,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                   </button>
                 </div>
               )}
-              <div className="flex justify-center space-x-2 mt-2">
+              <div className="flex justify-center space-x-2">
                 <span className="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded">
                   Lv. {selectedDigimon.current_level}
                 </span>
@@ -487,10 +470,10 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
             </div>
 
             {/* Description - keep as is */}
-            <p className="text-center text-gray-600 mb-4">
+            <p className="text-center text-gray-600 mb-2">
               {`${selectedDigimon.digimon?.name} is a ${selectedDigimon.digimon?.attribute} ${selectedDigimon.digimon?.type}, ${selectedDigimon.digimon?.stage} level Digimon.`}
             </p>
-            <div className="flex justify-center mb-4">
+            <div className="flex justify-center mb-2">
               <TypeAttributeIcon
                 type={selectedDigimon.digimon?.type as DigimonType}
                 attribute={selectedDigimon.digimon?.attribute as DigimonAttribute}
@@ -618,11 +601,10 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
               
               {/* Evolution Options - Only show for the current user's Digimon */}
               <div className="mt-4">
-                <h4 className="text-lg font-semibold mb-2">Evolution Options</h4>
-                
+                <h4 className="text-lg font-semibold mb-2">Evolution Options</h4> 
                 {belongsToCurrentUser ? (
                   evolutions?.length > 0 ? (
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-3 gap-2">
                       {evolutions.map((option) => {
                         // Calculate base stats for current level
                         const baseHP = statModifier(
@@ -840,6 +822,19 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
               Active
             </div>
           )}
+
+          {/* Release button - only show if NOT active */}
+          {!selectedDigimon.is_active && onRelease && (
+            <button
+              onClick={() => {
+                onRelease(selectedDigimon.id);
+                onClose();
+              }}
+              className="flex-1 border border-red-500 bg-red-500 text-white hover:bg-red-600 py-2 px-4 rounded"
+            >
+              Release
+            </button>
+          )}
           
           {/* Digivolve button - only show if evolution options exist */}
           {evolutions?.length > 0 && onShowEvolution && (
@@ -853,21 +848,8 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
               Digivolve
             </button>
           )}
-          
-          {/* Release button - only show if NOT active */}
-          {!selectedDigimon.is_active && onRelease && (
-            <button
-              onClick={() => {
-                onRelease(selectedDigimon.id);
-                onClose();
-              }}
-              className="flex-1 border border-red-500 text-red-500 hover:bg-red-50 py-2 px-4 rounded"
-            >
-              Release
-            </button>
-          )}
 
-          {canDevolve && onShowDevolution && (
+          {onShowDevolution && (
             <button
               onClick={() => onShowDevolution(selectedDigimon.id)}
               className="flex-1 bg-indigo-100 text-indigo-800 rounded hover:bg-indigo-200"

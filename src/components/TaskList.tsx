@@ -55,7 +55,6 @@ const TaskList = () => {
   useEffect(() => {
     // Force UI update every minute to refresh task status
     const intervalId = setInterval(() => {
-      console.log("Forcing task list UI update");
       forceUpdate({});
     }, 30 * 1000);
     
@@ -63,25 +62,25 @@ const TaskList = () => {
   }, []);
   
   // Ensure consistent date handling across browsers
-  const isTaskDueToday = (task: Task) => {
-    if (!task.due_date) return false;
+  // const isTaskDueToday = (task: Task) => {
+  //   if (!task.due_date) return false;
     
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+  //   const today = new Date();
+  //   today.setHours(0, 0, 0, 0);
     
-    const taskDate = new Date(task.due_date);
-    taskDate.setHours(0, 0, 0, 0);
+  //   const taskDate = new Date(task.due_date);
+  //   taskDate.setHours(0, 0, 0, 0);
     
-    return taskDate.getTime() === today.getTime();
-  };
+  //   return taskDate.getTime() === today.getTime();
+  // };
 
   // Debug date handling
-  useEffect(() => {
-    if (tasks.length > 0) {
-      console.log("Current date:", new Date().toISOString());
-      console.log("Today's tasks:", tasks.filter(isTaskDueToday));
-    }
-  }, [tasks]);
+  // useEffect(() => {
+  //   if (tasks.length > 0) {
+  //     console.log("Current date:", new Date().toISOString());
+  //     console.log("Today's tasks:", tasks.filter(isTaskDueToday));
+  //   }
+  // }, [tasks]);
   
   // Get filtered tasks based on the current filter
   const getFilteredTasks = () => {

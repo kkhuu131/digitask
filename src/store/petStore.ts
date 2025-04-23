@@ -4,6 +4,21 @@ import { useNotificationStore } from "./notificationStore";
 import { useTaskStore } from "./taskStore";
 import { StatCategory } from "../utils/categoryDetection";
 import statModifier from "./battleStore";
+
+export function expToBoostPoints(
+  level: number,
+  experience: number,
+  evolution: boolean = true
+) {
+  const totalEXP = 20 * ((level * (level + 1)) / 2 - 1) + experience;
+
+  if (evolution) {
+    return Math.floor(totalEXP / 1500);
+  } else {
+    return Math.floor(totalEXP / 1000);
+  }
+}
+
 export interface UserDigimon {
   id: string;
   user_id: string;
@@ -556,15 +571,11 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         )
         .eq("to_digimon_id", userDigimon.digimon_id);
 
-      console.log("evolutionPaths", evolutionPaths);
-
       if (error) throw error;
 
       const availableEvolutions = evolutionPaths.filter((path) => {
         return get().discoveredDigimon.includes(path.to_digimon_id);
       });
-
-      console.log("availableEvolutions", availableEvolutions);
 
       return availableEvolutions.length > 0;
     } catch (error) {
@@ -855,10 +866,24 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         }
       }
 
+      const boostPoints = expToBoostPoints(
+        digimonToEvolve.current_level,
+        digimonToEvolve.experience_points,
+        true
+      );
+
       const { error } = await supabase
         .from("user_digimon")
         .update({
           digimon_id: toDigimonId,
+          current_level: 1,
+          experience_points: 0,
+          hp_bonus: digimonToEvolve.hp_bonus + boostPoints,
+          sp_bonus: digimonToEvolve.sp_bonus + boostPoints,
+          atk_bonus: digimonToEvolve.atk_bonus + boostPoints,
+          def_bonus: digimonToEvolve.def_bonus + boostPoints,
+          int_bonus: digimonToEvolve.int_bonus + boostPoints,
+          spd_bonus: digimonToEvolve.spd_bonus + boostPoints,
         })
         .eq("id", digimonToEvolve.id);
 
@@ -928,17 +953,35 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
       if (devolutionError) throw devolutionError;
 
+      // Check if we've discovered the Digimon we're devolving to
+      if (!get().discoveredDigimon.includes(fromDigimonId)) {
+        throw new Error(
+          `You haven't discovered the Digimon you're devolving to. Please discover it first.`
+        );
+      }
+
+      const boostPoints = expToBoostPoints(
+        digimonToDevolve.current_level,
+        digimonToDevolve.experience_points,
+        false
+      );
+
       const { error } = await supabase
         .from("user_digimon")
         .update({
           digimon_id: fromDigimonId,
+          current_level: 1,
+          experience_points: 0,
+          hp_bonus: digimonToDevolve.hp_bonus + boostPoints,
+          sp_bonus: digimonToDevolve.sp_bonus + boostPoints,
+          atk_bonus: digimonToDevolve.atk_bonus + boostPoints,
+          def_bonus: digimonToDevolve.def_bonus + boostPoints,
+          int_bonus: digimonToDevolve.int_bonus + boostPoints,
+          spd_bonus: digimonToDevolve.spd_bonus + boostPoints,
         })
         .eq("id", digimonToDevolve.id);
 
       if (error) throw error;
-
-      // Add the new Digimon to discovered list
-      await get().addDiscoveredDigimon(fromDigimonId);
 
       // Always refresh all user Digimon to update the UI
       await get().fetchAllUserDigimon();
@@ -1092,8 +1135,6 @@ export const useDigimonStore = create<PetState>((set, get) => ({
     try {
       const { userDigimon } = get();
       if (!userDigimon) return;
-
-      console.log(`Applying penalty: -${happinessPenalty} happiness`);
 
       // Calculate new happiness value
       const newHappiness = Math.max(
@@ -1399,9 +1440,6 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         ),
       }));
 
-      console.log(
-        `Increased ${statCategory} by ${amount}. New value: ${newBonus}`
-      );
       return true;
     } catch (error) {
       console.error(`Error increasing ${statCategory}:`, error);

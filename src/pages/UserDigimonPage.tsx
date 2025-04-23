@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useDigimonStore, EvolutionOption, UserDigimon } from "../store/petStore";
+import { useDigimonStore, EvolutionOption, UserDigimon, expToBoostPoints } from "../store/petStore";
 import MilestoneProgress from "../components/MilestoneProgress"
 import { supabase } from "../lib/supabase";
 import DigimonDetailModal from "../components/DigimonDetailModal";
@@ -352,7 +352,9 @@ const UserDigimonPage = () => {
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-xl font-bold mb-4">Evolution Options</h3>
-            
+            <div className="text-md text-gray-500 mb-4">
+              Evolving will<b className="text-red-500"> reset your Digimon level back to 1</b> and give {expToBoostPoints(selectedDetailDigimon.current_level, selectedDetailDigimon.experience_points, true)} bonus points to all stats.
+            </div>
             {evolutionError && (
               <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
                 <p className="text-sm text-red-700">{evolutionError}</p>
@@ -488,8 +490,8 @@ const UserDigimonPage = () => {
                     return (
                       <div 
                         key={option.id}
-                        className={`border rounded-lg p-4 flex flex-col items-center hover:shadow-md cursor-pointer ${
-                      canEvolve ? "" : "opacity-60 bg-gray-100"
+                        className={`border rounded-lg p-4 flex flex-col items-center ${
+                      canEvolve ? "hover:shadow-md cursor-pointer opacity-100" : "opacity-60 bg-gray-100"
                         }`}
                         onClick={() => canEvolve && handleEvolution(showEvolutionModal, option.digimon_id)}
                       >
@@ -522,7 +524,7 @@ const UserDigimonPage = () => {
                             {discovered ? option.name : "???"}
                           </span>
                           <span className="text-xs text-gray-500">
-                            {discovered ? option.stage : "Unknown Stage"}
+                            {option.stage}
                           </span>
                       
                       {/* Level requirement */}
@@ -536,11 +538,10 @@ const UserDigimonPage = () => {
                       {/* Stat requirements */}
                       {statRequirementsList.length > 0 && (
                         <div className="mt-2 w-full">
-                          <span className="text-xs font-medium">Stat Requirements:</span>
                           <div className="space-y-1 mt-1">
                             {statRequirementsList.map(stat => (
                               <div key={stat.name} className="flex justify-between text-xs">
-                                <span>{stat.name}:</span>
+                                <span>{stat.name}</span>
                                 <span className={stat.meets ? "text-green-600" : "text-red-600"}>
                                   {stat.current}/{stat.required}
                           </span>
@@ -610,7 +611,9 @@ const UserDigimonPage = () => {
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-xl font-bold mb-4">De-Digivolution Options</h3>
-            
+            <div className="text-md text-gray-500 mb-4">
+              Devolving will<b className="text-red-500"> reset your Digimon level back to 1</b> and give {expToBoostPoints(selectedDetailDigimon?.current_level || 1, selectedDetailDigimon?.experience_points || 0, false)} bonus points to all stats.
+            </div>
             {devolutionError && (
               <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
                 <p className="text-sm text-red-700">{devolutionError}</p>
@@ -624,30 +627,38 @@ const UserDigimonPage = () => {
               
               const options = devolutionData[selectedDigimon.digimon_id] || [];
                       
-                      return (
+                return (
+                  <div>
+                    {options.length === 0 && (
+                      <p className="text-gray-500 text-center">No options available.</p>
+                    )}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
-                  {options.length === 0 ? (
-                    <p>No de-digivolution options available</p>
-                  ) : (
-                    options.map((option) => (
+                  {options.map((option) => {
+                      const discovered = isDiscovered(option.digimon_id);
+                      return (
                         <div 
                           key={option.id}
-                        className="border rounded-lg p-4 flex flex-col items-center hover:shadow-md cursor-pointer"
-                        onClick={() => handleDevolve(showDevolutionModal, option.digimon_id)}
+                        className={`border rounded-lg p-4 flex flex-col items-center ${
+                          discovered ? "hover:shadow-md cursor-pointer opacity-100" : "opacity-60 bg-gray-100"
+                        }`}
+                        onClick={() => discovered && handleDevolve(showDevolutionModal, option.digimon_id)}
                       >
-                                <img 
-                                  src={option.sprite_url} 
-                                  alt={option.name}
-                          className="w-24 h-24 object-contain mb-2"
-                                  style={{ imageRendering: "pixelated" }}
-                                />
-                        <h4 className="font-bold">{option.name}</h4>
+                          <img 
+                            src={option.sprite_url} 
+                            alt={discovered ? option.name : "Unknown Digimon"}
+                            className={`w-24 h-24 object-contain mb-2 ${
+                              discovered ? "opacity-100" : "brightness-0"
+                            }`}
+                            style={{ imageRendering: "pixelated" }}
+                          />
+                        <h4 className="font-bold">{discovered ? option.name : "???"}</h4>
                         <p className="text-sm text-gray-500">{option.stage}</p>
                                 </div>
-                    ))
-                  )}
-                        </div>
                       );
+                    })}
+                  </div>
+                </div>
+                );
             })()}
             
             <div className="flex justify-end mt-4">

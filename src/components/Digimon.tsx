@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useDigimonStore, UserDigimon, Digimon as DigimonType, EvolutionOption } from "../store/petStore";
+import { useDigimonStore, UserDigimon, Digimon as DigimonType, EvolutionOption, expToBoostPoints } from "../store/petStore";
 import { useState, useEffect, useRef } from "react";
 import DigimonDetailModal from "./DigimonDetailModal";
 import { useNotificationStore } from "../store/notificationStore";
@@ -186,7 +186,6 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
   
   // Add a debug function to log when clicks happen
   const handleCardClick = () => {
-    console.log("Digimon card clicked");
     setShowDetailModal(true);
   };
   
@@ -329,7 +328,6 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
           className="w-40 h-40 flex items-center justify-center"
           onClick={(e) => {
             e.stopPropagation(); // Stop propagation to prevent double handling
-            console.log("Sprite container clicked");
             setShowDetailModal(true);
           }}
         >
@@ -343,7 +341,6 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
             }}
             onClick={(e) => {
               e.stopPropagation(); // Prevent opening modal when clicking sprite
-              console.log("Sprite image clicked");
               handleSpriteClick();
             }}
             onError={(e) => {
@@ -442,8 +439,10 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
             className="bg-white rounded-lg p-6 max-w-4xl w-full mx-4"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-xl font-bold mb-4">Evolution Options</h3>
-            
+            <h3 className="text-xl font-bold mb-2">Evolution Options</h3>
+            <div className="text-md text-gray-500 mb-4">
+              Evolving will reset your Digimon level back to 1 and give {expToBoostPoints(userDigimon.current_level, userDigimon.experience_points)} bonus points to all stats.
+            </div>
             {evolutionError && (
               <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
                 <p className="text-sm text-red-700">{evolutionError}</p>
@@ -579,8 +578,8 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
                 return (
                   <div 
                     key={option.id}
-                    className={`border rounded-lg p-3 transition-all ${
-                      canEvolve 
+                    className={`border rounded-lg p-3 px-10 transition-all ${
+                      canEvolve
                         ? "cursor-pointer hover:bg-primary-50 hover:border-primary-300" 
                         : "opacity-60 bg-gray-100"
                     }`}
@@ -615,7 +614,7 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
                         {discovered ? option.name : "???"}
                       </span>
                       <span className="text-xs text-gray-500">
-                        {discovered ? option.stage : "Unknown Stage"}
+                        {option.stage}
                       </span>
                       
                       {/* Level requirement */}
@@ -629,11 +628,10 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
                       {/* Stat requirements */}
                       {statRequirementsList.length > 0 && (
                         <div className="mt-2 w-full">
-                          <span className="text-xs font-medium">Stat Requirements:</span>
                           <div className="space-y-1 mt-1">
                             {statRequirementsList.map(stat => (
                               <div key={stat.name} className="flex justify-between text-xs">
-                                <span>{stat.name}:</span>
+                                <span>{stat.name}</span>
                                 <span className={stat.meets ? "text-green-600" : "text-red-600"}>
                                   {stat.current}/{stat.required}
                                 </span>
@@ -701,8 +699,15 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
             className="bg-white rounded-lg p-6 max-w-4xl w-full mx-4"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-xl font-bold mb-4">De-Digivolution Options</h3>
-            
+            <h3 className="text-xl font-bold mb-2">De-Digivolution Options</h3>
+            <div className="text-md text-gray-500 mb-4">
+              Devolving will<b className="text-red-500"> reset your Digimon level back to 1</b> and give {expToBoostPoints(userDigimon.current_level, userDigimon.experience_points, false)} bonus points to all stats.
+            </div>
+            {devolutionOptions.length === 0 && (
+              <p className="text-gray-500 mb-4 text-center">
+                No options available.
+              </p>
+            )}
             {devolutionError && (
               <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
                 <p className="text-sm text-red-700">{devolutionError}</p>
@@ -710,22 +715,30 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
             )}
             
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
-              {devolutionOptions.map((option) => (
-                <div
-                  key={option.id}
-                  className="border rounded-lg p-4 flex flex-col items-center hover:shadow-md cursor-pointer"
-                  onClick={() => handleDevolve(option.digimon_id)}
-                >
-                  <img
-                    src={option.sprite_url}
-                    alt={option.name}
-                    className="w-24 h-24 object-contain mb-2"
-                    style={{ imageRendering: "pixelated" }}
-                  />
-                  <h4 className="font-bold">{option.name}</h4>
-                  <p className="text-sm text-gray-500">{option.stage}</p>
-                </div>
-              ))}
+              {devolutionOptions.map((option) => {
+                const discovered = isDiscovered(option.digimon_id);
+                return(
+                  <div
+                    key={option.id}
+                    className={`border rounded-lg p-4 flex flex-col items-center ${
+                      discovered ? "hover:shadow-md cursor-pointer opacity-100" : "opacity-60 bg-gray-100"
+                    }`}
+                    onClick={() => discovered && handleDevolve(option.digimon_id)}
+                  >
+                    <img
+                      src={option.sprite_url}
+                      alt={discovered ? option.name : "Unknown Digimon"}
+                      className={`w-24 h-24 object-contain mb-2 ${
+                        discovered ? "opacity-100" : "brightness-0"
+                      }`}
+                      style={{ imageRendering: "pixelated" }}
+                    />
+                    <h4 className="font-bold">{discovered ? option.name : "???"}</h4>
+                    <p className="text-sm text-gray-500">{option.stage}</p>
+                  </div>
+                )
+
+              })}
             </div>
             
             <div className="flex justify-end mt-4">
