@@ -17,6 +17,7 @@ interface DigimonDetailModalProps {
   onNameChange?: (updatedDigimon: UserDigimon) => void;
   evolutionData?: {[key: number]: any[]};
   className?: string;
+  onShowDevolution?: (digimonId: string) => void;
 }
 
 const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
@@ -27,7 +28,8 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
   onRelease,
   evolutionData = {},
   onNameChange,
-  className = ""
+  className = "",
+  onShowDevolution,
 }) => {
   const { discoveredDigimon } = useDigimonStore();
   const [editingName, setEditingName] = useState<string | null>(null);
@@ -40,6 +42,8 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
   });
   const [allocating, setAllocating] = useState(false);
   const [belongsToCurrentUser, setBelongsToCurrentUser] = useState(false);
+  const [canDevolve, setCanDevolve] = useState(false);
+  const { checkDevolution } = useDigimonStore();
 
   useEffect(() => {
     // Check if the Digimon belongs to the current user
@@ -82,6 +86,18 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
     
     loadSavedStats();
   }, []);
+
+  useEffect(() => {
+    // Check if digimon can devolve
+    const checkIfCanDevolve = async () => {
+      if (selectedDigimon) {
+        const canDevolve = await checkDevolution();
+        setCanDevolve(canDevolve);
+      }
+    };
+    
+    checkIfCanDevolve();
+  }, [selectedDigimon, checkDevolution]);
 
   // Function to allocate a stat point
   const allocateStat = async (statType: StatType) => {
@@ -367,9 +383,9 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
           </button>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Left column - Image, basic info, and now buttons */}
-          <div className="flex flex-col items-center">
+        <div className="flex flex-col md:flex-row gap-6">
+          {/* Left column */}
+          <div className="md:w-2/5 flex flex-col items-center">
             <div className="w-32 h-32 mt-4 mb-8 relative">
               <motion.img 
                 src={selectedDigimon.digimon?.sprite_url} 
@@ -518,8 +534,8 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
             </div>
           </div>
           
-          {/* Right column - Stats and evolution */}
-          <div className="flex flex-col h-full">
+          {/* Right column */}
+          <div className="flex flex-col h-full md:w-3/5">
             <div className="flex-grow">
               <h4 className="text-lg font-semibold mb-2">Stats</h4>
 
@@ -800,56 +816,65 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                 )}
               </div>
             </div>
-            
-            {/* Button container at the bottom with margin-top for spacing */}
-            <div className="flex space-x-2 w-full mt-4 mb-1">
-              {/* Set Active button - only show if not already active */}
-              {!selectedDigimon.is_active && onSetActive && (
-                <button
-                  onClick={() => {
-                    onSetActive(selectedDigimon.id);
-                    onClose();
-                  }}
-                  className="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
-                >
-                  Set Active
-                </button>
-              )}
-              
-              {/* Active indicator - show instead of Set Active button if already active */}
-              {selectedDigimon.is_active && (
-                <div className="flex-1 bg-blue-100 text-blue-800 py-2 px-4 rounded text-center">
-                  Active
-                </div>
-              )}
-              
-              {/* Digivolve button - only show if evolution options exist */}
-              {evolutions?.length > 0 && onShowEvolution && (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation(); // Prevent event bubbling
-                    onShowEvolution(selectedDigimon.id);
-                  }}
-                  className="flex-1 bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded"
-                >
-                  Digivolve
-                </button>
-              )}
-              
-              {/* Release button - only show if NOT active */}
-              {!selectedDigimon.is_active && onRelease && (
-                <button
-                  onClick={() => {
-                    onRelease(selectedDigimon.id);
-                    onClose();
-                  }}
-                  className="flex-1 border border-red-500 text-red-500 hover:bg-red-50 py-2 px-4 rounded"
-                >
-                  Release
-                </button>
-              )}
-            </div>
           </div>
+        </div>
+        
+        {/* Add the buttons here, after the two-column layout */}
+        <div className="flex space-x-2 w-full mt-4">
+          {/* All the buttons */}
+          {!selectedDigimon.is_active && onSetActive && (
+            <button
+              onClick={() => {
+                onSetActive(selectedDigimon.id);
+                onClose();
+              }}
+              className="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
+            >
+              Set Active
+            </button>
+          )}
+          
+          {/* Active indicator - show instead of Set Active button if already active */}
+          {selectedDigimon.is_active && (
+            <div className="flex-1 bg-blue-100 text-blue-800 py-2 px-4 rounded text-center">
+              Active
+            </div>
+          )}
+          
+          {/* Digivolve button - only show if evolution options exist */}
+          {evolutions?.length > 0 && onShowEvolution && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation(); // Prevent event bubbling
+                onShowEvolution(selectedDigimon.id);
+              }}
+              className="flex-1 bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded"
+            >
+              Digivolve
+            </button>
+          )}
+          
+          {/* Release button - only show if NOT active */}
+          {!selectedDigimon.is_active && onRelease && (
+            <button
+              onClick={() => {
+                onRelease(selectedDigimon.id);
+                onClose();
+              }}
+              className="flex-1 border border-red-500 text-red-500 hover:bg-red-50 py-2 px-4 rounded"
+            >
+              Release
+            </button>
+          )}
+
+          {canDevolve && onShowDevolution && (
+            <button
+              onClick={() => onShowDevolution(selectedDigimon.id)}
+              className="flex-1 bg-indigo-100 text-indigo-800 rounded hover:bg-indigo-200"
+            >
+              De-Digivolve
+            </button>
+          )}
         </div>
       </div>
     </div>

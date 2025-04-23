@@ -4,7 +4,6 @@ import MilestoneProgress from "../components/MilestoneProgress"
 import { supabase } from "../lib/supabase";
 import DigimonDetailModal from "../components/DigimonDetailModal";
 import { motion } from "framer-motion";
-import { useNotificationStore } from "../store/notificationStore";
 import statModifier, { DigimonType, DigimonAttribute } from "../store/battleStore";
 import TypeAttributeIcon from '../components/TypeAttributeIcon';
 
@@ -18,7 +17,8 @@ const UserDigimonPage = () => {
     loading, 
     error,
     discoveredDigimon,
-    evolveDigimon
+    evolveDigimon,
+    devolveDigimon
   } = useDigimonStore();
   const [switchingDigimon, setSwitchingDigimon] = useState(false);
   const [digimonToRelease, setDigimonToRelease] = useState<string | null>(null);
@@ -27,10 +27,14 @@ const UserDigimonPage = () => {
   const [showEvolutionModal, setShowEvolutionModal] = useState<string | null>(null);
   const [evolutionError, setEvolutionError] = useState<string | null>(null);
   const [selectedDetailDigimon, setSelectedDetailDigimon] = useState<UserDigimon | null>(null);
+  const [showDevolutionModal, setShowDevolutionModal] = useState<string | null>(null);
+  const [devolutionError, setDevolutionError] = useState<string | null>(null);
+  const [devolutionData, setDevolutionData] = useState<{[key: number]: EvolutionOption[]}>({});
 
   useEffect(() => {
     fetchAllUserDigimon();
     fetchAllEvolutionPaths();
+    fetchAllDevolutionPaths();
   }, [fetchAllUserDigimon]);
 
   // Add event listener for name changes
@@ -96,6 +100,44 @@ const UserDigimonPage = () => {
     }
   };
 
+  // Add function to fetch devolution paths
+  const fetchAllDevolutionPaths = async () => {
+    try {
+      const { data: devolutionPaths, error } = await supabase
+        .from("evolution_paths")
+        .select(`
+          id,
+          to_digimon_id,
+          from_digimon_id,
+          digimon:from_digimon_id (id, digimon_id, name, stage, sprite_url)
+        `);
+        
+      if (error) throw error;
+      
+      // Group by to_digimon_id (the current form that can devolve)
+      const groupedPaths: {[key: number]: EvolutionOption[]} = {};
+      
+      devolutionPaths.forEach(path => {
+        if (!groupedPaths[path.to_digimon_id]) {
+          groupedPaths[path.to_digimon_id] = [];
+        }
+        
+        groupedPaths[path.to_digimon_id].push({
+          id: path.id,
+          digimon_id: path.from_digimon_id,
+          name: (path.digimon as any).name,
+          stage: (path.digimon as any).stage,
+          sprite_url: (path.digimon as any).sprite_url,
+          level_required: 0 // Not applicable for devolution
+        });
+      });
+      
+      setDevolutionData(groupedPaths);
+    } catch (error) {
+      console.error("Error fetching devolution paths:", error);
+    }
+  };
+
   const handleSwitchDigimon = async (digimonId: string) => {
     if (digimonId === userDigimon?.id) return;
     
@@ -124,34 +166,6 @@ const UserDigimonPage = () => {
   const handleShowEvolutionModal = (digimonId: string) => {
     setShowEvolutionModal(digimonId);
     setEvolutionError(null);
-  };
-
-  const handleEvolution = async (toDigimonId: number) => {
-    try {
-      setEvolutionError(null);
-      
-      // Call the evolve function from the store
-      await evolveDigimon(toDigimonId, showEvolutionModal || undefined);
-      
-      // Fetch new evolution options for the evolved Digimon
-      await fetchEvolutionPathsForDigimon(toDigimonId);
-      
-      // Refresh all user Digimon data
-      await fetchAllUserDigimon();
-      
-      // Close both modals after successful evolution
-      setShowEvolutionModal(null);
-      setSelectedDetailDigimon(null);
-      
-      // Show success notification
-      useNotificationStore.getState().addNotification({
-        message: `Your Digimon has evolved successfully!`,
-        type: "success"
-      });
-    } catch (error) {
-      console.error("Evolution error:", error);
-      setEvolutionError((error as Error).message);
-    }
   };
 
   // Add a new function to fetch evolution paths for a specific Digimon ID
@@ -200,6 +214,41 @@ const UserDigimonPage = () => {
     }
   };
 
+  const handleEvolution = async (digimonId: string, toDigimonId: number) => {
+    try {
+      setEvolutionError(null);
+      setShowEvolutionModal(null);
+      setSelectedDetailDigimon(null);
+      
+      // Evolve the Digimon
+      await evolveDigimon(toDigimonId, digimonId);
+
+      await fetchEvolutionPathsForDigimon(toDigimonId);
+
+      // Refresh all user Digimon data
+      await fetchAllUserDigimon();
+
+      
+      
+    } catch (error) {
+      setEvolutionError((error as Error).message);
+    }
+  };
+
+  const handleDevolve = async (digimonId: string, fromDigimonId: number) => {
+    try {
+      setDevolutionError(null);
+
+      setShowDevolutionModal(null);
+      setSelectedDetailDigimon(null);
+
+      await devolveDigimon(fromDigimonId, digimonId);
+      await fetchEvolutionPathsForDigimon(fromDigimonId);
+    } catch (error) {
+      setDevolutionError((error as Error).message);
+    }
+  };
+
   // Check if a Digimon has been discovered
   const isDiscovered = (digimonId: number) => {
     return discoveredDigimon.includes(digimonId);
@@ -235,7 +284,8 @@ const UserDigimonPage = () => {
         fetchAllUserDigimon();
         
         // Fetch evolution paths for the newly evolved Digimon
-        fetchEvolutionPathsForDigimon(event.detail.newDigimonId);
+        fetchAllEvolutionPaths();
+        fetchAllDevolutionPaths();
       }
     };
 
@@ -245,6 +295,12 @@ const UserDigimonPage = () => {
       window.removeEventListener('digimon-evolved', handleDigimonEvolved as EventListener);
     };
   }, [fetchAllUserDigimon]);
+
+  // Add this function to UserDigimonPage.tsx
+  const handleShowDevolutionModal = (digimonId: string) => {
+    setShowDevolutionModal(digimonId);
+    setDevolutionError(null);
+  };
 
   if (loading && allUserDigimon.length === 0) {
     return (
@@ -432,12 +488,10 @@ const UserDigimonPage = () => {
                     return (
                       <div 
                         key={option.id}
-                        className={`border rounded-lg p-3 transition-all ${
-                      canEvolve 
-                            ? "cursor-pointer hover:bg-primary-50 hover:border-primary-300" 
-                            : "opacity-60 bg-gray-100"
+                        className={`border rounded-lg p-4 flex flex-col items-center hover:shadow-md cursor-pointer ${
+                      canEvolve ? "" : "opacity-60 bg-gray-100"
                         }`}
-                    onClick={() => canEvolve && handleEvolution(option.digimon_id)}
+                        onClick={() => canEvolve && handleEvolution(showEvolutionModal, option.digimon_id)}
                       >
                         <div className="flex flex-col items-center">
                           <div className="relative w-24 h-24 mb-2">
@@ -489,25 +543,25 @@ const UserDigimonPage = () => {
                                 <span>{stat.name}:</span>
                                 <span className={stat.meets ? "text-green-600" : "text-red-600"}>
                                   {stat.current}/{stat.required}
-                    </span>
-                  </div>
+                          </span>
+                        </div>
                             ))}
-                </div>
-                                </div>
-                              )}
+                      </div>
+              </div>
+            )}
                           </div>
                         </div>
                       );
                     })}
                   </div>
-                
+            
             <div className="flex justify-end mt-4">
-                    <button
+              <button 
                 onClick={() => setShowEvolutionModal(null)}
                 className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
               >
                 Close
-                    </button>
+              </button>
             </div>
           </div>
         </div>
@@ -523,6 +577,7 @@ const UserDigimonPage = () => {
             // Set the evolution modal to show but don't close the detail modal
             handleShowEvolutionModal(digimonId);
           }}
+          onShowDevolution={(digimonId) => handleShowDevolutionModal(digimonId)}
           onRelease={handleReleaseClick}
           evolutionData={evolutionData}
           onNameChange={(updatedDigimon) => {
@@ -542,6 +597,69 @@ const UserDigimonPage = () => {
           }}
           className="z-40" // Add a lower z-index
         />
+      )}
+
+      {/* Devolution Modal */}
+      {showDevolutionModal && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          onClick={() => setShowDevolutionModal(null)}
+        >
+          <div 
+            className="bg-white rounded-lg p-6 max-w-4xl w-full mx-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-xl font-bold mb-4">De-Digivolution Options</h3>
+            
+            {devolutionError && (
+              <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
+                <p className="text-sm text-red-700">{devolutionError}</p>
+                    </div>
+                  )}
+            
+            {/* Find the selected digimon */}
+            {(() => {
+              const selectedDigimon = allUserDigimon.find(d => d.id === showDevolutionModal);
+              if (!selectedDigimon) return <p>Digimon not found</p>;
+              
+              const options = devolutionData[selectedDigimon.digimon_id] || [];
+                      
+                      return (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+                  {options.length === 0 ? (
+                    <p>No de-digivolution options available</p>
+                  ) : (
+                    options.map((option) => (
+                        <div 
+                          key={option.id}
+                        className="border rounded-lg p-4 flex flex-col items-center hover:shadow-md cursor-pointer"
+                        onClick={() => handleDevolve(showDevolutionModal, option.digimon_id)}
+                      >
+                                <img 
+                                  src={option.sprite_url} 
+                                  alt={option.name}
+                          className="w-24 h-24 object-contain mb-2"
+                                  style={{ imageRendering: "pixelated" }}
+                                />
+                        <h4 className="font-bold">{option.name}</h4>
+                        <p className="text-sm text-gray-500">{option.stage}</p>
+                                </div>
+                    ))
+                  )}
+                        </div>
+                      );
+            })()}
+            
+            <div className="flex justify-end mt-4">
+                    <button
+                onClick={() => setShowDevolutionModal(null)}
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
+              >
+                Close
+                    </button>
+            </div>
+          </div>
+        </div>
       )}
 
       <div className="card mb-6">

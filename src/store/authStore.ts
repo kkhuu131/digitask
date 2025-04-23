@@ -67,7 +67,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         password,
         options: {
           data: {
-            // Store the username in user metadata so we can access it later
             username: username,
           },
         },
@@ -77,15 +76,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
       if (data.user) {
         // Create the user profile with the provided username
-        const { error: profileError } = await supabase.from("profiles").insert({
-          id: data.user.id,
-          username: username, // Use the provided username
-          display_name: username, // Use the same for display_name
-        });
-
-        if (profileError) {
-          console.error("Error creating profile:", profileError);
-        }
+        await createProfile(data.user.id, username);
 
         set({
           user: data.user,
@@ -283,3 +274,27 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 }));
+
+// Add this function to create a profile after signup
+const createProfile = async (userId: string, username: string) => {
+  try {
+    const { error } = await supabase.from("profiles").insert([
+      {
+        id: userId,
+        username,
+        display_name: username,
+        saved_stats: { HP: 0, SP: 0, ATK: 0, DEF: 0, INT: 0, SPD: 0 },
+        daily_stat_gains: 0,
+        last_stat_reset: new Date().toISOString(),
+        battles_won: 0,
+        battles_completed: 0,
+      },
+    ]);
+
+    if (error) throw error;
+    return true;
+  } catch (error) {
+    console.error("Error creating profile:", error);
+    return false;
+  }
+};

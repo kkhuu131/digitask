@@ -5,6 +5,7 @@ import DigimonDetailModal from "./DigimonDetailModal";
 import { useNotificationStore } from "../store/notificationStore";
 import statModifier, { DigimonAttribute, DigimonType as DigimonBattleType } from "../store/battleStore";
 import TypeAttributeIcon from "./TypeAttributeIcon";
+import { supabase } from "../lib/supabase";
 
 interface DigimonProps {
   userDigimon: UserDigimon;
@@ -15,7 +16,7 @@ interface DigimonProps {
 const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOptions }) => {
   const [showEvolutionModal, setShowEvolutionModal] = useState(false);
   const [evolutionError, setEvolutionError] = useState<string | null>(null);
-  const { evolveDigimon, discoveredDigimon, getDigimonDisplayName } = useDigimonStore();
+  const { evolveDigimon, discoveredDigimon, fetchAllUserDigimon } = useDigimonStore();
   
   // Add a local state to track XP and level
   const [currentXP, setCurrentXP] = useState(userDigimon.experience_points);
@@ -36,6 +37,12 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
   
   // Add state to track the current digimon data
   const [currentDigimon, setCurrentDigimon] = useState<UserDigimon>(userDigimon);
+  
+  // Add state for devolution
+  const [showDevolutionModal, setShowDevolutionModal] = useState(false);
+  const [devolutionError, setDevolutionError] = useState<string | null>(null);
+  const [devolutionOptions, setDevolutionOptions] = useState<EvolutionOption[]>([]);
+  const { devolveDigimon } = useDigimonStore();
   
   // Update local state when userDigimon changes
   useEffect(() => {
@@ -60,6 +67,21 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
     // Update currentDigimon with the latest userDigimon data
     setCurrentDigimon(userDigimon);
   }, [userDigimon]);
+
+  // Add event listener for name changes
+  useEffect(() => {
+    const handleNameChange = (event: CustomEvent) => {
+      if (event.detail && event.detail.digimonId) {
+        fetchAllUserDigimon();
+      }
+    };
+
+    window.addEventListener('digimon-name-changed', handleNameChange as EventListener);
+    
+    return () => {
+      window.removeEventListener('digimon-name-changed', handleNameChange as EventListener);
+    };
+  }, [fetchAllUserDigimon]);
   
   // Function to trigger level up animation
   const triggerLevelUpAnimation = () => {
@@ -191,11 +213,61 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
     [userDigimon.digimon_id]: evolutionOptions
   };
   
+  // Add function to handle showing the devolution modal
+  const handleShowDevolutionModal = async () => {
+    setShowDevolutionModal(true);
+    
+    try {
+      // Fetch devolution options
+      const { data: devolutionPaths, error } = await supabase
+        .from("evolution_paths")
+        .select(`
+          id,
+          from_digimon_id,
+          digimon:from_digimon_id (id, digimon_id, name, stage, sprite_url)
+        `)
+        .eq("to_digimon_id", userDigimon.digimon_id);
+        
+      if (error) throw error;
+      
+      // Format options similar to evolution options
+      const options = devolutionPaths.map(path => ({
+        id: path.id,
+        digimon_id: path.from_digimon_id,
+        name: (path.digimon as any).name,
+        stage: (path.digimon as any).stage,
+        sprite_url: (path.digimon as any).sprite_url,
+        level_required: 0
+      }));
+      
+      setDevolutionOptions(options);
+    } catch (error) {
+      setDevolutionError((error as Error).message);
+    }
+  };
+  
+  // Add function to handle devolution
+  const handleDevolve = async (fromDigimonId: number) => {
+    try {
+      setDevolutionError(null);
+      await devolveDigimon(fromDigimonId);
+      setShowDevolutionModal(false);
+      
+      // Show success notification
+      useNotificationStore.getState().addNotification({
+        message: "Your Digimon has de-digivolved successfully!",
+        type: "success"
+      });
+    } catch (error) {
+      setDevolutionError((error as Error).message);
+    }
+  };
+  
   if (!userDigimon || !digimonData) {
     return <div>Loading Digimon...</div>;
   }
   
-  const displayName = getDigimonDisplayName();
+  const displayName = currentDigimon.name || digimonData.name;
   
   // Animation variants
   const levelUpVariants = {
@@ -592,22 +664,80 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
       {showDetailModal && (
         <DigimonDetailModal
           selectedDigimon={currentDigimon}
-          onClose={() => setShowDetailModal(false)}
+          onClose={() => {
+            setShowDetailModal(false);
+            setShowEvolutionModal(false);
+            setShowDevolutionModal(false);
+          }}
           onSetActive={handleSetActive}
           onShowEvolution={handleShowEvolutionModal}
+          onShowDevolution={handleShowDevolutionModal}
           onRelease={handleRelease}
           evolutionData={evolutionData}
           onNameChange={(updatedDigimon) => {
+            // Update the local state immediately
             setCurrentDigimon(updatedDigimon);
             
-            // Dispatch a custom event to notify parent components
-            const event = new CustomEvent('digimon-updated', { 
-              detail: { digimonId: updatedDigimon.id, updatedDigimon } 
+            // Update the store directly
+            useDigimonStore.getState().updateDigimonName(updatedDigimon.id, updatedDigimon.name || '');
+            
+            // Dispatch the custom event to notify other components
+            const event = new CustomEvent('digimon-name-changed', {
+              detail: { digimonId: updatedDigimon.id }
             });
             window.dispatchEvent(event);
           }}
           className="z-40"
         />
+      )}
+
+      {/* Devolution Modal */}
+      {showDevolutionModal && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          onClick={() => setShowDevolutionModal(false)}
+        >
+          <div 
+            className="bg-white rounded-lg p-6 max-w-4xl w-full mx-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-xl font-bold mb-4">De-Digivolution Options</h3>
+            
+            {devolutionError && (
+              <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
+                <p className="text-sm text-red-700">{devolutionError}</p>
+              </div>
+            )}
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+              {devolutionOptions.map((option) => (
+                <div
+                  key={option.id}
+                  className="border rounded-lg p-4 flex flex-col items-center hover:shadow-md cursor-pointer"
+                  onClick={() => handleDevolve(option.digimon_id)}
+                >
+                  <img
+                    src={option.sprite_url}
+                    alt={option.name}
+                    className="w-24 h-24 object-contain mb-2"
+                    style={{ imageRendering: "pixelated" }}
+                  />
+                  <h4 className="font-bold">{option.name}</h4>
+                  <p className="text-sm text-gray-500">{option.stage}</p>
+                </div>
+              ))}
+            </div>
+            
+            <div className="flex justify-end mt-4">
+              <button 
+                onClick={() => setShowDevolutionModal(false)}
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

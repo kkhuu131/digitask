@@ -12,6 +12,18 @@ const PatchNotes = () => {
           <div className="mb-6">
             <div className="flex items-center mb-2">
               <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
+              <h3 className="text-lg font-medium ml-2">De-digivolution, EXP Rework, UI Updates</h3>
+              <span className="text-sm text-gray-500 ml-auto">April 22, 2025</span>
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+              <li>Added icons for Digimon Types and Attributes (credit to <a href="https://www.deviantart.com/sergiogransol/art/Digimon-Icons-Official-and-Fanmade-947832465" target="_blank" rel="noopener noreferrer">SergioGranSol</a>)</li>
+              <li>De-digivolution is now possible, allowing Digimon to revert to a previously discovered Digimon</li>
+              <li>Reworked EXP system: tasks now give a percentage of EXP to non-active Digimon, battles now gives less EXP</li>
+
+            </ul>
+          </div>
+          <div className="mb-6">
+            <div className="flex items-center mb-2">
               <h3 className="text-lg font-medium ml-2">Task Updates</h3>
               <span className="text-sm text-gray-500 ml-auto">April 21, 2025</span>
             </div>
@@ -103,6 +115,19 @@ const PatchNotes = () => {
         
         <div>
           <h2 className="text-xl font-semibold mb-4">Upcoming Features</h2>
+          <div className="mb-6">
+            <div className="flex items-center mb-2">
+              <span className="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">Possible?</span>
+              <h3 className="text-lg font-medium ml-2">More Activities?</h3>
+            </div>
+            <p className="text-gray-600 mb-2">
+              More ways to interact with Digimon:
+            </p>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+              <li>Co-op battles?</li>
+              <li>Bosses?</li>
+            </ul>
+          </div>
           <div className="mb-6">
             <div className="flex items-center mb-2">
               <span className="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">Possible?</span>

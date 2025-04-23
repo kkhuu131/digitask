@@ -43,7 +43,7 @@ const Dashboard: React.FC = () => {
           <div className="ml-3 flex justify-between items-center w-full">
             <div>
               <p className="text-sm text-indigo-800">
-                <span className="font-medium">Digitask is in beta! Check our the latest updates in the Patch Notes page.</span>
+                <span className="font-medium">Digitask is in beta! Check our the latest updates in the Help &gt; Patch Notes page.</span>
               </p>
             </div>
             <div className="flex space-x-2">

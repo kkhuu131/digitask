@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState} from "react";
 import { Task, useTaskStore } from "../store/taskStore";
 import TaskItem from "./TaskItem";
 import { useDigimonStore } from "../store/petStore";
@@ -13,7 +13,7 @@ const getSavedAutoAllocateSetting = () => {
 
 const TaskList = () => {
   const { tasks, completeTask, deleteTask } = useTaskStore();
-  const [filter, setFilter] = useState<"all" | "active" | "completed">("all");
+  const [filter, setFilter] = useState<"all" | "active" | "completed" | "today" | "upcoming">("all");
   const [, forceUpdate] = useState({});
   // Initialize with the value from localStorage
   const [autoAllocateStats, setAutoAllocateStats] = useState(getSavedAutoAllocateSetting());
@@ -62,16 +62,67 @@ const TaskList = () => {
     return () => clearInterval(intervalId);
   }, []);
   
-  // Use useMemo for expensive calculations
-  const filteredTasks = useMemo(() => {
-    return tasks.filter((task) => {
-      if (filter === "active") return !task.is_completed;
-      if (filter === "completed") return task.is_completed;
-      return true;
-    });
-  }, [tasks, filter]);
+  // Ensure consistent date handling across browsers
+  const isTaskDueToday = (task: Task) => {
+    if (!task.due_date) return false;
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const taskDate = new Date(task.due_date);
+    taskDate.setHours(0, 0, 0, 0);
+    
+    return taskDate.getTime() === today.getTime();
+  };
+
+  // Debug date handling
+  useEffect(() => {
+    if (tasks.length > 0) {
+      console.log("Current date:", new Date().toISOString());
+      console.log("Today's tasks:", tasks.filter(isTaskDueToday));
+    }
+  }, [tasks]);
   
-  // Group tasks by date
+  // Get filtered tasks based on the current filter
+  const getFilteredTasks = () => {
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    switch (filter) {
+      case "all":
+        return tasks;
+      case "active":
+        return tasks.filter(task => !task.is_completed);
+      case "completed":
+        return tasks.filter(task => task.is_completed);
+      case "today":
+        return tasks.filter(task => {
+          if (task.is_completed) return false;
+          if (!task.due_date) return false;
+          
+          const dueDate = new Date(task.due_date);
+          dueDate.setHours(0, 0, 0, 0);
+          return dueDate.getTime() === now.getTime();
+        });
+      case "upcoming":
+        return tasks.filter(task => {
+          if (task.is_completed) return false;
+          if (!task.due_date) return false;
+          
+          const dueDate = new Date(task.due_date);
+          dueDate.setHours(0, 0, 0, 0);
+          return dueDate.getTime() > now.getTime();
+        });
+      default:
+        return tasks;
+    }
+  };
+  
+  const filteredTasks = getFilteredTasks();
+  
+  // Group tasks by category for display
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   
@@ -97,30 +148,32 @@ const TaskList = () => {
   const overdueTasks = filteredTasks
     .filter((task) => {
       if (task.is_daily || task.is_completed || !task.due_date) return false;
-      return new Date(task.due_date) < new Date();
+      return new Date(task.due_date) < today;
     })
-    .sort(sortByDueDate); // Sort by due date (most recent first)
+    .sort(sortByDueDate);
   
   const todayTasks = filteredTasks
     .filter((task) => {
       if (task.is_daily || task.is_completed || !task.due_date) return false;
       const dueDate = new Date(task.due_date);
-      return dueDate >= today && dueDate < tomorrow && !overdueTasks.includes(task);
+      dueDate.setHours(0, 0, 0, 0);
+      return dueDate.getTime() === today.getTime();
     })
-    .sort(sortByDueDate); // Sort by due date (most recent first)
+    .sort(sortByDueDate);
   
   const futureTasks = filteredTasks
     .filter((task) => {
       if (task.is_daily || task.is_completed || !task.due_date) return false;
-      return new Date(task.due_date) >= tomorrow && !overdueTasks.includes(task);
+      const dueDate = new Date(task.due_date);
+      dueDate.setHours(0, 0, 0, 0);
+      return dueDate.getTime() > today.getTime();
     })
-    .sort(sortByDueDate); // Sort by due date (most recent first)
+    .sort(sortByDueDate);
   
   const completedTasks = filteredTasks
     .filter((task) => task.is_completed)
     .sort((a, b) => {
       // Sort completed tasks by completion date (most recent first)
-      // If no completion date, fall back to due date
       if (a.completed_at && b.completed_at) {
         return new Date(b.completed_at).getTime() - new Date(a.completed_at).getTime();
       }
@@ -129,9 +182,8 @@ const TaskList = () => {
   
   return (
     <div className="bg-white rounded-lg shadow-md p-4">
-      
       <div className="flex justify-between items-center mb-4">
-        <div className="flex space-x-2">
+        <div className="flex space-x-2 overflow-x-auto pb-1">
           <button
             className={`px-3 py-1 text-sm rounded-full ${
               filter === "all" ? "bg-primary-100 text-primary-800" : "bg-gray-100"
@@ -147,6 +199,22 @@ const TaskList = () => {
             onClick={() => setFilter("active")}
           >
             Active
+          </button>
+          <button
+            className={`px-3 py-1 text-sm rounded-full ${
+              filter === "today" ? "bg-primary-100 text-primary-800" : "bg-gray-100"
+            }`}
+            onClick={() => setFilter("today")}
+          >
+            Today
+          </button>
+          <button
+            className={`px-3 py-1 text-sm rounded-full ${
+              filter === "upcoming" ? "bg-primary-100 text-primary-800" : "bg-gray-100"
+            }`}
+            onClick={() => setFilter("upcoming")}
+          >
+            Upcoming
           </button>
           <button
             className={`px-3 py-1 text-sm rounded-full ${
@@ -204,8 +272,8 @@ const TaskList = () => {
             </div>
           )}
           
-          {/* Overdue Tasks */}
-          {overdueTasks.length > 0 && (
+          {/* Overdue Tasks - only show in relevant filters */}
+          {overdueTasks.length > 0 && (filter === "all" || filter === "active" || filter === "today") && (
             <div className="mb-4">
               <h3 className="text-sm font-medium text-red-600 mb-2">Overdue</h3>
               <div className="bg-red-50 border border-red-100 rounded-lg overflow-hidden">
@@ -221,8 +289,8 @@ const TaskList = () => {
             </div>
           )}
           
-          {/* Today's Tasks */}
-          {todayTasks.length > 0 && (
+          {/* Today's Tasks - only show in relevant filters */}
+          {todayTasks.length > 0 && (filter === "all" || filter === "active" || filter === "today") && (
             <div className="mb-4">
               <h3 className="text-sm font-medium text-gray-600 mb-2">Today</h3>
               <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
@@ -238,8 +306,8 @@ const TaskList = () => {
             </div>
           )}
           
-          {/* Daily Tasks - now only showing active ones */}
-          {dailyTasks.length > 0 && (
+          {/* Daily Tasks - only show in relevant filters */}
+          {dailyTasks.length > 0 && (filter === "all" || filter === "active") && (
             <div className="mb-4">
               <h3 className="text-sm font-medium text-gray-600 mb-2">Daily</h3>
               <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
@@ -255,8 +323,8 @@ const TaskList = () => {
             </div>
           )}
           
-          {/* Future Tasks */}
-          {futureTasks.length > 0 && (
+          {/* Future Tasks - only show in relevant filters */}
+          {futureTasks.length > 0 && (filter === "all" || filter === "active" || filter === "upcoming") && (
             <div className="mb-4">
               <h3 className="text-sm font-medium text-gray-600 mb-2">Upcoming</h3>
               <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
@@ -272,8 +340,8 @@ const TaskList = () => {
             </div>
           )}
           
-          {/* Completed Tasks */}
-          {completedTasks.length > 0 && filter !== "active" && (
+          {/* Completed Tasks - only show in relevant filters */}
+          {completedTasks.length > 0 && (filter === "all" || filter === "completed") && (
             <div>
               <h3 className="text-sm font-medium text-gray-600 mb-2">Completed</h3>
               <div className="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
