@@ -8,10 +8,14 @@ import {
   categoryIcons,
 } from "../utils/categoryDetection";
 
+const DAYS_OF_WEEK = [
+  "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+];
+
 const TaskForm = () => {
   const { createTask } = useTaskStore();
   const [description, setDescription] = useState("");
-  const [isDaily, setIsDaily] = useState(true);
+  const [taskType, setTaskType] = useState<"daily" | "one-time" | "recurring">("daily");
   const [dueDate, setDueDate] = useState<string>("");
   const [dueTime, setDueTime] = useState<string>("12:00"); // Default to noon
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -21,6 +25,7 @@ const TaskForm = () => {
   const [detectedCategory, setDetectedCategory] = useState<StatCategory | null>(null);
   const [showCategorySelector, setShowCategorySelector] = useState(false);
   const [notes, setNotes] = useState("");
+  const [recurringDays, setRecurringDays] = useState<string[]>([]);
 
   // Set minimum date to today when component mounts
   useEffect(() => {
@@ -130,38 +135,33 @@ const TaskForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-  
+    
     try {
-      // Prepare the task object
-      const task: Partial<Task> = {
+      // Prepare the task data
+      const taskData: Partial<Task> = {
         description: description.trim(),
-        is_daily: isDaily,
-        category: category,
-        notes: notes.trim() || null
+        notes: notes.trim() || null,
+        category: category || detectedCategory,
+        is_daily: taskType === "daily",
+        recurring_days: taskType === "recurring" ? recurringDays : null,
       };
       
-      // Add due date if this is not a daily task
-      if (!isDaily && dueDate) {
-        // Combine date and time
+      // Add due date for one-time tasks
+      if (taskType === "one-time" && dueDate) {
         const combinedDateTime = new Date(`${dueDate}T${dueTime}`);
-        task.due_date = combinedDateTime.toISOString();
+        taskData.due_date = combinedDateTime.toISOString();
       }
       
-      // Create the task
-      await createTask(task);
+      await createTask(taskData);
       
       // Reset form
       setDescription("");
       setNotes("");
-      setIsDaily(true);
-      setDueDate(minDate);
-      setDueTime("12:00");
       setCategory(null);
       setDetectedCategory(null);
-      setShowCategorySelector(false);
+      setIsSubmitting(false);
     } catch (error) {
       console.error("Error creating task:", error);
-    } finally {
       setIsSubmitting(false);
     }
   };
@@ -211,41 +211,91 @@ const TaskForm = () => {
       
       <div className="mb-4">
         <label htmlFor="notes" className="block text-sm font-medium text-gray-700">
-          Additional Notes (optional)
+          Notes (optional)
         </label>
         <textarea
           id="notes"
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           rows={3}
-          className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+          className="input mt-1"
           placeholder="Add any additional details or notes"
         />
       </div>
       
       <div className="mb-4">
-        <div className="flex items-center">
-          <input
-            id="is_daily"
-            name="is_daily"
-            type="checkbox"
-            checked={isDaily}
-            onChange={(e) => setIsDaily(e.target.checked)}
-            className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
-          />
-          <label htmlFor="is_daily" className="ml-2 block text-sm text-gray-700">
-            Daily recurring task
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Task Type
+        </label>
+        <div className="flex space-x-4">
+          <label className="inline-flex items-center">
+            <input
+              type="radio"
+              className="form-radio"
+              name="taskType"
+              value="daily"
+              checked={taskType === "daily"}
+              onChange={() => setTaskType("daily")}
+            />
+            <span className="ml-2">Daily</span>
           </label>
-          <div className="relative ml-1 group">
-            <span className="cursor-help text-gray-400">ⓘ</span>
-            <div className="absolute left-0 bottom-full mb-2 hidden group-hover:block bg-gray-800 text-white text-xs rounded p-2 w-64">
-              Daily tasks reset each day and can be completed again. They provide less XP (50 vs 75) but can be done repeatedly for consistent pet care.
-            </div>
-          </div>
+          
+          <label className="inline-flex items-center">
+            <input
+              type="radio"
+              className="form-radio"
+              name="taskType"
+              value="recurring"
+              checked={taskType === "recurring"}
+              onChange={() => setTaskType("recurring")}
+            />
+            <span className="ml-2">Recurring</span>
+          </label>
+          
+          <label className="inline-flex items-center">
+            <input
+              type="radio"
+              className="form-radio"
+              name="taskType"
+              value="one-time"
+              checked={taskType === "one-time"}
+              onChange={() => setTaskType("one-time")}
+            />
+            <span className="ml-2">One-time</span>
+          </label>
         </div>
       </div>
       
-      {!isDaily && (
+      {/* Recurring days selection */}
+      {taskType === "recurring" && (
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Repeat on these days:
+          </label>
+          <div className="grid grid-cols-4 gap-2">
+            {DAYS_OF_WEEK.map(day => (
+              <label key={day} className="inline-flex items-center">
+                <input
+                  type="checkbox"
+                  className="form-checkbox"
+                  checked={recurringDays.includes(day)}
+                  onChange={() => {
+                    if (recurringDays.includes(day)) {
+                      setRecurringDays(recurringDays.filter(d => d !== day));
+                    } else {
+                      setRecurringDays([...recurringDays, day]);
+                    }
+                  }}
+                />
+                <span className="ml-2">{day}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
+      
+      {/* Due date for one-time tasks */}
+      {taskType === "one-time" && (
         <div className="mt-4">
           <label htmlFor="due_date" className="block text-sm font-medium text-gray-700">
             Due Date
@@ -276,7 +326,7 @@ const TaskForm = () => {
         <button
           type="submit"
           className="btn-primary"
-          disabled={isSubmitting || !description.trim()}
+          disabled={isSubmitting || !description.trim() || (taskType === "recurring" && recurringDays.length === 0)}
         >
           {isSubmitting ? "Adding..." : "Add Task"}
         </button>

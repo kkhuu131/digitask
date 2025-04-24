@@ -6,6 +6,10 @@ import {
   categoryOptions 
 } from "../utils/categoryDetection";
 
+const DAYS_OF_WEEK = [
+  "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+];
+
 interface EditTaskModalProps {
   task: Task;
   isOpen: boolean;
@@ -20,6 +24,12 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
   const [dueTime, setDueTime] = useState<string>("12:00");
   const [category, setCategory] = useState<StatCategory | null>(task.category as StatCategory || null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [taskType, setTaskType] = useState<"daily" | "one-time" | "recurring">(
+    task.is_daily ? "daily" : 
+    (task.recurring_days && task.recurring_days.length > 0) ? "recurring" : 
+    "one-time"
+  );
+  const [recurringDays, setRecurringDays] = useState<string[]>(task.recurring_days || []);
   
   // Initialize date and time from task's due date
   useEffect(() => {
@@ -61,46 +71,55 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
 
   // Update the customSelectStyles object to better handle the category dropdown
   const customSelectStyles = {
+    control: (provided: any) => ({
+      ...provided,
+      minHeight: '38px',
+      borderColor: '#D1D5DB',
+      boxShadow: 'none',
+      '&:hover': {
+        borderColor: '#9CA3AF',
+      }
+    }),
     menu: (provided: any) => ({
       ...provided,
-      maxHeight: '200px',
-      zIndex: 9999, // Ensure dropdown appears above other elements
-    }),
-    menuPortal: (base: any) => ({
-      ...base,
-      zIndex: 9999
-    }),
-    option: (provided: any, state: any) => ({
-      ...provided,
-      backgroundColor: state.isSelected ? '#4f46e5' : state.isFocused ? '#e0e7ff' : 'white',
-      color: state.isSelected ? 'white' : '#374151',
-      padding: '8px 12px',
+      zIndex: 9999,
     }),
   };
-
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     
     try {
-      // Prepare updates object
+      // Prepare the updates
       const updates: Partial<Task> = {
-        description: description.trim(),
-        notes: notes.trim() || null,
-        category: category
+        description,
+        notes: notes || null,
+        category: category as string,
       };
       
-      // Add due date if this is not a daily task
-      if (!task.is_daily && dueDate) {
-        // Combine date and time
-        const combinedDateTime = new Date(`${dueDate}T${dueTime}`);
-        updates.due_date = combinedDateTime.toISOString();
+      // Update task type and related fields
+      if (taskType === "daily") {
+        updates.is_daily = true;
+        updates.recurring_days = null;
+        updates.due_date = null;
+      } else if (taskType === "recurring") {
+        updates.is_daily = false;
+        updates.recurring_days = recurringDays;
+        updates.due_date = null; // Clear due date for recurring tasks
+      } else {
+        // One-time task
+        updates.is_daily = false;
+        updates.recurring_days = null;
+        
+        // Set due date for one-time tasks
+        if (dueDate) {
+          const combinedDateTime = new Date(`${dueDate}T${dueTime}`);
+          updates.due_date = combinedDateTime.toISOString();
+        }
       }
       
-      // Update the task
       await editTask(task.id, updates);
-      
-      // Close the modal
       onClose();
     } catch (error) {
       console.error("Error updating task:", error);
@@ -112,99 +131,160 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
   if (!isOpen) return null;
   
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
-        <div className="p-6">
-          <h2 className="text-xl font-bold mb-4">Edit Task</h2>
-          
-          <form onSubmit={handleSubmit}>
-            <div className="mb-4">
+    <div className={`fixed inset-0 z-50 overflow-y-auto ${isOpen ? '' : 'hidden'}`}>
+      <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+        <div className="fixed inset-0 transition-opacity" aria-hidden="true">
+          <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+        </div>
+
+        <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+          <form onSubmit={handleSubmit} className="p-6 space-y-6">
+            <h3 className="text-lg font-medium text-gray-900 mb-4">Edit Task</h3>
+
+            {/* Description */}
+            <div>
               <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-                Task Description
+                Description
               </label>
               <input
                 type="text"
                 id="description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                placeholder="What do you need to do?"
-                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500"
               />
             </div>
-            
-            <div className="mb-4">
+
+            {/* Notes */}
+            <div>
               <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-1">
-                Additional Notes
+                Notes (optional)
               </label>
               <textarea
                 id="notes"
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                placeholder="Add any additional details or notes (optional)"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500"
               />
             </div>
-            
-            <div className="mb-4">
-              <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
-                Category
-              </label>
+
+            {/* Task Type */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Task Type</label>
+              <div className="flex space-x-6">
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    value="daily"
+                    checked={taskType === "daily"}
+                    onChange={(e) => setTaskType(e.target.value as "daily")}
+                    className="form-radio h-4 w-4 text-primary-600"
+                  />
+                  <span className="ml-2">Daily</span>
+                </label>
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    value="recurring"
+                    checked={taskType === "recurring"}
+                    onChange={(e) => setTaskType(e.target.value as "recurring")}
+                    className="form-radio h-4 w-4 text-primary-600"
+                  />
+                  <span className="ml-2">Recurring</span>
+                </label>
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    value="one-time"
+                    checked={taskType === "one-time"}
+                    onChange={(e) => setTaskType(e.target.value as "one-time")}
+                    className="form-radio h-4 w-4 text-primary-600"
+                  />
+                  <span className="ml-2">One-time</span>
+                </label>
+              </div>
+            </div>
+
+            {/* Recurring Days Selection */}
+            {taskType === "recurring" && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Repeat on these days:
+                </label>
+                <div className="grid grid-cols-4 gap-4">
+                  {DAYS_OF_WEEK.map((day) => (
+                    <label key={day} className="inline-flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={recurringDays.includes(day)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setRecurringDays([...recurringDays, day]);
+                          } else {
+                            setRecurringDays(recurringDays.filter((d) => d !== day));
+                          }
+                        }}
+                        className="form-checkbox h-4 w-4 text-primary-600"
+                      />
+                      <span className="ml-2 text-sm">{day}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Due Date - only show for one-time tasks */}
+            {taskType === "one-time" && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Due Date</label>
+                <div className="grid grid-cols-2 gap-4">
+                  <input
+                    type="date"
+                    value={dueDate}
+                    onChange={(e) => setDueDate(e.target.value)}
+                    className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500"
+                  />
+                  <Select
+                    options={timeOptions}
+                    value={timeOptions.find((opt) => opt.value === dueTime)}
+                    onChange={(selected) => setDueTime(selected?.value || '')}
+                    placeholder="Select time"
+                    styles={customSelectStyles}
+                    menuPortalTarget={document.body}
+                    menuPosition="fixed"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Category */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
               <Select
-                id="category"
                 options={categoryOptions}
                 value={categoryOptions.find(opt => opt.value === category)}
-                onChange={(selected) => setCategory(selected?.value || null)}
-                placeholder="Select a category"
-                className="mt-1"
+                onChange={(selected) => setCategory(selected?.value as StatCategory)}
+                className="w-full"
                 styles={customSelectStyles}
                 menuPortalTarget={document.body}
                 menuPosition="fixed"
               />
             </div>
-            
-            {!task.is_daily && (
-              <div className="mb-4">
-                <label htmlFor="due_date" className="block text-sm font-medium text-gray-700 mb-1">
-                  Due Date
-                </label>
-                <div className="mt-1 mb-4 flex space-x-2 text-sm">
-                  <input
-                    type="date"
-                    id="due_date"
-                    name="due_date"
-                    value={dueDate}
-                    onChange={(e) => setDueDate(e.target.value)}
-                    className="w-1/2 shadow-sm focus:ring-primary-500 focus:border-primary-500 block sm:text-sm border-gray-300 rounded-md"
-                  />
-                  <div className="w-1/2">
-                    <Select
-                      options={timeOptions}
-                      value={timeOptions.find((opt) => opt.value === dueTime)}
-                      onChange={(selected) => setDueTime(selected?.value || '')}
-                      placeholder="Select time"
-                      styles={customSelectStyles}
-                      menuPortalTarget={document.body}
-                      menuPosition="fixed"
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-            
-            <div className="flex justify-end space-x-3">
+
+            {/* Action Buttons */}
+            <div className="flex justify-end space-x-3 pt-4">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                disabled={isSubmitting || !description.trim()}
-                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:bg-primary-300"
+                disabled={isSubmitting || !description.trim() || (taskType === "recurring" && recurringDays.length === 0)}
+                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 disabled:bg-primary-300"
               >
                 {isSubmitting ? 'Saving...' : 'Save Changes'}
               </button>

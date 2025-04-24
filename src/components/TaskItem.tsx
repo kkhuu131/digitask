@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Task } from "../store/taskStore";
-import { categoryIcons } from "../utils/categoryDetection";
+import { categoryIcons, StatCategory } from "../utils/categoryDetection";
 import EditTaskModal from "./EditTaskModal";
 
 interface TaskItemProps {
@@ -92,7 +92,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onComplete, onDelete }) => {
     return (
       <div className="text-xs text-gray-400 mt-1">
         Due: {dueDate.toLocaleString()} 
-        {isOverdue && ` (${Math.floor((now.getTime() - dueDate.getTime()) / 60000)} minutes overdue)`}
+        {isOverdue && !task.is_completed && ` (${Math.floor((now.getTime() - dueDate.getTime()) / 60000)} minutes overdue)`}
       </div>
     );
   };
@@ -158,7 +158,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onComplete, onDelete }) => {
           {/* Category tag */}
           {task.category && (
             <span className="text-xs px-2 py-0.5 rounded-full bg-purple-100 text-purple-800">
-              {categoryIcons[task.category]} {task.category}
+              {categoryIcons[task.category as StatCategory]} {task.category}
             </span>
           )}
           
@@ -176,8 +176,14 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onComplete, onDelete }) => {
             </span>
           )}
           
+          {task.recurring_days && task.recurring_days.length > 0 && (
+            <span className="text-xs px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800 mr-1">
+              Repeats: {task.recurring_days.join(', ')}
+            </span>
+          )}
+          
           <span className="text-xs text-gray-500 ml-2">
-            {!task.is_daily && formatDueDate(task.due_date)}
+            {!task.is_daily && !task.recurring_days && formatDueDate(task.due_date)}
           </span>
         </div>
         
@@ -201,7 +207,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onComplete, onDelete }) => {
             </button>
             
             {showNotes && (
-              <div className="mt-2 text-sm text-gray-600 bg-gray-50 p-2 rounded">
+              <div className="mt-2 text-left text-sm text-gray-800 bg-gray-50 p-2 rounded">
                 {task.notes}
               </div>
             )}

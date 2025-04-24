@@ -10,12 +10,13 @@ export interface Task {
   user_id: string;
   description: string;
   is_daily: boolean;
+  recurring_days?: string[] | null;
   due_date: string | null;
   is_completed: boolean;
   created_at: string;
   completed_at: string | null;
-  category: StatCategory | null;
-  notes?: string | null;
+  category: string | null;
+  notes: string | null;
 }
 
 interface DailyQuota {
@@ -219,7 +220,9 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       }));
 
       // Always feed the Digimon regardless of stat allocation preference
-      await useDigimonStore.getState().feedDigimon(task.is_daily ? 50 : 75);
+      await useDigimonStore
+        .getState()
+        .feedDigimon(task.is_daily || !!task.recurring_days ? 50 : 75);
 
       // Check if we've reached the daily stat cap
       const { canGain, remaining } = await useDigimonStore
@@ -233,7 +236,9 @@ export const useTaskStore = create<TaskState>((set, get) => ({
           type: "info",
         });
       } else if (task.category) {
-        const boostValue = getStatBoostValue(task.is_daily);
+        const boostValue = getStatBoostValue(
+          task.is_daily || !!task.recurring_days
+        );
 
         // Limit the boost value to the remaining stat points
         const adjustedBoostValue = Math.min(boostValue, remaining);
@@ -271,7 +276,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
           // Apply stat boost to active Digimon
           await useDigimonStore
             .getState()
-            .increaseStat(task.category, adjustedBoostValue);
+            .increaseStat(task.category as StatCategory, adjustedBoostValue);
 
           // Update the pet store's userDailyStatGains
           useDigimonStore.getState().fetchUserDailyStatGains();

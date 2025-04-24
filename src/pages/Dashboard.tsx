@@ -8,7 +8,7 @@ import StatProgressMeter from "@/components/StatProgressMeter";
 import { useNavigate } from "react-router-dom";
 
 const Dashboard: React.FC = () => {
-  const { userDigimon, digimonData, evolutionOptions, fetchUserDigimon, error: digimonError } = useDigimonStore();
+  const { userDigimon, digimonData, evolutionOptions, fetchUserDigimon, error: digimonError, } = useDigimonStore();
   const { fetchTasks, dailyQuota, error: taskError, getExpMultiplier } = useTaskStore();
   const navigate = useNavigate();
   

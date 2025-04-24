@@ -265,8 +265,8 @@ function App() {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="text-center">
+          <img src="/assets/digimon/dot050.png" alt="Digitask" className="h-12 w-12 mx-auto mb-4" style={{ imageRendering: 'pixelated' }} />
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading Digitask...</p>
         </div>
       </div>
     );
