@@ -4,12 +4,14 @@ import { useDigimonStore } from '../store/petStore';
 const StatProgressMeter: React.FC = () => {
   const { allUserDigimon, userDailyStatGains, calculateDailyStatCap, fetchUserDailyStatGains, loading } = useDigimonStore();
   const [cap, setCap] = useState(0);
+  const [localStatGains, setLocalStatGains] = useState(0);
   
-  // Fetch the latest daily stat gains and calculate cap when the component mounts or data changes
+  // Fetch the latest daily stat gains and calculate cap when the component mounts
   useEffect(() => {
     const updateData = async () => {
       // Fetch the latest daily stat gains
-      await fetchUserDailyStatGains();
+      const gains = await fetchUserDailyStatGains();
+      setLocalStatGains(gains);
       
       // Calculate the cap based on the number of digimon owned
       const calculatedCap = calculateDailyStatCap();
@@ -24,8 +26,13 @@ const StatProgressMeter: React.FC = () => {
     return () => clearInterval(intervalId);
   }, [fetchUserDailyStatGains, calculateDailyStatCap, allUserDigimon.length]);
   
+  // Update local state when store value changes
+  useEffect(() => {
+    setLocalStatGains(userDailyStatGains);
+  }, [userDailyStatGains]);
+  
   // Calculate percentage of cap used
-  const percentage = cap > 0 ? Math.min(100, (userDailyStatGains / cap) * 100) : 0;
+  const percentage = cap > 0 ? Math.min(100, (localStatGains / cap) * 100) : 0;
   
   // Determine color based on percentage
   let colorClass = 'bg-green-500';
@@ -43,7 +50,7 @@ const StatProgressMeter: React.FC = () => {
           {loading ? (
             <span className="text-gray-400">Loading...</span>
           ) : (
-            `${userDailyStatGains}/${cap}`
+            `${localStatGains}/${cap}`
           )}
         </span>
       </div>

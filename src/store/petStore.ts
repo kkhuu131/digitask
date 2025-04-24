@@ -139,7 +139,7 @@ export interface PetState {
   }>;
   calculateDailyStatCap: () => number;
   userDailyStatGains: number;
-  fetchUserDailyStatGains: () => Promise<void>;
+  fetchUserDailyStatGains: () => Promise<number>;
   updateDigimonName: (
     digimonId: string,
     newName: string
@@ -1535,6 +1535,9 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         console.error("Error fetching user daily stat gains:", error);
         return 0;
       }
+
+      // Update the store state
+      set({ userDailyStatGains: data?.daily_stat_gains || 0 });
 
       return data?.daily_stat_gains || 0;
     } catch (error) {
