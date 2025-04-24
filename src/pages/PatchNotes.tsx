@@ -12,7 +12,7 @@ const PatchNotes = () => {
           <div className="mb-6">
             <div className="flex items-center mb-2">
               <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
-              <h3 className="text-lg font-medium ml-2">Recurring Taks</h3>
+              <h3 className="text-lg font-medium ml-2">Recurring Tasks</h3>
               <span className="text-sm text-gray-500 ml-auto">April 24, 2025</span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600">

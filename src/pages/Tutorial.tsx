@@ -135,39 +135,33 @@ const Tutorial = () => {
                   View Daily Stat Caps
                 </summary>
                 <div className="p-3 py-4 border-t">
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-md">
-                    <div><span className="font-medium">Baby/In-Training:</span> 5</div>
-                    <div><span className="font-medium">Rookie:</span> 8</div>
-                    <div><span className="font-medium">Champion:</span> 12</div>
-                    <div><span className="font-medium">Ultimate:</span> 15</div>
-                    <div><span className="font-medium">Mega:</span> 20</div>
-                  </div>
+                    <div>You start with base 2 and gain an additional 2 per Digimon you own</div>
                 </div>
               </details>
             </div>
             
             <p className="mb-4">
-              There are two types of tasks: daily and regular.
+              There are 3 types of tasks: daily, recurring, and regular.
             </p>
             <div className="flex flex-col md:flex-row gap-6 mb-6">
               
               <div className="md:w-1/2">
-                <h3 className="text-xl font-semibold mb-2">Daily Tasks</h3>
+                <h3 className="text-xl font-semibold mb-2">Daily and Recurring Tasks</h3>
                 <p className="mb-4">
-                  Daily tasks reset each day at {(() => {
+                  These tasks reset each day (specific days each week, if recurring) at {(() => {
                   // Create a date object for 8:00 UTC
                   const resetTime = new Date();
                   resetTime.setUTCHours(8, 0, 0, 0);
                   
                   // Format the time in the user's local timezone
                   return resetTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                })()} (8:00 UTC) and need to be completed before the next day.
+                })()} (8:00 UTC) and need to be completed before the next day. They give 50 EXP and 2 stat points.
                 </p>
               </div>
               <div className="md:w-1/2">
                 <h3 className="text-xl font-semibold mb-2">Regular Tasks</h3>
                 <p className="mb-4">
-                  Regular tasks have due dates and provide larger rewards when completed.
+                  Regular tasks have due dates and provide larger rewards when completed. They give 75 EXP and 3 stat points.
                 </p>
               </div>
             </div>
