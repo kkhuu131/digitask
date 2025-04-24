@@ -20,6 +20,7 @@ const PatchNotes = () => {
               <li>Digivolving will reward +1 points to all stats per 1000 experience points.</li>
               <li>De-digivolution will reward +1 points to all stats per 1500 experince points.</li>
               <li>De-digivolution will only be possible if the Digimon has been discovered.</li>
+              <li>These changes are still being experimented with, so any feedback on this system is welcome!</li>
               <li>Future changes: Asa a result of this update, EXP rewards may be increased in the future.</li>
             </ul>
           </div>

@@ -441,7 +441,7 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
           >
             <h3 className="text-xl font-bold mb-2">Evolution Options</h3>
             <div className="text-md text-gray-500 mb-4">
-              Evolving will reset your Digimon level back to 1 and give {expToBoostPoints(userDigimon.current_level, userDigimon.experience_points)} bonus points to all stats.
+              Evolving will <b className="text-red-500">reset your Digimon level back to 1</b> and give {expToBoostPoints(userDigimon.current_level, userDigimon.experience_points)} bonus points to all stats.
             </div>
             {evolutionError && (
               <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
