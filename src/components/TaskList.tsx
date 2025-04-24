@@ -22,7 +22,7 @@ const getSavedAutoAllocateSetting = () => {
 };
 
 const TaskList = () => {
-  const { tasks, completeTask, deleteTask } = useTaskStore();
+  const { tasks, deleteTask, completeTask, loading } = useTaskStore();
   const [filter, setFilter] = useState<"all" | "active" | "completed" | "today" | "upcoming">("all");
   const [, forceUpdate] = useState({});
   // Initialize with the value from localStorage
@@ -183,6 +183,15 @@ const TaskList = () => {
     });
   }, [tasks]);
   
+  // If loading, show a spinner
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary-500"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white rounded-lg shadow-md p-4">
       {/* Filter tabs */}

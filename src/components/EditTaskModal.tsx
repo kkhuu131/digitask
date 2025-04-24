@@ -69,7 +69,7 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
     return { value, label };
   });
 
-  // Update the customSelectStyles object to better handle the category dropdown
+  // Update the customSelectStyles object to properly handle z-indexing
   const customSelectStyles = {
     control: (provided: any) => ({
       ...provided,
@@ -82,8 +82,12 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
     }),
     menu: (provided: any) => ({
       ...provided,
-      zIndex: 9999,
+      zIndex: 9999, // Ensure menu appears above modal
     }),
+    menuPortal: (provided: any) => ({
+      ...provided,
+      zIndex: 9999, // Ensure menu portal appears above modal
+    })
   };
   
   const handleSubmit = async (e: React.FormEvent) => {

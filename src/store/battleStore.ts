@@ -1016,7 +1016,10 @@ export const useBattleStore = create<BattleState>((set, get) => {
               const lower = Math.floor(avgLevel * min);
               const upper = Math.floor(avgLevel * max);
 
-              const teamSize = 3;
+              const teamSize = Math.min(
+                3,
+                useDigimonStore.getState().allUserDigimon.length
+              );
 
               const { data: wildDigimon } = await supabase.rpc(
                 "get_random_digimon",
