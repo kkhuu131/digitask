@@ -5,6 +5,7 @@ import { useDigimonStore } from './store/petStore';
 import { useTaskStore } from './store/taskStore';
 import { supabase } from './lib/supabase';
 import NotificationCenter from './components/NotificationCenter';
+import 'reactflow/dist/style.css';
 
 // Pages
 import Login from './pages/Login';

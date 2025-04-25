@@ -14,10 +14,7 @@ const DigimonSelection = ({ onSelect }: DigimonSelectionProps) => {
   useEffect(() => {
     const loadStarterDigimon = async () => {
       try {
-        console.log("Loading starter Digimon...");
         const starters = await getStarterDigimon();
-        console.log("Starter Digimon loaded:", starters);
-        
         setStarterDigimon(starters);
         
         // Auto-select the first one
