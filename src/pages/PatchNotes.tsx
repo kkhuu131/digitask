@@ -19,7 +19,7 @@ const PatchNotes = () => {
               <li>New Task Type: Recurring. These are different from Daily tasks.</li>
               <li>You can set these to refresh on specific days of the week (every Sunday and Saturday, or every weekday, for example).</li>
               <li>They give the same rewards as Daily tasks, 50 EXP and 2 stat points.</li>
-              <li>Made some changes to the Evolution/Devolution UI for mobile users.</li>
+              <li>Made some changes to the Evolution/Devolution UI and Battle page for mobile users.</li>
             </ul>
           </div>
           <div className="mb-6">

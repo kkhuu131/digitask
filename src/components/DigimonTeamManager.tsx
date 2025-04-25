@@ -187,6 +187,98 @@ const EmptySlot = ({ isTeam, onAddToTeam }: EmptySlotProps) => {
   );
 };
 
+const MobileDigimonCard = ({ digimon, isTeam, onSwap }: DigimonCardProps) => {
+  const [{ isDragging }, drag] = useDrag({
+    type: DIGIMON_TYPE,
+    item: { id: digimon.id, isTeam } as DigimonDragItem,
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+  });
+
+  const [{ isOver }, drop] = useDrop({
+    accept: DIGIMON_TYPE,
+    drop: (item: DigimonDragItem) => {
+      if (item.id !== digimon.id) {
+        if (item.isTeam !== isTeam) {
+          // Different team types - swap
+          console.log(`Mobile Swapping ${item.id} with ${digimon.id}`);
+          onSwap(item.id, digimon.id);
+        }
+        // If item.isTeam === isTeam, it means dragging within the same list (team or reserve)
+        // We might want reordering logic here in the future, but for now, do nothing.
+      }
+    },
+    collect: (monitor) => ({
+      isOver: !!monitor.isOver(),
+    }),
+  });
+
+  return (
+    <div
+      ref={(node) => drag(drop(node))}
+      className={`
+        w-20 h-auto border flex flex-col items-center justify-start
+        ${isDragging ? 'opacity-50' : 'opacity-100'}
+        ${isOver ? 'bg-blue-100 border border-blue-300' : 'bg-white'}
+        cursor-move transition-all
+      `}
+    >
+      <div className="w-16 h-16 flex items-center justify-center">
+        <img
+          src={digimon.digimon?.sprite_url}
+          alt={digimon.name || digimon.digimon?.name}
+          className="scale-[1]"
+          style={{ imageRendering: "pixelated" }}
+        />
+      </div>
+      <div className="flex justify-center items-center mb-1">
+         {digimon.digimon?.type && digimon.digimon?.attribute && (
+            <TypeAttributeIcon
+              type={digimon.digimon.type as DigimonType}
+              attribute={digimon.digimon.attribute as DigimonAttribute}
+              size="sm" // Smaller icon for mobile
+              showLabel={false} // No label needed based on image
+            />
+          )}
+      </div>
+      <p className="text-[10px] mb-1 text-gray-500 text-center">Lv.{digimon.current_level}</p>
+    </div>
+  );
+};
+
+// NEW: Mobile Empty Slot Component
+const MobileEmptySlot = ({ isTeam, onAddToTeam }: EmptySlotProps) => {
+  const [{ isOver }, drop] = useDrop({
+    accept: DIGIMON_TYPE,
+    drop: (item: DigimonDragItem) => {
+      console.log(`Mobile Dropping ${item.id} to ${isTeam ? 'team' : 'reserve'} slot`);
+      if (isTeam !== item.isTeam) {
+        onAddToTeam(item.id);
+      }
+    },
+    collect: (monitor) => ({
+      isOver: !!monitor.isOver(),
+    }),
+  });
+
+  return (
+    <div
+      ref={drop}
+      className={`
+        w-24 h-24 border-2 border-dashed rounded-md flex items-center justify-center
+        ${isTeam ? 'border-gray-300' : 'border-gray-200'}
+        ${isOver ? 'bg-blue-100 border-blue-300' : ''}
+        transition-colors duration-200
+      `}
+    >
+      <p className={`text-[10px] ${isTeam ? 'text-gray-400' : 'text-gray-300'} ${isOver ? 'text-blue-500 font-medium' : ''}`}>
+        Drop Here
+      </p>
+    </div>
+  );
+};
+
 const DigimonTeamManager = () => {
   const { allUserDigimon, swapTeamMember, setTeamMember } = useDigimonStore();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -197,18 +289,24 @@ const DigimonTeamManager = () => {
   // Simplified handlers
   const handleSwap = async (id1: string, id2: string) => {
     if (isProcessing) return;
-    
+
     setIsProcessing(true);
     try {
       // Determine which is team and which is reserve
       const digimon1 = allUserDigimon.find(d => d.id === id1);
       const digimon2 = allUserDigimon.find(d => d.id === id2);
-      
+
       if (!digimon1 || !digimon2) {
         console.error("Couldn't find one of the Digimon");
         return;
       }
-      
+
+      // Ensure we only swap between team and reserve
+      if (digimon1.is_on_team === digimon2.is_on_team) {
+        console.log("Cannot swap within the same group (team/reserve).");
+        return; // Prevent swapping within the same list
+      }
+
       // Always call with team first, reserve second
       if (digimon1.is_on_team && !digimon2.is_on_team) {
         await swapTeamMember(id1, id2);
@@ -222,12 +320,19 @@ const DigimonTeamManager = () => {
 
   const handleAddToTeam = async (id: string) => {
     if (isProcessing) return;
-    
+
     setIsProcessing(true);
     try {
       const digimon = allUserDigimon.find(d => d.id === id);
       if (!digimon) return;
-      
+
+      // Check if team is full before adding
+      if (!digimon.is_on_team && teamDigimon.length >= 3) {
+         console.log("Team is full. Cannot add more Digimon.");
+         // Optionally show a user-facing message here
+         return;
+      }
+
       await setTeamMember(id, !digimon.is_on_team);
     } finally {
       setIsProcessing(false);
@@ -238,44 +343,84 @@ const DigimonTeamManager = () => {
     <DndProvider backend={HTML5Backend}>
       <div className="mb-6">
         <h3 className="text-lg font-semibold mb-2">Team</h3>
-        <div className="grid grid-cols-3 gap-4 mb-8 justify-items-center">
+        <div className="grid grid-cols-3 gap-2 lg_xl:gap-4 mb-8 justify-items-center">
           {teamDigimon.map((digimon) => (
-            <DigimonCard
-              key={digimon.id}
-              digimon={digimon}
-              isTeam={true}
-              onSwap={handleSwap}
-              onMove={handleAddToTeam}
-            />
+            <div key={digimon.id}>
+              <div className="hidden lg_xl:block">
+                <DigimonCard
+                  digimon={digimon}
+                  isTeam={true}
+                  onSwap={handleSwap}
+                  onMove={handleAddToTeam}
+                />
+              </div>
+              <div className="block lg_xl:hidden">
+                 <MobileDigimonCard
+                  digimon={digimon}
+                  isTeam={true}
+                  onSwap={handleSwap}
+                  onMove={handleAddToTeam}
+                />
+              </div>
+            </div>
           ))}
 
           {Array.from({ length: Math.max(0, 3 - teamDigimon.length) }).map((_, i) => (
-            <EmptySlot
-              key={`empty-team-${i}`}
-              isTeam={true}
-              onAddToTeam={handleAddToTeam}
-            />
+            <div key={`empty-team-${i}`}>
+              <div className="hidden lg_xl:block">
+                <EmptySlot
+                  isTeam={true}
+                  onAddToTeam={handleAddToTeam}
+                />
+              </div>
+              <div className="block lg_xl:hidden">
+                 <MobileEmptySlot
+                  isTeam={true}
+                  onAddToTeam={handleAddToTeam}
+                />
+              </div>
+            </div>
           ))}
         </div>
 
         <h3 className="text-lg font-semibold mb-2">Reserve</h3>
-        <div className="grid grid-cols-3 gap-4 gap-y-6 justify-items-center">
+        <div className="grid grid-cols-3 gap-2 lg_xl:gap-4 gap-y-4 lg_xl:gap-y-6 justify-items-center">
           {reserveDigimon.map((digimon) => (
-            <DigimonCard
-              key={digimon.id}
-              digimon={digimon}
-              isTeam={false}
-              onSwap={handleSwap}
-              onMove={handleAddToTeam}
-            />
+            <div key={digimon.id}>
+              <div className="hidden lg_xl:block">
+                <DigimonCard
+                  digimon={digimon}
+                  isTeam={false}
+                  onSwap={handleSwap}
+                  onMove={handleAddToTeam}
+                />
+              </div>
+               <div className="block lg_xl:hidden">
+                 <MobileDigimonCard
+                  digimon={digimon}
+                  isTeam={false}
+                  onSwap={handleSwap}
+                  onMove={handleAddToTeam}
+                />
+              </div>
+            </div>
           ))}
 
           {Array.from({ length: Math.max(0, 6 - reserveDigimon.length) }).map((_, i) => (
-            <EmptySlot
-              key={`empty-reserve-${i}`}
-              isTeam={false}
-              onAddToTeam={handleAddToTeam}
-            />
+            <div key={`empty-reserve-${i}`}>
+              <div className="hidden lg_xl:block">
+                <EmptySlot
+                  isTeam={false}
+                  onAddToTeam={handleAddToTeam}
+                />
+              </div>
+              <div className="block lg_xl:hidden">
+                 <MobileEmptySlot
+                  isTeam={false}
+                  onAddToTeam={handleAddToTeam}
+                />
+              </div>
+            </div>
           ))}
         </div>
       </div>
