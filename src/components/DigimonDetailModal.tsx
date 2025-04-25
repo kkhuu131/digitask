@@ -758,7 +758,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                                   </div>
                                 )}
                               </div>
-                              <div className="flex-1">
+                              <div className="flex-1 hidden sm:block">
                                 <p className="font-medium text-sm">
                                   {discovered ? option.name : "???"}
                                 </p>
@@ -801,8 +801,8 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
           </div>
         </div>
         
-        {/* Add the buttons here, after the two-column layout */}
-        <div className="flex space-x-2 w-full mt-4">
+        {/* Update the buttons section at the bottom of the modal */}
+        <div className="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0 w-full mt-4">
           {/* All the buttons */}
           {!selectedDigimon.is_active && onSetActive && (
             <button
@@ -835,7 +835,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
               Release
             </button>
           )}
-          
+
           {/* Digivolve button - only show if evolution options exist */}
           {evolutions?.length > 0 && onShowEvolution && (
             <button
@@ -849,10 +849,11 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
             </button>
           )}
 
+          {/* De-Digivolve button */}
           {onShowDevolution && (
             <button
               onClick={() => onShowDevolution(selectedDigimon.id)}
-              className="flex-1 bg-indigo-100 text-indigo-800 rounded hover:bg-indigo-200"
+              className="flex-1 bg-indigo-100 text-indigo-800 rounded hover:bg-indigo-200 py-2 px-4"
             >
               De-Digivolve
             </button>

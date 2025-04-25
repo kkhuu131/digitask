@@ -30,6 +30,8 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
     "one-time"
   );
   const [recurringDays, setRecurringDays] = useState<string[]>(task.recurring_days || []);
+  const [minDate, setMinDate] = useState<string>("");
+  const [minTime, setMinTime] = useState<string>("");
   
   // Initialize date and time from task's due date
   useEffect(() => {
@@ -90,6 +92,78 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
     })
   };
   
+  // Set minimum date and default date/time when component mounts or task type changes
+  useEffect(() => {
+    // Get today's date in local timezone
+    const today = new Date();
+    const formattedDate = today.toLocaleDateString('en-CA'); // en-CA uses YYYY-MM-DD format
+    setMinDate(formattedDate);
+
+    // If switching to one-time task or initializing
+    if (taskType === "one-time") {
+      // If no date is set yet, default to today
+      if (!dueDate) {
+        setDueDate(formattedDate);
+      }
+      
+      // Update minimum time and default time if needed
+      updateMinTime(dueDate || formattedDate);
+    }
+  }, [taskType]);
+
+  // Update minimum time whenever date changes
+  useEffect(() => {
+    if (taskType === "one-time") {
+      updateMinTime(dueDate);
+    }
+  }, [dueDate]);
+
+  // Function to update minimum time based on selected date
+  const updateMinTime = (selectedDate: string) => {
+    const today = new Date().toLocaleDateString('en-CA');
+    
+    if (selectedDate === today) {
+      // If date is today, minimum time should be current time rounded up to next 5 minutes
+      const now = new Date();
+      const minutes = Math.ceil(now.getMinutes() / 5) * 5;
+      const hours = minutes === 60 ? now.getHours() + 1 : now.getHours();
+      const adjustedMinutes = minutes === 60 ? 0 : minutes;
+      
+      const formattedHours = hours.toString().padStart(2, '0');
+      const formattedMinutes = adjustedMinutes.toString().padStart(2, '0');
+      const minTimeValue = `${formattedHours}:${formattedMinutes}`;
+      
+      setMinTime(minTimeValue);
+      
+      // If current time is before min time or no time is set, set to min time
+      if (!dueTime || dueTime < minTimeValue) {
+        setDueTime(minTimeValue);
+      }
+    } else {
+      setMinTime("00:00");
+    }
+  };
+
+  // Validate the form
+  const isFormValid = () => {
+    if (!description.trim()) return false;
+    if (taskType === "recurring" && recurringDays.length === 0) return false;
+    if (taskType === "one-time") {
+      if (!dueDate) return false;
+      
+      const selectedDateTime = new Date(`${dueDate}T${dueTime}`);
+      const now = new Date();
+      
+      // Check if selected date/time is in the past
+      if (selectedDateTime < now) return false;
+      
+      // If it's today, check against minimum time
+      const today = new Date().toLocaleDateString('en-CA');
+      if (dueDate === today && dueTime < minTime) return false;
+    }
+    return true;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -176,36 +250,38 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
             {/* Task Type */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Task Type</label>
-              <div className="flex space-x-6">
-                <label className="inline-flex items-center">
+              <div className="flex flex-col sm:grid sm:grid-cols-3 gap-2">
+                <label className="flex items-center p-2 border rounded-md hover:bg-gray-50 cursor-pointer">
                   <input
                     type="radio"
                     value="daily"
                     checked={taskType === "daily"}
-                    onChange={(e) => setTaskType(e.target.value as "daily")}
-                    className="form-radio h-4 w-4 text-primary-600"
+                    onChange={(e) => setTaskType(e.target.value as "daily" | "one-time" | "recurring")}
+                    className="h-4 w-4 text-primary-600"
                   />
-                  <span className="ml-2">Daily</span>
+                  <span className="ml-2 text-sm">Daily</span>
                 </label>
-                <label className="inline-flex items-center">
+                
+                <label className="flex items-center p-2 border rounded-md hover:bg-gray-50 cursor-pointer">
                   <input
                     type="radio"
                     value="recurring"
                     checked={taskType === "recurring"}
-                    onChange={(e) => setTaskType(e.target.value as "recurring")}
-                    className="form-radio h-4 w-4 text-primary-600"
+                    onChange={(e) => setTaskType(e.target.value as "daily" | "one-time" | "recurring")}
+                    className="h-4 w-4 text-primary-600"
                   />
-                  <span className="ml-2">Recurring</span>
+                  <span className="ml-2 text-sm">Recurring</span>
                 </label>
-                <label className="inline-flex items-center">
+                
+                <label className="flex items-center p-2 border rounded-md hover:bg-gray-50 cursor-pointer">
                   <input
                     type="radio"
                     value="one-time"
                     checked={taskType === "one-time"}
-                    onChange={(e) => setTaskType(e.target.value as "one-time")}
-                    className="form-radio h-4 w-4 text-primary-600"
+                    onChange={(e) => setTaskType(e.target.value as "daily" | "one-time" | "recurring")}
+                    className="h-4 w-4 text-primary-600"
                   />
-                  <span className="ml-2">One-time</span>
+                  <span className="ml-2 text-sm">One-time</span>
                 </label>
               </div>
             </div>
@@ -216,20 +292,20 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Repeat on these days:
                 </label>
-                <div className="grid grid-cols-4 gap-4">
-                  {DAYS_OF_WEEK.map((day) => (
-                    <label key={day} className="inline-flex items-center">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {DAYS_OF_WEEK.map(day => (
+                    <label key={day} className="flex items-center p-2 border rounded-md hover:bg-gray-50 cursor-pointer">
                       <input
                         type="checkbox"
+                        className="h-4 w-4 text-primary-600 rounded"
                         checked={recurringDays.includes(day)}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setRecurringDays([...recurringDays, day]);
+                        onChange={() => {
+                          if (recurringDays.includes(day)) {
+                            setRecurringDays(recurringDays.filter(d => d !== day));
                           } else {
-                            setRecurringDays(recurringDays.filter((d) => d !== day));
+                            setRecurringDays([...recurringDays, day]);
                           }
                         }}
-                        className="form-checkbox h-4 w-4 text-primary-600"
                       />
                       <span className="ml-2 text-sm">{day}</span>
                     </label>
@@ -241,19 +317,22 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
             {/* Due Date - only show for one-time tasks */}
             {taskType === "one-time" && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Due Date</label>
-                <div className="grid grid-cols-2 gap-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Due Date & Time
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <input
                     type="date"
                     value={dueDate}
+                    min={minDate}
                     onChange={(e) => setDueDate(e.target.value)}
-                    className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500"
                   />
                   <Select
                     options={timeOptions}
                     value={timeOptions.find((opt) => opt.value === dueTime)}
                     onChange={(selected) => setDueTime(selected?.value || '')}
-                    placeholder="Select time"
+                    className="w-full"
                     styles={customSelectStyles}
                     menuPortalTarget={document.body}
                     menuPosition="fixed"
@@ -287,7 +366,7 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
               </button>
               <button
                 type="submit"
-                disabled={isSubmitting || !description.trim() || (taskType === "recurring" && recurringDays.length === 0)}
+                disabled={isSubmitting || !isFormValid()}
                 className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 disabled:bg-primary-300"
               >
                 {isSubmitting ? 'Saving...' : 'Save Changes'}

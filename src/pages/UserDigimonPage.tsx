@@ -344,11 +344,11 @@ const UserDigimonPage = () => {
       {/* Evolution Modal */}
       {showEvolutionModal && selectedDetailDigimon && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center z-50 p-4 overflow-y-auto"
           onClick={() => setShowEvolutionModal(null)}
         >
           <div 
-            className="bg-white rounded-lg p-6 max-w-4xl w-full mx-4"
+            className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-4xl my-8 relative"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-xl font-bold mb-4">Evolution Options</h3>
@@ -361,6 +361,7 @@ const UserDigimonPage = () => {
               </div>
             )}
             
+            <div className="overflow-y-auto max-h-[60vh] mb-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
               {(evolutionData[selectedDetailDigimon.digimon_id] || []).map((option) => {
                 // Calculate base stats for current level
@@ -544,18 +545,18 @@ const UserDigimonPage = () => {
                                 <span>{stat.name}</span>
                                 <span className={stat.meets ? "text-green-600" : "text-red-600"}>
                                   {stat.current}/{stat.required}
-                          </span>
-                        </div>
+                                </span>
+                              </div>
                             ))}
-                      </div>
-              </div>
-            )}
                           </div>
                         </div>
-                      );
-                    })}
+                      )}
+                    </div>
                   </div>
-            
+                );
+              })}
+            </div>
+            </div>
             <div className="flex justify-end mt-4">
               <button 
                 onClick={() => setShowEvolutionModal(null)}
@@ -603,11 +604,11 @@ const UserDigimonPage = () => {
       {/* Devolution Modal */}
       {showDevolutionModal && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center z-50 p-4 overflow-y-auto"
           onClick={() => setShowDevolutionModal(null)}
         >
           <div 
-            className="bg-white rounded-lg p-6 max-w-4xl w-full mx-4"
+            className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-4xl my-8 relative"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-xl font-bold mb-4">De-Digivolution Options</h3>
@@ -632,6 +633,7 @@ const UserDigimonPage = () => {
                     {options.length === 0 && (
                       <p className="text-gray-500 text-center">No options available.</p>
                     )}
+                  <div className="overflow-y-auto max-h-[60vh] mb-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
                   {options.map((option) => {
                       const discovered = isDiscovered(option.digimon_id);
@@ -657,6 +659,7 @@ const UserDigimonPage = () => {
                       );
                     })}
                   </div>
+                </div>
                 </div>
                 );
             })()}

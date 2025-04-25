@@ -135,14 +135,14 @@ const Battle = () => {
                   {battleOptions.map(option => (
                     <div 
                       key={option.id}
-                      className={`border rounded-lg p-4 transition-colors ${
+                      className={`border rounded-lg p-2 sm:p-4 transition-colors ${
                         selectedOption === option.id 
                           ? 'border-primary-500 bg-primary-50' 
                           : 'border-gray-200'
                       }`}
                     >
-                      <div className="flex justify-between items-center mb-3">
-                        <span className={`px-2 py-1 rounded text-xs font-medium ${
+                      <div className="flex justify-between items-center mb-2 sm:mb-3">
+                        <span className={`px-1 sm:px-2 py-0.5 sm:py-1 rounded text-[10px] sm:text-xs font-medium ${
                           option.difficulty === 'easy' ? 'bg-green-100 text-green-800' :
                           option.difficulty === 'medium' ? 'bg-yellow-100 text-yellow-800' :
                           'bg-red-100 text-red-800'
@@ -150,15 +150,15 @@ const Battle = () => {
                           {option.difficulty.charAt(0).toUpperCase() + option.difficulty.slice(1)}
                         </span>
                         
-                        <span className="text-sm font-medium text-gray-700">
-                          {option.isWild ? 'Wild Digimon' : option.team.display_name || option.team.username}
+                        <span className="text-xs sm:text-sm font-medium text-gray-700 truncate max-w-[120px]">
+                          {option.isWild ? 'Wild' : option.team.display_name || option.team.username}
                         </span>
                       </div>
                       
-                      <div className="flex justify-center items-center space-x-2 mb-3 min-h-[80px]">
+                      <div className="flex justify-center items-center space-x-1 sm:space-x-2 mb-2 sm:mb-3 min-h-[60px] sm:min-h-[80px]">
                         {option.team.digimon.map(digimon => (
                           <div key={digimon.id} className="text-center flex-1 flex flex-col items-center">
-                            <div className="w-16 h-16 flex items-center justify-center relative group">
+                            <div className="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center relative group">
                               <img 
                                 src={digimon.sprite_url} 
                                 alt={digimon.name}
@@ -172,8 +172,8 @@ const Battle = () => {
                             </div>
             
                             {digimon.type && digimon.attribute && (
-                              <div className="text-xs text-gray-500">
-                                <div className="flex justify-center mb-2">
+                              <div className="text-[10px] sm:text-xs text-gray-500">
+                                <div className="flex justify-center mb-1">
                                   <TypeAttributeIcon
                                     type={digimon.type as DigimonType}
                                     attribute={digimon.attribute as DigimonAttribute}
@@ -181,7 +181,7 @@ const Battle = () => {
                                     showLabel={false}
                                   />
                                 </div>
-                                <span className="relative group cursor-help font-medium">
+                                <span className="hidden sm:inline relative group cursor-help font-medium">
                                   {digimon.type}
                                   {/* Type advantage tooltip */}
                                   <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 p-2 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 w-56">
@@ -194,8 +194,8 @@ const Battle = () => {
                                     </div>
                                   </div>
                                 </span>
-                                /
-                                <span className="relative group cursor-help font-medium">
+                                <span className="hidden sm:inline">/</span>
+                                <span className="hidden sm:inline relative group cursor-help font-medium">
                                   {digimon.attribute}
                                   {/* Attribute advantage tooltip */}
                                   <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 p-2 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 w-56">
@@ -231,7 +231,7 @@ const Battle = () => {
                                 </span>
                               </div>
                             )}
-                            <div className="text-xs mt-1">Lv.{digimon.current_level}</div>
+                            <div className="text-[10px] sm:text-xs mt-1">Lv.{digimon.current_level}</div>
                           </div>
                         ))}
                       </div>
@@ -242,14 +242,14 @@ const Battle = () => {
                           handleStartBattle(option.id);
                         }}
                         disabled={loading || dailyBattlesRemaining <= 0 || teamDigimon.length < 1}
-                        className={`btn-primary w-full ${
+                        className={`btn-primary w-full text-xs sm:text-sm py-1 sm:py-2 ${
                           (dailyBattlesRemaining <= 0 || teamDigimon.length < 1) 
                             ? 'opacity-50 cursor-not-allowed' 
                             : ''
                         }`}
                       >
                         {loading ? "Starting..." : 
-                         dailyBattlesRemaining <= 0 ? "No remaining battles" : teamDigimon.length < 1 ? "Need 1+ Team Members" : "Battle!"}
+                         dailyBattlesRemaining <= 0 ? "No battles" : teamDigimon.length < 1 ? "Need team" : "Battle!"}
                       </button>
                     </div>
                   ))}
