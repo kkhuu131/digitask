@@ -4,11 +4,14 @@ import { supabase } from "../lib/supabase";
 import { useDigimonData } from "../hooks/useDigimonData";
 
 const DigimonDex = () => {
-  const { digimon: allDigimon, loading, } = useDigimonData();
+  const { digimon: allDigimon, loading } = useDigimonData();
   const [selectedDigimon, setSelectedDigimon] = useState<Digimon | null>(null);
   const [evolutionPathsData, setEvolutionPaths] = useState<any>({});
   const { discoveredDigimon } = useDigimonStore();
   const [statLevel, setStatLevel] = useState<1 | 50 | 99>(1);
+
+  // Sort the Digimon by their ID
+  const sortedDigimon = [...allDigimon].sort((a, b) => a.id - b.id);
 
   const isDiscovered = (digimonId: number) => {
     return discoveredDigimon.includes(digimonId);
@@ -113,7 +116,7 @@ const DigimonDex = () => {
       </p>
       
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-        {allDigimon.map((digimon) => {
+        {sortedDigimon.map((digimon) => {
           const discovered = isDiscovered(digimon.id);
           
           return (
@@ -125,6 +128,8 @@ const DigimonDex = () => {
                 ${discovered ? 'cursor-pointer hover:shadow-md transition-shadow' : 'opacity-60 grayscale'}
               `}
             >
+              <div className="self-start text-xs text-gray-400 mb-1">#{digimon.id}</div>
+              
               <div className="w-16 h-16 flex items-center justify-center">
                 {digimon.sprite_url ? (
                   <img 
