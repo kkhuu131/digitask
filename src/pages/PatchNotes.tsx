@@ -17,7 +17,8 @@ const PatchNotes = () => {
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600">
               <li>Battle options now have a 33% chance to force a wild encounter even if there's a real opponent</li>
-              <li>Wild encoutners have a chance to all be the same Type, or same Attribute.</li>
+              <li>Wild encounters have a chance to all be the same Type, or same Attribute to add some variety.</li>
+              <li>Wild encounters have a chance of being an Alpha + Minions, meaning one of the Digimon will be a higher stage and level than the others.</li>
               <li>Wild encounters now choose Digimon with stages that would match the level (ex. not level 5 Mega Digimon, or level 50 Baby Digimon)</li>
               <li>The battle teams of other players, will now be the Digimon on their team, instead of their 3 highest level Digimon.</li>
               <li>Evolving or devolving a Digimon will now play a short animation.</li>
