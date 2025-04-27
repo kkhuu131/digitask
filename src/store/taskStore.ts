@@ -513,8 +513,8 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       // If daily quota is met
       const dailyQuota = get().dailyQuota;
       if (dailyQuota && dailyQuota.completed_today >= DAILY_QUOTA_MILESTONE) {
-        // Increment the daily quota streak for milestones
-        await useMilestoneStore.getState().incrementDailyQuotaStreak();
+        // Complete the daily quota (which will reward the team with EXP)
+        await get().completeDailyQuota();
       }
     } catch (error) {
       console.error("Error in checkDailyQuota:", error);
@@ -590,9 +590,34 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         return;
       }
 
+      if (get().dailyQuota?.completed_today === DAILY_QUOTA_MILESTONE) {
+        // Get the XP multiplier based on streak
+        const expMultiplier = get().getExpMultiplier();
+
+        // Apply multiplier to the base reward
+        const BASE_XP_REWARD = 100;
+        const actualXpReward = Math.round(BASE_XP_REWARD * expMultiplier);
+
+        // Reward the whole team with the calculated XP
+        await useDigimonStore.getState().feedAllDigimon(actualXpReward);
+
+        // Show notification about the team reward with multiplier info
+        const multiplierText =
+          expMultiplier > 1
+            ? ` (${BASE_XP_REWARD} × ${expMultiplier.toFixed(1)} streak bonus)`
+            : "";
+
+        useNotificationStore.getState().addNotification({
+          message: `🎉 Daily Quota Complete! All team members received ${actualXpReward} EXP${multiplierText}!`,
+          type: "success",
+        });
+      }
+
       await useMilestoneStore.getState().incrementDailyQuotaStreak();
+      set({ loading: false });
     } catch (error) {
       console.error("Error in completeDailyQuota:", error);
+      set({ loading: false });
     }
   },
 
@@ -603,7 +628,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     const streak = dailyQuota.current_streak;
     if (streak <= 1) return 1.0;
 
-    return Math.min(1.0 + (streak - 1) * 0.1, 3.0);
+    return Math.min(1.0 + (streak - 1) * 0.1, 2.5);
   },
 
   editTask: async (id, updates) => {

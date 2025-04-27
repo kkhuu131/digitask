@@ -42,6 +42,7 @@ const Battle = () => {
   
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [showBattleAnimation, setShowBattleAnimation] = useState(false);
+  const [localLoading, setLocalLoading] = useState(false);
 
   const teamDigimon = allUserDigimon.filter(d => d.is_on_team);
 
@@ -63,9 +64,16 @@ const Battle = () => {
   }, [checkDailyBattleLimit]);
 
   const handleStartBattle = async (optionId: string) => {
-    if (!optionId) return;
-    setSelectedOption(optionId); // Still set this for visual feedback
-    await selectAndStartBattle(optionId);
+    // Prevent multiple clicks while loading (either global or local loading state)
+    if (!optionId || loading || localLoading) return;
+    
+    try {
+      setLocalLoading(true); // Set local loading state immediately
+      setSelectedOption(optionId);
+      await selectAndStartBattle(optionId);
+    } finally {
+      setLocalLoading(false); // Reset local loading state when done
+    }
   };
 
   const handleBattleComplete = () => {
@@ -151,7 +159,7 @@ const Battle = () => {
                         </span>
                         
                         <span className="text-xs sm:text-sm font-medium text-gray-700 truncate max-w-[120px]">
-                          {option.isWild ? 'Wild' : option.team.display_name || option.team.username}
+                          {option.isWild ? 'Wild Digimon' : option.team.display_name || option.team.username}
                         </span>
                       </div>
                       
@@ -237,18 +245,15 @@ const Battle = () => {
                       </div>
                       
                       <button
-                        onClick={() => {
-                          // Set the selected option and immediately start the battle
-                          handleStartBattle(option.id);
-                        }}
-                        disabled={loading || dailyBattlesRemaining <= 0 || teamDigimon.length < 1}
+                        onClick={() => handleStartBattle(option.id)}
+                        disabled={loading || localLoading || dailyBattlesRemaining <= 0 || teamDigimon.length < 1}
                         className={`btn-primary w-full text-xs sm:text-sm py-1 sm:py-2 ${
-                          (dailyBattlesRemaining <= 0 || teamDigimon.length < 1) 
+                          (loading || localLoading || dailyBattlesRemaining <= 0 || teamDigimon.length < 1) 
                             ? 'opacity-50 cursor-not-allowed' 
                             : ''
                         }`}
                       >
-                        {loading ? "Starting..." : 
+                        {loading || localLoading ? "Starting..." : 
                          dailyBattlesRemaining <= 0 ? "No battles" : teamDigimon.length < 1 ? "Need team" : "Battle!"}
                       </button>
                     </div>

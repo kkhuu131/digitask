@@ -6,6 +6,7 @@ import DigimonDetailModal from "../components/DigimonDetailModal";
 import { motion } from "framer-motion";
 import statModifier, { DigimonType, DigimonAttribute } from "../store/battleStore";
 import TypeAttributeIcon from '../components/TypeAttributeIcon';
+import EvolutionAnimation from "../components/EvolutionAnimation";
 
 const UserDigimonPage = () => {
   const { 
@@ -30,6 +31,10 @@ const UserDigimonPage = () => {
   const [showDevolutionModal, setShowDevolutionModal] = useState<string | null>(null);
   const [devolutionError, setDevolutionError] = useState<string | null>(null);
   const [devolutionData, setDevolutionData] = useState<{[key: number]: EvolutionOption[]}>({});
+  const [showEvolutionAnimation, setShowEvolutionAnimation] = useState(false);
+  const [evolutionSprites, setEvolutionSprites] = useState<{old: string, new: string} | null>(null);
+  const [pendingEvolution, setPendingEvolution] = useState<{digimonId: string, toDigimonId: number} | null>(null);
+  const [pendingDevolution, setPendingDevolution] = useState<{digimonId: string, fromDigimonId: number} | null>(null);
 
   useEffect(() => {
     fetchAllUserDigimon();
@@ -217,35 +222,116 @@ const UserDigimonPage = () => {
   const handleEvolution = async (digimonId: string, toDigimonId: number) => {
     try {
       setEvolutionError(null);
+      
+      // Find the current digimon
+      const currentDigimon = allUserDigimon.find(d => d.id === digimonId);
+      if (!currentDigimon) throw new Error("Current Digimon not found");
+      
+      // Find the target digimon
+      const targetDigimon = evolutionData[currentDigimon.digimon_id]?.find(
+        option => option.digimon_id === toDigimonId
+      );
+      if (!targetDigimon) throw new Error("Target Digimon not found");
+      
+      // Set up animation sprites
+      setEvolutionSprites({
+        old: currentDigimon.digimon?.sprite_url || "",
+        new: targetDigimon.sprite_url
+      });
+      
+      // Store pending evolution data
+      setPendingEvolution({digimonId, toDigimonId});
+      
+      // Show animation
       setShowEvolutionModal(null);
       setSelectedDetailDigimon(null);
-      
-      // Evolve the Digimon
-      await evolveDigimon(toDigimonId, digimonId);
-
-      await fetchEvolutionPathsForDigimon(toDigimonId);
-
-      // Refresh all user Digimon data
-      await fetchAllUserDigimon();
-      
-      
+      setShowEvolutionAnimation(true);
       
     } catch (error) {
       setEvolutionError((error as Error).message);
+    }
+  };
+  
+  // Function to complete evolution after animation
+  const completeEvolution = async () => {
+    if (!pendingEvolution) return;
+    
+    try {
+      const {digimonId, toDigimonId} = pendingEvolution;
+      
+      // Evolve the Digimon
+      await evolveDigimon(toDigimonId, digimonId);
+      
+      // Fetch new evolution paths
+      await fetchEvolutionPathsForDigimon(toDigimonId);
+      
+      // Refresh all user Digimon data
+      await fetchAllUserDigimon();
+      
+    } catch (error) {
+      setEvolutionError((error as Error).message);
+    } finally {
+      setShowEvolutionAnimation(false);
+      setEvolutionSprites(null);
+      setPendingEvolution(null);
     }
   };
 
   const handleDevolve = async (digimonId: string, fromDigimonId: number) => {
     try {
       setDevolutionError(null);
-
+      
+      // Find the current digimon
+      const currentDigimon = allUserDigimon.find(d => d.id === digimonId);
+      if (!currentDigimon) throw new Error("Current Digimon not found");
+      
+      // Find the target digimon
+      const targetDigimon = devolutionData[currentDigimon.digimon_id]?.find(
+        option => option.digimon_id === fromDigimonId
+      );
+      if (!targetDigimon) throw new Error("Target Digimon not found");
+      
+      // Set up animation sprites
+      setEvolutionSprites({
+        old: currentDigimon.digimon?.sprite_url || "",
+        new: targetDigimon.sprite_url
+      });
+      
+      // Store pending devolution data
+      setPendingDevolution({digimonId, fromDigimonId});
+      
+      // Show animation
       setShowDevolutionModal(null);
       setSelectedDetailDigimon(null);
-
-      await devolveDigimon(fromDigimonId, digimonId);
-      await fetchEvolutionPathsForDigimon(fromDigimonId);
+      setShowEvolutionAnimation(true);
+      
     } catch (error) {
       setDevolutionError((error as Error).message);
+    }
+  };
+  
+  // Function to complete devolution after animation
+  const completeDevolution = async () => {
+    if (!pendingDevolution) return;
+    
+    try {
+      const {digimonId, fromDigimonId} = pendingDevolution;
+      
+      // Devolve the Digimon
+      await devolveDigimon(fromDigimonId, digimonId);
+      
+      // Fetch new evolution paths
+      await fetchEvolutionPathsForDigimon(fromDigimonId);
+      
+      // Refresh all user Digimon data
+      await fetchAllUserDigimon();
+      
+    } catch (error) {
+      setDevolutionError((error as Error).message);
+    } finally {
+      setShowEvolutionAnimation(false);
+      setEvolutionSprites(null);
+      setPendingDevolution(null);
     }
   };
 
@@ -674,6 +760,16 @@ const UserDigimonPage = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Evolution/Devolution Animation */}
+      {showEvolutionAnimation && evolutionSprites && (
+        <EvolutionAnimation
+          oldSpriteUrl={evolutionSprites.old}
+          newSpriteUrl={evolutionSprites.new}
+          onComplete={pendingEvolution ? completeEvolution : completeDevolution}
+          isDevolution={!!pendingDevolution}
+        />
       )}
 
       <div className="card mb-6">

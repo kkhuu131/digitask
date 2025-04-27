@@ -2,10 +2,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useDigimonStore, UserDigimon, Digimon as DigimonType, EvolutionOption, expToBoostPoints } from "../store/petStore";
 import { useState, useEffect, useRef } from "react";
 import DigimonDetailModal from "./DigimonDetailModal";
-import { useNotificationStore } from "../store/notificationStore";
 import statModifier, { DigimonAttribute, DigimonType as DigimonBattleType } from "../store/battleStore";
 import TypeAttributeIcon from "./TypeAttributeIcon";
 import { supabase } from "../lib/supabase";
+import EvolutionAnimation from "./EvolutionAnimation";
 
 interface DigimonProps {
   userDigimon: UserDigimon;
@@ -43,6 +43,14 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
   const [devolutionError, setDevolutionError] = useState<string | null>(null);
   const [devolutionOptions, setDevolutionOptions] = useState<EvolutionOption[]>([]);
   const { devolveDigimon } = useDigimonStore();
+
+  const [showEvolutionAnimation, setShowEvolutionAnimation] = useState(false);
+  const [showDevolutionAnimation, setShowDevolutionAnimation] = useState(false);
+  const [evolutionSprites, setEvolutionSprites] = useState<{old: string, new: string} | null>(null);
+  
+  // Add pending state variables like in UserDigimonPage
+  const [pendingEvolution, setPendingEvolution] = useState<{toDigimonId: number} | null>(null);
+  const [pendingDevolution, setPendingDevolution] = useState<{toDigimonId: number} | null>(null);
 
   // Update local state when userDigimon changes
   useEffect(() => {
@@ -126,30 +134,58 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
   const handleEvolution = async (toDigimonId: number) => {
     try {
       setEvolutionError(null);
-      setShowEvolutionModal(true);
+      
+      // Find the target digimon to get its sprite URL
+      const targetDigimon = evolutionOptions.find(option => option.digimon_id === toDigimonId);
+      if (!targetDigimon) throw new Error("Target Digimon not found");
+      
+      // Set up animation sprites
+      setEvolutionSprites({
+        old: digimonData.sprite_url,
+        new: targetDigimon.sprite_url
+      });
+      
+      // Store pending evolution data
+      setPendingEvolution({toDigimonId});
+      
+      // Show animation
+      setShowEvolutionAnimation(true);
+      
+      // Close the modal
+      setShowEvolutionModal(false);
+      
+    } catch (error) {
+      console.error("Evolution error:", error);
+      setEvolutionError((error as Error).message);
+    }
+  };
+  
+  // Function to complete evolution after animation
+  const completeEvolution = async () => {
+    if (!pendingEvolution || !evolutionSprites) return;
+    
+    try {
+      const {toDigimonId} = pendingEvolution;
       
       // Call the evolve function from the store
       await evolveDigimon(toDigimonId, userDigimon.id);
       
-      // Close both modals after successful evolution
-      setShowEvolutionModal(false);
+      // Close detail modal after successful evolution
       setShowDetailModal(false);
       
-      // Fetch new evolution options for the evolved Digimon
-      // We can dispatch a custom event that the parent component can listen for
+      // Dispatch event for parent component
       const event = new CustomEvent('digimon-evolved', { 
         detail: { digimonId: userDigimon.id, newDigimonId: toDigimonId } 
       });
       window.dispatchEvent(event);
       
-      // Show success notification
-      useNotificationStore.getState().addNotification({
-        message: `Your Digimon has evolved successfully!`,
-        type: "success"
-      });
     } catch (error) {
       console.error("Evolution error:", error);
       setEvolutionError((error as Error).message);
+    } finally {
+      setShowEvolutionAnimation(false);
+      setEvolutionSprites(null);
+      setPendingEvolution(null);
     }
   };
   
@@ -246,19 +282,61 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
   };
   
   // Add function to handle devolution
-  const handleDevolve = async (fromDigimonId: number) => {
+  const handleDevolve = async (toDigimonId: number) => {
     try {
       setDevolutionError(null);
-      await devolveDigimon(fromDigimonId);
+      
+      // Find the target digimon to get its sprite URL
+      const targetDigimon = devolutionOptions.find(option => option.digimon_id === toDigimonId);
+      if (!targetDigimon) throw new Error("Target Digimon not found");
+      
+      // Set up animation sprites
+      setEvolutionSprites({
+        old: digimonData.sprite_url,
+        new: targetDigimon.sprite_url
+      });
+      
+      // Store pending devolution data
+      setPendingDevolution({toDigimonId});
+      
+      // Show animation
+      setShowDevolutionAnimation(true);
+      
+      // Close the modal
       setShowDevolutionModal(false);
       
-      // Show success notification
-      useNotificationStore.getState().addNotification({
-        message: "Your Digimon has de-digivolved successfully!",
-        type: "success"
-      });
     } catch (error) {
+      console.error("Devolution error:", error);
       setDevolutionError((error as Error).message);
+    }
+  };
+  
+  // Function to complete devolution after animation
+  const completeDevolution = async () => {
+    if (!pendingDevolution || !evolutionSprites) return;
+    
+    try {
+      const {toDigimonId} = pendingDevolution;
+      
+      // Call the devolve function from the store
+      await devolveDigimon(toDigimonId, userDigimon.id);
+      
+      // Close detail modal after successful devolution
+      setShowDetailModal(false);
+      
+      // Dispatch event for parent component
+      const event = new CustomEvent('digimon-devolved', { 
+        detail: { digimonId: userDigimon.id, newDigimonId: toDigimonId } 
+      });
+      window.dispatchEvent(event);
+      
+    } catch (error) {
+      console.error("Devolution error:", error);
+      setDevolutionError((error as Error).message);
+    } finally {
+      setShowDevolutionAnimation(false);
+      setEvolutionSprites(null);
+      setPendingDevolution(null);
     }
   };
   
@@ -758,6 +836,26 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
             </div>
           </div>
         </div>
+      )}
+
+      {/* Evolution Animation */}
+      {showEvolutionAnimation && evolutionSprites && (
+        <EvolutionAnimation
+          oldSpriteUrl={evolutionSprites.old}
+          newSpriteUrl={evolutionSprites.new}
+          onComplete={completeEvolution}
+          isDevolution={false}
+        />
+      )}
+
+      {/* Devolution Animation */}
+      {showDevolutionAnimation && evolutionSprites && (
+        <EvolutionAnimation
+          oldSpriteUrl={evolutionSprites.old}
+          newSpriteUrl={evolutionSprites.new}
+          onComplete={completeDevolution}
+          isDevolution={true}
+        />
       )}
     </div>
   );

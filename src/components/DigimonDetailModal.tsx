@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import statModifier, { DigimonAttribute, DigimonType } from "../store/battleStore";
 import { supabase } from "../lib/supabase";
 import TypeAttributeIcon from "./TypeAttributeIcon";
-
 // Define the stat types
 type StatType = "HP" | "SP" | "ATK" | "DEF" | "INT" | "SPD";
 

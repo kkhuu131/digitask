@@ -12,11 +12,26 @@ const PatchNotes = () => {
           <div className="mb-6">
             <div className="flex items-center mb-2">
               <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
+              <h3 className="text-lg font-medium ml-2">Enhanced Wild Encounter Generation</h3>
+              <span className="text-sm text-gray-500 ml-auto">April 26, 2025</span>
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+              <li>Battle options now have a 33% chance to force a wild encounter even if there's a real opponent</li>
+              <li>Wild encoutners have a chance to all be the same Type, or same Attribute.</li>
+              <li>Wild encounters now choose Digimon with stages that would match the level (ex. not level 5 Mega Digimon, or level 50 Baby Digimon)</li>
+              <li>The battle teams of other players, will now be the Digimon on their team, instead of their 3 highest level Digimon.</li>
+              <li>Evolving or devolving a Digimon will now play a short animation.</li>
+            </ul>
+          </div>
+          <div className="mb-6">
+            <div className="flex items-center mb-2">
+              <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
               <h3 className="text-lg font-medium ml-2">Digidex Graph Display</h3>
               <span className="text-sm text-gray-500 ml-auto">April 25, 2025</span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600">
               <li>Added a new way to visualize Digidex data (only on desktop resolutions)</li>
+              <li>Completing your daily quota will now reward the whole team with 100 EXP</li>
             </ul>
           </div>
           <div className="mb-6">
