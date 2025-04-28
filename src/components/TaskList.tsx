@@ -261,7 +261,7 @@ const TaskList = () => {
       </div>
       
       {/* Auto-allocate toggle */}
-      <div className="mb-4 flex items-center justify-between">
+      <div className="flex items-center justify-between">
         <div className="flex items-center">
           <input
             id="auto-allocate"
@@ -276,7 +276,7 @@ const TaskList = () => {
         </div>
       </div>
       
-      <div className="text-center py-8 text-gray-500">
+      <div className="text-center pb-8 pt-4 text-gray-500">
         {tasks.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
             No tasks found. Add some tasks to get started!

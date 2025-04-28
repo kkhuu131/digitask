@@ -10,7 +10,7 @@ export function expToBoostPoints(
   experience: number,
   evolution: boolean = true
 ) {
-  const totalEXP = 20 * ((level * (level + 1)) / 2 - 1) + experience;
+  const totalEXP = (20 * (level * (level - 1))) / 2 + experience;
 
   if (evolution) {
     return Math.floor(totalEXP / 1500);
@@ -40,6 +40,7 @@ export interface UserDigimon {
   spd_bonus: number;
   daily_stat_gains: number;
   last_stat_reset: string;
+  personality?: string;
   digimon?: Digimon;
 }
 
@@ -439,8 +440,6 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       // Also fetch the user profile to update the auth store
       const { useAuthStore } = await import("../store/authStore");
       await useAuthStore.getState().fetchUserProfile();
-
-      // Continue with the rest of the function...
 
       set({
         userDigimon: data,

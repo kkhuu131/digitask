@@ -492,6 +492,9 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
               style={{ width: `${xpPercentage}%` }}
             ></div>
           </div>
+          <div className="text-xs text-gray-500 text-right mt-1">
+            {20 * currentLevel * (currentLevel - 1) / 2 + currentXP} Total EXP
+          </div>
         </div>
       </div>
 

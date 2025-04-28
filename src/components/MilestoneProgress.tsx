@@ -18,12 +18,13 @@ const MilestoneProgress = () => {
   
   const { allUserDigimon } = useDigimonStore();
   const { tasks, dailyQuota } = useTaskStore();
-  const hasMaxDigimon = allUserDigimon.length >= 9;
+  const hasMaxDigimon = allUserDigimon.length >= 12;
   const location = useLocation();
   
   // State for the selection modal
   const [isSelectionModalOpen, setIsSelectionModalOpen] = useState(false);
   const [isNXChance, setIsNXChance] = useState(false);
+  const [isProcessingClaim, setIsProcessingClaim] = useState(false);
   
   // Calculate if user should be able to claim based on current values
   const shouldBeAbleToClaimDigimon = 
@@ -76,7 +77,7 @@ const MilestoneProgress = () => {
   
   // Handle opening the selection modal
   const handleOpenSelectionModal = () => {
-    if (!shouldBeAbleToClaimDigimon) return;
+    if (!shouldBeAbleToClaimDigimon || isProcessingClaim) return;
     
     // 3% chance for NX Digimon
     const hasNXChance = Math.random() < 0.03;
@@ -87,15 +88,28 @@ const MilestoneProgress = () => {
   // Handle Digimon selection
   const handleDigimonSelection = async (digimonId: number) => {
     try {
+      // Set processing flag to prevent multiple claims
+      setIsProcessingClaim(true);
+      
+      // Close the modal immediately to prevent flash
+      setIsSelectionModalOpen(false);
+      
       const success = await claimSelectedDigimon(digimonId);
       
       if (success) {
         // Force refresh milestones and Digimon data after claiming
         await fetchMilestones();
         await useDigimonStore.getState().fetchAllUserDigimon();
+      } else {
+        // If claim failed, reopen the modal
+        setIsSelectionModalOpen(true);
       }
     } catch (error) {
       console.error("Error claiming Digimon:", error);
+      // If there was an error, reopen the modal
+      setIsSelectionModalOpen(true);
+    } finally {
+      setIsProcessingClaim(false);
     }
   };
   
@@ -153,14 +167,15 @@ const MilestoneProgress = () => {
           <div className="mt-4">
             <button
               onClick={handleOpenSelectionModal}
-              disabled={!shouldBeAbleToClaimDigimon}
+              disabled={!shouldBeAbleToClaimDigimon || isProcessingClaim}
               className={`w-full py-2 px-4 rounded-md text-white font-medium ${
-                shouldBeAbleToClaimDigimon
+                shouldBeAbleToClaimDigimon && !isProcessingClaim
                   ? "bg-primary-600 hover:bg-primary-700"
                   : "bg-gray-400 cursor-not-allowed"
               }`}
             >
-              {hasMaxDigimon ? "Maximum Digimon Reached (9)" :
+              {hasMaxDigimon ? "Maximum Digimon Reached (12)" :
+               isProcessingClaim ? "Processing..." :
                shouldBeAbleToClaimDigimon ? "Choose New Digimon" : "Reach a Milestone to Claim"}
             </button>
           </div>
@@ -168,12 +183,14 @@ const MilestoneProgress = () => {
       </div>
       
       {/* Digimon Selection Modal */}
-      <DigimonSelectionModal
-        isOpen={isSelectionModalOpen}
-        onClose={() => setIsSelectionModalOpen(false)}
-        onSelect={handleDigimonSelection}
-        isNXChance={isNXChance}
-      />
+      {isSelectionModalOpen && (
+        <DigimonSelectionModal
+          isOpen={isSelectionModalOpen}
+          onClose={() => setIsSelectionModalOpen(false)}
+          onSelect={handleDigimonSelection}
+          isNXChance={isNXChance}
+        />
+      )}
     </>
   );
 };

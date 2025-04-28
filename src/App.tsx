@@ -28,6 +28,7 @@ import ProfilePage from './pages/ProfilePage';
 import UserSearchPage from './pages/UserSearchPage';
 import LeaderboardPage from './pages/LeaderboardPage';
 import AdminReportsPage from './pages/AdminReportsPage';
+import DigimonPlayground from "./pages/DigimonPlayground";
 
 // Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -444,6 +445,14 @@ function App() {
           <ProtectedRoute>
             <Layout>
               <AdminReportsPage />
+            </Layout>
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/playground" element={
+          <ProtectedRoute>
+            <Layout>
+              <DigimonPlayground />
             </Layout>
           </ProtectedRoute>
         } />

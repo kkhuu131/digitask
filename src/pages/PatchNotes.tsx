@@ -12,6 +12,20 @@ const PatchNotes = () => {
           <div className="mb-6">
             <div className="flex items-center mb-2">
               <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
+              <h3 className="text-lg font-medium ml-2">Playground Mode and Personality System</h3>
+              <span className="text-sm text-gray-500 ml-auto">April 26, 2025</span>
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+              <li>Playground mode is now available. Allows you to play and interact with all your Digimon.</li>
+              <li>Mode is currently just cosmetic, and provides no benefits.</li>
+              <li>Digimon are now randomly assigned a personality, each increasing one of their stats by 5% (applied after bonus stats).</li>
+              <li>Personality can be Durable (HP), Lively (SP), Fighter (ATK), Defender (DEF), Brainy (INT), or Nimble (SPD).</li>
+              <li>Max # of Digimon per user is increased to 12 (from 9).</li>
+              <li>Stats displayed in Digimon details are now displayed like so: Total Stat # (+ Bonus Stat #). The total stat # already has the bonus stats and personality applied.</li>
+            </ul>
+          </div>
+          <div className="mb-6">
+            <div className="flex items-center mb-2">
               <h3 className="text-lg font-medium ml-2">Enhanced Wild Encounter Generation</h3>
               <span className="text-sm text-gray-500 ml-auto">April 26, 2025</span>
             </div>
@@ -26,7 +40,6 @@ const PatchNotes = () => {
           </div>
           <div className="mb-6">
             <div className="flex items-center mb-2">
-              <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
               <h3 className="text-lg font-medium ml-2">Digidex Graph Display</h3>
               <span className="text-sm text-gray-500 ml-auto">April 25, 2025</span>
             </div>

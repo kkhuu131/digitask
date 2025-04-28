@@ -125,7 +125,7 @@ const Layout = ({ children }: LayoutProps) => {
                 
                 <Link
                   to="/your-digimon"
-                  className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+                  className={`text-center inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
                     isActive("/your-digimon")
                       ? "border-primary-500 text-gray-900"
                       : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
@@ -145,11 +145,18 @@ const Layout = ({ children }: LayoutProps) => {
                     Arena
                   </Link>
                   <Link
+                    to="/playground"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Playground
+                  </Link>
+                  <Link
                     to="/digimon-dex"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     DigiDex
                   </Link>
+                  
                 </NavDropdown>
                 
                 <NavDropdown 
@@ -279,7 +286,7 @@ const Layout = ({ children }: LayoutProps) => {
       
       {/* Bottom navigation for mobile */}
       {userDigimon && (
-        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-10">
+        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-[9999]">
           <div className="flex justify-around items-center">
             <Link 
               to="/" 

@@ -61,7 +61,7 @@ const Dashboard: React.FC = () => {
           <div className="ml-3 flex justify-between items-center w-full">
             <div>
               <p className="text-sm text-indigo-800">
-                <span className="font-medium">Digivolution and De-digivolution are reworked! Check out the latest updates in the Help &gt; Patch Notes page.</span>
+                <span className="font-medium">Check out the latest updates in the Help &gt; Patch Notes page.</span>
               </p>
             </div>
             <div className="flex space-x-2">
@@ -71,7 +71,7 @@ const Dashboard: React.FC = () => {
                 rel="noopener noreferrer"
                 className="text-sm bg-indigo-100 hover:bg-indigo-200 text-indigo-800 px-3 py-1 rounded-full transition-colors"
               >
-                Bug Report
+                Feedback
               </a>
             </div>
           </div>

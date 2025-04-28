@@ -236,10 +236,10 @@ export const useMilestoneStore = create<MilestoneState>((set, get) => ({
         .select("count")
         .eq("user_id", userData.user.id);
 
-      if (userDigimonCount && userDigimonCount[0]?.count >= 9) {
+      if (userDigimonCount && userDigimonCount[0]?.count >= 12) {
         set({
           loading: false,
-          error: "You already have the maximum number of Digimon (9).",
+          error: "You already have the maximum number of Digimon (12).",
         });
         return false;
       }

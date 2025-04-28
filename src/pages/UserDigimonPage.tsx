@@ -775,7 +775,7 @@ const UserDigimonPage = () => {
       <div className="card mb-6">
         <h1 className="text-2xl font-bold mb-4">Your Digimon</h1>
         <p className="text-gray-600 mb-6">
-          You can have up to 9 Digimon total, with 3 on your battle team. 
+          You can have up to 12 Digimon total, with 3 on your battle team. 
           Only one Digimon can be active at a time to gain experience from completed tasks.
         </p>
 
@@ -788,7 +788,7 @@ const UserDigimonPage = () => {
         <h2 className="text-xl font-semibold mb-4">Digimon Details</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[...allUserDigimon]
-            .sort((a, b) => b.current_level - a.current_level)
+            .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
             .map((digimon) => {
             
             return (
@@ -901,7 +901,7 @@ const UserDigimonPage = () => {
             );
           })}
           
-          {allUserDigimon.length < 9 && (
+          {allUserDigimon.length < 12 && (
             <div className="border border-dashed border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center text-gray-400">
               <div className="w-24 h-24 flex items-center justify-center mb-3">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -911,7 +911,7 @@ const UserDigimonPage = () => {
               <p className="text-center">
                 Digimon slot available
                 <br />
-                <span className="text-xs">{9 - allUserDigimon.length} slots remaining</span>
+                <span className="text-xs">{12 - allUserDigimon.length} slots remaining</span>
               </p>
             </div>
           )}

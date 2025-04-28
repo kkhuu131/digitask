@@ -3,54 +3,73 @@ import { supabase } from "../lib/supabase";
 import { useDigimonStore } from "./petStore";
 import { useTaskStore } from "./taskStore";
 
-function simulateTeamBattle(userTeamData: any, opponentTeamData: any) {
-  function modifyStats(digimon: any) {
-    return {
-      hp:
-        statModifier(
-          digimon.current_level,
-          digimon.digimon.hp_level1,
-          digimon.digimon.hp,
-          digimon.digimon.hp_level99
-        ) + (digimon.hp_bonus || 0),
-      atk:
-        statModifier(
-          digimon.current_level,
-          digimon.digimon.atk_level1,
-          digimon.digimon.atk,
-          digimon.digimon.atk_level99
-        ) + (digimon.atk_bonus || 0),
-      def:
-        statModifier(
-          digimon.current_level,
-          digimon.digimon.def_level1,
-          digimon.digimon.def,
-          digimon.digimon.def_level99
-        ) + (digimon.def_bonus || 0),
-      sp:
-        statModifier(
-          digimon.current_level,
-          digimon.digimon.sp_level1,
-          digimon.digimon.sp,
-          digimon.digimon.sp_level99
-        ) + (digimon.sp_bonus || 0),
-      int:
-        statModifier(
-          digimon.current_level,
-          digimon.digimon.int_level1,
-          digimon.digimon.int,
-          digimon.digimon.int_level99
-        ) + (digimon.int_bonus || 0),
-      spd:
-        statModifier(
-          digimon.current_level,
-          digimon.digimon.spd_level1,
-          digimon.digimon.spd,
-          digimon.digimon.spd_level99
-        ) + (digimon.spd_bonus || 0),
-    };
+export function modifyStats(digimon: any) {
+  const baseStats = {
+    hp:
+      statModifier(
+        digimon.current_level,
+        digimon.digimon.hp_level1 ?? 0,
+        digimon.digimon.hp ?? 0,
+        digimon.digimon.hp_level99 ?? 0
+      ) + (digimon.hp_bonus || 0),
+    atk:
+      statModifier(
+        digimon.current_level,
+        digimon.digimon.atk_level1 ?? 0,
+        digimon.digimon.atk ?? 0,
+        digimon.digimon.atk_level99 ?? 0
+      ) + (digimon.atk_bonus || 0),
+    def:
+      statModifier(
+        digimon.current_level,
+        digimon.digimon.def_level1 ?? 0,
+        digimon.digimon.def ?? 0,
+        digimon.digimon.def_level99 ?? 0
+      ) + (digimon.def_bonus || 0),
+    sp:
+      statModifier(
+        digimon.current_level,
+        digimon.digimon.sp_level1 ?? 0,
+        digimon.digimon.sp ?? 0,
+        digimon.digimon.sp_level99 ?? 0
+      ) + (digimon.sp_bonus || 0),
+    int:
+      statModifier(
+        digimon.current_level,
+        digimon.digimon.int_level1 ?? 0,
+        digimon.digimon.int ?? 0,
+        digimon.digimon.int_level99 ?? 0
+      ) + (digimon.int_bonus || 0),
+    spd:
+      statModifier(
+        digimon.current_level,
+        digimon.digimon.spd_level1 ?? 0,
+        digimon.digimon.spd ?? 0,
+        digimon.digimon.spd_level99 ?? 0
+      ) + (digimon.spd_bonus || 0),
+  };
+
+  // Mapping of personality to stat key
+  const personalityBoosts: Record<string, keyof typeof baseStats> = {
+    Durable: "hp",
+    Lively: "sp",
+    Fighter: "atk",
+    Defender: "def",
+    Brainy: "int",
+    Nimble: "spd",
+  };
+
+  const boostedStats = { ...baseStats };
+
+  const boostKey = personalityBoosts[digimon.personality];
+  if (boostKey) {
+    boostedStats[boostKey] = Math.floor(boostedStats[boostKey] * 1.05);
   }
 
+  return boostedStats;
+}
+
+function simulateTeamBattle(userTeamData: any, opponentTeamData: any) {
   function getAttributeDamageMultiplier(
     attacker: DigimonAttribute,
     defender: DigimonAttribute
@@ -1014,7 +1033,7 @@ export const useBattleStore = create<BattleState>((set, get) => {
             }
 
             // Add a 50% chance to force a wild encounter even if we found a real opponent
-            const forceWildEncounter = Math.random() < 0.33;
+            const forceWildEncounter = Math.random() < 0.5;
 
             if (opponentsWithTeams.length > 0 && !forceWildEncounter) {
               if (matchingOpponent) {

@@ -223,7 +223,7 @@ const TaskForm = () => {
         />
       </div>
       
-      <div className="mb-4">
+      <div className="mb-4 text-sm">
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Task Type
         </label>
@@ -274,7 +274,7 @@ const TaskForm = () => {
           </label>
           <div className="grid grid-cols-4 gap-2">
             {DAYS_OF_WEEK.map(day => (
-              <label key={day} className="inline-flex items-center">
+              <label key={day} className="inline-flex items-center text-sm">
                 <input
                   type="checkbox"
                   className="form-checkbox"

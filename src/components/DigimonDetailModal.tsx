@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { UserDigimon, useDigimonStore } from "../store/petStore";
 import { motion, AnimatePresence } from "framer-motion";
-import statModifier, { DigimonAttribute, DigimonType } from "../store/battleStore";
+import statModifier, { DigimonAttribute, DigimonType, modifyStats } from "../store/battleStore";
 import { supabase } from "../lib/supabase";
 import TypeAttributeIcon from "./TypeAttributeIcon";
 // Define the stat types
@@ -187,12 +187,12 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
           {/* Allocation Button */}
           {statValue > 0 && belongsToCurrentUser && (
             <button 
-              className="w-6 h-6 bg-purple-100 hover:bg-purple-200 text-purple-800 rounded-full flex items-center justify-center relative"
+              className="w-6 h-6 bg-indigo-100 hover:bg-indigo-200 text-indigo-800 rounded-full flex items-center justify-center relative"
               onClick={() => allocateStat(lowerLabel as StatType)}
               disabled={allocating}
             >
               <span className="text-xs">+</span>
-              <span className="absolute -top-1 -right-1 bg-purple-500 text-white text-xs rounded-full w-3.5 h-3.5 flex items-center justify-center text-[10px]">
+              <span className="absolute -top-2 -right-2 bg-indigo-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center text-[10px]">
                 {statValue}
               </span>
             </button>
@@ -336,6 +336,8 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
   // Get evolution options for this Digimon
   const evolutions = evolutionData[selectedDigimon.digimon_id] || [];
 
+  const stats = modifyStats(selectedDigimon);
+
   return (
     <div 
       className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40 ${className}`}
@@ -347,23 +349,21 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
       }}
     >
       <div 
-        className="bg-white rounded-lg p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+        className="bg-white rounded-lg px-6 pb-4 pt-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto relative"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex justify-between items-start mb-4">
-          <h3 className="text-2xl font-bold">Digimon Details</h3>
+          {/* X Button */}
           <button 
             onClick={(e) => {
               e.stopPropagation();
               onClose();
             }}
-            className="p-1 text-gray-500 hover:text-gray-700"
+            className="absolute top-3 right-3 p-1 text-gray-500 hover:text-gray-700"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
-        </div>
         
         <div className="flex flex-col md:flex-row gap-6">
           {/* Left column */}
@@ -463,25 +463,28 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                   </span>
                 )}
               </div>
-              <p className="text-sm text-gray-500 mt-2">
-                Age: {calculateAgeDays(selectedDigimon.created_at)} days
-              </p>
+              <div className="grid grid-cols-2 gap-x-1 text-sm text-gray-500 mt-2">
+                <p className="text-right">Age:</p>
+                <p className="text-left">{calculateAgeDays(selectedDigimon.created_at)} days</p>
+
+                <p className="text-right">Personality:</p>
+                <p className="text-left">{selectedDigimon.personality}</p>
+              </div>
             </div>
 
-            {/* Description - keep as is */}
-            <p className="text-center text-gray-600 mb-2">
-              {`${selectedDigimon.digimon?.name} is a ${selectedDigimon.digimon?.attribute} ${selectedDigimon.digimon?.type}, ${selectedDigimon.digimon?.stage} level Digimon.`}
-            </p>
-            <div className="flex justify-center mb-2">
+            {/* Description - fix the nesting issue */}
+            <div className="text-center text-gray-600 text-sm mt-1 mb-2 flex flex-wrap items-center justify-center gap-x-1">
+              <span>{`${selectedDigimon.digimon?.name} is a `}</span>
               <TypeAttributeIcon
                 type={selectedDigimon.digimon?.type as DigimonType}
                 attribute={selectedDigimon.digimon?.attribute as DigimonAttribute}
-                size="md"
+                size="sm"
                 showLabel={false}
               />
+              <span>{`${selectedDigimon.digimon?.attribute} ${selectedDigimon.digimon?.type}, ${selectedDigimon.digimon?.stage} Digimon.`}</span>
             </div>
             {/* Status bars - keep as is */}
-            <div className="w-full space-y-4 mb-6">
+            <div className="w-full space-y-4 mb-6 mt-4">
               <div>
                 <div className="flex justify-between text-sm mb-1">
                   <span>Happiness</span>
@@ -512,6 +515,9 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                     }}
                   ></div>
                 </div>
+                <div className="text-xs text-gray-500 text-right mt-1">
+                  {20 * selectedDigimon.current_level * (selectedDigimon.current_level - 1) / 2 + selectedDigimon.experience_points} Total EXP
+                </div>
               </div>
             </div>
           </div>
@@ -523,79 +529,21 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
 
               {/* Add a section showing total available stat points if any */}
               {Object.values(savedStats).some(val => val > 0) && belongsToCurrentUser && (
-                <div className="mb-3 p-2 bg-purple-50 border border-purple-200 rounded-lg">
-                  <p className="text-sm text-purple-800">
+                <div className="mb-3 p-2 bg-indigo-50 border border-indigo-200 rounded-lg">
+                  <p className="text-sm text-indigo-800">
                     You have saved stat points to allocate! Click the + buttons to improve this Digimon.
                   </p>
                 </div>
               )}
 
-              <div className="space-y-3 mb-4">
-                {renderStatRow(
-                  "HP",
-                  statModifier(
-                    selectedDigimon.current_level,
-                    selectedDigimon.digimon?.hp_level1 ?? 0,
-                    selectedDigimon.digimon?.hp ?? 0,
-                    selectedDigimon.digimon?.hp_level99 ?? 0
-                  ),
-                  selectedDigimon.hp_bonus ?? 0
-                )}
-                
-                {renderStatRow(
-                  "SP",
-                  statModifier(
-                    selectedDigimon.current_level,
-                    selectedDigimon.digimon?.sp_level1 ?? 0,
-                    selectedDigimon.digimon?.sp ?? 0,
-                    selectedDigimon.digimon?.sp_level99 ?? 0
-                  ),
-                  selectedDigimon.sp_bonus ?? 0
-                )}
-                
-                {renderStatRow(
-                  "ATK",
-                  statModifier(
-                    selectedDigimon.current_level,
-                    selectedDigimon.digimon?.atk_level1 ?? 0,
-                    selectedDigimon.digimon?.atk ?? 0,
-                    selectedDigimon.digimon?.atk_level99 ?? 0
-                  ),
-                  selectedDigimon.atk_bonus ?? 0
-                )}
-                
-                {renderStatRow(
-                  "DEF",
-                  statModifier(
-                    selectedDigimon.current_level,
-                    selectedDigimon.digimon?.def_level1 ?? 0,
-                    selectedDigimon.digimon?.def ?? 0,
-                    selectedDigimon.digimon?.def_level99 ?? 0
-                  ),
-                  selectedDigimon.def_bonus ?? 0
-                )}
 
-                {renderStatRow(
-                  "INT",
-                  statModifier(
-                    selectedDigimon.current_level,
-                    selectedDigimon.digimon?.int_level1 ?? 0,
-                    selectedDigimon.digimon?.int ?? 0,
-                    selectedDigimon.digimon?.int_level99 ?? 0
-                  ),
-                  selectedDigimon.int_bonus ?? 0
-                )}
-                
-                {renderStatRow(
-                  "SPD",
-                  statModifier(
-                    selectedDigimon.current_level,
-                    selectedDigimon.digimon?.spd_level1 ?? 0,
-                    selectedDigimon.digimon?.spd ?? 0,
-                    selectedDigimon.digimon?.spd_level99 ?? 0
-                  ),
-                  selectedDigimon.spd_bonus ?? 0
-                )}
+              <div className="space-y-3 mb-4">
+                {renderStatRow("HP", stats.hp, selectedDigimon.hp_bonus)}
+                {renderStatRow("SP", stats.sp, selectedDigimon.sp_bonus)}
+                {renderStatRow("ATK", stats.atk, selectedDigimon.atk_bonus)}
+                {renderStatRow("DEF", stats.def, selectedDigimon.def_bonus)}
+                {renderStatRow("INT", stats.int, selectedDigimon.int_bonus)}
+                {renderStatRow("SPD", stats.spd, selectedDigimon.spd_bonus)}
               </div>
               
               {/* Evolution Options - Only show for the current user's Digimon */}
@@ -765,24 +713,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                                   <p className="text-xs text-gray-500">
                                     {discovered ? option.stage : "Unknown"}
                                   </p>
-                                  {/* <p className={`text-xs ${meetsLevelRequirement ? "text-green-600" : "text-red-600"}`}>
-                                    Lv. {option.level_required}
-                                  </p> */}
                                 </div>
-                                
-                                {/* Add stat requirements display */}
-                                {/* {statRequirementsList.length > 0 && (
-                                  <div className="mt-1 grid grid-cols-2 gap-x-2 gap-y-1">
-                                    {statRequirementsList.map(stat => (
-                                      <div key={stat.name} className="flex justify-between text-xs">
-                                        <span>{stat.name}:</span>
-                                        <span className={stat.meets ? "text-green-600" : "text-red-600"}>
-                                          {stat.current}/{stat.required}
-                                        </span>
-                                      </div>
-                                    ))}
-                                  </div>
-                                )} */}
                               </div>
                             </div>
                           </div>
@@ -809,7 +740,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                 onSetActive(selectedDigimon.id);
                 onClose();
               }}
-              className="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
+              className="flex-1 bg-indigo-100 text-indigo-800 rounded hover:bg-indigo-200 py-2 px-4"
             >
               Set Active
             </button>
@@ -829,7 +760,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                 onRelease(selectedDigimon.id);
                 onClose();
               }}
-              className="flex-1 border border-red-500 bg-red-500 text-white hover:bg-red-600 py-2 px-4 rounded"
+              className="flex-1 bg-indigo-100 text-indigo-800 rounded hover:bg-indigo-200 py-2 px-4"
             >
               Release
             </button>
@@ -842,7 +773,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                 e.stopPropagation(); // Prevent event bubbling
                 onShowEvolution(selectedDigimon.id);
               }}
-              className="flex-1 bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded"
+              className="flex-1 bg-indigo-100 text-indigo-800 rounded hover:bg-indigo-200 py-2 px-4"
             >
               Digivolve
             </button>
