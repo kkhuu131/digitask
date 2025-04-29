@@ -86,18 +86,15 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
 
   // Function to allocate a stat point
   const allocateStat = async (statType: StatType) => {
-    // Check for both uppercase and lowercase keys
-    const upperType = statType.toUpperCase() as StatType;
-    const lowerType = statType.toLowerCase() as StatType;
-    
-    // Get the stat value regardless of case
-    const statValue = savedStats[upperType] || savedStats[lowerType] || 0;
-    
-    if (statValue <= 0 || allocating || !selectedDigimon) return;
+    // Get the available stat points for this type
+    const upperType = statType.toUpperCase();
+    const availablePoints = savedStats[upperType] || 0;
+
+    if (availablePoints <= 0 || allocating || !selectedDigimon) return;
     
     try {
       setAllocating(true);
-      
+
       // Get current user
       const { data: userData } = await supabase.auth.getUser();
       if (!userData.user) {
@@ -105,53 +102,54 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
         return;
       }
       
-      // Make a copy of the current digimon for UI updates
-      const currentDigimon = { ...selectedDigimon };
+      // Calculate the new bonus value
+      const statField = `${statType.toLowerCase()}_bonus`;
+      const currentBonus = (selectedDigimon as any)[statField] || 0;
+      const newBonus = currentBonus + 1;
+
+      // Optimistically update local state first
+      const updatedDigimon = {
+        ...selectedDigimon,
+        [statField]: newBonus
+      };
       
-      // Call the RPC function - use the same case as in the database (uppercase for keys, lowercase for field names)
-      const { data, error } = await supabase.rpc('allocate_stat', {
+      // Update parent component immediately
+      if (onNameChange) {
+        onNameChange(updatedDigimon);
+      }
+
+      // Then perform the database update
+      const { error } = await supabase.rpc('allocate_stat', {
         p_digimon_id: selectedDigimon.id,
-        p_stat_type: upperType, // Keep uppercase for the saved_stats keys
+        p_stat_type: upperType,
         p_user_id: userData.user.id
       });
-      
-      if (error) throw error;
-      
-      if (!data) {
-        throw new Error("Failed to allocate stat - no stats available");
+
+      if (error) {
+        // If error, revert the optimistic update
+        if (onNameChange) {
+          onNameChange(selectedDigimon);
+        }
+        throw error;
       }
+
+      // Update the global store state
+      useDigimonStore.getState().updateDigimonInStore(updatedDigimon);
       
-      // Refresh saved stats
-      const { data: profileData, error: profileError } = await supabase
+      // Update saved stats in profile
+      const { data: profileData } = await supabase
         .from("profiles")
         .select("saved_stats")
         .eq("id", userData.user.id)
         .single();
-        
-      if (profileError) throw profileError;
-      
-      // Update local saved stats
+
       const newSavedStats = profileData?.saved_stats || {
         HP: 0, SP: 0, ATK: 0, DEF: 0, INT: 0, SPD: 0
       };
       setSavedStats(newSavedStats);
       localStorage.setItem("savedStats", JSON.stringify(newSavedStats));
       
-      // Update the local digimon object with the new stat - use lowercase for field names
-      const statField = `${lowerType}_bonus`;
-      const currentBonus = (currentDigimon as any)[statField] || 0;
-      const updatedDigimon = {
-        ...currentDigimon,
-        [statField]: currentBonus + 1
-      };
-      
-      // Notify the parent component about the change
-      if (onNameChange) {
-        onNameChange(updatedDigimon);
-      }
-      
-      // Update the pet store's userDailyStatGains
-      useDigimonStore.getState().fetchUserDailyStatGains();
+      await useDigimonStore.getState().fetchUserDailyStatGains();
       
       setAllocating(false);
     } catch (error) {

@@ -19,7 +19,7 @@ const UserDigimonPage = () => {
     error,
     discoveredDigimon,
     evolveDigimon,
-    devolveDigimon
+    devolveDigimon,
   } = useDigimonStore();
   const [switchingDigimon, setSwitchingDigimon] = useState(false);
   const [digimonToRelease, setDigimonToRelease] = useState<string | null>(null);
@@ -388,6 +388,11 @@ const UserDigimonPage = () => {
     setDevolutionError(null);
   };
 
+  const handleDigimonUpdate = (updatedDigimon: UserDigimon) => {
+    setSelectedDetailDigimon(updatedDigimon);
+
+  };
+
   if (loading && allUserDigimon.length === 0) {
     return (
       <div className="text-center py-12">
@@ -668,21 +673,7 @@ const UserDigimonPage = () => {
           onShowDevolution={(digimonId) => handleShowDevolutionModal(digimonId)}
           onRelease={handleReleaseClick}
           evolutionData={evolutionData}
-          onNameChange={(updatedDigimon) => {
-            // Update the local state immediately
-            setSelectedDetailDigimon(updatedDigimon);
-            
-            // This is a bit of a hack, but we can use this to force a re-render
-            // of the digimon cards
-            setTimeout(() => {
-              const cards = document.querySelectorAll(`.digimon-card-${updatedDigimon.id} .digimon-name`);
-              cards.forEach(card => {
-                if (card) {
-                  card.textContent = updatedDigimon.name || updatedDigimon.digimon?.name || '';
-                }
-              });
-            }, 0);
-          }}
+          onNameChange={handleDigimonUpdate}
           className="z-40" // Add a lower z-index
         />
       )}

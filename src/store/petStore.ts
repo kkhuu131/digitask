@@ -145,6 +145,7 @@ export interface PetState {
     digimonId: string,
     newName: string
   ) => Promise<{ success: boolean; error?: string }>;
+  updateDigimonInStore: (updatedDigimon: UserDigimon) => void;
 }
 
 export const useDigimonStore = create<PetState>((set, get) => ({
@@ -1581,5 +1582,17 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       set({ error: (error as Error).message });
       return { success: false, error: (error as Error).message };
     }
+  },
+
+  updateDigimonInStore: (updatedDigimon: UserDigimon) => {
+    set((state) => ({
+      allUserDigimon: state.allUserDigimon.map((d) =>
+        d.id === updatedDigimon.id ? updatedDigimon : d
+      ),
+      userDigimon:
+        state.userDigimon?.id === updatedDigimon.id
+          ? updatedDigimon
+          : state.userDigimon,
+    }));
   },
 }));
