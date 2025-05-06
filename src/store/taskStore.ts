@@ -196,6 +196,8 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     }
   },
 
+  // Rookie: 5, Champion 10, Ultimate: 20, Mega: 50
+
   completeTask: async (taskId: string, autoAllocate = true) => {
     try {
       set({ loading: true, error: null });
@@ -246,6 +248,9 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       const reserveExp = await useDigimonStore
         .getState()
         .feedMultipleDigimon(expPoints);
+
+      // Dispatch event to notify components that a task was completed
+      window.dispatchEvent(new Event("task-completed"));
 
       // Check if we've reached the daily stat cap
       const { canGain, remaining } = await useDigimonStore

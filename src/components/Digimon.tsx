@@ -403,7 +403,7 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
             setShowDetailModal(true);
           }}
         >
-          <motion.img 
+          <motion.img
             src={digimonData.sprite_url} 
             alt={digimonData.name} 
             className="w-auto h-auto cursor-pointer"

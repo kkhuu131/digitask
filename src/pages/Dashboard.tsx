@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDigimonStore } from "../store/petStore";
 import { useTaskStore } from "../store/taskStore";
 import Digimon from "../components/Digimon";
@@ -12,10 +12,27 @@ const Dashboard: React.FC = () => {
   const { fetchTasks, dailyQuota, error: taskError, getExpMultiplier } = useTaskStore();
   const navigate = useNavigate();
   
+  // Add state to force re-render when tasks are completed
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  
   useEffect(() => {
     fetchUserDigimon();
     fetchTasks();
   }, [fetchUserDigimon, fetchTasks]);
+  
+  // Add listener for task completion to refresh Digimon data
+  useEffect(() => {
+    const handleTaskComplete = () => {
+      fetchUserDigimon();
+      setRefreshTrigger(prev => prev + 1);
+    };
+    
+    window.addEventListener('task-completed', handleTaskComplete);
+    
+    return () => {
+      window.removeEventListener('task-completed', handleTaskComplete);
+    };
+  }, [fetchUserDigimon]);
   
   useEffect(() => {
     const checkUserDigimon = async () => {
@@ -82,7 +99,8 @@ const Dashboard: React.FC = () => {
         <Digimon 
           userDigimon={userDigimon} 
           digimonData={digimonData} 
-          evolutionOptions={evolutionOptions} 
+          evolutionOptions={evolutionOptions}
+          key={`digimon-${refreshTrigger}`} // Add key to force re-render
         />
         <div className="card my-6">
           <div className="flex justify-between items-center mb-2">

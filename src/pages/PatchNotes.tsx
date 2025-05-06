@@ -12,6 +12,18 @@ const PatchNotes = () => {
           <div className="mb-6">
             <div className="flex items-center mb-2">
               <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
+              <h3 className="text-lg font-medium ml-2">ABI Rewards, Bug Fixes</h3>
+              <span className="text-sm text-gray-500 ml-auto">May 6, 2025</span>
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+              <li>Digimon created before the update recieved ABI depending on their stage. Rookie: 5, Champion: 8, Ultimate: 15, Mega: 20</li>
+              <li>Fixed bug where Digimon did not recieve happiness from tasks</li>
+              <li>Fixed bug where Digimon on Dashboard was not visually updated when task was completed</li>
+              <li>Thank you for the suggestions, please continue to send in any feedback!</li>
+            </ul>
+          </div>
+          <div className="mb-6">
+            <div className="flex items-center mb-2">
               <h3 className="text-lg font-medium ml-2">ABI System</h3>
               <span className="text-sm text-gray-500 ml-auto">May 5, 2025</span>
             </div>
