@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { EvolutionOption, UserDigimon, expToBoostPoints } from "../store/petStore";
 import calculateBaseStat from "../utils/digimonStatCalculation";
+import EvolutionAnimation from "./EvolutionAnimation";
 
 interface DigimonEvolutionModalProps {
   isOpen: boolean;
@@ -23,7 +24,45 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
   error,
   isDiscovered,
 }) => {
+  // Add state for animation
+  const [showAnimation, setShowAnimation] = useState(false);
+  const [evolutionTarget, setEvolutionTarget] = useState<EvolutionOption | null>(null);
+
   if (!isOpen) return null;
+
+  // Handle the evolution process
+  const handleEvolve = (toDigimonId: number) => {
+    const target = options.find(option => option.digimon_id === toDigimonId);
+    if (target) {
+      setEvolutionTarget(target);
+      setShowAnimation(true);
+    } else {
+      onEvolve(toDigimonId);
+    }
+  };
+
+  // Handle animation completion
+  const handleAnimationComplete = () => {
+    if (evolutionTarget) {
+      onEvolve(evolutionTarget.digimon_id);
+    }
+    setShowAnimation(false);
+    setEvolutionTarget(null);
+  };
+
+  // If showing animation, render that instead of the modal content
+  if (showAnimation && evolutionTarget) {
+    return (
+      <div className="fixed inset-0 z-50">
+        <EvolutionAnimation
+          oldSpriteUrl={selectedDigimon.digimon?.sprite_url || ''}
+          newSpriteUrl={evolutionTarget.sprite_url}
+          onComplete={handleAnimationComplete}
+          isDevolution={isDevolution}
+        />
+      </div>
+    );
+  }
 
   const modalTitle = isDevolution ? "De-Digivolution Options" : "Evolution Options";
   const actionText = isDevolution ? "Devolving" : "Evolving";
@@ -212,7 +251,7 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
                       ? "hover:shadow-md cursor-pointer opacity-100" 
                       : "opacity-60 bg-gray-100"
                   }`}
-                  onClick={() => canProceed && onEvolve(option.digimon_id)}
+                  onClick={() => canProceed && handleEvolve(option.digimon_id)}
                 >
                   <img
                     src={option.sprite_url}
