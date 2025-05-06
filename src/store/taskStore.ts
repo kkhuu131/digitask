@@ -239,8 +239,13 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         loading: false,
       }));
 
-      // Always feed the Digimon regardless of stat allocation preference
-      await useDigimonStore.getState().feedDigimon(getExpPoints(task));
+      // Replace the feedDigimon call with feedMultipleDigimon
+      const expPoints = Math.round(
+        getExpPoints(task) * get().getExpMultiplier()
+      );
+      const reserveExp = await useDigimonStore
+        .getState()
+        .feedMultipleDigimon(expPoints);
 
       // Check if we've reached the daily stat cap
       const { canGain, remaining } = await useDigimonStore
@@ -299,7 +304,11 @@ export const useTaskStore = create<TaskState>((set, get) => ({
           useDigimonStore.getState().fetchUserDailyStatGains();
 
           useNotificationStore.getState().addNotification({
-            message: `Completed "${task.description}"! \n Digimon gained ${adjustedBoostValue} ${task.category}!`,
+            message: `Completed "${task.description}"! \n${
+              useDigimonStore.getState().userDigimon?.name || "Active Digimon"
+            } gained ${expPoints} exp and ${adjustedBoostValue} ${
+              task.category
+            }!\nReserve Digimon gained ${reserveExp} exp!`,
             type: "success",
           });
         } else {
@@ -354,19 +363,29 @@ export const useTaskStore = create<TaskState>((set, get) => ({
 
           if (autoAllocate) {
             useNotificationStore.getState().addNotification({
-              message: `Completed "${task.description}"!\n Digimon has reached its stat cap, ${adjustedBoostValue} ${task.category} points were saved!`,
+              message: `Digimon has reached its stat cap, ${adjustedBoostValue} ${
+                task.category
+              } points were saved!\n${
+                useDigimonStore.getState().userDigimon?.name || "Active Digimon"
+              } gained ${expPoints} exp!\nReserve Digimon gained ${reserveExp} exp!`,
               type: "success",
             });
           } else {
             useNotificationStore.getState().addNotification({
-              message: `Completed "${task.description}"!\n ${adjustedBoostValue} ${task.category} saved for later!`,
+              message: `${adjustedBoostValue} ${
+                task.category
+              } saved for later!\n${
+                useDigimonStore.getState().userDigimon?.name || "Active Digimon"
+              } gained ${expPoints} exp!\nReserve Digimon gained ${reserveExp} exp!`,
               type: "success",
             });
           }
         }
       } else {
         useNotificationStore.getState().addNotification({
-          message: `Completed "${task.description}"!`,
+          message: `${
+            useDigimonStore.getState().userDigimon?.name || "Active Digimon"
+          } gained ${expPoints} exp!\nReserve Digimon gained ${reserveExp} exp!`,
           type: "success",
         });
       }

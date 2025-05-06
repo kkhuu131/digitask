@@ -6,6 +6,7 @@ import { useTaskStore } from './store/taskStore';
 import { supabase } from './lib/supabase';
 import NotificationCenter from './components/NotificationCenter';
 import 'reactflow/dist/style.css';
+import UpdateNotification from './components/UpdateNotification';
 
 // Pages
 import Login from './pages/Login';
@@ -470,6 +471,7 @@ function App() {
       </Routes>
       
       <NotificationCenter />
+      <UpdateNotification />
     </Router>
   );
 }

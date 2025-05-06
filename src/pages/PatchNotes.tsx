@@ -28,6 +28,7 @@ const PatchNotes = () => {
                 </ul>
               </li>
               <li>ABI is also used as a stat requirement for some evolutions.</li>
+              <li>Tasks now give all reserve Digimon 50% of the experience. (ex. active Digimon gets 100 exp, all reserve Digimon get 50 exp)</li>
               <li>The balancing of this system is still being tested, so expect changes in the future and give feedback if you have any suggestions.</li>
             </ul>
           </div>

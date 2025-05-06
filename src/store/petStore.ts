@@ -5,6 +5,8 @@ import { useTaskStore } from "./taskStore";
 import { StatCategory } from "../utils/categoryDetection";
 import calculateBaseStat from "../utils/digimonStatCalculation";
 
+export const NON_ACTIVE_DIGIMON_EXP_MULTIPLIER = 0.5;
+
 export function expToBoostPoints(level: number, evolution: boolean = true) {
   if (evolution) {
     return Math.floor(level / 10) + 1;
@@ -170,6 +172,7 @@ export interface PetState {
   devolutionPathsCache: Record<number, EvolutionOption[]>;
   fetchEvolutionOptions: (digimonId: number) => Promise<EvolutionOption[]>;
   fetchDevolutionOptions: (digimonId: number) => Promise<EvolutionOption[]>;
+  feedMultipleDigimon: (baseExp: number) => Promise<number>;
 }
 
 export const useDigimonStore = create<PetState>((set, get) => ({
@@ -1709,6 +1712,32 @@ export const useDigimonStore = create<PetState>((set, get) => ({
     } catch (error) {
       console.error("Error fetching devolution options:", error);
       return [];
+    }
+  },
+
+  feedMultipleDigimon: async (baseExp: number) => {
+    try {
+      const { userDigimon } = get();
+      if (!userDigimon) throw new Error("No active Digimon found");
+
+      // Call the database function to update all Digimon exp
+      const { error } = await supabase.rpc("update_digimon_exp", {
+        p_active_digimon_id: userDigimon.id,
+        p_base_exp: baseExp,
+        p_non_active_multiplier: NON_ACTIVE_DIGIMON_EXP_MULTIPLIER,
+      });
+
+      if (error) throw error;
+
+      // Fetch updated data and check for level ups
+      await get().fetchAllUserDigimon();
+      await get().checkLevelUp();
+
+      // Return exp gained by reserve Digimon for notification
+      return Math.floor(baseExp * NON_ACTIVE_DIGIMON_EXP_MULTIPLIER);
+    } catch (error) {
+      console.error("Error feeding multiple Digimon:", error);
+      throw error;
     }
   },
 }));
