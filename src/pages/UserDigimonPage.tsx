@@ -4,7 +4,8 @@ import MilestoneProgress from "../components/MilestoneProgress"
 import { supabase } from "../lib/supabase";
 import DigimonDetailModal from "../components/DigimonDetailModal";
 import { motion } from "framer-motion";
-import statModifier, { DigimonType, DigimonAttribute } from "../store/battleStore";
+import calculateBaseStat from "../utils/digimonStatCalculation";
+import { DigimonType, DigimonAttribute } from "../store/battleStore";
 import TypeAttributeIcon from '../components/TypeAttributeIcon';
 import EvolutionAnimation from "../components/EvolutionAnimation";
 
@@ -444,7 +445,7 @@ const UserDigimonPage = () => {
           >
             <h3 className="text-xl font-bold mb-4">Evolution Options</h3>
             <div className="text-md text-gray-500 mb-4">
-              Evolving will<b className="text-red-500"> reset your Digimon level back to 1</b> and give {expToBoostPoints(selectedDetailDigimon.current_level, selectedDetailDigimon.experience_points, true)} bonus points to all stats.
+              Evolving will<b className="text-red-500"> reset your Digimon level back to 1</b> and give {expToBoostPoints(selectedDetailDigimon.current_level, true)} ABI.
             </div>
             {evolutionError && (
               <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
@@ -456,42 +457,42 @@ const UserDigimonPage = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
               {(evolutionData[selectedDetailDigimon.digimon_id] || []).map((option) => {
                 // Calculate base stats for current level
-                const baseHP = statModifier(
+                const baseHP = calculateBaseStat(
                   selectedDetailDigimon.current_level,
                   selectedDetailDigimon.digimon?.hp_level1 || 0,
                   selectedDetailDigimon.digimon?.hp || 0,
                   selectedDetailDigimon.digimon?.hp_level99 || 0
                 );
                 
-                const baseSP = statModifier(
+                const baseSP = calculateBaseStat(
                   selectedDetailDigimon.current_level,
                   selectedDetailDigimon.digimon?.sp_level1 || 0,
                   selectedDetailDigimon.digimon?.sp || 0,
                   selectedDetailDigimon.digimon?.sp_level99 || 0
                 );
                 
-                const baseATK = statModifier(
+                const baseATK = calculateBaseStat(
                   selectedDetailDigimon.current_level,
                   selectedDetailDigimon.digimon?.atk_level1 || 0,
                   selectedDetailDigimon.digimon?.atk || 0,
                   selectedDetailDigimon.digimon?.atk_level99 || 0
                 );
                 
-                const baseDEF = statModifier(
+                const baseDEF = calculateBaseStat(
                   selectedDetailDigimon.current_level,
                   selectedDetailDigimon.digimon?.def_level1 || 0,
                   selectedDetailDigimon.digimon?.def || 0,
                   selectedDetailDigimon.digimon?.def_level99 || 0
                 );
                 
-                const baseINT = statModifier(
+                const baseINT = calculateBaseStat(
                   selectedDetailDigimon.current_level,
                   selectedDetailDigimon.digimon?.int_level1 || 0,
                   selectedDetailDigimon.digimon?.int || 0,
                   selectedDetailDigimon.digimon?.int_level99 || 0
                 );
                 
-                const baseSPD = statModifier(
+                const baseSPD = calculateBaseStat(
                   selectedDetailDigimon.current_level,
                   selectedDetailDigimon.digimon?.spd_level1 || 0,
                   selectedDetailDigimon.digimon?.spd || 0,
@@ -672,7 +673,6 @@ const UserDigimonPage = () => {
           }}
           onShowDevolution={(digimonId) => handleShowDevolutionModal(digimonId)}
           onRelease={handleReleaseClick}
-          evolutionData={evolutionData}
           onNameChange={handleDigimonUpdate}
           className="z-40" // Add a lower z-index
         />
@@ -690,7 +690,7 @@ const UserDigimonPage = () => {
           >
             <h3 className="text-xl font-bold mb-4">De-Digivolution Options</h3>
             <div className="text-md text-gray-500 mb-4">
-              Devolving will<b className="text-red-500"> reset your Digimon level back to 1</b> and give {expToBoostPoints(selectedDetailDigimon?.current_level || 1, selectedDetailDigimon?.experience_points || 0, false)} bonus points to all stats.
+              Devolving will<b className="text-red-500"> reset your Digimon level back to 1</b> and give {expToBoostPoints(selectedDetailDigimon?.current_level || 1, false)} ABI.
             </div>
             {devolutionError && (
               <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">

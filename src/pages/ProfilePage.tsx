@@ -4,7 +4,7 @@ import { useAuthStore } from "../store/authStore";
 import { useDigimonStore, UserDigimon } from "../store/petStore";
 import { supabase } from "../lib/supabase";
 import { motion } from "framer-motion";
-import statModifier from "../store/battleStore";
+import calculateBaseStat from "../utils/digimonStatCalculation";
 import DigimonDetailModal from "../components/DigimonDetailModal";
 import AvatarSelectionModal from "../components/AvatarSelectionModal";
 import ReportButton from '../components/ReportButton';
@@ -349,7 +349,7 @@ const ProfilePage = () => {
                     <div className="flex justify-between">
                       <span className="font-medium text-red-700">HP</span>
                       <span>
-                        {Math.round(statModifier(
+                        {Math.round(calculateBaseStat(
                           favoriteDigimon.current_level,
                           favoriteDigimon.digimon?.hp_level1 ?? 0,
                           favoriteDigimon.digimon?.hp ?? 0,
@@ -364,7 +364,7 @@ const ProfilePage = () => {
                     <div className="flex justify-between">
                       <span className="font-medium text-yellow-600">SP</span>
                       <span>
-                        {Math.round(statModifier(
+                        {Math.round(calculateBaseStat(
                           favoriteDigimon.current_level,
                           favoriteDigimon.digimon?.sp_level1 ?? 0,
                           favoriteDigimon.digimon?.sp ?? 0,
@@ -379,7 +379,7 @@ const ProfilePage = () => {
                     <div className="flex justify-between">
                       <span className="font-medium text-orange-600">ATK</span>
                       <span>
-                        {Math.round(statModifier(
+                        {Math.round(calculateBaseStat(
                           favoriteDigimon.current_level,
                           favoriteDigimon.digimon?.atk_level1 ?? 0,
                           favoriteDigimon.digimon?.atk ?? 0,
@@ -394,7 +394,7 @@ const ProfilePage = () => {
                     <div className="flex justify-between">
                       <span className="font-medium text-blue-600">DEF</span>
                       <span>
-                        {Math.round(statModifier(
+                        {Math.round(calculateBaseStat(
                           favoriteDigimon.current_level,
                           favoriteDigimon.digimon?.def_level1 ?? 0,
                           favoriteDigimon.digimon?.def ?? 0,
@@ -409,7 +409,7 @@ const ProfilePage = () => {
                     <div className="flex justify-between">
                       <span className="font-medium text-purple-600">INT</span>
                       <span>
-                        {Math.round(statModifier(
+                        {Math.round(calculateBaseStat(
                           favoriteDigimon.current_level,
                           favoriteDigimon.digimon?.int_level1 ?? 0,
                           favoriteDigimon.digimon?.int ?? 0,
@@ -424,7 +424,7 @@ const ProfilePage = () => {
                     <div className="flex justify-between">
                       <span className="font-medium text-green-600">SPD</span>
                       <span>
-                        {Math.round(statModifier(
+                        {Math.round(calculateBaseStat(
                           favoriteDigimon.current_level,
                           favoriteDigimon.digimon?.spd_level1 ?? 0,
                           favoriteDigimon.digimon?.spd ?? 0,

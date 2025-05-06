@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Task, useTaskStore } from "../store/taskStore";
+import { getExpPoints, getStatPoints, Task, useTaskStore } from "../store/taskStore";
 import Select from 'react-select';
 import { 
   StatCategory, 
@@ -166,6 +166,18 @@ const TaskForm = () => {
     }
   };
   
+  const getTaskPreview = (): Partial<Task> => {
+    return {
+      description: description.trim(),
+      notes: notes.trim() || null,
+      category: category || detectedCategory,
+      is_daily: taskType === "daily",
+      recurring_days: taskType === "recurring" ? recurringDays : null,
+      due_date: taskType === "one-time" && dueDate ? 
+        new Date(`${dueDate}T${dueTime}`).toISOString() : null
+    };
+  };
+
   return (
     <form onSubmit={handleSubmit} className="card mb-6">
       <h2 className="text-lg font-semibold mb-4">Add New Task</h2>
@@ -321,7 +333,13 @@ const TaskForm = () => {
           </div>
         </div>
       )}
-      
+
+      {/* Add a section showing how many exp points and stat points the task will give */}
+      <div className="mb-4">
+        <p className="text-sm text-gray-700">
+          This task will give you {getExpPoints(getTaskPreview() as Task)} exp points and {getStatPoints(getTaskPreview() as Task)} stat points.
+        </p>
+      </div>
       <div className="flex justify-end">
         <button
           type="submit"

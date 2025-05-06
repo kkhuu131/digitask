@@ -3,21 +3,39 @@ import { supabase } from "../lib/supabase";
 import { useNotificationStore } from "./notificationStore";
 import { useTaskStore } from "./taskStore";
 import { StatCategory } from "../utils/categoryDetection";
-import statModifier from "./battleStore";
+import calculateBaseStat from "../utils/digimonStatCalculation";
 
-export function expToBoostPoints(
-  level: number,
-  experience: number,
-  evolution: boolean = true
-) {
-  const totalEXP = (20 * (level * (level - 1))) / 2 + experience;
-
+export function expToBoostPoints(level: number, evolution: boolean = true) {
   if (evolution) {
-    return Math.floor(totalEXP / 1500);
+    return Math.floor(level / 10) + 1;
   } else {
-    return Math.floor(totalEXP / 1000);
+    return Math.floor(level / 5) + 1;
   }
 }
+
+export function calculateBonusStatCap(abi: number) {
+  return 50 + Math.floor(abi / 2);
+}
+
+export function getTotalBonusStats(userDigimon: UserDigimon) {
+  return (
+    userDigimon.hp_bonus +
+    userDigimon.sp_bonus +
+    userDigimon.atk_bonus +
+    userDigimon.def_bonus +
+    userDigimon.int_bonus +
+    userDigimon.spd_bonus
+  );
+}
+
+export function isUnderStatCap(userDigimon: UserDigimon | null) {
+  if (!userDigimon) return false;
+  const cap = calculateBonusStatCap(userDigimon.abi);
+  const totalStat = getTotalBonusStats(userDigimon);
+  return totalStat < cap;
+}
+
+export type StatType = "HP" | "SP" | "ATK" | "DEF" | "INT" | "SPD" | "ABI";
 
 export interface UserDigimon {
   id: string;
@@ -38,6 +56,7 @@ export interface UserDigimon {
   def_bonus: number;
   int_bonus: number;
   spd_bonus: number;
+  abi: number;
   daily_stat_gains: number;
   last_stat_reset: string;
   personality?: string;
@@ -86,6 +105,7 @@ export interface EvolutionOption {
     def?: number;
     int?: number;
     spd?: number;
+    abi?: number;
   };
 }
 
@@ -146,6 +166,10 @@ export interface PetState {
     newName: string
   ) => Promise<{ success: boolean; error?: string }>;
   updateDigimonInStore: (updatedDigimon: UserDigimon) => void;
+  evolutionPathsCache: Record<number, EvolutionOption[]>;
+  devolutionPathsCache: Record<number, EvolutionOption[]>;
+  fetchEvolutionOptions: (digimonId: number) => Promise<EvolutionOption[]>;
+  fetchDevolutionOptions: (digimonId: number) => Promise<EvolutionOption[]>;
 }
 
 export const useDigimonStore = create<PetState>((set, get) => ({
@@ -157,6 +181,8 @@ export const useDigimonStore = create<PetState>((set, get) => ({
   loading: false,
   error: null,
   userDailyStatGains: 0,
+  evolutionPathsCache: {},
+  devolutionPathsCache: {},
 
   fetchDiscoveredDigimon: async () => {
     try {
@@ -617,42 +643,42 @@ export const useDigimonStore = create<PetState>((set, get) => ({
           const statReqs = path.stat_requirements;
 
           // Calculate base stats for current level
-          const baseHP = statModifier(
+          const baseHP = calculateBaseStat(
             userDigimon.current_level,
             userDigimon.digimon?.hp_level1 || 0,
             userDigimon.digimon?.hp || 0,
             userDigimon.digimon?.hp_level99 || 0
           );
 
-          const baseSP = statModifier(
+          const baseSP = calculateBaseStat(
             userDigimon.current_level,
             userDigimon.digimon?.sp_level1 || 0,
             userDigimon.digimon?.sp || 0,
             userDigimon.digimon?.sp_level99 || 0
           );
 
-          const baseATK = statModifier(
+          const baseATK = calculateBaseStat(
             userDigimon.current_level,
             userDigimon.digimon?.atk_level1 || 0,
             userDigimon.digimon?.atk || 0,
             userDigimon.digimon?.atk_level99 || 0
           );
 
-          const baseDEF = statModifier(
+          const baseDEF = calculateBaseStat(
             userDigimon.current_level,
             userDigimon.digimon?.def_level1 || 0,
             userDigimon.digimon?.def || 0,
             userDigimon.digimon?.def_level99 || 0
           );
 
-          const baseINT = statModifier(
+          const baseINT = calculateBaseStat(
             userDigimon.current_level,
             userDigimon.digimon?.int_level1 || 0,
             userDigimon.digimon?.int || 0,
             userDigimon.digimon?.int_level99 || 0
           );
 
-          const baseSPD = statModifier(
+          const baseSPD = calculateBaseStat(
             userDigimon.current_level,
             userDigimon.digimon?.spd_level1 || 0,
             userDigimon.digimon?.spd || 0,
@@ -694,6 +720,10 @@ export const useDigimonStore = create<PetState>((set, get) => ({
             statReqs.spd &&
             baseSPD + (userDigimon.spd_bonus || 0) < statReqs.spd
           ) {
+            meetsStatRequirements = false;
+          }
+
+          if (statReqs.abi && (userDigimon.abi || 0) < statReqs.abi) {
             meetsStatRequirements = false;
           }
         }
@@ -765,42 +795,42 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         const statErrors = [];
 
         // Calculate base stats for current level
-        const baseHP = statModifier(
+        const baseHP = calculateBaseStat(
           digimonToEvolve.current_level,
           digimonToEvolve.digimon?.hp_level1 || 0,
           digimonToEvolve.digimon?.hp || 0,
           digimonToEvolve.digimon?.hp_level99 || 0
         );
 
-        const baseSP = statModifier(
+        const baseSP = calculateBaseStat(
           digimonToEvolve.current_level,
           digimonToEvolve.digimon?.sp_level1 || 0,
           digimonToEvolve.digimon?.sp || 0,
           digimonToEvolve.digimon?.sp_level99 || 0
         );
 
-        const baseATK = statModifier(
+        const baseATK = calculateBaseStat(
           digimonToEvolve.current_level,
           digimonToEvolve.digimon?.atk_level1 || 0,
           digimonToEvolve.digimon?.atk || 0,
           digimonToEvolve.digimon?.atk_level99 || 0
         );
 
-        const baseDEF = statModifier(
+        const baseDEF = calculateBaseStat(
           digimonToEvolve.current_level,
           digimonToEvolve.digimon?.def_level1 || 0,
           digimonToEvolve.digimon?.def || 0,
           digimonToEvolve.digimon?.def_level99 || 0
         );
 
-        const baseINT = statModifier(
+        const baseINT = calculateBaseStat(
           digimonToEvolve.current_level,
           digimonToEvolve.digimon?.int_level1 || 0,
           digimonToEvolve.digimon?.int || 0,
           digimonToEvolve.digimon?.int_level99 || 0
         );
 
-        const baseSPD = statModifier(
+        const baseSPD = calculateBaseStat(
           digimonToEvolve.current_level,
           digimonToEvolve.digimon?.spd_level1 || 0,
           digimonToEvolve.digimon?.spd || 0,
@@ -857,6 +887,10 @@ export const useDigimonStore = create<PetState>((set, get) => ({
           );
         }
 
+        if (statReqs.abi && (digimonToEvolve.abi || 0) < statReqs.abi) {
+          statErrors.push(`ABI: ${digimonToEvolve.abi || 0}/${statReqs.abi}`);
+        }
+
         if (statErrors.length > 0) {
           throw new Error(
             `Your Digimon doesn't meet the stat requirements: ${statErrors.join(
@@ -866,11 +900,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         }
       }
 
-      const boostPoints = expToBoostPoints(
-        digimonToEvolve.current_level,
-        digimonToEvolve.experience_points,
-        true
-      );
+      const boostPoints = expToBoostPoints(digimonToEvolve.current_level, true);
 
       const { error } = await supabase
         .from("user_digimon")
@@ -878,12 +908,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
           digimon_id: toDigimonId,
           current_level: 1,
           experience_points: 0,
-          hp_bonus: digimonToEvolve.hp_bonus + boostPoints,
-          sp_bonus: digimonToEvolve.sp_bonus + boostPoints,
-          atk_bonus: digimonToEvolve.atk_bonus + boostPoints,
-          def_bonus: digimonToEvolve.def_bonus + boostPoints,
-          int_bonus: digimonToEvolve.int_bonus + boostPoints,
-          spd_bonus: digimonToEvolve.spd_bonus + boostPoints,
+          abi: digimonToEvolve.abi + boostPoints,
         })
         .eq("id", digimonToEvolve.id);
 
@@ -962,7 +987,6 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
       const boostPoints = expToBoostPoints(
         digimonToDevolve.current_level,
-        digimonToDevolve.experience_points,
         false
       );
 
@@ -972,12 +996,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
           digimon_id: fromDigimonId,
           current_level: 1,
           experience_points: 0,
-          hp_bonus: digimonToDevolve.hp_bonus + boostPoints,
-          sp_bonus: digimonToDevolve.sp_bonus + boostPoints,
-          atk_bonus: digimonToDevolve.atk_bonus + boostPoints,
-          def_bonus: digimonToDevolve.def_bonus + boostPoints,
-          int_bonus: digimonToDevolve.int_bonus + boostPoints,
-          spd_bonus: digimonToDevolve.spd_bonus + boostPoints,
+          abi: digimonToDevolve.abi + boostPoints,
         })
         .eq("id", digimonToDevolve.id);
 
@@ -1485,7 +1504,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
   // Add a helper function to calculate the daily stat cap
   calculateDailyStatCap: () => {
     // Base cap of 2 + 2 per digimon owned
-    return 2 + 2 * get().allUserDigimon.length;
+    return 3 + 1 * get().allUserDigimon.length;
   },
 
   fetchUserDailyStatGains: async () => {
@@ -1594,5 +1613,102 @@ export const useDigimonStore = create<PetState>((set, get) => ({
           ? updatedDigimon
           : state.userDigimon,
     }));
+  },
+
+  fetchEvolutionOptions: async (digimonId: number) => {
+    // Check cache first
+    if (get().evolutionPathsCache[digimonId]) {
+      return get().evolutionPathsCache[digimonId];
+    }
+
+    try {
+      // Fetch evolution paths for this digimon
+      const { data: evolutionPaths, error } = await supabase
+        .from("evolution_paths")
+        .select(
+          `
+          id,
+          from_digimon_id,
+          to_digimon_id,
+          level_required,
+          stat_requirements,
+          digimon:to_digimon_id (id, digimon_id, name, stage, sprite_url)
+        `
+        )
+        .eq("from_digimon_id", digimonId);
+
+      if (error) throw error;
+
+      // Transform the data into EvolutionOption format
+      const options: EvolutionOption[] = evolutionPaths.map((path) => ({
+        id: path.id,
+        digimon_id: path.to_digimon_id,
+        name: (path.digimon as any).name,
+        stage: (path.digimon as any).stage,
+        sprite_url: (path.digimon as any).sprite_url,
+        level_required: path.level_required,
+        stat_requirements: path.stat_requirements || {},
+      }));
+
+      // Update cache
+      set((state) => ({
+        evolutionPathsCache: {
+          ...state.evolutionPathsCache,
+          [digimonId]: options,
+        },
+      }));
+
+      return options;
+    } catch (error) {
+      console.error("Error fetching evolution options:", error);
+      return [];
+    }
+  },
+
+  fetchDevolutionOptions: async (digimonId: number) => {
+    // Check cache first
+    if (get().devolutionPathsCache[digimonId]) {
+      return get().devolutionPathsCache[digimonId];
+    }
+
+    try {
+      // Fetch devolution paths for this digimon
+      const { data: devolutionPaths, error } = await supabase
+        .from("evolution_paths")
+        .select(
+          `
+          id,
+          to_digimon_id,
+          from_digimon_id,
+          digimon:from_digimon_id (id, digimon_id, name, stage, sprite_url)
+        `
+        )
+        .eq("to_digimon_id", digimonId);
+
+      if (error) throw error;
+
+      // Transform the data into EvolutionOption format
+      const options: EvolutionOption[] = devolutionPaths.map((path) => ({
+        id: path.id,
+        digimon_id: path.from_digimon_id,
+        name: (path.digimon as any).name,
+        stage: (path.digimon as any).stage,
+        sprite_url: (path.digimon as any).sprite_url,
+        level_required: 0, // Not applicable for devolution
+      }));
+
+      // Update cache
+      set((state) => ({
+        devolutionPathsCache: {
+          ...state.devolutionPathsCache,
+          [digimonId]: options,
+        },
+      }));
+
+      return options;
+    } catch (error) {
+      console.error("Error fetching devolution options:", error);
+      return [];
+    }
   },
 }));

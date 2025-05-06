@@ -3,13 +3,19 @@ import { supabase } from "../lib/supabase";
 import { useDigimonStore } from "./petStore";
 import { useNotificationStore } from "./notificationStore";
 
-// Constants for milestone requirements
-export const DAILY_QUOTA_MILESTONE = 3; // Complete daily quota 3 times
-export const TASKS_COMPLETED_MILESTONE = 10; // Complete 10 tasks
+export const ABI_MILESTONES = [5, 10, 25, 40, 60, 85, 115, 150, 200, 240, 300];
+
+export function getABIThreshold() {
+  const teamSize = useDigimonStore.getState().allUserDigimon.length;
+  return ABI_MILESTONES[teamSize - 1] || 999;
+}
+
+export function getABITotal() {
+  const allUserDigimon = useDigimonStore.getState().allUserDigimon;
+  return allUserDigimon.reduce((acc, digimon) => acc + digimon.abi, 0);
+}
 
 interface MilestoneState {
-  dailyQuotaStreak: number;
-  tasksCompletedCount: number;
   lastDigimonClaimedAt: string | null;
   loading: boolean;
   error: string | null;
@@ -17,19 +23,11 @@ interface MilestoneState {
 
   // Methods
   fetchMilestones: () => Promise<void>;
-  incrementDailyQuotaStreak: () => Promise<void>;
-  incrementTasksCompleted: (count?: number) => Promise<void>;
-  resetMilestoneProgress: (
-    type: "daily_quota" | "tasks_completed"
-  ) => Promise<void>;
   claimSelectedDigimon: (digimonId: number) => Promise<boolean>;
-  claimDigimon: () => Promise<boolean>;
   checkCanClaimDigimon: () => boolean;
 }
 
 export const useMilestoneStore = create<MilestoneState>((set, get) => ({
-  dailyQuotaStreak: 0,
-  tasksCompletedCount: 0,
   lastDigimonClaimedAt: null,
   loading: false,
   error: null,
@@ -38,53 +36,7 @@ export const useMilestoneStore = create<MilestoneState>((set, get) => ({
   fetchMilestones: async () => {
     try {
       set({ loading: true, error: null });
-
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) {
-        set({ loading: false });
-        return;
-      }
-
-      // Check if user has milestone data
-      const { data: milestoneData, error } = await supabase
-        .from("user_milestones")
-        .select("*")
-        .eq("user_id", userData.user.id)
-        .single();
-
-      if (error && error.code !== "PGRST116") {
-        throw error;
-      }
-
-      // If no milestone data exists, create it
-      if (!milestoneData) {
-        const { error: createError } = await supabase
-          .from("user_milestones")
-          .insert({
-            user_id: userData.user.id,
-            daily_quota_streak: 0,
-            tasks_completed_count: 0,
-          })
-          .select("*")
-          .single();
-
-        if (createError) throw createError;
-
-        set({
-          dailyQuotaStreak: 0,
-          tasksCompletedCount: 0,
-          lastDigimonClaimedAt: null,
-          loading: false,
-          canClaimDigimon: false,
-        });
-        return;
-      }
-
-      // Update state with milestone data
       set({
-        dailyQuotaStreak: milestoneData.daily_quota_streak,
-        tasksCompletedCount: milestoneData.tasks_completed_count,
-        lastDigimonClaimedAt: milestoneData.last_digimon_claimed_at,
         loading: false,
         canClaimDigimon: get().checkCanClaimDigimon(),
       });
@@ -94,136 +46,21 @@ export const useMilestoneStore = create<MilestoneState>((set, get) => ({
     }
   },
 
-  incrementDailyQuotaStreak: async () => {
-    try {
-      // Fetch the updated milestone data from the database
-      // The actual increment is now handled by the database trigger
-      await get().fetchMilestones();
-
-      // Check if milestone reached and show notification
-      if (
-        get().dailyQuotaStreak % DAILY_QUOTA_MILESTONE === 0 &&
-        get().dailyQuotaStreak > 0
-      ) {
-        useNotificationStore.getState().addNotification({
-          message: `You've completed your daily quota ${DAILY_QUOTA_MILESTONE} times! You can claim a new Digimon.`,
-          type: "success",
-          persistent: true,
-        });
-      }
-    } catch (error) {
-      console.error("Error updating daily quota streak:", error);
-    }
-  },
-
-  incrementTasksCompleted: async (count = 1) => {
-    try {
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) return;
-
-      const newCount = get().tasksCompletedCount + count;
-
-      // Update the count in the database
-      const { error } = await supabase
-        .from("user_milestones")
-        .update({
-          tasks_completed_count: newCount,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("user_id", userData.user.id);
-
-      if (error) throw error;
-
-      // Update local state
-      set({
-        tasksCompletedCount: newCount,
-        canClaimDigimon: get().checkCanClaimDigimon(),
-      });
-
-      // Check if milestone reached
-      if (
-        Math.floor(newCount / TASKS_COMPLETED_MILESTONE) >
-        Math.floor((newCount - count) / TASKS_COMPLETED_MILESTONE)
-      ) {
-        useNotificationStore.getState().addNotification({
-          message: `You've completed ${TASKS_COMPLETED_MILESTONE} tasks! You can claim a new Digimon.`,
-          type: "success",
-          persistent: true,
-        });
-      }
-    } catch (error) {
-      console.error("Error incrementing tasks completed:", error);
-    }
-  },
-
-  resetMilestoneProgress: async (type: "daily_quota" | "tasks_completed") => {
-    try {
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) return;
-
-      const updates =
-        type === "daily_quota"
-          ? {
-              daily_quota_streak:
-                get().dailyQuotaStreak - DAILY_QUOTA_MILESTONE,
-            }
-          : {
-              tasks_completed_count:
-                get().tasksCompletedCount - TASKS_COMPLETED_MILESTONE,
-            };
-
-      // Reset the progress in the database
-      const { error } = await supabase
-        .from("user_milestones")
-        .update({
-          ...updates,
-          last_digimon_claimed_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        })
-        .eq("user_id", userData.user.id);
-
-      if (error) throw error;
-
-      // Update local state
-      set(() => ({
-        ...(type === "daily_quota"
-          ? { dailyQuotaStreak: 0 }
-          : { tasksCompletedCount: 0 }),
-        lastDigimonClaimedAt: new Date().toISOString(),
-        canClaimDigimon: false,
-      }));
-    } catch (error) {
-      console.error(`Error resetting ${type} progress:`, error);
-    }
-  },
-
   claimSelectedDigimon: async (digimonId: number) => {
     try {
       set({ loading: true, error: null });
 
       // Check if user can claim a Digimon
-      if (!get().canClaimDigimon) {
+      if (!get().checkCanClaimDigimon()) {
         set({
           loading: false,
-          error: "You haven't reached a milestone to claim a Digimon yet.",
+          error:
+            "You haven't reached the ABI threshold to claim a Digimon yet.",
         });
         return false;
       }
 
-      // Validate the selected Digimon ID
-      const validStarters = [1, 2, 3, 4, 5];
-      const validNX = [337, 338, 339, 340, 341];
-      const validDigimonIds = [...validStarters, ...validNX];
-
-      if (!validDigimonIds.includes(digimonId)) {
-        set({
-          loading: false,
-          error: "Invalid Digimon selection.",
-        });
-        return false;
-      }
-
-      // Create the Digimon for the user (not active by default)
+      // Get current user
       const { data: userData } = await supabase.auth.getUser();
       if (!userData.user) {
         set({ loading: false, error: "User not authenticated." });
@@ -259,18 +96,6 @@ export const useMilestoneStore = create<MilestoneState>((set, get) => ({
 
       if (createError) throw createError;
 
-      // Determine which milestone was reached
-      const dailyQuotaReached = get().dailyQuotaStreak >= DAILY_QUOTA_MILESTONE;
-      const tasksReached =
-        get().tasksCompletedCount >= TASKS_COMPLETED_MILESTONE;
-
-      // Reset the appropriate milestone counter
-      if (dailyQuotaReached) {
-        await get().resetMilestoneProgress("daily_quota");
-      } else if (tasksReached) {
-        await get().resetMilestoneProgress("tasks_completed");
-      }
-
       // Refresh the user's Digimon list
       await useDigimonStore.getState().fetchAllUserDigimon();
 
@@ -289,36 +114,7 @@ export const useMilestoneStore = create<MilestoneState>((set, get) => ({
     }
   },
 
-  claimDigimon: async () => {
-    // This can now just call claimSelectedDigimon with a random selection
-    try {
-      // Get available starter Digimon
-      const starterDigimon = [1, 2, 3, 4, 5];
-      // NX Digimon id's 337-341
-      const NXDigimon = [337, 338, 339, 340, 341];
-
-      let selectedDigimon: number;
-
-      if (Math.random() < 0.03) {
-        const randomIndex = Math.floor(Math.random() * NXDigimon.length);
-        selectedDigimon = NXDigimon[randomIndex];
-      } else {
-        const randomIndex = Math.floor(Math.random() * starterDigimon.length);
-        selectedDigimon = starterDigimon[randomIndex];
-      }
-
-      return await get().claimSelectedDigimon(selectedDigimon);
-    } catch (error) {
-      console.error("Error in legacy claimDigimon:", error);
-      return false;
-    }
-  },
-
   checkCanClaimDigimon: () => {
-    const { dailyQuotaStreak, tasksCompletedCount } = get();
-    return (
-      dailyQuotaStreak >= DAILY_QUOTA_MILESTONE ||
-      tasksCompletedCount >= TASKS_COMPLETED_MILESTONE
-    );
+    return getABITotal() >= getABIThreshold();
   },
 }));

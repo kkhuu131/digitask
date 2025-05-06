@@ -12,6 +12,27 @@ const PatchNotes = () => {
           <div className="mb-6">
             <div className="flex items-center mb-2">
               <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
+              <h3 className="text-lg font-medium ml-2">ABI System</h3>
+              <span className="text-sm text-gray-500 ml-auto">May 5, 2025</span>
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+              <li>ABI (or Ability) is now a stat that can be increased by evolving or devolving Digimon.</li>
+              <li>ABI is used to calculate the cap of total bonus stats a Digimon can have (50 + ABI/2).</li>
+              <li>You will not be able to allocate bonus stats to a Digimon once it has reached or past its cap, auto allocation will instead save the stats.</li>
+              <li>Because of this new system, <b>tasks only give 1 bonus stat point</b>.</li>
+              <li>Evolving and devolving will now give ABI based on experience instead of bonus stats (flat 1 ABI with an additional ABI / 5 levels for devolution, ABI / 10 levels for evolution).</li>
+              <li>Reaching certain ABI thresholds will also give more Digimon, replacing task/daily quota milestones.</li>
+              <li>Depending on how many Digimon you have, thresholds to claim the next Digimon will be different.
+                <ul>
+                  <li>In order: 5, 10, 25, 40, 60, 85, 115, 150, 200, 240, 300</li>
+                </ul>
+              </li>
+              <li>ABI is also used as a stat requirement for some evolutions.</li>
+              <li>The balancing of this system is still being tested, so expect changes in the future and give feedback if you have any suggestions.</li>
+            </ul>
+          </div>
+          <div className="mb-6">
+            <div className="flex items-center mb-2">
               <h3 className="text-lg font-medium ml-2">Playground Mode and Personality System</h3>
               <span className="text-sm text-gray-500 ml-auto">April 26, 2025</span>
             </div>

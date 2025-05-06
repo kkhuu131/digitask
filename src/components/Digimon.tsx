@@ -2,7 +2,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useDigimonStore, UserDigimon, Digimon as DigimonType, EvolutionOption, expToBoostPoints } from "../store/petStore";
 import { useState, useEffect, useRef } from "react";
 import DigimonDetailModal from "./DigimonDetailModal";
-import statModifier, { DigimonAttribute, DigimonType as DigimonBattleType } from "../store/battleStore";
+import calculateBaseStat from "../utils/digimonStatCalculation";
+import { DigimonAttribute, DigimonType as DigimonBattleType } from "../store/battleStore";
 import TypeAttributeIcon from "./TypeAttributeIcon";
 import { supabase } from "../lib/supabase";
 import EvolutionAnimation from "./EvolutionAnimation";
@@ -239,13 +240,6 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
   
   // Function to handle releasing a Digimon
   const handleRelease = () => {
-    // Use userDigimon.id instead of the parameter
-    // Rest of the function...
-  };
-  
-  // Create an evolutionData object in the format expected by DigimonDetailModal
-  const evolutionData = {
-    [userDigimon.digimon_id]: evolutionOptions
   };
   
   // Add function to handle showing the devolution modal
@@ -522,7 +516,7 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
           >
             <h3 className="text-xl font-bold mb-2">Evolution Options</h3>
             <div className="text-md text-gray-500 mb-4">
-              Evolving will<b className="text-red-500"> reset your Digimon level back to 1</b> and give {expToBoostPoints(userDigimon.current_level, userDigimon.experience_points, true)} bonus points to all stats.
+              Evolving will<b className="text-red-500"> reset your Digimon level back to 1</b> and give {expToBoostPoints(userDigimon.current_level, true)} ABI.
             </div>
             
             {evolutionError && (
@@ -535,42 +529,42 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {evolutionOptions.map((option) => {
                   // Calculate base stats for current level
-                  const baseHP = statModifier(
+                  const baseHP = calculateBaseStat(
                     userDigimon.current_level,
                     userDigimon.digimon?.hp_level1 || 0,
                     userDigimon.digimon?.hp || 0,
                     userDigimon.digimon?.hp_level99 || 0
                   );
                   
-                  const baseSP = statModifier(
+                  const baseSP = calculateBaseStat(
                     userDigimon.current_level,
                     userDigimon.digimon?.sp_level1 || 0,
                     userDigimon.digimon?.sp || 0,
                     userDigimon.digimon?.sp_level99 || 0
                   );
                   
-                  const baseATK = statModifier(
+                  const baseATK = calculateBaseStat(
                     userDigimon.current_level,
                     userDigimon.digimon?.atk_level1 || 0,
                     userDigimon.digimon?.atk || 0,
                     userDigimon.digimon?.atk_level99 || 0
                   );
                   
-                  const baseDEF = statModifier(
+                  const baseDEF = calculateBaseStat(
                     userDigimon.current_level,
                     userDigimon.digimon?.def_level1 || 0,
                     userDigimon.digimon?.def || 0,
                     userDigimon.digimon?.def_level99 || 0
                   );
                   
-                  const baseINT = statModifier(
+                  const baseINT = calculateBaseStat(
                     userDigimon.current_level,
                     userDigimon.digimon?.int_level1 || 0,
                     userDigimon.digimon?.int || 0,
                     userDigimon.digimon?.int_level99 || 0
                   );
                   
-                  const baseSPD = statModifier(
+                  const baseSPD = calculateBaseStat(
                     userDigimon.current_level,
                     userDigimon.digimon?.spd_level1 || 0,
                     userDigimon.digimon?.spd || 0,
@@ -755,7 +749,6 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
           onShowEvolution={handleShowEvolutionModal}
           onShowDevolution={handleShowDevolutionModal}
           onRelease={handleRelease}
-          evolutionData={evolutionData}
           onNameChange={(updatedDigimon) => {
             // Update the local state immediately
             setCurrentDigimon(updatedDigimon);
@@ -785,7 +778,7 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
           >
             <h3 className="text-xl font-bold mb-2">De-Digivolution Options</h3>
             <div className="text-md text-gray-500 mb-4">
-              Devolving will<b className="text-red-500"> reset your Digimon level back to 1</b> and give {expToBoostPoints(userDigimon.current_level, userDigimon.experience_points, false)} bonus points to all stats.
+              Devolving will<b className="text-red-500"> reset your Digimon level back to 1</b> and give {expToBoostPoints(userDigimon.current_level, false)} ABI.
             </div>
             
             {devolutionOptions.length === 0 && (

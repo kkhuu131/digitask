@@ -196,6 +196,9 @@ async function scrapeEvolutionData(detailUrl, digimonId) {
           // Look for SPD: X
           const spdMatch = requiresText.match(/SPD\s*:?\s*(\d+)/i);
           if (spdMatch) statRequirements.spd = parseInt(spdMatch[1]);
+
+          const abiMatch = requiresText.match(/ABI\s*:?\s*(\d+)/i);
+          if (abiMatch) statRequirements.abi = parseInt(abiMatch[1]);
         }
 
         if (name && !isNaN(level)) {

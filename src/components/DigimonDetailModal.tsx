@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { UserDigimon, useDigimonStore } from "../store/petStore";
+import { EvolutionOption, UserDigimon, useDigimonStore } from "../store/petStore";
 import { motion, AnimatePresence } from "framer-motion";
-import statModifier, { DigimonAttribute, DigimonType, modifyStats } from "../store/battleStore";
+import calculateBaseStat, { calculateFinalStats } from "../utils/digimonStatCalculation";
+import { DigimonAttribute, DigimonType } from "../store/battleStore";
 import { supabase } from "../lib/supabase";
 import TypeAttributeIcon from "./TypeAttributeIcon";
-// Define the stat types
-type StatType = "HP" | "SP" | "ATK" | "DEF" | "INT" | "SPD";
+import DigimonEvolutionModal from "./DigimonEvolutionModal";
+import { StatType, isUnderStatCap } from "../store/petStore";
 
 interface DigimonDetailModalProps {
   selectedDigimon: UserDigimon | null;
@@ -14,7 +15,6 @@ interface DigimonDetailModalProps {
   onShowEvolution?: (digimonId: string) => void;
   onRelease?: (digimonId: string) => void;
   onNameChange?: (updatedDigimon: UserDigimon) => void;
-  evolutionData?: {[key: number]: any[]};
   className?: string;
   onShowDevolution?: (digimonId: string) => void;
 }
@@ -23,24 +23,27 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
   selectedDigimon,
   onClose,
   onSetActive,
-  onShowEvolution,
   onRelease,
-  evolutionData = {},
   onNameChange,
   className = "",
-  onShowDevolution,
 }) => {
-  const { discoveredDigimon } = useDigimonStore();
+  const { discoveredDigimon, evolveDigimon, devolveDigimon } = useDigimonStore();
   const [editingName, setEditingName] = useState<string | null>(null);
   const [newName, setNewName] = useState<string>("");
   const [isAnimating, setIsAnimating] = useState(false);
   const [showHeart, setShowHeart] = useState(false);
   const [lookDirection, setLookDirection] = useState(1);
   const [savedStats, setSavedStats] = useState<Record<string, number>>({
-    hp: 0, sp: 0, atk: 0, def: 0, int: 0, spd: 0
+    hp: 0, sp: 0, atk: 0, def: 0, int: 0, spd: 0,
   });
   const [allocating, setAllocating] = useState(false);
   const [belongsToCurrentUser, setBelongsToCurrentUser] = useState(false);
+  const [showEvolutionModal, setShowEvolutionModal] = useState(false);
+  const [showDevolutionModal, setShowDevolutionModal] = useState(false);
+  const [evolutionError, setEvolutionError] = useState<string | null>(null);
+  const [devolutionError, setDevolutionError] = useState<string | null>(null);
+  const [devolutionOptions, setDevolutionOptions] = useState<EvolutionOption[]>([]);
+  const [evolutionOptions, setEvolutionOptions] = useState<EvolutionOption[]>([]);
 
   useEffect(() => {
     // Check if the Digimon belongs to the current user
@@ -167,6 +170,8 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
     // Check for both uppercase and lowercase keys
     const upperLabel = label.toUpperCase();
     const lowerLabel = label.toLowerCase();
+
+    console.log(label, baseValue, bonusValue);
     
     // Get the stat value regardless of case
     const statValue = savedStats[upperLabel] || savedStats[lowerLabel] || 0;
@@ -178,12 +183,12 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
           <div className="text-right mr-2">
             <span className="font-semibold">{baseValue}</span>
             <span className={bonusValue > 0 ? "text-green-600 ml-1" : "text-gray-400 ml-1"}>
-              (+{bonusValue})
+              {bonusValue > 0 ? `(+${bonusValue})` : ""}
             </span>
           </div>
           
           {/* Allocation Button */}
-          {statValue > 0 && belongsToCurrentUser && (
+          {belongsToCurrentUser && statValue > 0 && isUnderStatCap(selectedDigimon) && (
             <button 
               className="w-6 h-6 bg-indigo-100 hover:bg-indigo-200 text-indigo-800 rounded-full flex items-center justify-center relative"
               onClick={() => allocateStat(lowerLabel as StatType)}
@@ -197,7 +202,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
           )}
           
           {/* Placeholder for when there are no stats to allocate */}
-          {(statValue <= 0 || !belongsToCurrentUser) && (
+          {(statValue <= 0 || !belongsToCurrentUser || !isUnderStatCap(selectedDigimon)) && (
             <div className="w-6"></div>
           )}
         </div>
@@ -331,10 +336,55 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
     }
   };
 
-  // Get evolution options for this Digimon
-  const evolutions = evolutionData[selectedDigimon.digimon_id] || [];
+  const stats = calculateFinalStats(selectedDigimon);
 
-  const stats = modifyStats(selectedDigimon);
+  // Handle evolution
+  const handleEvolution = async (toDigimonId: number) => {
+    try {
+      setEvolutionError(null);
+      await evolveDigimon(toDigimonId, selectedDigimon.id);
+      setShowEvolutionModal(false);
+      onClose(); // Close the detail modal after successful evolution
+    } catch (error) {
+      setEvolutionError((error as Error).message);
+    }
+  };
+  
+  // Handle devolution
+  const handleDevolution = async (toDigimonId: number) => {
+    try {
+      setDevolutionError(null);
+      await devolveDigimon(toDigimonId, selectedDigimon.id);
+      setShowDevolutionModal(false);
+      onClose(); // Close the detail modal after successful devolution
+    } catch (error) {
+      setDevolutionError((error as Error).message);
+    }
+  };
+
+  // Add this useEffect to fetch devolution options when the modal opens
+  useEffect(() => {
+    const loadDevolutionOptions = async () => {
+      if (!selectedDigimon || !selectedDigimon.digimon_id) return;
+      
+      const options = await useDigimonStore.getState().fetchDevolutionOptions(selectedDigimon.digimon_id);
+      setDevolutionOptions(options);
+    };
+    
+    loadDevolutionOptions();
+  }, [selectedDigimon]);
+
+  // Add this useEffect to fetch evolution options when the modal opens or digimon changes
+  useEffect(() => {
+    const loadEvolutionOptions = async () => {
+      if (!selectedDigimon || !selectedDigimon.digimon_id) return;
+      
+      const options = await useDigimonStore.getState().fetchEvolutionOptions(selectedDigimon.digimon_id);
+      setEvolutionOptions(options);
+    };
+    
+    loadEvolutionOptions();
+  }, [selectedDigimon]);
 
   return (
     <div 
@@ -529,7 +579,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
               {Object.values(savedStats).some(val => val > 0) && belongsToCurrentUser && (
                 <div className="mb-3 p-2 bg-indigo-50 border border-indigo-200 rounded-lg">
                   <p className="text-sm text-indigo-800">
-                    You have saved stat points to allocate! Click the + buttons to improve this Digimon.
+                    {isUnderStatCap(selectedDigimon) ? "You have saved stat points to allocate! Click the + buttons to improve this Digimon." : "This Digimon has reached its stat cap. Increase its ABI through evolution and devolution to unlock more stat points."}
                   </p>
                 </div>
               )}
@@ -542,52 +592,53 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                 {renderStatRow("DEF", stats.def, selectedDigimon.def_bonus)}
                 {renderStatRow("INT", stats.int, selectedDigimon.int_bonus)}
                 {renderStatRow("SPD", stats.spd, selectedDigimon.spd_bonus)}
+                {renderStatRow("ABI", selectedDigimon.abi, 0)}
               </div>
               
               {/* Evolution Options - Only show for the current user's Digimon */}
               <div className="mt-4">
-                <h4 className="text-lg font-semibold mb-2">Evolution Options</h4> 
+                <h4 className="font-semibold text-sm mb-2">Evolution Options</h4>
                 {belongsToCurrentUser ? (
-                  evolutions?.length > 0 ? (
+                  evolutionOptions.length > 0 ? (
                     <div className="grid grid-cols-3 gap-2">
-                      {evolutions.map((option) => {
+                      {evolutionOptions.map((option) => {
                         // Calculate base stats for current level
-                        const baseHP = statModifier(
+                        const baseHP = calculateBaseStat(
                           selectedDigimon.current_level,
                           selectedDigimon.digimon?.hp_level1 ?? 0,
                           selectedDigimon.digimon?.hp ?? 0,
                           selectedDigimon.digimon?.hp_level99 ?? 0
                         );
                         
-                        const baseSP = statModifier(
+                        const baseSP = calculateBaseStat(
                           selectedDigimon.current_level,
                           selectedDigimon.digimon?.sp_level1 ?? 0,
                           selectedDigimon.digimon?.sp ?? 0,
                           selectedDigimon.digimon?.sp_level99 ?? 0
                         );
                         
-                        const baseATK = statModifier(
+                        const baseATK = calculateBaseStat(
                           selectedDigimon.current_level,
                           selectedDigimon.digimon?.atk_level1 ?? 0,
                           selectedDigimon.digimon?.atk ?? 0,
                           selectedDigimon.digimon?.atk_level99 ?? 0
                         );
                         
-                        const baseDEF = statModifier(
+                        const baseDEF = calculateBaseStat(
                           selectedDigimon.current_level,
                           selectedDigimon.digimon?.def_level1 ?? 0,
                           selectedDigimon.digimon?.def ?? 0,
                           selectedDigimon.digimon?.def_level99 ?? 0
                         );
                         
-                        const baseINT = statModifier(
+                        const baseINT = calculateBaseStat(
                           selectedDigimon.current_level,
                           selectedDigimon.digimon?.int_level1 ?? 0,
                           selectedDigimon.digimon?.int ?? 0,
                           selectedDigimon.digimon?.int_level99 ?? 0
                         );
                         
-                        const baseSPD = statModifier(
+                        const baseSPD = calculateBaseStat(
                           selectedDigimon.current_level,
                           selectedDigimon.digimon?.spd_level1 ?? 0,
                           selectedDigimon.digimon?.spd ?? 0,
@@ -599,76 +650,43 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                         
                         // Check stat requirements
                         let meetsStatRequirements = true;
-                        const statRequirementsList = [];
                         
                         if (option.stat_requirements) {
                           const statReqs = option.stat_requirements;
                           
-                          // Check each stat requirement and build display list
                           if (statReqs.hp && statReqs.hp > 0) {
                             const currentHP = baseHP + (selectedDigimon.hp_bonus || 0);
                             if (currentHP < statReqs.hp) meetsStatRequirements = false;
-                            statRequirementsList.push({
-                              name: 'HP',
-                              current: currentHP,
-                              required: statReqs.hp,
-                              meets: currentHP >= statReqs.hp
-                            });
                           }
                           
                           if (statReqs.sp && statReqs.sp > 0) {
                             const currentSP = baseSP + (selectedDigimon.sp_bonus || 0);
                             if (currentSP < statReqs.sp) meetsStatRequirements = false;
-                            statRequirementsList.push({
-                              name: 'SP',
-                              current: currentSP,
-                              required: statReqs.sp,
-                              meets: currentSP >= statReqs.sp
-                            });
                           }
                           
                           if (statReqs.atk && statReqs.atk > 0) {
                             const currentATK = baseATK + (selectedDigimon.atk_bonus || 0);
                             if (currentATK < statReqs.atk) meetsStatRequirements = false;
-                            statRequirementsList.push({
-                              name: 'ATK',
-                              current: currentATK,
-                              required: statReqs.atk,
-                              meets: currentATK >= statReqs.atk
-                            });
                           }
                           
                           if (statReqs.def && statReqs.def > 0) {
                             const currentDEF = baseDEF + (selectedDigimon.def_bonus || 0);
                             if (currentDEF < statReqs.def) meetsStatRequirements = false;
-                            statRequirementsList.push({
-                              name: 'DEF',
-                              current: currentDEF,
-                              required: statReqs.def,
-                              meets: currentDEF >= statReqs.def
-                            });
                           }
                           
                           if (statReqs.int && statReqs.int > 0) {
                             const currentINT = baseINT + (selectedDigimon.int_bonus || 0);
                             if (currentINT < statReqs.int) meetsStatRequirements = false;
-                            statRequirementsList.push({
-                              name: 'INT',
-                              current: currentINT,
-                              required: statReqs.int,
-                              meets: currentINT >= statReqs.int
-                            });
                           }
                           
                           if (statReqs.spd && statReqs.spd > 0) {
                             const currentSPD = baseSPD + (selectedDigimon.spd_bonus || 0);
                             if (currentSPD < statReqs.spd) meetsStatRequirements = false;
-                            statRequirementsList.push({
-                              name: 'SPD',
-                              current: currentSPD,
-                              required: statReqs.spd,
-                              meets: currentSPD >= statReqs.spd
-                            });
+                          }
+
+                          if (statReqs.abi && statReqs.abi > 0) {
+                            const currentABI = selectedDigimon.abi || 0;
+                            if (currentABI < statReqs.abi) meetsStatRequirements = false;
                           }
                         }
                         
@@ -765,12 +783,9 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
           )}
 
           {/* Digivolve button - only show if evolution options exist */}
-          {evolutions?.length > 0 && onShowEvolution && (
+          {belongsToCurrentUser && (
             <button
-              onClick={(e) => {
-                e.stopPropagation(); // Prevent event bubbling
-                onShowEvolution(selectedDigimon.id);
-              }}
+              onClick={() => setShowEvolutionModal(true)}
               className="flex-1 bg-indigo-100 text-indigo-800 rounded hover:bg-indigo-200 py-2 px-4"
             >
               Digivolve
@@ -778,9 +793,9 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
           )}
 
           {/* De-Digivolve button */}
-          {onShowDevolution && (
+          {belongsToCurrentUser && (
             <button
-              onClick={() => onShowDevolution(selectedDigimon.id)}
+              onClick={() => setShowDevolutionModal(true)}
               className="flex-1 bg-indigo-100 text-indigo-800 rounded hover:bg-indigo-200 py-2 px-4"
             >
               De-Digivolve
@@ -788,6 +803,30 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
           )}
         </div>
       </div>
+      
+      {/* Evolution Modal */}
+      <DigimonEvolutionModal
+        isOpen={showEvolutionModal}
+        onClose={() => setShowEvolutionModal(false)}
+        selectedDigimon={selectedDigimon}
+        options={evolutionOptions}
+        onEvolve={handleEvolution}
+        isDevolution={false}
+        error={evolutionError}
+        isDiscovered={isDiscovered}
+      />
+      
+      {/* Devolution Modal */}
+      <DigimonEvolutionModal
+        isOpen={showDevolutionModal}
+        onClose={() => setShowDevolutionModal(false)}
+        selectedDigimon={selectedDigimon}
+        options={devolutionOptions}
+        onEvolve={handleDevolution}
+        isDevolution={true}
+        error={devolutionError}
+        isDiscovered={isDiscovered}
+      />
     </div>
   );
 };

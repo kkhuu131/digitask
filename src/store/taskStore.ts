@@ -1,9 +1,29 @@
 import { create } from "zustand";
 import { supabase } from "../lib/supabase";
-import { useDigimonStore } from "./petStore";
-import { DAILY_QUOTA_MILESTONE, useMilestoneStore } from "./milestoneStore";
+import { isUnderStatCap, useDigimonStore } from "./petStore";
 import { useNotificationStore } from "./notificationStore";
-import { StatCategory, getStatBoostValue } from "../utils/categoryDetection";
+import { StatCategory } from "../utils/categoryDetection";
+
+const BASE_EXP_FOR_ONE_TIME_TASK = 100;
+const BASE_STAT_FOR_ONE_TIME_TASK = 1;
+const BASE_EXP_FOR_RECURRING_TASK = 75;
+const BASE_STAT_FOR_RECURRING_TASK = 1;
+const BASE_EXP_FOR_DAILY_TASK = 75;
+const BASE_STAT_FOR_DAILY_TASK = 1;
+
+const DAILY_QUOTA_AMOUNT = 3;
+
+export const getExpPoints = (task: Task) => {
+  if (task.is_daily) return BASE_EXP_FOR_DAILY_TASK;
+  if (task.recurring_days) return BASE_EXP_FOR_RECURRING_TASK;
+  return BASE_EXP_FOR_ONE_TIME_TASK;
+};
+
+export const getStatPoints = (task: Task) => {
+  if (task.is_daily) return BASE_STAT_FOR_DAILY_TASK;
+  if (task.recurring_days) return BASE_STAT_FOR_RECURRING_TASK;
+  return BASE_STAT_FOR_ONE_TIME_TASK;
+};
 
 export interface Task {
   id: string;
@@ -220,9 +240,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       }));
 
       // Always feed the Digimon regardless of stat allocation preference
-      await useDigimonStore
-        .getState()
-        .feedDigimon(task.is_daily || !!task.recurring_days ? 50 : 75);
+      await useDigimonStore.getState().feedDigimon(getExpPoints(task));
 
       // Check if we've reached the daily stat cap
       const { canGain, remaining } = await useDigimonStore
@@ -236,14 +254,13 @@ export const useTaskStore = create<TaskState>((set, get) => ({
           type: "info",
         });
       } else if (task.category) {
-        const boostValue = getStatBoostValue(
-          task.is_daily || !!task.recurring_days
-        );
-
-        // Limit the boost value to the remaining stat points
+        const boostValue = getStatPoints(task);
         const adjustedBoostValue = Math.min(boostValue, remaining);
 
-        if (autoAllocate) {
+        if (
+          autoAllocate &&
+          isUnderStatCap(useDigimonStore.getState().userDigimon)
+        ) {
           // Get current daily_stat_gains from profile
           const { data: profileData, error: profileError } = await supabase
             .from("profiles")
@@ -282,7 +299,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
           useDigimonStore.getState().fetchUserDailyStatGains();
 
           useNotificationStore.getState().addNotification({
-            message: `✅ Completed "${task.description}"!\n→ ${task.category} +${adjustedBoostValue}!`,
+            message: `Completed "${task.description}"! \n Digimon gained ${adjustedBoostValue} ${task.category}!`,
             type: "success",
           });
         } else {
@@ -335,23 +352,27 @@ export const useTaskStore = create<TaskState>((set, get) => ({
           // Update the pet store's userDailyStatGains
           useDigimonStore.getState().fetchUserDailyStatGains();
 
-          useNotificationStore.getState().addNotification({
-            message: `✅ Completed "${task.description}"!\n→ ${task.category} +${adjustedBoostValue} saved for later!`,
-            type: "success",
-          });
+          if (autoAllocate) {
+            useNotificationStore.getState().addNotification({
+              message: `Completed "${task.description}"!\n Digimon has reached its stat cap, ${adjustedBoostValue} ${task.category} points were saved!`,
+              type: "success",
+            });
+          } else {
+            useNotificationStore.getState().addNotification({
+              message: `Completed "${task.description}"!\n ${adjustedBoostValue} ${task.category} saved for later!`,
+              type: "success",
+            });
+          }
         }
       } else {
         useNotificationStore.getState().addNotification({
-          message: `✅ Completed "${task.description}"!`,
+          message: `Completed "${task.description}"!`,
           type: "success",
         });
       }
 
       // Check for level up
       await useDigimonStore.getState().checkLevelUp();
-
-      // Increment tasks completed milestone
-      await useMilestoneStore.getState().incrementTasksCompleted();
 
       // Check daily quota
       await get().checkDailyQuota();
@@ -512,7 +533,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
 
       // If daily quota is met
       const dailyQuota = get().dailyQuota;
-      if (dailyQuota && dailyQuota.completed_today >= DAILY_QUOTA_MILESTONE) {
+      if (dailyQuota && dailyQuota.completed_today >= DAILY_QUOTA_AMOUNT) {
         // Complete the daily quota (which will reward the team with EXP)
         await get().completeDailyQuota();
       }
@@ -590,7 +611,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         return;
       }
 
-      if (get().dailyQuota?.completed_today === DAILY_QUOTA_MILESTONE) {
+      if (get().dailyQuota?.completed_today === DAILY_QUOTA_AMOUNT) {
         // Get the XP multiplier based on streak
         const expMultiplier = get().getExpMultiplier();
 
@@ -613,7 +634,6 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         });
       }
 
-      await useMilestoneStore.getState().incrementDailyQuotaStreak();
       set({ loading: false });
     } catch (error) {
       console.error("Error in completeDailyQuota:", error);

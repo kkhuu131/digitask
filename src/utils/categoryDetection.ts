@@ -134,12 +134,6 @@ export const categoryIcons: Record<StatCategory, string> = {
   SPD: "⚡",
 };
 
-// Stat boost values
-export const statBoostValues = {
-  daily: 2,
-  regular: 3,
-};
-
 /**
  * Detect the most likely category for a task based on its description
  */
@@ -182,13 +176,6 @@ export function detectCategory(description: string): StatCategory | null {
 
   // Only return a category if we have at least one match
   return maxMatches > 0 ? bestCategory : null;
-}
-
-/**
- * Get the stat boost value for a task
- */
-export function getStatBoostValue(isDaily: boolean): number {
-  return isDaily ? statBoostValues.daily : statBoostValues.regular;
 }
 
 // Add this export to the file

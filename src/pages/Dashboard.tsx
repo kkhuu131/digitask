@@ -115,7 +115,7 @@ const Dashboard: React.FC = () => {
             ></div>
           </div>
           <p className="text-xs text-gray-500 mt-2">
-            Complete at least {DAILY_QUOTA_REQUIREMENT} tasks daily to keep your Digimon happy and healthy.
+            Complete at least {DAILY_QUOTA_REQUIREMENT} tasks daily to maintain a streak and earn extra XP.
           </p>
         </div>
 

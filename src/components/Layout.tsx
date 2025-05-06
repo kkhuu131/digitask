@@ -91,6 +91,7 @@ const Layout = ({ children }: LayoutProps) => {
     { path: "/user-search", label: "Find Players", icon: "👥" },
     { path: "/tutorial", label: "Tutorial", icon: "📚" },
     { path: "/settings", label: "Settings", icon: "⚙️" },
+    { path: "/playground", label: "Playground", icon: "🎮" },
   ];
   
   return (

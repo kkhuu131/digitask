@@ -9,7 +9,20 @@ const DigimonPlayground: React.FC = () => {
   const playgroundRef = useRef<HTMLDivElement>(null);
   const animationFrameRef = useRef<number>(0);
   const initializedRef = useRef(false);
+  const [poopLocations, setPoopLocations] = useState<PoopLocation[]>([]);
+  const [draggedItem, setDraggedItem] = useState<'food' | 'bandage' | null>(null);
+  const [showHearts, setShowHearts] = useState<string | null>(null);
+  const [hoppingDigimon, setHoppingDigimon] = useState<string | null>(null);
+  const [showNameFor, setShowNameFor] = useState<string | null>(null);
   
+  // Constants for event timing
+  const EVENT_COOLDOWN = 30000; // 30 seconds minimum between events
+  const EVENT_CHANCES = {
+    hungry: 0.0002,
+    hurt: 0.00015,
+    poop: 0.0001,
+  };
+
   // Define the PlaygroundDigimon type with position and behavior properties
   interface PlaygroundDigimon extends UserDigimon {
     x: number;
@@ -22,6 +35,17 @@ const DigimonPlayground: React.FC = () => {
     isPickedUp: boolean;
     facingDirection: 'left' | 'right';
     lastBehaviorChange: number;
+    state: 'normal' | 'hungry' | 'hurt';
+    lastEventTime: number;
+    lastStateChange: number;
+    isHopping: boolean;
+  }
+
+  interface PoopLocation {
+    id: string;
+    x: number;
+    y: number;
+    digimonId: string;
   }
 
   // Fetch user's Digimon on component mount
@@ -32,7 +56,6 @@ const DigimonPlayground: React.FC = () => {
   // Initialize playground Digimon when allUserDigimon changes
   useEffect(() => {
     if (allUserDigimon.length > 0 && !initializedRef.current) {
-      // Mark as initialized to prevent re-initialization
       initializedRef.current = true;
       
       const initializedDigimon = allUserDigimon.map(digimon => {
@@ -68,7 +91,11 @@ const DigimonPlayground: React.FC = () => {
           isMoving: true,
           isPickedUp: false,
           facingDirection: Math.random() > 0.5 ? 'left' as const : 'right' as const,
-          lastBehaviorChange: Date.now()
+          lastBehaviorChange: Date.now(),
+          state: 'normal' as const,
+          lastEventTime: Date.now(),
+          lastStateChange: Date.now(),
+          isHopping: false,
         };
       });
       
@@ -103,60 +130,100 @@ const DigimonPlayground: React.FC = () => {
       
       setPlaygroundDigimon(prevDigimon => {
         return prevDigimon.map(digimon => {
-          // Skip if Digimon is picked up
-          if (digimon.isPickedUp) return digimon;
+          // Skip if Digimon is picked up or hopping
+          if (digimon.isPickedUp || digimon.isHopping) return digimon;
           
-          // Chance to change behavior every 5-10 seconds
-          const behaviorChangeProbability = (now - digimon.lastBehaviorChange) / 1000 / 15; // 0-1 over 15 seconds
+          let updatedDigimon = { ...digimon };
+          
+          // Handle random events (separate from movement)
+          if (now - digimon.lastEventTime >= EVENT_COOLDOWN && digimon.state === 'normal') {
+            if (Math.random() < EVENT_CHANCES.hungry) {
+              updatedDigimon = {
+                ...updatedDigimon,
+                state: 'hungry',
+                lastEventTime: now,
+                lastStateChange: now,
+                speed: digimon.speed * 0.5
+              };
+            } else if (Math.random() < EVENT_CHANCES.hurt) {
+              updatedDigimon = {
+                ...updatedDigimon,
+                state: 'hurt',
+                lastEventTime: now,
+                lastStateChange: now,
+                speed: digimon.speed * 0.5
+              };
+            } else if (Math.random() < EVENT_CHANCES.poop) {
+              setPoopLocations(prev => {
+                const filtered = prev.filter(p => p.digimonId !== digimon.id);
+                return [...filtered, {
+                  id: `poop-${digimon.id}-${Date.now()}`,
+                  x: digimon.x,
+                  y: digimon.y,
+                  digimonId: digimon.id
+                }];
+              });
+              updatedDigimon.lastEventTime = now;
+            }
+          }
+
+          // Handle behavior changes (separate from events)
+          const behaviorChangeProbability = (now - updatedDigimon.lastBehaviorChange) / 1000 / 15;
           if (Math.random() < behaviorChangeProbability) {
-            const behaviors: ('wander' | 'energetic' | 'lazy' | 'curious')[] = ['wander', 'energetic', 'lazy', 'curious'];
-            const newBehavior = behaviors[Math.floor(Math.random() * behaviors.length)];
+            // Filter out 'energetic' if Digimon is hungry or hurt
+            const availableBehaviors: ('wander' | 'energetic' | 'lazy' | 'curious')[] = 
+              updatedDigimon.state === 'normal' 
+                ? ['wander', 'energetic', 'lazy', 'curious']
+                : ['wander', 'lazy', 'curious'];
             
-            // Update speed based on new behavior - REDUCED SPEEDS
+            const newBehavior = availableBehaviors[Math.floor(Math.random() * availableBehaviors.length)];
+            
             let newSpeed = 0.015;
             if (newBehavior === 'energetic') newSpeed = 0.1;
             if (newBehavior === 'lazy') newSpeed = 0.005;
             if (newBehavior === 'wander') newSpeed = 0.015;
             if (newBehavior === 'curious') newSpeed = 0.02;
             
-            // Adjust speed based on Digimon's SPD stat if available
-            if (digimon.digimon?.spd) {
-              const spdFactor = digimon.digimon.spd / 75;
+            // Apply speed modifiers
+            if (updatedDigimon.digimon?.spd) {
+              const spdFactor = updatedDigimon.digimon.spd / 75;
               newSpeed *= (0.5 + spdFactor);
             }
             
-            return {
-              ...digimon,
+            // Apply state-based speed reduction if needed
+            if (updatedDigimon.state === 'hungry' || updatedDigimon.state === 'hurt') {
+              newSpeed *= 0.5;
+            }
+            
+            updatedDigimon = {
+              ...updatedDigimon,
               behavior: newBehavior,
               speed: newSpeed,
               lastBehaviorChange: now
             };
           }
-          
-          // Behavior-specific movement patterns
-          let newX = digimon.x;
-          let newY = digimon.y;
-          let newDirection = digimon.direction;
-          let newIsMoving = digimon.isMoving;
-          let newFacingDirection = digimon.facingDirection;
-          
-          // Increment behavior timer
-          const newBehaviorTimer = digimon.behaviorTimer + 1;
-          
-          switch (digimon.behavior) {
+
+          // Always process movement (unless picked up)
+          let newX = updatedDigimon.x;
+          let newY = updatedDigimon.y;
+          let newDirection = updatedDigimon.direction;
+          let newIsMoving = updatedDigimon.isMoving;
+          let newFacingDirection = updatedDigimon.facingDirection;
+
+          // Process behavior-specific movement
+          switch (updatedDigimon.behavior) {
             case 'wander':
-              // Occasionally change direction or pause
               if (Math.random() < 0.01) {
                 newDirection = Math.random() * Math.PI * 2;
                 newFacingDirection = Math.cos(newDirection) < 0 ? 'left' : 'right';
               }
-              if (Math.random() < 0.005) { // Reduced from 0.01
+              if (Math.random() < 0.005) {
                 newIsMoving = !newIsMoving;
               }
               
               if (newIsMoving) {
-                newX += Math.cos(newDirection) * digimon.speed;
-                newY += Math.sin(newDirection) * digimon.speed;
+                newX += Math.cos(newDirection) * updatedDigimon.speed;
+                newY += Math.sin(newDirection) * updatedDigimon.speed;
               }
               break;
               
@@ -170,13 +237,13 @@ const DigimonPlayground: React.FC = () => {
               // Occasional sprint
               const sprintFactor = Math.random() < 0.05 ? 1.5 : 1; // Reduced from 2
               
-              newX += Math.cos(newDirection) * digimon.speed * sprintFactor;
-              newY += Math.sin(newDirection) * digimon.speed * sprintFactor;
+              newX += Math.cos(newDirection) * updatedDigimon.speed * sprintFactor;
+              newY += Math.sin(newDirection) * updatedDigimon.speed * sprintFactor;
               break;
               
             case 'lazy':
               // Mostly stationary with occasional slow movement
-              if (newBehaviorTimer % 150 === 0) { // Increased from 100
+              if (updatedDigimon.behaviorTimer % 150 === 0) { // Increased from 100
                 newIsMoving = Math.random() < 0.3;
                 if (newIsMoving) {
                   newDirection = Math.random() * Math.PI * 2;
@@ -184,15 +251,15 @@ const DigimonPlayground: React.FC = () => {
                 }
               }
               
-              if (newIsMoving && newBehaviorTimer % 4 === 0) { // Move even slower
-                newX += Math.cos(newDirection) * digimon.speed;
-                newY += Math.sin(newDirection) * digimon.speed;
+              if (newIsMoving && updatedDigimon.behaviorTimer % 4 === 0) { // Move even slower
+                newX += Math.cos(newDirection) * updatedDigimon.speed;
+                newY += Math.sin(newDirection) * updatedDigimon.speed;
               }
               break;
               
             case 'curious':
               // Move toward a point of interest, then pause to "look around"
-              if (newBehaviorTimer % 200 === 0 || !newIsMoving) { // Increased from 150
+              if (updatedDigimon.behaviorTimer % 200 === 0 || !newIsMoving) { // Increased from 150
                 // Toggle between moving and looking
                 newIsMoving = !newIsMoving;
                 
@@ -209,11 +276,15 @@ const DigimonPlayground: React.FC = () => {
               }
               
               if (newIsMoving) {
-                newX += Math.cos(newDirection) * digimon.speed;
-                newY += Math.sin(newDirection) * digimon.speed;
+                newX += Math.cos(newDirection) * updatedDigimon.speed;
+                newY += Math.sin(newDirection) * updatedDigimon.speed;
               }
               break;
           }
+          
+          // Boundary checks
+          newX = Math.max(0, Math.min(100, newX));
+          newY = Math.max(0, Math.min(100, newY));
           
           // Convert percentage positions to actual pixel positions
           const pixelX = (newX / 100) * playgroundWidth;
@@ -263,13 +334,13 @@ const DigimonPlayground: React.FC = () => {
           }
           
           return {
-            ...digimon,
+            ...updatedDigimon,
             x: newX,
             y: newY,
             direction: newDirection,
             isMoving: newIsMoving,
-            behaviorTimer: newBehaviorTimer,
-            facingDirection: newFacingDirection
+            facingDirection: newFacingDirection,
+            behaviorTimer: updatedDigimon.behaviorTimer + 1
           };
         });
       });
@@ -311,29 +382,11 @@ const DigimonPlayground: React.FC = () => {
     e.stopPropagation();
     
     if (selectedDigimon?.id === digimon.id) {
-      // If already selected, deselect
       setSelectedDigimon(null);
-      
-      // Update the Digimon to not be picked up
-      setPlaygroundDigimon(prevDigimon => 
-        prevDigimon.map(d => 
-          d.id === digimon.id 
-            ? { ...d, isPickedUp: false } 
-            : d
-        )
-      );
+      setShowNameFor(null);
     } else {
-      // Select this Digimon
       setSelectedDigimon(digimon);
-      
-      // Update the Digimon to be picked up
-      setPlaygroundDigimon(prevDigimon => 
-        prevDigimon.map(d => 
-          d.id === digimon.id 
-            ? { ...d, isPickedUp: true } 
-            : d
-        )
-      );
+      setShowNameFor(digimon.id);
     }
   };
   
@@ -366,8 +419,61 @@ const DigimonPlayground: React.FC = () => {
     );
     
     setSelectedDigimon(null);
+    setShowNameFor(null); // Clear name display when clicking playground
   };
   
+  // Add handlers for items
+  const handleItemDragStart = (item: 'food' | 'bandage') => {
+    setDraggedItem(item);
+  };
+
+  const handleItemDrop = async (e: React.DragEvent, digimon: PlaygroundDigimon) => {
+    e.preventDefault();
+    
+    if (!draggedItem || digimon.isPickedUp) return;
+
+    if ((draggedItem === 'food' && digimon.state === 'hungry') ||
+        (draggedItem === 'bandage' && digimon.state === 'hurt')) {
+      
+      // Set hopping state
+      setPlaygroundDigimon(prev =>
+        prev.map(d => d.id === digimon.id ? {
+          ...d,
+          state: 'normal',
+          speed: d.speed * 2,
+          lastEventTime: Date.now(),
+          isMoving: false,
+          isHopping: true
+        } : d)
+      );
+
+      setHoppingDigimon(digimon.id);
+      setShowHearts(digimon.id);
+      
+      // Wait for hopping animation
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Clear hopping state and resume movement
+      setHoppingDigimon(null);
+      setPlaygroundDigimon(prev =>
+        prev.map(d => d.id === digimon.id ? {
+          ...d,
+          isMoving: true,
+          isHopping: false
+        } : d)
+      );
+      
+      setShowHearts(null);
+    }
+    
+    setDraggedItem(null);
+  };
+
+  // Add handler for cleaning poop
+  const handlePoopClick = (poopId: string) => {
+    setPoopLocations(prev => prev.filter(p => p.id !== poopId));
+  };
+
   return (
     <div className="container mx-auto px-4 py-6 pb-20 md:pb-6">
       <div className="flex justify-between items-center mb-4">
@@ -384,7 +490,23 @@ const DigimonPlayground: React.FC = () => {
         onClick={handlePlaygroundClick}
         onMouseMove={handleMouseMove}
       >
-        {/* Render each Digimon */}
+        {/* Render poops */}
+        {poopLocations.map(poop => (
+          <div
+            key={poop.id}
+            className="absolute cursor-pointer text-2xl transform"
+            style={{
+              left: `${poop.x}%`,
+              top: `${poop.y}%`,
+              zIndex: 5
+            }}
+            onClick={() => handlePoopClick(poop.id)}
+          >
+            💩
+          </div>
+        ))}
+
+        {/* Render Digimon with state indicators */}
         {playgroundDigimon.map(digimon => (
           <motion.div
             key={digimon.id}
@@ -393,19 +515,23 @@ const DigimonPlayground: React.FC = () => {
               left: `${digimon.x}%`,
               top: `${digimon.y}%`,
               zIndex: digimon.isPickedUp ? 999 : Math.floor(digimon.y * 10) + 10,
-              filter: selectedDigimon?.id === digimon.id ? 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.8))' : 'none'
+              filter: selectedDigimon?.id === digimon.id ? 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.8))' : 'none',
+              padding: '20px',
+              margin: '-20px',
             }}
-            animate={
-              selectedDigimon?.id === digimon.id 
-                ? { 
-                    scale: [1, 1.1, 1],
-                    transition: { repeat: Infinity, duration: 1 }
-                  } 
-                : {}
-            }
+            animate={hoppingDigimon === digimon.id ? {
+              y: [0, -15, 0, -10, 0, -5, 0],
+            } : {}}
+            transition={hoppingDigimon === digimon.id ? {
+              duration: 1,
+              times: [0, 0.2, 0.4, 0.6, 0.8, 0.9, 1],
+              ease: "easeInOut"
+            } : {}}
             onClick={(e) => handleDigimonClick(digimon, e)}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => handleItemDrop(e, digimon)}
           >
-            {/* Digimon sprite with scaleX applied only to the sprite */}
+            {/* Digimon sprite */}
             <div 
               className="w-8 h-8 md:w-12 md:h-12 flex items-center justify-center transform"
               style={{ 
@@ -422,33 +548,55 @@ const DigimonPlayground: React.FC = () => {
               />
             </div>
             
-            {/* Digimon name label - now outside the flipped container */}
-            <div 
-              className="absolute -bottom-5 md:-bottom-6 left-1/2 transform -translate-x-1/2 bg-white bg-opacity-80 px-1 md:px-2 py-0.5 rounded text-[10px] md:text-xs whitespace-nowrap"
-              style={{ pointerEvents: 'none' }}
-            >
-              {digimon.name || digimon.digimon?.name}
-            </div>
+            {/* Digimon name label - only show when clicked */}
+            {showNameFor === digimon.id && (
+              <div 
+                className="absolute -bottom-5 md:-bottom-6 left-1/2 transform -translate-x-1/2 bg-white bg-opacity-80 px-1 md:px-2 py-0.5 rounded text-[10px] md:text-xs whitespace-nowrap"
+                style={{ pointerEvents: 'none' }}
+              >
+                {digimon.name || digimon.digimon?.name}
+              </div>
+            )}
             
-            {/* Behavior indicator - also outside the flipped container */}
-            {digimon.behavior === 'energetic' && (
-              <div className="absolute -top-3 md:-top-4 left-1/2 transform -translate-x-1/2 text-[10px] md:text-xs">
-                💨
+            {/* State indicator */}
+            {digimon.state !== 'normal' && (
+              <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-white rounded-lg px-2 py-1 shadow-md">
+                {digimon.state === 'hungry' ? '🍖' : '🩹'}
               </div>
             )}
-            {digimon.behavior === 'lazy' && (
-              <div className="absolute -top-3 md:-top-4 left-1/2 transform -translate-x-1/2 text-[10px] md:text-xs">
-                💤
-              </div>
-            )}
-            {digimon.behavior === 'curious' && !digimon.isMoving && (
-              <div className="absolute -top-3 md:-top-4 left-1/2 transform -translate-x-1/2 text-[10px] md:text-xs">
-                ❓
-              </div>
+            
+            {/* Hearts animation */}
+            {showHearts === digimon.id && (
+              <motion.div
+                className="absolute -top-8 left-1/2 transform -translate-x-1/2"
+                initial={{ y: 0, opacity: 1 }}
+                animate={{ y: -20, opacity: 0 }}
+                transition={{ duration: 1 }}
+              >
+                ❤️
+              </motion.div>
             )}
           </motion.div>
         ))}
         
+      </div>
+
+      {/* Item toolbar - now below the playground */}
+      <div className="mt-4 flex justify-center gap-4">
+        <div
+          className="w-12 h-12 flex items-center justify-center bg-gray-100 rounded-lg cursor-grab shadow-md hover:bg-gray-200"
+          draggable
+          onDragStart={() => handleItemDragStart('food')}
+        >
+          🍖
+        </div>
+        <div
+          className="w-12 h-12 flex items-center justify-center bg-gray-100 rounded-lg cursor-grab shadow-md hover:bg-gray-200"
+          draggable
+          onDragStart={() => handleItemDragStart('bandage')}
+        >
+          🩹
+        </div>
       </div>
     </div>
   );
