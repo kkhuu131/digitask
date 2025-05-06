@@ -10,6 +10,8 @@ export const UPDATE_CHANGES = {
   ],
   "1.0.2": [
     "Digimon created before the update recieved ABI depending on their stage. Rookie: 5, Champion: 8, Ultimate: 15, Mega: 20",
+    "Digimon with bonus stats that exceeded their ABI cap were granted the ABI needed to reach the cap (at most 25 ABI).",
+    "Note: Digimon were not granted both of these ABI rewards, only whichever was higher.",
     "Fixed bug where Digimon did not recieve happiness from tasks",
     "Fixed bug where Digimon on Dashboard was not visually updated when task was completed",
     "Thank you for the suggestions, please continue to send in any feedback!",
