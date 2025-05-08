@@ -12,11 +12,9 @@ interface DigimonDetailModalProps {
   selectedDigimon: UserDigimon | null;
   onClose: () => void;
   onSetActive?: (digimonId: string) => Promise<void>;
-  onShowEvolution?: (digimonId: string) => void;
   onRelease?: (digimonId: string) => void;
   onNameChange?: (updatedDigimon: UserDigimon) => void;
   className?: string;
-  onShowDevolution?: (digimonId: string) => void;
 }
 
 const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
@@ -171,8 +169,6 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
     const upperLabel = label.toUpperCase();
     const lowerLabel = label.toLowerCase();
 
-    console.log(label, baseValue, bonusValue);
-    
     // Get the stat value regardless of case
     const statValue = savedStats[upperLabel] || savedStats[lowerLabel] || 0;
     
@@ -342,9 +338,9 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
   const handleEvolution = async (toDigimonId: number) => {
     try {
       setEvolutionError(null);
-      await evolveDigimon(toDigimonId, selectedDigimon.id);
       setShowEvolutionModal(false);
-      onClose(); // Close the detail modal after successful evolution
+      onClose();
+      await evolveDigimon(toDigimonId, selectedDigimon.id);
     } catch (error) {
       setEvolutionError((error as Error).message);
     }
@@ -354,9 +350,9 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
   const handleDevolution = async (toDigimonId: number) => {
     try {
       setDevolutionError(null);
-      await devolveDigimon(toDigimonId, selectedDigimon.id);
       setShowDevolutionModal(false);
-      onClose(); // Close the detail modal after successful devolution
+      onClose();
+      await devolveDigimon(toDigimonId, selectedDigimon.id);
     } catch (error) {
       setDevolutionError((error as Error).message);
     }

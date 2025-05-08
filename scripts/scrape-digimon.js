@@ -162,14 +162,7 @@ async function scrapeEvolutionData(detailUrl, digimonId) {
 
         // Extract stat requirements
         const requiresText = $(row).find("td[width='55%']").text().trim();
-        const statRequirements = {
-          hp: 0,
-          sp: 0,
-          atk: 0,
-          def: 0,
-          int: 0,
-          spd: 0,
-        };
+        const statRequirements = {};
 
         // Parse requirements text for stats
         if (requiresText) {

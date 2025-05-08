@@ -8,7 +8,7 @@ import calculateBaseStat from "../utils/digimonStatCalculation";
 import DigimonDetailModal from "../components/DigimonDetailModal";
 import AvatarSelectionModal from "../components/AvatarSelectionModal";
 import ReportButton from '../components/ReportButton';
-
+import { DIGIMON_LOOKUP_TABLE } from "../constants/digimonLookup";
 interface ProfileData {
   id: string;
   username: string;
@@ -128,16 +128,18 @@ const ProfilePage = () => {
           if (active) setFavoriteDigimon(active);
         } else {
           // Fetch the user's Digimon
-          const { data: digimonData, error: digimonError } = await supabase
+          const { data: digimonRawData, error: digimonError } = await supabase
             .from("user_digimon")
-            .select(`
-              *,
-              digimon (*)
-            `)
+            .select("*")
             .eq("user_id", profileId)
             .order("current_level", { ascending: false });
             
           if (digimonError) throw digimonError;
+
+          const digimonData = digimonRawData.map(digimon => ({
+            ...digimon,
+            digimon: DIGIMON_LOOKUP_TABLE[digimon.digimon_id]
+          }));
           
           setUserDigimon(digimonData);
           const active = digimonData.find(d => d.is_active);
@@ -484,12 +486,10 @@ const ProfilePage = () => {
                   const active = allUserDigimon.find(d => d.id === digimonId);
                   if (active) setFavoriteDigimon(active);
                 },
-                onShowEvolution: (digimonId) => {
-                  // You could implement this if needed
+                onShowEvolution: (digimonId: number) => {
                   console.log("Show evolution for", digimonId);
                 },
                 onRelease: (digimonId) => {
-                  // You could implement this if needed
                   console.log("Release digimon", digimonId);
                 }
               } : {})}

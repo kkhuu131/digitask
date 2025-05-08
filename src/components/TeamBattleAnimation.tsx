@@ -17,6 +17,8 @@ const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({
   teamBattle, 
   onComplete 
 }) => {
+
+
   const [step, setStep] = useState(0);
   const [showResults, setShowResults] = useState(false);
   const [showResultsScreen, setShowResultsScreen] = useState(false);
@@ -186,6 +188,15 @@ const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({
       setDisintegratingDigimon(prev => ({...prev, ...newlyDead}));
     }
   }, [hpState]); // Only depend on hpState changes to detect deaths
+
+  // Add this inside the useEffect that handles turn animations
+  // useEffect(() => {
+  //   if (currentTurn) {
+  //     console.log("Animating turn:", step, currentTurn);
+  //     // Log the current HP state to see if multiple values are changing at once
+  //     console.log("Current HP state:", {...hpState});
+  //   }
+  // }, [step, currentTurn]);
 
   // --- Calculations & Helpers ---
   const calculatePositions = (teamSize: number) => {

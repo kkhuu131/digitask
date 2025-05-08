@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useDigimonStore, Digimon } from "../store/petStore";
-import { supabase } from "../lib/supabase";
 import { useDigimonData } from "../hooks/useDigimonData";
+import { DIGIMON_LOOKUP_TABLE } from "../constants/digimonLookup";
+import { getDevolutions } from "@/utils/evolutionsHelper";
+import { getEvolutions } from "@/utils/evolutionsHelper";
 
 const DigimonDex = () => {
   const { digimon: allDigimon, loading } = useDigimonData();
@@ -24,32 +26,45 @@ const DigimonDex = () => {
     setSelectedDigimon(digimon);
     
     try {
-      // Fetch evolution paths for this Digimon
-      const { data: evolvesFrom, error: fromError } = await supabase
-        .from("evolution_paths")
-        .select(`
-          id,
-          from_digimon:from_digimon_id (id, digimon_id, name, stage, sprite_url),
-          level_required
-        `)
-        .eq("to_digimon_id", digimon.id);
-        
-      if (fromError) throw fromError;
+      // Get evolution paths for this Digimon using the lookup table
+      const evolutionPaths = getEvolutions(digimon.id);
+      const devolutionPaths = getDevolutions(digimon.id);
+
+      const allPaths = [...evolutionPaths, ...devolutionPaths];
       
-      const { data: evolvesTo, error: toError } = await supabase
-        .from("evolution_paths")
-        .select(`
-          id,
-          to_digimon:to_digimon_id (id, digimon_id, name, stage, sprite_url),
-          level_required
-        `)
-        .eq("from_digimon_id", digimon.id);
-        
-      if (toError) throw toError;
+      // Filter and enrich paths where this Digimon evolves from others
+      const evolvesFrom = allPaths
+        .filter(path => path.to_digimon_id === digimon.id)
+        .map(path => ({
+          id: path.id,
+          from_digimon: {
+            id: DIGIMON_LOOKUP_TABLE[path.from_digimon_id].id,
+            digimon_id: DIGIMON_LOOKUP_TABLE[path.from_digimon_id].digimon_id,
+            name: DIGIMON_LOOKUP_TABLE[path.from_digimon_id].name,
+            stage: DIGIMON_LOOKUP_TABLE[path.from_digimon_id].stage,
+            sprite_url: DIGIMON_LOOKUP_TABLE[path.from_digimon_id].sprite_url
+          },
+          level_required: path.level_required
+        }));
+      
+      // Filter and enrich paths where this Digimon evolves to others
+      const evolvesTo = allPaths
+        .filter(path => path.from_digimon_id === digimon.id)
+        .map(path => ({
+          id: path.id,
+          to_digimon: {
+            id: DIGIMON_LOOKUP_TABLE[path.to_digimon_id].id,
+            digimon_id: DIGIMON_LOOKUP_TABLE[path.to_digimon_id].digimon_id,
+            name: DIGIMON_LOOKUP_TABLE[path.to_digimon_id].name,
+            stage: DIGIMON_LOOKUP_TABLE[path.to_digimon_id].stage,
+            sprite_url: DIGIMON_LOOKUP_TABLE[path.to_digimon_id].sprite_url
+          },
+          level_required: path.level_required
+        }));
       
       setEvolutionPaths({
-        evolvesFrom: evolvesFrom || [],
-        evolvesTo: evolvesTo || []
+        evolvesFrom: evolvesFrom,
+        evolvesTo: evolvesTo
       });
     } catch (err) {
       console.error("Error fetching evolution paths:", err);

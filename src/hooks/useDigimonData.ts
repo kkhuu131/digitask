@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { supabase } from "../lib/supabase";
 import { Digimon } from "../store/petStore";
+import { DIGIMON_LOOKUP_TABLE } from "../constants/digimonLookup";
+import { getAllEvolutions } from "@/utils/evolutionsHelper";
 
 export interface EvolutionPath {
   id: number;
@@ -29,21 +30,13 @@ export const useDigimonData = () => {
 
       setLoading(true);
 
-      // Fetch all digimon with all stats
-      const { data: digimonData } = await supabase.from("digimon").select(`
-          id, name, stage, type, attribute, sprite_url, 
-          hp, sp, atk, def, int, spd,
-          hp_level1, sp_level1, atk_level1, def_level1, int_level1, spd_level1,
-          hp_level99, sp_level99, atk_level99, def_level99, int_level99, spd_level99
-        `);
+      // Use the lookup table instead of fetching from Supabase
+      const digimonData = Object.values(DIGIMON_LOOKUP_TABLE);
 
-      // Fetch all evolution paths
-      const { data: pathsData } = await supabase
-        .from("evolution_paths")
-        .select("id, from_digimon_id, to_digimon_id, level_required");
+      const pathsData = getAllEvolutions();
 
       // Map the data to match the Digimon interface
-      const mappedDigimon: Digimon[] = (digimonData || []).map((d) => ({
+      const mappedDigimon: Digimon[] = digimonData.map((d) => ({
         id: d.id,
         digimon_id: d.id, // Use id as digimon_id since that's what the interface expects
         name: d.name,
@@ -90,20 +83,13 @@ export const useDigimonData = () => {
     cachedEvolutionPaths = null;
     setLoading(true);
 
-    // Re-fetch data
-    const { data: digimonData } = await supabase.from("digimon").select(`
-        id, name, stage, type, attribute, sprite_url, 
-        hp, sp, atk, def, int, spd,
-        hp_level1, sp_level1, atk_level1, def_level1, int_level1, spd_level1,
-        hp_level99, sp_level99, atk_level99, def_level99, int_level99, spd_level99
-      `);
+    // Use the lookup table instead of fetching from Supabase
+    const digimonData = Object.values(DIGIMON_LOOKUP_TABLE);
 
-    const { data: pathsData } = await supabase
-      .from("evolution_paths")
-      .select("id, from_digimon_id, to_digimon_id, level_required");
+    const pathsData = getAllEvolutions();
 
     // Map the data
-    const mappedDigimon: Digimon[] = (digimonData || []).map((d) => ({
+    const mappedDigimon: Digimon[] = digimonData.map((d) => ({
       id: d.id,
       digimon_id: d.id,
       name: d.name,

@@ -29,67 +29,73 @@ export default function calculateBaseStat(
 }
 
 export function calculateFinalStats(digimon: any) {
-  const baseStats = {
-    hp:
-      calculateBaseStat(
-        digimon.current_level,
-        digimon.digimon.hp_level1 ?? 0,
-        digimon.digimon.hp ?? 0,
-        digimon.digimon.hp_level99 ?? 0
-      ) + (digimon.hp_bonus || 0),
-    atk:
-      calculateBaseStat(
-        digimon.current_level,
-        digimon.digimon.atk_level1 ?? 0,
-        digimon.digimon.atk ?? 0,
-        digimon.digimon.atk_level99 ?? 0
-      ) + (digimon.atk_bonus || 0),
-    def:
-      calculateBaseStat(
-        digimon.current_level,
-        digimon.digimon.def_level1 ?? 0,
-        digimon.digimon.def ?? 0,
-        digimon.digimon.def_level99 ?? 0
-      ) + (digimon.def_bonus || 0),
-    sp:
-      calculateBaseStat(
-        digimon.current_level,
-        digimon.digimon.sp_level1 ?? 0,
-        digimon.digimon.sp ?? 0,
-        digimon.digimon.sp_level99 ?? 0
-      ) + (digimon.sp_bonus || 0),
-    int:
-      calculateBaseStat(
-        digimon.current_level,
-        digimon.digimon.int_level1 ?? 0,
-        digimon.digimon.int ?? 0,
-        digimon.digimon.int_level99 ?? 0
-      ) + (digimon.int_bonus || 0),
-    spd:
-      calculateBaseStat(
-        digimon.current_level,
-        digimon.digimon.spd_level1 ?? 0,
-        digimon.digimon.spd ?? 0,
-        digimon.digimon.spd_level99 ?? 0
-      ) + (digimon.spd_bonus || 0),
-  };
-
-  // Mapping of personality to stat key
-  const personalityBoosts: Record<string, keyof typeof baseStats> = {
-    Durable: "hp",
-    Lively: "sp",
-    Fighter: "atk",
-    Defender: "def",
-    Brainy: "int",
-    Nimble: "spd",
-  };
-
-  const boostedStats = { ...baseStats };
-
-  const boostKey = personalityBoosts[digimon.personality];
-  if (boostKey) {
-    boostedStats[boostKey] = Math.floor(boostedStats[boostKey] * 1.05);
+  // Make sure digimon and digimon.digimon exist
+  if (!digimon || !digimon.digimon) {
+    console.error("Invalid digimon data:", digimon);
+    // Return default stats to prevent crashes
+    return {
+      hp: 100,
+      sp: 50,
+      atk: 10,
+      def: 10,
+      int: 10,
+      spd: 10,
+    };
   }
 
-  return boostedStats;
+  const baseDigimon = digimon.digimon;
+  const level = digimon.current_level || 1;
+
+  // Calculate base stats for current level with null checks
+  const baseHP = calculateBaseStat(
+    level,
+    baseDigimon.hp_level1 || 100,
+    baseDigimon.hp || 100,
+    baseDigimon.hp_level99 || 1000
+  );
+
+  const baseSP = calculateBaseStat(
+    level,
+    baseDigimon.sp_level1 || 50,
+    baseDigimon.sp || 50,
+    baseDigimon.sp_level99 || 500
+  );
+
+  const baseATK = calculateBaseStat(
+    level,
+    baseDigimon.atk_level1 || 10,
+    baseDigimon.atk || 10,
+    baseDigimon.atk_level99 || 100
+  );
+
+  const baseDEF = calculateBaseStat(
+    level,
+    baseDigimon.def_level1 || 10,
+    baseDigimon.def || 10,
+    baseDigimon.def_level99 || 100
+  );
+
+  const baseINT = calculateBaseStat(
+    level,
+    baseDigimon.int_level1 || 10,
+    baseDigimon.int || 10,
+    baseDigimon.int_level99 || 100
+  );
+
+  const baseSPD = calculateBaseStat(
+    level,
+    baseDigimon.spd_level1 || 10,
+    baseDigimon.spd || 10,
+    baseDigimon.spd_level99 || 100
+  );
+
+  // Apply bonuses
+  const hp = Math.round(baseHP * (1 + (digimon.hp_bonus || 0) / 100));
+  const sp = Math.round(baseSP * (1 + (digimon.sp_bonus || 0) / 100));
+  const atk = Math.round(baseATK * (1 + (digimon.atk_bonus || 0) / 100));
+  const def = Math.round(baseDEF * (1 + (digimon.def_bonus || 0) / 100));
+  const int = Math.round(baseINT * (1 + (digimon.int_bonus || 0) / 100));
+  const spd = Math.round(baseSPD * (1 + (digimon.spd_bonus || 0) / 100));
+
+  return { hp, sp, atk, def, int, spd };
 }

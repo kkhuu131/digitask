@@ -6,12 +6,24 @@ const PatchNotes = () => {
         <p className="text-gray-600 mb-6">
           Stay informed about recent changes and upcoming features for Digitask.
         </p>
-        
         <div className="border-b pb-2 mb-6">
           <h2 className="text-xl font-semibold mb-4">Recent Updates</h2>
           <div className="mb-6">
             <div className="flex items-center mb-2">
               <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
+              <h3 className="text-lg font-medium ml-2">Minor Changes</h3>
+              <span className="text-sm text-gray-500 ml-auto">May 7, 2025</span>
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+              <li>Digimon species data and evolution paths are saved locally, so should reduce the load on the server.</li>
+              <li>Fixed rare battle bug where turn animations would get out of sync.</li>
+              <li><b>Campaign mode is coming soon</b>, where you fight a series of progressively harder pre-made battles.</li>
+              <li>Rewards will probably(?) just be titles or achievements, so it won't be required to complete the campaign.</li>
+              <li>Let us know what you want to see in campaign mode in the feedback form!</li>
+            </ul>
+          </div>
+          <div className="mb-6">
+            <div className="flex items-center mb-2">
               <h3 className="text-lg font-medium ml-2">ABI Rewards, Bug Fixes</h3>
               <span className="text-sm text-gray-500 ml-auto">May 6, 2025</span>
             </div>

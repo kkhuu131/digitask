@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { supabase } from "../lib/supabase";
+import { DIGIMON_LOOKUP_TABLE } from "../constants/digimonLookup";
 
 interface DigimonOption {
   id: number;
@@ -39,22 +39,34 @@ const DigimonSelectionModal: React.FC<DigimonSelectionModalProps> = ({
         setError(null);
 
         // Fetch starter Digimon (IDs 1-5)
-        const { data: starterData, error: starterError } = await supabase
-          .from("digimon")
-          .select("id, name, sprite_url, type, attribute, stage")
-          .in("id", [1, 2, 3, 4, 5]);
-
-        if (starterError) throw starterError;
-        setStarterOptions(starterData || []);
+        const starterIds = [1, 2, 3, 4, 5];
+        const starterData = starterIds.map(id => {
+          const digimon = DIGIMON_LOOKUP_TABLE[id];
+          return {
+            id: digimon.id,
+            name: digimon.name,
+            sprite_url: digimon.sprite_url,
+            type: digimon.type,
+            attribute: digimon.attribute,
+            stage: digimon.stage
+          };
+        });
+        setStarterOptions(starterData);
 
         // Fetch NX Digimon (IDs 337-341)
-        const { data: nxData, error: nxError } = await supabase
-          .from("digimon")
-          .select("id, name, sprite_url, type, attribute, stage")
-          .in("id", [337, 338, 339, 340, 341]);
-
-        if (nxError) throw nxError;
-        setNXOptions(nxData || []);
+        const nxIds = [337, 338, 339, 340, 341];
+        const nxData = nxIds.map(id => {
+          const digimon = DIGIMON_LOOKUP_TABLE[id];
+          return {
+            id: digimon.id,
+            name: digimon.name,
+            sprite_url: digimon.sprite_url,
+            type: digimon.type,
+            attribute: digimon.attribute,
+            stage: digimon.stage
+          };
+        });
+        setNXOptions(nxData);
 
         setLoading(false);
       } catch (err) {

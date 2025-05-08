@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDigimonStore } from "../store/petStore";
-import { supabase } from "../lib/supabase";
+import { DIGIMON_LOOKUP_TABLE } from "../constants/digimonLookup";
 
 interface AvatarSelectionModalProps {
   isOpen: boolean;
@@ -28,19 +28,18 @@ const AvatarSelectionModal = ({ isOpen, onClose, onSelect }: AvatarSelectionModa
       setLoading(true);
       
       try {
-        // Fetch the digimon data for the discovered IDs
-        const { data, error } = await supabase
-          .from('digimon')
-          .select('id, sprite_url')
-          .in('id', discoveredDigimon)
-          .not('sprite_url', 'is', null)
-          .order('id', { ascending: true });
+        // Use the lookup table:
+        const avatarOptions = discoveredDigimon
+          .map(id => ({
+            id,
+            sprite_url: DIGIMON_LOOKUP_TABLE[id]?.sprite_url
+          }))
+          .filter(digimon => digimon.sprite_url) // Filter out any without sprite URLs
+          .sort((a, b) => a.id - b.id); // Sort by ID ascending
         
-        if (error) throw error;
-        
-        if (data && data.length > 0) {
+        if (avatarOptions.length > 0) {
           // Store both ID and sprite URL to maintain sort order
-          setAvailableSprites(data as DigimonSprite[]);
+          setAvailableSprites(avatarOptions as DigimonSprite[]);
         } else {
           setAvailableSprites([]);
         }

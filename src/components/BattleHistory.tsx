@@ -16,7 +16,7 @@ const BattleHistory: React.FC<BattleHistoryProps> = ({ teamBattles = [] }) => {
   return (
     <div className="max-h-[700px] md:max-h-[700px] lg:max-h-[700px] overflow-y-auto pr-2 pb-4">
       <div className="space-y-3 sm:space-y-4">
-        {teamBattles.map((battle) => {
+        {teamBattles.map((battle, index) => {
           // Format the date
           const battleDate = new Date(battle.created_at);
           const formattedDate = battleDate.toLocaleDateString(undefined, {
@@ -33,7 +33,7 @@ const BattleHistory: React.FC<BattleHistoryProps> = ({ teamBattles = [] }) => {
           
           return (
             <div 
-              key={teamBattle.id} 
+              key={`${battle.id}-${index}`} 
               className={`px-2 py-3 sm:px-3 rounded-lg border ${
                 playerWon ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'
               }`}

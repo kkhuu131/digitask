@@ -30,6 +30,7 @@ import UserSearchPage from './pages/UserSearchPage';
 import LeaderboardPage from './pages/LeaderboardPage';
 import AdminReportsPage from './pages/AdminReportsPage';
 import DigimonPlayground from "./pages/DigimonPlayground";
+import Campaign from "./pages/Campaign";
 
 // Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -466,6 +467,14 @@ function App() {
             </RequireAuth>
           } 
         />
+        
+        <Route path="/campaign" element={
+          <ProtectedRoute>
+            <Layout>
+              <Campaign />
+            </Layout>
+          </ProtectedRoute>
+        } />
         
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

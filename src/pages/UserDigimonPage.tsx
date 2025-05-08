@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
-import { useDigimonStore, EvolutionOption, UserDigimon, expToBoostPoints } from "../store/petStore";
+import { useDigimonStore, EvolutionOption, UserDigimon } from "../store/petStore";
 import MilestoneProgress from "../components/MilestoneProgress"
-import { supabase } from "../lib/supabase";
 import DigimonDetailModal from "../components/DigimonDetailModal";
 import { motion } from "framer-motion";
-import calculateBaseStat from "../utils/digimonStatCalculation";
 import { DigimonType, DigimonAttribute } from "../store/battleStore";
 import TypeAttributeIcon from '../components/TypeAttributeIcon';
 import EvolutionAnimation from "../components/EvolutionAnimation";
+import { DIGIMON_LOOKUP_TABLE } from "../constants/digimonLookup";
+import { getEvolutions, getEvolutionsByDigimonIds } from "@/utils/evolutionsHelper";
 
 const UserDigimonPage = () => {
   const { 
@@ -18,7 +18,6 @@ const UserDigimonPage = () => {
     releaseDigimon,
     loading, 
     error,
-    discoveredDigimon,
     evolveDigimon,
     devolveDigimon,
   } = useDigimonStore();
@@ -26,12 +25,7 @@ const UserDigimonPage = () => {
   const [digimonToRelease, setDigimonToRelease] = useState<string | null>(null);
   const [releasingDigimon, setReleasingDigimon] = useState(false);
   const [evolutionData, setEvolutionData] = useState<{[key: number]: EvolutionOption[]}>({});
-  const [showEvolutionModal, setShowEvolutionModal] = useState<string | null>(null);
-  const [evolutionError, setEvolutionError] = useState<string | null>(null);
   const [selectedDetailDigimon, setSelectedDetailDigimon] = useState<UserDigimon | null>(null);
-  const [showDevolutionModal, setShowDevolutionModal] = useState<string | null>(null);
-  const [devolutionError, setDevolutionError] = useState<string | null>(null);
-  const [devolutionData, setDevolutionData] = useState<{[key: number]: EvolutionOption[]}>({});
   const [showEvolutionAnimation, setShowEvolutionAnimation] = useState(false);
   const [evolutionSprites, setEvolutionSprites] = useState<{old: string, new: string} | null>(null);
   const [pendingEvolution, setPendingEvolution] = useState<{digimonId: string, toDigimonId: number} | null>(null);
@@ -40,7 +34,6 @@ const UserDigimonPage = () => {
   useEffect(() => {
     fetchAllUserDigimon();
     fetchAllEvolutionPaths();
-    fetchAllDevolutionPaths();
   }, [fetchAllUserDigimon]);
 
   // Add event listener for name changes
@@ -66,35 +59,34 @@ const UserDigimonPage = () => {
       
       if (digimonIds.length === 0) return;
 
-      // Fetch evolution paths for all digimon_ids
-      const { data: evolutionPaths, error } = await supabase
-        .from("evolution_paths")
-        .select(`
-          id,
-          from_digimon_id,
-          to_digimon_id,
-          level_required,
-          stat_requirements,
-          digimon:to_digimon_id (id, digimon_id, name, stage, sprite_url)
-        `)
-        .in("from_digimon_id", digimonIds);
+      const evolutionPaths = getEvolutionsByDigimonIds(digimonIds);
 
-      if (error) throw error;
+      // Enrich with digimon data from lookup table
+      const enrichedEvolutionPaths = evolutionPaths.map(path => ({
+        ...path,
+        digimon: {
+          id: DIGIMON_LOOKUP_TABLE[path.to_digimon_id].id,
+          digimon_id: DIGIMON_LOOKUP_TABLE[path.to_digimon_id].digimon_id,
+          name: DIGIMON_LOOKUP_TABLE[path.to_digimon_id].name,
+          stage: DIGIMON_LOOKUP_TABLE[path.to_digimon_id].stage,
+          sprite_url: DIGIMON_LOOKUP_TABLE[path.to_digimon_id].sprite_url
+        }
+      }));
 
       // Organize evolution paths by from_digimon_id
       const evolutionsByDigimon: {[key: number]: EvolutionOption[]} = {};
       
-      evolutionPaths.forEach(path => {
+      enrichedEvolutionPaths.forEach(path => {
         if (!evolutionsByDigimon[path.from_digimon_id]) {
           evolutionsByDigimon[path.from_digimon_id] = [];
         }
         
         evolutionsByDigimon[path.from_digimon_id].push({
           id: path.id,
-          digimon_id: (path.digimon as any).id,
-          name: (path.digimon as any).name,
-          stage: (path.digimon as any).stage,
-          sprite_url: (path.digimon as any).sprite_url,
+          digimon_id: path.digimon.digimon_id,
+          name: path.digimon.name,
+          stage: path.digimon.stage,
+          sprite_url: path.digimon.sprite_url,
           level_required: path.level_required,
           stat_requirements: path.stat_requirements || {}
         });
@@ -103,44 +95,6 @@ const UserDigimonPage = () => {
       setEvolutionData(evolutionsByDigimon);
     } catch (error) {
       console.error("Error fetching evolution paths:", error);
-    }
-  };
-
-  // Add function to fetch devolution paths
-  const fetchAllDevolutionPaths = async () => {
-    try {
-      const { data: devolutionPaths, error } = await supabase
-        .from("evolution_paths")
-        .select(`
-          id,
-          to_digimon_id,
-          from_digimon_id,
-          digimon:from_digimon_id (id, digimon_id, name, stage, sprite_url)
-        `);
-        
-      if (error) throw error;
-      
-      // Group by to_digimon_id (the current form that can devolve)
-      const groupedPaths: {[key: number]: EvolutionOption[]} = {};
-      
-      devolutionPaths.forEach(path => {
-        if (!groupedPaths[path.to_digimon_id]) {
-          groupedPaths[path.to_digimon_id] = [];
-        }
-        
-        groupedPaths[path.to_digimon_id].push({
-          id: path.id,
-          digimon_id: path.from_digimon_id,
-          name: (path.digimon as any).name,
-          stage: (path.digimon as any).stage,
-          sprite_url: (path.digimon as any).sprite_url,
-          level_required: 0 // Not applicable for devolution
-        });
-      });
-      
-      setDevolutionData(groupedPaths);
-    } catch (error) {
-      console.error("Error fetching devolution paths:", error);
     }
   };
 
@@ -169,36 +123,31 @@ const UserDigimonPage = () => {
     setDigimonToRelease(null);
   };
 
-  const handleShowEvolutionModal = (digimonId: string) => {
-    setShowEvolutionModal(digimonId);
-    setEvolutionError(null);
-  };
-
   // Add a new function to fetch evolution paths for a specific Digimon ID
   const fetchEvolutionPathsForDigimon = async (digimonId: number) => {
     try {
-      const { data: evolutionPaths, error } = await supabase
-        .from("evolution_paths")
-        .select(`
-          id,
-          from_digimon_id,
-          to_digimon_id,
-          level_required,
-          stat_requirements,
-          digimon:to_digimon_id (id, digimon_id, name, stage, sprite_url)
-        `)
-        .eq("from_digimon_id", digimonId);
+      const evolutionPaths = getEvolutions(digimonId);
 
-      if (error) throw error;
+      // Enrich with digimon data from lookup table
+      const enrichedEvolutionPaths = evolutionPaths.map(path => ({
+        ...path,
+        digimon: {
+          id: DIGIMON_LOOKUP_TABLE[path.to_digimon_id].id,
+          digimon_id: DIGIMON_LOOKUP_TABLE[path.to_digimon_id].digimon_id,
+          name: DIGIMON_LOOKUP_TABLE[path.to_digimon_id].name,
+          stage: DIGIMON_LOOKUP_TABLE[path.to_digimon_id].stage,
+          sprite_url: DIGIMON_LOOKUP_TABLE[path.to_digimon_id].sprite_url
+        }
+      }));
 
       // Update the evolution data for this specific Digimon ID
-      if (evolutionPaths.length > 0) {
-        const newEvolutions: EvolutionOption[] = evolutionPaths.map(path => ({
+      if (enrichedEvolutionPaths.length > 0) {
+        const newEvolutions: EvolutionOption[] = enrichedEvolutionPaths.map(path => ({
           id: path.id,
-          digimon_id: (path.digimon as any).id,
-          name: (path.digimon as any).name,
-          stage: (path.digimon as any).stage,
-          sprite_url: (path.digimon as any).sprite_url,
+          digimon_id: path.digimon.id,
+          name: path.digimon.name,
+          stage: path.digimon.stage,
+          sprite_url: path.digimon.sprite_url,
           level_required: path.level_required,
           stat_requirements: path.stat_requirements || {}
         }));
@@ -219,39 +168,6 @@ const UserDigimonPage = () => {
       console.error("Error fetching evolution paths:", error);
     }
   };
-
-  const handleEvolution = async (digimonId: string, toDigimonId: number) => {
-    try {
-      setEvolutionError(null);
-      
-      // Find the current digimon
-      const currentDigimon = allUserDigimon.find(d => d.id === digimonId);
-      if (!currentDigimon) throw new Error("Current Digimon not found");
-      
-      // Find the target digimon
-      const targetDigimon = evolutionData[currentDigimon.digimon_id]?.find(
-        option => option.digimon_id === toDigimonId
-      );
-      if (!targetDigimon) throw new Error("Target Digimon not found");
-      
-      // Set up animation sprites
-      setEvolutionSprites({
-        old: currentDigimon.digimon?.sprite_url || "",
-        new: targetDigimon.sprite_url
-      });
-      
-      // Store pending evolution data
-      setPendingEvolution({digimonId, toDigimonId});
-      
-      // Show animation
-      setShowEvolutionModal(null);
-      setSelectedDetailDigimon(null);
-      setShowEvolutionAnimation(true);
-      
-    } catch (error) {
-      setEvolutionError((error as Error).message);
-    }
-  };
   
   // Function to complete evolution after animation
   const completeEvolution = async () => {
@@ -270,44 +186,11 @@ const UserDigimonPage = () => {
       await fetchAllUserDigimon();
       
     } catch (error) {
-      setEvolutionError((error as Error).message);
+      console.error("Error evolving Digimon:", error);
     } finally {
       setShowEvolutionAnimation(false);
       setEvolutionSprites(null);
       setPendingEvolution(null);
-    }
-  };
-
-  const handleDevolve = async (digimonId: string, fromDigimonId: number) => {
-    try {
-      setDevolutionError(null);
-      
-      // Find the current digimon
-      const currentDigimon = allUserDigimon.find(d => d.id === digimonId);
-      if (!currentDigimon) throw new Error("Current Digimon not found");
-      
-      // Find the target digimon
-      const targetDigimon = devolutionData[currentDigimon.digimon_id]?.find(
-        option => option.digimon_id === fromDigimonId
-      );
-      if (!targetDigimon) throw new Error("Target Digimon not found");
-      
-      // Set up animation sprites
-      setEvolutionSprites({
-        old: currentDigimon.digimon?.sprite_url || "",
-        new: targetDigimon.sprite_url
-      });
-      
-      // Store pending devolution data
-      setPendingDevolution({digimonId, fromDigimonId});
-      
-      // Show animation
-      setShowDevolutionModal(null);
-      setSelectedDetailDigimon(null);
-      setShowEvolutionAnimation(true);
-      
-    } catch (error) {
-      setDevolutionError((error as Error).message);
     }
   };
   
@@ -328,17 +211,12 @@ const UserDigimonPage = () => {
       await fetchAllUserDigimon();
       
     } catch (error) {
-      setDevolutionError((error as Error).message);
+      console.error("Error devolving Digimon:", error);
     } finally {
       setShowEvolutionAnimation(false);
       setEvolutionSprites(null);
       setPendingDevolution(null);
     }
-  };
-
-  // Check if a Digimon has been discovered
-  const isDiscovered = (digimonId: number) => {
-    return discoveredDigimon.includes(digimonId);
   };
 
   // Add function to handle opening the detail modal
@@ -369,10 +247,6 @@ const UserDigimonPage = () => {
       if (event.detail && event.detail.newDigimonId) {
         // Refresh all user Digimon data
         fetchAllUserDigimon();
-        
-        // Fetch evolution paths for the newly evolved Digimon
-        fetchAllEvolutionPaths();
-        fetchAllDevolutionPaths();
       }
     };
 
@@ -382,12 +256,6 @@ const UserDigimonPage = () => {
       window.removeEventListener('digimon-evolved', handleDigimonEvolved as EventListener);
     };
   }, [fetchAllUserDigimon]);
-
-  // Add this function to UserDigimonPage.tsx
-  const handleShowDevolutionModal = (digimonId: string) => {
-    setShowDevolutionModal(digimonId);
-    setDevolutionError(null);
-  };
 
   const handleDigimonUpdate = (updatedDigimon: UserDigimon) => {
     setSelectedDetailDigimon(updatedDigimon);
@@ -433,324 +301,16 @@ const UserDigimonPage = () => {
         </div>
       )}
 
-      {/* Evolution Modal */}
-      {showEvolutionModal && selectedDetailDigimon && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center z-50 p-4 overflow-y-auto"
-          onClick={() => setShowEvolutionModal(null)}
-        >
-          <div 
-            className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-4xl my-8 relative"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h3 className="text-xl font-bold mb-4">Evolution Options</h3>
-            <div className="text-md text-gray-500 mb-4">
-              Evolving will<b className="text-red-500"> reset your Digimon level back to 1</b> and give {expToBoostPoints(selectedDetailDigimon.current_level, true)} ABI.
-            </div>
-            {evolutionError && (
-              <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
-                <p className="text-sm text-red-700">{evolutionError}</p>
-              </div>
-            )}
-            
-            <div className="overflow-y-auto max-h-[60vh] mb-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
-              {(evolutionData[selectedDetailDigimon.digimon_id] || []).map((option) => {
-                // Calculate base stats for current level
-                const baseHP = calculateBaseStat(
-                  selectedDetailDigimon.current_level,
-                  selectedDetailDigimon.digimon?.hp_level1 || 0,
-                  selectedDetailDigimon.digimon?.hp || 0,
-                  selectedDetailDigimon.digimon?.hp_level99 || 0
-                );
-                
-                const baseSP = calculateBaseStat(
-                  selectedDetailDigimon.current_level,
-                  selectedDetailDigimon.digimon?.sp_level1 || 0,
-                  selectedDetailDigimon.digimon?.sp || 0,
-                  selectedDetailDigimon.digimon?.sp_level99 || 0
-                );
-                
-                const baseATK = calculateBaseStat(
-                  selectedDetailDigimon.current_level,
-                  selectedDetailDigimon.digimon?.atk_level1 || 0,
-                  selectedDetailDigimon.digimon?.atk || 0,
-                  selectedDetailDigimon.digimon?.atk_level99 || 0
-                );
-                
-                const baseDEF = calculateBaseStat(
-                  selectedDetailDigimon.current_level,
-                  selectedDetailDigimon.digimon?.def_level1 || 0,
-                  selectedDetailDigimon.digimon?.def || 0,
-                  selectedDetailDigimon.digimon?.def_level99 || 0
-                );
-                
-                const baseINT = calculateBaseStat(
-                  selectedDetailDigimon.current_level,
-                  selectedDetailDigimon.digimon?.int_level1 || 0,
-                  selectedDetailDigimon.digimon?.int || 0,
-                  selectedDetailDigimon.digimon?.int_level99 || 0
-                );
-                
-                const baseSPD = calculateBaseStat(
-                  selectedDetailDigimon.current_level,
-                  selectedDetailDigimon.digimon?.spd_level1 || 0,
-                  selectedDetailDigimon.digimon?.spd || 0,
-                  selectedDetailDigimon.digimon?.spd_level99 || 0
-                );
-                
-                // Check level requirement
-                const meetsLevelRequirement = selectedDetailDigimon.current_level >= option.level_required;
-                
-                // Check stat requirements
-                let meetsStatRequirements = true;
-                const statRequirementsList = [];
-                
-                if (option.stat_requirements) {
-                  const statReqs = option.stat_requirements;
-                  
-                  // Check each stat requirement and build display list
-                  if (statReqs.hp && statReqs.hp > 0) {
-                    const currentHP = baseHP + (selectedDetailDigimon.hp_bonus || 0);
-                    if (currentHP < statReqs.hp) meetsStatRequirements = false;
-                    statRequirementsList.push({
-                      name: 'HP',
-                      current: currentHP,
-                      required: statReqs.hp,
-                      meets: currentHP >= statReqs.hp
-                    });
-                  }
-                  
-                  if (statReqs.sp && statReqs.sp > 0) {
-                    const currentSP = baseSP + (selectedDetailDigimon.sp_bonus || 0);
-                    if (currentSP < statReqs.sp) meetsStatRequirements = false;
-                    statRequirementsList.push({
-                      name: 'SP',
-                      current: currentSP,
-                      required: statReqs.sp,
-                      meets: currentSP >= statReqs.sp
-                    });
-                  }
-                  
-                  if (statReqs.atk && statReqs.atk > 0) {
-                    const currentATK = baseATK + (selectedDetailDigimon.atk_bonus || 0);
-                    if (currentATK < statReqs.atk) meetsStatRequirements = false;
-                    statRequirementsList.push({
-                      name: 'ATK',
-                      current: currentATK,
-                      required: statReqs.atk,
-                      meets: currentATK >= statReqs.atk
-                    });
-                  }
-                  
-                  if (statReqs.def && statReqs.def > 0) {
-                    const currentDEF = baseDEF + (selectedDetailDigimon.def_bonus || 0);
-                    if (currentDEF < statReqs.def) meetsStatRequirements = false;
-                    statRequirementsList.push({
-                      name: 'DEF',
-                      current: currentDEF,
-                      required: statReqs.def,
-                      meets: currentDEF >= statReqs.def
-                    });
-                  }
-                  
-                  if (statReqs.int && statReqs.int > 0) {
-                    const currentINT = baseINT + (selectedDetailDigimon.int_bonus || 0);
-                    if (currentINT < statReqs.int) meetsStatRequirements = false;
-                    statRequirementsList.push({
-                      name: 'INT',
-                      current: currentINT,
-                      required: statReqs.int,
-                      meets: currentINT >= statReqs.int
-                    });
-                  }
-                  
-                  if (statReqs.spd && statReqs.spd > 0) {
-                    const currentSPD = baseSPD + (selectedDetailDigimon.spd_bonus || 0);
-                    if (currentSPD < statReqs.spd) meetsStatRequirements = false;
-                    statRequirementsList.push({
-                      name: 'SPD',
-                      current: currentSPD,
-                      required: statReqs.spd,
-                      meets: currentSPD >= statReqs.spd
-                    });
-                  }
-                }
-                
-                const canEvolve = meetsLevelRequirement && meetsStatRequirements;
-                    const discovered = isDiscovered(option.digimon_id);
-                    
-                    return (
-                      <div 
-                        key={option.id}
-                        className={`border rounded-lg p-4 flex flex-col items-center ${
-                      canEvolve ? "hover:shadow-md cursor-pointer opacity-100" : "opacity-60 bg-gray-100"
-                        }`}
-                        onClick={() => canEvolve && handleEvolution(showEvolutionModal, option.digimon_id)}
-                      >
-                        <div className="flex flex-col items-center">
-                          <div className="relative w-24 h-24 mb-2">
-                            <img 
-                              src={option.sprite_url} 
-                              alt={discovered ? option.name : "Unknown Digimon"}
-                              style={{ imageRendering: "pixelated" }} 
-                              className={`w-full h-full object-contain ${!discovered ? "opacity-0" : ""}`}
-                              onError={(e) => {
-                                (e.target as HTMLImageElement).src = "/assets/pet/egg.svg";
-                              }}
-                            />
-                            {!discovered && (
-                              <div className="absolute inset-0 flex items-center justify-center">
-                                <img 
-                                  src={option.sprite_url} 
-                                  alt="Unknown Digimon"
-                                  style={{ imageRendering: "pixelated" }} 
-                                  className="w-full h-full object-contain brightness-0"
-                                  onError={(e) => {
-                                    (e.target as HTMLImageElement).src = "/assets/pet/egg.svg";
-                                  }}
-                                />
-                              </div>
-                            )}
-                          </div>
-                          <span className="font-medium text-center">
-                            {discovered ? option.name : "???"}
-                          </span>
-                          <span className="text-xs text-gray-500">
-                            {option.stage}
-                          </span>
-                      
-                      {/* Level requirement */}
-                          <span className={`text-xs mt-1 ${
-                            meetsLevelRequirement ? "text-green-600" : "text-red-600"
-                          }`}>
-                            Required Level: {option.level_required}
-                        {!meetsLevelRequirement && ` (Current: ${selectedDetailDigimon.current_level})`}
-                          </span>
-                      
-                      {/* Stat requirements */}
-                      {statRequirementsList.length > 0 && (
-                        <div className="mt-2 w-full">
-                          <div className="space-y-1 mt-1">
-                            {statRequirementsList.map(stat => (
-                              <div key={stat.name} className="flex justify-between text-xs">
-                                <span>{stat.name}</span>
-                                <span className={stat.meets ? "text-green-600" : "text-red-600"}>
-                                  {stat.current}/{stat.required}
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-            </div>
-            <div className="flex justify-end mt-4">
-              <button 
-                onClick={() => setShowEvolutionModal(null)}
-                className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Digimon Detail Modal - Replace with new component */}
       {selectedDetailDigimon && (
         <DigimonDetailModal
           selectedDigimon={selectedDetailDigimon}
           onClose={handleCloseDetailModal}
           onSetActive={handleSwitchDigimon}
-          onShowEvolution={(digimonId) => {
-            // Set the evolution modal to show but don't close the detail modal
-            handleShowEvolutionModal(digimonId);
-          }}
-          onShowDevolution={(digimonId) => handleShowDevolutionModal(digimonId)}
           onRelease={handleReleaseClick}
           onNameChange={handleDigimonUpdate}
-          className="z-40" // Add a lower z-index
+          className="z-40"
         />
-      )}
-
-      {/* Devolution Modal */}
-      {showDevolutionModal && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center z-50 p-4 overflow-y-auto"
-          onClick={() => setShowDevolutionModal(null)}
-        >
-          <div 
-            className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-4xl my-8 relative"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h3 className="text-xl font-bold mb-4">De-Digivolution Options</h3>
-            <div className="text-md text-gray-500 mb-4">
-              Devolving will<b className="text-red-500"> reset your Digimon level back to 1</b> and give {expToBoostPoints(selectedDetailDigimon?.current_level || 1, false)} ABI.
-            </div>
-            {devolutionError && (
-              <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
-                <p className="text-sm text-red-700">{devolutionError}</p>
-                    </div>
-                  )}
-            
-            {/* Find the selected digimon */}
-            {(() => {
-              const selectedDigimon = allUserDigimon.find(d => d.id === showDevolutionModal);
-              if (!selectedDigimon) return <p>Digimon not found</p>;
-              
-              const options = devolutionData[selectedDigimon.digimon_id] || [];
-                      
-                return (
-                  <div>
-                    {options.length === 0 && (
-                      <p className="text-gray-500 text-center">No options available.</p>
-                    )}
-                  <div className="overflow-y-auto max-h-[60vh] mb-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
-                  {options.map((option) => {
-                      const discovered = isDiscovered(option.digimon_id);
-                      return (
-                        <div 
-                          key={option.id}
-                        className={`border rounded-lg p-4 flex flex-col items-center ${
-                          discovered ? "hover:shadow-md cursor-pointer opacity-100" : "opacity-60 bg-gray-100"
-                        }`}
-                        onClick={() => discovered && handleDevolve(showDevolutionModal, option.digimon_id)}
-                      >
-                          <img 
-                            src={option.sprite_url} 
-                            alt={discovered ? option.name : "Unknown Digimon"}
-                            className={`w-24 h-24 object-contain mb-2 ${
-                              discovered ? "opacity-100" : "brightness-0"
-                            }`}
-                            style={{ imageRendering: "pixelated" }}
-                          />
-                        <h4 className="font-bold">{discovered ? option.name : "???"}</h4>
-                        <p className="text-sm text-gray-500">{option.stage}</p>
-                                </div>
-                      );
-                    })}
-                  </div>
-                </div>
-                </div>
-                );
-            })()}
-            
-            <div className="flex justify-end mt-4">
-                    <button
-                onClick={() => setShowDevolutionModal(null)}
-                className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
-              >
-                Close
-                    </button>
-            </div>
-          </div>
-        </div>
       )}
 
       {/* Evolution/Devolution Animation */}

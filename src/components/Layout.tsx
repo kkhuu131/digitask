@@ -157,7 +157,12 @@ const Layout = ({ children }: LayoutProps) => {
                   >
                     DigiDex
                   </Link>
-                  
+                  {/* <Link
+                    to="/campaign"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Campaign
+                  </Link> */}
                 </NavDropdown>
                 
                 <NavDropdown 

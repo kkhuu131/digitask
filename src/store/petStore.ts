@@ -4,7 +4,12 @@ import { useNotificationStore } from "./notificationStore";
 import { useTaskStore } from "./taskStore";
 import { StatCategory } from "../utils/categoryDetection";
 import calculateBaseStat from "../utils/digimonStatCalculation";
-
+import { DIGIMON_LOOKUP_TABLE } from "../constants/digimonLookup";
+import {
+  getDevolutions,
+  getEvolutionPath,
+  getEvolutions,
+} from "@/utils/evolutionsHelper";
 export const NON_ACTIVE_DIGIMON_EXP_MULTIPLIER = 0.5;
 
 export function expToBoostPoints(level: number, evolution: boolean = true) {
@@ -68,6 +73,8 @@ export interface UserDigimon {
 export interface Digimon {
   id: number;
   digimon_id: number;
+  request_id?: number;
+  detail_url?: string;
   name: string;
   stage: string;
   sprite_url: string;
@@ -259,32 +266,27 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       }
 
       // Now try to get the active Digimon
-      const { data: userDigimon, error } = await supabase
+      const { data: userDigimonRawData, error } = await supabase
         .from("user_digimon")
-        .select(
-          `
-          *,
-          digimon:digimon_id(*)
-        `
-        )
+        .select("*")
         .eq("user_id", userData.user.id)
         .eq("is_active", true)
         .single();
+
+      const userDigimon = {
+        ...userDigimonRawData,
+        digimon: DIGIMON_LOOKUP_TABLE[userDigimonRawData.digimon_id],
+      };
 
       if (error) {
         // If no active Digimon found, try to get any Digimon
         if (error.code === "PGRST116") {
           console.log("No active Digimon found, looking for any Digimon");
 
-          const { data: anyAvailableDigimon, error: availableError } =
+          const { data: anyAvailableDigimonRawData, error: availableError } =
             await supabase
               .from("user_digimon")
-              .select(
-                `
-              *,
-              digimon:digimon_id(*)
-            `
-              )
+              .select("*")
               .eq("user_id", userData.user.id)
               .order("created_at", { ascending: false })
               .limit(1)
@@ -295,6 +297,12 @@ export const useDigimonStore = create<PetState>((set, get) => ({
             set({ userDigimon: null, digimonData: null, loading: false });
             return;
           }
+
+          const anyAvailableDigimon = {
+            ...anyAvailableDigimonRawData,
+            digimon:
+              DIGIMON_LOOKUP_TABLE[anyAvailableDigimonRawData.digimon_id],
+          };
 
           // Found a Digimon, make it active
           if (anyAvailableDigimon) {
@@ -340,20 +348,12 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       await get().addDiscoveredDigimon(userDigimon.digimon_id);
 
       // Get evolution options
-      const { data: evolutionPaths, error: evolutionError } = await supabase
-        .from("evolution_paths")
-        .select(
-          `
-          id,
-          to_digimon_id,
-          level_required,
-          stat_requirements,
-          digimon:to_digimon_id (id, digimon_id, name, stage, sprite_url)
-        `
-        )
-        .eq("from_digimon_id", userDigimon.digimon_id);
+      const evolutionPathsRawData = getEvolutions(userDigimon.digimon_id);
 
-      if (evolutionError) throw evolutionError;
+      const evolutionPaths = evolutionPathsRawData.map((path) => ({
+        ...path,
+        digimon: DIGIMON_LOOKUP_TABLE[path.to_digimon_id],
+      }));
 
       const evolutionOptions = evolutionPaths.map((path) => ({
         id: path.id,
@@ -387,18 +387,18 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
       const { data: digimon, error } = await supabase
         .from("user_digimon")
-        .select(
-          `
-          *,
-          digimon (*)
-        `
-        )
+        .select("*")
         .eq("user_id", userData.user.id)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
 
-      set({ allUserDigimon: digimon || [], loading: false });
+      const allUserDigimon = digimon.map((d) => ({
+        ...d,
+        digimon: DIGIMON_LOOKUP_TABLE[d.digimon_id],
+      }));
+
+      set({ allUserDigimon: allUserDigimon || [], loading: false });
 
       // Also fetch the user's daily stat gains
       await get().fetchUserDailyStatGains();
@@ -586,23 +586,22 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       const { userDigimon } = get();
       if (!userDigimon) return false;
 
-      // Fetch evolution options for the current Digimon
-      const { data: evolutionPaths, error } = await supabase
-        .from("evolution_paths")
-        .select(
-          `
-          id,
-          to_digimon_id,
-          level_required,
-          stat_requirements,
-          digimon:to_digimon_id (id, digimon_id, name, stage, sprite_url)
-        `
-        )
-        .eq("to_digimon_id", userDigimon.digimon_id);
+      // Fetch de-evolution options for the current Digimon
+      const evolutionPaths = getDevolutions(userDigimon.digimon_id);
 
-      if (error) throw error;
+      // Enrich with digimon data from lookup table
+      const enrichedEvolutionPaths = evolutionPaths.map((path) => ({
+        ...path,
+        digimon: {
+          id: DIGIMON_LOOKUP_TABLE[path.to_digimon_id].id,
+          digimon_id: DIGIMON_LOOKUP_TABLE[path.to_digimon_id].digimon_id,
+          name: DIGIMON_LOOKUP_TABLE[path.to_digimon_id].name,
+          stage: DIGIMON_LOOKUP_TABLE[path.to_digimon_id].stage,
+          sprite_url: DIGIMON_LOOKUP_TABLE[path.to_digimon_id].sprite_url,
+        },
+      }));
 
-      const availableEvolutions = evolutionPaths.filter((path) => {
+      const availableEvolutions = enrichedEvolutionPaths.filter((path) => {
         return get().discoveredDigimon.includes(path.to_digimon_id);
       });
 
@@ -619,23 +618,22 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       if (!userDigimon) return false;
 
       // Fetch evolution options for the current Digimon
-      const { data: evolutionPaths, error } = await supabase
-        .from("evolution_paths")
-        .select(
-          `
-          id,
-          to_digimon_id,
-          level_required,
-          stat_requirements,
-          digimon:to_digimon_id (id, digimon_id, name, stage, sprite_url)
-        `
-        )
-        .eq("from_digimon_id", userDigimon.digimon_id);
+      const evolutionPaths = getEvolutions(userDigimon.digimon_id);
 
-      if (error) throw error;
+      // Enrich with digimon data from lookup table
+      const enrichedEvolutionPaths = evolutionPaths.map((path) => ({
+        ...path,
+        digimon: {
+          id: DIGIMON_LOOKUP_TABLE[path.to_digimon_id].id,
+          digimon_id: DIGIMON_LOOKUP_TABLE[path.to_digimon_id].digimon_id,
+          name: DIGIMON_LOOKUP_TABLE[path.to_digimon_id].name,
+          stage: DIGIMON_LOOKUP_TABLE[path.to_digimon_id].stage,
+          sprite_url: DIGIMON_LOOKUP_TABLE[path.to_digimon_id].sprite_url,
+        },
+      }));
 
       // Check if any evolution paths are available and meet requirements
-      const availableEvolutions = evolutionPaths.filter((path) => {
+      const availableEvolutions = enrichedEvolutionPaths.filter((path) => {
         // Check level requirement
         const meetsLevelRequirement =
           userDigimon.current_level >= path.level_required;
@@ -756,17 +754,15 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       if (specificDigimonId) {
         const { data, error } = await supabase
           .from("user_digimon")
-          .select(
-            `
-            *,
-            digimon (*)
-          `
-          )
+          .select("*")
           .eq("id", specificDigimonId)
           .single();
 
         if (error) throw error;
-        digimonToEvolve = data;
+        digimonToEvolve = {
+          ...data,
+          digimon: DIGIMON_LOOKUP_TABLE[data.digimon_id],
+        };
       } else {
         digimonToEvolve = get().userDigimon;
       }
@@ -776,25 +772,33 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       }
 
       // Get the evolution path
-      const { data: evolutionPath, error: evolutionError } = await supabase
-        .from("evolution_paths")
-        .select("*, digimon:to_digimon_id (*)")
-        .eq("from_digimon_id", digimonToEvolve.digimon_id)
-        .eq("to_digimon_id", toDigimonId)
-        .single();
+      const evolutionPath = getEvolutionPath(
+        digimonToEvolve.digimon_id,
+        toDigimonId
+      );
 
-      if (evolutionError) throw evolutionError;
+      if (!evolutionPath) {
+        throw new Error("No evolution path found for Digimon");
+      }
+
+      // Enrich with digimon data from lookup table
+      const enrichedEvolutionPath = {
+        ...evolutionPath,
+        digimon: DIGIMON_LOOKUP_TABLE[evolutionPath.to_digimon_id],
+      };
 
       // Check level requirement
-      if (digimonToEvolve.current_level < evolutionPath.level_required) {
+      if (
+        digimonToEvolve.current_level < enrichedEvolutionPath.level_required
+      ) {
         throw new Error(
-          `Your Digimon needs to be at least level ${evolutionPath.level_required} to evolve.`
+          `Your Digimon needs to be at least level ${enrichedEvolutionPath.level_required} to evolve.`
         );
       }
 
       // Check stat requirements if they exist
-      if (evolutionPath.stat_requirements) {
-        const statReqs = evolutionPath.stat_requirements;
+      if (enrichedEvolutionPath.stat_requirements) {
+        const statReqs = enrichedEvolutionPath.stat_requirements;
         const statErrors = [];
 
         // Calculate base stats for current level
@@ -952,17 +956,15 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       if (specificDigimonId) {
         const { data, error } = await supabase
           .from("user_digimon")
-          .select(
-            `
-            *,
-            digimon (*)
-          `
-          )
+          .select("*")
           .eq("id", specificDigimonId)
           .single();
 
         if (error) throw error;
-        digimonToDevolve = data;
+        digimonToDevolve = {
+          ...data,
+          digimon: DIGIMON_LOOKUP_TABLE[data.digimon_id],
+        };
       } else {
         digimonToDevolve = get().userDigimon;
       }
@@ -972,14 +974,14 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       }
 
       // Get the evolution path
-      const { error: devolutionError } = await supabase
-        .from("evolution_paths")
-        .select("*, digimon:from_digimon_id (*)")
-        .eq("from_digimon_id", fromDigimonId)
-        .eq("to_digimon_id", digimonToDevolve.digimon_id)
-        .single();
+      const devolutionPath = getEvolutionPath(
+        fromDigimonId,
+        digimonToDevolve.digimon_id
+      );
 
-      if (devolutionError) throw devolutionError;
+      if (!devolutionPath) {
+        throw new Error("No devolution path found for Digimon");
+      }
 
       // Check if we've discovered the Digimon we're devolving to
       if (!get().discoveredDigimon.includes(fromDigimonId)) {
@@ -1027,12 +1029,10 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       set({ loading: true, error: null });
 
       // Get Baby stage Digimon as starters
-      const { data: starterDigimon, error } = await supabase
-        .from("digimon")
-        .select("*")
-        .eq("stage", "Baby");
+      const starterDigimon = Object.values(DIGIMON_LOOKUP_TABLE).filter(
+        (digimon) => digimon.stage === "Baby"
+      );
 
-      if (error) throw error;
       set({ loading: false });
 
       return starterDigimon || [];
@@ -1625,30 +1625,15 @@ export const useDigimonStore = create<PetState>((set, get) => ({
     }
 
     try {
-      // Fetch evolution paths for this digimon
-      const { data: evolutionPaths, error } = await supabase
-        .from("evolution_paths")
-        .select(
-          `
-          id,
-          from_digimon_id,
-          to_digimon_id,
-          level_required,
-          stat_requirements,
-          digimon:to_digimon_id (id, digimon_id, name, stage, sprite_url)
-        `
-        )
-        .eq("from_digimon_id", digimonId);
+      const evolutionPaths = getEvolutions(digimonId);
 
-      if (error) throw error;
-
-      // Transform the data into EvolutionOption format
+      // Transform the data into EvolutionOption format with lookup table
       const options: EvolutionOption[] = evolutionPaths.map((path) => ({
         id: path.id,
         digimon_id: path.to_digimon_id,
-        name: (path.digimon as any).name,
-        stage: (path.digimon as any).stage,
-        sprite_url: (path.digimon as any).sprite_url,
+        name: DIGIMON_LOOKUP_TABLE[path.to_digimon_id].name,
+        stage: DIGIMON_LOOKUP_TABLE[path.to_digimon_id].stage,
+        sprite_url: DIGIMON_LOOKUP_TABLE[path.to_digimon_id].sprite_url,
         level_required: path.level_required,
         stat_requirements: path.stat_requirements || {},
       }));
@@ -1676,28 +1661,16 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
     try {
       // Fetch devolution paths for this digimon
-      const { data: devolutionPaths, error } = await supabase
-        .from("evolution_paths")
-        .select(
-          `
-          id,
-          to_digimon_id,
-          from_digimon_id,
-          digimon:from_digimon_id (id, digimon_id, name, stage, sprite_url)
-        `
-        )
-        .eq("to_digimon_id", digimonId);
+      const devolutionPaths = getDevolutions(digimonId);
 
-      if (error) throw error;
-
-      // Transform the data into EvolutionOption format
+      // Transform the data into EvolutionOption format with lookup table
       const options: EvolutionOption[] = devolutionPaths.map((path) => ({
         id: path.id,
         digimon_id: path.from_digimon_id,
-        name: (path.digimon as any).name,
-        stage: (path.digimon as any).stage,
-        sprite_url: (path.digimon as any).sprite_url,
-        level_required: 0, // Not applicable for devolution
+        name: DIGIMON_LOOKUP_TABLE[path.from_digimon_id].name,
+        stage: DIGIMON_LOOKUP_TABLE[path.from_digimon_id].stage,
+        sprite_url: DIGIMON_LOOKUP_TABLE[path.from_digimon_id].sprite_url,
+        level_required: 0,
       }));
 
       // Update cache

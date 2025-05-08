@@ -446,8 +446,6 @@
 
 - fetchTeamBattleHistory(): Promise<void>
   - Fetches the history of team battles the user has participated in from the database
-- queueForTeamBattle(): Promise<void>
-  - Queues the user for a team battle, DEPRECATED/UNUSED (replaced with selectAndStartBattle)
 - clearCurrentTeamBattle(): void
   - Clears the current team battle from the store
 - checkDailyBattleLimit(): Promise<number>

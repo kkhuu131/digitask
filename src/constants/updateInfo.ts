@@ -1,4 +1,4 @@
-export const CURRENT_VERSION = "1.0.2";
+export const CURRENT_VERSION = "1.0.3";
 
 export const UPDATE_CHANGES = {
   "1.0.1": [
@@ -15,5 +15,11 @@ export const UPDATE_CHANGES = {
     "Fixed bug where Digimon did not recieve happiness from tasks",
     "Fixed bug where Digimon on Dashboard was not visually updated when task was completed",
     "Thank you for the suggestions, please continue to send in any feedback!",
+  ],
+  "1.0.3": [
+    "Performance optimizations and fixed bug where turn animations would get out of sync.",
+    "Campaign mode is in development, where you fight a series of progressively harder pre-made battles.",
+    "Rewards will probably(?) just be titles or achievements, so it won't be required to complete the campaign.",
+    "Let us know what you want to see in campaign mode in the feedback form!",
   ],
 };
