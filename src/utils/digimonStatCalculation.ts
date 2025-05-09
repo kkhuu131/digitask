@@ -89,13 +89,28 @@ export function calculateFinalStats(digimon: any) {
     baseDigimon.spd_level99 || 100
   );
 
-  // Apply bonuses
-  const hp = Math.round(baseHP * (1 + (digimon.hp_bonus || 0) / 100));
-  const sp = Math.round(baseSP * (1 + (digimon.sp_bonus || 0) / 100));
-  const atk = Math.round(baseATK * (1 + (digimon.atk_bonus || 0) / 100));
-  const def = Math.round(baseDEF * (1 + (digimon.def_bonus || 0) / 100));
-  const int = Math.round(baseINT * (1 + (digimon.int_bonus || 0) / 100));
-  const spd = Math.round(baseSPD * (1 + (digimon.spd_bonus || 0) / 100));
+  let hp = Math.round(baseHP + (digimon.hp_bonus || 0));
+  let sp = Math.round(baseSP + (digimon.sp_bonus || 0));
+  let atk = Math.round(baseATK + (digimon.atk_bonus || 0));
+  let def = Math.round(baseDEF + (digimon.def_bonus || 0));
+  let int = Math.round(baseINT + (digimon.int_bonus || 0));
+  let spd = Math.round(baseSPD + (digimon.spd_bonus || 0));
+
+  if (digimon.personality) {
+    if (digimon.personality === "Durable") {
+      hp = Math.round(hp * 1.05);
+    } else if (digimon.personality === "Lively") {
+      sp = Math.round(sp * 1.05);
+    } else if (digimon.personality === "Fighter") {
+      atk = Math.round(atk * 1.05);
+    } else if (digimon.personality === "Defender") {
+      def = Math.round(def * 1.05);
+    } else if (digimon.personality === "Brainy") {
+      int = Math.round(int * 1.05);
+    } else if (digimon.personality === "Nimble") {
+      spd = Math.round(spd * 1.05);
+    }
+  }
 
   return { hp, sp, atk, def, int, spd };
 }

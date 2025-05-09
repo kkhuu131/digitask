@@ -3,7 +3,7 @@ import { supabase } from "../lib/supabase";
 import { useDigimonStore } from "./petStore";
 import { useNotificationStore } from "./notificationStore";
 
-export const ABI_MILESTONES = [5, 10, 25, 40, 60, 85, 115, 150, 200, 240, 300];
+export const ABI_MILESTONES = [5, 10, 20, 40, 60, 80, 120, 150, 200, 250, 300];
 
 export function getABIThreshold() {
   const teamSize = useDigimonStore.getState().allUserDigimon.length;

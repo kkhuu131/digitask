@@ -12,6 +12,19 @@ const PatchNotes = () => {
             <div className="flex items-center mb-2">
               <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
               <h3 className="text-lg font-medium ml-2">Minor Changes</h3>
+              <span className="text-sm text-gray-500 ml-auto">May 9, 2025</span>
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <li>Updated task list UI to be more compact on mobile.</li>
+            <li>Final stat calculations fixed, bonus stats were being applied multiplicatively instead of additively.</li>
+            <li>Users are now suggested a category in task creation, but can change it freely during creation.</li>
+            <li>Campaign mode is in development, please send any suggestions for enemy teams or rewards through the feedback form!</li>
+            <li>A preview of the new campaign mode is available if you go to <a className="text-blue-500" href="https://digitask-pi.vercel.app/campaign" rel="noopener noreferrer">https://digitask-pi.vercel.app/campaign</a>.</li>
+            </ul>
+          </div>
+          <div className="mb-6">
+            <div className="flex items-center mb-2">
+              <h3 className="text-lg font-medium ml-2">Minor Changes</h3>
               <span className="text-sm text-gray-500 ml-auto">May 7, 2025</span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600">

@@ -4,7 +4,7 @@ import { DigimonType, DigimonAttribute } from '../store/battleStore';
 interface TypeAttributeIconProps {
   type: DigimonType;
   attribute: DigimonAttribute;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'xs';
   showLabel?: boolean;
   className?: string;
 }
@@ -25,6 +25,7 @@ const TypeAttributeIcon: React.FC<TypeAttributeIconProps> = ({
   
   // Size classes for the icon itself - adjusted 'md' to be 2x original (32px)
   const iconSizeClasses = {
+    xs: 'w-2 h-2', // 8px (1x)
     sm: 'w-4 h-4', // 16px (1x)
     md: 'w-8 h-8', // 32px (2x) - Changed from w-6 h-6
     lg: 'w-16 h-16' // 64px (4x) - Kept as is
@@ -32,6 +33,7 @@ const TypeAttributeIcon: React.FC<TypeAttributeIconProps> = ({
   
   // Size classes for the background circle (slightly larger) - adjusted 'md'
   const backgroundSizeClasses = {
+    xs: 'w-3 h-3', // 8px
     sm: 'w-5 h-5', // 20px
     md: 'w-10 h-10', // 40px - Changed from w-7 h-7 (approx proportional adjustment)
     lg: 'w-20 h-20' // 80px - Changed from w-18 h-18 (approx proportional adjustment)

@@ -173,8 +173,8 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
         
-        <div className="card">
-          <h2 className="text-xl font-bold">Your Tasks</h2>
+        <div className="card px-0 sm:px-4">
+          <h2 className="text-xl font-bold text-center sm:text-left">Your Tasks</h2>
           <TaskList />
         </div>
         

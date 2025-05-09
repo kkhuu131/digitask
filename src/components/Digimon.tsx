@@ -290,6 +290,7 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
           }}
         >
           <motion.img
+            draggable="false"
             src={digimonData.sprite_url} 
             alt={digimonData.name} 
             className="w-auto h-auto cursor-pointer"

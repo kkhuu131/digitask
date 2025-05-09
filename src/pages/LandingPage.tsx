@@ -100,6 +100,23 @@ const LandingPage: React.FC = () => {
             Manage your tasks and watch your Digimon grow as you complete them
           </p>
         </section>
+        {/* Feedback Section */}
+        <section className="mb-16 text-center">
+          <div className="bg-indigo-50 rounded-xl p-8 max-w-2xl mx-auto">
+            <h3 className="text-xl font-semibold text-indigo-800 mb-3">Help Improve Digitask</h3>
+            <p className="text-gray-700 mb-4">
+              Found any bugs or have any suggestions? Share your thoughts and suggestions in the form below.
+            </p>
+            <a 
+              href="https://forms.gle/4geGdXkywwAQcZDt6" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-full transition-colors"
+            >
+              Share Feedback
+            </a>
+          </div>
+        </section>
       </main>
 
       <footer className="bg-indigo-900 text-white py-8">

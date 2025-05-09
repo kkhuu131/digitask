@@ -89,66 +89,69 @@ const DigimonCard = ({ digimon, isTeam, onSwap }: DigimonCardProps) => {
   // Calculate EXP needed for next level
   const expForNextLevel = digimon.current_level * 20;
 
-  // Content based on team status
-  const content = isTeam ? (
-    <motion.div
-      animate={{ y: [0, -3, 0] }}
-      transition={{ repeat: Infinity, duration: 2 }}
-      className="w-24 h-24 flex items-center justify-center"
-    >
-      <img 
-        src={digimon.digimon?.sprite_url} 
-        alt={digimon.name} 
-        className="scale-[1.5]"
-        style={{ imageRendering: "pixelated" }}
-      />
-    </motion.div>
-  ) : (
-    <div className="w-20 h-20 flex items-center justify-center">
-      <img 
-        src={digimon.digimon?.sprite_url} 
-        alt={digimon.name} 
-        className="scale-[1.5]"
-        style={{ imageRendering: "pixelated" }}
-      />
-    </div>
-  );
-
   return (
     <div 
       ref={(node) => drag(drop(node))}
       className={`
-        ${isTeam ? 'w-40 h-48' : 'w-40 h-48'}
+        ${isTeam ? 'w-40 h-40' : 'w-40 h-40'}
         border rounded-md flex flex-col items-center justify-start p-3
         ${isDragging ? 'opacity-50' : 'opacity-100'}
         ${isOver ? 'bg-blue-100 border border-blue-300' : 'bg-white'}
-        cursor-move transition-all
+        cursor-move transition-all relative
       `}
     >
-      {content}
-      <div className="w-full pb-1">
-        <p className="text-sm truncate w-full text-center mt-1">{digimon.name || digimon.digimon?.name}</p>
-        <div className="flex justify-center items-center mt-1">
-          {digimon.digimon?.type && digimon.digimon?.attribute && (
-            <TypeAttributeIcon
-              type={digimon.digimon.type as DigimonType}
-              attribute={digimon.digimon.attribute as DigimonAttribute}
-              size="sm"
-              showLabel={true}
-              className="text-xs text-gray-500"
-            />
-          )}
+      {digimon.digimon?.type && digimon.digimon?.attribute && (
+        <div className="absolute top-2 left-2">
+          <TypeAttributeIcon
+            type={digimon.digimon.type as DigimonType}
+            attribute={digimon.digimon.attribute as DigimonAttribute}
+            size="md"
+            showLabel={false}
+          />
         </div>
-        <p className="text-xs text-gray-500 mt-1 text-center">Lv.{digimon.current_level}</p>
-      </div>
+      )}
       
-      {/* EXP Bar */}
-      <ProgressBar 
-        value={digimon.experience_points % expForNextLevel} 
-        maxValue={expForNextLevel} 
-        color="bg-blue-500" 
-        label="EXP"
-      />
+      {isTeam ? (
+        <motion.div
+          animate={{ y: [0, -3, 0] }}
+          transition={{ repeat: Infinity, duration: 2 }}
+          className="w-24 h-24 flex items-center justify-center"
+        >
+          <img 
+            src={digimon.digimon?.sprite_url} 
+            alt={digimon.name} 
+            className="scale-[1.5]"
+            style={{ imageRendering: "pixelated" }}
+            draggable="false"
+          />
+        </motion.div>
+      ) : (
+        <div className="w-20 h-20 flex items-center justify-center">
+          <img 
+            src={digimon.digimon?.sprite_url} 
+            alt={digimon.name} 
+            className="scale-[1.5]"
+            style={{ imageRendering: "pixelated" }}
+            draggable="false"
+          />
+        </div>
+      )}
+      
+      <div className="w-full">
+        <p className="text-sm truncate w-full text-center mt-1">{digimon.name || digimon.digimon?.name}</p>
+        
+        <div className="flex items-center justify-center gap-2 w-full">
+          <p className="text-xs text-gray-500 whitespace-nowrap">Lv.{digimon.current_level}</p>
+          <div className="w-20">
+            <ProgressBar 
+              value={digimon.experience_points % expForNextLevel} 
+              maxValue={expForNextLevel} 
+              color="bg-blue-500" 
+              label=""
+            />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
@@ -172,7 +175,7 @@ const EmptySlot = ({ isTeam, onAddToTeam }: EmptySlotProps) => {
     <div 
       ref={drop}
       className={`
-        ${isTeam ? 'w-40 h-48' : 'w-40 h-48'}
+        ${isTeam ? 'w-40 h-40' : 'w-40 h-40'}
         border-2 border-dashed
         ${isTeam ? 'border-gray-300' : 'border-gray-200'}
         rounded-md flex items-center justify-center
@@ -218,31 +221,38 @@ const MobileDigimonCard = ({ digimon, isTeam, onSwap }: DigimonCardProps) => {
     <div
       ref={(node) => drag(drop(node))}
       className={`
-        w-20 h-auto border flex flex-col items-center justify-start
+        w-24 h-24 border flex flex-col items-center justify-start pt-2
         ${isDragging ? 'opacity-50' : 'opacity-100'}
         ${isOver ? 'bg-blue-100 border border-blue-300' : 'bg-white'}
-        cursor-move transition-all
+        cursor-move transition-all rounded-md relative
       `}
     >
-      <div className="w-16 h-16 flex items-center justify-center">
+      {/* Type/Attribute Icon in top left corner */}
+      {digimon.digimon?.type && digimon.digimon?.attribute && (
+        <div className="absolute top-1 left-1">
+          <TypeAttributeIcon
+            type={digimon.digimon.type as DigimonType}
+            attribute={digimon.digimon.attribute as DigimonAttribute}
+            size="sm"
+            showLabel={false}
+          />
+        </div>
+      )}
+      
+      {/* Digimon sprite */}
+      <div className="w-12 h-12 flex items-center justify-center">
         <img
           src={digimon.digimon?.sprite_url}
           alt={digimon.name || digimon.digimon?.name}
           className="scale-[1]"
           style={{ imageRendering: "pixelated" }}
+          draggable="false"
         />
       </div>
-      <div className="flex justify-center items-center mb-1">
-         {digimon.digimon?.type && digimon.digimon?.attribute && (
-            <TypeAttributeIcon
-              type={digimon.digimon.type as DigimonType}
-              attribute={digimon.digimon.attribute as DigimonAttribute}
-              size="sm" // Smaller icon for mobile
-              showLabel={false} // No label needed based on image
-            />
-          )}
-      </div>
-      <p className="text-[10px] mb-1 text-gray-500 text-center">Lv.{digimon.current_level}</p>
+      
+      {/* Level indicator */}
+      <p className="text-[10px]">{digimon.name || digimon.digimon?.name}</p>
+      <p className="text-[10px] text-gray-500">Lv.{digimon.current_level}</p>
     </div>
   );
 };
@@ -279,6 +289,68 @@ const MobileEmptySlot = ({ isTeam, onAddToTeam }: EmptySlotProps) => {
   );
 };
 
+// For the smallest screens (<320px)
+const TinyDigimonCard = ({ digimon, isTeam, onSwap }: DigimonCardProps) => {
+  const [{ isDragging }, drag] = useDrag({
+    type: DIGIMON_TYPE,
+    item: { id: digimon.id, isTeam } as DigimonDragItem,
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+  });
+
+  const [{ isOver }, drop] = useDrop({
+    accept: DIGIMON_TYPE,
+    drop: (item: DigimonDragItem) => {
+      if (item.id !== digimon.id && item.isTeam !== isTeam) {
+        onSwap(item.id, digimon.id);
+      }
+    },
+    collect: (monitor) => ({
+      isOver: !!monitor.isOver(),
+    }),
+  });
+
+  return (
+    <div
+      ref={(node) => drag(drop(node))}
+      className={`
+        w-20 h-20 border flex flex-col items-center justify-start pt-4
+        ${isDragging ? 'opacity-50' : 'opacity-100'}
+        ${isOver ? 'bg-blue-100 border border-blue-300' : 'bg-white'}
+        cursor-move transition-all rounded-md relative
+      `}
+    >
+      {/* Type/Attribute Icon in top left corner */}
+      {digimon.digimon?.type && digimon.digimon?.attribute && (
+        <div className="absolute top-1 left-1">
+          <TypeAttributeIcon
+            type={digimon.digimon.type as DigimonType}
+            attribute={digimon.digimon.attribute as DigimonAttribute}
+            size="sm"
+            showLabel={false}
+          />
+        </div>
+      )}
+      
+      {/* Digimon sprite */}
+      <div className="w-8 h-8 flex items-center justify-center">
+        <img
+          src={digimon.digimon?.sprite_url}
+          alt={digimon.name || digimon.digimon?.name}
+          className="scale-[1]"
+          style={{ imageRendering: "pixelated" }}
+          draggable="false"
+        />
+      </div>
+
+      {/* Level indicator */}
+      <p className="text-[12px] font-bold mt-1">Lv.{digimon.current_level}</p>
+    </div>
+  );
+};
+
+// Update the main component to use the new TinyDigimonCard
 const DigimonTeamManager = () => {
   const { allUserDigimon, swapTeamMember, setTeamMember } = useDigimonStore();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -343,7 +415,7 @@ const DigimonTeamManager = () => {
     <DndProvider backend={HTML5Backend}>
       <div className="mb-6">
         <h3 className="text-lg font-semibold mb-2">Team</h3>
-        <div className="grid grid-cols-3 gap-2 lg_xl:gap-4 mb-8 justify-items-center">
+        <div className="grid grid-cols-3 gap-2 sm:gap-2 lg_xl:gap-4 mb-8 justify-items-center">
           {teamDigimon.map((digimon) => (
             <div key={digimon.id}>
               <div className="hidden lg_xl:block">
@@ -354,8 +426,16 @@ const DigimonTeamManager = () => {
                   onMove={handleAddToTeam}
                 />
               </div>
-              <div className="block lg_xl:hidden">
-                 <MobileDigimonCard
+              <div className="hidden sm:block lg_xl:hidden">
+                <MobileDigimonCard
+                  digimon={digimon}
+                  isTeam={true}
+                  onSwap={handleSwap}
+                  onMove={handleAddToTeam}
+                />
+              </div>
+              <div className="block sm:hidden">
+                <TinyDigimonCard
                   digimon={digimon}
                   isTeam={true}
                   onSwap={handleSwap}
@@ -373,8 +453,14 @@ const DigimonTeamManager = () => {
                   onAddToTeam={handleAddToTeam}
                 />
               </div>
-              <div className="block lg_xl:hidden">
-                 <MobileEmptySlot
+              <div className="hidden sm:block lg_xl:hidden">
+                <MobileEmptySlot
+                  isTeam={true}
+                  onAddToTeam={handleAddToTeam}
+                />
+              </div>
+              <div className="block sm:hidden">
+                <TinyEmptySlot
                   isTeam={true}
                   onAddToTeam={handleAddToTeam}
                 />
@@ -384,7 +470,7 @@ const DigimonTeamManager = () => {
         </div>
 
         <h3 className="text-lg font-semibold mb-2">Reserve</h3>
-        <div className="grid grid-cols-3 gap-2 lg_xl:gap-4 gap-y-4 lg_xl:gap-y-6 justify-items-center">
+        <div className="grid grid-cols-3 gap-2 sm:gap-2 lg_xl:gap-4 gap-y-3 sm:gap-y-4 lg_xl:gap-y-6 justify-items-center">
           {reserveDigimon.map((digimon) => (
             <div key={digimon.id}>
               <div className="hidden lg_xl:block">
@@ -395,8 +481,16 @@ const DigimonTeamManager = () => {
                   onMove={handleAddToTeam}
                 />
               </div>
-               <div className="block lg_xl:hidden">
+               <div className="hidden sm:block lg_xl:hidden">
                  <MobileDigimonCard
+                  digimon={digimon}
+                  isTeam={false}
+                  onSwap={handleSwap}
+                  onMove={handleAddToTeam}
+                />
+              </div>
+              <div className="block sm:hidden">
+                <TinyDigimonCard
                   digimon={digimon}
                   isTeam={false}
                   onSwap={handleSwap}
@@ -414,8 +508,14 @@ const DigimonTeamManager = () => {
                   onAddToTeam={handleAddToTeam}
                 />
               </div>
-              <div className="block lg_xl:hidden">
+              <div className="hidden sm:block lg_xl:hidden">
                  <MobileEmptySlot
+                  isTeam={false}
+                  onAddToTeam={handleAddToTeam}
+                />
+              </div>
+              <div className="block sm:hidden">
+                <TinyEmptySlot
                   isTeam={false}
                   onAddToTeam={handleAddToTeam}
                 />
@@ -425,6 +525,37 @@ const DigimonTeamManager = () => {
         </div>
       </div>
     </DndProvider>
+  );
+};
+
+// Add TinyEmptySlot component
+const TinyEmptySlot = ({ isTeam, onAddToTeam }: EmptySlotProps) => {
+  const [{ isOver }, drop] = useDrop({
+    accept: DIGIMON_TYPE,
+    drop: (item: DigimonDragItem) => {
+      if (isTeam !== item.isTeam) {
+        onAddToTeam(item.id);
+      }
+    },
+    collect: (monitor) => ({
+      isOver: !!monitor.isOver(),
+    }),
+  });
+
+  return (
+    <div
+      ref={drop}
+      className={`
+        w-20 h-20 border-2 border-dashed rounded-md flex items-center justify-center
+        ${isTeam ? 'border-gray-300' : 'border-gray-200'}
+        ${isOver ? 'bg-blue-100 border-blue-300' : ''}
+        transition-colors duration-200
+      `}
+    >
+      <p className={`text-[8px] ${isTeam ? 'text-gray-400' : 'text-gray-300'} ${isOver ? 'text-blue-500 font-medium' : ''}`}>
+        Drop Here
+      </p>
+    </div>
   );
 };
 

@@ -613,7 +613,7 @@ const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({
                           </div>
                           
                           {/* XP Bar */}
-                          <div className="relative h-4 bg-gray-900 rounded-full overflow-hidden">
+                          { xpGain > 0 && <div className="relative h-4 bg-gray-900 rounded-full overflow-hidden">
                             {/* Previous XP */}
                             <div 
                               className="absolute h-full bg-blue-600" 
@@ -664,16 +664,31 @@ const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({
                               </span>
                             </div>
                           </div>
+                        }
                         </div>
+                        
                       </div>
                     );
                   })}
                 </div>
-                <div className="w-full flex justify-center items-center my-8">
-                  <p className="text-green-300 text-sm">
-                    Your reserve Digimon also gained XP!
-                  </p>
-                </div>
+                {
+                  teamBattle.xpGain > 0 && (
+                    <div className="w-full flex justify-center items-center my-8">
+                      <p className="text-green-300 text-sm">
+                        Your reserve Digimon also gained XP!
+                      </p>
+                    </div>
+                  )
+                }
+                {
+                  teamBattle.hint && !playerWon && (
+                    <div className="w-full flex justify-center items-center my-8">
+                      <p className="text-green-300 text-sm">
+                        {teamBattle.hint}
+                      </p>
+                    </div>
+                  )
+                }
               </div>
               {/* Return button */}
               <div className="flex justify-center mt-4">

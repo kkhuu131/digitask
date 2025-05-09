@@ -408,6 +408,7 @@ const UserDigimonPage = () => {
                             repeatType: "loop",
                             repeatDelay: 1,
                           }}
+                          draggable="false"
                         />
                       ) : (
                         // If it can't evolve, use regular img
@@ -416,6 +417,7 @@ const UserDigimonPage = () => {
                           alt={digimon.name || digimon.digimon?.name} 
                           className="scale-[1.5]"
                           style={{ imageRendering: "pixelated" }}
+                          draggable="false"
                         />
                       )}
                     </div>

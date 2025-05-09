@@ -28,7 +28,7 @@ function simulateTeamBattle(userTeamData: any, opponentTeamData: any) {
     }
     usedIds.add(digimon.id);
   }
-
+  console.log("opponentTeamData", opponentTeamData);
   for (const digimon of [...userTeamData, ...opponentTeamData]) {
     const stats = calculateFinalStats(digimon);
     Object.assign(digimon.digimon, {
@@ -57,8 +57,6 @@ function simulateTeamBattle(userTeamData: any, opponentTeamData: any) {
   ];
 
   allCombatants.sort((a, b) => b.digimon.spd - a.digimon.spd);
-
-  console.log("allCombatants", allCombatants);
 
   const digimonHPMap: Record<string, number> = {};
   for (const digimon of [...userTeamData, ...opponentTeamData]) {
@@ -138,21 +136,12 @@ function simulateTeamBattle(userTeamData: any, opponentTeamData: any) {
             )
           );
 
-      console.log(combatant.id, "target", target.id, "damage", damage);
-
-      console.log("Target ID:", target.id);
-      console.log("Target current HP:", target.digimon.current_hp);
-      console.log("HP Map before update:", { ...digimonHPMap });
-      console.log("Updating HP for ID:", target.id);
-
       target.digimon.current_hp = Math.max(
         0,
         target.digimon.current_hp - damage
       );
 
       digimonHPMap[target.id] = Math.max(0, digimonHPMap[target.id] - damage);
-
-      console.log(turns.length, digimonHPMap);
 
       turns.push({
         attacker: combatant,
@@ -382,6 +371,7 @@ export interface TeamBattle {
   winner_id: string;
   xpGain: number;
   created_at: string;
+  hint?: string;
 }
 
 export interface TeamBattleHistory {
@@ -479,7 +469,8 @@ interface BattleState {
   isBattleInProgress: boolean;
   simulateCampaignBattle: (
     userTeamData: any,
-    opponentTeamData: any
+    opponentTeamData: any,
+    hint?: string
   ) => Promise<TeamBattle>;
 }
 
@@ -1200,11 +1191,10 @@ export const useBattleStore = create<BattleState>((set, get) => {
 
     simulateCampaignBattle: async (
       userTeamData: any,
-      opponentTeamData: any
+      opponentTeamData: any,
+      hint?: string
     ) => {
       try {
-        console.log("simulateCampaignBattle", userTeamData, opponentTeamData);
-
         // Determine winner using the existing battle simulation
         const { winnerId, turns } = simulateTeamBattle(
           userTeamData,
@@ -1253,6 +1243,7 @@ export const useBattleStore = create<BattleState>((set, get) => {
           turns,
           winner_id: winnerId,
           xpGain: 0,
+          hint: hint || "You're not ready for this battle. Try again later.",
         } as TeamBattle;
       } catch (error) {
         console.error("Error in campaign battle:", error);

@@ -23,7 +23,6 @@ const TaskForm = () => {
   const [minTime, setMinTime] = useState<string>("");
   const [category, setCategory] = useState<StatCategory | null>(null);
   const [detectedCategory, setDetectedCategory] = useState<StatCategory | null>(null);
-  const [showCategorySelector, setShowCategorySelector] = useState(false);
   const [notes, setNotes] = useState("");
   const [recurringDays, setRecurringDays] = useState<string[]>([]);
 
@@ -112,17 +111,9 @@ const TaskForm = () => {
       // If we detect a category, set it as the selected category
       if (detected) {
         setCategory(detected);
-        setShowCategorySelector(false);
-      } else {
-        // If we can't detect a category and the description is substantial,
-        // show the category selector
-        if (description.trim().length > 2) {
-          setShowCategorySelector(true);
-        }
       }
     } else {
       setDetectedCategory(null);
-      setShowCategorySelector(false);
     }
   }, [description]);
 
@@ -198,27 +189,28 @@ const TaskForm = () => {
         
         {/* Show detected category */}
         {detectedCategory && (
-          <div className="mt-1 text-sm text-gray-600">
-            <span className="font-medium">Detected category:</span> {categoryIcons[detectedCategory]} {detectedCategory}
+          <div className="mt-2 text-sm text-gray-600">
+            <span className="font-medium">Suggested category:</span> {categoryIcons[detectedCategory]} {detectedCategory}
           </div>
+        )}
+
+        {!detectedCategory && description.trim().length > 2 && (
+          <label htmlFor="category" className="block text-sm font-medium text-gray-700 mt-2">
+            Couldn't detect a category - what should this task improve?
+          </label>
         )}
         
         {/* Show category selector if we couldn't detect one */}
-        {showCategorySelector && !detectedCategory && (
-          <div className="mt-3">
-            <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
-              Couldn't detect a category - what should this task improve?
-            </label>
-            <Select
-              id="category"
-              options={categoryOptions}
-              value={categoryOptions.find(opt => opt.value === category)}
-              onChange={(selected) => setCategory(selected?.value || null)}
-              placeholder="Select a category"
-              className="mt-1"
-            />
-          </div>
-        )}
+        <div className="mt-2">
+          <Select
+            id="category"
+            options={categoryOptions}
+            value={categoryOptions.find(opt => opt.value === category)}
+            onChange={(selected) => setCategory(selected?.value || null)}
+            placeholder="Select a category"
+            className="mt-1"
+          />
+        </div>
       </div>
       
       <div className="mb-4">

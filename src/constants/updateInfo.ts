@@ -1,4 +1,4 @@
-export const CURRENT_VERSION = "1.0.3";
+export const CURRENT_VERSION = "1.0.4";
 
 export const UPDATE_CHANGES = {
   "1.0.1": [
@@ -21,5 +21,11 @@ export const UPDATE_CHANGES = {
     "Campaign mode is in development, where you fight a series of progressively harder pre-made battles.",
     "Rewards will probably(?) just be titles or achievements, so it won't be required to complete the campaign.",
     "Let us know what you want to see in campaign mode in the feedback form!",
+  ],
+  "1.0.4": [
+    "Final stat calculations fixed, bonus stats were being applied multiplicatively instead of additively.",
+    "Users are now suggested a category in task creation, but can change it freely during creation.",
+    "Campaign mode is in development, please send any suggestions for enemy teams or rewards through the feedback form!",
+    "A preview of the new campaign mode is available if you go to https://digitask-pi.vercel.app/campaign.",
   ],
 };
