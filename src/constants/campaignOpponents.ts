@@ -583,6 +583,116 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
     ],
   },
   {
+    id: "21A",
+    name: "Virus",
+    team: [
+      { digimon_id: 106, level: 21 },
+      { digimon_id: 120, level: 21 },
+      { digimon_id: 129, level: 21 },
+    ],
+    hint: "They're all Virus types, maybe bring some Vaccine types to counter them.",
+  },
+  {
+    id: "21B",
+    name: "Vaccine",
+    team: [
+      { digimon_id: 130, level: 21 },
+      { digimon_id: 139, level: 21 },
+      { digimon_id: 122, level: 21 },
+    ],
+    hint: "These Digimon have high speed, so they'll probably attack first. They're all Vaccine types, maybe bring some Virus types to counter them.",
+  },
+  {
+    id: "21C",
+    name: "Data",
+    team: [
+      { digimon_id: 112, level: 21 },
+      { digimon_id: 118, level: 21 },
+      { digimon_id: 107, level: 21 },
+    ],
+    hint: "They're all Data types, maybe bring some Virus types to counter them.",
+  },
+  {
+    id: "22A",
+    name: "Hogwarts",
+    team: [
+      { digimon_id: 72, level: 22 },
+      { digimon_id: 111, level: 23 },
+      { digimon_id: 72, level: 22 },
+    ],
+    hint: "They're all Data types, maybe bring some Virus types to counter them.",
+  },
+  {
+    id: "22B",
+    name: "Forest",
+    team: [
+      { digimon_id: 108, level: 22 },
+      { digimon_id: 140, level: 23 },
+      { digimon_id: 102, level: 22 },
+    ],
+    hint: "They're all Data types, maybe bring some Virus types to counter them.",
+  },
+  {
+    id: "23",
+    name: "Apex Duo",
+    team: [
+      { digimon_id: 90, level: 25, hp_bonus: 2000 },
+      { digimon_id: 85, level: 25, hp_bonus: 2000 },
+    ],
+  },
+  {
+    id: "24",
+    name: "Immortal Snail",
+    team: [{ digimon_id: 98, level: 24, hp_bonus: 4000 }],
+    hint: "The immortal snail has 7000 HP, so you'll need to bring a lot of damage to take it down!",
+  },
+  {
+    id: "25",
+    name: "Nightmare",
+    team: [
+      { digimon_id: 116, level: 24 },
+      { digimon_id: 147, level: 25 },
+      { digimon_id: 124, level: 24 },
+    ],
+    hint: "Looks like they're planning to ambush you!",
+  },
+  {
+    id: "26A",
+    name: "Savannah",
+    team: [
+      { digimon_id: 137, level: 25 },
+      { digimon_id: 160, level: 27 },
+      { digimon_id: 137, level: 25 },
+    ],
+  },
+  {
+    id: "26B",
+    name: "Dinosaur",
+    team: [
+      { digimon_id: 132, level: 25 },
+      { digimon_id: 176, level: 27 },
+      { digimon_id: 114, level: 25 },
+    ],
+  },
+  {
+    id: "27A",
+    name: "Fairy Garden",
+    team: [
+      { digimon_id: 212, level: 28 },
+      { digimon_id: 188, level: 26 },
+      { digimon_id: 210, level: 27 },
+    ],
+  },
+  {
+    id: "27B",
+    name: "Robot",
+    team: [
+      { digimon_id: 157, level: 28 },
+      { digimon_id: 158, level: 26 },
+      { digimon_id: 183, level: 27 },
+    ],
+  },
+  {
     id: "100",
     name: "The End",
     team: [

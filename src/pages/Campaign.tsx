@@ -13,6 +13,7 @@ interface PreparationModalProps {
   onClose: () => void;
   onStartBattle: () => void;
   isUnlocked: boolean;
+  isPast: boolean;
 }
 
 const PreparationModal: React.FC<PreparationModalProps> = ({
@@ -20,7 +21,8 @@ const PreparationModal: React.FC<PreparationModalProps> = ({
   isOpen,
   onClose,
   onStartBattle,
-  isUnlocked
+  isUnlocked,
+  isPast
 }) => {
   const { allUserDigimon } = useDigimonStore();
   const teamDigimon = allUserDigimon.filter(d => d.is_on_team);
@@ -91,6 +93,8 @@ const PreparationModal: React.FC<PreparationModalProps> = ({
               ? "Add Digimon to Team"
               : !isUnlocked
               ? "Stage Locked"
+              : isPast
+              ? "Rematch"
               : "Start Battle"}
           </button>
         </div>
@@ -291,9 +295,9 @@ const Campaign: React.FC = () => {
                 <div className="flex justify-center px-[10%] sm:px-4">
                   <div className="flex gap-2 sm:gap-8">
                     {stagesByLevel[level].map(stage => {
-                      const isUnlocked = isStageUnlocked(stage.id, highestStageCleared);
+                      const isUnlocked = isStageUnlocked(stage.id, highestStageCleared) || (process.env.NODE_ENV === "development");
                       const isNext = getBaseStage(stage.id) === highestStageCleared + 1;
-                      const isPast = getBaseStage(stage.id) < highestStageCleared;
+                      const isPast = getBaseStage(stage.id) <= highestStageCleared;
 
                       return (
                         <div key={stage.id} className="relative">
@@ -326,6 +330,7 @@ const Campaign: React.FC = () => {
           onClose={() => setSelectedOpponentIndex(null)}
           onStartBattle={handleStartBattle}
           isUnlocked={selectedOpponentIndex <= highestStageCleared}
+          isPast={getBaseStage(CAMPAIGN_OPPONENTS[selectedOpponentIndex].id) <= highestStageCleared}
         />
       )}
 

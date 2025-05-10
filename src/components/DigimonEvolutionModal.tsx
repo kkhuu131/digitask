@@ -261,7 +261,13 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
                     }`}
                     style={{ imageRendering: "pixelated" }}
                   />
-                  <h4 className="font-bold">{discovered ? option.name : "???"}</h4>
+                  <h4 className="font-bold">
+                    {discovered 
+                      ? option.name 
+                      : option.name.includes('(') 
+                        ? `??? ${option.name.substring(option.name.indexOf('('))}` 
+                        : "???"}
+                  </h4>
                   <p className="text-sm text-gray-500">{option.stage}</p>
                   {!isDevolution && (
                     <p className="text-sm my-1">Level: <span className={selectedDigimon.current_level >= option.level_required ? "text-green-600" : "text-red-600"}>{selectedDigimon.current_level}/{option.level_required}</span></p>

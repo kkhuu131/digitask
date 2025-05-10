@@ -94,6 +94,8 @@ export const useMilestoneStore = create<MilestoneState>((set, get) => ({
           is_active: false,
         });
 
+      useDigimonStore.getState().addDiscoveredDigimon(digimonId);
+
       if (createError) throw createError;
 
       // Refresh the user's Digimon list
