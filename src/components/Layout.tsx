@@ -68,6 +68,7 @@ const Layout = ({ children }: LayoutProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
+  const [battleMenuOpen, setBattleMenuOpen] = useState(false);
   
   const handleSignOut = async () => {
     await signOut();
@@ -146,6 +147,12 @@ const Layout = ({ children }: LayoutProps) => {
                     Arena
                   </Link>
                   <Link
+                    to="/campaign"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Campaign
+                  </Link>
+                  <Link
                     to="/playground"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
@@ -215,6 +222,20 @@ const Layout = ({ children }: LayoutProps) => {
                 >
                   Reports
                 </Link>
+                <Link
+                  to="/admin/digimon-editor"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => setMoreMenuOpen(false)}
+                >
+                  Editor
+                </Link>
+                <Link
+                  to="/admin/titles"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => setMoreMenuOpen(false)}
+                >
+                  Titles
+                </Link>
               </NavDropdown>
             )}
             
@@ -240,49 +261,6 @@ const Layout = ({ children }: LayoutProps) => {
               )}
             </div>
           </div>
-          
-          {/* Mobile navigation */}
-          {userDigimon && (
-            <div className="md:hidden py-2 flex overflow-x-auto space-x-2 border-t">
-              <Link 
-                to="/" 
-                className={`flex-shrink-0 px-3 py-2 rounded-md text-sm font-medium text-center whitespace-nowrap ${
-                  isActive("/") ? "bg-primary-100 text-primary-700" : "text-gray-700 hover:bg-gray-100"
-                }`}
-              >
-                Dashboard
-              </Link>
-              
-              <Link 
-                to="/your-digimon" 
-                className={`flex-shrink-0 px-3 py-2 rounded-md text-sm font-medium text-center whitespace-nowrap ${
-                  isActive("/your-digimon") ? "bg-primary-100 text-primary-700" : "text-gray-700 hover:bg-gray-100"
-                }`}
-              >
-                Digimon
-              </Link>
-              
-              <Link 
-                to="/battle" 
-                className={`flex-shrink-0 px-3 py-2 rounded-md text-sm font-medium text-center whitespace-nowrap ${
-                  isActive("/battle") ? "bg-primary-100 text-primary-700" : "text-gray-700 hover:bg-gray-100"
-                }`}
-              >
-                Battle
-              </Link>
-              
-              <Link 
-                to="/more" 
-                className={`flex-shrink-0 px-3 py-2 rounded-md text-sm font-medium text-center whitespace-nowrap ${
-                  isAnyActive(["/trainers", "/digimon-dex", "/tutorial", "/leaderboard"]) 
-                    ? "bg-primary-100 text-primary-700" 
-                    : "text-gray-700 hover:bg-gray-100"
-                }`}
-              >
-                More
-              </Link>
-            </div>
-          )}
         </div>
       </header>
       
@@ -318,17 +296,56 @@ const Layout = ({ children }: LayoutProps) => {
               <span className="text-xs mt-1">Digimon</span>
             </Link>
             
-            <Link 
-              to="/battle" 
-              className={`flex flex-col items-center justify-center py-2 ${
-                isActive("/battle") ? "text-primary-600" : "text-gray-500"
-              }`}
-            >
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-              <span className="text-xs mt-1">Battle</span>
-            </Link>
+            <div className="relative">
+              <button
+                onClick={() => setBattleMenuOpen(!battleMenuOpen)}
+                className={`flex flex-col items-center justify-center py-2 ${
+                  battleMenuOpen || isActive("/battle") || isActive("/campaign") 
+                    ? "text-primary-600" 
+                    : "text-gray-500"
+                }`}
+              >
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <span className="text-xs mt-1">Battle</span>
+              </button>
+              
+              <AnimatePresence>
+                {battleMenuOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 20 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute bottom-full mb-2 right-0 bg-white rounded-lg shadow-lg border border-gray-200 w-36 overflow-hidden"
+                  >
+                    <div className="py-1">
+                      <Link
+                        to="/battle"
+                        className={`flex items-center px-4 py-2 text-sm ${
+                          isActive("/battle") ? "bg-primary-50 text-primary-700" : "text-gray-700 hover:bg-gray-100"
+                        }`}
+                        onClick={() => setBattleMenuOpen(false)}
+                      >
+                        <span className="mr-2">⚔️</span>
+                        Arena
+                      </Link>
+                      <Link
+                        to="/campaign"
+                        className={`flex items-center px-4 py-2 text-sm ${
+                          isActive("/campaign") ? "bg-primary-50 text-primary-700" : "text-gray-700 hover:bg-gray-100"
+                        }`}
+                        onClick={() => setBattleMenuOpen(false)}
+                      >
+                        <span className="mr-2">🗺️</span>
+                        Campaign
+                      </Link>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
             
             <Link 
               to="/digimon-dex" 

@@ -1,3 +1,4 @@
+// AUTO-GENERATED FILE. DO NOT EDIT DIRECTLY.
 // Generated from Supabase digimon table
 
 import type { Digimon } from "../store/petStore";
@@ -9892,4 +9893,33 @@ export const DIGIMON_LOOKUP_TABLE: Record<number, Digimon> = {
     int_level99: 182,
     spd_level99: 179,
   },
-} as const;
+  "999": {
+    id: 999,
+    digimon_id: 999,
+    request_id: 999,
+    name: "Yggdrasill",
+    stage: "Ultra",
+    type: "Free",
+    attribute: "Neutral",
+    sprite_url: "/assets/digimon/yggdrasil.png",
+    hp: 99999,
+    sp: 99999,
+    atk: 99999,
+    def: 99999,
+    int: 99999,
+    spd: 99999,
+    detail_url: "https://digidb.io/digimon-search/?request=1",
+    hp_level1: 99999,
+    sp_level1: 99999,
+    atk_level1: 99999,
+    def_level1: 99999,
+    int_level1: 99999,
+    spd_level1: 99999,
+    hp_level99: 99999,
+    sp_level99: 99999,
+    atk_level99: 99999,
+    def_level99: 99999,
+    int_level99: 99999,
+    spd_level99: 159,
+  },
+};

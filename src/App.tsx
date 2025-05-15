@@ -31,6 +31,8 @@ import LeaderboardPage from './pages/LeaderboardPage';
 import AdminReportsPage from './pages/AdminReportsPage';
 import DigimonPlayground from "./pages/DigimonPlayground";
 import Campaign from "./pages/Campaign";
+import AdminDigimonEditor from './pages/AdminDigimonEditor';
+import AdminTitlesPage from './pages/AdminTitlesPage';
 
 // Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -450,6 +452,14 @@ function App() {
             </Layout>
           </ProtectedRoute>
         } />
+
+        <Route path="/admin/digimon-editor" element={
+          <ProtectedRoute>
+            <Layout>
+              <AdminDigimonEditor />
+            </Layout>
+          </ProtectedRoute>
+        } />
         
         <Route path="/playground" element={
           <ProtectedRoute>
@@ -472,6 +482,14 @@ function App() {
           <ProtectedRoute>
             <Layout>
               <Campaign />
+            </Layout>
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/admin/titles" element={
+          <ProtectedRoute>
+            <Layout>
+              <AdminTitlesPage />
             </Layout>
           </ProtectedRoute>
         } />

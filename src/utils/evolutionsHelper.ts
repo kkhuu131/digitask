@@ -51,8 +51,11 @@ export function getDevolutions(toId: number) {
   );
 }
 
-export function getEvolutionPath(fromId: number, toId: number) {
-  if (!EVOLUTION_LOOKUP_TABLE.byPair) {
+export function getEvolutionPath(
+  fromId: number,
+  toId: number
+): EvolutionPath | null {
+  if (!fromId || !toId) {
     return null;
   }
 

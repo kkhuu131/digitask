@@ -6,6 +6,8 @@ import TeamBattleAnimation from "../components/TeamBattleAnimation";
 import DigimonTeamManager from "../components/DigimonTeamManager";
 import { useAuthStore } from "../store/authStore";
 import TypeAttributeIcon from "../components/TypeAttributeIcon";
+import BattleSpeedControl from "../components/BattleSpeedControl";
+
 const Battle = () => {
   const { userDigimon, digimonData, allUserDigimon, fetchAllUserDigimon } = useDigimonStore();
   const { 
@@ -103,7 +105,12 @@ const Battle = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
+        <h1 className="text-2xl font-bold">Battle Arena</h1>
+        <BattleSpeedControl />
+      </div>
+      
       {showBattleAnimation ? (
         currentTeamBattle ?
           (
@@ -118,11 +125,11 @@ const Battle = () => {
           {/* Battle Options Section */}
           <div className="card">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">Choose Your Opponent</h2>
+              <h2 className="text-xl font-bold">Choose Opponent</h2>
             
               <div className="flex items-center space-x-4">
                 {/* Refresh button - only visible in development environment */}
-                {import.meta.env.DEV && (
+                {/* {import.meta.env.DEV && (
                   <button
                     onClick={() => getBattleOptions(true)}
                     className="text-sm px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded-md transition-colors"
@@ -130,7 +137,7 @@ const Battle = () => {
                   >
                     {loading ? "Refreshing..." : "Refresh Options"}
                   </button>
-                )}
+                )} */}
                 <div className="text-sm">
                 <span className="font-medium">Daily Battles:</span> {dailyBattlesRemaining} remaining
                 </div>

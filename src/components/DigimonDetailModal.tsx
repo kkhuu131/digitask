@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { EvolutionOption, UserDigimon, useDigimonStore } from "../store/petStore";
+import { EvolutionOption, UserDigimon, getRemainingStatPoints, useDigimonStore } from "../store/petStore";
 import { motion, AnimatePresence } from "framer-motion";
 import calculateBaseStat, { calculateFinalStats } from "../utils/digimonStatCalculation";
 import { DigimonAttribute, DigimonType } from "../store/battleStore";
@@ -25,7 +25,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
   onNameChange,
   className = "",
 }) => {
-  const { discoveredDigimon, evolveDigimon, devolveDigimon } = useDigimonStore();
+  const { discoveredDigimon, evolveDigimon, devolveDigimon, allUserDigimon } = useDigimonStore();
   const [editingName, setEditingName] = useState<string | null>(null);
   const [newName, setNewName] = useState<string>("");
   const [isAnimating, setIsAnimating] = useState(false);
@@ -338,10 +338,10 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
   const handleEvolution = async (toDigimonId: number) => {
     try {
       setEvolutionError(null);
-      setShowEvolutionModal(false);
-      onClose();
       await evolveDigimon(toDigimonId, selectedDigimon.id);
+      onClose();
     } catch (error) {
+      console.error("Evolution error:", error);
       setEvolutionError((error as Error).message);
     }
   };
@@ -575,7 +575,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
               {Object.values(savedStats).some(val => val > 0) && belongsToCurrentUser && (
                 <div className="mb-3 p-2 bg-indigo-50 border border-indigo-200 rounded-lg">
                   <p className="text-sm text-indigo-800">
-                    {isUnderStatCap(selectedDigimon) ? "You have saved stat points to allocate! Click the + buttons to improve this Digimon." : "This Digimon has reached its stat cap. Increase its ABI through evolution and devolution to unlock more stat points."}
+                    {isUnderStatCap(selectedDigimon) ? "You have saved stat points to allocate! " + getRemainingStatPoints(selectedDigimon) + " stat points until cap." : "This Digimon has reached its stat cap. Increase its ABI through evolution and devolution to unlock more stat points."}
                   </p>
                 </div>
               )}
@@ -651,7 +651,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                           const statReqs = option.stat_requirements;
                           
                           if (statReqs.hp && statReqs.hp > 0) {
-                            const currentHP = baseHP + (selectedDigimon.hp_bonus || 0);
+                            const currentHP = baseHP + 10 * (selectedDigimon.hp_bonus || 0);
                             if (currentHP < statReqs.hp) meetsStatRequirements = false;
                           }
                           
@@ -803,13 +803,19 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
       {/* Evolution Modal */}
       <DigimonEvolutionModal
         isOpen={showEvolutionModal}
-        onClose={() => setShowEvolutionModal(false)}
+        onClose={() => {
+          setShowEvolutionModal(false);
+          // For DNA evolution, we need to make sure the detail modal closes too
+          // This will be called after the animation completes
+          onClose();
+        }}
         selectedDigimon={selectedDigimon}
         options={evolutionOptions}
         onEvolve={handleEvolution}
         isDevolution={false}
         error={evolutionError}
         isDiscovered={isDiscovered}
+        allUserDigimon={allUserDigimon}
       />
       
       {/* Devolution Modal */}
@@ -822,6 +828,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
         isDevolution={true}
         error={devolutionError}
         isDiscovered={isDiscovered}
+        allUserDigimon={allUserDigimon}
       />
     </div>
   );

@@ -60,6 +60,7 @@ export type EvolutionPath = {
     spd?: number;
     abi?: number;
   };
+  dna_requirement?: number | null;
 };
 
 export const EVOLUTION_LOOKUP_TABLE = {

@@ -89,7 +89,7 @@ export function calculateFinalStats(digimon: any) {
     baseDigimon.spd_level99 || 100
   );
 
-  let hp = Math.round(baseHP + (digimon.hp_bonus || 0));
+  let hp = Math.round(baseHP + (digimon.hp_bonus * 10 || 0));
   let sp = Math.round(baseSP + (digimon.sp_bonus || 0));
   let atk = Math.round(baseATK + (digimon.atk_bonus || 0));
   let def = Math.round(baseDEF + (digimon.def_bonus || 0));

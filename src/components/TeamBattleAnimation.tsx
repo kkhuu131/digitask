@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { TeamBattle } from "../store/battleStore";
+import { useBattleSpeedStore } from "../store/battleSpeedStore";
 
 interface TeamBattleAnimationProps {
   teamBattle: TeamBattle;
@@ -10,14 +11,15 @@ interface TeamBattleAnimationProps {
 const DEFAULT_MAX_HP = 100; // Fallback if stats are missing
 const VERTICAL_RANGE_START = 10; // Start positioning at 10% from the top
 const VERTICAL_RANGE_END = 50;   // End positioning at 50% from the top
-const TURN_DURATION = 1000; // Duration for each turn animation + pause
+const BASE_TURN_DURATION = 1000; // Base duration for each turn animation + pause
 const FINAL_MESSAGE_DURATION = 2000; // How long to show "Victory/Defeat" before results confirmation
 
 const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({ 
   teamBattle, 
   onComplete 
 }) => {
-
+  const { speedMultiplier } = useBattleSpeedStore();
+  const TURN_DURATION = BASE_TURN_DURATION / speedMultiplier; // Apply speed multiplier
 
   const [step, setStep] = useState(0);
   const [showResults, setShowResults] = useState(false);

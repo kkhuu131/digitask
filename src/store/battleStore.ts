@@ -4,6 +4,7 @@ import { useDigimonStore } from "./petStore";
 import { useTaskStore } from "./taskStore";
 import { calculateFinalStats } from "../utils/digimonStatCalculation";
 import { DIGIMON_LOOKUP_TABLE } from "../constants/digimonLookup";
+import { useTitleStore } from "./titleStore";
 
 function simulateTeamBattle(userTeamData: any, opponentTeamData: any) {
   function getAttributeDamageMultiplier(
@@ -28,11 +29,16 @@ function simulateTeamBattle(userTeamData: any, opponentTeamData: any) {
     }
     usedIds.add(digimon.id);
   }
-  console.log("opponentTeamData", opponentTeamData);
+
   for (const digimon of [...userTeamData, ...opponentTeamData]) {
     const stats = calculateFinalStats(digimon);
     Object.assign(digimon.digimon, {
-      ...stats,
+      final_hp: stats.hp,
+      final_atk: stats.atk,
+      final_int: stats.int,
+      final_spd: stats.spd,
+      final_def: stats.def,
+      final_sp: stats.sp,
       current_hp: stats.hp,
     });
   }
@@ -56,11 +62,11 @@ function simulateTeamBattle(userTeamData: any, opponentTeamData: any) {
     })),
   ];
 
-  allCombatants.sort((a, b) => b.digimon.spd - a.digimon.spd);
+  allCombatants.sort((a, b) => b.digimon.final_spd - a.digimon.final_spd);
 
   const digimonHPMap: Record<string, number> = {};
   for (const digimon of [...userTeamData, ...opponentTeamData]) {
-    digimonHPMap[digimon.id] = digimon.digimon.hp;
+    digimonHPMap[digimon.id] = digimon.digimon.final_hp;
   }
 
   const isTeamAlive = (team: any[], hpMap: Record<string, number>) => {
@@ -100,13 +106,13 @@ function simulateTeamBattle(userTeamData: any, opponentTeamData: any) {
 
       let attackPower = 1;
 
-      if (combatant.digimon.atk >= combatant.digimon.int) {
-        attackPower = combatant.digimon.atk / target.digimon.def;
+      if (combatant.digimon.final_atk >= combatant.digimon.final_int) {
+        attackPower = combatant.digimon.final_atk / target.digimon.final_def;
       } else {
-        attackPower = combatant.digimon.int / target.digimon.int;
+        attackPower = combatant.digimon.final_int / target.digimon.final_int;
       }
 
-      const sp = target.digimon.sp;
+      const sp = target.digimon.final_sp;
 
       const damageMultiplier = 0.8 + Math.random() * 0.4;
       const isCriticalHit = Math.random() < criticalHitChance;
@@ -470,7 +476,8 @@ interface BattleState {
   simulateCampaignBattle: (
     userTeamData: any,
     opponentTeamData: any,
-    hint?: string
+    hint?: string,
+    description?: string
   ) => Promise<TeamBattle>;
 }
 
@@ -738,7 +745,7 @@ export const useBattleStore = create<BattleState>((set, get) => {
               display_name: userProfile?.display_name ?? "You",
             },
             stats: {
-              hp: d.digimon.hp,
+              hp: d.digimon.final_hp,
             },
           })),
           opponent_team: opponentTeamData.map((d) => ({
@@ -756,7 +763,7 @@ export const useBattleStore = create<BattleState>((set, get) => {
               display_name: opponentProfile?.display_name ?? "Unknown",
             },
             stats: {
-              hp: d.digimon.hp,
+              hp: d.digimon.final_hp,
             },
           })),
           turns,
@@ -791,6 +798,32 @@ export const useBattleStore = create<BattleState>((set, get) => {
           true
         );
         set({ shouldRefreshOptions: true });
+
+        // If battle was won, update stats and check for titles
+        if (winnerId === userTeamData[0].user_id) {
+          // Update battle stats in profile
+          const { data: profile, error: profileError } = await supabase
+            .from("profiles")
+            .select("battles_won, battles_completed")
+            .eq("id", userData.user.id)
+            .single();
+
+          if (!profileError && profile) {
+            const newBattlesWon = (profile.battles_won || 0) + 1;
+            const newBattlesCompleted = (profile.battles_completed || 0) + 1;
+
+            await supabase
+              .from("profiles")
+              .update({
+                battles_won: newBattlesWon,
+                battles_completed: newBattlesCompleted,
+              })
+              .eq("id", userData.user.id);
+
+            // Check for battle titles
+            await useTitleStore.getState().checkBattleTitles(newBattlesWon);
+          }
+        }
 
         return;
       } catch (error) {
@@ -1192,7 +1225,8 @@ export const useBattleStore = create<BattleState>((set, get) => {
     simulateCampaignBattle: async (
       userTeamData: any,
       opponentTeamData: any,
-      hint?: string
+      hint?: string,
+      description?: string
     ) => {
       try {
         // Determine winner using the existing battle simulation
@@ -1200,6 +1234,33 @@ export const useBattleStore = create<BattleState>((set, get) => {
           userTeamData,
           opponentTeamData
         );
+
+        // If campaign battle was won, update stats and check for titles
+        // if (winnerId === userTeamData[0].user_id) {
+        //   const { data: profile, error: profileError } = await supabase
+        //     .from("profiles")
+        //     .select("highest_stage_cleared")
+        //     .eq("id", userTeamData[0].user_id)
+        //     .single();
+
+        //   if (!profileError && profile) {
+        //     const newHighestStageCleared = Math.max(
+        //       profile.highest_stage_cleared,
+        //       stageNumber || 0
+        //     );
+
+        //     if ((stageNumber || 0) > profile.highest_stage_cleared) {
+        //       await supabase
+        //         .from("profiles")
+        //         .update({ highest_stage_cleared: newHighestStageCleared })
+        //         .eq("id", userTeamData[0].user_id);
+        //     }
+
+        //     await useTitleStore
+        //       .getState()
+        //       .checkCampaignTitles(newHighestStageCleared);
+        //   }
+        // }
 
         return {
           id: crypto.randomUUID ? crypto.randomUUID() : "temp-id-" + Date.now(),
@@ -1219,7 +1280,7 @@ export const useBattleStore = create<BattleState>((set, get) => {
               display_name: "You",
             },
             stats: {
-              hp: d.digimon.hp,
+              hp: d.digimon.final_hp,
             },
           })),
           opponent_team: opponentTeamData.map((d: any) => ({
@@ -1237,13 +1298,14 @@ export const useBattleStore = create<BattleState>((set, get) => {
               display_name: "Opponent",
             },
             stats: {
-              hp: d.digimon.hp,
+              hp: d.digimon.final_hp,
             },
           })),
           turns,
           winner_id: winnerId,
           xpGain: 0,
           hint: hint || "You're not ready for this battle. Try again later.",
+          description: description || "",
         } as TeamBattle;
       } catch (error) {
         console.error("Error in campaign battle:", error);

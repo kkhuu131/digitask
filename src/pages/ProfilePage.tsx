@@ -9,6 +9,9 @@ import DigimonDetailModal from "../components/DigimonDetailModal";
 import AvatarSelectionModal from "../components/AvatarSelectionModal";
 import ReportButton from '../components/ReportButton';
 import { DIGIMON_LOOKUP_TABLE } from "../constants/digimonLookup";
+import { useTitleStore, UserTitle } from '../store/titleStore';
+import UserTitles from '../components/UserTitles';
+
 interface ProfileData {
   id: string;
   username: string;
@@ -35,6 +38,8 @@ const ProfilePage = () => {
   const [selectedDetailDigimon, setSelectedDetailDigimon] = useState<UserDigimon | null>(null);
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
   const [isUpdatingAvatar, setIsUpdatingAvatar] = useState(false);
+  const [userTitles, setUserTitles] = useState<UserTitle[]>([]);
+  const { fetchUserTitles } = useTitleStore();
   
   // Determine if viewing own profile
   const isOwnProfile = !id && !username || 
@@ -126,6 +131,9 @@ const ProfilePage = () => {
           setUserDigimon(allUserDigimon);
           const active = allUserDigimon.find(d => d.is_active);
           if (active) setFavoriteDigimon(active);
+          await fetchUserTitles();
+          const { userTitles } = useTitleStore.getState();
+          setUserTitles(userTitles);
         } else {
           // Fetch the user's Digimon
           const { data: digimonRawData, error: digimonError } = await supabase
@@ -144,6 +152,32 @@ const ProfilePage = () => {
           setUserDigimon(digimonData);
           const active = digimonData.find(d => d.is_active);
           if (active) setFavoriteDigimon(active);
+          
+          // Fetch titles for other user
+          try {
+            const { data: titlesData, error: titlesError } = await supabase
+              .from('user_titles')
+              .select(`
+                id,
+                title_id,
+                is_displayed,
+                earned_at
+              `)
+              .eq('user_id', profileId)
+              .order('earned_at', { ascending: false });
+              
+            if (!titlesError && titlesData) {
+              // Enrich with title details from constants
+              const enrichedTitles = titlesData.map(userTitle => ({
+                ...userTitle,
+                title: useTitleStore.getState().availableTitles.find(t => t.id === userTitle.title_id)
+              }));
+              
+              setUserTitles(enrichedTitles);
+            }
+          } catch (err) {
+            console.error("Error fetching user titles:", err);
+          }
         }
       } catch (err) {
         console.error("Error fetching profile:", err);
@@ -154,7 +188,7 @@ const ProfilePage = () => {
     };
     
     fetchProfileData();
-  }, [id, username, user?.id, userProfile?.username, isOwnProfile, allUserDigimon, navigate]);
+  }, [id, username, user?.id, userProfile?.username, isOwnProfile, allUserDigimon, navigate, fetchUserTitles]);
   
   // Calculate Digimon discovery percentage
   const discoveryPercentage = () => {
@@ -301,7 +335,6 @@ const ProfilePage = () => {
               </div>
             </div>
             
-            {/* Move report button to bottom of card */}
             {user?.id !== profileData.id && (
               <div className="mt-4 pt-4 border-t border-gray-200 flex justify-end">
                 <ReportButton 
@@ -311,6 +344,14 @@ const ProfilePage = () => {
                 />
               </div>
             )}
+          </div>
+
+          {/* Titles Section */}
+          <div className="card my-6">
+            <UserTitles 
+              titles={userTitles}
+              isOwnProfile={isOwnProfile || false}
+            />
           </div>
           
           {/* Favorite Digimon */}

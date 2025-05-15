@@ -164,6 +164,15 @@ async function scrapeEvolutionData(detailUrl, digimonId) {
         const requiresText = $(row).find("td[width='55%']").text().trim();
         const statRequirements = {};
 
+        // Extract DNA fusion requirement
+        let dnaFusionPartner = null;
+        const dnaMatch = requiresText.match(
+          /Digimon\s*:?\s*([A-Za-z0-9\s\(\)]+)/i
+        );
+        if (dnaMatch) {
+          dnaFusionPartner = dnaMatch[1].trim();
+        }
+
         // Parse requirements text for stats
         if (requiresText) {
           // Look for HP: X
@@ -199,6 +208,7 @@ async function scrapeEvolutionData(detailUrl, digimonId) {
             name,
             level_required: level,
             stat_requirements: statRequirements,
+            dna_fusion_partner: dnaFusionPartner,
           });
         }
       });
@@ -206,7 +216,7 @@ async function scrapeEvolutionData(detailUrl, digimonId) {
     console.log(
       `Digimon #${digimonId} - Evolves From: ${evolvesFrom.length}, Evolves To: ${evolvesTo.length}`
     );
-    ``;
+
     return { evolvesFrom, evolvesTo };
   } catch (error) {
     console.error(
@@ -282,6 +292,174 @@ async function updateEvolutionRequirements(evolutionData) {
   }
 
   console.log("Evolution requirements update complete!");
+}
+
+async function updateFusionRequirementsOnly() {
+  try {
+    console.log("Starting to update DNA fusion requirements...");
+
+    // First, check if the dna_requirement column exists, if not, add it
+    try {
+      const { data: columnExists, error: checkError } = await supabase
+        .from("evolution_paths")
+        .select("dna_requirement")
+        .limit(1);
+
+      if (
+        checkError &&
+        checkError.message.includes('column "dna_requirement" does not exist')
+      ) {
+        console.log(
+          "Adding dna_requirement column to evolution_paths table..."
+        );
+        // Use raw SQL to add the column
+        const { error: alterError } = await supabase.rpc(
+          "add_dna_requirement_column"
+        );
+
+        if (alterError) {
+          console.error("Error adding dna_requirement column:", alterError);
+          // Create the function and execute it
+          const { error: createFunctionError } = await supabase.rpc(
+            "create_add_dna_requirement_function"
+          );
+          if (createFunctionError) {
+            console.error("Error creating function:", createFunctionError);
+            return;
+          }
+
+          // Try again after creating the function
+          const { error: retryError } = await supabase.rpc(
+            "add_dna_requirement_column"
+          );
+          if (retryError) {
+            console.error(
+              "Error adding column after creating function:",
+              retryError
+            );
+            return;
+          }
+        }
+        console.log("Column added successfully!");
+      }
+    } catch (error) {
+      console.error("Error checking for column existence:", error);
+    }
+
+    // Scrape basic Digimon data to get the request_ids
+    const digimonList = await scrapeDigimonList();
+
+    // Create a map of digimon names to their database IDs
+    const nameToDbId = {};
+    digimonList.forEach((digimon) => {
+      nameToDbId[digimon.name.toLowerCase()] = digimon.digimon_id;
+    });
+
+    // Scrape evolution data for each Digimon
+    const evolutionData = {};
+    for (const digimon of digimonList) {
+      console.log(`Scraping evolution data for ${digimon.name}...`);
+
+      evolutionData[digimon.request_id] = await scrapeEvolutionData(
+        digimon.detail_url,
+        digimon.digimon_id
+      );
+
+      // Add a small delay to avoid overwhelming the server
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    }
+
+    // Update the fusion requirements
+    await updateDnaFusionRequirements(evolutionData, nameToDbId);
+
+    console.log("DNA fusion requirements update complete!");
+  } catch (error) {
+    console.error("Error in DNA fusion requirements update process:", error);
+  }
+}
+
+async function updateDnaFusionRequirements(evolutionData, nameToDbId) {
+  console.log("Updating DNA fusion requirements in Supabase...");
+
+  // Get existing digimon data to map names/request_ids to database IDs
+  const { data: existingDigimon, error: fetchError } = await supabase
+    .from("digimon")
+    .select("id, digimon_id, request_id, name");
+
+  if (fetchError) {
+    console.error("Error fetching existing Digimon:", fetchError);
+    return;
+  }
+
+  // Create mapping dictionaries
+  const requestIdToDbId = {};
+  const nameToId = {};
+
+  existingDigimon.forEach((digimon) => {
+    requestIdToDbId[digimon.request_id] = digimon.id;
+    nameToId[digimon.name.toLowerCase()] = digimon.id;
+  });
+
+  // Process each digimon's evolution data
+  for (const requestId in evolutionData) {
+    const fromDigimonDbId = requestIdToDbId[requestId];
+
+    if (!fromDigimonDbId) {
+      console.warn(
+        `Could not find database ID for Digimon with request_id ${requestId}`
+      );
+      continue;
+    }
+
+    const { evolvesTo } = evolutionData[requestId];
+
+    for (const evolution of evolvesTo) {
+      const toDigimonName = evolution.name.toLowerCase();
+      const toDigimonDbId = nameToId[toDigimonName];
+
+      if (!toDigimonDbId) {
+        console.warn(
+          `Could not find database ID for Digimon named "${evolution.name}"`
+        );
+        continue;
+      }
+
+      // Check if there's a DNA fusion partner
+      let dnaRequirementId = null;
+      if (evolution.dna_fusion_partner) {
+        const partnerName = evolution.dna_fusion_partner.toLowerCase();
+        dnaRequirementId = nameToId[partnerName];
+
+        if (!dnaRequirementId) {
+          console.warn(
+            `Could not find database ID for DNA fusion partner "${evolution.dna_fusion_partner}"`
+          );
+        } else {
+          console.log(
+            `Found DNA requirement: ${evolution.dna_fusion_partner} (ID: ${dnaRequirementId}) for evolution from ${fromDigimonDbId} to ${toDigimonDbId}`
+          );
+        }
+      }
+
+      // Update the existing evolution path with DNA requirement
+      const { error: updateError } = await supabase
+        .from("evolution_paths")
+        .update({
+          dna_requirement: dnaRequirementId,
+        })
+        .eq("from_digimon_id", fromDigimonDbId)
+        .eq("to_digimon_id", toDigimonDbId);
+
+      if (updateError) {
+        console.error(
+          `Error updating DNA requirement from ${fromDigimonDbId} to ${toDigimonDbId}:`,
+          updateError
+        );
+      }
+    }
+  }
+
+  console.log("DNA fusion requirements update complete!");
 }
 
 async function updateRequirementsOnly() {
@@ -674,4 +852,6 @@ async function testDetailScraping() {
 
 // updateStatsOnly();
 
-updateRequirementsOnly();
+// updateRequirementsOnly();
+
+updateFusionRequirementsOnly();

@@ -10,6 +10,9 @@ import {
   getEvolutionPath,
   getEvolutions,
 } from "@/utils/evolutionsHelper";
+import { useTitleStore } from "../store/titleStore";
+import { useAuthStore } from "../store/authStore";
+
 export const NON_ACTIVE_DIGIMON_EXP_MULTIPLIER = 0.5;
 
 export function expToBoostPoints(level: number, evolution: boolean = true) {
@@ -33,6 +36,13 @@ export function getTotalBonusStats(userDigimon: UserDigimon) {
     userDigimon.int_bonus +
     userDigimon.spd_bonus
   );
+}
+
+export function getRemainingStatPoints(userDigimon: UserDigimon | null) {
+  if (!userDigimon) return 0;
+  const cap = calculateBonusStatCap(userDigimon.abi);
+  const totalStat = getTotalBonusStats(userDigimon);
+  return cap - totalStat;
 }
 
 export function isUnderStatCap(userDigimon: UserDigimon | null) {
@@ -116,6 +126,7 @@ export interface EvolutionOption {
     spd?: number;
     abi?: number;
   };
+  dna_requirement?: number | null;
 }
 
 export interface PetState {
@@ -180,6 +191,11 @@ export interface PetState {
   fetchEvolutionOptions: (digimonId: number) => Promise<EvolutionOption[]>;
   fetchDevolutionOptions: (digimonId: number) => Promise<EvolutionOption[]>;
   feedMultipleDigimon: (baseExp: number) => Promise<number>;
+  dnaEvolveDigimon: (
+    digimonId: string,
+    toDigimonId: number,
+    dnaPartnerDigimonId: string
+  ) => Promise<boolean>;
 }
 
 export const useDigimonStore = create<PetState>((set, get) => ({
@@ -233,6 +249,9 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
       // Update local state
       set({ discoveredDigimon: [...discoveredDigimon, digimonId] });
+      await useTitleStore
+        .getState()
+        .checkCollectionTitles(discoveredDigimon.length);
     } catch (error) {
       console.error("Error adding discovered Digimon:", error);
     }
@@ -689,7 +708,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
           // Check each stat requirement
           if (
             statReqs.hp &&
-            baseHP + (userDigimon.hp_bonus || 0) < statReqs.hp
+            baseHP + 10 * (userDigimon.hp_bonus || 0) < statReqs.hp
           ) {
             meetsStatRequirements = false;
           }
@@ -847,10 +866,12 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         // Check each stat requirement
         if (
           statReqs.hp &&
-          baseHP + (digimonToEvolve.hp_bonus || 0) < statReqs.hp
+          baseHP + 10 * (digimonToEvolve.hp_bonus || 0) < statReqs.hp
         ) {
           statErrors.push(
-            `HP: ${baseHP + (digimonToEvolve.hp_bonus || 0)}/${statReqs.hp}`
+            `HP: ${baseHP + 10 * (digimonToEvolve.hp_bonus || 0)}/${
+              statReqs.hp
+            }`
           );
         }
         if (
@@ -931,6 +952,14 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       const { userDigimon } = get();
       if (userDigimon && digimonToEvolve.id === userDigimon.id) {
         await get().fetchUserDigimon();
+      }
+
+      console.log("userDigimon", userDigimon);
+
+      // After successful evolution, check for titles
+      const newDigimon = DIGIMON_LOOKUP_TABLE[toDigimonId];
+      if (newDigimon?.stage) {
+        await useTitleStore.getState().checkEvolutionTitles(newDigimon.stage);
       }
 
       set({ loading: false });
@@ -1636,6 +1665,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         sprite_url: DIGIMON_LOOKUP_TABLE[path.to_digimon_id].sprite_url,
         level_required: path.level_required,
         stat_requirements: path.stat_requirements || {},
+        dna_requirement: path.dna_requirement || null,
       }));
 
       // Update cache
@@ -1711,6 +1741,69 @@ export const useDigimonStore = create<PetState>((set, get) => ({
     } catch (error) {
       console.error("Error feeding multiple Digimon:", error);
       throw error;
+    }
+  },
+
+  dnaEvolveDigimon: async (
+    digimonId: string,
+    toDigimonId: number,
+    dnaPartnerDigimonId: string
+  ) => {
+    try {
+      const { user } = useAuthStore.getState();
+      if (!user) throw new Error("User not authenticated");
+
+      const { userDigimon } = get();
+      if (!userDigimon) throw new Error("No active Digimon found");
+
+      // Get the digimon to evolve
+      const digimonToEvolve = get().allUserDigimon.find(
+        (d) => d.id === digimonId
+      );
+      if (!digimonToEvolve) throw new Error("Digimon not found");
+
+      // Get the DNA partner digimon
+      const dnaPartnerDigimon = get().allUserDigimon.find(
+        (d) => d.id === dnaPartnerDigimonId
+      );
+      if (!dnaPartnerDigimon) throw new Error("DNA partner Digimon not found");
+
+      // Calculate bonus stats based on level before evolution
+      const boostPoints = expToBoostPoints(digimonToEvolve.current_level);
+      const abiGain = Math.floor(digimonToEvolve.current_level / 5) + 1;
+
+      // Call the RPC function to handle the DNA evolution
+      const { error } = await supabase.rpc("dna_evolve_digimon", {
+        p_digimon_id: digimonId,
+        p_to_digimon_id: toDigimonId,
+        p_dna_partner_digimon_id: dnaPartnerDigimonId,
+        p_boost_points: boostPoints,
+        p_abi_gain: abiGain,
+      });
+
+      if (error) throw error;
+
+      // Update discovered digimon
+      await get().addDiscoveredDigimon(toDigimonId);
+
+      // Refresh digimon data
+      await get().fetchUserDigimon();
+      await get().fetchAllUserDigimon();
+
+      // Check for evolution titles
+      const toDigimon = DIGIMON_LOOKUP_TABLE[toDigimonId];
+      if (toDigimon) {
+        await useTitleStore.getState().checkEvolutionTitles(toDigimon.stage);
+      }
+
+      return true;
+    } catch (error) {
+      console.error("Error in DNA evolution:", error);
+      useNotificationStore.getState().addNotification({
+        message: `Failed to DNA evolve: ${(error as Error).message}`,
+        type: "error",
+      });
+      return false;
     }
   },
 }));

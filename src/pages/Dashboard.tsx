@@ -6,11 +6,13 @@ import TaskForm from "../components/TaskForm";
 import TaskList from "../components/TaskList";
 import StatProgressMeter from "@/components/StatProgressMeter";
 import { useNavigate } from "react-router-dom";
+import { useTitleStore } from '../store/titleStore';
 
 const Dashboard: React.FC = () => {
   const { userDigimon, digimonData, evolutionOptions, fetchUserDigimon, error: digimonError, } = useDigimonStore();
   const { fetchTasks, dailyQuota, error: taskError, getExpMultiplier } = useTaskStore();
   const navigate = useNavigate();
+  const { checkForNewTitles } = useTitleStore();
   
   // Add state to force re-render when tasks are completed
   const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -49,6 +51,11 @@ const Dashboard: React.FC = () => {
     
     checkUserDigimon();
   }, [userDigimon, navigate]);
+  
+  useEffect(() => {
+    // Check for any new titles based on current stats
+    checkForNewTitles();
+  }, [checkForNewTitles]);
   
   const DAILY_QUOTA_REQUIREMENT = 3.0; // Should match the quota in taskStore.ts
 

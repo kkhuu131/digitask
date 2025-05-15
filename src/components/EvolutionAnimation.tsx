@@ -6,6 +6,8 @@ interface EvolutionAnimationProps {
   newSpriteUrl: string;
   onComplete: () => void;
   isDevolution?: boolean;
+  isDNAFusion?: boolean;
+  dnaPartnerSpriteUrl?: string;
 }
 
 const EvolutionAnimation: React.FC<EvolutionAnimationProps> = ({
@@ -13,6 +15,8 @@ const EvolutionAnimation: React.FC<EvolutionAnimationProps> = ({
   newSpriteUrl,
   onComplete,
   isDevolution = false,
+  isDNAFusion = false,
+  dnaPartnerSpriteUrl,
 }) => {
   const [stage, setStage] = useState<"intro" | "pulse" | "transform" | "finale">("intro");
   const [showText, setShowText] = useState(false);
@@ -99,20 +103,23 @@ const EvolutionAnimation: React.FC<EvolutionAnimationProps> = ({
               // Switch to new sprite but keep as silhouette
               setCurrentSprite(newSpriteUrlRef.current);
             }
-            
-            if (count >= 8) {
+            if (count >= 5) {
               clearInterval(flashInterval);
-              // Only reveal the actual sprite at the end
-              setSilhouette(false);
-              setStage("finale");
               
-              // End animation
-              const completeTimer = setTimeout(() => {
-                // Use the ref to get the latest callback
-                onCompleteRef.current();
-              }, 2000);
+              // Finale sequence
+              const finaleTimer = setTimeout(() => {
+                setStage("finale");
+                setSilhouette(false);
+                
+                // Complete animation
+                const completeTimer = setTimeout(() => {
+                  onCompleteRef.current();
+                }, 2000);
+                
+                return () => clearTimeout(completeTimer);
+              }, 1000);
               
-              return () => clearTimeout(completeTimer);
+              return () => clearTimeout(finaleTimer);
             }
           }, 300);
           
@@ -123,33 +130,15 @@ const EvolutionAnimation: React.FC<EvolutionAnimationProps> = ({
       }, 1500);
       
       return () => clearTimeout(pulseTimer);
-    }, 1000);
+    }, 500);
     
     return () => clearTimeout(introTimer);
-  // Empty dependency array means this effect runs only once when the component mounts
   }, [createSparkles]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden">
-      {/* Updated background with digital grid */}
-      <div className="absolute inset-0 bg-blue-600 bg-opacity-90">
-        {/* Grid overlay */}
-        <div 
-          className="absolute inset-0" 
-          style={{ 
-            backgroundImage: 'linear-gradient(to right, rgba(180, 144, 238, 0.2) 1px, transparent 1px), linear-gradient(to bottom, rgba(180, 144, 238, 0.2) 1px, transparent 1px)',
-            backgroundSize: '20px 20px',
-            boxShadow: 'inset 0 0 50px rgba(120, 0, 255, 0.3)'
-          }}
-        ></div>
-        
-        {/* Glow effect */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-blue-900 opacity-20"></div>
-      </div>
-      
-      {/* Main content container */}
-      <div className="relative z-10 w-full max-w-2xl">
-        {/* Evolution/Devolution text */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80">
+      <div className="relative w-full max-w-2xl mx-auto">
+        {/* Title text */}
         <AnimatePresence>
           {showText && (
             <motion.div 
@@ -159,7 +148,7 @@ const EvolutionAnimation: React.FC<EvolutionAnimationProps> = ({
               className="absolute top-0 left-0 right-0 text-center mb-8"
             >
               <h2 className="text-4xl font-bold text-white tracking-wider drop-shadow-lg">
-                {isDevolution ? "DE-DIGIVOLUTION" : "DIGIVOLUTION"}
+                {isDevolution ? "DE-DIGIVOLUTION" : isDNAFusion ? "DNA DIGIVOLUTION" : "DIGIVOLUTION"}
               </h2>
             </motion.div>
           )}
@@ -174,50 +163,186 @@ const EvolutionAnimation: React.FC<EvolutionAnimationProps> = ({
             className={`absolute inset-0 ${showSparkles ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}
           />
           
-          {/* Digimon sprite container */}
-          <motion.div
-            className="relative z-20 w-40 h-40 flex items-center justify-center"
-            style={{ transformOrigin: '50% 50%' }}
-            animate={{
-              scale: stage === "pulse" ? [1, 1.2, 1] : 
-                     stage === "transform" ? [1, 1.5, 1.3, 1.6] : 
-                     stage === "finale" ? [1.6, 1] : 1,
-              rotate: stage === "transform" ? [0, 5, -5, 0] : 0,
-            }}
-            transition={{
-              duration: stage === "pulse" ? 1.5 : 
-                        stage === "transform" ? 2 : 
-                        stage === "finale" ? 0.5 : 1,
-              repeat: stage === "pulse" ? Infinity : 0,
-              repeatType: "loop"
-            }}
-          >
-            {/* Actual sprite image */}
-            <div className="relative w-full h-full">
-              <img 
-                src={currentSprite} 
-                alt="Evolving Digimon"
-                className={`w-full h-full object-contain ${silhouette ? 'invisible' : 'visible'}`}
-                style={{ imageRendering: "pixelated" }}
-              />
-              
-              {/* Silhouette overlay */}
-              {silhouette && (
-                <div className="absolute inset-0 flex items-center justify-center">
+          {isDNAFusion ? (
+            // DNA Fusion Animation
+            <div className="relative w-full h-full flex items-center justify-center">
+              {/* First Digimon (left) */}
+              <motion.div
+                className="absolute z-20 w-32 h-32 flex items-center justify-center"
+                initial={{ x: -80, opacity: 1 }}
+                animate={{
+                  x: stage === "transform" ? 0 : -80,
+                  opacity: stage === "transform" ? [1, 1, 0] : 1,
+                  scale: stage === "pulse" ? [1, 1.1, 1] : 
+                         stage === "transform" ? [1, 1.2, 0] : 1,
+                  rotate: stage === "transform" ? [0, 10, 0] : 0,
+                }}
+                transition={{
+                  duration: stage === "pulse" ? 1.5 : 
+                            stage === "transform" ? 2 : 1,
+                  times: stage === "transform" ? [0, 0.7, 1] : [0, 0.5, 1],
+                  repeat: stage === "pulse" ? Infinity : 0,
+                  repeatType: "loop"
+                }}
+              >
+                <div className="relative w-full h-full">
                   <img 
-                    src={currentSprite} 
-                    alt="Silhouette"
+                    src={oldSpriteUrl} 
+                    alt="First Digimon"
+                    className={`w-full h-full object-contain ${stage === "transform" && silhouette ? 'invisible' : 'visible'}`}
+                    style={{ imageRendering: "pixelated" }}
+                  />
+                  
+                  {/* Silhouette overlay */}
+                  {stage === "transform" && silhouette && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <img 
+                        src={oldSpriteUrl} 
+                        alt="Silhouette"
+                        className="w-full h-full object-contain"
+                        style={{ 
+                          imageRendering: "pixelated",
+                          filter: "brightness(0) invert(1)",
+                          opacity: 0.8
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+              
+              {/* Second Digimon (right) - DNA Partner */}
+              <motion.div
+                className="absolute z-20 w-32 h-32 flex items-center justify-center"
+                initial={{ x: 80, opacity: 1 }}
+                animate={{
+                  x: stage === "transform" ? 0 : 80,
+                  opacity: stage === "transform" ? [1, 1, 0] : 1,
+                  scale: stage === "pulse" ? [1, 1.1, 1] : 
+                         stage === "transform" ? [1, 1.2, 0] : 1,
+                  rotate: stage === "transform" ? [0, -10, 0] : 0,
+                }}
+                transition={{
+                  duration: stage === "pulse" ? 1.5 : 
+                            stage === "transform" ? 2 : 1,
+                  times: stage === "transform" ? [0, 0.7, 1] : [0, 0.5, 1],
+                  repeat: stage === "pulse" ? Infinity : 0,
+                  repeatType: "loop"
+                }}
+              >
+                <div className="relative w-full h-full">
+                  <img 
+                    src={dnaPartnerSpriteUrl} 
+                    alt="Second Digimon"
+                    className={`w-full h-full object-contain ${stage === "transform" && silhouette ? 'invisible' : 'visible'}`}
+                    style={{ imageRendering: "pixelated" }}
+                  />
+                  
+                  {/* Silhouette overlay */}
+                  {stage === "transform" && silhouette && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <img 
+                        src={dnaPartnerSpriteUrl} 
+                        alt="Silhouette"
+                        className="w-full h-full object-contain"
+                        style={{ 
+                          imageRendering: "pixelated",
+                          filter: "brightness(0) invert(1)",
+                          opacity: 0.8
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+              
+              {/* Fusion Spiral Effect */}
+              {stage === "transform" && (
+                <motion.div
+                  className="absolute z-10 w-40 h-40 rounded-full border-4 border-yellow-400 border-dashed"
+                  animate={{
+                    rotate: [0, 360],
+                    scale: [0, 1.5, 0],
+                    opacity: [0, 0.8, 0]
+                  }}
+                  transition={{
+                    duration: 2,
+                    times: [0, 0.5, 1],
+                    repeat: 1,
+                    repeatType: "loop"
+                  }}
+                />
+              )}
+              
+              {/* Result Digimon (center) */}
+              <motion.div
+                className="relative z-20 w-40 h-40 flex items-center justify-center"
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{
+                  scale: stage === "finale" ? [0, 1.5, 1] : 0,
+                  opacity: stage === "finale" ? [0, 1] : 0,
+                }}
+                transition={{
+                  duration: 1,
+                  times: [0, 0.7, 1],
+                }}
+              >
+                <div className="relative w-full h-full">
+                  <img 
+                    src={newSpriteUrl} 
+                    alt="Fused Digimon"
                     className="w-full h-full object-contain"
-                    style={{ 
-                      imageRendering: "pixelated",
-                      filter: "brightness(0) invert(1)",
-                      opacity: 0.8
-                    }}
+                    style={{ imageRendering: "pixelated" }}
                   />
                 </div>
-              )}
+              </motion.div>
             </div>
-          </motion.div>
+          ) : (
+            // Regular Evolution Animation
+            <motion.div
+              className="relative z-20 w-40 h-40 flex items-center justify-center"
+              style={{ transformOrigin: '50% 50%' }}
+              animate={{
+                scale: stage === "pulse" ? [1, 1.2, 1] : 
+                       stage === "transform" ? [1, 1.5, 1.3, 1.6] : 
+                       stage === "finale" ? [1.6, 1] : 1,
+                rotate: stage === "transform" ? [0, 5, -5, 0] : 0,
+              }}
+              transition={{
+                duration: stage === "pulse" ? 1.5 : 
+                          stage === "transform" ? 2 : 
+                          stage === "finale" ? 0.5 : 1,
+                repeat: stage === "pulse" ? Infinity : 0,
+                repeatType: "loop"
+              }}
+            >
+              {/* Actual sprite image */}
+              <div className="relative w-full h-full">
+                <img 
+                  src={currentSprite} 
+                  alt="Evolving Digimon"
+                  className={`w-full h-full object-contain ${silhouette ? 'invisible' : 'visible'}`}
+                  style={{ imageRendering: "pixelated" }}
+                />
+                
+                {/* Silhouette overlay */}
+                {silhouette && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <img 
+                      src={currentSprite} 
+                      alt="Silhouette"
+                      className="w-full h-full object-contain"
+                      style={{ 
+                        imageRendering: "pixelated",
+                        filter: "brightness(0) invert(1)",
+                        opacity: 0.8
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          )}
         </div>
         
         {/* Evolution/Devolution complete text */}
@@ -228,7 +353,9 @@ const EvolutionAnimation: React.FC<EvolutionAnimationProps> = ({
             className="text-center mt-8"
           >
             <h3 className="text-2xl font-bold text-white">
-              {isDevolution ? "Devolution Successful!" : "Evolution Complete!"}
+              {isDevolution ? "Devolution Successful!" : 
+               isDNAFusion ? "DNA Fusion Complete!" : 
+               "Evolution Complete!"}
             </h3>
           </motion.div>
         )}

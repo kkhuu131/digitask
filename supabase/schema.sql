@@ -92,6 +92,7 @@ CREATE TABLE public.profiles (
   avatar_url text NULL,
   created_at timestamp with time zone NOT NULL DEFAULT now(),
   updated_at timestamp with time zone NULL DEFAULT now(),
+  highest_stage_cleared INTEGER DEFAULT 0,
   CONSTRAINT profiles_pkey PRIMARY KEY (id),
   CONSTRAINT profiles_username_key UNIQUE (username),
   CONSTRAINT profiles_id_fkey FOREIGN KEY (id) REFERENCES auth.users(id) ON DELETE CASCADE
@@ -171,6 +172,26 @@ CREATE TABLE public.user_milestones (
 );
 CREATE INDEX IF NOT EXISTS idx_user_milestones_user_id ON public.user_milestones USING btree (user_id);
 
+-- Add titles table to store all available titles
+CREATE TABLE titles (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  description TEXT NOT NULL,
+  category TEXT NOT NULL, -- 'campaign', 'collection', 'evolution', etc.
+  requirement_type TEXT NOT NULL, -- 'campaign_stage', 'digimon_count', 'digimon_level', etc.
+  requirement_value INTEGER NOT NULL, -- stage number, count threshold, etc.
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Add user_titles table to track which titles users have earned
+CREATE TABLE user_titles (
+  id SERIAL PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  title_id INTEGER REFERENCES titles(id) ON DELETE CASCADE,
+  earned_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE(user_id, title_id)
+);
+
 -- Functions
 
 CREATE OR REPLACE FUNCTION public.get_random_digimon_by_stage(stage_param text)
@@ -211,3 +232,6 @@ BEGIN
   LIMIT 1;
 END;
 $$ LANGUAGE plpgsql;
+
+-- Update user_titles table to remove is_displayed column
+ALTER TABLE user_titles DROP COLUMN is_displayed;

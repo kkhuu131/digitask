@@ -11,6 +11,29 @@ const PatchNotes = () => {
           <div className="mb-6">
             <div className="flex items-center mb-2">
               <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
+              <h3 className="text-lg font-medium ml-2">Big Update: Campaign Mode, Titles, and more</h3>
+              <span className="text-sm text-gray-500 ml-auto">May 9, 2025</span>
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <li><b>Campaign mode is now available!</b> The first 60 stages are made and follows a similar journey to Digimon Adventure.</li>
+            <li>This mode is just meant to be something you slowly do over time, or have something to work towards with the strength of your Digimon. Progress the stages at your own pace, and expect to be added in the future. </li>
+            <li>Some stages offer multiple options (A, B, C, for example), and only clearing one is required to progress.</li>
+            <li>⚠️NOTE: Any feedback on the difficulty of the campaign is welcome, please send it through the feedback form.</li>
+            <li>You can now set the Battle Speed for turn animations (1x-4x)</li>
+            <li><b>Titles are now available!</b> You can now earn titles by completing certain achievements such as campaign progression, discovering and evolving Digimon, and doing team battles.</li>
+            <li>These titles can be displayed on your profile page for others to see (up to 3).</li>
+            <li><b>Fusion (aka DNA Digivolution) is now possible!</b> This mechanic is used to evolve into certain Digimon such as Omnimon. These evolutions require another Digimon to fuse with and the process consumes them.</li>
+            <li>⚠️NOTE: Fusion consumes the Digimon listed as the requirement, and not the current one. No, the bonus stats or ABI are not combined.</li>
+            <li>HP Bonus is now effectively 10x what it was previously, so expect a lot more HP for your Digimon. The (+Number) displayed is just number of stat points into HP, but the effective increase is 10x that.</li>
+            <li>In the future, some higher stage evolutions may also be locked behind a Campaign stage clear such as some of the Royal Knights or Ultra Digimon.</li>
+            <li>Expect potential bugs and issues with these new features, please report any issues to the feedback form!</li>
+            <li>Thank you to everyone who has been using the site and providing feedback, I appreciate it!</li>
+            </ul>
+          </div>
+          <div className="mb-6"></div>
+          <div className="mb-6">
+            <div className="flex items-center mb-2">
+              <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
               <h3 className="text-lg font-medium ml-2">Minor Changes</h3>
               <span className="text-sm text-gray-500 ml-auto">May 9, 2025</span>
             </div>

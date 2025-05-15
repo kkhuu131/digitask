@@ -1,4 +1,4 @@
-export const CURRENT_VERSION = "1.0.4";
+export const CURRENT_VERSION = "1.1.1";
 
 export const UPDATE_CHANGES = {
   "1.0.1": [
@@ -27,5 +27,12 @@ export const UPDATE_CHANGES = {
     "Users are now suggested a category in task creation, but can change it freely during creation.",
     "Campaign mode is in development, please send any suggestions for enemy teams or rewards through the feedback form!",
     "A preview of the new campaign mode is available if you go to https://digitask-pi.vercel.app/campaign.",
+  ],
+  "1.1.1": [
+    "Campaign mode is now available!",
+    "Titles are now available! Gained from certain achievements and display up to 3 on your profile.",
+    "DNA Digivolution is now implemented!",
+    "HP Bonus is now effectively 10x.",
+    "Expect bugs and balancing issues (with the campaign), report any issues in the feedback form!",
   ],
 };
