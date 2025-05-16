@@ -1184,19 +1184,20 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
   },
   {
     id: "72",
-    name: "Order's Edge",
+    name: "Crossroads of Loyalty",
     team: [
-      { digimon_id: 264, level: 71 },
-      { digimon_id: 251, level: 73 },
-      { digimon_id: 331, level: 73 },
+      { digimon_id: 219, level: 75, hp_bonus: 400 },
+      { digimon_id: 331, level: 75, hp_bonus: 200 },
     ],
+    description:
+      "A holy knight and its dragon partner, stop your path. Though they say nothing, Alphamon's gaze is conflicted. You sense hesitation against its orders.",
   },
   {
     id: "73",
     name: "Enforcers of Justice",
     team: [
+      { digimon_id: 251, level: 73 },
       { digimon_id: 241, level: 75 },
-      { digimon_id: 219, level: 75 },
       { digimon_id: 265, level: 75 },
     ],
   },
@@ -1307,7 +1308,7 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
   },
   {
     id: "80",
-    name: "Last Protector",
+    name: "Final Judgement",
     team: [
       {
         digimon_id: 312,
@@ -1321,7 +1322,7 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
       },
     ],
     description:
-      "He was once the silence in the storm — watching, weighing, withholding judgment. But now, Alphamon transforms, not in blind loyalty, but to challenge and test your conviction.",
+      "Alphamon returns, now fused with the dragon. He stands now not for Yggdrasill, but against it. He challenges you to a test of your strength and conviction.",
   },
   {
     id: "100",
