@@ -1,154 +1,143 @@
-import { useState } from 'react';
-import { useDrag, useDrop, DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
 import { useDigimonStore } from '../store/petStore';
 import { UserDigimon } from '../store/petStore';
-import { DigimonType } from '@/store/battleStore';
+import { DigimonType, DigimonAttribute } from '@/store/battleStore';
 import TypeAttributeIcon from './TypeAttributeIcon';
-import { DigimonAttribute } from '@/store/battleStore';
-
-// Define types for drag items
-interface DigimonDragItem {
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragOverlay,
+  DragStartEvent,
+  DragEndEvent,
+  UniqueIdentifier
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  rectSortingStrategy
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+// Define types for our items
+interface DigimonItem {
   id: string;
   isTeam: boolean;
+  digimon: UserDigimon | null;
 }
 
-// Define component prop types
-interface DigimonCardProps {
-  digimon: UserDigimon;
+// Sortable Digimon Card component
+const SortableDigimonCard = ({ 
+  id, 
+  digimon, 
+  isTeam 
+}: { 
+  id: string; 
+  digimon: UserDigimon | null; 
   isTeam: boolean;
-  onSwap: (id1: string, id2: string) => void;
-  onMove: (id: string) => void;
-}
+}) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging
+  } = useSortable({ id });
 
-interface EmptySlotProps {
-  isTeam: boolean;
-  onAddToTeam: (digimonId: string) => void;
-}
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.4 : 1,
+    zIndex: isDragging ? 1 : 0,
+    touchAction: 'none'
+  };
 
-// Progress bar component for HP and EXP
-interface ProgressBarProps {
-  value: number;
-  maxValue: number;
-  color: string;
-  label: string;
-}
-
-const ProgressBar = ({ value, maxValue, color, label }: ProgressBarProps) => {
-  const percentage = Math.min(100, Math.max(0, (value / maxValue) * 100));
-  
-  return (
-    <div className="w-full mt-1">
-      <div className="flex justify-between items-center text-[10px] text-gray-500 mb-1">
-        <span>{label}</span>
-        <span>{value}/{maxValue}</span>
+  // If this is an empty slot
+  if (!digimon) {
+    return (
+      <div
+        ref={setNodeRef}
+        style={style}
+        className={`
+          border-2 border-dashed rounded-md flex items-center justify-center
+          ${isTeam ? 'border-gray-300' : 'border-gray-200'}
+          transition-colors duration-200
+          w-full aspect-square
+        `}
+        {...attributes}
+        {...listeners}
+      >
+        <p className={`text-xs text-center ${isTeam ? 'text-gray-400' : 'text-gray-300'}`}>
+          Drop Here
+        </p>
       </div>
-      <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
-        <div 
-          className={`h-full ${color}`} 
-          style={{ width: `${percentage}%` }}
-        />
-      </div>
-    </div>
-  );
-};
-
-// Single item type for all Digimon
-const DIGIMON_TYPE = 'digimon';
-
-// Simplified DigimonCard component
-const DigimonCard = ({ digimon, isTeam, onSwap }: DigimonCardProps) => {
-  const [{ isDragging }, drag] = useDrag({
-    type: DIGIMON_TYPE,
-    item: { id: digimon.id, isTeam } as DigimonDragItem,
-    collect: (monitor) => ({
-      isDragging: !!monitor.isDragging(),
-    }),
-  });
-
-  const [{ isOver }, drop] = useDrop({
-    accept: DIGIMON_TYPE,
-    drop: (item: DigimonDragItem) => {
-      if (item.id !== digimon.id) {
-        if (item.isTeam === isTeam) {
-          // Same team type - do nothing for now
-          console.log("Same team type, no action needed");
-        } else {
-          // Different team types - swap
-          console.log(`Swapping ${item.id} with ${digimon.id}`);
-          onSwap(item.id, digimon.id);
-        }
-      }
-    },
-    collect: (monitor) => ({
-      isOver: !!monitor.isOver(),
-    }),
-  });
+    );
+  }
 
   // Calculate EXP needed for next level
   const expForNextLevel = digimon.current_level * 20;
+  const expPercentage = Math.min(100, (digimon.experience_points / expForNextLevel) * 100);
 
   return (
-    <div 
-      ref={(node) => drag(drop(node))}
-      className={`
-        ${isTeam ? 'w-40 h-40' : 'w-40 h-40'}
-        border rounded-md flex flex-col items-center justify-start p-3
-        ${isDragging ? 'opacity-50' : 'opacity-100'}
-        ${isOver ? 'bg-blue-100 border border-blue-300' : 'bg-white'}
-        cursor-move transition-all relative
-      `}
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      className="border rounded-md relative w-full aspect-square select-none overflow-hidden bg-white cursor-move card-container"
     >
+      {/* Type/Attribute icon - with responsive size */}
       {digimon.digimon?.type && digimon.digimon?.attribute && (
-        <div className="absolute top-2 left-2">
+        <div className="absolute top-0.5 left-0.5 z-10 select-none small-icon">
           <TypeAttributeIcon
             type={digimon.digimon.type as DigimonType}
             attribute={digimon.digimon.attribute as DigimonAttribute}
-            size="md"
+            size="sm"
             showLabel={false}
           />
         </div>
       )}
       
-      {isTeam ? (
-        <motion.div
-          animate={{ y: [0, -3, 0] }}
-          transition={{ repeat: Infinity, duration: 2 }}
-          className="w-24 h-24 flex items-center justify-center"
-        >
-          <img 
-            src={digimon.digimon?.sprite_url} 
-            alt={digimon.name} 
-            className="scale-[1.5]"
-            style={{ imageRendering: "pixelated" }}
-            draggable="false"
-          />
-        </motion.div>
-      ) : (
-        <div className="w-20 h-20 flex items-center justify-center">
-          <img 
-            src={digimon.digimon?.sprite_url} 
-            alt={digimon.name} 
-            className="scale-[1.5]"
-            style={{ imageRendering: "pixelated" }}
+      {/* Level badge - with responsive size */}
+      <div className="absolute bottom-0.5 right-0.5 bg-black bg-opacity-60 text-white text-[8px] px-1 py-0.5 rounded select-none z-10 small-level">
+        Lv.{digimon.current_level}
+      </div>
+      
+      {/* Transparent overlay to ensure the entire card is draggable */}
+      <div className="absolute inset-0 z-0"></div>
+      
+      {/* Sprite container with flex centering and max size */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center p-3 z-0">
+        <div className="relative w-full h-full max-w-[80px] max-h-[80px] mx-auto">
+          <img
+            src={digimon.digimon?.sprite_url || '/assets/digimon/dot050.png'}
+            alt={digimon.name || digimon.digimon?.name || 'Digimon'}
+            className="absolute inset-0 w-full h-full object-contain select-none"
+            style={{ imageRendering: 'pixelated' }}
             draggable="false"
           />
         </div>
-      )}
-      
-      <div className="w-full">
-        <p className="text-sm truncate w-full text-center mt-1">{digimon.name || digimon.digimon?.name}</p>
         
-        <div className="flex items-center justify-center gap-2 w-full">
-          <p className="text-xs text-gray-500 whitespace-nowrap">Lv.{digimon.current_level}</p>
-          <div className="w-20">
-            <ProgressBar 
-              value={digimon.experience_points % expForNextLevel} 
-              maxValue={expForNextLevel} 
-              color="bg-blue-500" 
-              label=""
-            />
+        {/* Additional info for larger cards - using container query class */}
+        <div className="large-card-content hidden w-full mt-2">
+          {/* Name */}
+          <p className="text-xs text-center font-medium truncate w-full">
+            {digimon.name || digimon.digimon?.name || 'Digimon'}
+          </p>
+          
+          {/* Simple EXP bar */}
+          <div className="w-full mt-1 px-1">
+            <div className="w-full h-1 bg-gray-200 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-blue-500" 
+                style={{ width: `${expPercentage}%` }}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -156,405 +145,219 @@ const DigimonCard = ({ digimon, isTeam, onSwap }: DigimonCardProps) => {
   );
 };
 
-// Simplified EmptySlot component
-const EmptySlot = ({ isTeam, onAddToTeam }: EmptySlotProps) => {
-  const [{ isOver }, drop] = useDrop({
-    accept: DIGIMON_TYPE,
-    drop: (item: DigimonDragItem) => {
-      console.log(`Dropping ${item.id} to ${isTeam ? 'team' : 'reserve'} slot`);
-      if (isTeam !== item.isTeam) {
-        onAddToTeam(item.id);
-      }
-    },
-    collect: (monitor) => ({
-      isOver: !!monitor.isOver(),
-    }),
-  });
-
+// Container for team or reserve
+const DigimonContainer = ({ 
+  items, 
+  isTeam 
+}: { 
+  items: DigimonItem[]; 
+  isTeam: boolean;
+}) => {
   return (
-    <div 
-      ref={drop}
-      className={`
-        ${isTeam ? 'w-40 h-40' : 'w-40 h-40'}
-        border-2 border-dashed
-        ${isTeam ? 'border-gray-300' : 'border-gray-200'}
-        rounded-md flex items-center justify-center
-        ${isOver ? 'bg-blue-100 border-blue-300' : ''}
-        transition-colors duration-200
-      `}
-    >
-      <p className={`text-sm ${isTeam ? 'text-gray-400' : 'text-gray-300'} ${isOver ? 'text-blue-500 font-medium' : ''}`}>
-        Drop Here
-      </p>
-    </div>
-  );
-};
-
-const MobileDigimonCard = ({ digimon, isTeam, onSwap }: DigimonCardProps) => {
-  const [{ isDragging }, drag] = useDrag({
-    type: DIGIMON_TYPE,
-    item: { id: digimon.id, isTeam } as DigimonDragItem,
-    collect: (monitor) => ({
-      isDragging: !!monitor.isDragging(),
-    }),
-  });
-
-  const [{ isOver }, drop] = useDrop({
-    accept: DIGIMON_TYPE,
-    drop: (item: DigimonDragItem) => {
-      if (item.id !== digimon.id) {
-        if (item.isTeam !== isTeam) {
-          // Different team types - swap
-          console.log(`Mobile Swapping ${item.id} with ${digimon.id}`);
-          onSwap(item.id, digimon.id);
-        }
-        // If item.isTeam === isTeam, it means dragging within the same list (team or reserve)
-        // We might want reordering logic here in the future, but for now, do nothing.
-      }
-    },
-    collect: (monitor) => ({
-      isOver: !!monitor.isOver(),
-    }),
-  });
-
-  return (
-    <div
-      ref={(node) => drag(drop(node))}
-      className={`
-        w-24 h-24 border flex flex-col items-center justify-start pt-2
-        ${isDragging ? 'opacity-50' : 'opacity-100'}
-        ${isOver ? 'bg-blue-100 border border-blue-300' : 'bg-white'}
-        cursor-move transition-all rounded-md relative
-      `}
-    >
-      {/* Type/Attribute Icon in top left corner */}
-      {digimon.digimon?.type && digimon.digimon?.attribute && (
-        <div className="absolute top-1 left-1">
-          <TypeAttributeIcon
-            type={digimon.digimon.type as DigimonType}
-            attribute={digimon.digimon.attribute as DigimonAttribute}
-            size="sm"
-            showLabel={false}
-          />
+    <div className="bg-gray-50 p-2 xs:p-3 rounded-lg">
+      <h3 className="text-base xs:text-lg font-semibold mb-1 xs:mb-2">{isTeam ? 'Team' : 'Reserve'}</h3>
+      <SortableContext items={items.map(item => item.id)} strategy={rectSortingStrategy}>
+        <div className={`grid ${isTeam ? 'grid-cols-3' : 'grid-cols-3'} gap-1 xs:gap-2 sm:gap-3 max-w-3xl mx-auto`}>
+          {items.map(item => (
+            <div key={item.id} className="max-w-[160px] w-full mx-auto">
+              <SortableDigimonCard
+                id={item.id}
+                digimon={item.digimon}
+                isTeam={isTeam}
+              />
+            </div>
+          ))}
         </div>
-      )}
-      
-      {/* Digimon sprite */}
-      <div className="w-12 h-12 flex items-center justify-center">
-        <img
-          src={digimon.digimon?.sprite_url}
-          alt={digimon.name || digimon.digimon?.name}
-          className="scale-[1]"
-          style={{ imageRendering: "pixelated" }}
-          draggable="false"
-        />
-      </div>
-      
-      {/* Level indicator */}
-      <p className="text-[10px]">{digimon.name || digimon.digimon?.name}</p>
-      <p className="text-[10px] text-gray-500">Lv.{digimon.current_level}</p>
+      </SortableContext>
     </div>
   );
 };
 
-// NEW: Mobile Empty Slot Component
-const MobileEmptySlot = ({ isTeam, onAddToTeam }: EmptySlotProps) => {
-  const [{ isOver }, drop] = useDrop({
-    accept: DIGIMON_TYPE,
-    drop: (item: DigimonDragItem) => {
-      console.log(`Mobile Dropping ${item.id} to ${isTeam ? 'team' : 'reserve'} slot`);
-      if (isTeam !== item.isTeam) {
-        onAddToTeam(item.id);
-      }
-    },
-    collect: (monitor) => ({
-      isOver: !!monitor.isOver(),
-    }),
-  });
-
-  return (
-    <div
-      ref={drop}
-      className={`
-        w-24 h-24 border-2 border-dashed rounded-md flex items-center justify-center
-        ${isTeam ? 'border-gray-300' : 'border-gray-200'}
-        ${isOver ? 'bg-blue-100 border-blue-300' : ''}
-        transition-colors duration-200
-      `}
-    >
-      <p className={`text-[10px] ${isTeam ? 'text-gray-400' : 'text-gray-300'} ${isOver ? 'text-blue-500 font-medium' : ''}`}>
-        Drop Here
-      </p>
-    </div>
-  );
-};
-
-// For the smallest screens (<320px)
-const TinyDigimonCard = ({ digimon, isTeam, onSwap }: DigimonCardProps) => {
-  const [{ isDragging }, drag] = useDrag({
-    type: DIGIMON_TYPE,
-    item: { id: digimon.id, isTeam } as DigimonDragItem,
-    collect: (monitor) => ({
-      isDragging: !!monitor.isDragging(),
-    }),
-  });
-
-  const [{ isOver }, drop] = useDrop({
-    accept: DIGIMON_TYPE,
-    drop: (item: DigimonDragItem) => {
-      if (item.id !== digimon.id && item.isTeam !== isTeam) {
-        onSwap(item.id, digimon.id);
-      }
-    },
-    collect: (monitor) => ({
-      isOver: !!monitor.isOver(),
-    }),
-  });
-
-  return (
-    <div
-      ref={(node) => drag(drop(node))}
-      className={`
-        w-20 h-20 border flex flex-col items-center justify-start pt-4
-        ${isDragging ? 'opacity-50' : 'opacity-100'}
-        ${isOver ? 'bg-blue-100 border border-blue-300' : 'bg-white'}
-        cursor-move transition-all rounded-md relative
-      `}
-    >
-      {/* Type/Attribute Icon in top left corner */}
-      {digimon.digimon?.type && digimon.digimon?.attribute && (
-        <div className="absolute top-1 left-1">
-          <TypeAttributeIcon
-            type={digimon.digimon.type as DigimonType}
-            attribute={digimon.digimon.attribute as DigimonAttribute}
-            size="sm"
-            showLabel={false}
-          />
-        </div>
-      )}
-      
-      {/* Digimon sprite */}
-      <div className="w-8 h-8 flex items-center justify-center">
-        <img
-          src={digimon.digimon?.sprite_url}
-          alt={digimon.name || digimon.digimon?.name}
-          className="scale-[1]"
-          style={{ imageRendering: "pixelated" }}
-          draggable="false"
-        />
-      </div>
-
-      {/* Level indicator */}
-      <p className="text-[12px] font-bold mt-1">Lv.{digimon.current_level}</p>
-    </div>
-  );
-};
-
-// Update the main component to use the new TinyDigimonCard
 const DigimonTeamManager = () => {
-  const { allUserDigimon, swapTeamMember, setTeamMember } = useDigimonStore();
-  const [isProcessing, setIsProcessing] = useState(false);
+  const { allUserDigimon, setTeamMember, swapTeamMember } = useDigimonStore();
+  const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
+  const [teamItems, setTeamItems] = useState<DigimonItem[]>([]);
+  const [reserveItems, setReserveItems] = useState<DigimonItem[]>([]);
 
-  const teamDigimon = allUserDigimon.filter(d => d.is_on_team);
-  const reserveDigimon = allUserDigimon.filter(d => !d.is_on_team);
-
-  // Simplified handlers
-  const handleSwap = async (id1: string, id2: string) => {
-    if (isProcessing) return;
-
-    setIsProcessing(true);
-    try {
-      // Determine which is team and which is reserve
-      const digimon1 = allUserDigimon.find(d => d.id === id1);
-      const digimon2 = allUserDigimon.find(d => d.id === id2);
-
-      if (!digimon1 || !digimon2) {
-        console.error("Couldn't find one of the Digimon");
-        return;
-      }
-
-      // Ensure we only swap between team and reserve
-      if (digimon1.is_on_team === digimon2.is_on_team) {
-        console.log("Cannot swap within the same group (team/reserve).");
-        return; // Prevent swapping within the same list
-      }
-
-      // Always call with team first, reserve second
-      if (digimon1.is_on_team && !digimon2.is_on_team) {
-        await swapTeamMember(id1, id2);
-      } else if (!digimon1.is_on_team && digimon2.is_on_team) {
-        await swapTeamMember(id2, id1);
-      }
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  const handleAddToTeam = async (id: string) => {
-    if (isProcessing) return;
-
-    setIsProcessing(true);
-    try {
-      const digimon = allUserDigimon.find(d => d.id === id);
-      if (!digimon) return;
-
-      // Check if team is full before adding
-      if (!digimon.is_on_team && teamDigimon.length >= 3) {
-         console.log("Team is full. Cannot add more Digimon.");
-         // Optionally show a user-facing message here
-         return;
-      }
-
-      await setTeamMember(id, !digimon.is_on_team);
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  return (
-    <DndProvider backend={HTML5Backend}>
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold mb-2">Team</h3>
-        <div className="grid grid-cols-3 gap-2 sm:gap-2 lg_xl:gap-4 mb-8 justify-items-center">
-          {teamDigimon.map((digimon) => (
-            <div key={digimon.id}>
-              <div className="hidden lg_xl:block">
-                <DigimonCard
-                  digimon={digimon}
-                  isTeam={true}
-                  onSwap={handleSwap}
-                  onMove={handleAddToTeam}
-                />
-              </div>
-              <div className="hidden sm:block lg_xl:hidden">
-                <MobileDigimonCard
-                  digimon={digimon}
-                  isTeam={true}
-                  onSwap={handleSwap}
-                  onMove={handleAddToTeam}
-                />
-              </div>
-              <div className="block sm:hidden">
-                <TinyDigimonCard
-                  digimon={digimon}
-                  isTeam={true}
-                  onSwap={handleSwap}
-                  onMove={handleAddToTeam}
-                />
-              </div>
-            </div>
-          ))}
-
-          {Array.from({ length: Math.max(0, 3 - teamDigimon.length) }).map((_, i) => (
-            <div key={`empty-team-${i}`}>
-              <div className="hidden lg_xl:block">
-                <EmptySlot
-                  isTeam={true}
-                  onAddToTeam={handleAddToTeam}
-                />
-              </div>
-              <div className="hidden sm:block lg_xl:hidden">
-                <MobileEmptySlot
-                  isTeam={true}
-                  onAddToTeam={handleAddToTeam}
-                />
-              </div>
-              <div className="block sm:hidden">
-                <TinyEmptySlot
-                  isTeam={true}
-                  onAddToTeam={handleAddToTeam}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <h3 className="text-lg font-semibold mb-2">Reserve</h3>
-        <div className="grid grid-cols-3 gap-2 sm:gap-2 lg_xl:gap-4 gap-y-3 sm:gap-y-4 lg_xl:gap-y-6 justify-items-center">
-          {reserveDigimon.map((digimon) => (
-            <div key={digimon.id}>
-              <div className="hidden lg_xl:block">
-                <DigimonCard
-                  digimon={digimon}
-                  isTeam={false}
-                  onSwap={handleSwap}
-                  onMove={handleAddToTeam}
-                />
-              </div>
-               <div className="hidden sm:block lg_xl:hidden">
-                 <MobileDigimonCard
-                  digimon={digimon}
-                  isTeam={false}
-                  onSwap={handleSwap}
-                  onMove={handleAddToTeam}
-                />
-              </div>
-              <div className="block sm:hidden">
-                <TinyDigimonCard
-                  digimon={digimon}
-                  isTeam={false}
-                  onSwap={handleSwap}
-                  onMove={handleAddToTeam}
-                />
-              </div>
-            </div>
-          ))}
-
-          {Array.from({ length: Math.max(0, 6 - reserveDigimon.length) }).map((_, i) => (
-            <div key={`empty-reserve-${i}`}>
-              <div className="hidden lg_xl:block">
-                <EmptySlot
-                  isTeam={false}
-                  onAddToTeam={handleAddToTeam}
-                />
-              </div>
-              <div className="hidden sm:block lg_xl:hidden">
-                 <MobileEmptySlot
-                  isTeam={false}
-                  onAddToTeam={handleAddToTeam}
-                />
-              </div>
-              <div className="block sm:hidden">
-                <TinyEmptySlot
-                  isTeam={false}
-                  onAddToTeam={handleAddToTeam}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </DndProvider>
-  );
-};
-
-// Add TinyEmptySlot component
-const TinyEmptySlot = ({ isTeam, onAddToTeam }: EmptySlotProps) => {
-  const [{ isOver }, drop] = useDrop({
-    accept: DIGIMON_TYPE,
-    drop: (item: DigimonDragItem) => {
-      if (isTeam !== item.isTeam) {
-        onAddToTeam(item.id);
-      }
-    },
-    collect: (monitor) => ({
-      isOver: !!monitor.isOver(),
+  // Setup sensors for drag and drop
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        delay: 100,
+        tolerance: 5,
+      },
     }),
-  });
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  // Update items when allUserDigimon changes
+  useEffect(() => {
+    const teamDigimon = allUserDigimon.filter(d => d.is_on_team);
+    const reserveDigimon = allUserDigimon.filter(d => !d.is_on_team);
+    
+    // Create team items
+    const team = teamDigimon.map(digimon => ({
+      id: `team-${digimon.id}`,
+      isTeam: true,
+      digimon
+    }));
+    
+    // Add empty slots to team if needed
+    while (team.length < 3) {
+      team.push({
+        id: `team-empty-${team.length}`,
+        isTeam: true,
+        digimon: null as any
+      });
+    }
+    
+    // Create reserve items
+    const reserve = reserveDigimon.map(digimon => ({
+      id: `reserve-${digimon.id}`,
+      isTeam: false,
+      digimon
+    }));
+    
+    // Add empty slots to reserve if needed
+    while (reserve.length < 6) {
+      reserve.push({
+        id: `reserve-empty-${reserve.length}`,
+        isTeam: false,
+        digimon: null as any
+      });
+    }
+    
+    setTeamItems(team);
+    setReserveItems(reserve);
+  }, [allUserDigimon]);
+
+  // Find the active item
+  const getActiveItem = () => {
+    if (!activeId) return null;
+    
+    const activeTeamItem = teamItems.find(item => item.id === activeId);
+    if (activeTeamItem) return activeTeamItem;
+    
+    const activeReserveItem = reserveItems.find(item => item.id === activeId);
+    if (activeReserveItem) return activeReserveItem;
+    
+    return null;
+  };
+
+  // Handle drag start
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(event.active.id);
+  };
+
+  // Handle drag end
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    
+    if (!over) {
+      setActiveId(null);
+      return;
+    }
+    
+    // Extract container and item info
+    const activeId = active.id as string;
+    const overId = over.id as string;
+    
+    const isActiveTeam = activeId.startsWith('team-');
+    const isOverTeam = overId.startsWith('team-');
+    
+    // If dropping on the same item, do nothing
+    if (activeId === overId) {
+      setActiveId(null);
+      return;
+    }
+    
+    // Handle reordering within the same container
+    if (isActiveTeam === isOverTeam) {
+      const items = isActiveTeam ? teamItems : reserveItems;
+      const activeIndex = items.findIndex(item => item.id === activeId);
+      const overIndex = items.findIndex(item => item.id === overId);
+      
+      if (activeIndex !== -1 && overIndex !== -1) {
+        const newItems = arrayMove(items, activeIndex, overIndex);
+        
+        if (isActiveTeam) {
+          setTeamItems(newItems);
+        } else {
+          setReserveItems(newItems);
+        }
+      }
+    } 
+    // Handle moving between containers
+    else {
+      // Get the active and over items
+      const activeItem = isActiveTeam 
+        ? teamItems.find(item => item.id === activeId)
+        : reserveItems.find(item => item.id === activeId);
+      
+      const overItem = isOverTeam
+        ? teamItems.find(item => item.id === overId)
+        : reserveItems.find(item => item.id === overId);
+      
+      // Only proceed if we're dragging a Digimon (not an empty slot)
+      if (activeItem?.digimon) {
+        // If dropping onto another Digimon, swap them
+        if (overItem?.digimon) {
+          // Determine which is team and which is reserve
+          const teamDigimon = isActiveTeam ? activeItem.digimon : overItem.digimon;
+          const reserveDigimon = isActiveTeam ? overItem.digimon : activeItem.digimon;
+          
+          // Use swapTeamMember if one is on team and one is in reserve
+          if (teamDigimon.is_on_team && !reserveDigimon.is_on_team) {
+            await swapTeamMember(teamDigimon.id, reserveDigimon.id);
+          } else if (!teamDigimon.is_on_team && reserveDigimon.is_on_team) {
+            await swapTeamMember(reserveDigimon.id, teamDigimon.id);
+          } else {
+            // If both are on team or both are in reserve, toggle individually
+            await setTeamMember(activeItem.digimon.id, !activeItem.digimon.is_on_team);
+          }
+        } 
+        // If dropping onto an empty slot, just toggle team membership
+        else {
+          await setTeamMember(activeItem.digimon.id, !activeItem.digimon.is_on_team);
+        }
+      }
+    }
+    
+    setActiveId(null);
+  };
 
   return (
-    <div
-      ref={drop}
-      className={`
-        w-20 h-20 border-2 border-dashed rounded-md flex items-center justify-center
-        ${isTeam ? 'border-gray-300' : 'border-gray-200'}
-        ${isOver ? 'bg-blue-100 border-blue-300' : ''}
-        transition-colors duration-200
-      `}
-    >
-      <p className={`text-[8px] ${isTeam ? 'text-gray-400' : 'text-gray-300'} ${isOver ? 'text-blue-500 font-medium' : ''}`}>
-        Drop Here
+    <div>
+      <h2 className="text-xl font-bold mb-4">Team Management</h2>
+      <p className="text-sm text-gray-600 mb-4">
+        Drag and drop to arrange your team. Your active Digimon must be on the team to participate in battles.
       </p>
+      
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+      >
+        <div className="space-y-6">
+          <DigimonContainer items={teamItems} isTeam={true} />
+          <DigimonContainer items={reserveItems} isTeam={false} />
+        </div>
+        
+        <DragOverlay>
+          {activeId ? (
+            <div className="opacity-80">
+              <SortableDigimonCard
+                id={activeId.toString()}
+                digimon={getActiveItem()?.digimon || null}
+                isTeam={getActiveItem()?.isTeam || false}
+              />
+            </div>
+          ) : null}
+        </DragOverlay>
+      </DndContext>
     </div>
   );
 };

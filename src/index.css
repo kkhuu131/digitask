@@ -45,3 +45,29 @@
     filter: brightness(0);
   }
 }
+
+/* Container query for Digimon cards */
+.card-container {
+  container-type: inline-size;
+}
+
+@container (min-width: 90px) {
+  .large-card-content {
+    display: block !important;
+  }
+
+  /* Larger level badge for bigger cards */
+  .small-level {
+    font-size: 12px !important;
+    padding: 2px 4px !important;
+    bottom: 10px !important;
+    right: 10px !important;
+  }
+
+  /* Larger type/attribute icon for bigger cards */
+  .small-icon {
+    top: 10px !important;
+    left: 10px !important;
+    transform: scale(1.2);
+  }
+}

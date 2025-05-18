@@ -11,6 +11,18 @@ const PatchNotes = () => {
           <div className="mb-6">
             <div className="flex items-center mb-2">
               <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
+              <h3 className="text-lg font-medium ml-2">UI Changes, 3 New Digimon</h3>
+              <span className="text-sm text-gray-500 ml-auto">May 9, 2025</span>
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <li>Completed tasks that are recurring or daily can now still be edited.</li>
+            <li>Improved Digimon team card UI.</li>
+            <li>Added 3 new Digimon: BlitzGreymon, CresGarurumon, and Omnimon Alter-S</li>
+            <li>BlitzGreymon are evolved through MetalGreymon (Blue), CresGarurumon from WereGarurumon, and Omnimon Alter-S from the fusion of the two.</li>
+            </ul>
+          </div>
+          <div className="mb-6">
+            <div className="flex items-center mb-2">
               <h3 className="text-lg font-medium ml-2">Big Update: Campaign Mode, Titles, and more</h3>
               <span className="text-sm text-gray-500 ml-auto">May 9, 2025</span>
             </div>
@@ -30,7 +42,6 @@ const PatchNotes = () => {
             <li>Thank you to everyone who has been using the site and providing feedback, I appreciate it!</li>
             </ul>
           </div>
-          <div className="mb-6"></div>
           <div className="mb-6">
             <div className="flex items-center mb-2">
               <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>

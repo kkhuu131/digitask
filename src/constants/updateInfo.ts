@@ -1,4 +1,4 @@
-export const CURRENT_VERSION = "1.1.1";
+export const CURRENT_VERSION = "1.1.2";
 
 export const UPDATE_CHANGES = {
   "1.0.1": [
@@ -34,5 +34,11 @@ export const UPDATE_CHANGES = {
     "DNA Digivolution is now implemented!",
     "HP Bonus is now effectively 10x.",
     "Expect bugs and balancing issues (with the campaign), report any issues in the feedback form!",
+  ],
+  "1.1.2": [
+    "Completed tasks that are recurring or daily can now still be edited.",
+    "Improved Digimon team card UI.",
+    "Added 3 new Digimon: BlitzGreymon, CresGarurumon, and Omnimon Alter-S",
+    "BlitzGreymon are evolved through MetalGreymon (Blue), CresGarurumon from WereGarurumon, and Omnimon Alter-S from the fusion of the two.",
   ],
 };

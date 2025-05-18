@@ -117,7 +117,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onComplete, onDelete }) => {
       <div className="flex items-center gap-2 sm:gap-3">
         {/* Action Buttons - Absolutely positioned */}
         <div className="absolute right-1 top-1 flex flex-col-reverse sm:flex-row items-center gap-1 flex-shrink-0">
-          {!task.is_completed && (
+          {(!task.is_completed || !task.due_date) && (
             <button
               onClick={() => setShowEditModal(true)}
               className="px-1 pt-1 sm:p-1 text-gray-400 hover:text-blue-500"
