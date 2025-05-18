@@ -19,6 +19,7 @@ const PatchNotes = () => {
             <li>Improved Digimon team card UI.</li>
             <li>Added 3 new Digimon: BlitzGreymon, CresGarurumon, and Omnimon Alter-S</li>
             <li>BlitzGreymon are evolved through MetalGreymon (Blue), CresGarurumon from WereGarurumon, and Omnimon Alter-S from the fusion of the two.</li>
+            <li>Made ABI Milestones easier to reach, especially earlier ones.</li>
             </ul>
           </div>
           <div className="mb-6">
