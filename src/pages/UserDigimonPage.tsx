@@ -2,12 +2,12 @@ import { useState, useEffect } from "react";
 import { useDigimonStore, EvolutionOption, UserDigimon } from "../store/petStore";
 import MilestoneProgress from "../components/MilestoneProgress"
 import DigimonDetailModal from "../components/DigimonDetailModal";
-import { motion } from "framer-motion";
 import { DigimonType, DigimonAttribute } from "../store/battleStore";
 import TypeAttributeIcon from '../components/TypeAttributeIcon';
 import EvolutionAnimation from "../components/EvolutionAnimation";
 import { DIGIMON_LOOKUP_TABLE } from "../constants/digimonLookup";
 import { getEvolutions, getEvolutionsByDigimonIds } from "@/utils/evolutionsHelper";
+import DigimonSprite from "../components/DigimonSprite";
 
 const UserDigimonPage = () => {
   const { 
@@ -388,39 +388,16 @@ const UserDigimonPage = () => {
                   
                   {/* Add back the sprite */}
                   <div className="flex items-center justify-center my-2">
-                    <div className="w-16 h-16 flex items-center justify-center">
-                      {/* Check if Digimon can evolve */}
-                      {evolutionData[digimon.digimon_id]?.some(
+                    <DigimonSprite
+                      digimonName={digimon.digimon?.name || ""}
+                      fallbackSpriteUrl={digimon.digimon?.sprite_url || "/assets/pet/egg.svg"}
+                      happiness={digimon.happiness}
+                      size="sm"
+                      onClick={() => handleShowDetailModal(digimon.id)}
+                      enableHopping={evolutionData[digimon.digimon_id]?.some(
                         option => digimon.current_level >= option.level_required
-                      ) ? (
-                        // If it can evolve, use motion.img with hopping animation
-                        <motion.img 
-                          src={digimon.digimon?.sprite_url} 
-                          alt={digimon.name || digimon.digimon?.name} 
-                          className="scale-[1.5]"
-                          style={{ imageRendering: "pixelated", scale: "1.5" }}
-                          animate={{
-                            y: [0, -5, 0, -3, 0, -5, 0],
-                          }}
-                          transition={{
-                            duration: 1,
-                            repeat: Infinity,
-                            repeatType: "loop",
-                            repeatDelay: 1,
-                          }}
-                          draggable="false"
-                        />
-                      ) : (
-                        // If it can't evolve, use regular img
-                        <img 
-                          src={digimon.digimon?.sprite_url} 
-                          alt={digimon.name || digimon.digimon?.name} 
-                          className="scale-[1.5]"
-                          style={{ imageRendering: "pixelated" }}
-                          draggable="false"
-                        />
                       )}
-                    </div>
+                    />
                   </div>
                   
                   {/* Age display */}

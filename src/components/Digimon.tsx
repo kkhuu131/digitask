@@ -5,6 +5,9 @@ import DigimonDetailModal from "./DigimonDetailModal";
 import { DigimonAttribute, DigimonType as DigimonBattleType } from "../store/battleStore";
 import TypeAttributeIcon from "./TypeAttributeIcon";
 import EvolutionAnimation from "./EvolutionAnimation";
+import { determineSpriteType, getSpriteUrl } from '../utils/spriteManager';
+import { ANIMATED_DIGIMON } from '../constants/animatedDigimonList';
+import type { SpriteType } from '../utils/spriteManager';
 
 interface DigimonProps {
   userDigimon: UserDigimon;
@@ -46,6 +49,84 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
   const [pendingEvolution, setPendingEvolution] = useState<{toDigimonId: number} | null>(null);
   const [pendingDevolution, setPendingDevolution] = useState<{toDigimonId: number} | null>(null);
 
+  // Add state for current sprite type
+  const [currentSpriteType, setCurrentSpriteType] = useState<SpriteType>('idle1');
+  const [hasAnimatedSprites, setHasAnimatedSprites] = useState(false);
+  
+  // Add state for sprite toggle
+  const [spriteToggle, setSpriteToggle] = useState(false);
+  
+  // Add these new state variables
+  const [lastInteractionTime, setLastInteractionTime] = useState<number>(Date.now());
+  const [isSleeping, setIsSleeping] = useState<boolean>(false);
+  
+  // Check if this Digimon has animated sprites
+  useEffect(() => {
+    if (digimonData && ANIMATED_DIGIMON.includes(digimonData.name)) {
+      setHasAnimatedSprites(true);
+    } else {
+      setHasAnimatedSprites(false);
+    }
+  }, [digimonData]);
+  
+  // Add this effect to check for inactivity
+  useEffect(() => {
+    if (!hasAnimatedSprites) return;
+    
+    // Check every 10 seconds if the Digimon should be sleeping
+    const inactivityCheckInterval = setInterval(() => {
+      const currentTime = Date.now();
+      const inactiveTime = currentTime - lastInteractionTime;
+      
+      // If inactive for more than 1 minute (60000ms), set to sleeping
+      if (inactiveTime > 60000 && !isSleeping) {
+        setIsSleeping(true);
+      }
+    }, 10000); // Check every 10 seconds
+    
+    return () => clearInterval(inactivityCheckInterval);
+  }, [hasAnimatedSprites, lastInteractionTime, isSleeping]);
+  
+  // Modify the sprite animation interval to handle sleeping state
+  useEffect(() => {
+    if (!hasAnimatedSprites) return;
+    
+    // Update sprite every 0.75 seconds for idle animation
+    const interval = setInterval(() => {
+      if (isLevelingUp || isStatIncreasing) return;
+      
+      // Toggle the sprite state
+      setSpriteToggle(prev => !prev);
+      
+      // If sleeping, alternate between sleeping1 and sleeping2
+      if (isSleeping) {
+        setCurrentSpriteType(spriteToggle ? "sleeping1" : "sleeping2");
+        return;
+      }
+      
+      // Otherwise, determine sprite type based on happiness and toggle state
+      let newSpriteType: SpriteType;
+      
+      if (userDigimon.happiness > 80) {
+        newSpriteType = spriteToggle ? "idle1" : "idle2";
+      } else {
+        newSpriteType = spriteToggle ? "sad1" : "sad2";
+      }
+      
+      setCurrentSpriteType(newSpriteType);
+    }, 750);
+    
+    return () => clearInterval(interval);
+  }, [hasAnimatedSprites, userDigimon.happiness, isLevelingUp, isStatIncreasing, spriteToggle, isSleeping]);
+  
+  // Function to get the current sprite URL
+  const getCurrentSpriteUrl = () => {
+    if (hasAnimatedSprites && digimonData) {
+      return getSpriteUrl(digimonData.name, currentSpriteType, digimonData.sprite_url);
+    }
+    return digimonData?.sprite_url || '/assets/digimon/dot050.png';
+  };
+  
   // Update local state when userDigimon changes
   useEffect(() => {
     // Check for level up
@@ -160,7 +241,10 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
   
   // Add this new function to handle sprite clicks
   const handleSpriteClick = () => {
-    // Trigger animation
+    // Update interaction time
+    updateInteraction();
+    
+    // Existing code...
     setIsStatIncreasing(true);
     
     // Random chance (1/5) to show heart
@@ -181,6 +265,7 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
   
   // Add a debug function to log when clicks happen
   const handleCardClick = () => {
+    updateInteraction();
     setShowDetailModal(true);
   };
   
@@ -217,6 +302,14 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
       setShowDevolutionAnimation(false);
       setEvolutionSprites(null);
       setPendingDevolution(null);
+    }
+  };
+  
+  // Add this function to update the last interaction time
+  const updateInteraction = () => {
+    setLastInteractionTime(Date.now());
+    if (isSleeping) {
+      setIsSleeping(false);
     }
   };
   
@@ -275,11 +368,13 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
               ? "hop" 
               : isStatIncreasing 
                 ? "statIncrease" 
-                : { y: [0, -10, 0] }
+                : hasAnimatedSprites 
+                  ? { y: 0 } // No up/down animation for animated sprites
+                  : { y: [0, -10, 0] } // Keep up/down only for non-animated sprites
           }
           variants={levelUpVariants}
           transition={
-            !isLevelingUp && !isStatIncreasing 
+            !isLevelingUp && !isStatIncreasing && !hasAnimatedSprites
               ? { repeat: Infinity, duration: 2 } 
               : undefined
           }
@@ -291,7 +386,7 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
         >
           <motion.img
             draggable="false"
-            src={digimonData.sprite_url} 
+            src={getCurrentSpriteUrl()} 
             alt={digimonData.name} 
             className="w-auto h-auto cursor-pointer"
             style={{ 
@@ -299,8 +394,17 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
               transform: `scale(${lookDirection}, 2.5)`,
             }}
             onClick={(e) => {
-              e.stopPropagation(); // Prevent opening modal when clicking sprite
+              e.stopPropagation();
               handleSpriteClick();
+              
+              // For animated sprites, show happy reaction temporarily
+              if (hasAnimatedSprites) {
+                updateInteraction();
+                setCurrentSpriteType('happy');
+                setTimeout(() => {
+                  setCurrentSpriteType(determineSpriteType(userDigimon.happiness));
+                }, 1000);
+              }
             }}
             onError={(e) => {
               // Fallback if image doesn't load

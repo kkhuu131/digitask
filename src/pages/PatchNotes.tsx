@@ -11,8 +11,20 @@ const PatchNotes = () => {
           <div className="mb-6">
             <div className="flex items-center mb-2">
               <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
+              <h3 className="text-lg font-medium ml-2">Animation Update</h3>
+              <span className="text-sm text-gray-500 ml-auto">May 19, 2025</span>
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <li>Several Digimon sprites have gotten animations/new sprites (ex. idle animation, happy, sad, sleeping)</li>
+            <li>Source: <a href="https://drive.google.com/drive/folders/1EgoXHwlXNiurD4X_9WEgoyzm9OuWf_tf" target="_blank" rel="noopener noreferrer">https://drive.google.com/drive/folders/1EgoXHwlXNiurD4X_9WEgoyzm9OuWf_tf</a></li>
+            <li>Unfortunately, I couldn't find sprites for all Digimon, so many Digimon are still static.</li>
+            <li>Due to influx of all these new sprites, I'll be able to add more Digimon to the game! Notably a lot of the X-Antibody Digimon!</li>
+            </ul>
+          </div>
+          <div className="mb-6">
+            <div className="flex items-center mb-2">
               <h3 className="text-lg font-medium ml-2">UI Changes, 3 New Digimon</h3>
-              <span className="text-sm text-gray-500 ml-auto">May 9, 2025</span>
+              <span className="text-sm text-gray-500 ml-auto">May 17, 2025</span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600">
             <li>Completed tasks that are recurring or daily can now still be edited.</li>
@@ -25,7 +37,7 @@ const PatchNotes = () => {
           <div className="mb-6">
             <div className="flex items-center mb-2">
               <h3 className="text-lg font-medium ml-2">Big Update: Campaign Mode, Titles, and more</h3>
-              <span className="text-sm text-gray-500 ml-auto">May 9, 2025</span>
+              <span className="text-sm text-gray-500 ml-auto">May 15, 2025</span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600">
             <li><b>Campaign mode is now available!</b> The first 60 stages are made and follows a similar journey to Digimon Adventure.</li>
@@ -274,7 +286,7 @@ const PatchNotes = () => {
           </div>
         </div>
         
-        <div>
+        {/* <div>
           <h2 className="text-xl font-semibold mb-4">Upcoming Features</h2>
           <div className="mb-6">
             <div className="flex items-center mb-2">
@@ -318,7 +330,7 @@ const PatchNotes = () => {
               <li>Trading system</li>
             </ul>
           </div>
-        </div>
+        </div> */}
         
         <div className="mt-8 p-4 bg-indigo-50 rounded-lg">
           <h3 className="font-medium text-indigo-800 mb-2">Have a suggestion?</h3>

@@ -1,4 +1,4 @@
-export const CURRENT_VERSION = "1.1.2";
+export const CURRENT_VERSION = "1.1.3";
 
 export const UPDATE_CHANGES = {
   "1.0.1": [
@@ -40,5 +40,10 @@ export const UPDATE_CHANGES = {
     "Improved Digimon team card UI.",
     "Added 3 new Digimon: BlitzGreymon, CresGarurumon, and Omnimon Alter-S",
     "BlitzGreymon are evolved through MetalGreymon (Blue), CresGarurumon from WereGarurumon, and Omnimon Alter-S from the fusion of the two.",
+  ],
+  "1.1.3": [
+    "Several Digimon sprites have gotten animations/new sprites (ex. idle animation, happy, sad, sleeping)",
+    "Unfortunately, I couldn't find sprites for all Digimon, so many Digimon are still static.",
+    "Due to influx of all these new sprites, I'm able to add more Digimon to the game! Notably a lot of the X-Antibody Digimon.",
   ],
 };

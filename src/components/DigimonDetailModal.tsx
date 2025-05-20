@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { EvolutionOption, UserDigimon, getRemainingStatPoints, useDigimonStore } from "../store/petStore";
-import { motion, AnimatePresence } from "framer-motion";
 import calculateBaseStat, { calculateFinalStats } from "../utils/digimonStatCalculation";
 import { DigimonAttribute, DigimonType } from "../store/battleStore";
 import { supabase } from "../lib/supabase";
 import TypeAttributeIcon from "./TypeAttributeIcon";
 import DigimonEvolutionModal from "./DigimonEvolutionModal";
 import { StatType, isUnderStatCap } from "../store/petStore";
+import DigimonSprite from "./DigimonSprite";
 
 interface DigimonDetailModalProps {
   selectedDigimon: UserDigimon | null;
@@ -29,8 +29,6 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
   const [editingName, setEditingName] = useState<string | null>(null);
   const [newName, setNewName] = useState<string>("");
   const [isAnimating, setIsAnimating] = useState(false);
-  const [showHeart, setShowHeart] = useState(false);
-  const [lookDirection, setLookDirection] = useState(1);
   const [savedStats, setSavedStats] = useState<Record<string, number>>({
     hp: 0, sp: 0, atk: 0, def: 0, int: 0, spd: 0,
   });
@@ -222,22 +220,6 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
     if (isAnimating) return; // Prevent multiple animations
     
     setIsAnimating(true);
-    
-    // Random chance (1/5) to show heart
-    if (Math.random() < 0.2) {
-      setShowHeart(true);
-    }
-    
-    // Look left and right sequence
-    setTimeout(() => setLookDirection(-1), 200);
-    setTimeout(() => setLookDirection(1), 400);
-    
-    // End animations
-    setTimeout(() => {
-      setIsAnimating(false);
-      setShowHeart(false);
-      setLookDirection(1); // Reset direction to neutral scale
-    }, 1000);
   };
 
   // Add function to handle name editing
@@ -311,25 +293,6 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
   // Check if a Digimon has been discovered
   const isDiscovered = (digimonId: number) => {
     return discoveredDigimon.includes(digimonId);
-  };
-
-  // Define animation variants
-  const animationVariants = {
-    hop: {
-      y: [0, -10, 0, -7, 0],
-      transition: { duration: 0.8, times: [0, 0.25, 0.5, 0.75, 1] }
-    },
-    idle: { y: 0 }
-  };
-  
-  const heartVariants = {
-    initial: { opacity: 0, scale: 0, y: 0 },
-    animate: { 
-      opacity: [0, 1, 1, 0],
-      scale: [0, 1.2, 1, 0],
-      y: -30,
-      transition: { duration: 1 }
-    }
   };
 
   const stats = calculateFinalStats(selectedDigimon);
@@ -412,34 +375,14 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
         <div className="flex flex-col md:flex-row gap-6">
           {/* Left column */}
           <div className="md:w-2/5 flex flex-col items-center">
-            <div className="w-32 h-32 mt-4 mb-8 relative">
-              <motion.img 
-                src={selectedDigimon.digimon?.sprite_url} 
-                alt={selectedDigimon.name || selectedDigimon.digimon?.name} 
-                className="w-full h-full object-contain cursor-pointer"
-                style={{ 
-                  imageRendering: "pixelated",
-                  transform: `scale(${lookDirection}, 1)`
-                }}
-                animate={isAnimating ? "hop" : "idle"}
-                variants={animationVariants}
+            <div className="w-32 h-32 flex items-center justify-center mt-4 mb-8">
+              <DigimonSprite
+                digimonName={selectedDigimon.digimon?.name || ""}
+                fallbackSpriteUrl={selectedDigimon.digimon?.sprite_url || "/assets/pet/egg.svg"}
+                happiness={selectedDigimon.happiness}
+                size="lg"
                 onClick={handleModalSpriteClick}
               />
-              
-              {/* Heart animation */}
-              <AnimatePresence>
-                {showHeart && (
-                  <motion.div
-                    className="absolute top-0 left-1/2 transform -translate-x-1/2"
-                    variants={heartVariants}
-                    initial="initial"
-                    animate="animate"
-                    exit={{ opacity: 0 }}
-                  >
-                    <span className="text-3xl">❤️</span>
-                  </motion.div>
-                )}
-              </AnimatePresence>
             </div>
             
             <div className="text-center mb-1">
