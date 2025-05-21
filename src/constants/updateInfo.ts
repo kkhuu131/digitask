@@ -1,4 +1,4 @@
-export const CURRENT_VERSION = "1.1.3";
+export const CURRENT_VERSION = "1.2.0";
 
 export const UPDATE_CHANGES = {
   "1.0.1": [
@@ -45,5 +45,11 @@ export const UPDATE_CHANGES = {
     "Several Digimon sprites have gotten animations/new sprites (ex. idle animation, happy, sad, sleeping)",
     "Unfortunately, I couldn't find sprites for all Digimon, so many Digimon are still static.",
     "Due to influx of all these new sprites, I'm able to add more Digimon to the game! Notably a lot of the X-Antibody Digimon.",
+  ],
+  "1.2.0": [
+    "Introducing X-Antibody Digimon! These are mutated variants of the original Digimon, providing a 10% boost to all stats.",
+    "Read patch notes for more information.",
+    "Added Bokomon and Neemon as guides to the game! Sprites are from @otro_jorch on twitter",
+    "Added an onboarding flow for new users to get started!",
   ],
 };

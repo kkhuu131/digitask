@@ -3,6 +3,7 @@ import { useDigimonStore } from '../store/petStore';
 import { UserDigimon } from '../store/petStore';
 import { DigimonType, DigimonAttribute } from '@/store/battleStore';
 import TypeAttributeIcon from './TypeAttributeIcon';
+import DigimonSprite from './DigimonSprite';
 import {
   DndContext,
   closestCenter,
@@ -113,13 +114,14 @@ const SortableDigimonCard = ({
       
       {/* Sprite container with flex centering and max size */}
       <div className="absolute inset-0 flex flex-col items-center justify-center p-3 z-0">
-        <div className="relative w-full h-full max-w-[80px] max-h-[80px] mx-auto">
-          <img
-            src={digimon.digimon?.sprite_url || '/assets/digimon/dot050.png'}
-            alt={digimon.name || digimon.digimon?.name || 'Digimon'}
-            className="absolute inset-0 w-full h-full object-contain select-none"
-            style={{ imageRendering: 'pixelated' }}
-            draggable="false"
+        <div className="relative w-full h-full max-w-[80px] max-h-[80px] mx-auto flex items-center justify-center">
+          <DigimonSprite
+            digimonName={digimon.digimon?.name || ""}
+            fallbackSpriteUrl={digimon.digimon?.sprite_url || "/assets/digimon/dot050.png"}
+            happiness={digimon.happiness}
+            size="sm"
+            showHappinessAnimations={false}
+            enableHopping={false}
           />
         </div>
         

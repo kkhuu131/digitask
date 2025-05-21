@@ -430,7 +430,9 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
         
         {/* Mood indicator */}
         <div className="absolute bottom-0 right-0 bg-white rounded-full p-1 shadow-md">
-          {userDigimon.happiness > 80 ? (
+          {isSleeping ? (
+            <span className="text-2xl">💤</span>
+          ) : userDigimon.happiness > 80 ? (
             <span className="text-2xl">😄</span>
           ) : userDigimon.happiness > 50 ? (
             <span className="text-2xl">🙂</span>

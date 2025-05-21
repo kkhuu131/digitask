@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { useEffect, useState, useRef } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuthStore } from './store/authStore';
 import { useDigimonStore } from './store/petStore';
 import { useTaskStore } from './store/taskStore';
@@ -7,6 +7,8 @@ import { supabase } from './lib/supabase';
 import NotificationCenter from './components/NotificationCenter';
 import 'reactflow/dist/style.css';
 import UpdateNotification from './components/UpdateNotification';
+import { useOnboardingStore } from './store/onboardingStore';
+import React from 'react';
 
 // Pages
 import Login from './pages/Login';
@@ -23,16 +25,32 @@ import Battle from './pages/Battle';
 import ProfileSettings from './pages/ProfileSettings';
 import UserDigimonPage from './pages/UserDigimonPage';
 import Tutorial from './pages/Tutorial';
-import LandingPage from './pages/LandingPage';
 import PatchNotes from './pages/PatchNotes';
 import ProfilePage from './pages/ProfilePage';
 import UserSearchPage from './pages/UserSearchPage';
 import LeaderboardPage from './pages/LeaderboardPage';
 import AdminReportsPage from './pages/AdminReportsPage';
-import DigimonPlayground from "./pages/DigimonPlayground";
+// import DigimonPlayground from "./pages/DigimonPlayground";
 import Campaign from "./pages/Campaign";
 import AdminDigimonEditor from './pages/AdminDigimonEditor';
 import AdminTitlesPage from './pages/AdminTitlesPage';
+import OnboardingPage from './pages/OnboardingPage';
+
+// Define a clear app initialization state
+interface AppInitState {
+  authChecked: boolean;
+  onboardingChecked: boolean;
+  digimonChecked: boolean;
+  tasksChecked: boolean;
+}
+
+// Add this at the top of the file, outside the component
+let isInitializationInProgress = false;
+let isAppMounted = false;
+let lastAuthEventTime = 0;
+const AUTH_EVENT_DEBOUNCE_MS = 2000; // 2 seconds
+let currentSessionId: string | null = null; // Track the current session ID
+let currentUserId: string | null = null; // Track the current user ID
 
 // Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -72,40 +90,209 @@ const PublicRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-function App() {
-  const { loading: authLoading, checkSession } = useAuthStore();
-  const { userDigimon, fetchUserDigimon } = useDigimonStore();
-  const [appLoading, setAppLoading] = useState(true);
-  const [needsEmailConfirmation, _setNeedsEmailConfirmation] = useState(false);
-  const [_isAuthenticated, setIsAuthenticated] = useState(false);
-  const [_loading, setLoading] = useState(true);
+function RequireAuth({ children, allowNoDigimon = false }: { children: React.ReactNode, allowNoDigimon?: boolean }) {
+  const { user, loading: authLoading } = useAuthStore();
+  const { userDigimon, loading: digimonLoading } = useDigimonStore();
+  const { hasCompletedOnboarding, isCheckingStatus, checkOnboardingStatus } = useOnboardingStore();
+  const location = useLocation();
+  const hasCheckedRef = useRef(false);
   
-  // Initial app loading
+  // Skip navigation during hot module reloading
+  const isHotReload = import.meta.hot;
+  
   useEffect(() => {
+    // Only check once per mount and skip during hot reload
+    if (!hasCheckedRef.current && !isHotReload) {
+      checkOnboardingStatus();
+      hasCheckedRef.current = true;
+    }
+  }, [checkOnboardingStatus]);
+  
+  // Show loading while checking auth and onboarding status
+  if ((authLoading || isCheckingStatus || hasCompletedOnboarding === null) && !isHotReload) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user && !isHotReload) {
+    // Redirect to login if not authenticated
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+  
+  // If needs onboarding, redirect to onboarding
+  if (hasCompletedOnboarding === false && !isHotReload) {
+    console.log("User needs onboarding, redirecting to /onboarding");
+    return <Navigate to="/onboarding" replace />;
+  }
+
+  // If user has completed onboarding but has no Digimon, redirect to onboarding
+  // This ensures they go through the full flow
+  if (hasCompletedOnboarding && !allowNoDigimon && !userDigimon && !digimonLoading && !isHotReload) {
+    console.log("No Digimon found, redirecting to onboarding");
+    return <Navigate to="/onboarding" replace />;
+  }
+
+  // Show loading while fetching Digimon data
+  if (!allowNoDigimon && digimonLoading && !isHotReload) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading your Digimon...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return <>{children}</>;
+}
+
+function App() {
+  const { checkSession, user } = useAuthStore();
+  const { fetchUserDigimon } = useDigimonStore();
+  const { initializeStore } = useTaskStore();
+  
+  // Use a single, comprehensive loading state
+  const [appInit, setAppInit] = useState<AppInitState>({
+    authChecked: false,
+    onboardingChecked: false,
+    digimonChecked: false,
+    tasksChecked: false
+  });
+  
+  // Track component mount state
+  useEffect(() => {
+    isAppMounted = true;
+    return () => {
+      isAppMounted = false;
+    };
+  }, []);
+  
+  // Derived loading state - only false when ALL checks are complete
+  const appLoading = !appInit.authChecked || 
+                    (!!user && (!appInit.onboardingChecked || 
+                               !appInit.digimonChecked || 
+                               !appInit.tasksChecked));
+
+  // Initial app loading - sequential approach
+  useEffect(() => {
+    // Skip if component is unmounted
+    if (!isAppMounted) return;
+    
     const initApp = async () => {
+      // Prevent multiple initializations
+      if (isInitializationInProgress) {
+        console.log("Initialization already in progress, skipping");
+        return;
+      }
+      
+      isInitializationInProgress = true;
+      
       try {
-        await checkSession();
+        console.log("Starting app initialization sequence");
         
-        if (useAuthStore.getState().user) {
-          await useTaskStore.getState().initializeStore();
-          await fetchUserDigimon();
+        // Step 1: Check authentication first
+        await checkSession();
+        const isAuthenticated = !!useAuthStore.getState().user;
+        console.log("Auth check complete", { isAuthenticated });
+        
+        // Skip further initialization if component unmounted during auth check
+        if (!isAppMounted) {
+          console.log("Component unmounted during initialization, aborting");
+          isInitializationInProgress = false;
+          return;
         }
+        
+        // Update auth checked state
+        setAppInit(prev => ({ ...prev, authChecked: true }));
+        
+        if (!isAuthenticated) {
+          console.log("User not authenticated, skipping further initialization");
+          // Mark all steps as complete when user is not authenticated
+          setAppInit({
+            authChecked: true,
+            onboardingChecked: true,
+            digimonChecked: true,
+            tasksChecked: true
+          });
+          isInitializationInProgress = false;
+          return;
+        }
+        
+        // Step 2: Check onboarding status
+        await useOnboardingStore.getState().checkOnboardingStatus();
+        console.log("Onboarding check complete");
+        
+        // Skip if component unmounted
+        if (!isAppMounted) {
+          isInitializationInProgress = false;
+          return;
+        }
+        
+        setAppInit(prev => ({ ...prev, onboardingChecked: true }));
+        
+        // Step 3: Initialize stores in sequence
+        await initializeStore();
+        console.log("Task store initialized");
+        
+        // Skip if component unmounted
+        if (!isAppMounted) {
+          isInitializationInProgress = false;
+          return;
+        }
+        
+        setAppInit(prev => ({ ...prev, tasksChecked: true }));
+        
+        await fetchUserDigimon();
+        console.log("Digimon data fetched");
+        
+        // Skip if component unmounted
+        if (!isAppMounted) {
+          isInitializationInProgress = false;
+          return;
+        }
+        
+        setAppInit(prev => ({ ...prev, digimonChecked: true }));
+        
+        console.log("App initialization complete");
       } catch (error) {
         console.error("Error initializing app:", error);
+        // Mark all as checked even on error to prevent infinite loading
+        if (isAppMounted) {
+          setAppInit({
+            authChecked: true,
+            onboardingChecked: true,
+            digimonChecked: true,
+            tasksChecked: true
+          });
+        }
       } finally {
-        setAppLoading(false);
+        isInitializationInProgress = false;
       }
     };
     
-    initApp();
-  }, [checkSession, fetchUserDigimon]);
+    // Only start initialization if not already in progress
+    if (!isInitializationInProgress && !appInit.authChecked) {
+      initApp();
+    }
+  }, [checkSession, fetchUserDigimon, initializeStore]);
   
-  // Set up Digimon subscription
+  // Set up Digimon subscription - only after initialization
   useEffect(() => {
+    // Only set up subscriptions if user is authenticated and app is initialized
+    if (!user || appLoading) return;
+    
     let unsubscribeDigimon: (() => void) | undefined;
     let unsubscribeQuota: (() => void) | undefined;
 
     const setupSubscriptions = async () => {
+      console.log("Setting up real-time subscriptions");
       // Set up Digimon subscription
       unsubscribeDigimon = await useDigimonStore.getState().subscribeToDigimonUpdates();
       
@@ -123,19 +310,136 @@ function App() {
         unsubscribeQuota();
       }
     };
-  }, []);
+  }, [user, appLoading]);
 
   // Auth state change listener
   useEffect(() => {
+    let isHandlingAuthChange = false;
+    
+    // Initialize the current session and user ID on mount
+    const initCurrentSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (data.session) {
+        currentSessionId = data.session.user.id;
+        currentUserId = data.session.user.id;
+        console.log("Initial session:", { id: currentSessionId, userId: currentUserId });
+      }
+    };
+    
+    initCurrentSession();
+    
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event) => {
-        console.log("Auth state change:", event);
+      async (event, session) => {
+        console.log("Auth state change:", event, { 
+          hasSession: !!session,
+          appInitState: appInit,
+          isInitializationInProgress,
+          sessionId: session?.user?.id,
+          currentSessionId,
+          userId: session?.user?.id,
+          currentUserId
+        });
         
+        // Skip if we're already handling an auth change or initialization is in progress
+        if (isHandlingAuthChange || isInitializationInProgress) {
+          console.log("Already handling auth change or initialization in progress, skipping");
+          return;
+        }
+        
+        // For INITIAL_SESSION, we should let the normal initialization flow handle it
+        if (event === 'INITIAL_SESSION') {
+          console.log("Received INITIAL_SESSION event - letting normal init flow handle it");
+          if (session) {
+            currentSessionId = session.user.id;
+            currentUserId = session.user.id;
+          }
+          return;
+        }
+        
+        // TOKEN_REFRESHED should never trigger reinitialization
+        if (event === 'TOKEN_REFRESHED') {
+          console.log("Token refreshed, no need to reinitialize app");
+          if (session) {
+            currentSessionId = session.user.id;
+            currentUserId = session.user.id;
+          }
+          return;
+        }
+        
+        // Only proceed with SIGNED_IN if it's a genuine new sign-in
         if (event === 'SIGNED_IN') {
-          // User signed in - session will be handled by checkSession in the first useEffect
-          console.log("User signed in");
+          const now = Date.now();
+          
+          // If this SIGNED_IN happens too soon after another auth event, ignore it
+          if (now - lastAuthEventTime < AUTH_EVENT_DEBOUNCE_MS) {
+            console.log("Ignoring SIGNED_IN event - too soon after previous auth event");
+            return;
+          }
+          
+          // Check for hot reload
+          const isHotReload = import.meta.hot && import.meta.hot.data.isHotReload;
+          if (isHotReload && appInit.authChecked) {
+            console.log("Ignoring SIGNED_IN during hot reload");
+            return;
+          }
+          
+          // Update the last auth event time
+          lastAuthEventTime = now;
+          
+          // CRITICAL CHECK: If we have a current user ID and it matches the session user ID,
+          // this is likely a token refresh or session continuation, not a new sign-in
+          if (currentUserId && session?.user?.id === currentUserId) {
+            console.log("Same user ID detected, not treating as new sign-in");
+            // Update session ID if needed
+            if (session) {
+              currentSessionId = session.user.id;
+            }
+            return;
+          }
+          
+          // If we get here, this is a genuine new sign-in or a different user
+          isHandlingAuthChange = true;
+          console.log("Genuine new sign-in detected, reinitializing app");
+          
+          try {
+            // Update the current session and user ID
+            if (session) {
+              currentSessionId = session.user.id || null;
+              currentUserId = session.user.id;
+            }
+            
+            // Reset initialization state to trigger the sequence again
+            setAppInit({
+              authChecked: false,
+              onboardingChecked: false,
+              digimonChecked: false,
+              tasksChecked: false
+            });
+            
+            // Re-run checkSession to update the auth store
+            await checkSession();
+            setAppInit(prev => ({ ...prev, authChecked: true }));
+            
+            // Continue with the rest of initialization
+            await useOnboardingStore.getState().checkOnboardingStatus();
+            setAppInit(prev => ({ ...prev, onboardingChecked: true }));
+            
+            await initializeStore();
+            setAppInit(prev => ({ ...prev, tasksChecked: true }));
+            
+            await fetchUserDigimon();
+            setAppInit(prev => ({ ...prev, digimonChecked: true }));
+            
+            console.log("App re-initialization complete after sign-in");
+          } finally {
+            isHandlingAuthChange = false;
+          }
         } else if (event === 'SIGNED_OUT') {
-          // User signed out
+          // Reset the session and user ID
+          currentSessionId = null;
+          currentUserId = null;
+          
+          // User signed out - clear all stores
           useAuthStore.setState({ user: null, loading: false });
           useDigimonStore.setState({ 
             userDigimon: null, 
@@ -143,6 +447,14 @@ function App() {
             evolutionOptions: [] 
           });
           useTaskStore.setState({ tasks: [] });
+          
+          // Mark auth as checked but reset others
+          setAppInit({
+            authChecked: true,
+            onboardingChecked: false,
+            digimonChecked: false,
+            tasksChecked: false
+          });
         }
       }
     );
@@ -150,173 +462,60 @@ function App() {
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [checkSession, fetchUserDigimon, initializeStore]);
   
-  // Update the useEffect that checks auth
-  useEffect(() => {
-    const checkAuth = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (data.session) {
-        setIsAuthenticated(true);
-        
-        // Fetch the user's Digimon
-        await useDigimonStore.getState().fetchUserDigimon();
-      } else {
-        setIsAuthenticated(false);
-      }
-      setLoading(false);
-    };
-    
-    checkAuth();
-  }, []);
+  // Remove redundant useEffects that were causing race conditions
+  // Keep only the essential ones
   
-  // Keep only this one
+  // Overdue task check - only run when fully initialized
   useEffect(() => {
-    // Only run if user is logged in
-    if (!useAuthStore.getState().user) return;
+    if (!user || appLoading || !isAppMounted) return;
     
     console.log("Setting up overdue task check interval");
     
-    // Check every 30 seconds instead of every minute
+    // Use a ref to track if a check is in progress
+    let isCheckingTasks = false;
+    
+    // Check every 30 seconds
     const intervalId = setInterval(() => {
-      console.log("Running scheduled overdue task check");
-      useTaskStore.getState().checkOverdueTasks();
+      // Skip if component unmounted, initialization in progress, or another check is running
+      if (!isAppMounted || isInitializationInProgress || isCheckingTasks) {
+        return;
+      }
       
-      // Also refresh the task list to update UI
-      useTaskStore.getState().fetchTasks();
+      isCheckingTasks = true;
+      useTaskStore.getState().checkOverdueTasks()
+        .finally(() => {
+          isCheckingTasks = false;
+        });
     }, 30 * 1000);
     
-    // Run once immediately
-    useTaskStore.getState().checkOverdueTasks();
+    // Run once immediately, but only if not initializing
+    if (!isInitializationInProgress) {
+      isCheckingTasks = true;
+      useTaskStore.getState().checkOverdueTasks()
+        .finally(() => {
+          isCheckingTasks = false;
+        });
+    }
     
     return () => {
-      console.log("Clearing overdue task check interval");
       clearInterval(intervalId);
     };
-  }, []);
-  
-  // Add this effect to listen for Digimon death
-  useEffect(() => {
-    const handleDigimonDeath = () => {
-      console.log("Digimon death event received, navigating to create pet");
-      window.location.href = "/create-pet"; // Force navigation
-    };
-    
-    window.addEventListener('digimon-died', handleDigimonDeath);
-    
-    return () => {
-      window.removeEventListener('digimon-died', handleDigimonDeath);
-    };
-  }, []);
-  
-  // Add this to the useEffect in App.tsx
-  useEffect(() => {
-    // Check for overdue tasks every minute
-    const overdueCheckInterval = setInterval(() => {
-      if (useAuthStore.getState().user) {
-        useTaskStore.getState().checkOverdueTasks();
-      }
-    }, 60000); // Check every minute
-    
-    return () => {
-      clearInterval(overdueCheckInterval);
-    };
-  }, []);
-  
-  // Add this to the useEffect that runs on app initialization
-  useEffect(() => {
-    const initializeApp = async () => {
-      // Check auth
-      const { data } = await supabase.auth.getSession();
-      if (data.session) {
-        setIsAuthenticated(true);
-        
-        try {
-          // Fetch the daily quota first to get penalized tasks
-          await useTaskStore.getState().fetchDailyQuota();
-          
-          // Then fetch tasks
-          await useTaskStore.getState().fetchTasks();
-          
-          // Fetch the user's Digimon
-          await useDigimonStore.getState().fetchUserDigimon();
-          await useDigimonStore.getState().fetchAllUserDigimon();
-          
-          // IMPORTANT: Don't redirect here - let the router handle it
-          // This prevents redirect loops
-          const { allUserDigimon } = useDigimonStore.getState();
-          if (allUserDigimon.length === 0) {
-            console.log("User has no Digimon, but letting router handle navigation");
-            // Don't force redirect here
-          }
-        } catch (error) {
-          console.error("Error during app initialization:", error);
-        }
-      } else {
-        setIsAuthenticated(false);
-      }
-      setLoading(false);
-    };
-    
-    initializeApp();
-  }, []);
-  
-  // Initialize the daily stat gains
-  useEffect(() => {
-    useDigimonStore.getState().fetchUserDailyStatGains();
-  }, []);
-  
-  // Show a loading indicator while the app is initializing
-  if (appLoading || authLoading) {
+  }, [user, appLoading]);
+
+  // Render a consistent loading state
+  if (appLoading) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-screen bg-gray-50">
         <div className="text-center">
-          <img src="/assets/digimon/dot050.png" alt="Digitask" className="h-12 w-12 mx-auto mb-4" style={{ imageRendering: 'pixelated' }} />
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading your Digimon adventure...</p>
         </div>
       </div>
     );
   }
-  
-  if (needsEmailConfirmation) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md w-full space-y-8 text-center">
-          <div>
-            <h1 className="text-center text-3xl font-extrabold text-primary-600">Digitask</h1>
-            <h2 className="mt-6 text-center text-2xl font-bold text-gray-900">Email Confirmation Required</h2>
-          </div>
-          
-          <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
-            <div className="flex">
-              <div className="flex-shrink-0">
-                <svg className="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <div className="ml-3">
-                <p className="text-sm text-yellow-700">
-                  Please check your email and click the confirmation link to activate your account.
-                </p>
-              </div>
-            </div>
-          </div>
-          
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Once confirmed, you'll be able to create your Digimon and start playing.
-          </p>
-          
-          <button
-            onClick={() => useAuthStore.getState().signOut()}
-            className="mt-4 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-          >
-            Sign Out
-          </button>
-        </div>
-      </div>
-    );
-  }
-  
+
   return (
     <Router>
       <Routes>
@@ -326,9 +525,14 @@ function App() {
           )
         }
         <Route path="/" element={
-          <PublicRoute>
-            <LandingPage />
-          </PublicRoute>
+          <ProtectedRoute>
+            <Layout>
+              <HomeRouteContent />
+            </Layout>
+          </ProtectedRoute>
+        } />
+        <Route path="/dashboard" element={
+          <Navigate to="/" replace />
         } />
         <Route path="/login" element={
           <PublicRoute>
@@ -339,23 +543,6 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
-        
-        <Route path="/dashboard" element={
-          <ProtectedRoute>
-            <Layout>
-              {appLoading ? (
-                <div className="flex items-center justify-center py-12">
-                  <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500 mx-auto mb-4"></div>
-                    <p className="text-gray-600">Loading your Digimon...</p>
-                  </div>
-                </div>
-              ) : (
-                userDigimon ? <Dashboard /> : <CreatePet />
-              )}
-            </Layout>
-          </ProtectedRoute>
-        } />
         
         <Route path="/digimon-dex" element={
           <ProtectedRoute>
@@ -368,7 +555,7 @@ function App() {
         <Route path="/battle" element={
           <ProtectedRoute>
             <Layout>
-              {userDigimon ? <Battle /> : <CreatePet />}
+              <Battle />
             </Layout>
           </ProtectedRoute>
         } />
@@ -408,7 +595,7 @@ function App() {
         <Route path="/your-digimon" element={
           <ProtectedRoute>
             <Layout>
-              {userDigimon ? <UserDigimonPage /> : <CreatePet />}
+              <UserDigimonPage />
             </Layout>
           </ProtectedRoute>
         } />
@@ -461,15 +648,15 @@ function App() {
           </ProtectedRoute>
         } />
         
-        <Route path="/playground" element={
+        {/* <Route path="/playground" element={
           <ProtectedRoute>
             <Layout>
               <DigimonPlayground />
             </Layout>
           </ProtectedRoute>
-        } />
+        } /> */}
         
-        <Route 
+        <Route
           path="/create-pet" 
           element={
             <RequireAuth allowNoDigimon={true}>
@@ -494,6 +681,10 @@ function App() {
           </ProtectedRoute>
         } />
         
+        <Route path="/onboarding" element={
+          <OnboardingWrapper />
+        } />
+        
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       
@@ -503,23 +694,141 @@ function App() {
   );
 }
 
-function RequireAuth({ children, allowNoDigimon = false }: { children: React.ReactNode, allowNoDigimon?: boolean }) {
-  const { user } = useAuthStore();
-  const { userDigimon } = useDigimonStore();
-  const location = useLocation();
-
-  if (!user) {
-    // Redirect to login if not authenticated
-    return <Navigate to="/login" state={{ from: location }} replace />;
+function HomeRouteContent() {
+  const { userDigimon, fetchUserDigimon, loading } = useDigimonStore();
+  const { hasCompletedOnboarding, checkOnboardingStatus } = useOnboardingStore();
+  const navigate = useNavigate();
+  const [isRefetching, setIsRefetching] = useState(false);
+  
+  // Function to refetch all necessary data
+  const refetchData = async () => {
+    setIsRefetching(true);
+    try {
+      // Check onboarding status first
+      await checkOnboardingStatus();
+      // Then fetch Digimon data
+      await fetchUserDigimon();
+    } catch (error) {
+      console.error("Error refetching data:", error);
+    } finally {
+      setIsRefetching(false);
+    }
+  };
+  
+  // If user hasn't completed onboarding, redirect them there
+  if (hasCompletedOnboarding === false) {
+    return <Navigate to="/onboarding" replace />;
   }
-
-  // Only check for Digimon if not on the create-pet page
-  if (!allowNoDigimon && !userDigimon) {
-    console.log("No Digimon found, redirecting to create-pet");
-    return <Navigate to="/create-pet" replace />;
+  
+  // If user has completed onboarding but has no Digimon, show create button
+  if (!userDigimon) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-center">
+          <p className="text-gray-600 mb-4">You don't have a Digimon yet!</p>
+          <div className="space-y-3">
+            <button
+              onClick={() => navigate("/onboarding")}
+              className="w-full py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              Start Onboarding
+            </button>
+            
+            <button
+              onClick={refetchData}
+              disabled={isRefetching || loading}
+              className="w-full py-2 px-4 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 flex items-center justify-center"
+            >
+              {isRefetching || loading ? (
+                <>
+                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-gray-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Refreshing...
+                </>
+              ) : (
+                "Refresh Data"
+              )}
+            </button>
+            
+            <p className="text-xs text-gray-500 mt-2">
+              If you already have a Digimon, try refreshing the data.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
   }
+  
+  // Otherwise show the dashboard
+  return <Dashboard />;
+}
 
-  return children;
+function OnboardingWrapper() {
+  const { user, loading: authLoading } = useAuthStore();
+  const { hasCompletedOnboarding, isCheckingStatus, checkOnboardingStatus } = useOnboardingStore();
+  const navigate = useNavigate();
+  const [hasChecked, setHasChecked] = useState(false);
+  
+  // Force a check when the component mounts
+  useEffect(() => {
+    const forceCheck = async () => {
+      if (user && !hasChecked) {
+        console.log("OnboardingWrapper: Forcing onboarding status check");
+        await checkOnboardingStatus();
+        setHasChecked(true);
+      }
+    };
+    
+    forceCheck();
+  }, [user, hasChecked, checkOnboardingStatus]);
+  
+  // Debug logging
+  useEffect(() => {
+    console.log("OnboardingWrapper debug:", {
+      user: !!user,
+      authLoading,
+      hasCompletedOnboarding,
+      isCheckingStatus,
+      hasChecked
+    });
+  }, [user, authLoading, hasCompletedOnboarding, isCheckingStatus, hasChecked]);
+  
+  // Handle redirects
+  useEffect(() => {
+    if (!user && !authLoading) {
+      navigate("/login", { replace: true });
+    } else if (hasCompletedOnboarding === true && hasChecked) {
+      navigate("/", { replace: true });
+    }
+  }, [user, authLoading, hasCompletedOnboarding, hasChecked, navigate]);
+  
+  // Show loading state
+  if (authLoading || !hasChecked || (isCheckingStatus && hasCompletedOnboarding === null)) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading onboarding...</p>
+        </div>
+      </div>
+    );
+  }
+  
+  // If we've checked and the user needs onboarding, show the onboarding page
+  if (hasCompletedOnboarding === false) {
+    return <OnboardingPage />;
+  }
+  
+  // Fallback - should not reach here
+  return (
+    <div className="flex items-center justify-center h-screen">
+      <div className="text-center">
+        <p className="text-gray-600">Redirecting...</p>
+      </div>
+    </div>
+  );
 }
 
 export default App; 

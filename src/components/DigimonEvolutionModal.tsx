@@ -5,6 +5,10 @@ import EvolutionAnimation from "./EvolutionAnimation";
 import { DIGIMON_LOOKUP_TABLE } from "@/constants/digimonLookup";
 import DigimonDNASelectionModal from './DigimonDNASelectionModal';
 import { useDigimonStore } from "../store/petStore";
+import PageTutorial from "./PageTutorial";
+import { DialogueStep } from "./DigimonDialogue";
+import { BASE_TO_FORMS_MAP } from '../constants/digimonFormsLookup';
+import DigimonFormTransformationModal from './DigimonFormTransformationModal';
 
 interface DigimonEvolutionModalProps {
   isOpen: boolean;
@@ -35,24 +39,8 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
   const [selectedDNAOption, setSelectedDNAOption] = useState<EvolutionOption | null>(null);
   const [selectedDNAPartnerId, setSelectedDNAPartnerId] = useState<string | null>(null);
   const [dnaPartnerDigimon, setDnaPartnerDigimon] = useState<UserDigimon | null>(null);
-
-  // useEffect(() => {
-  //   const fetchHighestStageCleared = async () => {
-  //     if (user) {
-  //       const { data, error } = await supabase
-  //         .from("profiles")
-  //         .select("highest_stage_cleared")
-  //         .eq("id", user.id)
-  //         .single();
-          
-  //       if (!error && data) {
-  //         setHighestStageCleared(data.highest_stage_cleared || 0);
-  //       }
-  //     }
-  //   };
-    
-  //   fetchHighestStageCleared();
-  // }, [user]);
+  const [showFormModal, setShowFormModal] = useState(false);
+  const [selectedFormInfo, setSelectedFormInfo] = useState<any>(null);
 
   if (!isOpen) return null;
 
@@ -61,15 +49,9 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
     if (!target) return;
     
     if (target.dna_requirement) {
-      const candidateDigimon = allUserDigimon.filter(
-        digimon => digimon.digimon_id === target.dna_requirement && digimon.id !== selectedDigimon.id
-      );
-      
-      if (candidateDigimon.length > 0) {
-        setSelectedDNAOption(target);
-        setShowDNAModal(true);
-        return;
-      }
+      setSelectedDNAOption(target);
+      setShowDNAModal(true);
+      return;
     }
     
     setEvolutionTarget(target);
@@ -112,6 +94,8 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
     }
   };
 
+  const availableForms = BASE_TO_FORMS_MAP[selectedDigimon.digimon_id] || [];
+
   if (showAnimation && evolutionTarget) {
     return (
       <div className="fixed inset-0 z-50">
@@ -138,6 +122,33 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
   const candidateDigimon = allUserDigimon.filter(
     digimon => digimon.digimon_id === dnaRequirementId && digimon.id !== selectedDigimon.id
   );
+
+  const digimonEvolutionModalTutorialSteps: DialogueStep[] = [
+    {
+      speaker: 'bokomon',
+      text: "Look at all the different evolutions your Digimon can undergo!"
+    },
+    {
+      speaker: 'neemon',
+      text: "Why can't we see what some of them look like?"
+    },
+    {
+      speaker: 'bokomon', 
+      text: "You'll only be able to see the Digimon when you've discovered them beforehand!"
+    },
+    {
+      speaker: 'bokomon',
+      text: "Evolutions typically will require both a certain level and a certain amount of stat requirements to be met. However, some of them may require ABI as well!"
+    },
+    {
+      speaker: 'neemon',
+      text: "You can also evolve your Digimon by using DNA Fusion!"
+    },
+    {
+      speaker: 'bokomon',
+      text: "Spoilers! Also, Digimon's levels reset to 1 after they evolve and gain ABI based on their level before evolving. Keep completing your tasks everyday and evolve your Digimon, good luck!"
+    }
+  ];
 
   return (
     <>
@@ -362,14 +373,7 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
                               </span>
                             </p>
                           )}
-                          
-                          {/* {option.campaign_requirement && (
-                            <p className="text-xs">
-                              Campaign: <span className={highestStageCleared >= option.campaign_requirement ? "text-green-600" : "text-red-600"}>
-                                Stage {highestStageCleared}/{option.campaign_requirement}
-                              </span>
-                            </p>
-                          )} */}
+                        
                         </div>
                       </div>
                     )}
@@ -379,7 +383,21 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
             </div>
           </div>
 
-          <div className="flex justify-end sticky bottom-0 bg-white pt-4 border-t">
+          <div className="flex justify-between sticky bottom-0 bg-white pt-4 border-t">
+            <div className="flex space-x-2">
+              {availableForms.length > 0 && availableForms.map(formInfo => (
+                <button
+                  key={formInfo.formDigimonId}
+                  onClick={() => {
+                    setSelectedFormInfo(formInfo);
+                    setShowFormModal(true);
+                  }}
+                  className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                >
+                  {formInfo.formType} Form
+                </button>
+              ))}
+            </div>
             <button
               onClick={onClose}
               className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
@@ -397,6 +415,18 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
         candidateDigimon={candidateDigimon}
         onSelectDigimon={handleDNASelection}
       />
+      <PageTutorial tutorialId="digimon_evolution_modal_intro" steps={digimonEvolutionModalTutorialSteps} />
+
+      {showFormModal && selectedFormInfo && (
+        <DigimonFormTransformationModal
+          isOpen={showFormModal}
+          onClose={() => setShowFormModal(false)}
+          userDigimonId={selectedDigimon.id}
+          currentDigimonId={selectedDigimon.digimon_id}
+          formInfo={selectedFormInfo}
+          onParentClose={onClose}
+        />
+      )}
     </>
   );
 };

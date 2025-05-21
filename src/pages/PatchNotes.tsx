@@ -11,6 +11,32 @@ const PatchNotes = () => {
           <div className="mb-6">
             <div className="flex items-center mb-2">
               <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
+              <h3 className="text-lg font-medium ml-2">X-Antibody, Bokomon and Neemon!</h3>
+              <span className="text-sm text-gray-500 ml-auto">May 20, 2025</span>
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <li>Introducing <b>X-Antibody Digimon</b>! These are mutated variants of the original Digimon, providing a 10% boost to all stats.</li>
+            <li>Unlike digivolution, you can transform back and forth between the original and X-Antibody forms without losing levels.</li>
+            <li>For now, you will be free to transform as much as you want, but expect there to be some requirement in the future.</li>
+            <li>The X-Antibody Digimon added in this update are:</li>
+            <ul>
+              <li>Agumon X, Greymon X, MetalGreymon X, WarGreymon X</li>
+              <li>Gabumon X, WereGarurumon X, MetalGarurumon X</li>
+              <li>Omnimon X</li>
+              <li>Guilmon X, Growlmon X, WarGrowlmon X, Megidramon X, Gallantmon X</li>
+              <li>Dracomon X</li>
+              <li>LadyDevimon X, BeelStarmon X</li>
+              <li>Beelzemon X</li>
+            </ul>
+            <li>All X-Antibody Digimon can be achieved through their normal Digimon counterpart, or evolving an X-Antibody Digimon that usually evolves into the Digimon.</li>
+            <li>BeelStarmon, a female counterpart to Beelzemon, has also been added.</li>
+            <li>Added <b>Bokomon and Neemon</b> (from Digimon Frontier) as guides to the game! Sprites are from @otro_jorch on twitter</li>
+            <li>Added an onboarding flow to the game to help new users get started!</li>
+            <li>Removed Playground mode, until I can find a way for it to be more useful.</li>
+            </ul>
+        </div>
+          <div className="mb-6">
+            <div className="flex items-center mb-2">
               <h3 className="text-lg font-medium ml-2">Animation Update</h3>
               <span className="text-sm text-gray-500 ml-auto">May 19, 2025</span>
             </div>

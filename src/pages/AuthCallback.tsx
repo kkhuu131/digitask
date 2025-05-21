@@ -1,12 +1,23 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { useDigimonStore } from "../store/petStore";
 
 const AuthCallback = () => {
   const navigate = useNavigate();
+  // Add a ref to track if we've already processed this callback
+  const processedRef = useRef(false);
 
   useEffect(() => {
+    // Skip if we've already processed this callback (prevents double processing during HMR)
+    if (processedRef.current) {
+      console.log("Auth callback already processed, skipping");
+      return;
+    }
+    
+    // Mark as processed
+    processedRef.current = true;
+    
     // Add this function to ensure a profile exists
     const ensureProfileExists = async (userId: string) => {
       try {
@@ -58,6 +69,15 @@ const AuthCallback = () => {
     // Handle the auth callback
     const handleAuthCallback = async () => {
       try {
+        // Check if this is a hot module reload
+        const isHotReload = import.meta.hot;
+        
+        // If this is a hot reload in development, skip the navigation
+        if (isHotReload) {
+          console.log("Hot module reload detected, skipping auth callback");
+          return;
+        }
+        
         // Clear any cached state that might be causing issues
         sessionStorage.clear();
         localStorage.removeItem('userDigimon');
@@ -100,11 +120,11 @@ const AuthCallback = () => {
         
         if (type === "recovery") {
           // Redirect to the reset password page
-          navigate("/reset-password" + window.location.hash);
+          navigate("/reset-password" + window.location.hash, { replace: true });
         } else if (type === "signup" || type === "magiclink") {
           try {
             // Check if user already has a Digimon directly from the database
-            const { data: digimonData, error: digimonError } = await supabase
+            const { error: digimonError } = await supabase
               .from('user_digimon')
               .select('id')
               .eq('user_id', data.session?.user?.id)
@@ -113,18 +133,14 @@ const AuthCallback = () => {
             if (digimonError) {
               console.error("Error checking for Digimon:", digimonError);
             }
-              
-            if (digimonData && digimonData.length > 0) {
-              // User already has a Digimon, go to dashboard
-              window.location.href = "/";
-            } else {
-              // No Digimon, go to create-pet
-              // Use window.location.href instead of navigate to force a clean page load
-              window.location.href = "/create-pet?from=auth";
+            
+            // Add a check to prevent navigation during development hot reloading
+            if (import.meta.hot) {
+              console.log("Skipping navigation during hot reload");
+              return;
             }
           } catch (error) {
             console.error("Error checking for existing Digimon:", error);
-            window.location.href = "/create-pet?from=auth&error=true";
           }
         } else {
           // Regular sign-in, redirect to home
@@ -137,6 +153,11 @@ const AuthCallback = () => {
     };
     
     handleAuthCallback();
+    
+    // Cleanup function to reset the processed flag when component unmounts
+    return () => {
+      processedRef.current = false;
+    };
   }, [navigate]);
 
   return (

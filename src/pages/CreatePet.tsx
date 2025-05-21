@@ -4,6 +4,7 @@ import { useDigimonStore } from "../store/petStore";
 import DigimonSelection from "../components/DigimonSelection";
 import { useAuthStore } from "../store/authStore";
 import { supabase } from "../lib/supabase";
+import { useOnboardingStore } from "../store/onboardingStore";
 
 const CreatePet = () => {
   const { createUserDigimon, error, fetchUserDigimon, userDigimon } = useDigimonStore();
@@ -17,6 +18,13 @@ const CreatePet = () => {
     const checkExistingDigimon = async () => {
       try {
         setLoading(true);
+        
+        // Skip during hot module reloading
+        if (import.meta.hot) {
+          console.log("Skipping digimon check during hot reload");
+          setLoading(false);
+          return;
+        }
         
         // Get current user ID
         const { data: sessionData } = await supabase.auth.getSession();
@@ -75,6 +83,46 @@ const CreatePet = () => {
     
     checkEmailConfirmation();
   }, []);
+  
+  useEffect(() => {
+    const checkOnboardingStatus = async () => {
+      try {
+        // Get current user ID
+        const { data: sessionData } = await supabase.auth.getSession();
+        const userId = sessionData.session?.user?.id;
+        
+        if (!userId) {
+          return;
+        }
+        
+        // Check if user has completed onboarding
+        const { data: profileData, error } = await supabase
+          .from('profiles')
+          .select('has_completed_onboarding')
+          .eq('id', userId)
+          .single();
+          
+        if (error) {
+          console.error("Error checking onboarding status:", error);
+        } else if (profileData && !profileData.has_completed_onboarding) {
+          console.log("User needs onboarding, redirecting from CreatePet");
+          // Redirect to onboarding if not completed
+          navigate("/onboarding", { replace: true });
+          return;
+        }
+      } catch (error) {
+        console.error("Exception in checkOnboardingStatus:", error);
+      }
+    };
+    
+    // Use the onboarding store instead of direct DB check
+    if (useOnboardingStore.getState().hasCompletedOnboarding === false) {
+      console.log("User needs onboarding (from store), redirecting from CreatePet");
+      navigate("/onboarding", { replace: true });
+    } else {
+      checkOnboardingStatus();
+    }
+  }, [navigate]);
   
   const handleSelectDigimon = async (digimonId: number, name: string) => {
     try {

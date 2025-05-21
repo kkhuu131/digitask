@@ -10,6 +10,8 @@ import { supabase } from "../lib/supabase";
 import { useTitleStore } from "../store/titleStore";
 import { useAuthStore } from "../store/authStore";
 import BattleSpeedControl from "../components/BattleSpeedControl";
+import PageTutorial from "../components/PageTutorial";
+import { DialogueStep } from "../components/DigimonDialogue";
 
 interface PreparationModalProps {
   opponent: typeof CAMPAIGN_OPPONENTS[0];
@@ -325,7 +327,27 @@ const Campaign: React.FC = () => {
     }
   };
 
+  const campaignPageTutorialSteps: DialogueStep[] = [
+    {
+      speaker: 'bokomon',
+      text: "Welcome to the Campaign! Here you can travel to the Digital World and battle against predetermined teams of Digimon to progress through the story and earn titles."
+    },
+    {
+      speaker: 'neemon',
+      text: "Oh, that Digimon doesn't look too tough. I'm sure you can take it down with your team!"
+    },
+    {
+      speaker: 'bokomon',
+      text: "Your journey may start easy, but as you progress, the challenges will become tougher. I hear there's a Digimon that's been causing trouble in the Digital World. I hope you're up for the challenge!"
+    },
+    {
+      speaker: 'both',
+      text: "Good luck, Tamer!"
+    }
+  ];
+
   return (
+    <>
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-4">Campaign</h1>
       
@@ -424,6 +446,8 @@ const Campaign: React.FC = () => {
         />
       )}
     </div>
+    <PageTutorial tutorialId="campaign_intro" steps={campaignPageTutorialSteps} />
+    </>
   );
 };
 

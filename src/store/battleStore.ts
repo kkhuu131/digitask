@@ -1045,8 +1045,6 @@ export const useBattleStore = create<BattleState>((set, get) => {
                 { avg_level: wildLevel }
               );
 
-              console.log("wildDigimon", wildDigimon);
-
               if (wildDigimon && wildDigimon.length > 0) {
                 const randomDigimon =
                   wildDigimon.length > teamSize

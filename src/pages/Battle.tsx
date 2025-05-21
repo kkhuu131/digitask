@@ -7,6 +7,8 @@ import DigimonTeamManager from "../components/DigimonTeamManager";
 import { useAuthStore } from "../store/authStore";
 import TypeAttributeIcon from "../components/TypeAttributeIcon";
 import BattleSpeedControl from "../components/BattleSpeedControl";
+import PageTutorial from "../components/PageTutorial";
+import { DialogueStep } from "../components/DigimonDialogue";
 
 const Battle = () => {
   const { userDigimon, digimonData, allUserDigimon, fetchAllUserDigimon } = useDigimonStore();
@@ -96,6 +98,45 @@ const Battle = () => {
     setSelectedOption(null);
   };
 
+  const digimonPageTutorialSteps: DialogueStep[] = [
+    {
+      speaker: 'bokomon',
+      text: "Welcome to the Battle Arena! Here you can battle against other players' teams and wild Digimon to earn experience and level up your team."
+    },
+    {
+      speaker: 'neemon',
+      text: "Ooh, some of these Digimon look pretty tough!"
+    },
+    {
+      speaker: 'bokomon',
+      text: "You can choose from three teams of varying difficulty. However, the more difficult the team, the more experience you'll earn!"
+    },
+    {
+      speaker: 'neemon',
+      text: "W-wait, what happens if we lose?"
+    },
+    {
+      speaker: 'bokomon',
+      text: "There's no need to worry! Your Digimon won't die, they just won't earn nearly as much experience."
+    },
+    {
+      speaker: 'neemon',
+      text: "In that case, we should probably choose and prep our team carefully!"
+    },
+    {
+      speaker: 'bokomon',
+      text: "Yes, Digimon have a Type and an Attribute. These will increase or decrease your damage output."
+    },
+    {
+      speaker: 'bokomon',
+      text: "Hover over the Type/Attribute text to see the advantages and disadvantages."
+    },
+    {
+      speaker: 'both',
+      text: "Good luck, Tamer!"
+    }
+  ];
+
   if (!userDigimon || !digimonData) {
     return (
       <div className="text-center py-12">
@@ -105,6 +146,7 @@ const Battle = () => {
   }
 
   return (
+    <>
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
         <h1 className="text-2xl font-bold">Battle Arena</h1>
@@ -157,7 +199,7 @@ const Battle = () => {
             ) : (
               <>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                  {battleOptions.map(option => (
+                  {battleOptions.map((option) => (
                     <div 
                       key={option.id}
                       className={`border rounded-lg p-2 sm:p-4 transition-colors ${
@@ -181,8 +223,8 @@ const Battle = () => {
                       </div>
                       
                       <div className="flex justify-center items-center space-x-1 sm:space-x-2 mb-2 sm:mb-3 min-h-[60px] sm:min-h-[80px]">
-                        {option.team.digimon.map(digimon => (
-                          <div key={digimon.id} className="text-center flex-1 flex flex-col items-center">
+                        {option.team.digimon.map((digimon) => (
+                          <div key={`${digimon.id}-${digimon.name}`} className="text-center flex-1 flex flex-col items-center">
                             <div className="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center relative group">
                               <img 
                                 src={digimon.sprite_url} 
@@ -307,6 +349,8 @@ const Battle = () => {
         </div>
       )}
     </div>
+    <PageTutorial tutorialId="battle_intro" steps={digimonPageTutorialSteps} />
+    </>
   );
 };
 

@@ -1,11 +1,29 @@
 import { useState } from "react";
 import DigimonDex from "../components/DigimonDex";
 import DigimonEvolutionGraph from "../components/DigimonEvolutionGraph";
+import PageTutorial from "../components/PageTutorial";
+import { DialogueStep } from "../components/DigimonDialogue";
 
 const DigimonDexPage = () => {
   const [showEvolutionGraph, setShowEvolutionGraph] = useState(false);
 
+  const digimonPageTutorialSteps: DialogueStep[] = [
+    {
+      speaker: 'bokomon',
+      text: "Welcome to the Digidex! Here you can see all the Digimon partners you've acquired on your journey."
+    },
+    {
+      speaker: 'bokomon',
+      text: "You can click on any Digimon card to see more details about them, including their stats, level, and evolution options."
+    },
+    {
+      speaker: 'bokomon',
+      text: "Evolve and devolve your Digimon to both increase their ABI and explore new evolution paths!"
+    }
+  ];
+
   return (
+    <>
     <div className="max-w-6xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Digidex</h1>
@@ -40,6 +58,8 @@ const DigimonDexPage = () => {
         <DigimonDex />
       )}
     </div>
+    <PageTutorial tutorialId="digidex_intro" steps={digimonPageTutorialSteps} />
+    </>
   );
 };
 

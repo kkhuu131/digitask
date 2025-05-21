@@ -7,6 +7,8 @@ import TypeAttributeIcon from "./TypeAttributeIcon";
 import DigimonEvolutionModal from "./DigimonEvolutionModal";
 import { StatType, isUnderStatCap } from "../store/petStore";
 import DigimonSprite from "./DigimonSprite";
+import PageTutorial from "./PageTutorial";
+import { DialogueStep } from "./DigimonDialogue";
 
 interface DigimonDetailModalProps {
   selectedDigimon: UserDigimon | null;
@@ -345,7 +347,39 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
     loadEvolutionOptions();
   }, [selectedDigimon]);
 
+  const digimonDetailModalTutorialSteps: DialogueStep[] = [
+    {
+      speaker: 'bokomon',
+      text: "Here you can see more details about your Digimon, including their stats, level, and evolution options."
+    },
+    {
+      speaker: 'neemon',
+      text: "Oh, you can also change their nickname here!"
+    },
+    {
+      speaker: 'bokomon',
+      text: "You can also allocate stat points gained from your tasks here, as well as evolve and devolve your Digimon."
+    },
+    {
+      speaker: 'bokomon',
+      text: "There's a lot of important information here about your Digimon. Your Digimon has a personality, which increases one of their stats by 5%!"
+    },
+    {
+      speaker: 'neemon',
+      text: `Ooh, your Digimon's personality is ${selectedDigimon.personality}!`
+    },
+    {
+      speaker: 'bokomon',
+      text: "Click the Digivolve button to view possible evolutions for your Digimon!"
+    },
+    {
+      speaker: 'neemon',
+      text: "You can also click the Devolve button to view possible devolutions for your Digimon!"
+    },
+  ];
+
   return (
+    <>
     <div 
       className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40 ${className}`}
       onClick={(e) => {
@@ -774,6 +808,8 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
         allUserDigimon={allUserDigimon}
       />
     </div>
+    <PageTutorial tutorialId="digimon_detail_modal_intro" steps={digimonDetailModalTutorialSteps} />
+    </>
   );
 };
 

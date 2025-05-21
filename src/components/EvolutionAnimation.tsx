@@ -7,6 +7,8 @@ interface EvolutionAnimationProps {
   onComplete: () => void;
   isDevolution?: boolean;
   isDNAFusion?: boolean;
+  isFormTransformation?: boolean;
+  formType?: string;
   dnaPartnerSpriteUrl?: string;
 }
 
@@ -16,6 +18,8 @@ const EvolutionAnimation: React.FC<EvolutionAnimationProps> = ({
   onComplete,
   isDevolution = false,
   isDNAFusion = false,
+  isFormTransformation = false,
+  formType,
   dnaPartnerSpriteUrl,
 }) => {
   const [stage, setStage] = useState<"intro" | "pulse" | "transform" | "finale">("intro");
@@ -148,7 +152,10 @@ const EvolutionAnimation: React.FC<EvolutionAnimationProps> = ({
               className="absolute top-0 left-0 right-0 text-center mb-8"
             >
               <h2 className="text-4xl font-bold text-white tracking-wider drop-shadow-lg">
-                {isDevolution ? "DE-DIGIVOLUTION" : isDNAFusion ? "DNA DIGIVOLUTION" : "DIGIVOLUTION"}
+                {isDevolution ? "DE-DIGIVOLUTION" : 
+                 isDNAFusion ? "DNA DIGIVOLUTION" : 
+                 isFormTransformation ? `${formType} Form` : 
+                 "DIGIVOLUTION"}
               </h2>
             </motion.div>
           )}
@@ -355,6 +362,7 @@ const EvolutionAnimation: React.FC<EvolutionAnimationProps> = ({
             <h3 className="text-2xl font-bold text-white">
               {isDevolution ? "Devolution Successful!" : 
                isDNAFusion ? "DNA Fusion Complete!" : 
+               isFormTransformation ? `Transformation Complete!` : 
                "Evolution Complete!"}
             </h3>
           </motion.div>

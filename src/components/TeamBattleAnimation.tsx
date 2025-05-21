@@ -2,10 +2,25 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { TeamBattle } from "../store/battleStore";
 import { useBattleSpeedStore } from "../store/battleSpeedStore";
+import { ANIMATED_DIGIMON } from "../constants/animatedDigimonList";
 
 interface TeamBattleAnimationProps {
   teamBattle: TeamBattle;
   onComplete: () => void;
+}
+
+// Add a function to get battle sprite URLs
+function getBattleSpriteUrl(
+  digimonName: string,
+  spriteType: string,
+  fallbackUrl: string
+): string {
+  // Check if this Digimon has animated sprites
+  if (ANIMATED_DIGIMON.includes(digimonName)) {
+    return `/assets/animated_digimon/${digimonName}/${spriteType}.png`;
+  }
+  // Return the fallback URL for Digimon without animated sprites
+  return fallbackUrl;
 }
 
 const DEFAULT_MAX_HP = 100; // Fallback if stats are missing
@@ -59,6 +74,13 @@ const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({
   const currentTurn = step > 0 && step <= totalTurns ? battleTurns[step - 1] : null; 
   // Are we on the step *displaying* the final message?
   const isFinalMessageStep = step === maxSteps - 1; 
+
+  // Add state to track animated sprites
+  const [animatedSprites, setAnimatedSprites] = useState<{[id: string]: boolean}>({});
+  // Add state to track sprite types for each Digimon
+  const [spriteTypes, setSpriteTypes] = useState<{[id: string]: string}>({});
+  // Add state to toggle celebration animation
+  const [celebrateToggle, setCelebrateToggle] = useState(false);
 
   // --- State Initialization ---
   useEffect(() => {
@@ -255,6 +277,187 @@ const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({
   };
   const attackAnimationParams = getAttackAnimationParams();
 
+  // Initialize animated sprites state
+  useEffect(() => {
+    const hasAnimated: {[id: string]: boolean} = {};
+    const initialSpriteTypes: {[id: string]: string} = {};
+    
+    // Check user team
+    userTeam.forEach(fighter => {
+      const digimonName = fighter.digimon_name || "";
+      hasAnimated[fighter.id] = ANIMATED_DIGIMON.includes(digimonName);
+      initialSpriteTypes[fighter.id] = "idle1";
+    });
+    
+    // Check opponent team
+    opponentTeam.forEach(fighter => {
+      const digimonName = fighter.digimon_name || "";
+      hasAnimated[fighter.id] = ANIMATED_DIGIMON.includes(digimonName);
+      initialSpriteTypes[fighter.id] = "idle1";
+    });
+    
+    setAnimatedSprites(hasAnimated);
+    setSpriteTypes(initialSpriteTypes);
+  }, [teamBattle]);
+
+  // Set up celebration animation interval for results screen
+  useEffect(() => {
+    if (!showResultsScreen) return;
+    
+    const interval = setInterval(() => {
+      setCelebrateToggle(prev => !prev);
+    }, 500);
+    
+    return () => clearInterval(interval);
+  }, [showResultsScreen]);
+
+  // Update sprite types based on current turn
+  useEffect(() => {
+    if (!currentTurn) return;
+    
+    const newSpriteTypes = { ...spriteTypes };
+    
+    // Set attacker to attack sprite
+    if (currentTurn.attacker && animatedSprites[currentTurn.attacker.id]) {
+      newSpriteTypes[currentTurn.attacker.id] = "attack";
+    }
+    
+    // Set defender to angry sprite
+    if (currentTurn.target && animatedSprites[currentTurn.target.id]) {
+      newSpriteTypes[currentTurn.target.id] = "angry";
+    }
+    
+    setSpriteTypes(newSpriteTypes);
+    
+    // Reset sprites after animation
+    const resetTimeout = setTimeout(() => {
+      const resetTypes = { ...newSpriteTypes };
+      Object.keys(resetTypes).forEach(id => {
+        resetTypes[id] = "idle1";
+      });
+      setSpriteTypes(resetTypes);
+    }, TURN_DURATION / 2);
+    
+    return () => clearTimeout(resetTimeout);
+  }, [currentTurn, animatedSprites]);
+
+  // Modify the sprite rendering in the battle area
+  const renderFighterSprite = (fighter: any) => {
+    const digimonName = fighter.digimon_name || "";
+    const hasAnimatedSprite = animatedSprites[fighter.id];
+    const spriteType = spriteTypes[fighter.id] || "idle1";
+    const spriteUrl = hasAnimatedSprite 
+      ? getBattleSpriteUrl(digimonName, spriteType, fighter.sprite_url)
+      : fighter.sprite_url;
+    
+    // Determine which direction the sprite should face
+    const isUserTeam = userTeam.some(u => u.id === fighter.id);
+    const transform = isUserTeam ? "scale(-1, 1)" : "scale(1, 1)";
+    
+    return (
+      <img
+        src={spriteUrl}
+        alt={fighter.name || "Digimon"}
+        className="w-14 h-14 object-contain"
+        style={{ 
+          imageRendering: "pixelated",
+          transform: transform
+        }}
+      />
+    );
+  };
+
+  // Modify the results screen to use animated sprites
+  const renderResultsDigimon = (fighter: any) => {
+    const digimonName = fighter.digimon_name || "";
+    const hasAnimatedSprite = animatedSprites[fighter.id];
+    
+    // Determine sprite type based on battle outcome
+    let spriteType = "intimidate";
+    if (hasAnimatedSprite) {
+      if (playerWon) {
+        spriteType = celebrateToggle ? "cheer" : "happy";
+      } else {
+        spriteType = celebrateToggle ? "sad1" : "sad2";
+      }
+    }
+    
+    const spriteUrl = hasAnimatedSprite 
+      ? getBattleSpriteUrl(digimonName, spriteType, fighter.sprite_url)
+      : fighter.sprite_url;
+    
+    return (
+      <img
+        src={spriteUrl}
+        alt={fighter.name || "Digimon"}
+        className="w-full h-full object-contain"
+        style={{ imageRendering: "pixelated" }}
+      />
+    );
+  };
+
+  // Add a function to render the disintegrating Digimon with sad sprite
+  const renderDisintegratingDigimon = (fighter: any) => {
+    const digimonName = fighter.digimon_name || "";
+    const hasAnimatedSprite = animatedSprites[fighter.id];
+    
+    // Use sad1 sprite for animated Digimon that are dying
+    const spriteUrl = hasAnimatedSprite 
+      ? getBattleSpriteUrl(digimonName, "sad1", fighter.sprite_url)
+      : fighter.sprite_url;
+    
+    // Determine which direction the sprite should face
+    const isUserTeam = userTeam.some(u => u.id === fighter.id);
+    const transform = isUserTeam ? "scale(-1, 1)" : "scale(1, 1)";
+    
+    return (
+      <div className="relative w-14 h-14">
+        {/* Generate pixel particles */}
+        {[...Array(40)].map((_, i) => (
+          <motion.div
+            key={`particle-${fighter.id}-${i}`}
+            className="absolute bg-green-400"
+            style={{
+              width: `${Math.random() * 2 + 4}px`,
+              height: `${Math.random() * 2 + 4}px`,
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              opacity: 0.8,
+              boxShadow: '0 0 3px #4ade80'
+            }}
+            initial={{ opacity: 1, scale: 1 }}
+            animate={{ 
+              opacity: 0,
+              y: [0, Math.random() * 40 - 20],
+              x: [0, Math.random() * 40 - 20],
+              scale: 0
+            }}
+            transition={{ 
+              duration: Math.random() * 0.5 + 1.5,
+              ease: "easeOut"
+            }}
+          />
+        ))}
+        
+        {/* Fading sprite with sad expression */}
+        <motion.img 
+          src={spriteUrl} 
+          alt={getDisplayName(fighter)} 
+          className="w-full h-full object-contain" 
+          style={{ 
+            imageRendering: "pixelated",
+            transform: transform
+          }}
+          initial={{ opacity: 1 }}
+          animate={{ 
+            opacity: [1, 0],
+          }}
+          transition={{ duration: 1.2 }}
+        />
+      </div>
+    );
+  };
+
   // --- Render ---
   return (
     <div className="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center">
@@ -338,62 +541,9 @@ const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({
                       
                       {/* Disintegration effect for dead Digimon */}
                       {isDisintegrating ? (
-                        <div className="relative w-14 h-14">
-                          {/* Generate 20 pixel particles */}
-                          {[...Array(40)].map((_, i) => (
-                            <motion.div
-                              key={`particle-${fighter.id}-${i}`}
-                              className="absolute bg-green-400"
-                              style={{
-                                width: `${Math.random() * 2 + 4}px`,
-                                height: `${Math.random() * 2 + 4}px`,
-                                left: `${Math.random() * 100}%`,
-                                top: `${Math.random() * 100}%`,
-                                opacity: 0.8,
-                                boxShadow: '0 0 3px #4ade80'
-                              }}
-                              initial={{ opacity: 1, scale: 1 }}
-                              animate={{ 
-                                opacity: 0,
-                                y: [0, Math.random() * 40 - 20],
-                                x: [0, Math.random() * 40 - 20],
-                                scale: 0
-                              }}
-                              transition={{ 
-                                duration: Math.random() * 0.5 + 1.5,
-                                ease: "easeOut"
-                              }}
-                            />
-                          ))}
-                          
-                          {/* Fading original sprite */}
-                          <motion.img 
-                            src={fighter.sprite_url} 
-                            alt={getDisplayName(fighter)} 
-                            className="w-full h-full object-contain" 
-                            style={{ 
-                              imageRendering: "pixelated",
-                              transform: "scale(-1, 1)"
-                            }}
-                            initial={{ opacity: 1 }}
-                            animate={{ 
-                              opacity: [1, 0],
-                            }}
-                            transition={{ duration: 1.2 }}
-                          />
-                          
-                
-                        </div>
+                        renderDisintegratingDigimon(fighter)
                       ) : (
-                        <img 
-                          src={fighter.sprite_url} 
-                          alt={getDisplayName(fighter)} 
-                          className="w-14 h-14 object-contain" 
-                          style={{ 
-                            imageRendering: "pixelated",
-                            transform: "scale(-1, 1)"
-                          }} 
-                        />
+                        renderFighterSprite(fighter)
                       )}
                       
                       {/* Hit effect - only show if not dead and is being targeted */}
@@ -467,61 +617,9 @@ const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({
                       
                       {/* Disintegration effect for dead Digimon */}
                       {isDisintegrating ? (
-                        <div className="relative w-14 h-14">
-                          {/* Generate 20 pixel particles */}
-                          {[...Array(40)].map((_, i) => (
-                            <motion.div
-                              key={`particle-${fighter.id}-${i}`}
-                              className="absolute bg-green-400"
-                              style={{
-                                width: `${Math.random() * 2 + 4}px`,
-                                height: `${Math.random() * 2 + 4}px`,
-                                left: `${Math.random() * 100}%`,
-                                top: `${Math.random() * 100}%`,
-                                opacity: 0.8,
-                                boxShadow: '0 0 3px #4ade80'
-                              }}
-                              initial={{ opacity: 1, scale: 1 }}
-                              animate={{ 
-                                opacity: 0,
-                                y: [0, Math.random() * 40 - 20],
-                                x: [0, Math.random() * 40 - 20],
-                                scale: 0
-                              }}
-                              transition={{ 
-                                duration: Math.random() * 0.5 + 1.5,
-                                ease: "easeOut"
-                              }}
-                            />
-                          ))}
-                          
-                          {/* Fading original sprite */}
-                          <motion.img 
-                            src={fighter.sprite_url} 
-                            alt={getDisplayName(fighter)} 
-                            className="w-full h-full object-contain" 
-                            style={{ 
-                              imageRendering: "pixelated",
-                              transform: "scale(1, 1)"
-                            }}
-                            initial={{ opacity: 1 }}
-                            animate={{ 
-                              opacity: [1, 0],
-                            }}
-                            transition={{ duration: 1.2 }}
-                          />
-                        
-                        </div>
+                        renderDisintegratingDigimon(fighter)
                       ) : (
-                        <img 
-                          src={fighter.sprite_url} 
-                          alt={getDisplayName(fighter)} 
-                          className="w-14 h-14 object-contain" 
-                          style={{ 
-                            imageRendering: "pixelated",
-                            transform: "scale(1, 1)"
-                          }} 
-                        />
+                        renderFighterSprite(fighter)
                       )}
                       
                       {/* Hit effect */}
@@ -574,12 +672,7 @@ const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({
                     return (
                       <div key={fighter.id} className="flex flex-col items-center w-1/3 max-w-[150px]">
                         <div className="w-16 h-16 mb-2">
-                          <img 
-                            src={fighter.sprite_url} 
-                            alt={getDisplayName(fighter)} 
-                            className="w-full h-full object-contain" 
-                            style={{ imageRendering: "pixelated" }} 
-                          />
+                          {renderResultsDigimon(fighter)}
                         </div>
                         
                         <div className="w-full">

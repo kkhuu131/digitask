@@ -3,7 +3,6 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import { useDigimonStore, UserDigimon } from "../store/petStore";
 import { supabase } from "../lib/supabase";
-import { motion } from "framer-motion";
 import calculateBaseStat from "../utils/digimonStatCalculation";
 import DigimonDetailModal from "../components/DigimonDetailModal";
 import AvatarSelectionModal from "../components/AvatarSelectionModal";
@@ -11,6 +10,9 @@ import ReportButton from '../components/ReportButton';
 import { DIGIMON_LOOKUP_TABLE } from "../constants/digimonLookup";
 import { useTitleStore, UserTitle } from '../store/titleStore';
 import UserTitles from '../components/UserTitles';
+import DigimonSprite from '../components/DigimonSprite';
+import PageTutorial from '../components/PageTutorial';
+import { DialogueStep } from '../components/DigimonDialogue';
 
 interface ProfileData {
   id: string;
@@ -222,6 +224,21 @@ const ProfilePage = () => {
       setIsUpdatingAvatar(false);
     }
   };
+
+  const profilePageTutorialSteps: DialogueStep[] = [
+    {
+      speaker: 'bokomon',
+      text: "Welcome to your profile page! Here you can view your Digimon, your titles, and your stats."
+    },
+    {
+      speaker: 'neemon',
+      text: "Ooh you can change your avatar here!"
+    },
+    {
+      speaker: 'bokomon',
+      text: "You can also change and set up to 3 titles to show off your achievements!"
+    },
+  ];
   
   if (loading) {
     return (
@@ -243,6 +260,7 @@ const ProfilePage = () => {
   }
   
   return (
+    <>
     <div className="max-w-4xl mx-auto px-4 py-8">
       {loading ? (
         <div className="text-center py-12">
@@ -360,18 +378,14 @@ const ProfilePage = () => {
               <h2 className="text-xl font-bold mb-4">Partner Digimon</h2>
               <div className="flex flex-col md:flex-row gap-6">
                 <div className="flex items-center gap-4">
-                  <div className="w-24 h-24 relative">
-                    <motion.div
-                      animate={{ y: [0, -5, 0] }}
-                      transition={{ repeat: Infinity, duration: 2 }}
-                    >
-                      <img 
-                        src={favoriteDigimon.digimon?.sprite_url} 
-                        alt={favoriteDigimon.name}
-                        className="w-full h-full object-contain"
-                        style={{ imageRendering: "pixelated" }}
-                      />
-                    </motion.div>
+                  <div className="w-24 h-24 flex items-center justify-center">
+                    <DigimonSprite
+                      digimonName={favoriteDigimon.digimon?.name || ""}
+                      fallbackSpriteUrl={favoriteDigimon.digimon?.sprite_url || "/assets/pet/egg.svg"}
+                      happiness={favoriteDigimon.happiness}
+                      size="md"
+                      enableHopping={true}
+                    />
                   </div>
                   
                   <div>
@@ -498,12 +512,14 @@ const ProfilePage = () => {
                     className="border rounded-lg p-3 text-center cursor-pointer hover:bg-gray-50 transition-colors"
                     onClick={() => handleDigimonClick(digimon)}
                   >
-                    <div className="w-16 h-16 mx-auto mb-2">
-                      <img 
-                        src={digimon.digimon?.sprite_url} 
-                        alt={digimon.name || digimon.digimon?.name}
-                        className="w-full h-full object-contain"
-                        style={{ imageRendering: "pixelated" }}
+                    <div className="w-16 h-16 mx-auto mb-2 flex items-center justify-center">
+                      <DigimonSprite
+                        digimonName={digimon.digimon?.name || ""}
+                        fallbackSpriteUrl={digimon.digimon?.sprite_url || "/assets/pet/egg.svg"}
+                        happiness={digimon.happiness}
+                        size="sm"
+                        showHappinessAnimations={false}
+                        enableHopping={false}
                       />
                     </div>
                     <div className="font-medium">{digimon.name || digimon.digimon?.name}</div>
@@ -545,6 +561,8 @@ const ProfilePage = () => {
         </>
       )}
     </div>
+    <PageTutorial tutorialId="profile_page_intro" steps={profilePageTutorialSteps} />
+    </>
   );
 };
 

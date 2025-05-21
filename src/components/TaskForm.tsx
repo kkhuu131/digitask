@@ -12,7 +12,11 @@ const DAYS_OF_WEEK = [
   "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
 ];
 
-const TaskForm = () => {
+interface TaskFormProps {
+  onTaskCreated?: () => void;
+}
+
+const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
   const { createTask } = useTaskStore();
   const [description, setDescription] = useState("");
   const [taskType, setTaskType] = useState<"daily" | "one-time" | "recurring">("daily");
@@ -151,6 +155,10 @@ const TaskForm = () => {
       setCategory(null);
       setDetectedCategory(null);
       setIsSubmitting(false);
+
+      if (onTaskCreated) {
+        onTaskCreated();
+      }
     } catch (error) {
       console.error("Error creating task:", error);
       setIsSubmitting(false);

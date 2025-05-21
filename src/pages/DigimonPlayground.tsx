@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDigimonStore, UserDigimon } from '../store/petStore';
 import { motion } from 'framer-motion';
+import PageTutorial from '../components/PageTutorial';
+import { DialogueStep } from '../components/DigimonDialogue';
 
 const DigimonPlayground: React.FC = () => {
   const { allUserDigimon, fetchAllUserDigimon } = useDigimonStore();
@@ -474,7 +476,31 @@ const DigimonPlayground: React.FC = () => {
     setPoopLocations(prev => prev.filter(p => p.id !== poopId));
   };
 
+  const playgroundPageTutorialSteps: DialogueStep[] = [
+    {
+      speaker: 'neemon',
+      text: "Oh hey, tamer! Come play with us!"
+    },
+    {
+      speaker: 'bokomon',
+      text: "Hey, Neemon! What's up?"
+    },
+    {
+      speaker: 'neemon',
+      text: "Here, you can play with your Digimon in the playground!"
+    },
+    {
+      speaker: 'bokomon',
+      text: "These don't make us any stronger, you know."
+    },
+    {
+      speaker: 'neemon',
+      text: "But they're fun!"
+    },
+  ];
+
   return (
+    <>
     <div className="container mx-auto px-4 py-6 pb-20 md:pb-6">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Digimon Playground</h1>
@@ -599,6 +625,8 @@ const DigimonPlayground: React.FC = () => {
         </div>
       </div>
     </div>
+    <PageTutorial tutorialId="playground_intro" steps={playgroundPageTutorialSteps} />
+    </>
   );
 };
 

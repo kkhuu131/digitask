@@ -3,6 +3,7 @@ import { supabase } from "../lib/supabase";
 import { isUnderStatCap, useDigimonStore } from "./petStore";
 import { useNotificationStore } from "./notificationStore";
 import { StatCategory } from "../utils/categoryDetection";
+import { useAuthStore } from "../store/authStore";
 
 const BASE_EXP_FOR_ONE_TIME_TASK = 100;
 const BASE_STAT_FOR_ONE_TIME_TASK = 1;
@@ -408,6 +409,13 @@ export const useTaskStore = create<TaskState>((set, get) => ({
 
   checkOverdueTasks: async () => {
     try {
+      const { user } = useAuthStore.getState();
+      if (!user) {
+        console.log("No user found, skipping overdue task check");
+        return;
+      }
+
+      console.log("Checking for overdue tasks");
       const { data: userData } = await supabase.auth.getUser();
       if (!userData.user) return;
 

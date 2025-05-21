@@ -196,6 +196,11 @@ export interface PetState {
     toDigimonId: number,
     dnaPartnerDigimonId: string
   ) => Promise<boolean>;
+  transformDigimonForm: (
+    userDigimonId: string,
+    toFormId: number,
+    formType: string
+  ) => Promise<boolean>;
 }
 
 export const useDigimonStore = create<PetState>((set, get) => ({
@@ -1801,6 +1806,43 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       console.error("Error in DNA evolution:", error);
       useNotificationStore.getState().addNotification({
         message: `Failed to DNA evolve: ${(error as Error).message}`,
+        type: "error",
+      });
+      return false;
+    }
+  },
+
+  transformDigimonForm: async (
+    userDigimonId: string,
+    toFormId: number,
+    formType: string
+  ): Promise<boolean> => {
+    try {
+      const { error } = await supabase
+        .from("user_digimon")
+        .update({ digimon_id: toFormId })
+        .eq("id", userDigimonId)
+        .select();
+
+      if (error) throw error;
+
+      // Add to discovered digimon
+      await get().addDiscoveredDigimon(toFormId);
+
+      // Refresh digimon data
+      await get().fetchUserDigimon();
+      await get().fetchAllUserDigimon();
+
+      useNotificationStore.getState().addNotification({
+        message: `${formType} transformation successful!`,
+        type: "success",
+      });
+
+      return true;
+    } catch (error) {
+      console.error("Error transforming Digimon form:", error);
+      useNotificationStore.getState().addNotification({
+        message: `Failed to transform Digimon: ${(error as Error).message}`,
         type: "error",
       });
       return false;

@@ -92,7 +92,7 @@ const Layout = ({ children }: LayoutProps) => {
     { path: "/user-search", label: "Find Players", icon: "👥" },
     { path: "/tutorial", label: "Tutorial", icon: "📚" },
     { path: "/settings", label: "Settings", icon: "⚙️" },
-    { path: "/playground", label: "Playground", icon: "🎮" },
+    // { path: "/playground", label: "Playground", icon: "🎮" },
   ];
   
   return (
@@ -152,12 +152,12 @@ const Layout = ({ children }: LayoutProps) => {
                   >
                     Campaign
                   </Link>
-                  <Link
+                  {/* <Link
                     to="/playground"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     Playground
-                  </Link>
+                  </Link> */}
                   <Link
                     to="/digimon-dex"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
