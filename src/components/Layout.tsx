@@ -3,7 +3,7 @@ import { useAuthStore } from '../store/authStore';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useDigimonStore } from "../store/petStore";
 import { motion, AnimatePresence } from "framer-motion";
-
+import DigimonSprite from "./DigimonSprite";
 interface LayoutProps {
   children: ReactNode;
 }
@@ -206,6 +206,12 @@ const Layout = ({ children }: LayoutProps) => {
                   >
                     Patch Notes
                   </Link>
+                  <Link
+                    to="/settings"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Settings
+                  </Link>
                 </NavDropdown>
               </div>
             )}
@@ -243,13 +249,9 @@ const Layout = ({ children }: LayoutProps) => {
               {user && (
                 <>
                   <Link to="/profile" className="text-sm text-gray-700 hover:text-primary-600 hidden md:inline">
-                    {userProfile?.username}
-                  </Link>
-                  <Link
-                    to="/settings"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    Settings
+                    <div className="flex-shrink-0 h-11 w-11 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden mr-3">
+                      <DigimonSprite digimonName={userProfile?.username || ""} fallbackSpriteUrl={userProfile?.avatar_url || "/assets/digimon/agumon.png"} size="xs" />
+                    </div>
                   </Link>
                   <button
                     onClick={handleSignOut}

@@ -5,7 +5,7 @@ import DigimonDetailModal from "./DigimonDetailModal";
 import { DigimonAttribute, DigimonType as DigimonBattleType } from "../store/battleStore";
 import TypeAttributeIcon from "./TypeAttributeIcon";
 import EvolutionAnimation from "./EvolutionAnimation";
-import { determineSpriteType, getSpriteUrl } from '../utils/spriteManager';
+import { getSpriteUrl } from '../utils/spriteManager';
 import { ANIMATED_DIGIMON } from '../constants/animatedDigimonList';
 import type { SpriteType } from '../utils/spriteManager';
 
@@ -107,7 +107,7 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
       // Otherwise, determine sprite type based on happiness and toggle state
       let newSpriteType: SpriteType;
       
-      if (userDigimon.happiness > 80) {
+      if (userDigimon.happiness > 60) {
         newSpriteType = spriteToggle ? "idle1" : "idle2";
       } else {
         newSpriteType = spriteToggle ? "sad1" : "sad2";
@@ -402,7 +402,7 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
                 updateInteraction();
                 setCurrentSpriteType('happy');
                 setTimeout(() => {
-                  setCurrentSpriteType(determineSpriteType(userDigimon.happiness));
+                  setCurrentSpriteType('cheer');
                 }, 1000);
               }
             }}

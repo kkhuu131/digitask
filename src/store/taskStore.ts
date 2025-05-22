@@ -4,6 +4,7 @@ import { isUnderStatCap, useDigimonStore } from "./petStore";
 import { useNotificationStore } from "./notificationStore";
 import { StatCategory } from "../utils/categoryDetection";
 import { useAuthStore } from "../store/authStore";
+import { useTitleStore } from "./titleStore";
 
 const BASE_EXP_FOR_ONE_TIME_TASK = 100;
 const BASE_STAT_FOR_ONE_TIME_TASK = 1;
@@ -49,6 +50,7 @@ interface DailyQuota {
   created_at: string;
   updated_at: string;
   current_streak: number;
+  longest_streak: number;
 }
 
 interface TaskState {
@@ -664,6 +666,12 @@ export const useTaskStore = create<TaskState>((set, get) => ({
           message: `🎉 Daily Quota Complete! All team members received ${actualXpReward} EXP${multiplierText}!`,
           type: "success",
         });
+
+        // Check for streak titles
+        const { longest_streak } = get().dailyQuota || {
+          longest_streak: 0,
+        };
+        await useTitleStore.getState().checkStreakTitles(longest_streak);
       }
 
       set({ loading: false });

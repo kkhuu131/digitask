@@ -1324,13 +1324,13 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
     description:
       "Alphamon returns, now fused with the dragon. He stands now not for Yggdrasill, but against it. He challenges you to a test of your strength and conviction.",
   },
-  {
-    id: "100",
-    name: "Core Protocol",
-    team: [{ digimon_id: 999, level: 999 }],
-    description:
-      "To Yggdrasill, emotion is deviation. You, and the Digimon who fight beside you, are anomalies in its perfect code.",
-  },
+  // {
+  //   id: "100",
+  //   name: "Core Protocol",
+  //   team: [{ digimon_id: 999, level: 999 }],
+  //   description:
+  //     "To Yggdrasill, emotion is deviation. You, and the Digimon who fight beside you, are anomalies in its perfect code.",
+  // },
 
   // {
   //   id: "81",

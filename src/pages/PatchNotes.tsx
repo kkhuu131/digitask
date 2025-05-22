@@ -6,16 +6,44 @@ const PatchNotes = () => {
         <p className="text-gray-600 mb-6">
           Stay informed about recent changes and upcoming features for Digitask.
         </p>
+        <div className="my-6 p-4 bg-indigo-50 rounded-lg">
+          <h3 className="font-medium text-indigo-800 mb-2">Have a suggestion?</h3>
+          <p className="text-indigo-700 text-sm mb-3">
+            We're constantly improving Digitask based on user feedback. If you have ideas for new features or improvements, let us know!
+          </p>
+          <a 
+            href="https://forms.gle/HrgybGG7BL1xj5wg6" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-block text-sm bg-indigo-100 hover:bg-indigo-200 text-indigo-800 px-3 py-1 rounded-full transition-colors"
+          >
+            Submit Feedback
+          </a>
+        </div>
         <div className="border-b pb-2 mb-6">
           <h2 className="text-xl font-semibold mb-4">Recent Updates</h2>
           <div className="mb-6">
             <div className="flex items-center mb-2">
               <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
+              <h3 className="text-lg font-medium ml-2">New Titles!</h3>
+              <span className="text-sm text-gray-500 ml-auto">May 21, 2025</span>
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <li>New titles are added for reaching new milestones for daily quota streaks.</li>
+            <li>Updated avatar sprites and Digidex to use the new sprites from the animation update.</li>
+            <li>Battle animations now use the new sprites, animating the Digimon attacking/defending, or victory/defeat.</li>
+            <li>Added egg sprites for the starters when claiming Digimon.</li>
+            <li>Updated Navigation bar to be more compact.</li>
+            </ul>
+        </div>
+          <div className="mb-6">
+            <div className="flex items-center mb-2">
               <h3 className="text-lg font-medium ml-2">X-Antibody, Bokomon and Neemon!</h3>
               <span className="text-sm text-gray-500 ml-auto">May 20, 2025</span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600">
             <li>Introducing <b>X-Antibody Digimon</b>! These are mutated variants of the original Digimon, providing a 10% boost to all stats.</li>
+            <li>If a Digimon has an X-Antibody form, you will see a new button in the Evolution window.</li>
             <li>Unlike digivolution, you can transform back and forth between the original and X-Antibody forms without losing levels.</li>
             <li>For now, you will be free to transform as much as you want, but expect there to be some requirement in the future.</li>
             <li>The X-Antibody Digimon added in this update are:</li>
@@ -357,21 +385,6 @@ const PatchNotes = () => {
             </ul>
           </div>
         </div> */}
-        
-        <div className="mt-8 p-4 bg-indigo-50 rounded-lg">
-          <h3 className="font-medium text-indigo-800 mb-2">Have a suggestion?</h3>
-          <p className="text-indigo-700 text-sm mb-3">
-            We're constantly improving Digitask based on user feedback. If you have ideas for new features or improvements, let us know!
-          </p>
-          <a 
-            href="https://forms.gle/HrgybGG7BL1xj5wg6" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="inline-block text-sm bg-indigo-100 hover:bg-indigo-200 text-indigo-800 px-3 py-1 rounded-full transition-colors"
-          >
-            Submit Feedback
-          </a>
-        </div>
       </div>
     </div>
   );

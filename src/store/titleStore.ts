@@ -28,6 +28,7 @@ interface TitleState {
     titleId: number,
     isDisplayed: boolean
   ) => Promise<boolean>;
+  checkStreakTitles: (longestStreak: number) => Promise<void>;
 }
 
 export const useTitleStore = create<TitleState>((set, get) => ({
@@ -386,6 +387,73 @@ export const useTitleStore = create<TitleState>((set, get) => ({
     } catch (error) {
       console.error("Error updating displayed title:", error);
       return false;
+    }
+  },
+
+  checkStreakTitles: async (longestStreak: number) => {
+    try {
+      const { user } = useAuthStore.getState();
+      if (!user) return;
+
+      const { availableTitles, userTitles } = get();
+
+      // Use the longest streak for awarding titles (permanent achievements)
+      const streakToCheck = longestStreak;
+
+      // Get IDs of titles the user already has
+      const earnedTitleIds = userTitles.map((ut) => ut.title_id);
+
+      // Find streak titles that should be earned based on longest streak
+      const streakTitles = availableTitles.filter(
+        (title) =>
+          title.category === "streak" &&
+          title.requirement_type === "longest_streak" &&
+          Number(title.requirement_value) <= streakToCheck &&
+          !earnedTitleIds.includes(title.id)
+      );
+
+      // Award new titles
+      if (streakTitles.length > 0) {
+        // First check which titles the user already has to avoid duplicates
+        const { data: existingTitles } = await supabase
+          .from("user_titles")
+          .select("title_id")
+          .eq("user_id", user.id)
+          .in(
+            "title_id",
+            streakTitles.map((t) => t.id)
+          );
+
+        // Filter out titles the user already has
+        const existingTitleIds = existingTitles?.map((t) => t.title_id) || [];
+        const newTitlesToAdd = streakTitles.filter(
+          (title) => !existingTitleIds.includes(title.id)
+        );
+
+        if (newTitlesToAdd.length === 0) return; // No new titles to add
+
+        const newTitles = newTitlesToAdd.map((title) => ({
+          title_id: title.id,
+          user_id: user.id,
+        }));
+
+        const { error } = await supabase.from("user_titles").insert(newTitles);
+
+        if (error) throw error;
+
+        // Notify user of new titles
+        newTitlesToAdd.forEach((title) => {
+          useNotificationStore.getState().addNotification({
+            message: `New title earned: ${title.name}`,
+            type: "success",
+          });
+        });
+
+        // Refresh titles
+        await get().fetchUserTitles();
+      }
+    } catch (error) {
+      console.error("Error checking streak titles:", error);
     }
   },
 }));

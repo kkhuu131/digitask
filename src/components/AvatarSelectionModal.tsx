@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useDigimonStore } from "../store/petStore";
 import { DIGIMON_LOOKUP_TABLE } from "../constants/digimonLookup";
+import { ANIMATED_DIGIMON } from "../constants/animatedDigimonList";
+import { getSpriteUrl } from "../utils/spriteManager";
 
 interface AvatarSelectionModalProps {
   isOpen: boolean;
@@ -11,6 +13,8 @@ interface AvatarSelectionModalProps {
 interface DigimonSprite {
   id: number;
   sprite_url: string;
+  name: string;
+  isAnimated: boolean;
 }
 
 const AvatarSelectionModal = ({ isOpen, onClose, onSelect }: AvatarSelectionModalProps) => {
@@ -28,21 +32,45 @@ const AvatarSelectionModal = ({ isOpen, onClose, onSelect }: AvatarSelectionModa
       setLoading(true);
       
       try {
-        // Use the lookup table:
+        // Map discovered Digimon to sprites, preferring animated ones
         const avatarOptions = discoveredDigimon
-          .map(id => ({
-            id,
-            sprite_url: DIGIMON_LOOKUP_TABLE[id]?.sprite_url
-          }))
-          .filter(digimon => digimon.sprite_url) // Filter out any without sprite URLs
-          .sort((a, b) => a.id - b.id); // Sort by ID ascending
+          .map(id => {
+            const digimon = DIGIMON_LOOKUP_TABLE[id];
+            if (!digimon) return null;
+            
+            const name = digimon.name;
+            const isAnimated = ANIMATED_DIGIMON.includes(name);
+            
+            // Use animated sprite if available, otherwise use regular sprite
+            const sprite_url = isAnimated 
+              ? getSpriteUrl(name, "idle1", digimon.sprite_url)
+              : digimon.sprite_url;
+              
+            return {
+              id,
+              name,
+              sprite_url,
+              isAnimated
+            };
+          })
+          .filter(Boolean) // Remove nulls
+          .sort((a, b) => a!.id - b!.id); // Sort by ID ascending
+
+        avatarOptions.push({
+          id: 777,
+          name: "Bokomon",
+          sprite_url: "/assets/digimon/bokomon.png",
+          isAnimated: false
+        });
+
+        avatarOptions.push({
+          id: 778,
+          name: "Neemon",
+          sprite_url: "/assets/digimon/neemon.png",
+          isAnimated: false
+        });
         
-        if (avatarOptions.length > 0) {
-          // Store both ID and sprite URL to maintain sort order
-          setAvailableSprites(avatarOptions as DigimonSprite[]);
-        } else {
-          setAvailableSprites([]);
-        }
+        setAvailableSprites(avatarOptions as DigimonSprite[]);
       } catch (err) {
         console.error("Error fetching digimon sprites:", err);
         setAvailableSprites([]);
@@ -91,13 +119,19 @@ const AvatarSelectionModal = ({ isOpen, onClose, onSelect }: AvatarSelectionModa
                     onSelect(sprite.sprite_url);
                     onClose();
                   }}
-                  className="bg-gray-100 rounded-lg p-2 hover:bg-gray-200 transition-colors flex items-center justify-center aspect-square"
+                  className="bg-gray-100 rounded-lg p-2 hover:bg-gray-200 transition-colors flex flex-col items-center justify-center aspect-square relative"
                 >
                   <img 
                     src={sprite.sprite_url} 
-                    alt={`Digimon #${sprite.id}`} 
+                    alt={`${sprite.name}`} 
                     className="w-16 h-16 object-contain"
                     style={{ imageRendering: "pixelated" }}
+                    onError={(e) => {
+                      // If animated sprite fails, fall back to regular sprite
+                      if (sprite.isAnimated) {
+                        (e.target as HTMLImageElement).src = DIGIMON_LOOKUP_TABLE[sprite.id].sprite_url;
+                      }
+                    }}
                   />
                 </button>
               ))}

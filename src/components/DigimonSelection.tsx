@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { DIGIMON_LOOKUP_TABLE } from '../constants/digimonLookup';
 import { useDigimonStore } from '../store/petStore';
+import DigimonSprite from './DigimonSprite';
 
 interface DigimonSelectionProps {
   onSelect: (digimonId: number, name: string) => void;
@@ -60,11 +61,10 @@ const DigimonSelection: React.FC<DigimonSelectionProps> = ({ onSelect }) => {
               `}
             >
               <div className="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center">
-                <img 
-                  src={digimon.sprite_url} 
-                  alt={isDiscovered ? digimon.name : "Unknown Digimon"}
-                  className="w-full h-full object-contain"
-                  style={{ imageRendering: "pixelated" }}
+                <DigimonSprite
+                  digimonName={digimon.name}
+                  fallbackSpriteUrl={digimon.sprite_url}
+                  showHappinessAnimations = {false}
                 />
               </div>
               <p className="mt-2 text-sm sm:text-base font-medium text-center">

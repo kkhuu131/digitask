@@ -159,7 +159,7 @@ const LeaderboardPage = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{index + 1}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden mr-3">
+                        <div className="flex-shrink-0 h-11 w-11 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden mr-3">
                           {user.avatar_url ? (
                             <img 
                               src={user.avatar_url} 

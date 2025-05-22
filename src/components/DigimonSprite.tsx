@@ -8,7 +8,8 @@ interface DigimonSpriteProps {
   digimonName: string;
   fallbackSpriteUrl: string;
   happiness?: number;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'xs' |'sm' | 'md' | 'lg' | 'xl';
+  silhouette?: boolean;
   onClick?: () => void;
   showHappinessAnimations?: boolean;
   enableHopping?: boolean;
@@ -19,6 +20,7 @@ const DigimonSprite: React.FC<DigimonSpriteProps> = ({
   fallbackSpriteUrl = "/assets/digimon/dot050.png",
   happiness = 100,
   size = 'md',
+  silhouette = false,
   onClick,
   showHappinessAnimations = true,
   enableHopping = false
@@ -109,6 +111,7 @@ const DigimonSprite: React.FC<DigimonSpriteProps> = ({
 
   // Size classes for container
   const sizeClasses = {
+    xs: "w-8 h-8",
     sm: "w-16 h-16",
     md: "w-32 h-32",
     lg: "w-64 h-64",
@@ -117,6 +120,7 @@ const DigimonSprite: React.FC<DigimonSpriteProps> = ({
   
   // Scale factors for the image based on size
   const scaleFactors = {
+    xs: .9,
     sm: 1.5,
     md: 2.5,
     lg: 4,
@@ -166,13 +170,14 @@ const DigimonSprite: React.FC<DigimonSpriteProps> = ({
               src={getCurrentSpriteUrl()}
               alt={digimonName}
               className="w-auto h-auto cursor-pointer"
-              style={{ 
+              style={{
                 imageRendering: "pixelated",
                 transform: `scaleX(${lookDirection}) scale(${scaleFactors[size]})`,
                 transformOrigin: "center center",
                 position: "relative",
                 display: "block",
-                margin: "0 auto"
+                margin: "0 auto",
+                ...(silhouette && { filter: "brightness(0)" })
               }}
               onClick={handleSpriteClick}
               onError={(e) => {

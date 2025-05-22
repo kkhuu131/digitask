@@ -2,13 +2,14 @@ export interface Title {
   id: number;
   name: string;
   description: string;
-  category: "campaign" | "collection" | "evolution" | "battle";
+  category: "campaign" | "collection" | "evolution" | "battle" | "streak";
   requirement_type:
     | "campaign_stage"
     | "digimon_count"
     | "digimon_level"
     | "digimon_stage"
-    | "battle_wins";
+    | "battle_wins"
+    | "longest_streak";
   requirement_value: number | string;
 }
 
@@ -30,14 +31,6 @@ export const TITLES: Title[] = [
     requirement_type: "campaign_stage",
     requirement_value: 20,
   },
-  // {
-  //   id: 3,
-  //   name: "Rockstar",
-  //   description: "Defeated Etemon.",
-  //   category: "campaign",
-  //   requirement_type: "campaign_stage",
-  //   requirement_value: 25,
-  // },
   {
     id: 3,
     name: "Vampire Hunter",
@@ -185,5 +178,79 @@ export const TITLES: Title[] = [
     category: "battle",
     requirement_type: "battle_wins",
     requirement_value: 1000,
+  },
+
+  // Streak titles
+  {
+    id: 400,
+    name: "Getting Started",
+    description: "Completed 1 Daily Quota.",
+    category: "streak",
+    requirement_type: "longest_streak",
+    requirement_value: 1,
+  },
+  {
+    id: 401,
+    name: "In Training",
+    description: "Maintained a 3 day streak.",
+    category: "streak",
+    requirement_type: "longest_streak",
+    requirement_value: 3,
+  },
+  {
+    id: 402,
+    name: "Routine Rookie",
+    description: "Maintained a 7 day streak.",
+    category: "streak",
+    requirement_type: "longest_streak",
+    requirement_value: 7,
+  },
+  {
+    id: 403,
+    name: "Champion Flow",
+    description: "Maintained a 14 day streak.",
+    category: "streak",
+    requirement_type: "longest_streak",
+    requirement_value: 14,
+  },
+  {
+    id: 404,
+    name: "Ultimate Bond",
+    description: "Maintained a 31 day streak.",
+    category: "streak",
+    requirement_type: "longest_streak",
+    requirement_value: 31,
+  },
+  {
+    id: 405,
+    name: "Crest Ignited",
+    description: "Maintained a 50 day streak.",
+    category: "streak",
+    requirement_type: "longest_streak",
+    requirement_value: 50,
+  },
+  {
+    id: 406,
+    name: "Digivolved",
+    description: "Maintained a 75 day streak.",
+    category: "streak",
+    requirement_type: "longest_streak",
+    requirement_value: 75,
+  },
+  {
+    id: 407,
+    name: "Perfect Partner",
+    description: "Maintained a 100 day streak.",
+    category: "streak",
+    requirement_type: "longest_streak",
+    requirement_value: 100,
+  },
+  {
+    id: 408,
+    name: "Digitask Adventure",
+    description: "Maintained a 365 day streak. One full year!",
+    category: "streak",
+    requirement_type: "longest_streak",
+    requirement_value: 365,
   },
 ];

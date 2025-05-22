@@ -30,6 +30,18 @@ const DigimonSelectionModal: React.FC<DigimonSelectionModalProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [selectedDigimon, setSelectedDigimon] = useState<number | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [spriteToggle, setSpriteToggle] = useState(false);
+
+  // Animation interval for sprites
+  useEffect(() => {
+    if (!isOpen) return;
+    
+    const interval = setInterval(() => {
+      setSpriteToggle(prev => !prev);
+    }, 750); // Toggle every 750ms
+    
+    return () => clearInterval(interval);
+  }, [isOpen]);
 
   // Fetch the available Digimon options
   useEffect(() => {
@@ -96,6 +108,11 @@ const DigimonSelectionModal: React.FC<DigimonSelectionModalProps> = ({
     }
   };
 
+  // Function to get the animated sprite URL
+  const getAnimatedSpriteUrl = (digimonName: string) => {
+    return `/assets/egg/${digimonName}/${spriteToggle ? 'idle1' : 'idle2'}.png`;
+  };
+
   if (!isOpen) return null;
 
   // Determine which options to show
@@ -115,7 +132,7 @@ const DigimonSelectionModal: React.FC<DigimonSelectionModalProps> = ({
           {isNXChance && (
             <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
               <p className="text-yellow-700">
-                <span className="font-bold">Special Chance!</span> You can choose from rare NX Digimon in addition to regular starters!
+                <span className="font-bold">Easter Egg!</span> You can choose from rare NX Digimon in addition to the starters! These are special, weaker versions of the original, that can't evolve or devolve.
               </p>
             </div>
           )}
@@ -145,12 +162,16 @@ const DigimonSelectionModal: React.FC<DigimonSelectionModalProps> = ({
                     }`}
                   >
                     <div className="flex flex-col items-center">
-                      <div className="h-24 w-24 flex items-center justify-center mb-2">
+                      <div className="h-16 w-16 flex items-center justify-center mb-2">
                         <img
-                          src={digimon.sprite_url}
+                          src={getAnimatedSpriteUrl(digimon.name)}
                           alt={digimon.name}
                           className="object-contain max-h-full max-w-full"
                           style={{ imageRendering: "pixelated" }}
+                          onError={(e) => {
+                            // Fallback to original sprite if animated sprite fails to load
+                            (e.target as HTMLImageElement).src = digimon.sprite_url;
+                          }}
                         />
                       </div>
                       <h3 className="font-medium text-center">{digimon.name}</h3>
@@ -186,7 +207,7 @@ const DigimonSelectionModal: React.FC<DigimonSelectionModalProps> = ({
                       : "bg-gray-400 cursor-not-allowed"
                   }`}
                 >
-                  {isSubmitting ? "Claiming..." : "Claim Digimon"}
+                  {isSubmitting ? "Claiming..." : "Claim"}
                 </button>
               </div>
             </>

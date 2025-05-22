@@ -4,6 +4,7 @@ import { useDigimonData } from "../hooks/useDigimonData";
 import { DIGIMON_LOOKUP_TABLE } from "../constants/digimonLookup";
 import { getDevolutions } from "@/utils/evolutionsHelper";
 import { getEvolutions } from "@/utils/evolutionsHelper";
+import DigimonSprite from "./DigimonSprite";
 
 const DigimonDex = () => {
   const { digimon: allDigimon, loading } = useDigimonData();
@@ -147,15 +148,7 @@ const DigimonDex = () => {
               
               <div className="w-16 h-16 flex items-center justify-center">
                 {digimon.sprite_url ? (
-                  <img 
-                    src={digimon.sprite_url} 
-                    alt={discovered ? digimon.name : "???"} 
-                    style={discovered ? { imageRendering: "pixelated"} : { imageRendering: "pixelated", filter: "brightness(0)" }} 
-                    className="w-full h-full object-contain"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = "/assets/pet/egg.svg";
-                    }}
-                  />
+                  <DigimonSprite digimonName={digimon.name} fallbackSpriteUrl={digimon.sprite_url} size="sm" silhouette={!discovered} showHappinessAnimations={false} enableHopping={false} />
                 ) : (
                   <div className="w-full h-full bg-gray-200 rounded-full flex items-center justify-center text-gray-400">?</div>
                 )}
@@ -184,15 +177,7 @@ const DigimonDex = () => {
             {/* Image section with background */}
             <div className="p-4 bg-gray-100 flex justify-center">
               {selectedDigimon.sprite_url && (
-                <img 
-                  src={selectedDigimon.sprite_url} 
-                  alt={selectedDigimon.name} 
-                  style={{ imageRendering: "pixelated" }} 
-                  className="w-32 h-32 object-contain"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = "/assets/pet/egg.svg";
-                  }}
-                />
+                <DigimonSprite digimonName={selectedDigimon.name} fallbackSpriteUrl={selectedDigimon.sprite_url} size="md" showHappinessAnimations={true} enableHopping={false} />
               )}
             </div>
             

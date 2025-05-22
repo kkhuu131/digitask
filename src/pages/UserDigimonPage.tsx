@@ -361,6 +361,10 @@ const UserDigimonPage = () => {
           />
         )}
 
+        <div className="mb-6">
+          <MilestoneProgress />
+        </div>
+
         <div className="card mb-6">
           <h1 className="text-2xl font-bold mb-4">Your Digimon</h1>
           <p className="text-gray-600 mb-6">
@@ -485,7 +489,6 @@ const UserDigimonPage = () => {
             )}
           </div>
         </div>
-        <MilestoneProgress />
       </div>
       <PageTutorial tutorialId="digimon_collection_intro" steps={digimonPageTutorialSteps} />
     </>

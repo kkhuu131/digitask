@@ -1,4 +1,4 @@
-export const CURRENT_VERSION = "1.2.0";
+export const CURRENT_VERSION = "1.2.1";
 
 export const UPDATE_CHANGES = {
   "1.0.1": [
@@ -51,5 +51,10 @@ export const UPDATE_CHANGES = {
     "Read patch notes for more information.",
     "Added Bokomon and Neemon as guides to the game! Sprites are from @otro_jorch on twitter",
     "Added an onboarding flow for new users to get started!",
+  ],
+  "1.2.1": [
+    "New titles are added for reaching new milestones for daily quota streaks.",
+    "Updated avatar sprites and Digidex to use the new sprites from the animation update.",
+    "Battle animations now use the new sprites, animating the Digimon attacking/defending, or victory/defeat.",
   ],
 };
