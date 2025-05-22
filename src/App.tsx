@@ -76,21 +76,6 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-// Public route that redirects to dashboard if user is logged in
-const PublicRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user, loading } = useAuthStore();
-  
-  if (loading) {
-    return <div className="flex items-center justify-center h-screen">Loading...</div>;
-  }
-  
-  if (user) {
-    return <Navigate to="/dashboard" />;
-  }
-  
-  return <>{children}</>;
-};
-
 function RequireAuth({ children, allowNoDigimon = false }: { children: React.ReactNode, allowNoDigimon?: boolean }) {
   const { user, loading: authLoading } = useAuthStore();
   const { userDigimon, loading: digimonLoading } = useDigimonStore();
