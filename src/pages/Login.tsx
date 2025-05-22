@@ -150,6 +150,20 @@ const Login = () => {
               </Link>
             </p>
           </div>
+          <div className="my-6 p-4 bg-indigo-50 rounded-lg text-center">
+          <h3 className="font-medium text-indigo-800 mb-2">Something not working?</h3>
+          <p className="text-indigo-700 text-sm mb-3">
+            If you're having any problems, let us know!
+          </p>
+          <a 
+            href="https://forms.gle/HrgybGG7BL1xj5wg6" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-block text-sm bg-indigo-100 hover:bg-indigo-200 text-indigo-800 px-3 py-1 rounded-full transition-colors"
+          >
+            Submit Feedback
+          </a>
+          </div>
         </form>
       </div>
     </div>
