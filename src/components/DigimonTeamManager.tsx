@@ -117,10 +117,10 @@ const SortableDigimonCard = ({
         <div className="relative w-full h-full max-w-[80px] max-h-[80px] mx-auto flex items-center justify-center">
           <DigimonSprite
             digimonName={digimon.digimon?.name || ""}
-            fallbackSpriteUrl={digimon.digimon?.sprite_url || "/assets/digimon/dot050.png"}
+            fallbackSpriteUrl={digimon.digimon?.sprite_url || "/assets/digimon/agumon_professor.png"}
             happiness={digimon.happiness}
             size="sm"
-            showHappinessAnimations={false}
+            showHappinessAnimations={digimon.is_on_team}
             enableHopping={false}
           />
         </div>

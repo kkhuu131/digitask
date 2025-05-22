@@ -65,7 +65,7 @@ const Login = () => {
         <div className="text-center">
           <div className="flex items-center justify-center">
             <img 
-              src="/assets/digimon/dot050.png" 
+              src="/assets/digimon/agumon_professor.png" 
               alt="Digitask Logo" 
               className="h-12 w-12 mr-2"
               style={{ imageRendering: "pixelated" }}

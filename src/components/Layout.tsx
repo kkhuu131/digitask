@@ -102,7 +102,7 @@ const Layout = ({ children }: LayoutProps) => {
             <div className="flex-shrink-0 flex items-center">
               <Link to="/" className="flex items-center">
                 <img 
-                  src="/assets/digimon/dot050.png" 
+                  src="/assets/digimon/agumon_professor.png" 
                   alt="Digitask Logo" 
                   className="h-8 w-8 mr-2"
                   style={{ imageRendering: "pixelated" }}
@@ -263,7 +263,7 @@ const Layout = ({ children }: LayoutProps) => {
                         }}
                         onError={(e) => {
                           // Fallback if image doesn't load
-                          (e.target as HTMLImageElement).src = "/assets/digimon/dot050.png";
+                          (e.target as HTMLImageElement).src = "/assets/digimon/agumon_professor.png";
                         }}
                       />
                     </div>

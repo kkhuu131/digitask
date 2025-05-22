@@ -1,4 +1,5 @@
 import { TeamBattleHistory } from "../store/battleStore";
+import DigimonSprite from "./DigimonSprite";
 interface BattleHistoryProps {
   teamBattles?: TeamBattleHistory[];
 }
@@ -53,11 +54,11 @@ const BattleHistory: React.FC<BattleHistoryProps> = ({ teamBattles = [] }) => {
                   <div className="flex space-x-0 sm:space-x-1">
                     {teamBattle.user_team.map((fighter) => (
                       <div key={fighter.id} className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center">
-                        <img 
-                          src={fighter.digimon.sprite_url} 
-                          alt={fighter.name || fighter.digimon.name} 
-                          className="scale-[1]"
-                          style={{ imageRendering: "pixelated" }} 
+                        <DigimonSprite 
+                          digimonName={fighter.digimon.name} 
+                          fallbackSpriteUrl={fighter.digimon.sprite_url} 
+                          size="xs" 
+                          showHappinessAnimations={false}
                         />
                       </div>
                     ))}
@@ -75,11 +76,11 @@ const BattleHistory: React.FC<BattleHistoryProps> = ({ teamBattles = [] }) => {
                   <div className="flex space-x-0 sm:space-x-1">
                     {teamBattle.opponent_team.map((fighter) => (
                       <div key={fighter.id} className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center">
-                        <img
-                          src={fighter.digimon.sprite_url}
-                          alt={fighter.name || fighter.digimon.name}
-                          className="scale-[1]"
-                          style={{ imageRendering: "pixelated" }} 
+                        <DigimonSprite 
+                          digimonName={fighter.digimon.name} 
+                          fallbackSpriteUrl={fighter.digimon.sprite_url} 
+                          size="xs" 
+                          showHappinessAnimations={false}
                         />
                       </div>
                     ))}

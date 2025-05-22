@@ -8,7 +8,7 @@ const LandingPage: React.FC = () => {
       <header className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center">
           <div className="flex items-center">
-            <img src="/assets/digimon/dot050.png" alt="Digitask Logo" className="h-10 w-10 mr-2" style={{ imageRendering: "pixelated" }} />
+            <img src="/assets/digimon/agumon_professor.png" alt="Digitask Logo" className="h-10 w-10 mr-2" style={{ imageRendering: "pixelated" }} />
             <h1 className="text-2xl font-bold text-indigo-800">Digitask</h1>
           </div>
           <div>

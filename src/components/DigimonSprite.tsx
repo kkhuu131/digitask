@@ -17,7 +17,7 @@ interface DigimonSpriteProps {
 
 const DigimonSprite: React.FC<DigimonSpriteProps> = ({
   digimonName,
-  fallbackSpriteUrl = "/assets/digimon/dot050.png",
+  fallbackSpriteUrl = "/assets/digimon/agumon_professor.png",
   happiness = 100,
   size = 'md',
   silhouette = false,

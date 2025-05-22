@@ -9,6 +9,7 @@ import TypeAttributeIcon from "../components/TypeAttributeIcon";
 import BattleSpeedControl from "../components/BattleSpeedControl";
 import PageTutorial from "../components/PageTutorial";
 import { DialogueStep } from "../components/DigimonDialogue";
+import DigimonSprite from "@/components/DigimonSprite";
 
 const Battle = () => {
   const { userDigimon, digimonData, allUserDigimon, fetchAllUserDigimon } = useDigimonStore();
@@ -226,12 +227,22 @@ const Battle = () => {
                         {option.team.digimon.map((digimon) => (
                           <div key={`${digimon.id}-${digimon.name}`} className="text-center flex-1 flex flex-col items-center">
                             <div className="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center relative group">
-                              <img 
-                                src={digimon.sprite_url} 
-                                alt={digimon.name}
-                                className="w-auto h-auto max-w-full max-h-full"
-                                style={{ imageRendering: "pixelated" }}
-                              />
+                              <div className="hidden sm:block">
+                                <DigimonSprite 
+                                  digimonName={digimon.name} 
+                                  fallbackSpriteUrl={digimon.sprite_url}
+                                  showHappinessAnimations={false}
+                                  size="sm" 
+                                />
+                              </div>
+                              <div className="block sm:hidden">
+                                <DigimonSprite 
+                                  digimonName={digimon.name} 
+                                  fallbackSpriteUrl={digimon.sprite_url} 
+                                  size="xs" 
+                                  showHappinessAnimations={false}
+                                />
+                              </div>
                               {/* Tooltip */}
                               <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none">
                                 {digimon.name}

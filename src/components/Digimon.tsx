@@ -124,7 +124,7 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
     if (hasAnimatedSprites && digimonData) {
       return getSpriteUrl(digimonData.name, currentSpriteType, digimonData.sprite_url);
     }
-    return digimonData?.sprite_url || '/assets/digimon/dot050.png';
+    return digimonData?.sprite_url || '/assets/digimon/agumon_professor.png';
   };
   
   // Update local state when userDigimon changes
