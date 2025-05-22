@@ -35,7 +35,6 @@ import Campaign from "./pages/Campaign";
 import AdminDigimonEditor from './pages/AdminDigimonEditor';
 import AdminTitlesPage from './pages/AdminTitlesPage';
 import OnboardingPage from './pages/OnboardingPage';
-import LandingPage from './pages/LandingPage';
 
 // Define a clear app initialization state
 interface AppInitState {
@@ -526,18 +525,14 @@ function App() {
           )
         }
         <Route path="/" element={
-          user ? (
-            <Navigate to="/dashboard" replace />
-          ) : (
-            <LandingPage />
-          )
-        } />
-        <Route path="/dashboard" element={
-          <RequireAuth>
+          <ProtectedRoute>
             <Layout>
               <HomeRouteContent />
             </Layout>
-          </RequireAuth>
+          </ProtectedRoute>
+        } />
+        <Route path="/dashboard" element={
+          <Navigate to="/" replace />
         } />
         <Route path="/login" element={
           <PublicRoute>
