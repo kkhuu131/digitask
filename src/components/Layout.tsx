@@ -3,7 +3,6 @@ import { useAuthStore } from '../store/authStore';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useDigimonStore } from "../store/petStore";
 import { motion, AnimatePresence } from "framer-motion";
-import DigimonSprite from "./DigimonSprite";
 interface LayoutProps {
   children: ReactNode;
 }
@@ -250,7 +249,23 @@ const Layout = ({ children }: LayoutProps) => {
                 <>
                   <Link to="/profile" className="text-sm text-gray-700 hover:text-primary-600 hidden md:inline">
                     <div className="flex-shrink-0 h-11 w-11 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden mr-3">
-                      <DigimonSprite digimonName={userProfile?.username || ""} fallbackSpriteUrl={userProfile?.avatar_url || "/assets/digimon/agumon.png"} size="xs" />
+                      <img
+                        draggable="false"
+                        src={userProfile?.avatar_url}
+                        alt={"avatar"}
+                        className="w-8 h-8 cursor-pointer"
+                        style={{
+                          imageRendering: "pixelated",
+                          transformOrigin: "center center",
+                          position: "relative",
+                          display: "block",
+                          margin: "0 auto",
+                        }}
+                        onError={(e) => {
+                          // Fallback if image doesn't load
+                          (e.target as HTMLImageElement).src = "/assets/digimon/dot050.png";
+                        }}
+                      />
                     </div>
                   </Link>
                   <button
