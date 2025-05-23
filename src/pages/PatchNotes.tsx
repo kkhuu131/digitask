@@ -29,7 +29,7 @@ const PatchNotes = () => {
               <span className="text-sm text-gray-500 ml-auto">May 22, 2025</span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600">
-            <li>Added tiers to Titles, so they are visually distinct from each other based on theri difficulty.</li>
+            <li>Added tiers to Titles, so they are visually distinct from each other based on their difficulty.</li>
             <li>Added Apollomon line and GraceNovamon to the game!</li>
             <li>These includes Coronamon, Firamon, Flaremon, and Apollomon, which DNA Digivolve into GraceNovamon with Dianamon.</li>
             <li>Added more animated sprites for Digimon that weren't working because of naming inconsistencies.</li>

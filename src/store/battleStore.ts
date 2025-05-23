@@ -5,6 +5,7 @@ import { useTaskStore } from "./taskStore";
 import { calculateFinalStats } from "../utils/digimonStatCalculation";
 import { DIGIMON_LOOKUP_TABLE } from "../constants/digimonLookup";
 import { useTitleStore } from "./titleStore";
+import { useNotificationStore } from "./notificationStore";
 
 function simulateTeamBattle(userTeamData: any, opponentTeamData: any) {
   function getAttributeDamageMultiplier(
@@ -547,6 +548,17 @@ export const useBattleStore = create<BattleState>((set, get) => {
         return;
       }
 
+      // Check daily battle limit and send notification if limit is reached
+      const dailyBattlesRemaining = await state.checkDailyBattleLimit();
+      if (dailyBattlesRemaining <= 0) {
+        useNotificationStore.getState().addNotification({
+          message:
+            "You've reached your daily battle limit. Try again tomorrow!",
+          type: "error",
+        });
+        return;
+      }
+
       // Set both loading and isBattleInProgress flags
       set({ loading: true, isBattleInProgress: true, error: null });
 
@@ -567,32 +579,6 @@ export const useBattleStore = create<BattleState>((set, get) => {
         if (!userData.user) {
           set({
             error: "User not authenticated",
-            loading: false,
-            isBattleInProgress: false,
-          });
-          return;
-        }
-
-        // Start a transaction to handle the battle limit check and update atomically
-        const { data: limitCheck, error: limitError } = await supabase.rpc(
-          "check_and_increment_battle_limit"
-        );
-
-        if (limitError) {
-          console.error("Error checking battle limit:", limitError);
-          set({
-            error: "Error checking battle limit",
-            loading: false,
-            isBattleInProgress: false,
-          });
-          return;
-        }
-
-        // If the function returns false, the user has reached their limit
-        if (!limitCheck) {
-          set({
-            error:
-              "You've reached your daily battle limit of 5 battles. Try again tomorrow!",
             loading: false,
             isBattleInProgress: false,
           });
@@ -722,7 +708,30 @@ export const useBattleStore = create<BattleState>((set, get) => {
         const expMultiplier = useTaskStore.getState().getExpMultiplier();
         xpGain = Math.round(xpGain * expMultiplier);
 
-        // console.log("xpGain", xpGain);
+        // Increment battle limit check and update atomically
+        const { data: limitCheck, error: limitError } = await supabase.rpc(
+          "check_and_increment_battle_limit"
+        );
+
+        if (limitError) {
+          console.error("Error checking battle limit:", limitError);
+          set({
+            error: "Error checking battle limit",
+            loading: false,
+            isBattleInProgress: false,
+          });
+          return;
+        }
+
+        if (!limitCheck) {
+          set({
+            error:
+              "You've reached your daily battle limit of 5 battles. Try again tomorrow!",
+            loading: false,
+            isBattleInProgress: false,
+          });
+          return;
+        }
 
         // Apply the XP gain to all Digimon
         await useDigimonStore.getState().feedAllDigimon(xpGain);

@@ -251,7 +251,7 @@ const Layout = ({ children }: LayoutProps) => {
                     <div className="flex-shrink-0 h-11 w-11 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden mr-3">
                       <img
                         draggable="false"
-                        src={userProfile?.avatar_url}
+                        src={userProfile?.avatar_url || "/assets/digimon/agumon_professor.png"}
                         alt={"avatar"}
                         className="w-8 h-8 cursor-pointer"
                         style={{

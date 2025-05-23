@@ -9,7 +9,7 @@ const LandingPage: React.FC = () => {
         <div className="flex justify-between items-center">
           <div className="flex items-center">
             <img src="/assets/digimon/agumon_professor.png" alt="Digitask Logo" className="h-8 w-8 mr-2" style={{ imageRendering: "pixelated" }} />
-            <h1 className="text-2xl font-bold text-indigo-800">Digitask</h1>
+            <h1 className="text-2xl font-bold text-indigo-800 hidden sm:block">Digitask</h1>
           </div>
           <div>
             <Link to="/login" className="btn-primary mr-2">Login</Link>
@@ -33,7 +33,7 @@ const LandingPage: React.FC = () => {
 
         {/* Digimon Showcase */}
         <section className="mb-16">
-          <h3 className="text-2xl font-semibold text-indigo-800 mb-4 text-center">Collect and Raise Digimon</h3>
+          <h3 className="text-2xl font-semibold text-indigo-800 mb-4 text-center">Collect and Raise from 350+ Digimon</h3>
           <DigimonShowcase />
         </section>
 

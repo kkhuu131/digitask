@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { DIGIMON_LOOKUP_TABLE } from '../constants/digimonLookup';
-import { useDigimonStore } from '../store/petStore';
 import DigimonSprite from './DigimonSprite';
 
 interface DigimonSelectionProps {
@@ -11,7 +10,6 @@ const DigimonSelection: React.FC<DigimonSelectionProps> = ({ onSelect }) => {
   const [selectedDigimon, setSelectedDigimon] = useState<number | null>(null);
   const [digimonName, setDigimonName] = useState('');
   const [nameError, setNameError] = useState('');
-  const { discoveredDigimon } = useDigimonStore();
   
   // Get starter Digimon (IDs 1-14 are typically the starters)
   const starterDigimon = Array.from({ length: 5 }, (_, i) => i + 1);
@@ -48,7 +46,6 @@ const DigimonSelection: React.FC<DigimonSelectionProps> = ({ onSelect }) => {
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-4 mb-6">
         {starterDigimon.map(id => {
           const digimon = DIGIMON_LOOKUP_TABLE[id];
-          const isDiscovered = discoveredDigimon.includes(id);
           
           return (
             <div 
@@ -68,7 +65,7 @@ const DigimonSelection: React.FC<DigimonSelectionProps> = ({ onSelect }) => {
                 />
               </div>
               <p className="mt-2 text-sm sm:text-base font-medium text-center">
-                {isDiscovered ? digimon.name : "???"}
+                {digimon.name}
               </p>
             </div>
           );

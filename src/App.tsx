@@ -684,13 +684,139 @@ function App() {
 function HomeRouteContent() {
   const { userDigimon, fetchUserDigimon, loading } = useDigimonStore();
   const { hasCompletedOnboarding, checkOnboardingStatus } = useOnboardingStore();
+  const [needsEmailConfirmation, setNeedsEmailConfirmation] = useState(false);
+  const [creatingProfile, setCreatingProfile] = useState(false);
+  const [profileError, setProfileError] = useState<string | null>(null);
   const navigate = useNavigate();
   const [isRefetching, setIsRefetching] = useState(false);
+
+  useEffect(() => {
+    const checkEmailConfirmationAndProfile = async () => {
+      const { user } = useAuthStore.getState();
+      if (!user) return;
+      
+      // Check if email is confirmed
+      if (!user.email_confirmed_at) {
+        setNeedsEmailConfirmation(true);
+        return;
+      }
+      
+      setNeedsEmailConfirmation(false);
+      
+      // Check if user has a profile
+      try {
+        const { data: profile, error } = await supabase
+          .from("profiles")
+          .select("id") // Just check if it exists, no need for all fields
+          .eq("id", user.id)
+          .single();
+        
+        if (error && error.code !== 'PGRST116') { // PGRST116 is "not found" error
+          console.error("Error checking profile:", error);
+          return;
+        }
+        
+        // Only create profile if it doesn't exist
+        if (!profile) {
+          console.log("No profile found, creating one...");
+          await createUserProfile(user);
+        } else {
+          console.log("Profile already exists, continuing...");
+          // Make sure we have the latest onboarding status
+          await checkOnboardingStatus();
+        }
+      } catch (error) {
+        console.error("Error checking user profile:", error);
+      }
+    };
+    
+    checkEmailConfirmationAndProfile();
+  }, []);
+  
+  // Function to create a user profile if it doesn't exist
+  const createUserProfile = async (user: any) => {
+    if (!user || !user.id) return;
+    
+    setCreatingProfile(true);
+    setProfileError(null);
+    
+    try {
+      // First check again if profile exists to avoid race conditions
+      const { data: existingProfile } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("id", user.id)
+        .single();
+      
+      if (existingProfile) {
+        console.log("Profile already exists (double-check), skipping creation");
+        setCreatingProfile(false);
+        await checkOnboardingStatus();
+        return;
+      }
+      
+      // Get username from user metadata
+      const username = user.user_metadata?.username || 
+                      user.email?.split('@')[0] || 
+                      `user_${Math.floor(Math.random() * 10000)}`;
+      
+      // Create the profile
+      const { error } = await supabase.from("profiles").insert([
+        {
+          id: user.id,
+          username,
+          display_name: username,
+          saved_stats: { HP: 0, SP: 0, ATK: 0, DEF: 0, INT: 0, SPD: 0 },
+          daily_stat_gains: 0,
+          last_stat_reset: new Date().toISOString(),
+          battles_won: 0,
+          battles_completed: 0,
+        },
+      ]);
+
+      if (error) {
+        // If it's a duplicate key error, the profile was created in a race condition
+        if (error.code === '23505') { // PostgreSQL unique violation error
+          console.log("Profile was created by another process, continuing");
+        } else {
+          throw error;
+        }
+      }
+      
+      // Refresh user profile in auth store
+      await useAuthStore.getState().fetchUserProfile();
+      
+      // Refresh onboarding status
+      await checkOnboardingStatus();
+      
+    } catch (error) {
+      console.error("Error creating user profile:", error);
+      setProfileError("Failed to create your profile. Please try refreshing the page.");
+    } finally {
+      setCreatingProfile(false);
+    }
+  };
   
   // Function to refetch all necessary data
   const refetchData = async () => {
     setIsRefetching(true);
+    setProfileError(null); // Clear any previous errors
+    
     try {
+      // First check if profile exists
+      const { user } = useAuthStore.getState();
+      if (user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("id")
+          .eq("id", user.id)
+          .single();
+          
+        if (!profile) {
+          await createUserProfile(user);
+        }
+      }
+      
       // Check onboarding status first
       await checkOnboardingStatus();
       // Then fetch Digimon data
@@ -702,6 +828,86 @@ function HomeRouteContent() {
     }
   };
   
+  // If there's an error but we want to try continuing anyway
+  const continueAnyway = async () => {
+    setProfileError(null);
+    await checkOnboardingStatus();
+    await fetchUserDigimon();
+  };
+  
+  if (needsEmailConfirmation) {
+    return (
+      <div className="max-w-4xl mx-auto">
+        <div className="card">
+          <h2 className="text-xl font-bold mb-4">Email Confirmation Required</h2>
+          
+          <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
+            <p className="text-sm text-yellow-700">
+              Please check your email and click the confirmation link to activate your account.
+              Once confirmed, you'll be able to create your Digimon and start playing.
+            </p>
+          </div>
+          
+          <button
+            onClick={() => useAuthStore.getState().signOut()}
+            className="btn-secondary"
+          >
+            Sign Out
+          </button>
+        </div>
+      </div>
+    );
+  }
+  
+  if (creatingProfile) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Setting up your profile...</p>
+        </div>
+      </div>
+    );
+  }
+  
+  if (profileError) {
+    return (
+      <div className="max-w-4xl mx-auto">
+        <div className="card">
+          <h2 className="text-xl font-bold mb-4">Profile Setup Error</h2>
+          
+          <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
+            <p className="text-sm text-red-700">{profileError}</p>
+          </div>
+          
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={refetchData}
+              className="btn-primary"
+              disabled={isRefetching}
+            >
+              {isRefetching ? "Trying again..." : "Try Again"}
+            </button>
+            
+            <button
+              onClick={continueAnyway}
+              className="btn-secondary"
+            >
+              Continue Anyway
+            </button>
+            
+            <button
+              onClick={() => useAuthStore.getState().signOut()}
+              className="btn-outline"
+            >
+              Sign Out
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // If user hasn't completed onboarding, redirect them there
   if (hasCompletedOnboarding === false) {
     return <Navigate to="/onboarding" replace />;

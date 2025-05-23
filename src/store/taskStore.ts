@@ -184,40 +184,59 @@ export const useTaskStore = create<TaskState>((set, get) => ({
 
   deleteTask: async (id) => {
     try {
-      set({ loading: true, error: null });
+      // Get the current task for potential rollback
+      const taskToDelete = get().tasks.find((t) => t.id === id);
+      if (!taskToDelete) return;
 
+      // Optimistically update the UI immediately
+      set((state) => ({
+        tasks: state.tasks.filter((task) => task.id !== id),
+      }));
+
+      // Then perform the actual deletion in the background
       const { error } = await supabase.from("tasks").delete().eq("id", id);
 
       if (error) throw error;
 
-      set((state) => ({
-        tasks: state.tasks.filter((task) => task.id !== id),
-        loading: false,
-      }));
+      // No need to update tasks again since we already did it optimistically
     } catch (error) {
-      set({ error: (error as Error).message, loading: false });
+      console.error("Error deleting task:", error);
+
+      // If there's an error, revert the optimistic update by adding the task back
+      const taskToRestore = get().tasks.find((t) => t.id === id);
+      if (taskToRestore) {
+        set((state) => ({
+          tasks: [...state.tasks, taskToRestore],
+          error: (error as Error).message,
+        }));
+
+        // Show error notification
+        useNotificationStore.getState().addNotification({
+          message: "Failed to delete task. Please try again.",
+          type: "error",
+        });
+      }
     }
   },
 
   // Rookie: 5, Champion 10, Ultimate: 20, Mega: 50
 
-  completeTask: async (taskId: string, autoAllocate = true) => {
+  completeTask: async (id: string, autoAllocate: boolean = false) => {
     try {
-      set({ loading: true, error: null });
+      // Get the current task
+      const task = get().tasks.find((t) => t.id === id);
+      if (!task) return;
 
-      // Find the task in the current state
-      const task = get().tasks.find((t) => t.id === taskId);
-      if (!task) {
-        set({ loading: false, error: "Task not found" });
-        return;
-      }
+      // Optimistically update the UI immediately
+      set((state) => ({
+        tasks: state.tasks.map((t) =>
+          t.id === id ? { ...t, is_completed: true } : t
+        ),
+      }));
 
-      // Get current user
+      // Then perform the actual update in the background
       const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) {
-        set({ loading: false, error: "User not authenticated" });
-        return;
-      }
+      if (!userData.user) return;
 
       // Update the task in the database
       const { error } = await supabase
@@ -226,23 +245,9 @@ export const useTaskStore = create<TaskState>((set, get) => ({
           is_completed: true,
           completed_at: new Date().toISOString(),
         })
-        .eq("id", taskId);
+        .eq("id", id);
 
       if (error) throw error;
-
-      // Update local state
-      set((state) => ({
-        tasks: state.tasks.map((t) =>
-          t.id === taskId
-            ? {
-                ...t,
-                is_completed: true,
-                completed_at: new Date().toISOString(),
-              }
-            : t
-        ),
-        loading: false,
-      }));
 
       // Replace the feedDigimon call with feedMultipleDigimon
       const expPoints = Math.round(
@@ -405,7 +410,20 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       await get().checkDailyQuota();
     } catch (error) {
       console.error("Error completing task:", error);
-      set({ error: (error as Error).message, loading: false });
+
+      // If there's an error, revert the optimistic update
+      set((state) => ({
+        tasks: state.tasks.map((t) =>
+          t.id === id ? { ...t, is_completed: false } : t
+        ),
+        error: (error as Error).message,
+      }));
+
+      // Show error notification
+      useNotificationStore.getState().addNotification({
+        message: "Failed to complete task. Please try again.",
+        type: "error",
+      });
     }
   },
 

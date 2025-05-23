@@ -111,7 +111,7 @@ const DigimonSprite: React.FC<DigimonSpriteProps> = ({
 
   // Size classes for container
   const sizeClasses = {
-    xxs: "w-8 h-8",
+    xxs: "w-8 h-6",
     xs: "w-8 h-8",
     sm: "w-16 h-16",
     md: "w-32 h-32",

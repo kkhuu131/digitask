@@ -332,9 +332,9 @@ const DigimonTeamManager = () => {
 
   return (
     <div>
-      <h2 className="text-xl font-bold mb-4">Team Management</h2>
+      <h2 className="text-xl font-bold mb-2">Team Management</h2>
       <p className="text-sm text-gray-600 mb-4">
-        Drag and drop to arrange your team. Your active Digimon must be on the team to participate in battles.
+        Drag and drop to arrange your team.
       </p>
       
       <DndContext
@@ -343,7 +343,7 @@ const DigimonTeamManager = () => {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <div className="space-y-6">
+        <div className="space-y-2">
           <DigimonContainer items={teamItems} isTeam={true} />
           <DigimonContainer items={reserveItems} isTeam={false} />
         </div>

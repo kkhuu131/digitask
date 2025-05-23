@@ -67,6 +67,7 @@ const PreparationModal: React.FC<PreparationModalProps> = ({
                     type={member.digimon.type as DigimonType}
                     attribute={member.digimon.attribute as DigimonAttribute}
                     size="sm"
+                    showTooltip={true}
                   />
                 </div>
                 <p className="text-sm mt-1">{member.digimon.name}</p>
@@ -106,7 +107,7 @@ const PreparationModal: React.FC<PreparationModalProps> = ({
         </div>
 
         {/* Team Manager Section */}
-        <div className="mb-8">
+        <div className="mt-4 mb-8">
           <DigimonTeamManager />
         </div>
       </div>
@@ -363,7 +364,7 @@ const Campaign: React.FC = () => {
       {/* Add the speed control near the top */}
       <div className="mb-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
         <p className="text-sm text-gray-600">
-          Battle against these teams to progress through the campaign and earn titles. Digimon levels will be capped at the opponent's max level + 5.
+          Battle against these teams to progress and earn titles. Levels will be capped at the opponent's max level + 5.
         </p>
         <BattleSpeedControl />
       </div>
@@ -376,7 +377,7 @@ const Campaign: React.FC = () => {
             onClick={scrollToCurrentStage}
             className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm"
           >
-            Go to Current Stage
+            Go to Stage {highestStageCleared + 1}
           </button>
         </div>
         

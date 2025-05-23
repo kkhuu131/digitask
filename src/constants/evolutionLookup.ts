@@ -10734,7 +10734,7 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "id": 937,
     "from_digimon_id": 364,
     "to_digimon_id": 160,
-    "level_required": 0,
+    "level_required": 26,
     "stat_requirements": {
       "hp": 400,
       "atk": 95
@@ -22322,7 +22322,7 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "id": 937,
       "from_digimon_id": 364,
       "to_digimon_id": 160,
-      "level_required": 0,
+      "level_required": 26,
       "stat_requirements": {
         "hp": 400,
         "atk": 95
@@ -26833,7 +26833,7 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "id": 937,
       "from_digimon_id": 364,
       "to_digimon_id": 160,
-      "level_required": 0,
+      "level_required": 26,
       "stat_requirements": {
         "hp": 400,
         "atk": 95
@@ -44710,7 +44710,7 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "id": 937,
     "from_digimon_id": 364,
     "to_digimon_id": 160,
-    "level_required": 0,
+    "level_required": 26,
     "stat_requirements": {
       "hp": 400,
       "atk": 95

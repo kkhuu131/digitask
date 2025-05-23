@@ -200,7 +200,7 @@ const Onboarding: React.FC = () => {
               <div className="bg-white rounded-lg p-6 shadow-lg max-w-2xl w-full">
                 <h2 className="text-xl font-bold mb-4">Choose Your Partner</h2>
                 <DigimonSelection onSelect={handleDigimonSelected} />
-              </div>
+              </div> 
             </div>
           )}
         </>

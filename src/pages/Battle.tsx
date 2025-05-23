@@ -150,7 +150,7 @@ const Battle = () => {
     <>
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
-        <h1 className="text-2xl font-bold">Battle Arena</h1>
+        <h1 className="text-2xl font-bold">Arena</h1>
         <BattleSpeedControl />
       </div>
       
@@ -181,8 +181,8 @@ const Battle = () => {
                     {loading ? "Refreshing..." : "Refresh Options"}
                   </button>
                 )} */}
-                <div className="text-sm">
-                <span className="font-medium">Daily Battles:</span> {dailyBattlesRemaining} remaining
+                <div className="text-xs sm:text-base">
+                <span className="font-medium">Daily Battles:</span> {dailyBattlesRemaining} left
                 </div>
               </div>
             </div>
@@ -257,56 +257,10 @@ const Battle = () => {
                                     attribute={digimon.attribute as DigimonAttribute}
                                     size="sm"
                                     showLabel={false}
+                                    showTooltip={true}
                                   />
                                 </div>
-                                <span className="hidden sm:inline relative group cursor-help font-medium">
-                                  {digimon.type}
-                                  {/* Type advantage tooltip */}
-                                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 p-2 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 w-56">
-                                    <div className="font-bold mb-1 text-center">Type Advantages</div>
-                                    <div className="grid grid-cols-2 gap-1 text-center">
-                                      <div className="text-green-400">Strong vs:</div>
-                                      <div>{digimon.type === 'Vaccine' ? 'Virus' : digimon.type === 'Virus' ? 'Data' : digimon.type === 'Data' ? 'Vaccine' : 'None'}</div>
-                                      <div className="text-red-400">Weak vs:</div>
-                                      <div>{digimon.type === 'Vaccine' ? 'Data' : digimon.type === 'Virus' ? 'Vaccine' : digimon.type === 'Data' ? 'Virus' : 'None'}</div>
-                                    </div>
-                                  </div>
-                                </span>
-                                <span className="hidden sm:inline">/</span>
-                                <span className="hidden sm:inline relative group cursor-help font-medium">
-                                  {digimon.attribute}
-                                  {/* Attribute advantage tooltip */}
-                                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 p-2 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 w-56">
-                                    <div className="font-bold mb-1 text-center">Attribute Advantages</div>
-                                    <div className="grid grid-cols-2 gap-1 text-center">
-                                      <div className="text-green-400">Strong vs:</div>
-                                      <div>
-                                        {digimon.attribute === 'Fire' ? 'Plant' : 
-                                         digimon.attribute === 'Water' ? 'Fire' : 
-                                         digimon.attribute === 'Plant' ? 'Water' : 
-                                         digimon.attribute === 'Electric' ? 'Wind' : 
-                                         digimon.attribute === 'Wind' ? 'Earth' : 
-                                         digimon.attribute === 'Earth' ? 'Electric' : 
-                                         digimon.attribute === 'Light' ? 'Dark' : 
-                                         digimon.attribute === 'Dark' ? 'Light' : 'None'}
-                                      </div>
-                                      <div className="text-red-400">Weak vs:</div>
-                                      <div>
-                                        {digimon.attribute === 'Fire' ? 'Water' : 
-                                         digimon.attribute === 'Water' ? 'Plant' : 
-                                         digimon.attribute === 'Plant' ? 'Fire' : 
-                                         digimon.attribute === 'Electric' ? 'Earth' : 
-                                         digimon.attribute === 'Wind' ? 'Electric' : 
-                                         digimon.attribute === 'Earth' ? 'Wind' : 
-                                         digimon.attribute === 'Light' ? 'Dark' : 
-                                         digimon.attribute === 'Dark' ? 'Light' : 'None'}
-                                      </div>
-                                    </div>
-                                    {digimon.attribute === 'Neutral' && (
-                                      <div className="mt-1 text-center">Neutral has no advantages or disadvantages</div>
-                                    )}
-                                  </div>
-                                </span>
+                                
                               </div>
                             )}
                             <div className="text-[10px] sm:text-xs mt-1">Lv.{digimon.current_level}</div>
@@ -337,7 +291,7 @@ const Battle = () => {
                 
                 {battleOptions.length === 0 && !loading && (
                   <div className="text-center py-8 text-gray-500">
-                    <p>No battle options available. Try refreshing or adding more Digimon to your team.</p>
+                    <p>No battle options available. Try adding more Digimon to your team and refresh the page.</p>
                   </div>
                 )}
               </>
