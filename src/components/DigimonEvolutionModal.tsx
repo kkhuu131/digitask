@@ -385,18 +385,41 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
 
           <div className="flex justify-between sticky bottom-0 bg-white pt-4 border-t">
             <div className="flex space-x-2">
-              {availableForms.length > 0 && availableForms.map(formInfo => (
-                <button
-                  key={formInfo.formDigimonId}
-                  onClick={() => {
-                    setSelectedFormInfo(formInfo);
-                    setShowFormModal(true);
-                  }}
-                  className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
-                >
-                  {formInfo.formType} Form
-                </button>
-              ))}
+              {availableForms.length > 0 && availableForms.map(formInfo => {
+                // Check if this is an X-Antibody form and if the Digimon's ABI is too low
+                const isXAntibodyWithLowAbi = formInfo.formType === 'X-Antibody' && selectedDigimon.abi < 60;
+                
+                return (
+                  <button
+                    key={formInfo.formDigimonId}
+                    onClick={() => {
+                      if (!isXAntibodyWithLowAbi) {
+                        setSelectedFormInfo(formInfo);
+                        setShowFormModal(true);
+                      }
+                    }}
+                    disabled={isXAntibodyWithLowAbi}
+                    className={`px-2 py-2 ${
+                      isXAntibodyWithLowAbi 
+                        ? "bg-gray-400 cursor-not-allowed" 
+                        : "bg-indigo-600 hover:bg-indigo-700"
+                    } text-white rounded flex items-center`}
+                    title={isXAntibodyWithLowAbi ? "Requires ABI ≥ 60" : ""}
+                  >
+                    {formInfo.formType === 'X-Antibody' && (
+                      <img 
+                        src="/assets/x-antibody.png" 
+                        alt="X-Antibody" 
+                        className={`w-6 h-6 mr-2 ${isXAntibodyWithLowAbi ? "opacity-50" : ""}`} 
+                      />
+                    )}
+                    <p className="text-xs sm:text-sm">{formInfo.formType}</p>
+                    {isXAntibodyWithLowAbi && (
+                      <span className="ml-2 text-xs">ABI ≥ 60</span>
+                    )}
+                  </button>
+                );
+              })}
             </div>
             <button
               onClick={onClose}

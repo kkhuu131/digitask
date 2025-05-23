@@ -8,6 +8,38 @@ interface UserTitlesProps {
   isOwnProfile: boolean;
 }
 
+// Define tier-specific styling
+const tierStyles = {
+  bronze: {
+    background: "bg-gradient-to-r from-amber-50 to-amber-100",
+    border: "border-amber-200",
+    text: "text-amber-800",
+    shadow: "shadow-sm",
+    badge: "bg-amber-600 text-amber-50"
+  },
+  silver: {
+    background: "bg-gradient-to-r from-gray-50 to-slate-100",
+    border: "border-slate-200",
+    text: "text-slate-700",
+    shadow: "shadow-md",
+    badge: "bg-slate-500 text-slate-50"
+  },
+  gold: {
+    background: "bg-gradient-to-r from-yellow-50 to-amber-100",
+    border: "border-yellow-300",
+    text: "text-yellow-800",
+    shadow: "shadow-lg",
+    badge: "bg-yellow-500 text-yellow-50"
+  },
+  platinum: {
+    background: "bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50",
+    border: "border-indigo-300",
+    text: "text-indigo-800",
+    shadow: "shadow-xl",
+    badge: "bg-gradient-to-r from-indigo-500 to-purple-500 text-white"
+  }
+};
+
 const UserTitles: React.FC<UserTitlesProps> = ({ titles: initialTitles, isOwnProfile }) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [titles, setTitles] = useState<UserTitle[]>(initialTitles);
@@ -23,9 +55,20 @@ const UserTitles: React.FC<UserTitlesProps> = ({ titles: initialTitles, isOwnPro
     .filter(title => title.is_displayed)
     .sort((a, b) => new Date(b.earned_at).getTime() - new Date(a.earned_at).getTime())
     .slice(0, 3);
+
+
+  const getTierPriority = (tier: string): number => {
+    switch (tier) {
+      case 'platinum': return 4;
+      case 'gold': return 3;
+      case 'silver': return 2;
+      case 'bronze': return 1;
+      default: return 1;
+    }
+  };
   
   // All titles for selection in edit mode
-  const allTitles = titles.sort((a, b) => new Date(b.earned_at).getTime() - new Date(a.earned_at).getTime());
+  const allTitles = titles.sort((a, b) => getTierPriority(b.title?.tier || 'bronze') - getTierPriority(a.title?.tier || 'bronze'));
   
   const toggleTitleDisplay = (titleId: number, currentlyDisplayed: boolean) => {
     // Update local state for the clicked title
@@ -122,25 +165,43 @@ const UserTitles: React.FC<UserTitlesProps> = ({ titles: initialTitles, isOwnPro
       </div>
       
       {!isEditMode ? (
-        // Display mode - show up to 3 displayed titles in the original card style
+        // Display mode - show up to 3 displayed titles with tier-specific styling
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {displayedTitles.length > 0 ? (
-            displayedTitles.map(userTitle => (
-              <div 
-                key={userTitle.id}
-                className="relative group bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-100 rounded-lg p-3"
-              >
-                <div className="font-medium text-blue-800">
-                  {userTitle.title?.name}
+            displayedTitles.map(userTitle => {
+              const tier = userTitle.title?.tier || 'bronze';
+              const style = tierStyles[tier];
+              
+              return (
+                <div 
+                  key={userTitle.id}
+                  className={`relative group ${style.background} border ${style.border} rounded-lg p-3 ${style.shadow} transition-all duration-300 hover:scale-105`}
+                >
+                  {/* Tier badge */}
+                  <div className={`absolute -top-2 -right-2 ${style.badge} text-xs px-2 py-0.5 rounded-full capitalize`}>
+                    {tier}
+                  </div>
+                  
+                  <div className={`font-medium ${style.text}`}>
+                    {userTitle.title?.name}
+                  </div>
+                  <div className="text-xs text-gray-600 mt-1">
+                    {userTitle.title?.description}
+                  </div>
+                  <div className="text-xs text-gray-400 mt-2">
+                    Earned: {new Date(userTitle.earned_at).toLocaleDateString()}
+                  </div>
+                  
+                  {/* Add tier-specific decorations */}
+                  {tier === 'platinum' && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 rounded-lg pointer-events-none"></div>
+                  )}
+                  {tier === 'gold' && (
+                    <div className="absolute inset-0 bg-yellow-500/5 rounded-lg pointer-events-none"></div>
+                  )}
                 </div>
-                <div className="text-xs text-gray-600 mt-1">
-                  {userTitle.title?.description}
-                </div>
-                <div className="text-xs text-gray-400 mt-2">
-                  Earned: {new Date(userTitle.earned_at).toLocaleDateString()}
-                </div>
-              </div>
-            ))
+              );
+            })
           ) : (
             <p className="text-gray-500 italic col-span-3">
               {isOwnProfile 
@@ -150,39 +211,51 @@ const UserTitles: React.FC<UserTitlesProps> = ({ titles: initialTitles, isOwnPro
           )}
         </div>
       ) : (
-        // Edit mode - show all titles with toggle options
+        // Edit mode - show all titles with toggle options and tier styling
         <div className="space-y-4">
           <p className="text-sm text-gray-500 mb-2">Select up to 3 titles to display on your profile:</p>
           <div className="grid grid-cols-1 gap-2">
-            {allTitles.map(userTitle => (
-              <div 
-                key={userTitle.id} 
-                className={`flex items-center justify-between p-3 rounded cursor-pointer ${
-                  userTitle.is_displayed ? 'bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-300' : 'bg-gray-50 border border-gray-200'
-                }`}
-                onClick={() => toggleTitleDisplay(userTitle.id, userTitle.is_displayed)}
-              >
-                <div>
-                  <div className="font-medium text-blue-800">
-                    {userTitle.title?.name}
+            {allTitles.map(userTitle => {
+              const tier = userTitle.title?.tier || 'bronze';
+              const style = tierStyles[tier];
+              
+              return (
+                <div 
+                  key={userTitle.id} 
+                  className={`flex items-center justify-between p-3 rounded cursor-pointer transition-all ${
+                    userTitle.is_displayed 
+                      ? `${style.background} border ${style.border}` 
+                      : 'bg-gray-50 border border-gray-200'
+                  }`}
+                  onClick={() => toggleTitleDisplay(userTitle.id, userTitle.is_displayed)}
+                >
+                  <div className="flex-1">
+                    <div className="flex items-center">
+                      <div className={`font-medium ${userTitle.is_displayed ? style.text : 'text-gray-700'}`}>
+                        {userTitle.title?.name}
+                      </div>
+                      <span className={`ml-2 text-xs ${style.badge} px-2 py-0.5 rounded-full capitalize`}>
+                        {tier}
+                      </span>
+                    </div>
+                    <div className="text-xs text-gray-600">
+                      {userTitle.title?.description}
+                    </div>
+                    <div className="text-xs text-gray-400 mt-1">
+                      Earned: {new Date(userTitle.earned_at).toLocaleDateString()}
+                    </div>
                   </div>
-                  <div className="text-xs text-gray-600">
-                    {userTitle.title?.description}
-                  </div>
-                  <div className="text-xs text-gray-400 mt-1">
-                    Earned: {new Date(userTitle.earned_at).toLocaleDateString()}
+                  <div className="flex items-center">
+                    <input 
+                      type="checkbox" 
+                      checked={userTitle.is_displayed} 
+                      onChange={() => {}} // Handled by the div onClick
+                      className="h-4 w-4 text-blue-600"
+                    />
                   </div>
                 </div>
-                <div className="flex items-center">
-                  <input 
-                    type="checkbox" 
-                    checked={userTitle.is_displayed} 
-                    onChange={() => {}} // Handled by the div onClick
-                    className="h-4 w-4 text-blue-600"
-                  />
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}

@@ -12,6 +12,7 @@ import { useAuthStore } from "../store/authStore";
 import BattleSpeedControl from "../components/BattleSpeedControl";
 import PageTutorial from "../components/PageTutorial";
 import { DialogueStep } from "../components/DigimonDialogue";
+import DigimonSprite from "@/components/DigimonSprite";
 
 interface PreparationModalProps {
   opponent: typeof CAMPAIGN_OPPONENTS[0];
@@ -55,12 +56,11 @@ const PreparationModal: React.FC<PreparationModalProps> = ({
         <div className="mb-4">
           <div className="flex gap-4 justify-center p-4 bg-gray-50 rounded-lg">
             {opponent.team.map((member) => (
-              <div key={member.id} className="text-center">
-                <img
-                  src={member.digimon.sprite_url}
-                  alt={member.name || member.digimon.name}
-                  className="w-16 h-16 mx-auto"
-                  style={{ imageRendering: "pixelated" }}
+              <div key={member.id} className="text-center flex flex-col items-center">
+                <DigimonSprite
+                  digimonName={member.digimon.name}
+                  fallbackSpriteUrl={member.digimon.sprite_url}
+                  size="sm"
                 />
                 <div className="mt-2 flex justify-center">
                   <TypeAttributeIcon
@@ -164,15 +164,24 @@ const CampaignNode: React.FC<{
             key={member.id}
             className="flex flex-col items-center w-6 sm:w-12"
           >
-            <img
-              src={member.digimon.sprite_url}
-              alt={member.digimon.name}
-              draggable="false"
-              className={`w-4 h-4 sm:w-8 sm:h-8 select-none ${
-                !isUnlocked ? 'brightness-0' : ''
-              }`}
-              style={{ imageRendering: "pixelated" }}
-            />
+            <div className="block sm:hidden">
+              <DigimonSprite
+                digimonName={member.digimon.name}
+                fallbackSpriteUrl={member.digimon.sprite_url}
+                showHappinessAnimations={false}
+                size="xxs"
+                silhouette={!isUnlocked}
+              />
+            </div>
+            <div className="hidden sm:block">
+              <DigimonSprite
+                digimonName={member.digimon.name}
+                fallbackSpriteUrl={member.digimon.sprite_url}
+                showHappinessAnimations={false}
+                size="xs"
+                silhouette={!isUnlocked}
+              />
+            </div>
             <div className={`h-3 sm:h-6 flex justify-center items-center ${
               !isUnlocked ? 'mt-1 sm:mt-2' : 'mt-0.5 sm:mt-1'
             }`}>

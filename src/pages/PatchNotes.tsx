@@ -25,6 +25,21 @@ const PatchNotes = () => {
           <div className="mb-6">
             <div className="flex items-center mb-2">
               <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
+              <h3 className="text-lg font-medium ml-2">Title Tiers, Apollomon and GraceNovamon line!</h3>
+              <span className="text-sm text-gray-500 ml-auto">May 22, 2025</span>
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <li>Added tiers to Titles, so they are visually distinct from each other based on theri difficulty.</li>
+            <li>Added Apollomon line and GraceNovamon to the game!</li>
+            <li>These includes Coronamon, Firamon, Flaremon, and Apollomon, which DNA Digivolve into GraceNovamon with Dianamon.</li>
+            <li>Added more animated sprites for Digimon that weren't working because of naming inconsistencies.</li>
+            <li>X-Antibody forms can only be achieved with a high enough ABI now (&gt;= 60), might be reworked later.</li>
+            <li>Changed Digitask Logo from Agumon to Agumon Expert.</li>
+            </ul>
+          </div>
+          <div className="mb-6">
+            <div className="flex items-center mb-2">
+              <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
               <h3 className="text-lg font-medium ml-2">New Titles!</h3>
               <span className="text-sm text-gray-500 ml-auto">May 21, 2025</span>
             </div>

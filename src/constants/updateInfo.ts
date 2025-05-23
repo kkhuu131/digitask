@@ -1,4 +1,4 @@
-export const CURRENT_VERSION = "1.2.1";
+export const CURRENT_VERSION = "1.2.2";
 
 export const UPDATE_CHANGES = {
   "1.0.1": [
@@ -56,5 +56,11 @@ export const UPDATE_CHANGES = {
     "New titles are added for reaching new milestones for daily quota streaks.",
     "Updated avatar sprites and Digidex to use the new sprites from the animation update.",
     "Battle animations now use the new sprites, animating the Digimon attacking/defending, or victory/defeat.",
+  ],
+  "1.2.2": [
+    "Added tiers to Titles, so they are visually distinct from each other based on theri difficulty.",
+    "Added Apollomon line and GraceNovamon to the game!",
+    "Added more animated sprites for Digimon that weren't working because of naming inconsistencies.",
+    "Changed Digitask Logo from Agumon to Agumon Expert.",
   ],
 };

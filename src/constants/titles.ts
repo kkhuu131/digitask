@@ -11,6 +11,7 @@ export interface Title {
     | "battle_wins"
     | "longest_streak";
   requirement_value: number | string;
+  tier: "bronze" | "silver" | "gold" | "platinum";
 }
 
 export const TITLES: Title[] = [
@@ -22,6 +23,7 @@ export const TITLES: Title[] = [
     category: "campaign",
     requirement_type: "campaign_stage",
     requirement_value: 10,
+    tier: "bronze",
   },
   {
     id: 2,
@@ -30,6 +32,7 @@ export const TITLES: Title[] = [
     category: "campaign",
     requirement_type: "campaign_stage",
     requirement_value: 20,
+    tier: "bronze",
   },
   {
     id: 3,
@@ -38,6 +41,7 @@ export const TITLES: Title[] = [
     category: "campaign",
     requirement_type: "campaign_stage",
     requirement_value: 30,
+    tier: "silver",
   },
   {
     id: 4,
@@ -46,6 +50,7 @@ export const TITLES: Title[] = [
     category: "campaign",
     requirement_type: "campaign_stage",
     requirement_value: 46,
+    tier: "gold",
   },
   {
     id: 5,
@@ -54,6 +59,7 @@ export const TITLES: Title[] = [
     category: "campaign",
     requirement_type: "campaign_stage",
     requirement_value: 60,
+    tier: "platinum",
   },
   {
     id: 6,
@@ -62,6 +68,7 @@ export const TITLES: Title[] = [
     category: "campaign",
     requirement_type: "campaign_stage",
     requirement_value: 70,
+    tier: "platinum",
   },
   {
     id: 7,
@@ -70,6 +77,7 @@ export const TITLES: Title[] = [
     category: "campaign",
     requirement_type: "campaign_stage",
     requirement_value: 80,
+    tier: "platinum",
   },
   {
     id: 8,
@@ -78,6 +86,7 @@ export const TITLES: Title[] = [
     category: "campaign",
     requirement_type: "campaign_stage",
     requirement_value: 56,
+    tier: "platinum",
   },
   // Collection titles
   {
@@ -87,6 +96,7 @@ export const TITLES: Title[] = [
     category: "collection",
     requirement_type: "digimon_count",
     requirement_value: 50,
+    tier: "bronze",
   },
   {
     id: 102,
@@ -95,6 +105,7 @@ export const TITLES: Title[] = [
     category: "collection",
     requirement_type: "digimon_count",
     requirement_value: 100,
+    tier: "silver",
   },
   {
     id: 103,
@@ -103,6 +114,7 @@ export const TITLES: Title[] = [
     category: "collection",
     requirement_type: "digimon_count",
     requirement_value: 200,
+    tier: "gold",
   },
   {
     id: 104,
@@ -111,6 +123,7 @@ export const TITLES: Title[] = [
     category: "collection",
     requirement_type: "digimon_count",
     requirement_value: 300,
+    tier: "platinum",
   },
   {
     id: 105,
@@ -118,7 +131,8 @@ export const TITLES: Title[] = [
     description: "Discovered every single Digimon",
     category: "collection",
     requirement_type: "digimon_count",
-    requirement_value: 341,
+    requirement_value: 362,
+    tier: "platinum",
   },
   // Evolution titles
   {
@@ -128,6 +142,7 @@ export const TITLES: Title[] = [
     category: "evolution",
     requirement_type: "digimon_stage",
     requirement_value: "Ultimate",
+    tier: "silver",
   },
   {
     id: 202,
@@ -136,6 +151,7 @@ export const TITLES: Title[] = [
     category: "evolution",
     requirement_type: "digimon_stage",
     requirement_value: "Mega",
+    tier: "gold",
   },
   {
     id: 203,
@@ -144,6 +160,7 @@ export const TITLES: Title[] = [
     category: "evolution",
     requirement_type: "digimon_stage",
     requirement_value: "Ultra",
+    tier: "platinum",
   },
 
   // Arena Battle titles
@@ -154,6 +171,7 @@ export const TITLES: Title[] = [
     category: "battle",
     requirement_type: "battle_wins",
     requirement_value: 10,
+    tier: "bronze",
   },
   {
     id: 302,
@@ -162,6 +180,7 @@ export const TITLES: Title[] = [
     category: "battle",
     requirement_type: "battle_wins",
     requirement_value: 50,
+    tier: "silver",
   },
   {
     id: 303,
@@ -170,6 +189,7 @@ export const TITLES: Title[] = [
     category: "battle",
     requirement_type: "battle_wins",
     requirement_value: 200,
+    tier: "gold",
   },
   {
     id: 304,
@@ -178,6 +198,7 @@ export const TITLES: Title[] = [
     category: "battle",
     requirement_type: "battle_wins",
     requirement_value: 1000,
+    tier: "platinum",
   },
 
   // Streak titles
@@ -188,6 +209,7 @@ export const TITLES: Title[] = [
     category: "streak",
     requirement_type: "longest_streak",
     requirement_value: 1,
+    tier: "bronze",
   },
   {
     id: 401,
@@ -196,6 +218,7 @@ export const TITLES: Title[] = [
     category: "streak",
     requirement_type: "longest_streak",
     requirement_value: 3,
+    tier: "bronze",
   },
   {
     id: 402,
@@ -204,6 +227,7 @@ export const TITLES: Title[] = [
     category: "streak",
     requirement_type: "longest_streak",
     requirement_value: 7,
+    tier: "silver",
   },
   {
     id: 403,
@@ -212,6 +236,7 @@ export const TITLES: Title[] = [
     category: "streak",
     requirement_type: "longest_streak",
     requirement_value: 14,
+    tier: "silver",
   },
   {
     id: 404,
@@ -220,6 +245,7 @@ export const TITLES: Title[] = [
     category: "streak",
     requirement_type: "longest_streak",
     requirement_value: 31,
+    tier: "gold",
   },
   {
     id: 405,
@@ -228,6 +254,7 @@ export const TITLES: Title[] = [
     category: "streak",
     requirement_type: "longest_streak",
     requirement_value: 50,
+    tier: "gold",
   },
   {
     id: 406,
@@ -236,6 +263,7 @@ export const TITLES: Title[] = [
     category: "streak",
     requirement_type: "longest_streak",
     requirement_value: 75,
+    tier: "gold",
   },
   {
     id: 407,
@@ -244,6 +272,7 @@ export const TITLES: Title[] = [
     category: "streak",
     requirement_type: "longest_streak",
     requirement_value: 100,
+    tier: "platinum",
   },
   {
     id: 408,
@@ -252,5 +281,6 @@ export const TITLES: Title[] = [
     category: "streak",
     requirement_type: "longest_streak",
     requirement_value: 365,
+    tier: "platinum",
   },
 ];

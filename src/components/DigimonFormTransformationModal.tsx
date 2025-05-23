@@ -55,7 +55,10 @@ const DigimonFormTransformationModal: React.FC<DigimonFormTransformationModalPro
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 max-w-md w-full">
         <div className="flex justify-between items-center mb-4">
+          <div className="flex items-center">
+          {formInfo.formType === 'X-Antibody' && <img src="/assets/x-antibody.png" alt="X-Antibody" className="w-6 h-6 mr-2" />}
           <h2 className="text-xl font-bold">{formInfo.formType} Transformation</h2>
+          </div>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-700">×</button>
         </div>
         
