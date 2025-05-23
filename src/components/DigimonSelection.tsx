@@ -16,8 +16,6 @@ const DigimonSelection: React.FC<DigimonSelectionProps> = ({ onSelect }) => {
   
   const handleSelectDigimon = (id: number) => {
     setSelectedDigimon(id);
-    // Auto-fill name with Digimon's default name
-    setDigimonName(DIGIMON_LOOKUP_TABLE[id].name);
   };
   
   const handleSubmit = () => {

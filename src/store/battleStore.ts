@@ -808,28 +808,18 @@ export const useBattleStore = create<BattleState>((set, get) => {
         );
         set({ shouldRefreshOptions: true });
 
-        // If battle was won, update stats and check for titles
-        if (winnerId === userTeamData[0].user_id) {
-          // Update battle stats in profile
-          const { data: profile, error: profileError } = await supabase
-            .from("profiles")
-            .select("battles_won, battles_completed")
-            .eq("id", userData.user.id)
-            .single();
+        // If you need to check for titles but not update counters:
+        const { data: profile, error: profileError } = await supabase
+          .from("profiles")
+          .select("battles_won, battles_completed")
+          .eq("id", userData.user.id)
+          .single();
 
-          if (!profileError && profile) {
-            const newBattlesWon = (profile.battles_won || 0) + 1;
-            const newBattlesCompleted = (profile.battles_completed || 0) + 1;
+        if (!profileError && profile) {
+          if (winnerId === userTeamData[0].user_id) {
+            const newBattlesWon = profile?.battles_won || 0;
 
-            await supabase
-              .from("profiles")
-              .update({
-                battles_won: newBattlesWon,
-                battles_completed: newBattlesCompleted,
-              })
-              .eq("id", userData.user.id);
-
-            // Check for battle titles
+            // Only check for titles
             await useTitleStore.getState().checkBattleTitles(newBattlesWon);
           }
         }
