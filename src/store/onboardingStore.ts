@@ -16,7 +16,6 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
   checkOnboardingStatus: async () => {
     try {
       if (get().isCheckingStatus) {
-        console.log("Already checking onboarding status, skipping");
         return get().hasCompletedOnboarding || false;
       }
 
@@ -29,8 +28,6 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
         set({ hasCompletedOnboarding: null, isCheckingStatus: false });
         return false;
       }
-
-      console.log("Checking onboarding status for user:", userId);
 
       const { data: profileData, error } = await supabase
         .from("profiles")
@@ -45,7 +42,6 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
       }
 
       const completed = !!profileData?.has_completed_onboarding;
-      console.log("Onboarding completed:", completed);
 
       set({
         hasCompletedOnboarding: completed,

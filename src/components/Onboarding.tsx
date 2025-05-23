@@ -19,7 +19,7 @@ const Onboarding: React.FC = () => {
   const [stage, setStage] = useState<OnboardingStage>(OnboardingStage.WELCOME);
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [showDigimonSelection, setShowDigimonSelection] = useState(false);
-  const { createUserDigimon } = useDigimonStore();
+  const { createUserDigimon, fetchAllUserDigimon } = useDigimonStore();
   const navigate = useNavigate();
   const { markOnboardingComplete } = useOnboardingStore();
   
@@ -68,11 +68,37 @@ const Onboarding: React.FC = () => {
 
   const handleDigimonSelected = async (digimonId: number, name: string) => {
     try {
-      await createUserDigimon(name, digimonId);
+      // First, get the latest data directly from the database
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) return;
+      
+      // Check if user already has any Digimon
+      const { data: existingDigimon, error: checkError } = await supabase
+        .from("user_digimon")
+        .select("id")
+        .eq("user_id", userData.user.id)
+        .limit(1);
+      
+      if (checkError) {
+        console.error("Error checking existing Digimon:", checkError);
+        throw checkError;
+      }
+      
+      // Only create a new Digimon if the user doesn't have any
+      if (!existingDigimon || existingDigimon.length === 0) {
+        await createUserDigimon(name, digimonId);
+      } else {
+        console.log("User already has a Digimon, skipping creation");
+      }
+      
+      // Refresh the Digimon data
+      await fetchAllUserDigimon();
+      
+      // Move to the next stage regardless
       setShowDigimonSelection(false);
       setStage(OnboardingStage.COMPLETE);
     } catch (error) {
-      console.error('Error creating Digimon:', error);
+      console.error('Error during Digimon selection:', error);
     }
   };
 

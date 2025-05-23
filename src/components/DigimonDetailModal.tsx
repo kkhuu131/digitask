@@ -29,7 +29,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
 }) => {
   const { discoveredDigimon, evolveDigimon, devolveDigimon, allUserDigimon } = useDigimonStore();
   const [editingName, setEditingName] = useState<string | null>(null);
-  const [newName, setNewName] = useState<string>("");
+  const [newName, setNewName] = useState("");
   const [isAnimating, setIsAnimating] = useState(false);
   const [savedStats, setSavedStats] = useState<Record<string, number>>({
     hp: 0, sp: 0, atk: 0, def: 0, int: 0, spd: 0,
@@ -225,10 +225,9 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
   };
 
   // Add function to handle name editing
-  const handleEditName = (digimonId: string, currentName: string, speciesName: string) => {
-    setEditingName(digimonId);
-    // If the current name is empty or matches the species name, start with empty field
-    setNewName(currentName === speciesName ? "" : currentName);
+  const handleEditName = (id: string, currentName: string, originalName: string) => {
+    setEditingName(id); // Set to the ID string, not boolean
+    setNewName(currentName || originalName);
   };
 
   // Add function to save the new name
@@ -284,10 +283,8 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
   // Add keyboard event handlers for the input field
   const handleKeyDown = (e: React.KeyboardEvent, digimonId: string) => {
     if (e.key === 'Enter') {
-      // Enter key pressed - save the name
       handleSaveName(digimonId);
     } else if (e.key === 'Escape') {
-      // Escape key pressed - cancel editing
       handleCancelEdit();
     }
   };
@@ -459,9 +456,13 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                     {selectedDigimon.name || selectedDigimon.digimon?.name}
                   </h4>
                   <button
-                    onClick={() => handleEditName(selectedDigimon.id, selectedDigimon.name, selectedDigimon.digimon?.name || "")}
-                    className="p-1 text-gray-500 hover:text-gray-700"
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent event bubbling
+                      handleEditName(selectedDigimon.id, selectedDigimon.name, selectedDigimon.digimon?.name || "");
+                    }}
+                    className="p-1 text-gray-500 hover:text-gray-700 z-10" // Add z-index
                     title="Edit name"
+                    type="button" // Explicitly set button type
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />

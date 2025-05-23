@@ -431,11 +431,9 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     try {
       const { user } = useAuthStore.getState();
       if (!user) {
-        console.log("No user found, skipping overdue task check");
         return;
       }
 
-      console.log("Checking for overdue tasks");
       const { data: userData } = await supabase.auth.getUser();
       if (!userData.user) return;
 

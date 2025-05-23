@@ -181,12 +181,10 @@ function App() {
       isInitializationInProgress = true;
       
       try {
-        console.log("Starting app initialization sequence");
         
         // Step 1: Check authentication first
         await checkSession();
         const isAuthenticated = !!useAuthStore.getState().user;
-        console.log("Auth check complete", { isAuthenticated });
         
         // Skip further initialization if component unmounted during auth check
         if (!isAppMounted) {
@@ -213,8 +211,7 @@ function App() {
         
         // Step 2: Check onboarding status
         await useOnboardingStore.getState().checkOnboardingStatus();
-        console.log("Onboarding check complete");
-        
+
         // Skip if component unmounted
         if (!isAppMounted) {
           isInitializationInProgress = false;
@@ -225,7 +222,6 @@ function App() {
         
         // Step 3: Initialize stores in sequence
         await initializeStore();
-        console.log("Task store initialized");
         
         // Skip if component unmounted
         if (!isAppMounted) {
@@ -236,7 +232,6 @@ function App() {
         setAppInit(prev => ({ ...prev, tasksChecked: true }));
         
         await fetchUserDigimon();
-        console.log("Digimon data fetched");
         
         // Skip if component unmounted
         if (!isAppMounted) {
@@ -246,7 +241,6 @@ function App() {
         
         setAppInit(prev => ({ ...prev, digimonChecked: true }));
         
-        console.log("App initialization complete");
       } catch (error) {
         console.error("Error initializing app:", error);
         // Mark all as checked even on error to prevent infinite loading
@@ -278,7 +272,6 @@ function App() {
     let unsubscribeQuota: (() => void) | undefined;
 
     const setupSubscriptions = async () => {
-      console.log("Setting up real-time subscriptions");
       // Set up Digimon subscription
       unsubscribeDigimon = await useDigimonStore.getState().subscribeToDigimonUpdates();
       
@@ -308,7 +301,6 @@ function App() {
       if (data.session) {
         currentSessionId = data.session.user.id;
         currentUserId = data.session.user.id;
-        console.log("Initial session:", { id: currentSessionId, userId: currentUserId });
       }
     };
     
@@ -328,13 +320,13 @@ function App() {
         
         // Skip if we're already handling an auth change or initialization is in progress
         if (isHandlingAuthChange || isInitializationInProgress) {
-          console.log("Already handling auth change or initialization in progress, skipping");
+          // console.log("Already handling auth change or initialization in progress, skipping");
           return;
         }
         
         // For INITIAL_SESSION, we should let the normal initialization flow handle it
         if (event === 'INITIAL_SESSION') {
-          console.log("Received INITIAL_SESSION event - letting normal init flow handle it");
+          // console.log("Received INITIAL_SESSION event - letting normal init flow handle it");
           if (session) {
             currentSessionId = session.user.id;
             currentUserId = session.user.id;
@@ -344,7 +336,7 @@ function App() {
         
         // TOKEN_REFRESHED should never trigger reinitialization
         if (event === 'TOKEN_REFRESHED') {
-          console.log("Token refreshed, no need to reinitialize app");
+          // console.log("Token refreshed, no need to reinitialize app");
           if (session) {
             currentSessionId = session.user.id;
             currentUserId = session.user.id;
@@ -358,14 +350,14 @@ function App() {
           
           // If this SIGNED_IN happens too soon after another auth event, ignore it
           if (now - lastAuthEventTime < AUTH_EVENT_DEBOUNCE_MS) {
-            console.log("Ignoring SIGNED_IN event - too soon after previous auth event");
+            // console.log("Ignoring SIGNED_IN event - too soon after previous auth event");
             return;
           }
           
           // Check for hot reload
           const isHotReload = import.meta.hot && import.meta.hot.data.isHotReload;
           if (isHotReload && appInit.authChecked) {
-            console.log("Ignoring SIGNED_IN during hot reload");
+            // console.log("Ignoring SIGNED_IN during hot reload");
             return;
           }
           
@@ -375,7 +367,7 @@ function App() {
           // CRITICAL CHECK: If we have a current user ID and it matches the session user ID,
           // this is likely a token refresh or session continuation, not a new sign-in
           if (currentUserId && session?.user?.id === currentUserId) {
-            console.log("Same user ID detected, not treating as new sign-in");
+            // console.log("Same user ID detected, not treating as new sign-in");
             // Update session ID if needed
             if (session) {
               currentSessionId = session.user.id;
@@ -385,7 +377,7 @@ function App() {
           
           // If we get here, this is a genuine new sign-in or a different user
           isHandlingAuthChange = true;
-          console.log("Genuine new sign-in detected, reinitializing app");
+          // console.log("Genuine new sign-in detected, reinitializing app");
           
           try {
             // Update the current session and user ID
@@ -416,7 +408,7 @@ function App() {
             await fetchUserDigimon();
             setAppInit(prev => ({ ...prev, digimonChecked: true }));
             
-            console.log("App re-initialization complete after sign-in");
+            // console.log("App re-initialization complete after sign-in");
           } finally {
             isHandlingAuthChange = false;
           }
@@ -457,7 +449,7 @@ function App() {
   useEffect(() => {
     if (!user || appLoading || !isAppMounted) return;
     
-    console.log("Setting up overdue task check interval");
+    // console.log("Setting up overdue task check interval");
     
     // Use a ref to track if a check is in progress
     let isCheckingTasks = false;
@@ -689,6 +681,15 @@ function HomeRouteContent() {
   const [profileError, setProfileError] = useState<string | null>(null);
   const navigate = useNavigate();
   const [isRefetching, setIsRefetching] = useState(false);
+  const [resendingEmail, setResendingEmail] = useState(false);
+  const [lastResendTime, setLastResendTime] = useState<number | null>(null);
+  const [resendSuccess, setResendSuccess] = useState(false);
+  const [resendError, setResendError] = useState<string | null>(null);
+  
+  // Calculate if resend is on cooldown
+  const resendCooldown = 120000; // 2 minutes in milliseconds
+  const isResendOnCooldown = lastResendTime ? (Date.now() - lastResendTime < resendCooldown) : false;
+  const cooldownRemaining = isResendOnCooldown ? Math.ceil((resendCooldown - (Date.now() - (lastResendTime || 0))) / 1000) : 0;
 
   useEffect(() => {
     const checkEmailConfirmationAndProfile = async () => {
@@ -733,6 +734,45 @@ function HomeRouteContent() {
     checkEmailConfirmationAndProfile();
   }, []);
   
+  // Function to resend confirmation email
+  const handleResendEmail = async () => {
+    // Check if on cooldown
+    if (isResendOnCooldown) return;
+    
+    setResendingEmail(true);
+    setResendSuccess(false);
+    setResendError(null);
+    
+    try {
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: useAuthStore.getState().user?.email || '',
+      });
+      
+      if (error) throw error;
+      
+      setResendSuccess(true);
+      setLastResendTime(Date.now());
+      
+      // Store last resend time in localStorage to persist across page refreshes
+      localStorage.setItem('lastEmailResendTime', Date.now().toString());
+      
+    } catch (error) {
+      console.error("Error resending confirmation email:", error);
+      setResendError((error as Error).message || "Failed to resend email. Please try again later.");
+    } finally {
+      setResendingEmail(false);
+    }
+  };
+  
+  // Load last resend time from localStorage on component mount
+  useEffect(() => {
+    const storedTime = localStorage.getItem('lastEmailResendTime');
+    if (storedTime) {
+      setLastResendTime(parseInt(storedTime));
+    }
+  }, []);
+  
   // Function to create a user profile if it doesn't exist
   const createUserProfile = async (user: any) => {
     if (!user || !user.id) return;
@@ -749,7 +789,6 @@ function HomeRouteContent() {
         .single();
       
       if (existingProfile) {
-        console.log("Profile already exists (double-check), skipping creation");
         setCreatingProfile(false);
         await checkOnboardingStatus();
         return;
@@ -848,12 +887,43 @@ function HomeRouteContent() {
             </p>
           </div>
           
-          <button
-            onClick={() => useAuthStore.getState().signOut()}
-            className="btn-secondary"
-          >
-            Sign Out
-          </button>
+          {resendSuccess && (
+            <div className="bg-green-50 border-l-4 border-green-400 p-4 mb-4">
+              <p className="text-sm text-green-700">
+                Confirmation email has been resent! Please check your inbox and spam folder.
+              </p>
+            </div>
+          )}
+          
+          {resendError && (
+            <div className="bg-red-50 border-l-4 border-red-400 p-4 mb-4">
+              <p className="text-sm text-red-700">{resendError}</p>
+            </div>
+          )}
+          
+          <div className="flex flex-wrap gap-2 mb-4">
+            <button
+              onClick={handleResendEmail}
+              className="btn-primary"
+              disabled={resendingEmail || isResendOnCooldown}
+            >
+              {resendingEmail ? "Sending..." : 
+               isResendOnCooldown ? `Resend in ${cooldownRemaining}s` : 
+               "Resend Confirmation Email"}
+            </button>
+            
+            <button
+              onClick={() => useAuthStore.getState().signOut()}
+              className="btn-secondary"
+            >
+              Sign Out
+            </button>
+          </div>
+          
+          <div className="text-xs text-gray-500">
+            <p>Didn't receive the email? Check your spam folder or try resending.</p>
+            <p>Make sure you entered the correct email address during registration.</p>
+          </div>
         </div>
       </div>
     );
