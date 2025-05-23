@@ -36,6 +36,7 @@ import AdminDigimonEditor from './pages/AdminDigimonEditor';
 import AdminTitlesPage from './pages/AdminTitlesPage';
 import OnboardingPage from './pages/OnboardingPage';
 import LandingPage from './pages/LandingPage';
+import RosterPage from './pages/RosterPage';
 
 // Define a clear app initialization state
 interface AppInitState {
@@ -663,6 +664,8 @@ function App() {
         <Route path="/onboarding" element={
           <OnboardingWrapper />
         } />
+        
+        <Route path="/roster" element={<RosterPage />} />
         
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

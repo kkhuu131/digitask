@@ -11,7 +11,7 @@ const LandingPage: React.FC = () => {
             <img src="/assets/digimon/agumon_professor.png" alt="Digitask Logo" className="h-8 w-8 mr-2" style={{ imageRendering: "pixelated" }} />
             <h1 className="text-2xl font-bold text-indigo-800 hidden sm:block">Digitask</h1>
           </div>
-          <div>
+          <div className="flex items-center">
             <Link to="/login" className="btn-primary mr-2">Login</Link>
             <Link to="/register" className="btn-secondary">Register</Link>
           </div>
@@ -32,8 +32,11 @@ const LandingPage: React.FC = () => {
         </section>
 
         {/* Digimon Showcase */}
-        <section className="mb-16">
+        <section className="mb-8">
           <h3 className="text-2xl font-semibold text-indigo-800 mb-4 text-center">Collect and Raise from 350+ Digimon</h3>
+          <div className="flex justify-center my-4 mb-8">
+            <Link to="/roster" className="text-indigo-600 hover:text-indigo-800">Check out the full roster!</Link>
+          </div>
           <DigimonShowcase />
         </section>
 
