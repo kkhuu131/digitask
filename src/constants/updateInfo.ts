@@ -1,4 +1,4 @@
-export const CURRENT_VERSION = "1.2.2";
+export const CURRENT_VERSION = "1.3.0";
 
 export const UPDATE_CHANGES = {
   "1.0.1": [
@@ -62,5 +62,11 @@ export const UPDATE_CHANGES = {
     "Added Apollomon line and GraceNovamon to the game!",
     "Added more animated sprites for Digimon that weren't working because of naming inconsistencies.",
     "Changed Digitask Logo from Agumon to Agumon Expert.",
+  ],
+  "1.3.0": [
+    "DigiFarm! Send Digimon that you want to keep, but don't want to use, to the DigiFarm!",
+    "Bringing back Playground mode as part of DigiFarm for stored Digimon!",
+    "Introducing the Store! Gain bits from Arena battles to purchase various items from Neemon!",
+    "Users start with 2000 bits!",
   ],
 };

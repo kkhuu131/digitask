@@ -101,6 +101,18 @@ const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({
 
   }, [teamBattle]); // Rerun only when the battle data itself changes
 
+  // Add this at the beginning of the component
+  useEffect(() => {
+    // Force first step advance after a small delay
+    const initialTimer = setTimeout(() => {
+      if (step === 0) {
+        setStep(1);
+      }
+    }, 500);
+    
+    return () => clearTimeout(initialTimer);
+  }, []);
+
   // --- HP Update Logic ---
   useEffect(() => {
     // Update HP based on the outcome of the turn being animated (currentTurn)
@@ -646,7 +658,6 @@ const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({
               </h2>
               
               <div className="w-full max-w-3xl bg-black bg-opacity-50 rounded-lg p-4 border border-green-500 overflow-auto">
-                <h3 className="text-xl font-semibold text-green-300 mb-3">Your Team</h3>
                 
                 {/* User team results - horizontal layout */}
                 <div className="flex flex-row justify-center space-x-4 mb-4">
@@ -766,13 +777,18 @@ const TeamBattleAnimation: React.FC<TeamBattleAnimationProps> = ({
                     );
                   })}
                 </div>
+                {/* The existing reserve XP message can stay after this */}
+                {teamBattle.xpGain > 0 && (
+                  <p className="text-center text-green-300 mt-2">
+                    Your reserve Digimon also gained some XP!
+                  </p>
+                )}
+                {/* Display bits reward */}
                 {
-                  teamBattle.xpGain > 0 && (
-                    <div className="w-full flex justify-center items-center my-8">
-                      <p className="text-green-300 text-sm">
-                        Your reserve Digimon also gained XP!
-                      </p>
-                    </div>
+                  teamBattle.bitsReward > 0 && (
+                    <p className="text-center text-green-300 mt-2">
+                      You earned {teamBattle.bitsReward} bits!
+                    </p>
                   )
                 }
                 {

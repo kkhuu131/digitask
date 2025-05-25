@@ -3,6 +3,8 @@ import { useDigimonStore } from "../store/petStore";
 import { DIGIMON_LOOKUP_TABLE } from "../constants/digimonLookup";
 import { ANIMATED_DIGIMON } from "../constants/animatedDigimonList";
 import { getSpriteUrl } from "../utils/spriteManager";
+import { supabase } from "../lib/supabase";
+import { useAuthStore } from "../store/authStore";
 
 interface AvatarSelectionModalProps {
   isOpen: boolean;
@@ -15,12 +17,15 @@ interface DigimonSprite {
   sprite_url: string;
   name: string;
   isAnimated: boolean;
+  item_id?: string;
 }
 
 const AvatarSelectionModal = ({ isOpen, onClose, onSelect }: AvatarSelectionModalProps) => {
   const { discoveredDigimon } = useDigimonStore();
   const [availableSprites, setAvailableSprites] = useState<DigimonSprite[]>([]);
   const [loading, setLoading] = useState(false);
+  const [unlockedVariants, setUnlockedVariants] = useState<string[]>([]);
+  const { user } = useAuthStore();
   
   useEffect(() => {
     const fetchDigimonSprites = async () => {
@@ -32,6 +37,19 @@ const AvatarSelectionModal = ({ isOpen, onClose, onSelect }: AvatarSelectionModa
       setLoading(true);
       
       try {
+        // First fetch unlocked variants if user is logged in
+        let unlockedVariantData: string[] = [];
+        if (user) {
+          const { data } = await supabase
+            .from('user_inventory')
+            .select('item_id')
+            .eq('user_id', user.id)
+            .eq('item_type', 'avatar_variant');
+          
+          unlockedVariantData = data?.map(item => item.item_id) || [];
+          setUnlockedVariants(unlockedVariantData);
+        }
+        
         // Map discovered Digimon to sprites, preferring animated ones
         const avatarOptions = discoveredDigimon
           .map(id => {
@@ -50,27 +68,49 @@ const AvatarSelectionModal = ({ isOpen, onClose, onSelect }: AvatarSelectionModa
               id,
               name,
               sprite_url,
-              isAnimated
+              isAnimated,
+              item_id: undefined
             };
           })
           .filter(Boolean) // Remove nulls
           .sort((a, b) => a!.id - b!.id); // Sort by ID ascending
 
+        // Add unlocked variants to the list
+        const variantOptions = unlockedVariantData
+          .filter(item => item.startsWith('avatar_'))
+          .map(item => {
+            const [_, digimonName, variant] = item.split('_');
+            if (!digimonName || !variant) return null;
+            
+            return {
+              id: -1, // Use negative ID to indicate it's a variant
+              name: `${digimonName} (${variant})`,
+              sprite_url: `/assets/animated_digimon/${digimonName}/${variant}.png`,
+              isAnimated: true,
+              item_id: item // Store the item_id for checking unlock status
+            };
+          })
+          .filter(Boolean);
+        
+        // Add special avatars
         avatarOptions.push({
           id: 777,
           name: "Bokomon",
           sprite_url: "/assets/digimon/bokomon.png",
-          isAnimated: false
+          isAnimated: false,
+          item_id: undefined
         });
 
         avatarOptions.push({
           id: 778,
           name: "Neemon",
           sprite_url: "/assets/digimon/neemon.png",
-          isAnimated: false
+          isAnimated: false,
+          item_id: undefined
         });
         
-        setAvailableSprites(avatarOptions as DigimonSprite[]);
+        // Combine base sprites and variant sprites
+        setAvailableSprites([...avatarOptions, ...variantOptions] as DigimonSprite[]);
       } catch (err) {
         console.error("Error fetching digimon sprites:", err);
         setAvailableSprites([]);
@@ -82,7 +122,7 @@ const AvatarSelectionModal = ({ isOpen, onClose, onSelect }: AvatarSelectionModa
     if (isOpen) {
       fetchDigimonSprites();
     }
-  }, [discoveredDigimon, isOpen]);
+  }, [discoveredDigimon, isOpen, user?.id]);
   
   if (!isOpen) return null;
   
@@ -112,29 +152,85 @@ const AvatarSelectionModal = ({ isOpen, onClose, onSelect }: AvatarSelectionModa
         ) : (
           <>
             <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-4">
-              {availableSprites.map((sprite) => (
-                <button
-                  key={sprite.id}
-                  onClick={() => {
-                    onSelect(sprite.sprite_url);
-                    onClose();
-                  }}
-                  className="bg-gray-100 rounded-lg p-2 hover:bg-gray-200 transition-colors flex flex-col items-center justify-center aspect-square relative"
-                >
-                  <img 
-                    src={sprite.sprite_url} 
-                    alt={`${sprite.name}`} 
-                    className="w-16 h-16 object-contain"
-                    style={{ imageRendering: "pixelated" }}
-                    onError={(e) => {
-                      // If animated sprite fails, fall back to regular sprite
-                      if (sprite.isAnimated) {
-                        (e.target as HTMLImageElement).src = DIGIMON_LOOKUP_TABLE[sprite.id].sprite_url;
-                      }
+              {/* Display unlocked special avatars first with highlight */}
+              {availableSprites
+                .filter(sprite => sprite.item_id && unlockedVariants.includes(sprite.item_id))
+                .map((sprite) => (
+                  <button
+                    key={sprite.sprite_url}
+                    onClick={() => {
+                      onSelect(sprite.sprite_url);
+                      onClose();
                     }}
-                  />
-                </button>
-              ))}
+                    className="bg-gradient-to-br from-amber-50 to-amber-100 rounded-lg p-2 hover:bg-amber-200 transition-colors flex flex-col items-center justify-center aspect-square relative border-2 border-amber-300"
+                  >
+                    <img 
+                      src={sprite.sprite_url} 
+                      alt={`${sprite.name}`} 
+                      className="w-16 h-16 object-contain"
+                      style={{ imageRendering: "pixelated" }}
+                      onError={(e) => {
+                        if (sprite.isAnimated && sprite.id > 0) {
+                          (e.target as HTMLImageElement).src = DIGIMON_LOOKUP_TABLE[sprite.id].sprite_url;
+                        }
+                      }}
+                    />
+                    <div className="text-xs text-center mt-1 text-amber-800 font-medium truncate w-full">
+                      {sprite.item_id ? sprite.item_id.split('_')[2] : sprite.name}
+                    </div>
+                  </button>
+                ))}
+              
+              {/* Display regular avatars */}
+              {availableSprites
+                .filter(sprite => !sprite.item_id)
+                .map((sprite) => (
+                  <button
+                    key={sprite.sprite_url}
+                    onClick={() => {
+                      onSelect(sprite.sprite_url);
+                      onClose();
+                    }}
+                    className="bg-gray-100 rounded-lg p-2 hover:bg-gray-200 transition-colors flex flex-col items-center justify-center aspect-square relative"
+                  >
+                    <img 
+                      src={sprite.sprite_url} 
+                      alt={`${sprite.name}`} 
+                      className="w-16 h-16 object-contain"
+                      style={{ imageRendering: "pixelated" }}
+                      onError={(e) => {
+                        if (sprite.isAnimated) {
+                          (e.target as HTMLImageElement).src = DIGIMON_LOOKUP_TABLE[sprite.id].sprite_url;
+                        }
+                      }}
+                    />
+                  </button>
+                ))}
+              
+              {/* At the end, show locked variants that the user doesn't have yet */}
+              {availableSprites
+                .filter(sprite => sprite.item_id && !unlockedVariants.includes(sprite.item_id))
+                .map((sprite) => (
+                  <button
+                    key={sprite.sprite_url}
+                    className="bg-gray-100 rounded-lg p-2 opacity-50 cursor-not-allowed flex flex-col items-center justify-center aspect-square relative"
+                  >
+                    <img 
+                      src={sprite.sprite_url} 
+                      alt={`${sprite.name}`} 
+                      className="w-16 h-16 object-contain"
+                      style={{ imageRendering: "pixelated" }}
+                      onError={(e) => {
+                        if (sprite.isAnimated && sprite.id > 0) {
+                          (e.target as HTMLImageElement).src = DIGIMON_LOOKUP_TABLE[sprite.id].sprite_url;
+                        }
+                      }}
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
+                      <span>🔒</span>
+                    </div>
+                  </button>
+                ))}
             </div>
             
             {availableSprites.length === 0 && (

@@ -13,6 +13,7 @@ interface DigimonSpriteProps {
   onClick?: () => void;
   showHappinessAnimations?: boolean;
   enableHopping?: boolean;
+  currentSpriteType?: SpriteType;
 }
 
 const DigimonSprite: React.FC<DigimonSpriteProps> = ({
@@ -23,9 +24,10 @@ const DigimonSprite: React.FC<DigimonSpriteProps> = ({
   silhouette = false,
   onClick,
   showHappinessAnimations = true,
-  enableHopping = false
+  enableHopping = false,
+  currentSpriteType: externalSpriteType
 }) => {
-  const [currentSpriteType, setCurrentSpriteType] = useState<SpriteType>('idle1');
+  const [internalSpriteType, setInternalSpriteType] = useState<SpriteType>('idle1');
   const [hasAnimatedSprites, setHasAnimatedSprites] = useState(false);
   const [spriteToggle, setSpriteToggle] = useState(false);
   const [showHeart, setShowHeart] = useState(false);
@@ -43,7 +45,7 @@ const DigimonSprite: React.FC<DigimonSpriteProps> = ({
 
   // Set up sprite animation interval
   useEffect(() => {
-    if (!hasAnimatedSprites || !showHappinessAnimations) return;
+    if (!hasAnimatedSprites || !showHappinessAnimations || externalSpriteType) return;
     
     // Update sprite every 0.75 seconds for idle animation
     const interval = setInterval(() => {
@@ -61,16 +63,19 @@ const DigimonSprite: React.FC<DigimonSpriteProps> = ({
         newSpriteType = spriteToggle ? "sad1" : "sad2";
       }
       
-      setCurrentSpriteType(newSpriteType);
+      setInternalSpriteType(newSpriteType);
     }, 750);
     
     return () => clearInterval(interval);
-  }, [hasAnimatedSprites, happiness, isAnimating, spriteToggle, showHappinessAnimations]);
+  }, [hasAnimatedSprites, happiness, isAnimating, spriteToggle, showHappinessAnimations, externalSpriteType]);
+
+  // Use external sprite type if provided, otherwise use internal state
+  const effectiveSpriteType = externalSpriteType || internalSpriteType;
 
   // Function to get the current sprite URL
   const getCurrentSpriteUrl = () => {
     if (hasAnimatedSprites && digimonName) {
-      return getSpriteUrl(digimonName, currentSpriteType, fallbackSpriteUrl);
+      return getSpriteUrl(digimonName, effectiveSpriteType, fallbackSpriteUrl);
     }
     return fallbackSpriteUrl;
   };
@@ -86,8 +91,8 @@ const DigimonSprite: React.FC<DigimonSpriteProps> = ({
     setTimeout(() => setLookDirection(1), 400);
     
     // Show happy reaction temporarily for animated sprites
-    if (hasAnimatedSprites && showHappinessAnimations) {
-      setCurrentSpriteType('happy');
+    if (hasAnimatedSprites && showHappinessAnimations && !externalSpriteType) {
+      setInternalSpriteType('happy');
     }
     
     // End animations
@@ -95,12 +100,12 @@ const DigimonSprite: React.FC<DigimonSpriteProps> = ({
       setIsAnimating(false);
       setShowHeart(false);
       
-      // Reset to normal sprite type based on happiness
-      if (hasAnimatedSprites && showHappinessAnimations) {
+      // Reset to normal sprite type based on happiness (only if we're managing the sprite internally)
+      if (hasAnimatedSprites && showHappinessAnimations && !externalSpriteType) {
         if (happiness > 80) {
-          setCurrentSpriteType(spriteToggle ? "idle1" : "idle2");
+          setInternalSpriteType(spriteToggle ? "idle1" : "idle2");
         } else {
-          setCurrentSpriteType(spriteToggle ? "sad1" : "sad2");
+          setInternalSpriteType(spriteToggle ? "sad1" : "sad2");
         }
       }
     }, 1000);

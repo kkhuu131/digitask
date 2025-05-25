@@ -6,13 +6,19 @@ import { useNotificationStore } from "./notificationStore";
 export const ABI_MILESTONES = [2, 5, 10, 15, 20, 30, 50, 75, 100, 150, 200];
 
 export function getABIThreshold() {
-  const teamSize = useDigimonStore.getState().allUserDigimon.length;
-  return ABI_MILESTONES[teamSize - 1] || 999;
+  const teamSize =
+    useDigimonStore.getState().allUserDigimon.length +
+    useDigimonStore.getState().storageDigimon.length;
+  return ABI_MILESTONES[teamSize - 1] || 200 + (teamSize - 11) * 50;
 }
 
 export function getABITotal() {
   const allUserDigimon = useDigimonStore.getState().allUserDigimon;
-  return allUserDigimon.reduce((acc, digimon) => acc + digimon.abi, 0);
+  const storageDigimon = useDigimonStore.getState().storageDigimon;
+  return (
+    allUserDigimon.reduce((acc, digimon) => acc + digimon.abi, 0) +
+    storageDigimon.reduce((acc, digimon) => acc + digimon.abi, 0)
+  );
 }
 
 interface MilestoneState {

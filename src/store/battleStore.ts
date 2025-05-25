@@ -6,6 +6,7 @@ import { calculateFinalStats } from "../utils/digimonStatCalculation";
 import { DIGIMON_LOOKUP_TABLE } from "../constants/digimonLookup";
 import { useTitleStore } from "./titleStore";
 import { useNotificationStore } from "./notificationStore";
+import { useCurrencyStore } from "./currencyStore";
 
 function simulateTeamBattle(userTeamData: any, opponentTeamData: any) {
   function getAttributeDamageMultiplier(
@@ -379,6 +380,7 @@ export interface TeamBattle {
   xpGain: number;
   created_at: string;
   hint?: string;
+  bitsReward: number;
 }
 
 export interface TeamBattleHistory {
@@ -778,6 +780,7 @@ export const useBattleStore = create<BattleState>((set, get) => {
           turns,
           winner_id: winnerId,
           xpGain: xpGain,
+          bitsReward: 0,
         };
 
         const { error: TeamBattleError } = await supabase
@@ -823,6 +826,41 @@ export const useBattleStore = create<BattleState>((set, get) => {
             await useTitleStore.getState().checkBattleTitles(newBattlesWon);
           }
         }
+
+        // Award bits based on difficulty and outcome
+        const bitsReward = calculateBitsReward(
+          option.difficulty,
+          winnerId === userTeamData[0].user_id
+        );
+        if (bitsReward > 0) {
+          // Add the bits to the player's currency
+          const currencyStore = useCurrencyStore.getState();
+          currencyStore.addCurrency("bits", bitsReward);
+        }
+
+        // Store the bits reward in the battle result for display
+        set((state) => {
+          // Make a deep copy with required fields guaranteed
+          const updatedBattle = {
+            ...state.currentTeamBattle,
+            bitsReward: bitsReward,
+            id:
+              state.currentTeamBattle?.id ||
+              crypto.randomUUID?.() ||
+              `temp-id-${Date.now()}`,
+            user_team: state.currentTeamBattle?.user_team || [],
+            opponent_team: state.currentTeamBattle?.opponent_team || [],
+            winner_id: state.currentTeamBattle?.winner_id || "",
+            xpGain: state.currentTeamBattle?.xpGain || 0,
+            created_at:
+              state.currentTeamBattle?.created_at || new Date().toISOString(),
+          };
+
+          return {
+            ...state,
+            currentTeamBattle: updatedBattle,
+          };
+        });
 
         return;
       } catch (error) {
@@ -1301,6 +1339,7 @@ export const useBattleStore = create<BattleState>((set, get) => {
           turns,
           winner_id: winnerId,
           xpGain: 0,
+          bitsReward: 0,
           hint: hint || "You're not ready for this battle. Try again later.",
           description: description || "",
         } as TeamBattle;
@@ -1311,3 +1350,35 @@ export const useBattleStore = create<BattleState>((set, get) => {
     },
   };
 });
+
+// Add this helper function to calculate bits rewards
+const calculateBitsReward = (
+  difficulty: string,
+  playerWon: boolean
+): number => {
+  if (playerWon) {
+    // Rewards for winning
+    switch (difficulty) {
+      case "hard":
+        return 120;
+      case "medium":
+        return 80;
+      case "easy":
+        return 60;
+      default:
+        return 60;
+    }
+  } else {
+    // Rewards for losing
+    switch (difficulty) {
+      case "hard":
+        return 15;
+      case "medium":
+        return 25;
+      case "easy":
+        return 30;
+      default:
+        return 30;
+    }
+  }
+};

@@ -15,7 +15,8 @@ const UserDigimonPage = () => {
   const { 
     allUserDigimon, 
     userDigimon, 
-    fetchAllUserDigimon, 
+    fetchAllUserDigimon,
+    fetchStorageDigimon,
     setActiveDigimon,
     releaseDigimon,
     loading, 
@@ -35,8 +36,9 @@ const UserDigimonPage = () => {
 
   useEffect(() => {
     fetchAllUserDigimon();
+    fetchStorageDigimon();
     fetchAllEvolutionPaths();
-  }, [fetchAllUserDigimon]);
+  }, [fetchAllUserDigimon, fetchStorageDigimon]);
 
   // Add event listener for name changes
   useEffect(() => {
@@ -267,11 +269,11 @@ const UserDigimonPage = () => {
   const digimonPageTutorialSteps: DialogueStep[] = [
     {
       speaker: 'bokomon',
-      text: "Welcome to your Digimon collection! Here you can see all the Digimon partners you've acquired on your journey."
+      text: "Welcome to your Digimon party! Here you can see all the Digimon partners you've acquired on your journey."
     },
     {
       speaker: 'neemon',
-      text: "Ooh, look at all these Digimon! You can have up to 12 different ones in your collection!"
+      text: "Ooh, look at all these Digimon! You can have up to 12 different ones in your party!"
     },
     {
       speaker: 'bokomon',
@@ -366,7 +368,7 @@ const UserDigimonPage = () => {
         </div>
 
         <div className="card mb-6">
-          <h1 className="text-2xl font-bold mb-4">Your Digimon</h1>
+          <h1 className="text-2xl font-bold mb-4">Party</h1>
           <p className="text-gray-600 mb-6">
             You can have up to 12 Digimon total. 
             Only one Digimon can be active at a time.

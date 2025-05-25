@@ -30,13 +30,14 @@ import ProfilePage from './pages/ProfilePage';
 import UserSearchPage from './pages/UserSearchPage';
 import LeaderboardPage from './pages/LeaderboardPage';
 import AdminReportsPage from './pages/AdminReportsPage';
-// import DigimonPlayground from "./pages/DigimonPlayground";
+import DigimonPlayground from "./pages/DigimonPlayground";
 import Campaign from "./pages/Campaign";
 import AdminDigimonEditor from './pages/AdminDigimonEditor';
 import AdminTitlesPage from './pages/AdminTitlesPage';
 import OnboardingPage from './pages/OnboardingPage';
 import LandingPage from './pages/LandingPage';
 import RosterPage from './pages/RosterPage';
+import DigimonStorePage from './pages/DigimonStorePage';
 
 // Define a clear app initialization state
 interface AppInitState {
@@ -136,7 +137,7 @@ function RequireAuth({ children, allowNoDigimon = false }: { children: React.Rea
       </div>
     );
   }
-
+  
   return <>{children}</>;
 }
 
@@ -212,7 +213,7 @@ function App() {
         
         // Step 2: Check onboarding status
         await useOnboardingStore.getState().checkOnboardingStatus();
-
+        
         // Skip if component unmounted
         if (!isAppMounted) {
           isInitializationInProgress = false;
@@ -572,7 +573,7 @@ function App() {
           </ProtectedRoute>
         } />
         
-        <Route path="/your-digimon" element={
+        <Route path="/party" element={
           <ProtectedRoute>
             <Layout>
               <UserDigimonPage />
@@ -628,15 +629,15 @@ function App() {
           </ProtectedRoute>
         } />
         
-        {/* <Route path="/playground" element={
+        <Route path="/digifarm" element={
           <ProtectedRoute>
             <Layout>
               <DigimonPlayground />
             </Layout>
           </ProtectedRoute>
-        } /> */}
+        } />
         
-        <Route
+        <Route 
           path="/create-pet" 
           element={
             <RequireAuth allowNoDigimon={true}>
@@ -666,6 +667,14 @@ function App() {
         } />
         
         <Route path="/roster" element={<RosterPage />} />
+        
+        <Route path="/store" element={
+          <ProtectedRoute>
+            <Layout>
+              <DigimonStorePage />
+            </Layout>
+          </ProtectedRoute>
+        } />
         
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
@@ -942,7 +951,7 @@ function HomeRouteContent() {
       </div>
     );
   }
-  
+
   if (profileError) {
     return (
       <div className="max-w-4xl mx-auto">
@@ -985,7 +994,7 @@ function HomeRouteContent() {
   if (hasCompletedOnboarding === false) {
     return <Navigate to="/onboarding" replace />;
   }
-  
+
   // If user has completed onboarding but has no Digimon, show create button
   if (!userDigimon) {
     return (
@@ -1026,7 +1035,7 @@ function HomeRouteContent() {
       </div>
     );
   }
-  
+
   // Otherwise show the dashboard
   return <Dashboard />;
 }

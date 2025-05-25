@@ -1,3 +1,4 @@
+
 const PatchNotes = () => {
   return (
     <div className="max-w-4xl mx-auto">
@@ -25,6 +26,35 @@ const PatchNotes = () => {
           <div className="mb-6">
             <div className="flex items-center mb-2">
               <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
+              <h3 className="text-lg font-medium ml-2">DigiFarm, Store, and more!</h3>
+              <span className="text-sm text-gray-500 ml-auto">May 25, 2025</span>
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <li>Added <b>DigiFarm</b>! Send Digimon that you want to keep, but don't want to use, to the DigiFarm!</li>
+            <li>These Digimon won't gain any experience, and they can be freely moved back.</li>
+            <li>The limit for your active Party still remains 12, but you can have a potentially unlimited number in the DigiFarm.</li>
+            <li>Bringing back <b>Playground mode</b> as part of DigiFarm to play with stored Digimon!</li>
+            <li>Introducing the <b>Store</b>! Gain bits from Arena battles to purchase various items from Neemon!</li>
+            <li>Items available in the store are:</li>
+            <ul>
+              <li>+4 of any bonus stat or +2 ABI for 1000 bits</li>
+              <li>Random Data: Discover a random Digimon for 2000 bits</li>
+              <li>Avatar Chip: Unlock a random, rare Digimon profile picture for 600 bits</li>
+              <li>X-Antibody: 8000 bits</li>
+            </ul>
+            <li>Item prices may change or more items will be added in the future, so give any suggestions through the feedback form!</li>
+            <li>Bits are a currency only gained from Arena battles; increasing difficulty will reward more bits, but losing will give significantly less.</li>
+            <li>Bit rewards are as follows:</li>
+            <ul>
+              <li>Easy: 60 for win, 30 for loss</li>
+              <li>Medium: 80 for win, 25 for loss</li>
+              <li>Hard: 120 for win, 15 for loss</li>
+            </ul>
+            <li>As you can see, it's very much a risk/reward system, so gauge your matchups before entering.</li>
+            </ul>
+          </div>
+          <div className="mb-6">
+            <div className="flex items-center mb-2">
               <h3 className="text-lg font-medium ml-2">Title Tiers, Apollomon and GraceNovamon line!</h3>
               <span className="text-sm text-gray-500 ml-auto">May 22, 2025</span>
             </div>

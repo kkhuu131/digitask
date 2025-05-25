@@ -78,6 +78,7 @@ export interface UserDigimon {
   last_stat_reset: string;
   personality?: string;
   digimon?: Digimon;
+  is_in_storage?: boolean;
 }
 
 export interface Digimon {
@@ -140,7 +141,7 @@ export interface PetState {
   fetchUserDigimon: () => Promise<void>;
   fetchAllUserDigimon: () => Promise<void>;
   createUserDigimon: (name: string, digimonId: number) => Promise<void>;
-  updateDigimonStats: (updates: Partial<UserDigimon>) => Promise<void>;
+  updateDigimonStats: (updates: Partial<UserDigimon>) => Promise<any>;
   feedDigimon: (taskPoints: number) => Promise<void>;
   checkEvolution: () => Promise<boolean>;
   checkDevolution: () => Promise<boolean>;
@@ -201,6 +202,12 @@ export interface PetState {
     toFormId: number,
     formType: string
   ) => Promise<boolean>;
+  storageDigimon: UserDigimon[];
+  activePartyCount: number;
+  maxActivePartySize: number;
+  fetchStorageDigimon: () => Promise<void>;
+  moveToStorage: (digimonId: string) => Promise<void>;
+  moveToActiveParty: (digimonId: string) => Promise<void>;
 }
 
 export const useDigimonStore = create<PetState>((set, get) => ({
@@ -214,6 +221,9 @@ export const useDigimonStore = create<PetState>((set, get) => ({
   userDailyStatGains: 0,
   evolutionPathsCache: {},
   devolutionPathsCache: {},
+  storageDigimon: [],
+  activePartyCount: 0,
+  maxActivePartySize: 12,
 
   fetchDiscoveredDigimon: async () => {
     try {
@@ -400,35 +410,35 @@ export const useDigimonStore = create<PetState>((set, get) => ({
   },
 
   fetchAllUserDigimon: async () => {
-    try {
-      set({ loading: true, error: null });
+    const user = useAuthStore.getState().user;
 
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) {
-        set({ allUserDigimon: [], loading: false });
+    if (!user) return;
+
+    try {
+      set({ loading: true });
+
+      // Fetch active party Digimon (not in storage)
+      const { data, error } = await supabase
+        .from("user_digimon")
+        .select("*, digimon(*)")
+        .eq("user_id", user.id)
+        .eq("is_in_storage", false)
+        .order("current_level", { ascending: false });
+
+      if (error) {
+        console.error("Error fetching user Digimon:", error);
+        set({ error: error.message });
         return;
       }
 
-      const { data: digimon, error } = await supabase
-        .from("user_digimon")
-        .select("*")
-        .eq("user_id", userData.user.id)
-        .order("created_at", { ascending: false });
-
-      if (error) throw error;
-
-      const allUserDigimon = digimon.map((d) => ({
-        ...d,
-        digimon: DIGIMON_LOOKUP_TABLE[d.digimon_id],
-      }));
-
-      set({ allUserDigimon: allUserDigimon || [], loading: false });
-
-      // Also fetch the user's daily stat gains
-      await get().fetchUserDailyStatGains();
+      set({
+        allUserDigimon: data || [],
+        activePartyCount: data?.length || 0,
+        loading: false,
+      });
     } catch (error) {
-      console.error("Error fetching all user Digimon:", error);
-      set({ error: (error as Error).message, loading: false });
+      console.error("Error in fetchAllUserDigimon:", error);
+      set({ loading: false, error: "Failed to fetch Digimon" });
     }
   },
 
@@ -510,40 +520,50 @@ export const useDigimonStore = create<PetState>((set, get) => ({
     }
   },
 
-  updateDigimonStats: async (updates) => {
+  updateDigimonStats: async (updates: Partial<UserDigimon>) => {
     try {
-      set({ loading: true, error: null });
-
-      const { data: user } = await supabase.auth.getUser();
-      if (!user.user) throw new Error("User not authenticated");
+      // First verify we have a valid session before making the request
+      const { data: sessionData } = await supabase.auth.getSession();
+      if (!sessionData.session) {
+        throw new Error("No active session found");
+      }
 
       const { data, error } = await supabase
         .from("user_digimon")
         .update(updates)
-        .eq("user_id", user.user.id)
-        .select()
-        .single();
+        .eq("id", updates.id)
+        .select();
 
       if (error) throw error;
 
-      // Fix the type issue by ensuring userDigimon is not null
-      set((state) => {
-        if (!state.userDigimon) return { ...state, loading: false };
-
-        return {
-          ...state,
+      // Update the active Digimon if that's what was modified
+      if (get().userDigimon && get().userDigimon?.id === updates.id) {
+        set({
           userDigimon: {
-            ...state.userDigimon,
+            ...get().userDigimon!,
             ...updates,
           },
-          loading: false,
-        };
+        });
+      }
+
+      // Also update in the allUserDigimon array
+      const updatedAllUserDigimon = get().allUserDigimon.map((digimon) => {
+        if (digimon.id === updates.id) {
+          return { ...digimon, ...updates };
+        }
+        return digimon;
       });
+
+      set({ allUserDigimon: updatedAllUserDigimon });
 
       return data;
     } catch (error) {
-      set({ error: (error as Error).message, loading: false });
-      return null;
+      console.error("Error updating Digimon stats:", error);
+      useNotificationStore.getState().addNotification({
+        message: `Failed to update Digimon: ${(error as Error).message}`,
+        type: "error",
+      });
+      throw error;
     }
   },
 
@@ -1404,7 +1424,8 @@ export const useDigimonStore = create<PetState>((set, get) => ({
           .update({
             experience_points: newXP,
           })
-          .eq("id", digimon.id);
+          .eq("id", digimon.id)
+          .eq("is_in_storage", false);
 
         if (error) {
           console.error(`Error feeding Digimon ${digimon.id}:`, error);
@@ -1847,5 +1868,119 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       });
       return false;
     }
+  },
+
+  fetchStorageDigimon: async () => {
+    const user = useAuthStore.getState().user;
+
+    if (!user) return;
+
+    try {
+      // Fetch storage Digimon
+      const { data, error } = await supabase
+        .from("user_digimon")
+        .select("*, digimon(*)")
+        .eq("user_id", user.id)
+        .eq("is_in_storage", true)
+        .order("current_level", { ascending: false });
+
+      if (error) {
+        console.error("Error fetching storage Digimon:", error);
+        return;
+      }
+
+      set({ storageDigimon: data || [] });
+    } catch (error) {
+      console.error("Error in fetchStorageDigimon:", error);
+    }
+  },
+
+  moveToStorage: async (digimonId: string) => {
+    const user = useAuthStore.getState().user;
+    const activeCount = get().activePartyCount;
+
+    if (!user) return;
+
+    // Ensure we're not moving the last active Digimon to storage
+    if (activeCount <= 1) {
+      useNotificationStore.getState().addNotification({
+        type: "error",
+        message: "You must keep at least one Digimon in your active party!",
+      });
+      return;
+    }
+
+    // Don't allow moving active Digimon
+    const targetDigimon = get().allUserDigimon.find((d) => d.id === digimonId);
+    if (targetDigimon?.is_active) {
+      useNotificationStore.getState().addNotification({
+        type: "error",
+        message: "You cannot move your active Digimon to storage!",
+      });
+      return;
+    }
+
+    // Update the database
+    const { error } = await supabase
+      .from("user_digimon")
+      .update({ is_in_storage: true, is_on_team: false })
+      .eq("id", digimonId);
+
+    if (error) {
+      console.error("Error moving Digimon to storage:", error);
+      useNotificationStore.getState().addNotification({
+        type: "error",
+        message: "Failed to move Digimon to storage",
+      });
+      return;
+    }
+
+    // Refresh both lists
+    await get().fetchAllUserDigimon();
+    await get().fetchStorageDigimon();
+    useNotificationStore.getState().addNotification({
+      type: "success",
+      message: "Digimon moved to DigiFarm storage!",
+    });
+  },
+
+  moveToActiveParty: async (digimonId: string) => {
+    const user = useAuthStore.getState().user;
+    const activeCount = get().activePartyCount;
+    const maxPartySize = get().maxActivePartySize;
+
+    if (!user) return;
+
+    // Ensure we're not exceeding the maximum party size
+    if (activeCount >= maxPartySize) {
+      useNotificationStore.getState().addNotification({
+        type: "error",
+        message: `You can only have ${maxPartySize} Digimon in your active party!`,
+      });
+      return;
+    }
+
+    // Update the database
+    const { error } = await supabase
+      .from("user_digimon")
+      .update({ is_in_storage: false })
+      .eq("id", digimonId);
+
+    if (error) {
+      console.error("Error moving Digimon to active party:", error);
+      useNotificationStore.getState().addNotification({
+        type: "error",
+        message: "Failed to move Digimon to active party",
+      });
+      return;
+    }
+
+    // Refresh both lists
+    await get().fetchAllUserDigimon();
+    await get().fetchStorageDigimon();
+    useNotificationStore.getState().addNotification({
+      type: "success",
+      message: "Digimon moved to active party!",
+    });
   },
 }));

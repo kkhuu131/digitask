@@ -3,6 +3,7 @@ import { useDigimonStore } from '../store/petStore';
 import { DIGIMON_LOOKUP_TABLE } from '../constants/digimonLookup';
 import { DigimonFormInfo } from '../constants/digimonFormsLookup';
 import EvolutionAnimation from './EvolutionAnimation';
+import { useNotificationStore } from '../store/notificationStore';
 
 interface DigimonFormTransformationModalProps {
   isOpen: boolean;
@@ -11,6 +12,7 @@ interface DigimonFormTransformationModalProps {
   currentDigimonId: number;
   formInfo: DigimonFormInfo;
   onParentClose?: () => void;
+  consumeXAntibody?: () => Promise<boolean>;
 }
 
 const DigimonFormTransformationModal: React.FC<DigimonFormTransformationModalProps> = ({
@@ -19,7 +21,8 @@ const DigimonFormTransformationModal: React.FC<DigimonFormTransformationModalPro
   userDigimonId,
   currentDigimonId,
   formInfo,
-  onParentClose
+  onParentClose,
+  consumeXAntibody
 }) => {
   const { transformDigimonForm, discoveredDigimon } = useDigimonStore();
   const [showAnimation, setShowAnimation] = useState(false);
@@ -34,20 +37,42 @@ const DigimonFormTransformationModal: React.FC<DigimonFormTransformationModalPro
     setShowAnimation(true);
   };
   
+  // This function will be called after animation completes
   const completeTransformation = async () => {
-    const success = await transformDigimonForm(
-      userDigimonId, 
-      formInfo.formDigimonId,
-      formInfo.formType
-    );
-    
-    if (success) {
-      onClose();
-      if (onParentClose) {
-        onParentClose();
+    try {
+      // Actually consume the X-Antibody here
+      if (formInfo.formType === 'X-Antibody' && consumeXAntibody) {
+        const consumed = await consumeXAntibody();
+        if (!consumed) {
+          useNotificationStore.getState().addNotification({
+            type: "error",
+            message: "Failed to consume X-Antibody."
+          });
+          setShowAnimation(false);
+          return;
+        }
       }
-    } else {
-      setShowAnimation(false);
+      
+      const success = await transformDigimonForm(
+        userDigimonId, 
+        formInfo.formDigimonId,
+        formInfo.formType
+      );
+      
+      if (success) {
+        onClose();
+        if (onParentClose) {
+          onParentClose();
+        }
+      } else {
+        setShowAnimation(false);
+      }
+    } catch (error) {
+      console.error("Error transforming Digimon:", error);
+      useNotificationStore.getState().addNotification({
+        type: "error",
+        message: "Failed to transform Digimon."
+      });
     }
   };
   

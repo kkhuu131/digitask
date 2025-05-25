@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { EvolutionOption, UserDigimon, expToBoostPoints } from "../store/petStore";
 import calculateBaseStat from "../utils/digimonStatCalculation";
 import EvolutionAnimation from "./EvolutionAnimation";
@@ -9,6 +9,9 @@ import PageTutorial from "./PageTutorial";
 import { DialogueStep } from "./DigimonDialogue";
 import { BASE_TO_FORMS_MAP } from '../constants/digimonFormsLookup';
 import DigimonFormTransformationModal from './DigimonFormTransformationModal';
+import { STORE_ITEMS } from "../constants/storeItems";
+import { supabase } from "../lib/supabase";
+import { useAuthStore } from "../store/authStore";
 
 interface DigimonEvolutionModalProps {
   isOpen: boolean;
@@ -41,6 +44,29 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
   const [dnaPartnerDigimon, setDnaPartnerDigimon] = useState<UserDigimon | null>(null);
   const [showFormModal, setShowFormModal] = useState(false);
   const [selectedFormInfo, setSelectedFormInfo] = useState<any>(null);
+  const [userInventory, setUserInventory] = useState<any[]>([]);
+  const { user } = useAuthStore();
+
+  // Fetch user inventory on component mount
+  useEffect(() => {
+    const fetchUserInventory = async () => {
+      if (!user) return;
+      
+      try {
+        const { data, error } = await supabase
+          .from('user_inventory')
+          .select('*')
+          .eq('user_id', user.id);
+          
+        if (error) throw error;
+        setUserInventory(data || []);
+      } catch (error) {
+        console.error("Error fetching user inventory:", error);
+      }
+    };
+    
+    fetchUserInventory();
+  }, [user]);
 
   if (!isOpen) return null;
 
@@ -95,6 +121,63 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
   };
 
   const availableForms = BASE_TO_FORMS_MAP[selectedDigimon.digimon_id] || [];
+
+  // Helper function to check if user has X-Antibody
+  const hasXAntibody = () => {
+    const xAntibodyItem = STORE_ITEMS.find(item => item.id === 'x_antibody');
+    if (!xAntibodyItem) return false;
+    
+    return userInventory.some(item => 
+      item.item_id === 'x_antibody' && item.quantity > 0
+    );
+  };
+
+  // Function to consume X-Antibody item
+  const consumeXAntibody = async () => {
+    if (!user) return false;
+    
+    try {
+      // Find the inventory item
+      const xAntibodyInventoryItem = userInventory.find(
+        item => item.item_id === 'x_antibody'
+      );
+      
+      if (!xAntibodyInventoryItem) return false;
+      
+      if (xAntibodyInventoryItem.quantity > 1) {
+        // Reduce quantity by 1
+        const { error } = await supabase
+          .from('user_inventory')
+          .update({ quantity: xAntibodyInventoryItem.quantity - 1 })
+          .eq('id', xAntibodyInventoryItem.id);
+          
+        if (error) throw error;
+      } else {
+        // Remove if last one
+        const { error } = await supabase
+          .from('user_inventory')
+          .delete()
+          .eq('id', xAntibodyInventoryItem.id);
+          
+        if (error) throw error;
+      }
+      
+      // Update local inventory state
+      setUserInventory(prev => 
+        prev.map(item => {
+          if (item.id === xAntibodyInventoryItem.id) {
+            return { ...item, quantity: item.quantity - 1 };
+          }
+          return item;
+        }).filter(item => item.quantity > 0)
+      );
+      
+      return true;
+    } catch (error) {
+      console.error("Error consuming X-Antibody:", error);
+      return false;
+    }
+  };
 
   if (showAnimation && evolutionTarget) {
     return (
@@ -387,36 +470,34 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
             <div className="flex space-x-2">
               {availableForms.length > 0 && availableForms.map(formInfo => {
                 // Check if this is an X-Antibody form and if the Digimon's ABI is too low
-                const isXAntibodyWithLowAbi = formInfo.formType === 'X-Antibody' && selectedDigimon.abi < 60;
+                const isXAntibodyWithoutItem = formInfo.formType === 'X-Antibody' && !hasXAntibody();
                 
                 return (
                   <button
                     key={formInfo.formDigimonId}
                     onClick={() => {
-                      if (!isXAntibodyWithLowAbi) {
+                      if (!isXAntibodyWithoutItem) {
                         setSelectedFormInfo(formInfo);
                         setShowFormModal(true);
                       }
                     }}
-                    disabled={isXAntibodyWithLowAbi}
+                    disabled={isXAntibodyWithoutItem}
                     className={`px-2 py-2 ${
-                      isXAntibodyWithLowAbi 
+                      isXAntibodyWithoutItem 
                         ? "bg-gray-400 cursor-not-allowed" 
                         : "bg-indigo-600 hover:bg-indigo-700"
                     } text-white rounded flex items-center`}
-                    title={isXAntibodyWithLowAbi ? "Requires ABI ≥ 60" : ""}
+                    title={isXAntibodyWithoutItem ? "Requires X-Antibody item" : ""}
                   >
                     {formInfo.formType === 'X-Antibody' && (
                       <img 
                         src="/assets/x-antibody.png" 
                         alt="X-Antibody" 
-                        className={`w-6 h-6 mr-2 ${isXAntibodyWithLowAbi ? "opacity-50" : ""}`} 
+                        className={`w-6 h-6 mr-2 ${isXAntibodyWithoutItem ? "opacity-50" : ""}`} 
                       />
                     )}
+                    
                     <p className="text-xs sm:text-sm">{formInfo.formType}</p>
-                    {isXAntibodyWithLowAbi && (
-                      <span className="ml-2 text-xs">ABI ≥ 60</span>
-                    )}
                   </button>
                 );
               })}
@@ -448,6 +529,7 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
           currentDigimonId={selectedDigimon.digimon_id}
           formInfo={selectedFormInfo}
           onParentClose={onClose}
+          consumeXAntibody={consumeXAntibody}
         />
       )}
     </>

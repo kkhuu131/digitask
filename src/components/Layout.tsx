@@ -66,9 +66,7 @@ const Layout = ({ children }: LayoutProps) => {
   const { userDigimon } = useDigimonStore();
   const navigate = useNavigate();
   const location = useLocation();
-  const [moreMenuOpen, setMoreMenuOpen] = useState(false);
-  const [battleMenuOpen, setBattleMenuOpen] = useState(false);
-  
+  const [activeMenu, setActiveMenu] = useState<'digimon' | 'battle' | 'more' | null>(null);
   const handleSignOut = async () => {
     await signOut();
     navigate('/login');
@@ -93,6 +91,10 @@ const Layout = ({ children }: LayoutProps) => {
     { path: "/settings", label: "Settings", icon: "⚙️" },
     // { path: "/playground", label: "Playground", icon: "🎮" },
   ];
+  
+  const handleMenuClick = (menu: 'digimon' | 'battle' | 'more') => {
+    setActiveMenu(activeMenu === menu ? null : menu);
+  };
   
   return (
     <div className="min-h-screen bg-gray-50 pb-16 md:pb-0">
@@ -123,18 +125,25 @@ const Layout = ({ children }: LayoutProps) => {
                 >
                   Dashboard
                 </Link>
-                
-                <Link
-                  to="/your-digimon"
-                  className={`text-center inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                    isActive("/your-digimon")
-                      ? "border-primary-500 text-gray-900"
-                      : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                  }`}
+                <NavDropdown 
+                  label="Digimon" 
+                  isActive={isAnyActive(["/party", "/digifarm"])}
                 >
-                  Your Digimon
-                </Link>
-                
+                  <Link
+                    to="/party"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => setActiveMenu(null)}
+                  >
+                    Party
+                  </Link>
+                  <Link
+                    to="/digifarm"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => setActiveMenu(null)}
+                  >
+                    DigiFarm
+                  </Link>
+                </NavDropdown>
                 <NavDropdown 
                   label="Play" 
                   isActive={isAnyActive(["/battle", "/digimon-dex"])}
@@ -142,33 +151,31 @@ const Layout = ({ children }: LayoutProps) => {
                   <Link
                     to="/battle"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => setActiveMenu(null)}
                   >
                     Arena
                   </Link>
                   <Link
                     to="/campaign"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => setActiveMenu(null)}
                   >
                     Campaign
                   </Link>
-                  {/* <Link
-                    to="/playground"
+                  <Link
+                    to="/store"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => setActiveMenu(null)}
                   >
-                    Playground
-                  </Link> */}
+                    Store
+                  </Link>
                   <Link
                     to="/digimon-dex"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => setActiveMenu(null)}
                   >
                     DigiDex
                   </Link>
-                  {/* <Link
-                    to="/campaign"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    Campaign
-                  </Link> */}
                 </NavDropdown>
                 
                 <NavDropdown 
@@ -178,12 +185,14 @@ const Layout = ({ children }: LayoutProps) => {
                   <Link
                     to="/user-search"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => setActiveMenu(null)}
                   >
                     Find Players
                   </Link>
                   <Link
                     to="/leaderboard"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => setActiveMenu(null)}
                   >
                     Leaderboard
                   </Link>
@@ -196,18 +205,21 @@ const Layout = ({ children }: LayoutProps) => {
                   <Link
                     to="/tutorial"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => setActiveMenu(null)}
                   >
                     Tutorial
                   </Link>
                   <Link
                     to="/patch-notes"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => setActiveMenu(null)}
                   >
                     Patch Notes
                   </Link>
                   <Link
                     to="/settings"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => setActiveMenu(null)}
                   >
                     Settings
                   </Link>
@@ -223,21 +235,21 @@ const Layout = ({ children }: LayoutProps) => {
                 <Link
                   to="/admin/reports"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  onClick={() => setMoreMenuOpen(false)}
+                  onClick={() => setActiveMenu(null)}
                 >
                   Reports
                 </Link>
                 <Link
                   to="/admin/digimon-editor"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  onClick={() => setMoreMenuOpen(false)}
+                  onClick={() => setActiveMenu(null)}
                 >
                   Editor
                 </Link>
                 <Link
                   to="/admin/titles"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  onClick={() => setMoreMenuOpen(false)}
+                  onClick={() => setActiveMenu(null)}
                 >
                   Titles
                 </Link>
@@ -300,24 +312,65 @@ const Layout = ({ children }: LayoutProps) => {
               </svg>
               <span className="text-xs mt-1">Home</span>
             </Link>
+
             
-            <Link 
-              to="/your-digimon" 
-              className={`flex flex-col items-center justify-center py-2 ${
-                isActive("/your-digimon") ? "text-primary-600" : "text-gray-500"
-              }`}
-            >
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+
+              <div className="relative">
+              <button
+                onClick={() => handleMenuClick('digimon')}
+                className={`flex flex-col items-center justify-center py-2 ${
+                  activeMenu === 'digimon' || isActive("/party") || isActive("/digifarm") 
+                    ? "text-primary-600" 
+                    : "text-gray-500"
+                }`}
+              >
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-              </svg>
-              <span className="text-xs mt-1">Digimon</span>
-            </Link>
+                </svg>
+                <span className="text-xs mt-1">Digimon</span>
+              </button>
+              
+              <AnimatePresence>
+                {activeMenu === 'digimon' && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 20 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-white rounded-lg shadow-lg border border-gray-200 w-36 overflow-hidden"
+                  >
+                    <div className="py-1">
+                      <Link
+                        to="/party"
+                        className={`flex items-center px-4 py-2 text-sm ${
+                          isActive("/party") ? "bg-primary-50 text-primary-700" : "text-gray-700 hover:bg-gray-100"
+                        }`}
+                        onClick={() => setActiveMenu(null)}
+                      >
+                        <span className="mr-2">👥</span>
+                        Party
+                      </Link>
+                      <Link
+                        to="/digifarm"
+                        className={`flex items-center px-4 py-2 text-sm ${
+                          isActive("/digifarm") ? "bg-primary-50 text-primary-700" : "text-gray-700 hover:bg-gray-100"
+                        }`}
+                        onClick={() => setActiveMenu(null)}
+                      >
+                        <span className="mr-2">🌾</span>
+                        DigiFarm
+                      </Link>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
             
             <div className="relative">
               <button
-                onClick={() => setBattleMenuOpen(!battleMenuOpen)}
+                onClick={() => handleMenuClick('battle')}
                 className={`flex flex-col items-center justify-center py-2 ${
-                  battleMenuOpen || isActive("/battle") || isActive("/campaign") 
+                  activeMenu === 'battle' || isActive("/battle") || isActive("/campaign") 
                     ? "text-primary-600" 
                     : "text-gray-500"
                 }`}
@@ -329,7 +382,7 @@ const Layout = ({ children }: LayoutProps) => {
               </button>
               
               <AnimatePresence>
-                {battleMenuOpen && (
+                {activeMenu === 'battle' && (
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -343,7 +396,7 @@ const Layout = ({ children }: LayoutProps) => {
                         className={`flex items-center px-4 py-2 text-sm ${
                           isActive("/battle") ? "bg-primary-50 text-primary-700" : "text-gray-700 hover:bg-gray-100"
                         }`}
-                        onClick={() => setBattleMenuOpen(false)}
+                        onClick={() => setActiveMenu(null)}
                       >
                         <span className="mr-2">⚔️</span>
                         Arena
@@ -353,10 +406,20 @@ const Layout = ({ children }: LayoutProps) => {
                         className={`flex items-center px-4 py-2 text-sm ${
                           isActive("/campaign") ? "bg-primary-50 text-primary-700" : "text-gray-700 hover:bg-gray-100"
                         }`}
-                        onClick={() => setBattleMenuOpen(false)}
+                        onClick={() => setActiveMenu(null)}
                       >
                         <span className="mr-2">🗺️</span>
                         Campaign
+                      </Link>
+                      <Link
+                        to="/store"
+                        className={`flex items-center px-4 py-2 text-sm ${
+                          isActive("/store") ? "bg-primary-50 text-primary-700" : "text-gray-700 hover:bg-gray-100"
+                        }`}
+                        onClick={() => setActiveMenu(null)}
+                      >
+                        <span className="mr-2">🛍️</span>
+                        Store
                       </Link>
                     </div>
                   </motion.div>
@@ -378,9 +441,9 @@ const Layout = ({ children }: LayoutProps) => {
             
             <div className="relative">
               <button
-                onClick={() => setMoreMenuOpen(!moreMenuOpen)}
+                onClick={() => handleMenuClick('more')}
                 className={`flex flex-col items-center justify-center py-2 ${
-                  moreMenuOpen || isAnyActive(moreNavItems.map(item => item.path)) 
+                  activeMenu === 'more' || isAnyActive(moreNavItems.map(item => item.path)) 
                     ? "text-primary-600" 
                     : "text-gray-500"
                 }`}
@@ -392,7 +455,7 @@ const Layout = ({ children }: LayoutProps) => {
               </button>
               
               <AnimatePresence>
-                {moreMenuOpen && (
+                {activeMenu === 'more' && (
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -408,7 +471,7 @@ const Layout = ({ children }: LayoutProps) => {
                           className={`flex items-center px-4 py-2 text-sm ${
                             isActive(item.path) ? "bg-primary-50 text-primary-700" : "text-gray-700 hover:bg-gray-100"
                           }`}
-                          onClick={() => setMoreMenuOpen(false)}
+                          onClick={() => setActiveMenu(null)}
                         >
                           <span className="mr-2">{item.icon}</span>
                           {item.label}
@@ -424,10 +487,10 @@ const Layout = ({ children }: LayoutProps) => {
       )}
       
       {/* Add a click outside handler to close the menu */}
-      {moreMenuOpen && (
+      {activeMenu && (
         <div 
           className="fixed inset-0 z-0"
-          onClick={() => setMoreMenuOpen(false)}
+          onClick={() => setActiveMenu(null)}
         />
       )}
       
