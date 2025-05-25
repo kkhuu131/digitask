@@ -55,7 +55,7 @@ export const useCurrencyStore = create<CurrencyState>((set, get) => ({
 
         if (insertError) throw insertError;
 
-        set({ bits: 5000, digicoins: 100, loading: false });
+        set({ bits: 2000, digicoins: 0, loading: false });
       } else {
         set({
           bits: data.bits,

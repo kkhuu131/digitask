@@ -69,4 +69,9 @@ export const UPDATE_CHANGES = {
     "Introducing the Store! Gain bits from Arena battles to purchase various items from Neemon!",
     "Users start with 2000 bits!",
   ],
+  "1.3.1": [
+    "DigiFarm! Send Digimon that you want to keep, but don't want to use, to the DigiFarm!",
+    "Introducing the Store! Gain bits from Arena battles to purchase various items from Neemon!",
+    "Fixed bug where users could not claim Digimon even though they had open party slots.",
+  ],
 };

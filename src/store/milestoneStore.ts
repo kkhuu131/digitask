@@ -77,12 +77,13 @@ export const useMilestoneStore = create<MilestoneState>((set, get) => ({
       const { data: userDigimonCount } = await supabase
         .from("user_digimon")
         .select("count")
+        .eq("is_in_storage", false)
         .eq("user_id", userData.user.id);
 
       if (userDigimonCount && userDigimonCount[0]?.count >= 12) {
         set({
           loading: false,
-          error: "You already have the maximum number of Digimon (12).",
+          error: "Your active party is full. Please move a Digimon to storage.",
         });
         return false;
       }
