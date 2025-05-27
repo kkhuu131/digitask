@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useCurrencyStore } from "../store/currencyStore";
-import { STORE_ITEMS, ItemCategory, StoreItem, ItemApplyType } from "../constants/storeItems";
+import { STORE_ITEMS, ItemCategory, StoreItem, ItemApplyType, ItemEffectType } from "../constants/storeItems";
 import { useDigimonStore } from "../store/petStore";
 import { useNotificationStore } from "../store/notificationStore";
 import { Tab } from "@headlessui/react";
@@ -8,6 +8,8 @@ import { supabase } from "../lib/supabase";
 import { useAuthStore } from "../store/authStore";
 import { ANIMATED_DIGIMON } from "../constants/animatedDigimonList";
 import { DIGIMON_LOOKUP_TABLE } from "../constants/digimonLookup";
+import DigimonSprite from "@/components/DigimonSprite";
+import { UserDigimon } from "../store/petStore";
 // import DigimonSprite from "../components/DigimonSprite";
 
 // Neemon's dialogue lines
@@ -39,6 +41,14 @@ const DigimonStorePage: React.FC = () => {
     HP: 0, SP: 0, ATK: 0, DEF: 0, INT: 0, SPD: 0
   });
   const [neeemonDialogue, setNeeemonDialogue] = useState("");
+  const [showDigimonSelectionModal, setShowDigimonSelectionModal] = useState<StoreItem | null>(null);
+  const [showStatResetModal, setShowStatResetModal] = useState<StoreItem | null>(null);
+  const [selectedDigimonForStatReset, setSelectedDigimonForStatReset] = useState<any>(null);
+  const [statBonusFields] = useState<string[]>([
+    "hp_bonus", "sp_bonus", "atk_bonus", "def_bonus", "int_bonus", "spd_bonus"
+  ]);
+  const [showXAntibodyModal, setShowXAntibodyModal] = useState(false);
+  const [digimonForXAntibody, setDigimonForXAntibody] = useState<UserDigimon[]>([]);
   
   // Set categories for filtering
   const categories = [
@@ -147,13 +157,81 @@ const DigimonStorePage: React.FC = () => {
     }
   };
 
+  // Function to apply personality to a Digimon
+  const applyPersonalityToDigimon = async (item: StoreItem, digimonId: string) => {
+    if (!user || !item.effect) return;
+    
+    try {
+      // First, check if the purchase can be completed
+      const success = await spendCurrency(item.currency, item.price);
+      
+      if (success) {
+        const { error } = await supabase
+          .from('user_digimon')
+          .update({ 
+            personality: item.effect.value as string,
+            last_updated_at: new Date().toISOString()
+          })
+          .eq('id', digimonId);
+          
+        if (error) throw error;
+        
+        // Refresh Digimon data
+        await fetchUserDigimon();
+        
+        useNotificationStore.getState().addNotification({
+          type: "success",
+          message: `Changed ${allUserDigimon.find(d => d.id === digimonId)?.name || 'Digimon'}'s personality to ${item.effect.value}!`,
+        });
+      }
+    } catch (error) {
+      console.error("Error applying personality:", error);
+      useNotificationStore.getState().addNotification({
+        type: "error",
+        message: `Failed to apply personality: ${(error as Error).message}`,
+      });
+    }
+  };
+
   // Handle purchase of an item
   const handlePurchase = async (item: StoreItem) => {
+    if (item.id === 'x_antibody') {
+      // Get eligible Digimon (those without X-Antibody capability)
+      const eligibleDigimon = allUserDigimon.filter(d => !d.has_x_antibody);
+      
+      if (eligibleDigimon.length === 0) {
+        useNotificationStore.getState().addNotification({
+          message: 'All your Digimon already have X-Antibody capability!',
+          type: 'info'
+        });
+        return;
+      }
+      
+      setDigimonForXAntibody(eligibleDigimon);
+      setShowXAntibodyModal(true);
+      return;
+    }
+    
     if (processingPurchase || !user) return;
     
     setProcessingPurchase(item.id);
     
     try {
+      // Add handling for stat reset item
+      if (item.effect?.type === ItemEffectType.STAT_RESET) {
+        setShowStatResetModal(item);
+        setProcessingPurchase(null);
+        return;
+      }
+      
+      // Check if the item is a personality changer
+      if (item.effect?.type === ItemEffectType.PERSONALITY) {
+        // Show Digimon selection modal instead of immediate purchase
+        setShowDigimonSelectionModal(item);
+        setProcessingPurchase(null);
+        return;
+      }
+      
       // Check if we're still authenticated
       const { data: sessionData } = await supabase.auth.getSession();
       if (!sessionData.session) {
@@ -181,7 +259,7 @@ const DigimonStorePage: React.FC = () => {
             const { error } = await supabase
               .from("user_digimon")
               .update({ 
-                abi: (userDigimon.abi || 0) + item.effect!.value,
+                abi: (userDigimon.abi || 0) + Number(item.effect!.value),
                 last_updated_at: new Date().toISOString()
               })
               .eq("id", userDigimon.id);
@@ -209,7 +287,7 @@ const DigimonStorePage: React.FC = () => {
           
           if (statKey) {
             const updatedStats = { ...userStats };
-            updatedStats[statKey] = (updatedStats[statKey] || 0) + item.effect!.value;
+            updatedStats[statKey] = (updatedStats[statKey] || 0) + Number(item.effect!.value);
             
             const { error } = await supabase
               .from('profiles')
@@ -372,12 +450,134 @@ const DigimonStorePage: React.FC = () => {
       console.error("Error purchasing item:", error);
       useNotificationStore.getState().addNotification({
         type: "error",
-        message: `Failed to purchase item: ${(error as Error).message}`,
+        message: `Failed to purchase: ${(error as Error).message}`,
       });
     } finally {
       setProcessingPurchase(null);
     }
   };
+
+  // Add a new function to reset the selected stat
+  const resetDigimonStat = async (digimonId: string, statField: string) => {
+    if (!user || !selectedDigimonForStatReset) return;
+    
+    try {
+      const statKey = statField.replace('_bonus', '').toUpperCase();
+      
+      // 1. Get the current stat value from the Digimon
+      const { data: digimonData, error: getError } = await supabase
+        .from('user_digimon')
+        .select(`${statField}`)
+        .eq('id', digimonId)
+        .single();
+        
+      if (getError) throw getError;
+      
+      const statValue = digimonData[statField as any] || 0;
+      if (Number(statValue) <= 0) {
+        useNotificationStore.getState().addNotification({
+          type: "info",
+          message: `This Digimon has no ${statKey} bonus points to reset.`,
+        });
+        return;
+      }
+      
+      // 2. Process the purchase for the stat reset item
+      const success = await spendCurrency(showStatResetModal!.currency, showStatResetModal!.price);
+      
+      if (success) {
+        // 3. Reset the stat on the Digimon
+        const updateObj: any = { last_updated_at: new Date().toISOString() };
+        updateObj[statField] = 0;
+        
+        const { error: updateError } = await supabase
+          .from('user_digimon')
+          .update(updateObj)
+          .eq('id', digimonId);
+          
+        if (updateError) throw updateError;
+        
+        // 4. Add the points back to the user's profile
+        const updatedStats = { ...userStats };
+        updatedStats[statKey] = (updatedStats[statKey] || 0) + Number(statValue);
+        
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .update({ saved_stats: updatedStats })
+          .eq('id', user.id);
+          
+        if (profileError) throw profileError;
+        
+        // 5. Update local state
+        setUserStats(updatedStats);
+        
+        // 6. Close the modal and show success notification
+        setShowStatResetModal(null);
+        setSelectedDigimonForStatReset(null);
+        
+        // 7. Refresh Digimon data
+        await fetchUserDigimon();
+        
+        useNotificationStore.getState().addNotification({
+          type: "success",
+          message: `Reset ${statValue} ${statKey} bonus points from ${selectedDigimonForStatReset.name || selectedDigimonForStatReset.digimon?.name}!`,
+        });
+      }
+    } catch (error) {
+      console.error("Error resetting stat:", error);
+      useNotificationStore.getState().addNotification({
+        type: "error",
+        message: `Failed to reset stat: ${(error as Error).message}`,
+      });
+    }
+  };
+
+  // Add the formatted display names for the stats
+  const statDisplayNames: Record<string, string> = {
+    hp_bonus: "HP",
+    sp_bonus: "SP",
+    atk_bonus: "Attack",
+    def_bonus: "Defense",
+    int_bonus: "Intelligence",
+    spd_bonus: "Speed"
+  };
+
+  // Add a function to apply X-Antibody to a selected Digimon
+  const applyXAntibodyToDigimon = async (digimonId: string) => {
+    const item = STORE_ITEMS.find(i => i.id === 'x_antibody');
+    if (!item) return;
+    
+    try {
+      // Instead of using handlePurchase, call spendCurrency directly
+      const purchaseSuccess = await spendCurrency(item.currency, item.price);
+      
+      if (purchaseSuccess) {
+        // Update the Digimon in the database
+        const { error } = await supabase
+          .from('user_digimon')
+          .update({ has_x_antibody: true })
+          .eq('id', digimonId);
+          
+        if (error) throw error;
+        
+        // Refresh Digimon data
+        await fetchUserDigimon();
+        
+        useNotificationStore.getState().addNotification({
+          message: 'X-Antibody capability granted successfully!',
+          type: 'success'
+        });
+      }
+    } catch (error) {
+      console.error('Error applying X-Antibody:', error);
+      useNotificationStore.getState().addNotification({
+        message: 'Failed to apply X-Antibody capability',
+        type: 'error'
+      });
+    }
+    
+    setShowXAntibodyModal(false);
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -544,6 +744,203 @@ const DigimonStorePage: React.FC = () => {
           </div>
         </Tab.Group>
       </div>
+
+      {showDigimonSelectionModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Select Digimon</h2>
+              <button 
+                onClick={() => setShowDigimonSelectionModal(null)} 
+                className="text-gray-500 hover:text-gray-700"
+              >
+                ×
+              </button>
+            </div>
+            
+            <p className="mb-4 text-sm text-gray-700">
+              Select a Digimon to change its personality to {showDigimonSelectionModal.effect?.value}
+            </p>
+            
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-80 overflow-y-auto">
+              {allUserDigimon.map(digimon => (
+                <div
+                  key={digimon.id}
+                  onClick={() => {
+                    applyPersonalityToDigimon(showDigimonSelectionModal, digimon.id);
+                    setShowDigimonSelectionModal(null);
+                  }}
+                  className="cursor-pointer p-3 rounded-lg border border-gray-200 hover:border-blue-300 transition-all"
+                >
+                  <div className="flex flex-col items-center">
+                    <div className="w-12 h-12 flex items-center justify-center">
+                      <DigimonSprite
+                        digimonName={digimon.digimon?.name || ""}
+                        fallbackSpriteUrl={digimon.digimon?.sprite_url || ""}
+                        size="sm"
+                        showHappinessAnimations={false}
+                      />
+                    </div>
+                    <div className="text-xs font-medium mt-1 text-center truncate w-full">
+                      {digimon.name || digimon.digimon?.name}
+                    </div>
+                    {digimon.personality && (
+                      <div className="text-xs text-blue-600 mt-1">
+                        {digimon.personality}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Stat Reset Digimon Selection Modal */}
+      {showStatResetModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Select Digimon</h2>
+              <button 
+                onClick={() => {
+                  setShowStatResetModal(null);
+                  setSelectedDigimonForStatReset(null);
+                }} 
+                className="text-gray-500 hover:text-gray-700"
+              >
+                ×
+              </button>
+            </div>
+            
+            <p className="mb-4 text-sm text-gray-700">
+              Select a Digimon to reset one of its bonus stats
+            </p>
+            
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-80 overflow-y-auto">
+              {allUserDigimon.map(digimon => (
+                <div
+                  key={digimon.id}
+                  onClick={() => setSelectedDigimonForStatReset(digimon)}
+                  className="cursor-pointer p-3 rounded-lg border border-gray-200 hover:border-blue-300 transition-all"
+                >
+                  <div className="flex flex-col items-center">
+                    <div className="w-12 h-12 flex items-center justify-center">
+                      <img
+                        src={digimon.digimon?.sprite_url || ""}
+                        alt={digimon.name || digimon.digimon?.name}
+                        className="w-12 h-12 object-contain"
+                        style={{ imageRendering: "pixelated" }}
+                      />
+                    </div>
+                    <div className="text-xs font-medium mt-1 text-center truncate w-full">
+                      {digimon.name || digimon.digimon?.name}
+                    </div>
+                    <div className="text-xs text-gray-500">Lv. {digimon.current_level}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Stat Selection Modal - shows after selecting a Digimon */}
+      {selectedDigimonForStatReset && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Select Stat to Reset</h2>
+              <button 
+                onClick={() => setSelectedDigimonForStatReset(null)} 
+                className="text-gray-500 hover:text-gray-700"
+              >
+                ×
+              </button>
+            </div>
+            
+            <div className="mb-4">
+              <div className="flex items-center space-x-3 mb-4">
+                <img
+                  src={selectedDigimonForStatReset.digimon?.sprite_url || ""}
+                  alt={selectedDigimonForStatReset.name || selectedDigimonForStatReset.digimon?.name}
+                  className="w-16 h-16 object-contain"
+                  style={{ imageRendering: "pixelated" }}
+                />
+                <div>
+                  <h3 className="font-bold">
+                    {selectedDigimonForStatReset.name || selectedDigimonForStatReset.digimon?.name}
+                  </h3>
+                  <p className="text-sm text-gray-600">Lv. {selectedDigimonForStatReset.current_level}</p>
+                </div>
+              </div>
+              
+              <p className="text-sm text-gray-700 mb-4">
+                Select a stat to reset. The bonus points will be returned to your account.
+              </p>
+              
+              <div className="space-y-2">
+                {statBonusFields.map(statField => (
+                  <button
+                    key={statField}
+                    onClick={() => resetDigimonStat(selectedDigimonForStatReset.id, statField)}
+                    className="w-full flex justify-between items-center p-3 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all"
+                  >
+                    <span className="font-medium">{statDisplayNames[statField]}</span>
+                    <span className="font-bold text-blue-600">
+                      {selectedDigimonForStatReset[statField] || 0}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* X-Antibody Selection Modal */}
+      {showXAntibodyModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full max-h-[80vh] overflow-y-auto">
+            <h2 className="text-xl font-bold mb-4">Select a Digimon</h2>
+            <p className="text-sm text-gray-600 mb-4">
+              Choose a Digimon to grant the X-Antibody. This will allow it to transform 
+              into its X-Antibody form at will (if available).
+            </p>
+            
+            <div className="grid grid-cols-1 gap-2">
+              {digimonForXAntibody.map(digimon => (
+                <button
+                  key={digimon.id}
+                  onClick={() => applyXAntibodyToDigimon(digimon.id)}
+                  className="flex items-center p-2 border rounded hover:bg-gray-100"
+                >
+                  <DigimonSprite
+                    digimonName={digimon.digimon?.name || ''}
+                    fallbackSpriteUrl={digimon.digimon?.sprite_url || ''}
+                    size="sm"
+                    showHappinessAnimations={false}
+                  />
+                  <div className="ml-2 text-left">
+                    <div className="font-medium text-left">{digimon.name || digimon.digimon?.name}</div>
+                    <div className="text-xs text-gray-500">Lv. {digimon.current_level}</div>
+                  </div>
+                </button>
+              ))}
+            </div>
+            
+            <div className="mt-4 flex justify-end">
+              <button
+                onClick={() => setShowXAntibodyModal(false)}
+                className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

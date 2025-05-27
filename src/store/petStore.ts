@@ -79,6 +79,7 @@ export interface UserDigimon {
   personality?: string;
   digimon?: Digimon;
   is_in_storage?: boolean;
+  has_x_antibody: boolean;
 }
 
 export interface Digimon {

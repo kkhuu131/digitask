@@ -38,6 +38,7 @@ import OnboardingPage from './pages/OnboardingPage';
 import LandingPage from './pages/LandingPage';
 import RosterPage from './pages/RosterPage';
 import DigimonStorePage from './pages/DigimonStorePage';
+import AdminDigimonManager from './pages/AdminDigimonManager';
 
 // Define a clear app initialization state
 interface AppInitState {
@@ -625,6 +626,14 @@ function App() {
           <ProtectedRoute>
             <Layout>
               <AdminDigimonEditor />
+            </Layout>
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/admin/digimon-manager" element={
+          <ProtectedRoute>
+            <Layout>
+              <AdminDigimonManager />
             </Layout>
           </ProtectedRoute>
         } />

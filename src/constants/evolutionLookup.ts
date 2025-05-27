@@ -4253,6 +4253,16 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "dna_requirement": 351
   },
   {
+    "id": 946,
+    "from_digimon_id": 379,
+    "to_digimon_id": 380,
+    "level_required": 16,
+    "stat_requirements": {
+      "int": 45
+    },
+    "dna_requirement": null
+  },
+  {
     "id": 149,
     "from_digimon_id": 34,
     "to_digimon_id": 70,
@@ -4853,6 +4863,63 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "dna_requirement": 76
   },
   {
+    "id": 947,
+    "from_digimon_id": 380,
+    "to_digimon_id": 368,
+    "level_required": 30,
+    "stat_requirements": {
+      "sp": 85,
+      "abi": 10,
+      "int": 110
+    },
+    "dna_requirement": null
+  },
+  {
+    "id": 948,
+    "from_digimon_id": 380,
+    "to_digimon_id": 385,
+    "level_required": 30,
+    "stat_requirements": {
+      "int": 85,
+      "spd": 85
+    },
+    "dna_requirement": null
+  },
+  {
+    "id": 951,
+    "from_digimon_id": 383,
+    "to_digimon_id": 384,
+    "level_required": 16,
+    "stat_requirements": {
+      "hp": 330,
+      "def": 35
+    },
+    "dna_requirement": null
+  },
+  {
+    "id": 952,
+    "from_digimon_id": 384,
+    "to_digimon_id": 385,
+    "level_required": 30,
+    "stat_requirements": {
+      "int": 85,
+      "spd": 85
+    },
+    "dna_requirement": null
+  },
+  {
+    "id": 953,
+    "from_digimon_id": 385,
+    "to_digimon_id": 369,
+    "level_required": 55,
+    "stat_requirements": {
+      "sp": 130,
+      "abi": 20,
+      "int": 130
+    },
+    "dna_requirement": null
+  },
+  {
     "id": 274,
     "from_digimon_id": 65,
     "to_digimon_id": 214,
@@ -5162,6 +5229,32 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 55,
       "spd": 20
+    },
+    "dna_requirement": null
+  },
+  {
+    "id": 949,
+    "from_digimon_id": 368,
+    "to_digimon_id": 381,
+    "level_required": 55,
+    "stat_requirements": {
+      "sp": 130,
+      "abi": 40,
+      "def": 130,
+      "int": 160
+    },
+    "dna_requirement": null
+  },
+  {
+    "id": 950,
+    "from_digimon_id": 359,
+    "to_digimon_id": 382,
+    "level_required": 60,
+    "stat_requirements": {
+      "sp": 220,
+      "abi": 80,
+      "int": 275,
+      "spd": 145
     },
     "dna_requirement": null
   },
@@ -22247,6 +22340,19 @@ export const EVOLUTION_LOOKUP_TABLE = {
   ],
   "359": [
     {
+      "id": 950,
+      "from_digimon_id": 359,
+      "to_digimon_id": 382,
+      "level_required": 60,
+      "stat_requirements": {
+        "sp": 220,
+        "abi": 80,
+        "int": 275,
+        "spd": 145
+      },
+      "dna_requirement": null
+    },
+    {
       "id": 927,
       "from_digimon_id": 359,
       "to_digimon_id": 361,
@@ -22382,6 +22488,98 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "spd": 170
       },
       "dna_requirement": 259
+    }
+  ],
+  "368": [
+    {
+      "id": 949,
+      "from_digimon_id": 368,
+      "to_digimon_id": 381,
+      "level_required": 55,
+      "stat_requirements": {
+        "sp": 130,
+        "abi": 40,
+        "def": 130,
+        "int": 160
+      },
+      "dna_requirement": null
+    }
+  ],
+  "379": [
+    {
+      "id": 946,
+      "from_digimon_id": 379,
+      "to_digimon_id": 380,
+      "level_required": 16,
+      "stat_requirements": {
+        "int": 45
+      },
+      "dna_requirement": null
+    }
+  ],
+  "380": [
+    {
+      "id": 947,
+      "from_digimon_id": 380,
+      "to_digimon_id": 368,
+      "level_required": 30,
+      "stat_requirements": {
+        "sp": 85,
+        "abi": 10,
+        "int": 110
+      },
+      "dna_requirement": null
+    },
+    {
+      "id": 948,
+      "from_digimon_id": 380,
+      "to_digimon_id": 385,
+      "level_required": 30,
+      "stat_requirements": {
+        "int": 85,
+        "spd": 85
+      },
+      "dna_requirement": null
+    }
+  ],
+  "383": [
+    {
+      "id": 951,
+      "from_digimon_id": 383,
+      "to_digimon_id": 384,
+      "level_required": 16,
+      "stat_requirements": {
+        "hp": 330,
+        "def": 35
+      },
+      "dna_requirement": null
+    }
+  ],
+  "384": [
+    {
+      "id": 952,
+      "from_digimon_id": 384,
+      "to_digimon_id": 385,
+      "level_required": 30,
+      "stat_requirements": {
+        "int": 85,
+        "spd": 85
+      },
+      "dna_requirement": null
+    }
+  ],
+  "385": [
+    {
+      "id": 953,
+      "from_digimon_id": 385,
+      "to_digimon_id": 369,
+      "level_required": 55,
+      "stat_requirements": {
+        "sp": 130,
+        "abi": 20,
+        "int": 130
+      },
+      "dna_requirement": null
     }
   ]
 },
@@ -33993,6 +34191,113 @@ export const EVOLUTION_LOOKUP_TABLE = {
       },
       "dna_requirement": 366
     }
+  ],
+  "368": [
+    {
+      "id": 947,
+      "from_digimon_id": 380,
+      "to_digimon_id": 368,
+      "level_required": 30,
+      "stat_requirements": {
+        "sp": 85,
+        "abi": 10,
+        "int": 110
+      },
+      "dna_requirement": null
+    }
+  ],
+  "369": [
+    {
+      "id": 953,
+      "from_digimon_id": 385,
+      "to_digimon_id": 369,
+      "level_required": 55,
+      "stat_requirements": {
+        "sp": 130,
+        "abi": 20,
+        "int": 130
+      },
+      "dna_requirement": null
+    }
+  ],
+  "380": [
+    {
+      "id": 946,
+      "from_digimon_id": 379,
+      "to_digimon_id": 380,
+      "level_required": 16,
+      "stat_requirements": {
+        "int": 45
+      },
+      "dna_requirement": null
+    }
+  ],
+  "381": [
+    {
+      "id": 949,
+      "from_digimon_id": 368,
+      "to_digimon_id": 381,
+      "level_required": 55,
+      "stat_requirements": {
+        "sp": 130,
+        "abi": 40,
+        "def": 130,
+        "int": 160
+      },
+      "dna_requirement": null
+    }
+  ],
+  "382": [
+    {
+      "id": 950,
+      "from_digimon_id": 359,
+      "to_digimon_id": 382,
+      "level_required": 60,
+      "stat_requirements": {
+        "sp": 220,
+        "abi": 80,
+        "int": 275,
+        "spd": 145
+      },
+      "dna_requirement": null
+    }
+  ],
+  "384": [
+    {
+      "id": 951,
+      "from_digimon_id": 383,
+      "to_digimon_id": 384,
+      "level_required": 16,
+      "stat_requirements": {
+        "hp": 330,
+        "def": 35
+      },
+      "dna_requirement": null
+    }
+  ],
+  "385": [
+    {
+      "id": 948,
+      "from_digimon_id": 380,
+      "to_digimon_id": 385,
+      "level_required": 30,
+      "stat_requirements": {
+        "int": 85,
+        "spd": 85
+      },
+      "dna_requirement": null
+    },
+    {
+      "id": 952,
+      "from_digimon_id": 384,
+      "to_digimon_id": 385,
+      "level_required": 30,
+      "stat_requirements": {
+        "int": 85,
+        "spd": 85
+      },
+      "dna_requirement": null
+    }
   ]
 },
   byPair: {
@@ -38228,6 +38533,16 @@ export const EVOLUTION_LOOKUP_TABLE = {
     },
     "dna_requirement": 351
   },
+  "379-380": {
+    "id": 946,
+    "from_digimon_id": 379,
+    "to_digimon_id": 380,
+    "level_required": 16,
+    "stat_requirements": {
+      "int": 45
+    },
+    "dna_requirement": null
+  },
   "34-70": {
     "id": 149,
     "from_digimon_id": 34,
@@ -38828,6 +39143,63 @@ export const EVOLUTION_LOOKUP_TABLE = {
     },
     "dna_requirement": 76
   },
+  "380-368": {
+    "id": 947,
+    "from_digimon_id": 380,
+    "to_digimon_id": 368,
+    "level_required": 30,
+    "stat_requirements": {
+      "sp": 85,
+      "abi": 10,
+      "int": 110
+    },
+    "dna_requirement": null
+  },
+  "380-385": {
+    "id": 948,
+    "from_digimon_id": 380,
+    "to_digimon_id": 385,
+    "level_required": 30,
+    "stat_requirements": {
+      "int": 85,
+      "spd": 85
+    },
+    "dna_requirement": null
+  },
+  "383-384": {
+    "id": 951,
+    "from_digimon_id": 383,
+    "to_digimon_id": 384,
+    "level_required": 16,
+    "stat_requirements": {
+      "hp": 330,
+      "def": 35
+    },
+    "dna_requirement": null
+  },
+  "384-385": {
+    "id": 952,
+    "from_digimon_id": 384,
+    "to_digimon_id": 385,
+    "level_required": 30,
+    "stat_requirements": {
+      "int": 85,
+      "spd": 85
+    },
+    "dna_requirement": null
+  },
+  "385-369": {
+    "id": 953,
+    "from_digimon_id": 385,
+    "to_digimon_id": 369,
+    "level_required": 55,
+    "stat_requirements": {
+      "sp": 130,
+      "abi": 20,
+      "int": 130
+    },
+    "dna_requirement": null
+  },
   "65-214": {
     "id": 274,
     "from_digimon_id": 65,
@@ -39138,6 +39510,32 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 55,
       "spd": 20
+    },
+    "dna_requirement": null
+  },
+  "368-381": {
+    "id": 949,
+    "from_digimon_id": 368,
+    "to_digimon_id": 381,
+    "level_required": 55,
+    "stat_requirements": {
+      "sp": 130,
+      "abi": 40,
+      "def": 130,
+      "int": 160
+    },
+    "dna_requirement": null
+  },
+  "359-382": {
+    "id": 950,
+    "from_digimon_id": 359,
+    "to_digimon_id": 382,
+    "level_required": 60,
+    "stat_requirements": {
+      "sp": 220,
+      "abi": 80,
+      "int": 275,
+      "spd": 145
     },
     "dna_requirement": null
   },

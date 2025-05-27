@@ -154,7 +154,7 @@ const EvolutionAnimation: React.FC<EvolutionAnimationProps> = ({
               <h2 className="text-4xl font-bold text-white tracking-wider drop-shadow-lg">
                 {isDevolution ? "DE-DIGIVOLUTION" : 
                  isDNAFusion ? "DNA DIGIVOLUTION" : 
-                 isFormTransformation ? `${formType} Form` : 
+                 isFormTransformation ? `${formType?.toUpperCase()} FORM` : 
                  "DIGIVOLUTION"}
               </h2>
             </motion.div>

@@ -4,6 +4,7 @@ import { DIGIMON_LOOKUP_TABLE } from '../constants/digimonLookup';
 import { DigimonFormInfo } from '../constants/digimonFormsLookup';
 import EvolutionAnimation from './EvolutionAnimation';
 import { useNotificationStore } from '../store/notificationStore';
+import DigimonSprite from './DigimonSprite';
 
 interface DigimonFormTransformationModalProps {
   isOpen: boolean;
@@ -12,7 +13,6 @@ interface DigimonFormTransformationModalProps {
   currentDigimonId: number;
   formInfo: DigimonFormInfo;
   onParentClose?: () => void;
-  consumeXAntibody?: () => Promise<boolean>;
 }
 
 const DigimonFormTransformationModal: React.FC<DigimonFormTransformationModalProps> = ({
@@ -22,7 +22,6 @@ const DigimonFormTransformationModal: React.FC<DigimonFormTransformationModalPro
   currentDigimonId,
   formInfo,
   onParentClose,
-  consumeXAntibody
 }) => {
   const { transformDigimonForm, discoveredDigimon } = useDigimonStore();
   const [showAnimation, setShowAnimation] = useState(false);
@@ -40,19 +39,7 @@ const DigimonFormTransformationModal: React.FC<DigimonFormTransformationModalPro
   // This function will be called after animation completes
   const completeTransformation = async () => {
     try {
-      // Actually consume the X-Antibody here
-      if (formInfo.formType === 'X-Antibody' && consumeXAntibody) {
-        const consumed = await consumeXAntibody();
-        if (!consumed) {
-          useNotificationStore.getState().addNotification({
-            type: "error",
-            message: "Failed to consume X-Antibody."
-          });
-          setShowAnimation(false);
-          return;
-        }
-      }
-      
+    
       const success = await transformDigimonForm(
         userDigimonId, 
         formInfo.formDigimonId,
@@ -95,43 +82,39 @@ const DigimonFormTransformationModal: React.FC<DigimonFormTransformationModalPro
         
         <div className="flex justify-center items-center space-x-8 my-6">
           <div className="text-center">
-            <img 
-              src={currentDigimon.sprite_url} 
-              alt={currentDigimon.name}
-              className="w-24 h-24 mx-auto"
-              style={{ imageRendering: "pixelated" }}
+            <DigimonSprite
+              digimonName={currentDigimon.name}
+              fallbackSpriteUrl={currentDigimon.sprite_url}
+              size="md"
+              showHappinessAnimations={true}
             />
-            <p className="mt-2 font-medium">{currentDigimon.name}</p>
+            <p className="font-medium">{currentDigimon.name}</p>
           </div>
-          
-          <div className="text-2xl">→</div>
+        
           
           <div className="text-center">
             {isFormDiscovered ? (
               <>
-                <img 
-                  src={formDigimon.sprite_url} 
-                  alt={formDigimon.name}
-                  className="w-24 h-24 mx-auto"
-                  style={{ imageRendering: "pixelated" }}
+                <DigimonSprite
+                  digimonName={formDigimon.name}
+                  fallbackSpriteUrl={formDigimon.sprite_url}
+                  size="md"
+                  showHappinessAnimations={true}
                 />
-                <p className="mt-2 font-medium">{formDigimon.name}</p>
+                <p className="font-medium">{formDigimon.name}</p>
               </>
             ) : (
               <>
                 <div className="w-24 h-24 mx-auto flex items-center justify-center">
-                  <img 
-                    src={formDigimon.sprite_url} 
-                    alt="Unknown Digimon"
-                    className="w-24 h-24 mx-auto"
-                    style={{ 
-                      imageRendering: "pixelated",
-                      filter: "brightness(0) contrast(100%)", 
-                      opacity: 0.7 
-                    }}
+                  <DigimonSprite
+                    digimonName={formDigimon.name}
+                    fallbackSpriteUrl={formDigimon.sprite_url}
+                    size="md"
+                    showHappinessAnimations={true}
+                    silhouette={true}
                   />
                 </div>
-                <p className="mt-2 font-medium">???</p>
+                <p className="font-medium">???</p>
               </>
             )}
           </div>

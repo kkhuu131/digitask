@@ -1,4 +1,4 @@
-export const CURRENT_VERSION = "1.3.0";
+export const CURRENT_VERSION = "1.4.0";
 
 export const UPDATE_CHANGES = {
   "1.0.1": [
@@ -73,5 +73,10 @@ export const UPDATE_CHANGES = {
     "DigiFarm! Send Digimon that you want to keep, but don't want to use, to the DigiFarm!",
     "Introducing the Store! Gain bits from Arena battles to purchase various items from Neemon!",
     "Fixed bug where users could not claim Digimon even though they had open party slots.",
+  ],
+  "1.4.0": [
+    "X-Antibody Rework! Item now permanently allows a Digimon to switch between X-Antibody and regular.",
+    "Tons of X-Antibody Digimon added! Royal Knights, Angewomon, Rosemon, and more!",
+    "More items such as Personality changer and Stat extractor added!",
   ],
 };

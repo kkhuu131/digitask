@@ -247,6 +247,13 @@ const Layout = ({ children }: LayoutProps) => {
                   Editor
                 </Link>
                 <Link
+                  to="/admin/digimon-manager"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => setActiveMenu(null)}
+                >
+                  Database Manager
+                </Link>
+                <Link
                   to="/admin/titles"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   onClick={() => setActiveMenu(null)}

@@ -11,6 +11,26 @@ export enum ItemApplyType {
   INVENTORY = "inventory", // Goes to inventory for later use
 }
 
+// Add a new ItemEffect type
+export enum ItemEffectType {
+  STAT_BOOST = "stat_boost",
+  PERSONALITY = "personality",
+  DISCOVER = "discover_digimon",
+  AVATAR = "avatar_variant",
+  X_ANTIBODY = "x_antibody",
+  STAT_RESET = "stat_reset", // New type for stat reset
+}
+
+// Personality types
+export enum DigimonPersonality {
+  DURABLE = "Durable", // HP focused
+  LIVELY = "Lively", // SP focused
+  FIGHTER = "Fighter", // ATK focused
+  DEFENDER = "Defender", // DEF focused
+  BRAINY = "Brainy", // INT focused
+  NIMBLE = "Nimble", // SPD focused
+}
+
 // Define store item interface
 export interface StoreItem {
   id: string;
@@ -23,7 +43,7 @@ export interface StoreItem {
   applyType: ItemApplyType;
   effect?: {
     type: string;
-    value: number;
+    value: number | string;
   };
 }
 
@@ -131,21 +151,105 @@ export const STORE_ITEMS: StoreItem[] = [
 
   // Utility Items
   {
-    id: "random_data",
-    name: "Random Data",
-    description: "Discovers an undiscovered Digimon",
+    id: "stat_reset",
+    name: "Stat Extractor",
+    description: "Refunds the points spent on a chosen bonus stat of a Digimon",
     category: ItemCategory.UTILITY,
-    price: 2000,
+    price: 1500,
+    currency: "bits",
+    imageUrl: "/assets/items/chip.png",
+    applyType: ItemApplyType.INVENTORY,
+    effect: {
+      type: ItemEffectType.STAT_RESET,
+      value: 1,
+    },
+  },
+  // Special Items
+  // Personality Items
+  {
+    id: "durable_data",
+    name: "Durable Data",
+    description: "Changes a Digimon's personality to Durable (HP focused)",
+    category: ItemCategory.UTILITY,
+    price: 2500,
     currency: "bits",
     imageUrl: "/assets/items/floppy_disc.png",
     applyType: ItemApplyType.INVENTORY,
     effect: {
-      type: "discover_digimon",
-      value: 1,
+      type: ItemEffectType.PERSONALITY,
+      value: DigimonPersonality.DURABLE,
     },
   },
-
-  // Special Items
+  {
+    id: "lively_data",
+    name: "Lively Data",
+    description: "Changes a Digimon's personality to Lively (SP focused)",
+    category: ItemCategory.UTILITY,
+    price: 2500,
+    currency: "bits",
+    imageUrl: "/assets/items/floppy_disc.png",
+    applyType: ItemApplyType.INVENTORY,
+    effect: {
+      type: ItemEffectType.PERSONALITY,
+      value: DigimonPersonality.LIVELY,
+    },
+  },
+  {
+    id: "fighter_data",
+    name: "Fighter Data",
+    description: "Changes a Digimon's personality to Fighter (ATK focused)",
+    category: ItemCategory.UTILITY,
+    price: 2500,
+    currency: "bits",
+    imageUrl: "/assets/items/floppy_disc.png",
+    applyType: ItemApplyType.INVENTORY,
+    effect: {
+      type: ItemEffectType.PERSONALITY,
+      value: DigimonPersonality.FIGHTER,
+    },
+  },
+  {
+    id: "defender_data",
+    name: "Defender Data",
+    description: "Changes a Digimon's personality to Defender (DEF focused)",
+    category: ItemCategory.UTILITY,
+    price: 2500,
+    currency: "bits",
+    imageUrl: "/assets/items/floppy_disc.png",
+    applyType: ItemApplyType.INVENTORY,
+    effect: {
+      type: ItemEffectType.PERSONALITY,
+      value: DigimonPersonality.DEFENDER,
+    },
+  },
+  {
+    id: "brainy_data",
+    name: "Brainy Data",
+    description: "Changes a Digimon's personality to Brainy (INT focused)",
+    category: ItemCategory.UTILITY,
+    price: 2500,
+    currency: "bits",
+    imageUrl: "/assets/items/floppy_disc.png",
+    applyType: ItemApplyType.INVENTORY,
+    effect: {
+      type: ItemEffectType.PERSONALITY,
+      value: DigimonPersonality.BRAINY,
+    },
+  },
+  {
+    id: "nimble_data",
+    name: "Nimble Data",
+    description: "Changes a Digimon's personality to Nimble (SPD focused)",
+    category: ItemCategory.UTILITY,
+    price: 2500,
+    currency: "bits",
+    imageUrl: "/assets/items/floppy_disc.png",
+    applyType: ItemApplyType.INVENTORY,
+    effect: {
+      type: ItemEffectType.PERSONALITY,
+      value: DigimonPersonality.NIMBLE,
+    },
+  },
   {
     id: "avatar_chip",
     name: "Avatar Chip",
@@ -161,11 +265,26 @@ export const STORE_ITEMS: StoreItem[] = [
     },
   },
   {
+    id: "random_data",
+    name: "Random Digimon Data",
+    description: "Discovers an undiscovered Digimon for the DigiDex",
+    category: ItemCategory.UTILITY,
+    price: 2000,
+    currency: "bits",
+    imageUrl: "/assets/items/floppy_disc.png",
+    applyType: ItemApplyType.INVENTORY,
+    effect: {
+      type: "discover_digimon",
+      value: 1,
+    },
+  },
+  {
     id: "x_antibody",
     name: "X-Antibody",
-    description: "Gain a vaccine allowing select Digimon to transform",
+    description:
+      "Grants a Digimon the ability to switch to its X-Antibody form at will",
     category: ItemCategory.SPECIAL,
-    price: 8000,
+    price: 3000,
     currency: "bits",
     imageUrl: "/assets/items/x-antibody.png",
     applyType: ItemApplyType.INVENTORY,

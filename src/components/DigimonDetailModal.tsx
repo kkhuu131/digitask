@@ -108,18 +108,28 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
       const currentBonus = (selectedDigimon as any)[statField] || 0;
       const newBonus = currentBonus + 1;
 
-      // Optimistically update local state first
+      // 1. OPTIMISTIC UPDATE: Immediately update the UI with the new value
+      // Create a copy of the selectedDigimon with the updated stat
       const updatedDigimon = {
         ...selectedDigimon,
         [statField]: newBonus
       };
       
-      // Update parent component immediately
+      // 2. Update the local state immediately
       if (onNameChange) {
         onNameChange(updatedDigimon);
       }
+      
+      // 3. Update the global store state immediately for UI consistency
+      useDigimonStore.getState().updateDigimonInStore(updatedDigimon);
+      
+      // 4. Optimistically update the savedStats display
+      const newSavedStats = { ...savedStats };
+      newSavedStats[upperType] = Math.max(0, (newSavedStats[upperType] || 0) - 1);
+      setSavedStats(newSavedStats);
+      localStorage.setItem("savedStats", JSON.stringify(newSavedStats));
 
-      // Then perform the database update
+      // 5. Now perform the actual database update in the background
       const { error } = await supabase.rpc('allocate_stat', {
         p_digimon_id: selectedDigimon.id,
         p_stat_type: upperType,
@@ -129,32 +139,43 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
       if (error) {
         // If error, revert the optimistic update
         if (onNameChange) {
-          onNameChange(selectedDigimon);
+          onNameChange(selectedDigimon); // Revert to original
         }
+        
+        // Revert the store update
+        useDigimonStore.getState().updateDigimonInStore(selectedDigimon);
+        
+        // Revert the savedStats
+        const originalSavedStats = { ...savedStats };
+        setSavedStats(originalSavedStats);
+        localStorage.setItem("savedStats", JSON.stringify(originalSavedStats));
+        
         throw error;
       }
 
-      // Update the global store state
-      useDigimonStore.getState().updateDigimonInStore(updatedDigimon);
-      
-      // Update saved stats in profile
-      const { data: profileData } = await supabase
+      // 6. Fetch the updated saved stats from the database (in the background)
+      supabase
         .from("profiles")
         .select("saved_stats")
         .eq("id", userData.user.id)
-        .single();
-
-      const newSavedStats = profileData?.saved_stats || {
-        HP: 0, SP: 0, ATK: 0, DEF: 0, INT: 0, SPD: 0
-      };
-      setSavedStats(newSavedStats);
-      localStorage.setItem("savedStats", JSON.stringify(newSavedStats));
+        .single()
+        .then(({ data: profileData }) => {
+          if (profileData?.saved_stats) {
+            // Only update if different from our optimistic update
+            if (JSON.stringify(profileData.saved_stats) !== JSON.stringify(newSavedStats)) {
+              setSavedStats(profileData.saved_stats);
+              localStorage.setItem("savedStats", JSON.stringify(profileData.saved_stats));
+            }
+          }
+        });
       
-      await useDigimonStore.getState().fetchUserDailyStatGains();
+      // 7. In the background, refresh other relevant data
+      useDigimonStore.getState().fetchUserDailyStatGains();
       
-      setAllocating(false);
     } catch (error) {
       console.error("Error allocating stat:", error);
+      // Error notification can be added here if needed
+    } finally {
       setAllocating(false);
     }
   };
@@ -484,6 +505,11 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                     Active
                   </span>
                 )}
+                {selectedDigimon.has_x_antibody && (
+                <div className="text-sm bg-purple-100 text-purple-800 px-2 py-1 rounded">
+                  <span className="text-sm font-medium text-indigo-600">X-Antibody</span>
+                </div>
+              )}
               </div>
               <div className="grid grid-cols-2 gap-x-1 text-sm text-gray-500 mt-2">
                 <p className="text-right">Age:</p>
@@ -557,7 +583,6 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                   </p>
                 </div>
               )}
-
 
               <div className="space-y-3 mb-4">
                 {renderStatRow("HP", stats.hp, selectedDigimon.hp_bonus)}

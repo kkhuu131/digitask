@@ -1,4 +1,3 @@
-
 const PatchNotes = () => {
   return (
     <div className="max-w-4xl mx-auto">
@@ -26,6 +25,25 @@ const PatchNotes = () => {
           <div className="mb-6">
             <div className="flex items-center mb-2">
               <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
+              <h3 className="text-lg font-medium ml-2">X-Antibody Rework!</h3>
+              <span className="text-sm text-gray-500 ml-auto">May 26, 2025</span>
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <li>X-Antibody item has been reworked to be a permanent application to a Digimon, allowing it to freely switch between X-Antibody and regular forms.</li>
+            <li>Cost has also been reduced to 3000 bits.</li>
+            <li>Added more X-Antibody Digimon!</li>
+            <ul>
+              <li>Royal Knights</li>
+              <li>Salamon, Gatomon, Angewomon, Ophanimon</li>
+              <li>Lilithmon, evolving from LadyDevimon</li>
+              <li>Palmon, Togemon, Lillymon, Rosemon</li>
+            </ul>
+            <li>More to come soon, feel free to send more suggestions through feedback form!</li>
+            <li>More items such as Personality changer and Stat extractor added!</li>
+            </ul>
+          </div>
+          <div className="mb-6">
+            <div className="flex items-center mb-2">
               <h3 className="text-lg font-medium ml-2">DigiFarm, Store, and more!</h3>
               <span className="text-sm text-gray-500 ml-auto">May 25, 2025</span>
             </div>

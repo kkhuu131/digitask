@@ -1,5 +1,5 @@
 // Auto-generated file - DO NOT EDIT MANUALLY
-// Generated on 2025-05-23T01:28:10.852Z
+// Generated on 2025-05-27T01:24:34.612Z
 
 export const ANIMATED_DIGIMON = [
   "Aegisdramon",
@@ -217,7 +217,7 @@ export const ANIMATED_DIGIMON = [
   "Gatomon X",
   "Gawappamon",
   "Gazimon",
-  "Gazimon_X",
+  "Gazimon X",
   "Gekomon",
   "GeoGreymon",
   "Geremon",
@@ -357,7 +357,7 @@ export const ANIMATED_DIGIMON = [
   "Lillymon X",
   "Lopmon",
   "Lopmon X",
-  "Lotusmon",
+  "Lotosmon",
   "Lucemon",
   "Lucemon FM",
   "Lucemon SM",
@@ -496,8 +496,6 @@ export const ANIMATED_DIGIMON = [
   "PlatinumScumon",
   "Plesiomon",
   "Plesiomon X",
-  "Plotmon",
-  "Plotmon X",
   "Pokomon",
   "Popomon",
   "Porcupamon",
@@ -556,6 +554,8 @@ export const ANIMATED_DIGIMON = [
   "SaintGargomon",
   "Sakuyamon",
   "Sakuyamon X",
+  "Salamon",
+  "Salamon X",
   "SandYanmamon",
   "Sangloupmon",
   "Sangomon",

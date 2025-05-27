@@ -5,6 +5,7 @@ import { useAuthStore } from '../store/authStore';
 import { useNotificationStore } from '../store/notificationStore';
 import { useDigimonStore, UserDigimon, Digimon } from '../store/petStore';
 import { DIGIMON_LOOKUP_TABLE } from '../constants/digimonLookup';
+import DigimonSprite from '@/components/DigimonSprite';
 
 const AdminDigimonEditor = () => {
   const { isAdmin } = useAuthStore();
@@ -234,11 +235,11 @@ const AdminDigimonEditor = () => {
                   >
                     <div className="flex flex-col items-center">
                       <p className="text-xs text-gray-500 mb-2">{digimon.id}</p>
-                      <img 
-                        src={digimon.sprite_url} 
-                        alt={digimon.name} 
-                        className="w-12 h-12 object-contain"
-                        style={{ imageRendering: 'pixelated' }}
+                      <DigimonSprite
+                        digimonName={digimon.name}
+                        fallbackSpriteUrl={digimon.sprite_url}
+                        size="sm"
+                        showHappinessAnimations={false}
                       />
                       <p className="text-xs font-medium text-center mt-1">{digimon.name}</p>
                       <p className="text-xs text-gray-500">{digimon.stage}</p>
@@ -265,11 +266,11 @@ const AdminDigimonEditor = () => {
                       onClick={() => setSelectedDigimon(digimon)}
                     >
                       <div className="flex flex-col items-center">
-                        <img 
-                          src={digimonData?.sprite_url} 
-                          alt={digimonData?.name} 
-                          className="w-16 h-16 object-contain"
-                          style={{ imageRendering: 'pixelated' }}
+                        <DigimonSprite
+                          digimonName={digimon.digimon?.name || ''}
+                          fallbackSpriteUrl={digimon.digimon?.sprite_url || ''}
+                          size="sm"
+                          showHappinessAnimations={true}
                         />
                         <h3 className="font-medium text-center mt-2">{digimon.name}</h3>
                         <p className="text-xs text-gray-500">{digimonData?.name}</p>
@@ -293,11 +294,11 @@ const AdminDigimonEditor = () => {
             <>
               <div className="mb-6 flex items-center">
                 <div className="mr-4">
-                  <img 
-                    src={DIGIMON_LOOKUP_TABLE[editForm.digimon_id]?.sprite_url || selectedDigimon.digimon?.sprite_url} 
-                    alt="Current Digimon"
-                    className="w-24 h-24 object-contain"
-                    style={{ imageRendering: 'pixelated' }}
+                  <DigimonSprite
+                    digimonName={editForm.name}
+                    fallbackSpriteUrl={DIGIMON_LOOKUP_TABLE[editForm.digimon_id]?.sprite_url || selectedDigimon.digimon?.sprite_url || ''}
+                    size="sm"
+                    showHappinessAnimations={false}
                   />
                 </div>
                 <div>
