@@ -8,6 +8,7 @@ import EvolutionAnimation from "./EvolutionAnimation";
 import { getSpriteUrl } from '../utils/spriteManager';
 import { ANIMATED_DIGIMON } from '../constants/animatedDigimonList';
 import type { SpriteType } from '../utils/spriteManager';
+import { calculateFinalStats } from "@/utils/digimonStatCalculation";
 
 interface DigimonProps {
   userDigimon: UserDigimon;
@@ -234,9 +235,24 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
     }
   };
   
-  // Filter evolution options to only show those that meet the level requirement
+  // Filter evolution options to only show those that meet all requirements
   const availableEvolutions = evolutionOptions.filter(
-    option => userDigimon.current_level >= option.level_required
+    option => {
+      // First check level requirement
+      if (userDigimon.current_level < option.level_required) return false;
+      
+      // Then check stat requirements if they exist
+      if (option.stat_requirements) {
+        const stats = calculateFinalStats(userDigimon);
+        // Check each stat requirement
+        for (const [stat, value] of Object.entries(option.stat_requirements)) {
+          if (stats[stat as keyof typeof stats] < value) return false;
+        }
+      }
+      
+      // If all requirements are met
+      return true;
+    }
   );
   
   // Add this new function to handle sprite clicks
@@ -271,10 +287,6 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
   
   // Function to handle setting a Digimon as active
   const handleSetActive = async () => {
-  };
-  
-  // Function to handle releasing a Digimon
-  const handleRelease = () => {
   };
   
   // Function to complete devolution after animation
@@ -443,10 +455,6 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
           )}
         </div>
       </div>
-
-      <div className="flex justify-between text-sm text-gray-500">
-        <p>Stage: {digimonData.stage}</p>
-      </div>
       
       <div className="w-full space-y-3">
         <div>
@@ -505,7 +513,6 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
             setShowDetailModal(false);
           }}
           onSetActive={handleSetActive}
-          onRelease={handleRelease}
           onNameChange={(updatedDigimon) => {
             // Update the local state immediately
             setCurrentDigimon(updatedDigimon);

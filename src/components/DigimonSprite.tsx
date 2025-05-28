@@ -155,14 +155,20 @@ const DigimonSprite: React.FC<DigimonSpriteProps> = ({
   return (
     <div className={`relative flex items-center justify-center ${sizeClasses[size]}`}>
       <motion.div
-        animate={
-          enableHopping && !hasAnimatedSprites
-            ? { y: [0, -5, 0] }
-            : { y: 0 }
+        animate={enableHopping
+          ? {
+              y: [0, -5, 0, -3, 0, -5, 0],
+            }
+          : { y: 0 }
         }
         transition={
-          enableHopping && !hasAnimatedSprites
-            ? { repeat: Infinity, duration: 2 }
+          enableHopping
+            ? {
+                duration: 1,
+                repeat: Infinity,
+                repeatType: "loop",
+                repeatDelay: 1,
+              }
             : undefined
         }
         className="w-full h-full flex items-center justify-center"

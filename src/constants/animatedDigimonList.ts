@@ -1,5 +1,5 @@
 // Auto-generated file - DO NOT EDIT MANUALLY
-// Generated on 2025-05-27T01:24:34.612Z
+// Generated on 2025-05-27T07:53:46.278Z
 
 export const ANIMATED_DIGIMON = [
   "Aegisdramon",
@@ -124,8 +124,8 @@ export const ANIMATED_DIGIMON = [
   "Commandramon",
   "Coronamon",
   "Cotsucomon",
-  "Craniummon",
-  "Craniummon X",
+  "Craniamon",
+  "Craniamon X",
   "Creepymon",
   "Creepymon X",
   "Crescemon",
@@ -566,8 +566,6 @@ export const ANIMATED_DIGIMON = [
   "Seadramon X",
   "Seraphimon",
   "Shadramon",
-  "Shakomon",
-  "Shakomon X",
   "Shawujinmon",
   "Sheepmon",
   "Shellmon",
@@ -595,6 +593,8 @@ export const ANIMATED_DIGIMON = [
   "SuperStarmon",
   "Susanomon",
   "Swimmon",
+  "Syakomon",
+  "Syakomon X",
   "Tanemon",
   "Tankmon",
   "Targetmon",

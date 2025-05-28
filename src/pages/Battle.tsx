@@ -172,7 +172,7 @@ const Battle = () => {
             
               <div className="flex items-center space-x-4">
                 {/* Refresh button - only visible in development environment */}
-                {/* {import.meta.env.DEV && (
+                {import.meta.env.DEV && (
                   <button
                     onClick={() => getBattleOptions(true)}
                     className="text-sm px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded-md transition-colors"
@@ -180,7 +180,7 @@ const Battle = () => {
                   >
                     {loading ? "Refreshing..." : "Refresh Options"}
                   </button>
-                )} */}
+                )}
                 <div className="text-xs sm:text-base">
                 <span className="font-medium">Daily Battles:</span> {dailyBattlesRemaining} left
                 </div>

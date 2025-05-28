@@ -246,6 +246,41 @@ const DigimonStorePage: React.FC = () => {
       const success = await spendCurrency(item.currency, item.price);
       
       if (success) {
+
+        if (item.id === "brave_point" && userDigimon) {
+          try {
+            // Ensure we have a valid session for this specific operation
+            const { data: sessionData } = await supabase.auth.getSession();
+            if (!sessionData.session) {
+              throw new Error("Your session has expired");
+            }
+            
+            // Do the update directly with Supabase to avoid potential store auth issues
+            const { error } = await supabase
+              .from("user_digimon")
+              .update({ 
+                experience_points: (userDigimon.experience_points || 0) + Number(item.effect!.value),
+                last_updated_at: new Date().toISOString()
+              })
+              .eq("id", userDigimon.id);
+              
+            if (error) throw error;
+            
+            // Refresh the Digimon data
+            await fetchUserDigimon();
+            
+            useNotificationStore.getState().addNotification({
+              type: "success",
+              message: `Applied ${item.name} to ${userDigimon.name || userDigimon.digimon?.name}!`,
+            });
+          } catch (error) {
+            console.error("Error applying brave point:", error);
+            useNotificationStore.getState().addNotification({
+              type: "error",
+              message: `Failed to apply brave point: ${(error as Error).message}`,
+            });
+          }
+        }
         // Special case for ABI enhancer - apply to active Digimon
         if (item.id === "abi_enhancer" && userDigimon) {
           try {

@@ -317,7 +317,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
           useDigimonStore.getState().fetchUserDailyStatGains();
 
           useNotificationStore.getState().addNotification({
-            message: `Completed "${task.description}"! \n${
+            message: `${
               useDigimonStore.getState().userDigimon?.name || "Active Digimon"
             } gained ${expPoints} exp and ${adjustedBoostValue} ${
               task.category

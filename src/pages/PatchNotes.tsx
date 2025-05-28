@@ -1,3 +1,4 @@
+
 const PatchNotes = () => {
   return (
     <div className="max-w-4xl mx-auto">
@@ -25,6 +26,21 @@ const PatchNotes = () => {
           <div className="mb-6">
             <div className="flex items-center mb-2">
               <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
+              <h3 className="text-lg font-medium ml-2">X-Antibody Rework!</h3>
+              <span className="text-sm text-gray-500 ml-auto">May 26, 2025</span>
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <li>Better Arena battle matchmaking (strength is determined by stats not level).</li>
+            <li>Example for reasoning behind this was level 1 Ultimate Digimon were the same as a level 1 Baby Digimon.</li>
+            <li>As such, battles may seem harder than before, so bit rewards have been overall increased.</li>
+            <li>New store item icons and replaced ABI booster with EXP item.</li>
+            <li>Ogremon X, Craniamon X (forgot in last update), and Numemon X added.</li>
+            <li>Fixed a bug where currency was reset to 0 after a battle, if shop wasn't visited during session.</li>
+            <li>If this affected you, please let me know, and I'll manually add the missing currency.</li>
+            </ul>
+          </div>
+          <div className="mb-6">
+            <div className="flex items-center mb-2">
               <h3 className="text-lg font-medium ml-2">X-Antibody Rework!</h3>
               <span className="text-sm text-gray-500 ml-auto">May 26, 2025</span>
             </div>

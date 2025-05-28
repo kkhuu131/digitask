@@ -14,7 +14,6 @@ interface DigimonDetailModalProps {
   selectedDigimon: UserDigimon | null;
   onClose: () => void;
   onSetActive?: (digimonId: string) => Promise<void>;
-  onRelease?: (digimonId: string) => void;
   onNameChange?: (updatedDigimon: UserDigimon) => void;
   className?: string;
 }
@@ -23,7 +22,6 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
   selectedDigimon,
   onClose,
   onSetActive,
-  onRelease,
   onNameChange,
   className = "",
 }) => {
@@ -704,18 +702,20 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                             <div className="flex items-center">
                               <div className="w-10 h-10 mr-2 flex items-center justify-center">
                                 {discovered ? (
-                                  <img 
-                                    src={option.sprite_url} 
-                                    alt={option.name} 
-                                    style={{ imageRendering: "pixelated" }}
+                                  <DigimonSprite
+                                    digimonName={option.name}
+                                    fallbackSpriteUrl={option.sprite_url}
+                                    size="xs"
+                                    showHappinessAnimations={false}
                                   />
                                 ) : (
                                   <div className="w-10 h-10 flex items-center justify-center">
-                                    <img 
-                                      src={option.sprite_url} 
-                                      alt="Unknown Digimon"
-                                      style={{ imageRendering: "pixelated" }} 
-                                      className="brightness-0 opacity-70"
+                                    <DigimonSprite
+                                      digimonName={option.name}
+                                      fallbackSpriteUrl={option.sprite_url}
+                                      size="xs"
+                                      showHappinessAnimations={false}
+                                      silhouette={true}
                                     />
                                   </div>
                                 )}
@@ -766,19 +766,6 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
             <div className="flex-1 bg-blue-100 text-blue-800 py-2 px-4 rounded text-center">
               Active
             </div>
-          )}
-
-          {/* Release button - only show if NOT active */}
-          {!selectedDigimon.is_active && onRelease && (
-            <button
-              onClick={() => {
-                onRelease(selectedDigimon.id);
-                onClose();
-              }}
-              className="flex-1 bg-indigo-100 text-indigo-800 rounded hover:bg-indigo-200 py-2 px-4"
-            >
-              Release
-            </button>
           )}
 
           {/* Digivolve button - only show if evolution options exist */}

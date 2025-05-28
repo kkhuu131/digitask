@@ -9,6 +9,7 @@ import PageTutorial from "./PageTutorial";
 import { DialogueStep } from "./DigimonDialogue";
 import { BASE_TO_FORMS_MAP } from '../constants/digimonFormsLookup';
 import DigimonFormTransformationModal from './DigimonFormTransformationModal';
+import DigimonSprite from "./DigimonSprite";
 
 interface DigimonEvolutionModalProps {
   isOpen: boolean;
@@ -328,14 +329,14 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
                     } ${option.dna_requirement ? "border-2 border-yellow-400 shadow-lg shadow-yellow-200/50" : ""}`}
                     onClick={() => canProceed && handleEvolve(option.digimon_id)}
                   >
-                    <img
-                      src={option.sprite_url}
-                      alt={discovered ? option.name : "Unknown Digimon"}
-                      className={`w-24 h-24 object-contain mb-2 ${
-                        discovered ? "opacity-100" : "brightness-0"
-                      }`}
-                      style={{ imageRendering: "pixelated" }}
+                    <DigimonSprite
+                      digimonName={option.name}
+                      fallbackSpriteUrl={option.sprite_url}
+                      size="md"
+                      showHappinessAnimations={false}
+                      silhouette={!discovered}
                     />
+                    
                     <h4 className="font-bold">
                       {discovered 
                         ? option.name 

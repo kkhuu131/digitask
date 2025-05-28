@@ -545,9 +545,6 @@ const ProfilePage = () => {
                 },
                 onShowEvolution: (digimonId: number) => {
                   console.log("Show evolution for", digimonId);
-                },
-                onRelease: (digimonId) => {
-                  console.log("Release digimon", digimonId);
                 }
               } : {})}
             />

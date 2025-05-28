@@ -1,4 +1,4 @@
-export const CURRENT_VERSION = "1.4.0";
+export const CURRENT_VERSION = "1.4.1";
 
 export const UPDATE_CHANGES = {
   "1.0.1": [
@@ -78,5 +78,10 @@ export const UPDATE_CHANGES = {
     "X-Antibody Rework! Item now permanently allows a Digimon to switch between X-Antibody and regular.",
     "Tons of X-Antibody Digimon added! Royal Knights, Angewomon, Rosemon, and more!",
     "More items such as Personality changer and Stat extractor added!",
+  ],
+  "1.4.1": [
+    "Better Arena battle matchmaking (strength is determined by stats not level). Bit rewards increased.",
+    "New store item icons and replaced ABI booster with EXP item.",
+    "Ogremon X, Craniamon X (forgot in last update), and Numemon X added.",
   ],
 };

@@ -52,7 +52,7 @@ const EvolutionAnimation: React.FC<EvolutionAnimationProps> = ({
     const container = sparklesRef.current;
     container.innerHTML = '';
     
-    for (let i = 0; i < 40; i++) {
+    for (let i = 0; i < 40; i++) { 
       const sparkle = document.createElement('div');
       sparkle.className = 'absolute rounded-full';
       

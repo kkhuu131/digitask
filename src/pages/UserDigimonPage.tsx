@@ -10,6 +10,7 @@ import { getEvolutions, getEvolutionsByDigimonIds } from "@/utils/evolutionsHelp
 import DigimonSprite from "../components/DigimonSprite";
 import PageTutorial from '../components/PageTutorial';
 import { DialogueStep } from '../components/DigimonDialogue';
+import { calculateFinalStats } from "@/utils/digimonStatCalculation";
 
 const UserDigimonPage = () => {
   const { 
@@ -18,15 +19,12 @@ const UserDigimonPage = () => {
     fetchAllUserDigimon,
     fetchStorageDigimon,
     setActiveDigimon,
-    releaseDigimon,
     loading, 
     error,
     evolveDigimon,
     devolveDigimon,
   } = useDigimonStore();
   const [switchingDigimon, setSwitchingDigimon] = useState(false);
-  const [digimonToRelease, setDigimonToRelease] = useState<string | null>(null);
-  const [releasingDigimon, setReleasingDigimon] = useState(false);
   const [evolutionData, setEvolutionData] = useState<{[key: number]: EvolutionOption[]}>({});
   const [selectedDetailDigimon, setSelectedDetailDigimon] = useState<UserDigimon | null>(null);
   const [showEvolutionAnimation, setShowEvolutionAnimation] = useState(false);
@@ -108,23 +106,6 @@ const UserDigimonPage = () => {
     setSwitchingDigimon(true);
     await setActiveDigimon(digimonId);
     setSwitchingDigimon(false);
-  };
-  
-  const handleReleaseClick = (digimonId: string) => {
-    setDigimonToRelease(digimonId);
-  };
-  
-  const handleConfirmRelease = async () => {
-    if (!digimonToRelease) return;
-    
-    setReleasingDigimon(true);
-    await releaseDigimon(digimonToRelease);
-    setReleasingDigimon(false);
-    setDigimonToRelease(null);
-  };
-  
-  const handleCancelRelease = () => {
-    setDigimonToRelease(null);
   };
 
   // Add a new function to fetch evolution paths for a specific Digimon ID
@@ -313,41 +294,12 @@ const UserDigimonPage = () => {
   return (
     <>
       <div className="max-w-4xl mx-auto">
-        {/* Confirmation Dialog for Release */}
-        {digimonToRelease && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 max-w-md w-full">
-              <h3 className="text-xl font-bold mb-4">Release Digimon</h3>
-              <p className="mb-6">
-                Are you sure you want to release this Digimon? This action cannot be undone.
-              </p>
-              <div className="flex justify-end space-x-3">
-                <button
-                  onClick={handleCancelRelease}
-                  className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-                  disabled={releasingDigimon}
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleConfirmRelease}
-                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
-                  disabled={releasingDigimon}
-                >
-                  {releasingDigimon ? "Releasing..." : "Release"}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Digimon Detail Modal - Replace with new component */}
         {selectedDetailDigimon && (
           <DigimonDetailModal
             selectedDigimon={selectedDetailDigimon}
             onClose={handleCloseDetailModal}
             onSetActive={handleSwitchDigimon}
-            onRelease={handleReleaseClick}
             onNameChange={handleDigimonUpdate}
             className="z-40"
           />
@@ -439,7 +391,22 @@ const UserDigimonPage = () => {
                         size="sm"
                         onClick={() => handleShowDetailModal(digimon.id)}
                         enableHopping={evolutionData[digimon.digimon_id]?.some(
-                          option => digimon.current_level >= option.level_required
+                          option => {
+                            // First check level requirement
+                            if (digimon.current_level < option.level_required) return false;
+                            
+                            // Then check stat requirements if they exist
+                            if (option.stat_requirements) {
+                              const stats = calculateFinalStats(digimon);
+                              // Check each stat requirement
+                              for (const [stat, value] of Object.entries(option.stat_requirements)) {
+                                if (stats[stat as keyof typeof stats] < value) return false;
+                              }
+                            }
+                            
+                            // If all requirements are met
+                            return true;
+                          }
                         )}
                       />
                     </div>

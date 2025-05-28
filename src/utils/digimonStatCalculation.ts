@@ -1,3 +1,5 @@
+import { Digimon, UserDigimon } from "@/store/petStore";
+
 /**
  * Calculates a Digimon's stat at any level using piecewise linear interpolation
  * between known values at levels 1, 50, and 99.
@@ -113,4 +115,72 @@ export function calculateFinalStats(digimon: any) {
   }
 
   return { hp, sp, atk, def, int, spd };
+}
+
+export function calculateUserDigimonPowerRating(digimon: UserDigimon): number {
+  if (!digimon.digimon) return 0;
+
+  // Get final stats with bonuses included
+  const stats = calculateFinalStats(digimon);
+
+  // Base power from stats (including bonus stats)
+  const statPower =
+    stats.hp / 10 + stats.atk + stats.def + stats.int + stats.spd + stats.sp;
+
+  return Math.round(statPower);
+}
+
+export function calculateBaseDigimonPowerRating(
+  digimon: Digimon,
+  level: number
+): number {
+  if (!digimon) return 0;
+
+  // Calculate base stats for current level with null checks
+  const baseHP = calculateBaseStat(
+    level,
+    digimon.hp_level1 || 100,
+    digimon.hp || 100,
+    digimon.hp_level99 || 1000
+  );
+
+  const baseSP = calculateBaseStat(
+    level,
+    digimon.sp_level1 || 50,
+    digimon.sp || 50,
+    digimon.sp_level99 || 500
+  );
+
+  const baseATK = calculateBaseStat(
+    level,
+    digimon.atk_level1 || 10,
+    digimon.atk || 10,
+    digimon.atk_level99 || 100
+  );
+
+  const baseDEF = calculateBaseStat(
+    level,
+    digimon.def_level1 || 10,
+    digimon.def || 10,
+    digimon.def_level99 || 100
+  );
+
+  const baseINT = calculateBaseStat(
+    level,
+    digimon.int_level1 || 10,
+    digimon.int || 10,
+    digimon.int_level99 || 100
+  );
+
+  const baseSPD = calculateBaseStat(
+    level,
+    digimon.spd_level1 || 10,
+    digimon.spd || 10,
+    digimon.spd_level99 || 100
+  );
+
+  const statPower =
+    baseHP / 10 + baseATK + baseDEF + baseINT + baseSPD + baseSP;
+
+  return Math.round(statPower);
 }

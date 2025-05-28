@@ -1,12 +1,232 @@
 import { create } from "zustand";
 import { supabase } from "../lib/supabase";
-import { useDigimonStore } from "./petStore";
+import { Digimon, useDigimonStore, UserDigimon } from "./petStore";
 import { useTaskStore } from "./taskStore";
-import { calculateFinalStats } from "../utils/digimonStatCalculation";
+import {
+  calculateBaseDigimonPowerRating,
+  calculateFinalStats,
+} from "../utils/digimonStatCalculation";
 import { DIGIMON_LOOKUP_TABLE } from "../constants/digimonLookup";
 import { useTitleStore } from "./titleStore";
 import { useNotificationStore } from "./notificationStore";
 import { useCurrencyStore } from "./currencyStore";
+
+const calculateUserPowerRating = (allDigimon: UserDigimon[]) => {
+  // Calculate power rating for each digimon
+  const powerRatings = allDigimon.map((digimon) => {
+    if (!digimon.digimon) return 0;
+    return calculateBaseDigimonPowerRating(
+      digimon.digimon,
+      digimon.current_level
+    );
+  });
+
+  // Sort power ratings in descending order
+  powerRatings.sort((a, b) => b - a);
+
+  // Average the 3 greatest power ratings, or all if less than 3
+  return (
+    powerRatings.slice(0, 6).reduce((acc, power) => acc + power, 0) /
+    Math.min(6, powerRatings.length)
+  );
+};
+
+const generateBattleOption = (powerRating: number, difficulty: string) => {
+  const battleOption = {
+    id: `${difficulty}-wild-${Date.now()}-${Math.random()
+      .toString(36)
+      .substring(2, 9)}`,
+    difficulty: difficulty,
+    team: {
+      user_id: "00000000-0000-0000-0000-000000000000",
+      username: "Wild Digimon",
+      digimon: [],
+    },
+    isWild: true,
+  };
+
+  const difficultyMultipliers = { easy: 0.85, medium: 1, hard: 1.15 };
+
+  // Determine if we should create a themed team (30% chance)
+  const createThemedTeam = Math.random() < 0.3;
+  let teamTheme: { type?: string; attribute?: string } = {};
+
+  if (createThemedTeam) {
+    // Decide whether to theme by type or attribute (50/50)
+    if (Math.random() < 0.5) {
+      // Create a type-themed team
+      const types = ["Vaccine", "Data", "Virus", "Free"];
+      teamTheme.type = types[Math.floor(Math.random() * types.length)];
+
+      // Update the battle option to show themed team name
+      battleOption.team.username = `Wild ${teamTheme.type} Digimon`;
+    } else {
+      // Create an attribute-themed team
+      const attributes = [
+        "Fire",
+        "Water",
+        "Plant",
+        "Electric",
+        "Wind",
+        "Earth",
+        "Light",
+        "Dark",
+        "Neutral",
+      ];
+      teamTheme.attribute =
+        attributes[Math.floor(Math.random() * attributes.length)];
+
+      // Update the battle option to show themed team name
+      battleOption.team.username = `Wild ${teamTheme.attribute} Digimon`;
+    }
+  }
+
+  // Group digimon by stage for better selection
+  const digimonByStage: Record<string, Digimon[]> = {
+    Baby: [],
+    "In-Training": [],
+    Rookie: [],
+    Champion: [],
+    Ultimate: [],
+    Mega: [],
+    Ultra: [],
+  };
+
+  // Populate the groups, filtering by theme if applicable
+  Object.values(DIGIMON_LOOKUP_TABLE).forEach((digimon) => {
+    // Skip if this doesn't match our theme (if we have one)
+    if (teamTheme.type && digimon.type !== teamTheme.type) return;
+    if (teamTheme.attribute && digimon.attribute !== teamTheme.attribute)
+      return;
+
+    if (digimonByStage[digimon.stage]) {
+      digimonByStage[digimon.stage].push(digimon);
+    }
+  });
+
+  // If we're creating a themed team but don't have enough digimon for certain stages,
+  // we might need to fall back to a non-themed approach
+  const hasEnoughDigimon = Object.values(digimonByStage).some(
+    (group) => group.length > 0
+  );
+
+  if (!hasEnoughDigimon && createThemedTeam) {
+    // Repopulate without theme filtering
+    Object.keys(digimonByStage).forEach((stage) => {
+      digimonByStage[stage] = [];
+    });
+
+    Object.values(DIGIMON_LOOKUP_TABLE).forEach((digimon) => {
+      if (digimonByStage[digimon.stage]) {
+        digimonByStage[digimon.stage].push(digimon);
+      }
+    });
+
+    // Reset the team name since we're no longer themed
+    battleOption.team.username = "Wild Digimon";
+  }
+
+  const targetPower =
+    powerRating *
+    difficultyMultipliers[difficulty as keyof typeof difficultyMultipliers];
+  const teamSize = Math.min(
+    3,
+    useDigimonStore.getState().allUserDigimon.length
+  );
+  const team = [];
+
+  // Total power to distribute among team members
+  let remainingPower = targetPower * teamSize;
+
+  for (let i = 0; i < teamSize; i++) {
+    const isLastMember = i === teamSize - 1;
+
+    // For the last member, use all remaining power
+    // For others, use a portion of remaining power plus some variance
+    const memberTargetPower = isLastMember
+      ? remainingPower
+      : (remainingPower / (teamSize - i)) * (0.95 + Math.random() * 0.1);
+
+    // Select appropriate stage based on power level
+    let selectedStage: string;
+    if (memberTargetPower < 150) selectedStage = "Baby";
+    else if (memberTargetPower < 240) selectedStage = "In-Training";
+    else if (memberTargetPower < 350) selectedStage = "Rookie";
+    else if (memberTargetPower < 500) selectedStage = "Champion";
+    else if (memberTargetPower < 650) selectedStage = "Ultimate";
+    else if (memberTargetPower < 800) selectedStage = "Mega";
+    else selectedStage = "Ultra";
+
+    // Get candidates from that stage
+    const candidates = digimonByStage[selectedStage];
+
+    if (candidates.length === 0) {
+      // Fallback if no digimon in that stage
+      const allDigimon = Object.values(DIGIMON_LOOKUP_TABLE);
+      const randomDigimon =
+        allDigimon[Math.floor(Math.random() * allDigimon.length)];
+      team.push({
+        id: randomDigimon.digimon_id,
+        name: randomDigimon.name,
+        current_level: 1,
+        sprite_url: randomDigimon.sprite_url,
+        type: randomDigimon.type,
+        attribute: randomDigimon.attribute,
+      }); // Default to level 1
+      continue;
+    }
+
+    // Pick a random digimon from the appropriate stage
+    const randomDigimon =
+      candidates[Math.floor(Math.random() * candidates.length)];
+
+    // Binary search to find level that produces the closest power to target
+    let minLevel = 1;
+    let maxLevel = 99;
+    let bestLevel = 1;
+    let bestPowerDiff = Number.MAX_SAFE_INTEGER;
+
+    while (minLevel <= maxLevel) {
+      const midLevel = Math.floor((minLevel + maxLevel) / 2);
+      const power = calculateBaseDigimonPowerRating(randomDigimon, midLevel);
+      const powerDiff = Math.abs(power - memberTargetPower);
+
+      if (powerDiff < bestPowerDiff) {
+        bestLevel = midLevel;
+        bestPowerDiff = powerDiff;
+      }
+
+      if (power < memberTargetPower) {
+        minLevel = midLevel + 1;
+      } else {
+        maxLevel = midLevel - 1;
+      }
+    }
+
+    const enemyDigimon = {
+      id: randomDigimon.digimon_id,
+      name: randomDigimon.name,
+      current_level: bestLevel, // Use the level we found
+      sprite_url: randomDigimon.sprite_url,
+      type: randomDigimon.type,
+      attribute: randomDigimon.attribute,
+    };
+
+    // Create enemy digimon and add to team
+    team.push(enemyDigimon);
+
+    // Subtract this digimon's actual power from remaining power
+    const actualPower = calculateBaseDigimonPowerRating(
+      randomDigimon,
+      bestLevel
+    );
+    remainingPower -= actualPower;
+  }
+
+  battleOption.team.digimon = team as any;
+
+  return battleOption as BattleOption;
+};
 
 function simulateTeamBattle(userTeamData: any, opponentTeamData: any) {
   function getAttributeDamageMultiplier(
@@ -455,7 +675,7 @@ interface OpponentWithTeam {
   username: string;
   display_name?: string;
   team: any[]; // You can define a more specific type if needed
-  avgLevel: number;
+  powerLevel: number;
 }
 
 interface BattleState {
@@ -935,10 +1155,7 @@ export const useBattleStore = create<BattleState>((set, get) => {
         }));
 
         // Calculate level range for difficulty tiers
-        const teamLevels = userTeam.map((d) => d.current_level);
-        const avgLevel = Math.floor(
-          teamLevels.reduce((sum, level) => sum + level, 0) / teamLevels.length
-        );
+        const powerLevel = calculateUserPowerRating(userTeam);
 
         // Create a new array for battle options
         const battleOptions: BattleOption[] = [];
@@ -968,14 +1185,12 @@ export const useBattleStore = create<BattleState>((set, get) => {
                   digimon: DIGIMON_LOOKUP_TABLE[d.digimon_id],
                 }));
 
-                const avgLevel =
-                  opponentTeam.reduce((sum, d) => sum + d.current_level, 0) /
-                  opponentTeam.length;
+                const powerLevel = calculateUserPowerRating(opponentTeam);
 
                 return {
                   ...opponent,
                   team: opponentTeam,
-                  avgLevel,
+                  powerLevel,
                 };
               }
               return null;
@@ -991,9 +1206,9 @@ export const useBattleStore = create<BattleState>((set, get) => {
         const difficulties = ["easy", "medium", "hard"] as const;
 
         const difficultyMultipliers = {
-          easy: { min: 0.5, max: 0.8 },
-          medium: { min: 0.8, max: 1.1 },
-          hard: { min: 1.1, max: 1.3 },
+          easy: { min: 0.7, max: 0.85 },
+          medium: { min: 0.85, max: 1.0 },
+          hard: { min: 1.0, max: 1.15 },
         };
 
         const usedOpponentIds = new Set();
@@ -1007,15 +1222,12 @@ export const useBattleStore = create<BattleState>((set, get) => {
             let matchingOpponent = null;
 
             const { min, max } = difficultyMultipliers[difficulty];
-            const lower = Math.floor(avgLevel * min);
-            const upper = Math.floor(avgLevel * max);
+            const lower = Math.floor(powerLevel * min);
+            const upper = Math.floor(powerLevel * max);
 
-            const possibleOpponents = opponentsWithTeams.filter(
-              (o) =>
-                o.avgLevel >= lower &&
-                o.avgLevel <= upper &&
-                !usedOpponentIds.has(o.id)
-            );
+            const possibleOpponents = opponentsWithTeams.filter((o) => {
+              return o.powerLevel > lower && o.powerLevel <= upper;
+            });
 
             if (possibleOpponents.length > 0) {
               matchingOpponent =
@@ -1024,8 +1236,7 @@ export const useBattleStore = create<BattleState>((set, get) => {
                 ];
             }
 
-            // Add a 50% chance to force a wild encounter even if we found a real opponent
-            const forceWildEncounter = Math.random() < 0.5;
+            const forceWildEncounter = Math.random() < 0.25;
 
             if (opponentsWithTeams.length > 0 && !forceWildEncounter) {
               if (matchingOpponent) {
@@ -1055,63 +1266,12 @@ export const useBattleStore = create<BattleState>((set, get) => {
 
             // If no real opponent found or we're forcing a wild encounter, create a wild encounter
             if (!foundRealOpponent || forceWildEncounter) {
-              // Calculate random wild level based on difficulty
-              const wildLevelDifficulties = {
-                easy: 0.7,
-                medium: 0.9,
-                hard: 1.2,
-              };
-
-              const minCap = avgLevel - 8;
-              const maxCap = avgLevel + 8;
-
-              const wildLevel = Math.floor(
-                Math.max(
-                  minCap,
-                  Math.min(maxCap, avgLevel * wildLevelDifficulties[difficulty])
+              battleOptions.push(
+                generateBattleOption(
+                  calculateUserPowerRating(userTeam),
+                  difficulty
                 )
               );
-
-              const teamSize = Math.min(
-                3,
-                useDigimonStore.getState().allUserDigimon.length
-              );
-
-              const { data: wildDigimon } = await supabase.rpc(
-                "generate_enemy_team",
-                { avg_level: wildLevel }
-              );
-
-              if (wildDigimon && wildDigimon.length > 0) {
-                const randomDigimon =
-                  wildDigimon.length > teamSize
-                    ? wildDigimon
-                        .sort(() => Math.random() - 0.5)
-                        .slice(0, teamSize)
-                    : wildDigimon;
-
-                battleOptions.push({
-                  id: `${difficulty}-wild-${Date.now()}-${Math.random()
-                    .toString(36)
-                    .substring(2, 9)}`,
-                  difficulty: difficulty,
-                  team: {
-                    user_id: "00000000-0000-0000-0000-000000000000",
-                    username: "Wild Digimon",
-                    digimon: randomDigimon.map((d: any) => {
-                      return {
-                        id: d.digimon_id,
-                        name: d.name,
-                        current_level: Math.max(d.level, 1),
-                        sprite_url: d.sprite_url,
-                        type: d.type,
-                        attribute: d.attribute,
-                      };
-                    }),
-                  },
-                  isWild: true,
-                });
-              }
             }
           })
         );
@@ -1360,25 +1520,25 @@ const calculateBitsReward = (
     // Rewards for winning
     switch (difficulty) {
       case "hard":
-        return 120;
+        return 200;
       case "medium":
-        return 80;
+        return 100;
       case "easy":
-        return 60;
+        return 75;
       default:
-        return 60;
+        return 75;
     }
   } else {
     // Rewards for losing
     switch (difficulty) {
       case "hard":
-        return 15;
+        return 40;
       case "medium":
-        return 25;
+        return 50;
       case "easy":
-        return 30;
+        return 50;
       default:
-        return 30;
+        return 50;
     }
   }
 };

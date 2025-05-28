@@ -77,6 +77,7 @@ export const useCurrencyStore = create<CurrencyState>((set, get) => ({
     if (!user) return false;
 
     try {
+      await useCurrencyStore.getState().fetchCurrency();
       const { error } = await supabase
         .from("user_currency")
         .update({
