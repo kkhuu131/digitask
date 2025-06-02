@@ -398,15 +398,6 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
     description:
       "These Digimon seem to have been put into a frenzy! You need to calm them down.",
   },
-  // {
-  //   id: "20",
-  //   name: "Tamers",
-  //   team: [
-  //     { digimon_id: 84, level: 22 },
-  //     { digimon_id: 88, level: 24 },
-  //     { digimon_id: 87, level: 22 },
-  //   ],
-  // },
   {
     id: "20",
     name: "Devimon",
@@ -584,8 +575,8 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
     name: "Laboratory",
     team: [
       { digimon_id: 157, level: 33 },
-      { digimon_id: 158, level: 33 },
-      { digimon_id: 183, level: 33 },
+      { digimon_id: 158, level: 30 },
+      { digimon_id: 183, level: 30 },
     ],
     description:
       "You find a broken lab, full of broken machines and a group of Digimon that suddently attack you.",
@@ -618,7 +609,7 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
     team: [
       { digimon_id: 71, level: 32 },
       { digimon_id: 200, level: 35 },
-      { digimon_id: 194, level: 35 },
+      { digimon_id: 194, level: 34 },
     ],
     description:
       "The oceans are now filled with a strange corruption, and the Digimon seem to be under control of a certain Digimon.",
@@ -627,7 +618,7 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
     id: "36",
     name: "Deep Savers",
     team: [
-      { digimon_id: 104, level: 34 },
+      { digimon_id: 104, level: 36 },
       { digimon_id: 173, level: 36 },
       { digimon_id: 170, level: 36 },
     ],
@@ -788,19 +779,23 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
   },
   {
     id: "48",
-    name: "Tokyo",
+    name: "City",
     team: [
       {
         digimon_id: 205,
         level: 55,
+        hp_bonus: 150,
+        atk_bonus: 50,
       },
       {
         digimon_id: 114,
         level: 55,
+        hp_bonus: 150,
+        atk_bonus: 50,
       },
     ],
     description:
-      "You were brought to an alternate Tokyo, where two Digimon are fighting over control in the city.",
+      "You were brought to an alternate city, where two Digimon are fighting over control.",
   },
   {
     id: "50",
@@ -809,10 +804,14 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
       {
         digimon_id: 232,
         level: 60,
+        hp_bonus: 150,
+        atk_bonus: 50,
       },
       {
         digimon_id: 233,
         level: 60,
+        hp_bonus: 150,
+        atk_bonus: 50,
       },
     ],
     description:
@@ -864,7 +863,7 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
     team: [
       {
         digimon_id: 276,
-        level: 75,
+        level: 80,
         hp_bonus: 240,
         sp_bonus: 100,
         int_bonus: 120,
@@ -899,7 +898,7 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
       {
         digimon_id: 248,
         level: 62,
-        hp_bonus: 50,
+        hp_bonus: 75,
         sp_bonus: 50,
         atk_bonus: 50,
         int_bonus: 50,
@@ -909,7 +908,7 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
       {
         digimon_id: 292,
         level: 62,
-        hp_bonus: 50,
+        hp_bonus: 75,
         sp_bonus: 50,
         atk_bonus: 50,
         int_bonus: 50,
@@ -943,7 +942,7 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
       },
     ],
     description:
-      "You meet a friendly, yet stern Spirit, who challenges you to an all out duel.",
+      "You meet a friendly Spirit, who challenges you to an all out duel.",
   },
   {
     id: "56",
@@ -966,9 +965,9 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
     id: "57",
     name: "Corrupted",
     team: [
-      { digimon_id: 116, level: 57, name: "Darkness Hand" },
-      { digimon_id: 151, level: 57, name: "Dark Network" },
-      { digimon_id: 147, level: 57, name: "Nightmare Claw" },
+      { digimon_id: 116, level: 55, name: "Darkness Hand" },
+      { digimon_id: 147, level: 60, hp_bonus: 100, name: "Nightmare Claw" },
+      { digimon_id: 151, level: 55, name: "Dark Network" },
     ],
     description:
       "You find yourself back to your world, but with all four Dark Masters conquered, a shadowy chaos summons familiar foes to take you down.",
@@ -977,8 +976,8 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
     id: "58",
     name: "Shadows",
     team: [
-      { digimon_id: 299, level: 60 },
-      { digimon_id: 274, level: 60 },
+      { digimon_id: 299, level: 60, hp_bonus: 100, atk_bonus: 100 },
+      { digimon_id: 274, level: 60, hp_bonus: 100, atk_bonus: 100 },
     ],
     description:
       "Using the data of the defeated Dark Masters, shadow versions of the Dark Masters appear to take you down.",
@@ -1001,12 +1000,12 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
       {
         digimon_id: 332,
         level: 99,
-        hp_bonus: 549,
+        hp_bonus: 449,
         sp_bonus: 120,
         atk_bonus: 120,
-        int_bonus: 120,
-        def_bonus: 120,
-        spd_bonus: 120,
+        int_bonus: 50,
+        def_bonus: 50,
+        spd_bonus: 50,
       },
     ],
     description:
@@ -1014,13 +1013,123 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
   },
   {
     id: "61",
-    name: "Seven Great What??",
-    team: [{ digimon_id: 26, level: 50 }],
+    name: "Dynasmon/Crusadermon",
+    team: [
+      { digimon_id: 182, level: 60 },
+      { digimon_id: 263, level: 65 },
+      { digimon_id: 306, level: 65 },
+    ],
     description:
-      "Though Apocalymon was destroyed, his data was not. Gazimon speaks of the return of a once sealed off group called the Seven Great Demon Lords.",
+      "A holy knight and its dragon partner, stop your path. Though they say nothing, Alphamon's gaze is conflicted. You sense hesitation against its orders.",
   },
   {
     id: "62",
+    name: "Ray of Victory",
+    team: [
+      { digimon_id: 150, level: 60 },
+      { digimon_id: 220, level: 65 },
+      { digimon_id: 161, level: 60 },
+    ],
+    description:
+      "A holy knight and its dragon partner, stop your path. Though they say nothing, Alphamon's gaze is conflicted. You sense hesitation against its orders.",
+  },
+  {
+    id: "63",
+    name: "Magnamon",
+    team: [
+      { digimon_id: 98, level: 60 },
+      { digimon_id: 324, level: 65 },
+      { digimon_id: 325, level: 63 },
+    ],
+    description:
+      "A holy knight and its dragon partner, stop your path. Though they say nothing, Alphamon's gaze is conflicted. You sense hesitation against its orders.",
+  },
+  {
+    id: "64",
+    name: "Leopardmon",
+    team: [
+      { digimon_id: 195, level: 60 },
+      { digimon_id: 265, level: 65 },
+      { digimon_id: 160, level: 60 },
+    ],
+    description:
+      "A holy knight and its dragon partner, stop your path. Though they say nothing, Alphamon's gaze is conflicted. You sense hesitation against its orders.",
+  },
+  {
+    id: "65",
+    name: "Kentaurosmon/Craniamon",
+    team: [
+      { digimon_id: 182, level: 60 },
+      { digimon_id: 251, level: 65 },
+      { digimon_id: 241, level: 65 },
+    ],
+    description:
+      "A holy knight and its dragon partner, stop your path. Though they say nothing, Alphamon's gaze is conflicted. You sense hesitation against its orders.",
+  },
+  {
+    id: "66",
+    name: "Examon",
+    team: [
+      { digimon_id: 252, level: 60 },
+      { digimon_id: 314, level: 65 },
+      { digimon_id: 278, level: 60 },
+    ],
+    description:
+      "A holy knight and its dragon partner, stop your path. Though they say nothing, Alphamon's gaze is conflicted. You sense hesitation against its orders.",
+  },
+  {
+    id: "67",
+    name: "Gankoomon/Jesmon",
+    team: [
+      { digimon_id: 182, level: 60 },
+      { digimon_id: 234, level: 65 },
+      { digimon_id: 247, level: 60 },
+    ],
+    description:
+      "A holy knight and its dragon partner, stop your path. Though they say nothing, Alphamon's gaze is conflicted. You sense hesitation against its orders.",
+  },
+  {
+    id: "68",
+    name: "Gallantmon",
+    team: [
+      { digimon_id: 202, level: 65 },
+      { digimon_id: 262, level: 70 },
+      { digimon_id: 79, level: 65 },
+    ],
+    description:
+      "A holy knight and its dragon partner, stop your path. Though they say nothing, Alphamon's gaze is conflicted. You sense hesitation against its orders.",
+  },
+  {
+    id: "69",
+    name: "Omnimon",
+    team: [
+      { digimon_id: 228, level: 65 },
+      { digimon_id: 315, level: 75 },
+      { digimon_id: 297, level: 65 },
+    ],
+    description:
+      "A holy knight and its dragon partner, stop your path. Though they say nothing, Alphamon's gaze is conflicted. You sense hesitation against its orders.",
+  },
+  {
+    id: "70",
+    name: "Finale",
+    team: [
+      { digimon_id: 161, level: 65 },
+      { digimon_id: 219, level: 75 },
+      { digimon_id: 181, level: 65 },
+    ],
+    description:
+      "A holy knight and its dragon partner, stop your path. Though they say nothing, Alphamon's gaze is conflicted. You sense hesitation against its orders.",
+  },
+  {
+    id: "71",
+    name: "Seven Great What??",
+    team: [{ digimon_id: 26, level: 50 }],
+    description:
+      "Though Apocalymon was destroyed, his data was not. Gazimon warns about thereturn of the Seven Great Demon Lords.",
+  },
+  {
+    id: "72",
     name: "Envy",
     team: [
       {
@@ -1038,7 +1147,7 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
       "The seas churn again as Leviamon emerges, embodying the sin of envy — consuming all in his path with primal hunger.",
   },
   {
-    id: "63",
+    id: "73",
     name: "Glutonny",
     team: [
       {
@@ -1056,7 +1165,7 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
       "Beelzemon, once a lone avenger, now devours anything in his path. His bike roars with vengeance and unchecked hunger.",
   },
   {
-    id: "64",
+    id: "74",
     name: "Lust",
     team: [
       {
@@ -1072,7 +1181,7 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
       "Seductive and cruel, Lilithmon sows confusion and despair. Her digital sorcery enslaves minds and corrupts hearts.",
   },
   {
-    id: "65",
+    id: "75",
     name: "Greed",
     team: [
       {
@@ -1089,7 +1198,7 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
       "Barbamon builds an empire of wealth and corruption, turning Digimon into pawns and resources in his endless schemes.",
   },
   {
-    id: "66",
+    id: "76",
     name: "Wrath",
     team: [
       {
@@ -1106,7 +1215,7 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
       "Daemon escapes the Dark Area, blazing across dimensions. His fury is boundless, his hatred eternal.",
   },
   {
-    id: "67",
+    id: "77",
     name: "Sloth",
     team: [
       {
@@ -1120,7 +1229,7 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
       "Time slows. Reality bends. Belphemon slumbers, and in doing so, nearly stops the world's flow of data entirely.",
   },
   {
-    id: "68",
+    id: "78",
     name: "Sloth's Awakening",
     team: [
       {
@@ -1137,192 +1246,45 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
       "Belphemon awakens from its slumber, enraged by the one who awakened it.",
   },
   {
-    id: "69",
+    id: "79",
     name: "Pride",
     team: [
       {
+        digimon_id: 49,
+        level: 50,
+      },
+      {
         digimon_id: 213,
         level: 99,
-        hp_bonus: 300,
-        sp_bonus: 100,
-        int_bonus: 200,
-        def_bonus: 150,
-        spd_bonus: 150,
+      },
+
+      {
+        digimon_id: 49,
+        level: 50,
       },
     ],
     description:
       "At the peak of darkness, Lucemon rises — beautiful, divine, and terrifying. His fall was ancient, but his pride never died.",
   },
   {
-    id: "70",
+    id: "80",
     name: "True Super Demon Lord",
     team: [
       {
+        digimon_id: 77,
+        level: 70,
+      },
+      {
         digimon_id: 322,
         level: 99,
-        hp_bonus: 600,
-        sp_bonus: 160,
-        atk_bonus: 130,
-        int_bonus: 250,
-        def_bonus: 100,
-        spd_bonus: 170,
+      },
+      {
+        digimon_id: 116,
+        level: 70,
       },
     ],
     description:
       "Lucemon's final form — a Satanic avatar of judgment. The data around him degrades as he attempts to rewrite the world in his twisted image.",
-  },
-  {
-    id: "71",
-    name: "The King's Orders",
-    team: [
-      { digimon_id: 182, level: 70 },
-      { digimon_id: 182, level: 70 },
-      { digimon_id: 182, level: 70 },
-    ],
-    description:
-      "Yggdrasill, the host computer of this Server, decides the world must be 'cleansed.' A group called the Royal Knights are ordered to purge the Digital World.",
-  },
-  {
-    id: "72",
-    name: "Crossroads of Loyalty",
-    team: [
-      { digimon_id: 219, level: 75, hp_bonus: 400 },
-      { digimon_id: 331, level: 75, hp_bonus: 200 },
-    ],
-    description:
-      "A holy knight and its dragon partner, stop your path. Though they say nothing, Alphamon's gaze is conflicted. You sense hesitation against its orders.",
-  },
-  {
-    id: "73",
-    name: "Enforcers of Justice",
-    team: [
-      { digimon_id: 251, level: 73 },
-      { digimon_id: 241, level: 75 },
-      { digimon_id: 265, level: 75 },
-    ],
-  },
-  {
-    id: "74",
-    name: "The Dragon Knights",
-    team: [
-      { digimon_id: 313, level: 75 },
-      { digimon_id: 314, level: 75 },
-      { digimon_id: 252, level: 75 },
-    ],
-  },
-  {
-    id: "75",
-    name: "Holy Blade",
-    team: [
-      { digimon_id: 262, level: 75 },
-      { digimon_id: 234, level: 75 },
-      { digimon_id: 247, level: 75 },
-    ],
-  },
-  {
-    id: "77",
-    name: "Lord Knightmon",
-    team: [
-      {
-        digimon_id: 182,
-        level: 70,
-      },
-      {
-        digimon_id: 306,
-        level: 99,
-        hp_bonus: 500,
-        sp_bonus: 200,
-        atk_bonus: 150,
-        int_bonus: 50,
-        def_bonus: 50,
-        spd_bonus: 150,
-      },
-      {
-        digimon_id: 182,
-        level: 70,
-      },
-    ],
-    description:
-      "Crusadermon believes that the only way to save the Digital World is to destroy it. The ends justify the means.",
-  },
-  {
-    id: "78",
-    name: "Unwavering Loyalty",
-    team: [
-      {
-        digimon_id: 182,
-        level: 70,
-      },
-      {
-        digimon_id: 263,
-        level: 99,
-        hp_bonus: 500,
-        sp_bonus: 250,
-        atk_bonus: 175,
-        int_bonus: 50,
-        def_bonus: 50,
-        spd_bonus: 175,
-      },
-      {
-        digimon_id: 182,
-        level: 70,
-      },
-    ],
-    description:
-      "Dynasmon's faith in its master, Yggdrasill, stays steady, even as the world around it crumbles.",
-  },
-  {
-    id: "76",
-    name: "Daybreak",
-    team: [
-      { digimon_id: 255, level: 80, hp_bonus: 100 },
-      { digimon_id: 324, level: 80, hp_bonus: 100 },
-      { digimon_id: 250, level: 80, hp_bonus: 100 },
-    ],
-  },
-  {
-    id: "79",
-    name: "Guardian of Legends",
-    team: [
-      {
-        digimon_id: 228,
-        level: 1,
-      },
-      {
-        digimon_id: 315,
-        level: 99,
-        hp_bonus: 800,
-        sp_bonus: 200,
-        atk_bonus: 200,
-        int_bonus: 200,
-        def_bonus: 200,
-        spd_bonus: 200,
-      },
-      {
-        digimon_id: 297,
-        level: 1,
-      },
-    ],
-    description:
-      "Born from unity of war and hope, Omnimon stands as the shining will of two heroes. Once a savior, he now enforces Yggdrasill's command to eliminate all 'errors' -- even you.",
-  },
-  {
-    id: "80",
-    name: "Final Judgement",
-    team: [
-      {
-        digimon_id: 312,
-        level: 99,
-        hp_bonus: 1000,
-        sp_bonus: 300,
-        atk_bonus: 300,
-        int_bonus: 300,
-        def_bonus: 300,
-        spd_bonus: 300,
-      },
-    ],
-    description:
-      "Alphamon returns, now fused with the dragon. He stands now not for Yggdrasill, but against it. He challenges you to a test of your strength and conviction.",
   },
   // {
   //   id: "100",
@@ -1485,17 +1447,23 @@ export const CAMPAIGN_ARCS: CampaignArc[] = [
     description: "The creator of the Dark Masters reveals itself",
   },
   {
-    title: "Seven Great Demon Lords",
+    title: "Royal Knights",
     startStage: 61,
     endStage: 70,
+    description:
+      "A group sworn to protect the Digital World is ordered to purge its errors",
+  },
+  {
+    title: "Seven Great Demon Lords",
+    startStage: 71,
+    endStage: 80,
     description: "An ancient group of demons threatens the Digital World",
   },
   {
-    title: "Royal Knights",
-    startStage: 71,
-    endStage: 80,
-    description:
-      "A group sworn to protect the Digital World is ordered to purge its errors",
+    title: "X-Antibody",
+    startStage: 81,
+    endStage: 90,
+    description: "An ancient group of demons threatens the Digital World",
   },
   {
     title: "???",

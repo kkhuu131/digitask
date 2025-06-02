@@ -26,8 +26,8 @@ const calculateUserPowerRating = (allDigimon: UserDigimon[]) => {
 
   // Average the 3 greatest power ratings, or all if less than 3
   return (
-    powerRatings.slice(0, 6).reduce((acc, power) => acc + power, 0) /
-    Math.min(6, powerRatings.length)
+    powerRatings.slice(0, 9).reduce((acc, power) => acc + power, 0) /
+    Math.min(9, powerRatings.length)
   );
 };
 
@@ -45,7 +45,7 @@ const generateBattleOption = (powerRating: number, difficulty: string) => {
     isWild: true,
   };
 
-  const difficultyMultipliers = { easy: 0.85, medium: 1, hard: 1.15 };
+  const difficultyMultipliers = { easy: 0.65, medium: 0.8, hard: 1.0 };
 
   // Determine if we should create a themed team (30% chance)
   const createThemedTeam = Math.random() < 0.3;
@@ -153,8 +153,8 @@ const generateBattleOption = (powerRating: number, difficulty: string) => {
     else if (memberTargetPower < 240) selectedStage = "In-Training";
     else if (memberTargetPower < 350) selectedStage = "Rookie";
     else if (memberTargetPower < 500) selectedStage = "Champion";
-    else if (memberTargetPower < 650) selectedStage = "Ultimate";
-    else if (memberTargetPower < 800) selectedStage = "Mega";
+    else if (memberTargetPower < 750) selectedStage = "Ultimate";
+    else if (memberTargetPower < 950) selectedStage = "Mega";
     else selectedStage = "Ultra";
 
     // Get candidates from that stage
@@ -1206,9 +1206,9 @@ export const useBattleStore = create<BattleState>((set, get) => {
         const difficulties = ["easy", "medium", "hard"] as const;
 
         const difficultyMultipliers = {
-          easy: { min: 0.7, max: 0.85 },
-          medium: { min: 0.85, max: 1.0 },
-          hard: { min: 1.0, max: 1.15 },
+          easy: { min: 0.6, max: 0.8 },
+          medium: { min: 0.8, max: 1.0 },
+          hard: { min: 1.0, max: 1.1 },
         };
 
         const usedOpponentIds = new Set();
@@ -1236,7 +1236,7 @@ export const useBattleStore = create<BattleState>((set, get) => {
                 ];
             }
 
-            const forceWildEncounter = Math.random() < 0.25;
+            const forceWildEncounter = Math.random() < 0.99;
 
             if (opponentsWithTeams.length > 0 && !forceWildEncounter) {
               if (matchingOpponent) {

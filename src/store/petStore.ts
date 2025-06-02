@@ -1490,6 +1490,9 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       // Calculate the new bonus value
       const newBonus = currentBonus + amount;
 
+      // Dispatch the stat-increased event for optimistic UI updates
+      window.dispatchEvent(new Event("stat-increased"));
+
       // Update the Digimon in the database
       const { error } = await supabase
         .from("user_digimon")

@@ -4,6 +4,7 @@ import { useDigimonStore } from '../store/petStore';
 const StatProgressMeter: React.FC = () => {
   const { allUserDigimon, userDailyStatGains, calculateDailyStatCap, fetchUserDailyStatGains, loading, fetchAllUserDigimon } = useDigimonStore();
   const [cap, setCap] = useState(0);
+  const [displayedStatGains, setDisplayedStatGains] = useState(0);
   
   // First fetch all user digimon
   useEffect(() => {
@@ -16,7 +17,6 @@ const StatProgressMeter: React.FC = () => {
   
   // Fetch the latest daily stat gains and calculate cap when the component mounts or data changes
   useEffect(() => {
-    
     // Calculate cap immediately since we have allUserDigimon
     const calculatedCap = calculateDailyStatCap();
     setCap(calculatedCap);
@@ -34,8 +34,27 @@ const StatProgressMeter: React.FC = () => {
     return () => clearInterval(intervalId);
   }, [fetchUserDailyStatGains, calculateDailyStatCap, allUserDigimon.length]);
   
+  // Update displayed stat gains whenever the actual value changes
+  useEffect(() => {
+    setDisplayedStatGains(userDailyStatGains);
+  }, [userDailyStatGains]);
+  
+  // Listen for stat increase events
+  useEffect(() => {
+    const handleStatIncrease = () => {
+      // Optimistically update the displayed value immediately
+      setDisplayedStatGains(prev => prev + 1);
+    };
+    
+    window.addEventListener('stat-increased', handleStatIncrease);
+    
+    return () => {
+      window.removeEventListener('stat-increased', handleStatIncrease);
+    };
+  }, []);
+  
   // Calculate percentage of cap used
-  const percentage = cap > 0 ? Math.min(100, (userDailyStatGains / cap) * 100) : 0;
+  const percentage = cap > 0 ? Math.min(100, (displayedStatGains / cap) * 100) : 0;
   
   // Determine color based on percentage
   let colorClass = 'bg-green-500';
@@ -50,10 +69,10 @@ const StatProgressMeter: React.FC = () => {
           Cumulative Points
         </div>
         <span>
-          {loading ? (
+          {loading && displayedStatGains === 0 ? (
             <span className="text-gray-400">Loading...</span>
           ) : (
-            `${userDailyStatGains}/${cap}`
+            `${displayedStatGains}/${cap}`
           )}
         </span>
       </div>

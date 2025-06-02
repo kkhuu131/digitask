@@ -22,12 +22,26 @@ const PatchNotes = () => {
           </a>
         </div>
         <div className="border-b pb-2 mb-6">
-          <h2 className="text-xl font-semibold mb-4">Recent Updates</h2>
-          <div className="mb-6">
+        <h2 className="text-xl font-semibold mb-4">Recent Updates</h2>
+        <div className="mb-6">
             <div className="flex items-center mb-2">
               <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
-              <h3 className="text-lg font-medium ml-2">X-Antibody Rework!</h3>
-              <span className="text-sm text-gray-500 ml-auto">May 26, 2025</span>
+              <h3 className="text-lg font-medium ml-2">Small Update</h3>
+              <span className="text-sm text-gray-500 ml-auto">June 2, 2025</span>
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <li>Nerfed Wild Digimon battles in Arena, so they're more easier to win.</li>
+            <li>For the difficulties, easy should feel like almost always win, mediums 50/50, and hard should be beatable if your type/attributes matchup counter them.</li>
+            <li>Made some UI more responsive (ex. Stat Cap Meter after completing tasks).</li>
+            <li>What to expect in future updates:</li>
+            <li>Item requirements for some existing evolutions (ex. Armor evolutions require an item).</li>
+            <li>Mobile app version in the works, so expect slower updates.</li>
+            </ul>
+          </div>
+          <div className="mb-6">
+            <div className="flex items-center mb-2">
+              <h3 className="text-lg font-medium ml-2">Arena Matchmaking Rework</h3>
+              <span className="text-sm text-gray-500 ml-auto">May 28, 2025</span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600">
             <li>Better Arena battle matchmaking (strength is determined by stats not level).</li>

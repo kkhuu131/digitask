@@ -1,4 +1,4 @@
-export const CURRENT_VERSION = "1.4.1";
+export const CURRENT_VERSION = "1.4.2";
 
 export const UPDATE_CHANGES = {
   "1.0.1": [
@@ -83,5 +83,13 @@ export const UPDATE_CHANGES = {
     "Better Arena battle matchmaking (strength is determined by stats not level). Bit rewards increased.",
     "New store item icons and replaced ABI booster with EXP item.",
     "Ogremon X, Craniamon X (forgot in last update), and Numemon X added.",
+  ],
+  "1.4.2": [
+    "Nerfed Wild Digimon battles in Arena.",
+    "Easy SHOULD feel like almost always win, mediums 50/50, and hard should be beatable if type/attributes counter them.",
+    "If the Wild Digimon battles consistently don't follow these guidelines, please let me know!",
+    "What to expect in future updates:",
+    "Item requirements for some existing evolutions (ex. Armor evolutions).",
+    "Mobile app version in the works, so expect slower updates.",
   ],
 };

@@ -13,6 +13,7 @@ import BattleSpeedControl from "../components/BattleSpeedControl";
 import PageTutorial from "../components/PageTutorial";
 import { DialogueStep } from "../components/DigimonDialogue";
 import DigimonSprite from "@/components/DigimonSprite";
+import { calculateUserDigimonPowerRating } from "@/utils/digimonStatCalculation";
 interface PreparationModalProps {
   opponent: typeof CAMPAIGN_OPPONENTS[0];
   isOpen: boolean;
@@ -115,24 +116,23 @@ const PreparationModal: React.FC<PreparationModalProps> = ({
 };
 
 // First, add a helper function to calculate the power level of a campaign team
-// const calculateCampaignTeamPower = (team: any[]) => {
-//   const avgPower = team.reduce((total, digimon) => {
-//     if (!digimon.digimon) return total;
-//     return total + calculateBaseDigimonPowerRating(
-//       digimon.digimon,
-//       digimon.current_level
-//     );
-//   }, 0) / team.length;
+const calculateCampaignTeamPower = (team: any[]) => {
+  const avgPower = team.reduce((total, digimon) => {
+    if (!digimon.digimon) return total;
+    return total + calculateUserDigimonPowerRating(
+      digimon
+    );
+  }, 0) / team.length;
   
-//   // If team size is 1, return 1/3 of power, if 2 return 2/3, otherwise full average
-//   if (team.length === 1) {
-//     return avgPower / 3;
-//   } else if (team.length === 2) {
-//     return (avgPower * 2) / 3;
-//   } else {
-//     return avgPower;
-//   }
-// };
+  // If team size is 1, return 1/2 of power, if 2 return 2/3, otherwise full average
+  if (team.length === 1) {
+    return avgPower / 2;
+  } else if (team.length === 2) {
+    return (avgPower * 2) / 3;
+  } else {
+    return avgPower;
+  }
+};
 
 const CampaignNode: React.FC<{
   stage: typeof CAMPAIGN_OPPONENTS[0];
@@ -222,9 +222,9 @@ const CampaignNode: React.FC<{
           </div>
         ))}
       </div>
-      {/* <span className="text-[8px] sm:text-[14px] text-gray-500">
+      <span className="text-[8px] sm:text-[14px] text-gray-500">
           Power: {Math.round(calculateCampaignTeamPower(stage.team))}
-        </span> */}
+        </span>
     </button>
   );
 };
