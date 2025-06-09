@@ -29,7 +29,7 @@ const MilestoneProgress = () => {
   const handleOpenSelectionModal = () => {
     if (!shouldBeAbleToClaimDigimon || isProcessingClaim) return;
     
-    const hasNXChance = Math.random() < 0.05;
+    const hasNXChance = Math.random() < 0.025;
     setIsNXChance(hasNXChance);
     setIsSelectionModalOpen(true);
   };

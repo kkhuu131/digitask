@@ -61,6 +61,7 @@ export type EvolutionPath = {
     abi?: number;
   };
   dna_requirement?: number | null;
+  item_requirement?: string | null;
 };
 
 export const EVOLUTION_LOOKUP_TABLE = {

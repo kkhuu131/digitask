@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { EvolutionOption, UserDigimon, expToBoostPoints } from "../store/petStore";
 import calculateBaseStat from "../utils/digimonStatCalculation";
 import EvolutionAnimation from "./EvolutionAnimation";
@@ -10,6 +10,8 @@ import { DialogueStep } from "./DigimonDialogue";
 import { BASE_TO_FORMS_MAP } from '../constants/digimonFormsLookup';
 import DigimonFormTransformationModal from './DigimonFormTransformationModal';
 import DigimonSprite from "./DigimonSprite";
+import { useInventoryStore } from "../store/inventoryStore";
+import { getItemName } from "@/constants/storeItems";
 
 interface DigimonEvolutionModalProps {
   isOpen: boolean;
@@ -42,6 +44,31 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
   const [dnaPartnerDigimon, setDnaPartnerDigimon] = useState<UserDigimon | null>(null);
   const [showFormModal, setShowFormModal] = useState(false);
   const [selectedFormInfo, setSelectedFormInfo] = useState<any>(null);
+  const [userHasItems, setUserHasItems] = useState<Record<string, boolean>>({});
+  const [itemsLoading, setItemsLoading] = useState(true);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const loadUserItems = async () => {
+      setItemsLoading(true);
+      const itemsStatus: Record<string, boolean> = {};
+      
+      const itemRequirements = options
+        .filter(option => option.item_requirement)
+        .map(option => option.item_requirement as string);
+      
+      for (const itemId of itemRequirements) {
+        const hasItem = await useInventoryStore.getState().checkEvolutionItem(itemId);
+        itemsStatus[itemId] = hasItem;
+      }
+      
+      setUserHasItems(itemsStatus);
+      setItemsLoading(false);
+    };
+    
+    loadUserItems();
+  }, [isOpen, options]);
 
   if (!isOpen) return null;
 
@@ -154,11 +181,11 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
   return (
     <>
       <div
-        className="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center z-50 p-4 overflow-y-auto"
+        className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto"
         onClick={onClose}
       >
         <div
-          className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-4xl my-8 relative"
+          className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-4xl my-auto relative"
           onClick={(e) => e.stopPropagation()}
         >
           <h3 className="text-xl font-bold mb-2">{modalTitle}</h3>
@@ -313,7 +340,13 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
                     }
                   }
                   
-                  canEvolve = meetsLevelRequirement && meetsStatRequirements;
+                  // Check for item requirement
+                  let hasRequiredItem = true;
+                  if (option.item_requirement) {
+                    hasRequiredItem = !itemsLoading && userHasItems[option.item_requirement] === true;
+                  }
+                  
+                  canEvolve = meetsLevelRequirement && meetsStatRequirements && hasRequiredItem;
                 }
 
                 const discovered = isDiscovered(option.digimon_id);
@@ -326,7 +359,8 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
                       canProceed 
                         ? "hover:shadow-md cursor-pointer opacity-100" 
                         : "opacity-60 bg-gray-100"
-                    } ${option.dna_requirement ? "border-2 border-yellow-400 shadow-lg shadow-yellow-200/50" : ""}`}
+                    } ${option.dna_requirement ? "border-2 border-yellow-400 shadow-lg shadow-yellow-200/50" : ""}
+                    ${option.item_requirement ? "border-2 border-purple-400 shadow-lg shadow-purple-200/50" : ""}`}
                     onClick={() => canProceed && handleEvolve(option.digimon_id)}
                   >
                     <DigimonSprite
@@ -365,6 +399,14 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
                             <p className="text-xs font-medium">
                               Digimon: <span className="text-yellow-600 font-bold">
                                 {DIGIMON_LOOKUP_TABLE[option.dna_requirement].name}
+                              </span>
+                            </p>
+                          )}
+                          
+                          {option.item_requirement && (
+                            <p className="text-xs font-medium">
+                              Item: <span className={userHasItems[option.item_requirement] ? "text-purple-600 font-bold" : "text-red-600 font-bold"}>
+                                {getItemName(option.item_requirement) || option.item_requirement.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
                               </span>
                             </p>
                           )}

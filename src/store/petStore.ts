@@ -129,6 +129,7 @@ export interface EvolutionOption {
     abi?: number;
   };
   dna_requirement?: number | null;
+  item_requirement?: string | null;
 }
 
 export interface PetState {
@@ -774,6 +775,8 @@ export const useDigimonStore = create<PetState>((set, get) => ({
           }
         }
 
+        // For the evolution check, we don't need to check if the user has the item yet
+        // We just want to show available evolutions, and will check for the item when evolving
         return meetsLevelRequirement && meetsStatRequirements;
       });
 
@@ -839,6 +842,27 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         throw new Error(
           `Your Digimon needs to be at least level ${enrichedEvolutionPath.level_required} to evolve.`
         );
+      }
+
+      // Check for item requirement
+      if (enrichedEvolutionPath.item_requirement) {
+        const { useInventoryStore } = await import("./inventoryStore");
+
+        // Check if user has the required item using our safer method
+        const hasItem = await useInventoryStore
+          .getState()
+          .checkEvolutionItem(enrichedEvolutionPath.item_requirement);
+
+        if (!hasItem) {
+          throw new Error(
+            `You need the item "${enrichedEvolutionPath.item_requirement}" to perform this evolution.`
+          );
+        }
+
+        // Use the item by removing it from inventory
+        await useInventoryStore
+          .getState()
+          .useItem(enrichedEvolutionPath.item_requirement);
       }
 
       // Check stat requirements if they exist
@@ -1696,6 +1720,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         level_required: path.level_required,
         stat_requirements: path.stat_requirements || {},
         dna_requirement: path.dna_requirement || null,
+        item_requirement: path.item_requirement || null,
       }));
 
       // Update cache

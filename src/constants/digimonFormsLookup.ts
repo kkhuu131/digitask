@@ -134,6 +134,13 @@ export const BASE_TO_FORMS_MAP: Record<number, DigimonFormInfo[]> = {
       "unlockCondition": null
     }
   ],
+  "213": [
+    {
+      "formDigimonId": 396,
+      "formType": "X-Antibody",
+      "unlockCondition": null
+    }
+  ],
   "214": [
     {
       "formDigimonId": 359,
@@ -183,9 +190,23 @@ export const BASE_TO_FORMS_MAP: Record<number, DigimonFormInfo[]> = {
       "unlockCondition": null
     }
   ],
+  "246": [
+    {
+      "formDigimonId": 391,
+      "formType": "X-Antibody",
+      "unlockCondition": null
+    }
+  ],
   "247": [
     {
       "formDigimonId": 372,
+      "formType": "X-Antibody",
+      "unlockCondition": null
+    }
+  ],
+  "250": [
+    {
+      "formDigimonId": 400,
       "formType": "X-Antibody",
       "unlockCondition": null
     }
@@ -200,6 +221,13 @@ export const BASE_TO_FORMS_MAP: Record<number, DigimonFormInfo[]> = {
   "260": [
     {
       "formDigimonId": 390,
+      "formType": "X-Antibody",
+      "unlockCondition": null
+    }
+  ],
+  "261": [
+    {
+      "formDigimonId": 394,
       "formType": "X-Antibody",
       "unlockCondition": null
     }
@@ -225,6 +253,13 @@ export const BASE_TO_FORMS_MAP: Record<number, DigimonFormInfo[]> = {
       "unlockCondition": null
     }
   ],
+  "271": [
+    {
+      "formDigimonId": 392,
+      "formType": "X-Antibody",
+      "unlockCondition": null
+    }
+  ],
   "281": [
     {
       "formDigimonId": 362,
@@ -242,6 +277,13 @@ export const BASE_TO_FORMS_MAP: Record<number, DigimonFormInfo[]> = {
   "297": [
     {
       "formDigimonId": 351,
+      "formType": "X-Antibody",
+      "unlockCondition": null
+    }
+  ],
+  "302": [
+    {
+      "formDigimonId": 395,
       "formType": "X-Antibody",
       "unlockCondition": null
     }
@@ -281,9 +323,23 @@ export const BASE_TO_FORMS_MAP: Record<number, DigimonFormInfo[]> = {
       "unlockCondition": null
     }
   ],
+  "321": [
+    {
+      "formDigimonId": 393,
+      "formType": "X-Antibody",
+      "unlockCondition": null
+    }
+  ],
   "324": [
     {
       "formDigimonId": 377,
+      "formType": "X-Antibody",
+      "unlockCondition": null
+    }
+  ],
+  "325": [
+    {
+      "formDigimonId": 401,
       "formType": "X-Antibody",
       "unlockCondition": null
     }
@@ -574,6 +630,62 @@ export const BASE_TO_FORMS_MAP: Record<number, DigimonFormInfo[]> = {
       "formType": "Base",
       "unlockCondition": null
     }
+  ],
+  "391": [
+    {
+      "formDigimonId": 246,
+      "formType": "Base",
+      "unlockCondition": null
+    }
+  ],
+  "392": [
+    {
+      "formDigimonId": 271,
+      "formType": "Base",
+      "unlockCondition": null
+    }
+  ],
+  "393": [
+    {
+      "formDigimonId": 321,
+      "formType": "Base",
+      "unlockCondition": null
+    }
+  ],
+  "394": [
+    {
+      "formDigimonId": 261,
+      "formType": "Base",
+      "unlockCondition": null
+    }
+  ],
+  "395": [
+    {
+      "formDigimonId": 302,
+      "formType": "Base",
+      "unlockCondition": null
+    }
+  ],
+  "396": [
+    {
+      "formDigimonId": 213,
+      "formType": "Base",
+      "unlockCondition": null
+    }
+  ],
+  "400": [
+    {
+      "formDigimonId": 250,
+      "formType": "Base",
+      "unlockCondition": null
+    }
+  ],
+  "401": [
+    {
+      "formDigimonId": 325,
+      "formType": "Base",
+      "unlockCondition": null
+    }
   ]
 };
 
@@ -664,6 +776,11 @@ export const FORM_TO_BASE_MAP: Record<number, BaseDigimonInfo> = {
     "formType": "Base",
     "unlockCondition": null
   },
+  "213": {
+    "baseDigimonId": 396,
+    "formType": "Base",
+    "unlockCondition": null
+  },
   "214": {
     "baseDigimonId": 359,
     "formType": "Base",
@@ -699,8 +816,18 @@ export const FORM_TO_BASE_MAP: Record<number, BaseDigimonInfo> = {
     "formType": "Base",
     "unlockCondition": null
   },
+  "246": {
+    "baseDigimonId": 391,
+    "formType": "Base",
+    "unlockCondition": null
+  },
   "247": {
     "baseDigimonId": 372,
+    "formType": "Base",
+    "unlockCondition": null
+  },
+  "250": {
+    "baseDigimonId": 400,
     "formType": "Base",
     "unlockCondition": null
   },
@@ -711,6 +838,11 @@ export const FORM_TO_BASE_MAP: Record<number, BaseDigimonInfo> = {
   },
   "260": {
     "baseDigimonId": 390,
+    "formType": "Base",
+    "unlockCondition": null
+  },
+  "261": {
+    "baseDigimonId": 394,
     "formType": "Base",
     "unlockCondition": null
   },
@@ -729,6 +861,11 @@ export const FORM_TO_BASE_MAP: Record<number, BaseDigimonInfo> = {
     "formType": "Base",
     "unlockCondition": null
   },
+  "271": {
+    "baseDigimonId": 392,
+    "formType": "Base",
+    "unlockCondition": null
+  },
   "281": {
     "baseDigimonId": 362,
     "formType": "Base",
@@ -741,6 +878,11 @@ export const FORM_TO_BASE_MAP: Record<number, BaseDigimonInfo> = {
   },
   "297": {
     "baseDigimonId": 351,
+    "formType": "Base",
+    "unlockCondition": null
+  },
+  "302": {
+    "baseDigimonId": 395,
     "formType": "Base",
     "unlockCondition": null
   },
@@ -769,8 +911,18 @@ export const FORM_TO_BASE_MAP: Record<number, BaseDigimonInfo> = {
     "formType": "Base",
     "unlockCondition": null
   },
+  "321": {
+    "baseDigimonId": 393,
+    "formType": "Base",
+    "unlockCondition": null
+  },
   "324": {
     "baseDigimonId": 377,
+    "formType": "Base",
+    "unlockCondition": null
+  },
+  "325": {
+    "baseDigimonId": 401,
     "formType": "Base",
     "unlockCondition": null
   },
@@ -976,6 +1128,46 @@ export const FORM_TO_BASE_MAP: Record<number, BaseDigimonInfo> = {
   },
   "390": {
     "baseDigimonId": 260,
+    "formType": "X-Antibody",
+    "unlockCondition": null
+  },
+  "391": {
+    "baseDigimonId": 246,
+    "formType": "X-Antibody",
+    "unlockCondition": null
+  },
+  "392": {
+    "baseDigimonId": 271,
+    "formType": "X-Antibody",
+    "unlockCondition": null
+  },
+  "393": {
+    "baseDigimonId": 321,
+    "formType": "X-Antibody",
+    "unlockCondition": null
+  },
+  "394": {
+    "baseDigimonId": 261,
+    "formType": "X-Antibody",
+    "unlockCondition": null
+  },
+  "395": {
+    "baseDigimonId": 302,
+    "formType": "X-Antibody",
+    "unlockCondition": null
+  },
+  "396": {
+    "baseDigimonId": 213,
+    "formType": "X-Antibody",
+    "unlockCondition": null
+  },
+  "400": {
+    "baseDigimonId": 250,
+    "formType": "X-Antibody",
+    "unlockCondition": null
+  },
+  "401": {
+    "baseDigimonId": 325,
     "formType": "X-Antibody",
     "unlockCondition": null
   }

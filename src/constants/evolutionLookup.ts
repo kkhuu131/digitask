@@ -16,6 +16,7 @@ export type EvolutionPath = {
     abi?: number;
   };
   dna_requirement?: number | null;
+  item_requirement?: string | null;
 };
 
 export const EVOLUTION_LOOKUP_TABLE = {
@@ -29,7 +30,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 40,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 161,
@@ -41,7 +43,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 25,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 165,
@@ -52,7 +55,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 173,
@@ -63,7 +67,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 9,
@@ -73,7 +78,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 15
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 177,
@@ -83,7 +89,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "def": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 181,
@@ -94,7 +101,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 130,
       "def": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 185,
@@ -105,7 +113,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 912,
@@ -118,7 +127,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 160,
       "spd": 135
     },
-    "dna_requirement": 343
+    "dna_requirement": 343,
+    "item_requirement": null
   },
   {
     "id": 938,
@@ -129,7 +139,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 600,
       "atk": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 13,
@@ -139,7 +150,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 17,
@@ -150,7 +162,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 50,
       "def": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 21,
@@ -162,7 +175,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 20,
       "spd": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 25,
@@ -172,7 +186,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 29,
@@ -182,7 +197,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 34,
@@ -192,7 +208,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "spd": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 38,
@@ -203,7 +220,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 75,
       "def": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 42,
@@ -214,7 +232,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 20,
       "int": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 46,
@@ -226,7 +245,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 20,
       "spd": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 50,
@@ -236,7 +256,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "int": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 54,
@@ -246,7 +267,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "def": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 58,
@@ -257,7 +279,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 20,
       "spd": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 62,
@@ -267,7 +290,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 66,
@@ -277,7 +301,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 70,
@@ -288,7 +313,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 30,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 75,
@@ -300,7 +326,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 25,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 79,
@@ -311,7 +338,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 83,
@@ -322,7 +350,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 40,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 87,
@@ -333,7 +362,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 35,
       "spd": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 91,
@@ -343,7 +373,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 95,
@@ -354,7 +385,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 99,
@@ -364,7 +396,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "spd": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 103,
@@ -375,7 +408,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 50,
       "spd": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 107,
@@ -386,7 +420,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 111,
@@ -397,7 +432,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 116,
@@ -408,7 +444,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 35,
       "spd": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 120,
@@ -418,7 +455,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 500
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 124,
@@ -429,7 +467,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "atk": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 128,
@@ -439,7 +478,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "abi": 5
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 132,
@@ -450,7 +490,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 35,
       "int": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 136,
@@ -461,7 +502,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 50,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 140,
@@ -471,7 +513,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "def": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 144,
@@ -481,7 +524,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "spd": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 148,
@@ -493,7 +537,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 25,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 152,
@@ -504,7 +549,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 250,
       "atk": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 325,
@@ -516,7 +562,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 70,
       "int": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 329,
@@ -527,7 +574,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 800,
       "atk": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 333,
@@ -539,7 +587,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 80,
       "int": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 337,
@@ -551,7 +600,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 75,
       "spd": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 194,
@@ -561,7 +611,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 342,
@@ -572,7 +623,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 350,
       "atk": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 346,
@@ -584,7 +636,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 350,
@@ -596,7 +649,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 95,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 354,
@@ -607,7 +661,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 358,
@@ -618,7 +673,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 362,
@@ -629,7 +685,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 366,
@@ -641,7 +698,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 70,
       "int": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 370,
@@ -649,7 +707,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "to_digimon_id": 191,
     "level_required": 32,
     "stat_requirements": {},
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 913,
@@ -662,7 +721,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 160,
       "spd": 135
     },
-    "dna_requirement": 342
+    "dna_requirement": 342,
+    "item_requirement": null
   },
   {
     "id": 939,
@@ -675,82 +735,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "spd": 120
     },
-    "dna_requirement": null
-  },
-  {
-    "id": 198,
-    "from_digimon_id": 47,
-    "to_digimon_id": 90,
-    "level_required": 16,
-    "stat_requirements": {
-      "atk": 55
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 202,
-    "from_digimon_id": 47,
-    "to_digimon_id": 123,
-    "level_required": 16,
-    "stat_requirements": {
-      "atk": 55,
-      "spd": 50
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 206,
-    "from_digimon_id": 48,
-    "to_digimon_id": 102,
-    "level_required": 14,
-    "stat_requirements": {
-      "hp": 150,
-      "int": 40
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 210,
-    "from_digimon_id": 49,
-    "to_digimon_id": 65,
-    "level_required": 15,
-    "stat_requirements": {
-      "atk": 40,
-      "int": 40
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 214,
-    "from_digimon_id": 49,
-    "to_digimon_id": 124,
-    "level_required": 13,
-    "stat_requirements": {
-      "sp": 40,
-      "int": 30
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 219,
-    "from_digimon_id": 50,
-    "to_digimon_id": 75,
-    "level_required": 14,
-    "stat_requirements": {
-      "atk": 35,
-      "spd": 45
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 223,
-    "from_digimon_id": 51,
-    "to_digimon_id": 130,
-    "level_required": 14,
-    "stat_requirements": {
-      "spd": 50
-    },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 227,
@@ -762,7 +748,90 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 145
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": "digi_egg_of_miracles"
+  },
+  {
+    "id": 198,
+    "from_digimon_id": 47,
+    "to_digimon_id": 90,
+    "level_required": 16,
+    "stat_requirements": {
+      "atk": 55
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 202,
+    "from_digimon_id": 47,
+    "to_digimon_id": 123,
+    "level_required": 16,
+    "stat_requirements": {
+      "atk": 55,
+      "spd": 50
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 206,
+    "from_digimon_id": 48,
+    "to_digimon_id": 102,
+    "level_required": 14,
+    "stat_requirements": {
+      "hp": 150,
+      "int": 40
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 210,
+    "from_digimon_id": 49,
+    "to_digimon_id": 65,
+    "level_required": 15,
+    "stat_requirements": {
+      "atk": 40,
+      "int": 40
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 214,
+    "from_digimon_id": 49,
+    "to_digimon_id": 124,
+    "level_required": 13,
+    "stat_requirements": {
+      "sp": 40,
+      "int": 30
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 219,
+    "from_digimon_id": 50,
+    "to_digimon_id": 75,
+    "level_required": 14,
+    "stat_requirements": {
+      "atk": 35,
+      "spd": 45
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 223,
+    "from_digimon_id": 51,
+    "to_digimon_id": 130,
+    "level_required": 14,
+    "stat_requirements": {
+      "spd": 50
+    },
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 231,
@@ -772,7 +841,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 235,
@@ -783,7 +853,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 55,
       "spd": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 239,
@@ -794,7 +865,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 247,
@@ -804,7 +876,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 500
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 251,
@@ -815,7 +888,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 5,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 255,
@@ -825,7 +899,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "spd": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 260,
@@ -836,7 +911,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 35,
       "int": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 264,
@@ -847,7 +923,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 268,
@@ -857,7 +934,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 272,
@@ -869,7 +947,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 70,
       "int": 90
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 276,
@@ -880,7 +959,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 70,
       "int": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 280,
@@ -891,7 +971,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 75,
       "spd": 90
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 284,
@@ -903,7 +984,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 85,
       "spd": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 288,
@@ -915,7 +997,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "int": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 292,
@@ -926,7 +1009,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 500,
       "atk": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 296,
@@ -938,7 +1022,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 75,
       "spd": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 301,
@@ -950,7 +1035,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 80,
       "spd": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 305,
@@ -962,7 +1048,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 10,
       "int": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 309,
@@ -973,7 +1060,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 500,
       "atk": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 313,
@@ -984,7 +1072,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 400,
       "atk": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 317,
@@ -995,7 +1084,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 400,
       "atk": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 321,
@@ -1006,7 +1096,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 800,
       "def": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 473,
@@ -1016,7 +1107,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "def": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 477,
@@ -1028,7 +1120,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 80,
       "spd": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 481,
@@ -1039,7 +1132,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 400,
       "def": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 499,
@@ -1052,7 +1146,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 180,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 379,
@@ -1062,7 +1157,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 900
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 500,
@@ -1075,7 +1171,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 250,
       "spd": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 501,
@@ -1088,7 +1185,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 200,
       "spd": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 502,
@@ -1102,7 +1200,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 110,
       "int": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 503,
@@ -1115,7 +1214,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 200
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 506,
@@ -1128,7 +1228,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 110,
       "int": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 510,
@@ -1141,7 +1242,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 518,
@@ -1154,7 +1256,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "int": 120
     },
-    "dna_requirement": 214
+    "dna_requirement": 214,
+    "item_requirement": null
   },
   {
     "id": 522,
@@ -1167,7 +1270,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 150,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 527,
@@ -1179,7 +1283,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 531,
@@ -1191,7 +1296,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "def": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 535,
@@ -1203,7 +1309,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 539,
@@ -1215,7 +1322,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 543,
@@ -1228,7 +1336,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 914,
@@ -1241,7 +1350,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 180,
       "def": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 940,
@@ -1254,7 +1364,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "spd": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 383,
@@ -1266,7 +1377,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 387,
@@ -1278,7 +1390,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "spd": 65
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 391,
@@ -1289,7 +1402,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 395,
@@ -1300,7 +1414,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 95,
       "spd": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 399,
@@ -1312,7 +1427,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 75,
       "spd": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 404,
@@ -1323,7 +1439,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 408,
@@ -1335,7 +1452,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 95,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 412,
@@ -1347,7 +1465,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 75,
       "spd": 75
     },
-    "dna_requirement": 67
+    "dna_requirement": 67,
+    "item_requirement": null
   },
   {
     "id": 416,
@@ -1359,7 +1478,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 70,
       "int": 90
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 420,
@@ -1371,7 +1491,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 60,
       "int": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 424,
@@ -1383,7 +1504,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 95,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 551,
@@ -1397,7 +1519,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 555,
@@ -1410,7 +1533,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 145,
       "def": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 428,
@@ -1422,7 +1546,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 70,
       "def": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 432,
@@ -1433,7 +1558,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 600,
       "atk": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 436,
@@ -1444,7 +1570,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 75,
       "spd": 90
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 440,
@@ -1456,7 +1583,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 60,
       "int": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 445,
@@ -1467,7 +1595,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 449,
@@ -1479,7 +1608,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "spd": 65
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 453,
@@ -1491,7 +1621,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 457,
@@ -1502,7 +1633,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 400,
       "def": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 461,
@@ -1514,7 +1646,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 80,
       "spd": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 465,
@@ -1526,7 +1659,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 80,
       "int": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 654,
@@ -1537,7 +1671,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "def": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 658,
@@ -1550,7 +1685,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 135,
       "spd": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 662,
@@ -1562,7 +1698,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "atk": 180
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 564,
@@ -1575,7 +1712,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 145
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 671,
@@ -1587,7 +1725,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 135,
       "spd": 125
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 675,
@@ -1602,7 +1741,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 250,
       "spd": 170
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 679,
@@ -1614,7 +1754,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 683,
@@ -1626,7 +1767,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "spd": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 687,
@@ -1639,7 +1781,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 160,
       "spd": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 691,
@@ -1647,7 +1790,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "to_digimon_id": 223,
     "level_required": 0,
     "stat_requirements": {},
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 695,
@@ -1660,7 +1804,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 100,
       "atk": 290
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 703,
@@ -1673,7 +1818,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "def": 200
     },
-    "dna_requirement": 298
+    "dna_requirement": 298,
+    "item_requirement": null
   },
   {
     "id": 707,
@@ -1685,7 +1831,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 200,
       "spd": 200
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 568,
@@ -1698,7 +1845,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 120,
       "spd": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 712,
@@ -1708,7 +1856,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "abi": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 716,
@@ -1719,7 +1868,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 40,
       "atk": 255
     },
-    "dna_requirement": 272
+    "dna_requirement": 272,
+    "item_requirement": null
   },
   {
     "id": 720,
@@ -1729,7 +1879,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 915,
@@ -1742,7 +1893,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 941,
@@ -1755,7 +1907,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "spd": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 576,
@@ -1767,7 +1920,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 145,
       "def": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 580,
@@ -1780,7 +1934,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "spd": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 584,
@@ -1793,7 +1948,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 180,
       "int": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 589,
@@ -1806,7 +1962,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 130,
       "def": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 593,
@@ -1818,7 +1975,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 597,
@@ -1830,7 +1988,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 605,
@@ -1843,7 +2002,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 200
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 609,
@@ -1856,7 +2016,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 613,
@@ -1869,7 +2030,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 617,
@@ -1882,7 +2044,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 135,
       "spd": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 621,
@@ -1894,7 +2057,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 625,
@@ -1907,7 +2071,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 724,
@@ -1918,7 +2083,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 728,
@@ -1928,7 +2094,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 732,
@@ -1939,7 +2106,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 40,
       "spd": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 737,
@@ -1950,7 +2118,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 630,
@@ -1963,7 +2132,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 638,
@@ -1976,7 +2146,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 180,
       "def": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 642,
@@ -1989,7 +2160,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 100,
       "spd": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 646,
@@ -2002,7 +2174,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 140,
       "def": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 650,
@@ -2015,7 +2188,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 180,
       "def": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 753,
@@ -2026,7 +2200,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 35,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 770,
@@ -2038,7 +2213,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 70,
       "int": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 774,
@@ -2050,7 +2226,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 80,
       "def": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 860,
@@ -2062,7 +2239,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 864,
@@ -2075,7 +2253,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 140,
       "def": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 868,
@@ -2088,7 +2267,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 876,
@@ -2102,7 +2282,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 110,
       "int": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 880,
@@ -2115,7 +2296,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 145,
       "def": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 884,
@@ -2128,7 +2310,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 160,
       "spd": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 888,
@@ -2141,7 +2324,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "spd": 150
     },
-    "dna_requirement": 278
+    "dna_requirement": 278,
+    "item_requirement": null
   },
   {
     "id": 893,
@@ -2154,7 +2338,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "spd": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 897,
@@ -2165,7 +2350,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 35,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 901,
@@ -2176,7 +2362,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 905,
@@ -2187,7 +2374,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 909,
@@ -2200,7 +2388,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 916,
@@ -2210,7 +2399,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 942,
@@ -2222,92 +2412,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 145,
       "spd": 120
     },
-    "dna_requirement": null
-  },
-  {
-    "id": 2,
-    "from_digimon_id": 1,
-    "to_digimon_id": 13,
-    "level_required": 5,
-    "stat_requirements": {},
-    "dna_requirement": null
-  },
-  {
-    "id": 3,
-    "from_digimon_id": 1,
-    "to_digimon_id": 6,
-    "level_required": 8,
-    "stat_requirements": {
-      "abi": 5,
-      "atk": 55
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 742,
-    "from_digimon_id": 52,
-    "to_digimon_id": 118,
-    "level_required": 16,
-    "stat_requirements": {
-      "hp": 300,
-      "def": 30
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 746,
-    "from_digimon_id": 57,
-    "to_digimon_id": 129,
-    "level_required": 12,
-    "stat_requirements": {
-      "hp": 300
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 750,
-    "from_digimon_id": 58,
-    "to_digimon_id": 89,
-    "level_required": 16,
-    "stat_requirements": {
-      "hp": 150,
-      "atk": 40
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 754,
-    "from_digimon_id": 61,
-    "to_digimon_id": 335,
-    "level_required": 14,
-    "stat_requirements": {
-      "sp": 40,
-      "spd": 50
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 758,
-    "from_digimon_id": 66,
-    "to_digimon_id": 170,
-    "level_required": 30,
-    "stat_requirements": {
-      "hp": 800,
-      "atk": 75
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 762,
-    "from_digimon_id": 68,
-    "to_digimon_id": 209,
-    "level_required": 30,
-    "stat_requirements": {
-      "hp": 350,
-      "atk": 100,
-      "spd": 75
-    },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 766,
@@ -2319,66 +2425,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 100,
       "spd": 85
     },
-    "dna_requirement": null
-  },
-  {
-    "id": 778,
-    "from_digimon_id": 96,
-    "to_digimon_id": 148,
-    "level_required": 30,
-    "stat_requirements": {
-      "abi": 10,
-      "atk": 80,
-      "spd": 95
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 782,
-    "from_digimon_id": 97,
-    "to_digimon_id": 180,
-    "level_required": 28,
-    "stat_requirements": {
-      "atk": 75,
-      "def": 75
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 786,
-    "from_digimon_id": 99,
-    "to_digimon_id": 187,
-    "level_required": 26,
-    "stat_requirements": {
-      "hp": 850,
-      "atk": 60,
-      "int": 60
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 790,
-    "from_digimon_id": 101,
-    "to_digimon_id": 216,
-    "level_required": 28,
-    "stat_requirements": {
-      "hp": 400,
-      "atk": 90,
-      "spd": 70
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 794,
-    "from_digimon_id": 104,
-    "to_digimon_id": 330,
-    "level_required": 30,
-    "stat_requirements": {
-      "hp": 400,
-      "atk": 95,
-      "def": 75
-    },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": "beast_spirit_of_light"
   },
   {
     "id": 798,
@@ -2390,7 +2438,165 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 100,
       "spd": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": "beast_spirit_of_light"
+  },
+  {
+    "id": 2,
+    "from_digimon_id": 1,
+    "to_digimon_id": 13,
+    "level_required": 5,
+    "stat_requirements": {},
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 3,
+    "from_digimon_id": 1,
+    "to_digimon_id": 6,
+    "level_required": 8,
+    "stat_requirements": {
+      "abi": 5,
+      "atk": 55
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 742,
+    "from_digimon_id": 52,
+    "to_digimon_id": 118,
+    "level_required": 16,
+    "stat_requirements": {
+      "hp": 300,
+      "def": 30
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 746,
+    "from_digimon_id": 57,
+    "to_digimon_id": 129,
+    "level_required": 12,
+    "stat_requirements": {
+      "hp": 300
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 750,
+    "from_digimon_id": 58,
+    "to_digimon_id": 89,
+    "level_required": 16,
+    "stat_requirements": {
+      "hp": 150,
+      "atk": 40
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 754,
+    "from_digimon_id": 61,
+    "to_digimon_id": 335,
+    "level_required": 14,
+    "stat_requirements": {
+      "sp": 40,
+      "spd": 50
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 758,
+    "from_digimon_id": 66,
+    "to_digimon_id": 170,
+    "level_required": 30,
+    "stat_requirements": {
+      "hp": 800,
+      "atk": 75
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 762,
+    "from_digimon_id": 68,
+    "to_digimon_id": 209,
+    "level_required": 30,
+    "stat_requirements": {
+      "hp": 350,
+      "atk": 100,
+      "spd": 75
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 778,
+    "from_digimon_id": 96,
+    "to_digimon_id": 148,
+    "level_required": 30,
+    "stat_requirements": {
+      "abi": 10,
+      "atk": 80,
+      "spd": 95
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 782,
+    "from_digimon_id": 97,
+    "to_digimon_id": 180,
+    "level_required": 28,
+    "stat_requirements": {
+      "atk": 75,
+      "def": 75
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 786,
+    "from_digimon_id": 99,
+    "to_digimon_id": 187,
+    "level_required": 26,
+    "stat_requirements": {
+      "hp": 850,
+      "atk": 60,
+      "int": 60
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 790,
+    "from_digimon_id": 101,
+    "to_digimon_id": 216,
+    "level_required": 28,
+    "stat_requirements": {
+      "hp": 400,
+      "atk": 90,
+      "spd": 70
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 794,
+    "from_digimon_id": 104,
+    "to_digimon_id": 330,
+    "level_required": 30,
+    "stat_requirements": {
+      "hp": 400,
+      "atk": 95,
+      "def": 75
+    },
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 802,
@@ -2400,7 +2606,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "def": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 806,
@@ -2411,7 +2618,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 600,
       "atk": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 811,
@@ -2422,7 +2630,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 815,
@@ -2433,7 +2642,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 819,
@@ -2445,7 +2655,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 80,
       "spd": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 823,
@@ -2456,7 +2667,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 80,
       "int": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 827,
@@ -2467,7 +2679,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 450,
       "atk": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 831,
@@ -2480,7 +2693,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 200,
       "spd": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 835,
@@ -2492,7 +2706,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "spd": 145
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 839,
@@ -2505,7 +2720,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 130,
       "def": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 847,
@@ -2518,7 +2734,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 170,
       "int": 135
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 852,
@@ -2531,7 +2748,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 130,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 856,
@@ -2544,7 +2762,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 130,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 6,
@@ -2554,7 +2773,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "def": 15
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 8,
@@ -2564,7 +2784,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "int": 10
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 96,
@@ -2575,7 +2796,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 300,
       "spd": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 98,
@@ -2585,7 +2807,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 100,
@@ -2596,7 +2819,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 102,
@@ -2606,7 +2830,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 104,
@@ -2616,7 +2841,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "spd": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 106,
@@ -2627,7 +2853,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "atk": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 108,
@@ -2638,7 +2865,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 110,
@@ -2648,7 +2876,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "spd": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 112,
@@ -2659,7 +2888,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 114,
@@ -2670,7 +2900,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 250,
       "atk": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 917,
@@ -2681,7 +2912,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 385,
       "atk": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 943,
@@ -2693,7 +2925,20 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 67,
+    "from_digimon_id": 18,
+    "to_digimon_id": 68,
+    "level_required": 15,
+    "stat_requirements": {
+      "hp": 150,
+      "atk": 50
+    },
+    "dna_requirement": null,
+    "item_requirement": "human_spirit_of_flame"
   },
   {
     "id": 10,
@@ -2701,7 +2946,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "to_digimon_id": 17,
     "level_required": 5,
     "stat_requirements": {},
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 11,
@@ -2709,7 +2955,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "to_digimon_id": 11,
     "level_required": 5,
     "stat_requirements": {},
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 15,
@@ -2720,7 +2967,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 75,
       "def": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 19,
@@ -2730,7 +2978,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 23,
@@ -2742,7 +2991,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 20,
       "spd": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 27,
@@ -2753,7 +3003,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 20,
       "spd": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 31,
@@ -2763,7 +3014,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "spd": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 33,
@@ -2774,7 +3026,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 20,
       "spd": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 35,
@@ -2784,7 +3037,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "spd": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 37,
@@ -2795,7 +3049,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 20,
       "int": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 39,
@@ -2805,7 +3060,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "spd": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 41,
@@ -2816,7 +3072,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 30,
       "int": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 43,
@@ -2827,7 +3084,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 15,
       "spd": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 45,
@@ -2837,7 +3095,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "spd": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 47,
@@ -2848,7 +3107,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 20,
       "spd": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 49,
@@ -2859,7 +3119,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 75,
       "def": 10
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 51,
@@ -2869,7 +3130,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 53,
@@ -2879,7 +3141,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 55,
@@ -2890,7 +3153,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 75,
       "def": 25
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 57,
@@ -2901,7 +3165,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 75,
       "def": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 59,
@@ -2912,7 +3177,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 20,
       "int": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 61,
@@ -2923,7 +3189,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 30,
       "def": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 63,
@@ -2934,7 +3201,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "atk": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 65,
@@ -2945,18 +3213,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "atk": 40
     },
-    "dna_requirement": null
-  },
-  {
-    "id": 67,
-    "from_digimon_id": 18,
-    "to_digimon_id": 68,
-    "level_required": 15,
-    "stat_requirements": {
-      "hp": 150,
-      "atk": 50
-    },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 69,
@@ -2967,7 +3225,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "atk": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 71,
@@ -2977,7 +3236,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "def": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 73,
@@ -2988,7 +3248,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 55,
       "def": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 77,
@@ -2999,7 +3260,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 30,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 81,
@@ -3010,7 +3272,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 35,
       "int": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 84,
@@ -3021,7 +3284,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 40,
       "int": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 88,
@@ -3033,7 +3297,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 25,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 90,
@@ -3044,7 +3309,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 92,
@@ -3055,7 +3321,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 94,
@@ -3066,7 +3333,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 30,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 12,
@@ -3076,7 +3344,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "int": 15
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 14,
@@ -3087,7 +3356,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 30,
       "spd": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 16,
@@ -3098,7 +3368,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "atk": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 123,
@@ -3109,7 +3380,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "atk": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 125,
@@ -3119,7 +3391,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 127,
@@ -3130,7 +3403,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 5,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 129,
@@ -3140,18 +3414,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "spd": 50
     },
-    "dna_requirement": null
-  },
-  {
-    "id": 131,
-    "from_digimon_id": 30,
-    "to_digimon_id": 73,
-    "level_required": 15,
-    "stat_requirements": {
-      "hp": 45,
-      "spd": 55
-    },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 133,
@@ -3162,7 +3426,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "atk": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 137,
@@ -3173,7 +3438,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 139,
@@ -3184,7 +3450,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 35
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 141,
@@ -3195,7 +3462,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 110,
       "def": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 918,
@@ -3208,7 +3476,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 175,
       "def": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 944,
@@ -3221,7 +3490,32 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 180,
       "spd": 170
     },
-    "dna_requirement": 259
+    "dna_requirement": 259,
+    "item_requirement": null
+  },
+  {
+    "id": 115,
+    "from_digimon_id": 27,
+    "to_digimon_id": 73,
+    "level_required": 15,
+    "stat_requirements": {
+      "hp": 45,
+      "spd": 55
+    },
+    "dna_requirement": null,
+    "item_requirement": "human_spirit_of_light"
+  },
+  {
+    "id": 131,
+    "from_digimon_id": 30,
+    "to_digimon_id": 73,
+    "level_required": 15,
+    "stat_requirements": {
+      "hp": 45,
+      "spd": 55
+    },
+    "dna_requirement": null,
+    "item_requirement": "human_spirit_of_light"
   },
   {
     "id": 18,
@@ -3232,7 +3526,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 30,
       "spd": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 20,
@@ -3242,7 +3537,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 22,
@@ -3252,7 +3548,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "spd": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 24,
@@ -3263,7 +3560,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 80,
       "atk": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 26,
@@ -3274,7 +3572,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 20,
       "spd": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 28,
@@ -3284,7 +3583,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 35
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 30,
@@ -3295,7 +3595,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 20,
       "spd": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 32,
@@ -3306,7 +3607,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 30,
       "spd": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 36,
@@ -3318,7 +3620,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 80,
       "int": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 40,
@@ -3329,7 +3632,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 20,
       "int": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 44,
@@ -3340,7 +3644,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 15,
       "int": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 48,
@@ -3350,7 +3655,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "def": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 52,
@@ -3361,7 +3667,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 15,
       "int": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 56,
@@ -3371,7 +3678,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "def": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 60,
@@ -3382,7 +3690,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 20,
       "spd": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 64,
@@ -3393,7 +3702,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 68,
@@ -3404,7 +3714,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 50,
       "spd": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 72,
@@ -3415,7 +3726,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "atk": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 76,
@@ -3425,7 +3737,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "abi": 5
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 78,
@@ -3435,7 +3748,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "def": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 80,
@@ -3446,7 +3760,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 82,
@@ -3456,7 +3771,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 85,
@@ -3466,7 +3782,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 89,
@@ -3477,7 +3794,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 93,
@@ -3488,7 +3806,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 40,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 97,
@@ -3498,7 +3817,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 500
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 101,
@@ -3509,7 +3829,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 300,
       "def": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 105,
@@ -3520,7 +3841,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 35,
       "spd": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 109,
@@ -3530,7 +3852,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 113,
@@ -3541,18 +3864,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 35
     },
-    "dna_requirement": null
-  },
-  {
-    "id": 115,
-    "from_digimon_id": 27,
-    "to_digimon_id": 73,
-    "level_required": 15,
-    "stat_requirements": {
-      "hp": 45,
-      "spd": 55
-    },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 117,
@@ -3562,7 +3875,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 300
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 119,
@@ -3573,7 +3887,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 5,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 121,
@@ -3584,7 +3899,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "atk": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 122,
@@ -3595,18 +3911,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 50,
       "spd": 20
     },
-    "dna_requirement": null
-  },
-  {
-    "id": 126,
-    "from_digimon_id": 29,
-    "to_digimon_id": 68,
-    "level_required": 15,
-    "stat_requirements": {
-      "hp": 150,
-      "atk": 50
-    },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 130,
@@ -3617,7 +3923,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 5,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 134,
@@ -3628,7 +3935,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 40,
       "int": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 237,
@@ -3639,7 +3947,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 40,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 238,
@@ -3650,7 +3959,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 30,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 240,
@@ -3660,7 +3970,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 300
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 246,
@@ -3671,7 +3982,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 35,
       "spd": 45
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 248,
@@ -3682,7 +3994,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 250,
@@ -3692,7 +4005,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 300
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 252,
@@ -3703,7 +4017,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 5,
       "atk": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 254,
@@ -3713,7 +4028,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 500
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 256,
@@ -3725,7 +4041,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 919,
@@ -3738,7 +4055,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "spd": 165
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 945,
@@ -3751,7 +4069,20 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 180,
       "spd": 170
     },
-    "dna_requirement": 366
+    "dna_requirement": 366,
+    "item_requirement": null
+  },
+  {
+    "id": 126,
+    "from_digimon_id": 29,
+    "to_digimon_id": 68,
+    "level_required": 15,
+    "stat_requirements": {
+      "hp": 150,
+      "atk": 50
+    },
+    "dna_requirement": null,
+    "item_requirement": "human_spirit_of_flame"
   },
   {
     "id": 138,
@@ -3761,7 +4092,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "int": 35
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 142,
@@ -3772,7 +4104,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 146,
@@ -3783,7 +4116,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "atk": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 150,
@@ -3793,7 +4127,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 300
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 154,
@@ -3804,7 +4139,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 45,
       "spd": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 156,
@@ -3815,7 +4151,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 158,
@@ -3826,7 +4163,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 30,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 163,
@@ -3836,7 +4174,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 167,
@@ -3846,7 +4185,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 300
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 171,
@@ -3857,7 +4197,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 40,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 175,
@@ -3868,7 +4209,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 179,
@@ -3879,7 +4221,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 183,
@@ -3890,7 +4233,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 30,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 187,
@@ -3900,7 +4244,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "def": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 189,
@@ -3910,7 +4255,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "abi": 5
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 191,
@@ -3918,7 +4264,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "to_digimon_id": 127,
     "level_required": 20,
     "stat_requirements": {},
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 195,
@@ -3930,7 +4277,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 197,
@@ -3941,7 +4289,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 199,
@@ -3952,7 +4301,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "atk": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 201,
@@ -3963,7 +4313,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 50,
       "spd": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 203,
@@ -3974,7 +4325,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 55,
       "def": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 205,
@@ -3984,7 +4336,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 207,
@@ -3995,7 +4348,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 300,
       "def": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 209,
@@ -4006,7 +4360,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 211,
@@ -4018,7 +4373,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 213,
@@ -4029,7 +4385,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 5,
       "atk": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 215,
@@ -4039,7 +4396,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "spd": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 217,
@@ -4051,7 +4409,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 221,
@@ -4062,7 +4421,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 225,
@@ -4073,7 +4433,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 35
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 229,
@@ -4084,7 +4445,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 45,
       "spd": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 233,
@@ -4095,7 +4457,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 250,
       "atk": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 145,
@@ -4106,7 +4469,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 50,
       "spd": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 147,
@@ -4117,7 +4481,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 234,
@@ -4128,7 +4493,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 5,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 236,
@@ -4139,7 +4505,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 241,
@@ -4150,7 +4517,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 35,
       "spd": 45
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 245,
@@ -4160,7 +4528,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 249,
@@ -4171,7 +4540,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 300,
       "def": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 253,
@@ -4184,7 +4554,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 240,
       "spd": 180
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 257,
@@ -4194,7 +4565,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 259,
@@ -4205,7 +4577,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 35,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 261,
@@ -4216,7 +4589,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 263,
@@ -4226,7 +4600,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 265,
@@ -4237,7 +4612,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 45,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 920,
@@ -4250,7 +4626,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 165,
       "spd": 165
     },
-    "dna_requirement": 351
+    "dna_requirement": 351,
+    "item_requirement": null
   },
   {
     "id": 946,
@@ -4260,7 +4637,32 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "int": 45
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 228,
+    "from_digimon_id": 53,
+    "to_digimon_id": 73,
+    "level_required": 15,
+    "stat_requirements": {
+      "hp": 45,
+      "spd": 55
+    },
+    "dna_requirement": null,
+    "item_requirement": "human_spirit_of_light"
+  },
+  {
+    "id": 226,
+    "from_digimon_id": 53,
+    "to_digimon_id": 323,
+    "level_required": 14,
+    "stat_requirements": {
+      "atk": 40,
+      "spd": 40
+    },
+    "dna_requirement": null,
+    "item_requirement": "digi_egg_of_courage"
   },
   {
     "id": 149,
@@ -4271,7 +4673,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 151,
@@ -4282,7 +4685,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 40,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 153,
@@ -4293,7 +4697,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 110,
       "def": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 155,
@@ -4303,7 +4708,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 300
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 159,
@@ -4314,7 +4720,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 300,
       "spd": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 160,
@@ -4324,7 +4731,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "int": 35
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 162,
@@ -4335,7 +4743,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 35
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 164,
@@ -4346,7 +4755,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 130,
       "def": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 166,
@@ -4357,7 +4767,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 168,
@@ -4367,7 +4778,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 170,
@@ -4378,7 +4790,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 172,
@@ -4388,7 +4801,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 174,
@@ -4399,7 +4813,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 176,
@@ -4409,7 +4824,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "int": 35
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 178,
@@ -4419,7 +4835,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 180,
@@ -4430,7 +4847,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 35
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 182,
@@ -4440,7 +4858,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "def": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 184,
@@ -4451,7 +4870,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 186,
@@ -4462,7 +4882,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 130,
       "atk": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 188,
@@ -4472,7 +4893,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "int": 35
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 192,
@@ -4483,7 +4905,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 196,
@@ -4494,7 +4917,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 5,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 200,
@@ -4502,7 +4926,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "to_digimon_id": 127,
     "level_required": 20,
     "stat_requirements": {},
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 204,
@@ -4512,7 +4937,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 500
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 208,
@@ -4522,7 +4948,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 300
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 216,
@@ -4533,7 +4960,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 40,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 218,
@@ -4545,7 +4973,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 220,
@@ -4555,7 +4984,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "spd": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 222,
@@ -4566,7 +4996,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 224,
@@ -4577,29 +5008,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 40
     },
-    "dna_requirement": null
-  },
-  {
-    "id": 226,
-    "from_digimon_id": 53,
-    "to_digimon_id": 323,
-    "level_required": 14,
-    "stat_requirements": {
-      "atk": 40,
-      "spd": 40
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 228,
-    "from_digimon_id": 53,
-    "to_digimon_id": 73,
-    "level_required": 15,
-    "stat_requirements": {
-      "hp": 45,
-      "spd": 55
-    },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 230,
@@ -4610,7 +5020,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 40,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 232,
@@ -4621,7 +5032,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 35
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 262,
@@ -4632,7 +5044,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 5,
       "atk": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 266,
@@ -4643,7 +5056,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 270,
@@ -4654,7 +5068,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 921,
@@ -4667,7 +5082,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 165,
       "spd": 165
     },
-    "dna_requirement": 348
+    "dna_requirement": 348,
+    "item_requirement": null
   },
   {
     "id": 356,
@@ -4678,7 +5094,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 360,
@@ -4689,7 +5106,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 75,
       "int": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 364,
@@ -4699,7 +5117,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 900
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 368,
@@ -4711,7 +5130,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 70,
       "def": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 372,
@@ -4721,7 +5141,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "abi": 10
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 374,
@@ -4732,7 +5153,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 60,
       "int": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 378,
@@ -4743,7 +5165,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 380,
@@ -4755,7 +5178,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "int": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 382,
@@ -4767,7 +5191,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 95,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 384,
@@ -4779,7 +5204,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 85,
       "spd": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 386,
@@ -4791,7 +5217,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 10,
       "atk": 125
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 388,
@@ -4803,7 +5230,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 70,
       "def": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 390,
@@ -4815,7 +5243,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 70,
       "def": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 392,
@@ -4826,7 +5255,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 80,
       "int": 65
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 394,
@@ -4837,7 +5267,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 60,
       "atk": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 396,
@@ -4848,7 +5279,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 95,
       "def": 90
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 398,
@@ -4860,7 +5292,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 90,
       "spd": 75
     },
-    "dna_requirement": 76
+    "dna_requirement": 76,
+    "item_requirement": null
   },
   {
     "id": 947,
@@ -4872,7 +5305,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 10,
       "int": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 948,
@@ -4883,7 +5317,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 85,
       "spd": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 951,
@@ -4894,7 +5329,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 330,
       "def": 35
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 952,
@@ -4905,7 +5341,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 85,
       "spd": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 953,
@@ -4917,264 +5354,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 130
     },
-    "dna_requirement": null
-  },
-  {
-    "id": 274,
-    "from_digimon_id": 65,
-    "to_digimon_id": 214,
-    "level_required": 30,
-    "stat_requirements": {
-      "sp": 75,
-      "abi": 10,
-      "int": 95
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 278,
-    "from_digimon_id": 67,
-    "to_digimon_id": 154,
-    "level_required": 30,
-    "stat_requirements": {
-      "atk": 75,
-      "spd": 75
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 282,
-    "from_digimon_id": 70,
-    "to_digimon_id": 145,
-    "level_required": 26,
-    "stat_requirements": {
-      "def": 110
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 286,
-    "from_digimon_id": 70,
-    "to_digimon_id": 159,
-    "level_required": 30,
-    "stat_requirements": {
-      "hp": 400,
-      "abi": 10,
-      "atk": 125
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 291,
-    "from_digimon_id": 72,
-    "to_digimon_id": 147,
-    "level_required": 30,
-    "stat_requirements": {
-      "abi": 10,
-      "atk": 70,
-      "int": 90
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 293,
-    "from_digimon_id": 72,
-    "to_digimon_id": 217,
-    "level_required": 28,
-    "stat_requirements": {
-      "sp": 75,
-      "int": 100
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 297,
-    "from_digimon_id": 74,
-    "to_digimon_id": 187,
-    "level_required": 26,
-    "stat_requirements": {
-      "hp": 850,
-      "atk": 60,
-      "int": 60
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 299,
-    "from_digimon_id": 76,
-    "to_digimon_id": 195,
-    "level_required": 30,
-    "stat_requirements": {
-      "sp": 80,
-      "abi": 10,
-      "int": 80
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 303,
-    "from_digimon_id": 77,
-    "to_digimon_id": 154,
-    "level_required": 30,
-    "stat_requirements": {
-      "atk": 75,
-      "spd": 75
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 307,
-    "from_digimon_id": 77,
-    "to_digimon_id": 189,
-    "level_required": 26,
-    "stat_requirements": {
-      "sp": 65,
-      "int": 65
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 311,
-    "from_digimon_id": 78,
-    "to_digimon_id": 169,
-    "level_required": 28,
-    "stat_requirements": {
-      "atk": 80,
-      "int": 70
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 315,
-    "from_digimon_id": 79,
-    "to_digimon_id": 206,
-    "level_required": 26,
-    "stat_requirements": {
-      "def": 80,
-      "int": 65
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 319,
-    "from_digimon_id": 81,
-    "to_digimon_id": 215,
-    "level_required": 28,
-    "stat_requirements": {
-      "atk": 90,
-      "spd": 85
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 322,
-    "from_digimon_id": 82,
-    "to_digimon_id": 210,
-    "level_required": 30,
-    "stat_requirements": {
-      "sp": 75,
-      "int": 75
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 324,
-    "from_digimon_id": 83,
-    "to_digimon_id": 191,
-    "level_required": 32,
-    "stat_requirements": {},
-    "dna_requirement": null
-  },
-  {
-    "id": 326,
-    "from_digimon_id": 84,
-    "to_digimon_id": 143,
-    "level_required": 28,
-    "stat_requirements": {
-      "atk": 65,
-      "int": 75,
-      "spd": 85
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 328,
-    "from_digimon_id": 84,
-    "to_digimon_id": 211,
-    "level_required": 28,
-    "stat_requirements": {
-      "atk": 75,
-      "spd": 75
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 330,
-    "from_digimon_id": 85,
-    "to_digimon_id": 181,
-    "level_required": 30,
-    "stat_requirements": {
-      "hp": 400,
-      "atk": 95,
-      "def": 75
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 332,
-    "from_digimon_id": 85,
-    "to_digimon_id": 215,
-    "level_required": 28,
-    "stat_requirements": {
-      "atk": 90,
-      "spd": 85
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 334,
-    "from_digimon_id": 86,
-    "to_digimon_id": 198,
-    "level_required": 26,
-    "stat_requirements": {
-      "atk": 75,
-      "spd": 80
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 336,
-    "from_digimon_id": 86,
-    "to_digimon_id": 186,
-    "level_required": 26,
-    "stat_requirements": {
-      "atk": 65,
-      "def": 65
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 338,
-    "from_digimon_id": 87,
-    "to_digimon_id": 207,
-    "level_required": 26,
-    "stat_requirements": {
-      "hp": 600,
-      "atk": 60
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 340,
-    "from_digimon_id": 88,
-    "to_digimon_id": 156,
-    "level_required": 26,
-    "stat_requirements": {
-      "hp": 800,
-      "atk": 75,
-      "def": 95
-    },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 344,
@@ -5186,7 +5367,288 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": "beast_spirit_of_flame"
+  },
+  {
+    "id": 274,
+    "from_digimon_id": 65,
+    "to_digimon_id": 214,
+    "level_required": 30,
+    "stat_requirements": {
+      "sp": 75,
+      "abi": 10,
+      "int": 95
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 278,
+    "from_digimon_id": 67,
+    "to_digimon_id": 154,
+    "level_required": 30,
+    "stat_requirements": {
+      "atk": 75,
+      "spd": 75
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 282,
+    "from_digimon_id": 70,
+    "to_digimon_id": 145,
+    "level_required": 26,
+    "stat_requirements": {
+      "def": 110
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 286,
+    "from_digimon_id": 70,
+    "to_digimon_id": 159,
+    "level_required": 30,
+    "stat_requirements": {
+      "hp": 400,
+      "abi": 10,
+      "atk": 125
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 291,
+    "from_digimon_id": 72,
+    "to_digimon_id": 147,
+    "level_required": 30,
+    "stat_requirements": {
+      "abi": 10,
+      "atk": 70,
+      "int": 90
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 293,
+    "from_digimon_id": 72,
+    "to_digimon_id": 217,
+    "level_required": 28,
+    "stat_requirements": {
+      "sp": 75,
+      "int": 100
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 297,
+    "from_digimon_id": 74,
+    "to_digimon_id": 187,
+    "level_required": 26,
+    "stat_requirements": {
+      "hp": 850,
+      "atk": 60,
+      "int": 60
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 299,
+    "from_digimon_id": 76,
+    "to_digimon_id": 195,
+    "level_required": 30,
+    "stat_requirements": {
+      "sp": 80,
+      "abi": 10,
+      "int": 80
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 303,
+    "from_digimon_id": 77,
+    "to_digimon_id": 154,
+    "level_required": 30,
+    "stat_requirements": {
+      "atk": 75,
+      "spd": 75
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 307,
+    "from_digimon_id": 77,
+    "to_digimon_id": 189,
+    "level_required": 26,
+    "stat_requirements": {
+      "sp": 65,
+      "int": 65
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 311,
+    "from_digimon_id": 78,
+    "to_digimon_id": 169,
+    "level_required": 28,
+    "stat_requirements": {
+      "atk": 80,
+      "int": 70
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 315,
+    "from_digimon_id": 79,
+    "to_digimon_id": 206,
+    "level_required": 26,
+    "stat_requirements": {
+      "def": 80,
+      "int": 65
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 319,
+    "from_digimon_id": 81,
+    "to_digimon_id": 215,
+    "level_required": 28,
+    "stat_requirements": {
+      "atk": 90,
+      "spd": 85
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 322,
+    "from_digimon_id": 82,
+    "to_digimon_id": 210,
+    "level_required": 30,
+    "stat_requirements": {
+      "sp": 75,
+      "int": 75
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 324,
+    "from_digimon_id": 83,
+    "to_digimon_id": 191,
+    "level_required": 32,
+    "stat_requirements": {},
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 326,
+    "from_digimon_id": 84,
+    "to_digimon_id": 143,
+    "level_required": 28,
+    "stat_requirements": {
+      "atk": 65,
+      "int": 75,
+      "spd": 85
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 328,
+    "from_digimon_id": 84,
+    "to_digimon_id": 211,
+    "level_required": 28,
+    "stat_requirements": {
+      "atk": 75,
+      "spd": 75
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 330,
+    "from_digimon_id": 85,
+    "to_digimon_id": 181,
+    "level_required": 30,
+    "stat_requirements": {
+      "hp": 400,
+      "atk": 95,
+      "def": 75
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 332,
+    "from_digimon_id": 85,
+    "to_digimon_id": 215,
+    "level_required": 28,
+    "stat_requirements": {
+      "atk": 90,
+      "spd": 85
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 334,
+    "from_digimon_id": 86,
+    "to_digimon_id": 198,
+    "level_required": 26,
+    "stat_requirements": {
+      "atk": 75,
+      "spd": 80
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 336,
+    "from_digimon_id": 86,
+    "to_digimon_id": 186,
+    "level_required": 26,
+    "stat_requirements": {
+      "atk": 65,
+      "def": 65
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 338,
+    "from_digimon_id": 87,
+    "to_digimon_id": 207,
+    "level_required": 26,
+    "stat_requirements": {
+      "hp": 600,
+      "atk": 60
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 340,
+    "from_digimon_id": 88,
+    "to_digimon_id": 156,
+    "level_required": 26,
+    "stat_requirements": {
+      "hp": 800,
+      "atk": 75,
+      "def": 95
+    },
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 348,
@@ -5197,7 +5659,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 110,
       "int": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 352,
@@ -5208,7 +5671,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 450,
       "atk": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 269,
@@ -5219,7 +5683,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 922,
@@ -5230,7 +5695,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 55,
       "spd": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 949,
@@ -5243,7 +5709,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 950,
@@ -5256,7 +5723,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 275,
       "spd": 145
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 271,
@@ -5267,7 +5735,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 335,
@@ -5279,7 +5748,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 90,
       "spd": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 339,
@@ -5291,7 +5761,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 10,
       "int": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 341,
@@ -5302,7 +5773,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 105,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 343,
@@ -5313,7 +5785,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 345,
@@ -5324,7 +5797,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 95,
       "spd": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 347,
@@ -5336,7 +5810,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 75,
       "spd": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 349,
@@ -5348,7 +5823,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 85,
       "spd": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 351,
@@ -5359,7 +5835,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 350,
       "atk": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 353,
@@ -5371,7 +5848,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 95,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 355,
@@ -5382,7 +5860,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 450,
       "atk": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 357,
@@ -5394,7 +5873,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "int": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 359,
@@ -5405,7 +5885,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 60,
       "int": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 361,
@@ -5416,7 +5897,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 95,
       "def": 90
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 363,
@@ -5427,7 +5909,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 800,
       "def": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 365,
@@ -5439,7 +5922,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "int": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 367,
@@ -5451,7 +5935,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "spd": 65
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 369,
@@ -5462,7 +5947,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 80,
       "int": 65
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 371,
@@ -5472,7 +5958,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "sp": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 373,
@@ -5484,7 +5971,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 95,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 377,
@@ -5495,7 +5983,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 75,
       "int": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 273,
@@ -5506,7 +5995,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 800,
       "def": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 275,
@@ -5517,7 +6007,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 110,
       "int": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 277,
@@ -5528,7 +6019,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 279,
@@ -5540,7 +6032,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 75,
       "spd": 75
     },
-    "dna_requirement": 115
+    "dna_requirement": 115,
+    "item_requirement": null
   },
   {
     "id": 281,
@@ -5551,7 +6044,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 65,
       "int": 65
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 283,
@@ -5562,7 +6056,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "int": 65
     },
-    "dna_requirement": 77
+    "dna_requirement": 77,
+    "item_requirement": null
   },
   {
     "id": 285,
@@ -5574,7 +6069,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 10,
       "int": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 287,
@@ -5585,7 +6081,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 800,
       "atk": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 289,
@@ -5596,7 +6093,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 290,
@@ -5607,7 +6105,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 294,
@@ -5618,7 +6117,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 80,
       "int": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 298,
@@ -5630,7 +6130,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 60,
       "spd": 75
     },
-    "dna_requirement": 108
+    "dna_requirement": 108,
+    "item_requirement": null
   },
   {
     "id": 300,
@@ -5642,7 +6143,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 100,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 302,
@@ -5654,7 +6156,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 90,
       "spd": 75
     },
-    "dna_requirement": 108
+    "dna_requirement": 108,
+    "item_requirement": null
   },
   {
     "id": 304,
@@ -5665,7 +6168,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "int": 65
     },
-    "dna_requirement": 70
+    "dna_requirement": 70,
+    "item_requirement": null
   },
   {
     "id": 306,
@@ -5676,7 +6180,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 90,
       "spd": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 308,
@@ -5687,7 +6192,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 700,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 310,
@@ -5698,7 +6204,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 90,
       "spd": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 312,
@@ -5710,7 +6217,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "int": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 314,
@@ -5721,7 +6229,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 60,
       "int": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 316,
@@ -5732,7 +6241,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 700,
       "def": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 318,
@@ -5743,7 +6253,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 320,
@@ -5754,7 +6265,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 400,
       "def": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 323,
@@ -5764,7 +6276,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 900
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 327,
@@ -5775,7 +6288,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 105,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 385,
@@ -5787,7 +6301,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 100,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 923,
@@ -5798,7 +6313,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 115,
       "spd": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 389,
@@ -5808,7 +6324,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "sp": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 393,
@@ -5819,7 +6336,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 700,
       "def": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 397,
@@ -5831,7 +6349,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 60,
       "spd": 75
     },
-    "dna_requirement": 76
+    "dna_requirement": 76,
+    "item_requirement": null
   },
   {
     "id": 468,
@@ -5842,7 +6361,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 80,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 470,
@@ -5853,7 +6373,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 800,
       "atk": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 472,
@@ -5864,7 +6385,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 60,
       "atk": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 474,
@@ -5875,7 +6397,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 400,
       "atk": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 476,
@@ -5886,7 +6409,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 350,
       "atk": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 478,
@@ -5898,7 +6422,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 10,
       "spd": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 480,
@@ -5909,7 +6434,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 482,
@@ -5920,7 +6446,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 95,
       "def": 90
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 484,
@@ -5931,7 +6458,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 487,
@@ -5944,7 +6472,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 145
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 489,
@@ -5957,7 +6486,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 130,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 491,
@@ -5970,7 +6500,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 40,
       "int": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 495,
@@ -5982,7 +6513,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 496,
@@ -5995,7 +6527,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 130,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 505,
@@ -6008,7 +6541,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 200,
       "spd": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 507,
@@ -6020,7 +6554,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "spd": 145
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 509,
@@ -6032,7 +6567,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 130,
       "spd": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 511,
@@ -6045,7 +6581,20 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 160,
       "spd": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 954,
+    "from_digimon_id": 21,
+    "to_digimon_id": 397,
+    "level_required": 14,
+    "stat_requirements": {
+      "atk": 35,
+      "spd": 35
+    },
+    "dna_requirement": null,
+    "item_requirement": "digi_egg_of_reliability"
   },
   {
     "id": 401,
@@ -6056,7 +6605,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 75,
       "int": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 403,
@@ -6068,7 +6618,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 406,
@@ -6079,7 +6630,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 80,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 410,
@@ -6090,7 +6642,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 414,
@@ -6101,7 +6654,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 65,
       "def": 65
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 418,
@@ -6112,7 +6666,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 450,
       "atk": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 422,
@@ -6123,7 +6678,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 426,
@@ -6135,7 +6691,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 80,
       "spd": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 430,
@@ -6147,7 +6704,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "spd": 65
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 434,
@@ -6158,7 +6716,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 438,
@@ -6169,7 +6728,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 65,
       "int": 65
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 442,
@@ -6181,7 +6741,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 10,
       "int": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 444,
@@ -6192,7 +6753,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 446,
@@ -6204,7 +6766,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 448,
@@ -6215,7 +6778,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 450,
@@ -6225,7 +6789,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "sp": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 452,
@@ -6236,7 +6801,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 700,
       "def": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 454,
@@ -6247,7 +6813,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 456,
@@ -6259,7 +6826,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 90,
       "spd": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 458,
@@ -6270,7 +6838,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 700,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 460,
@@ -6282,7 +6851,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 75,
       "spd": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 462,
@@ -6293,7 +6863,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 75,
       "spd": 90
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 464,
@@ -6305,7 +6876,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 402,
@@ -6317,7 +6889,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "int": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 405,
@@ -6328,7 +6901,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 407,
@@ -6339,7 +6913,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 409,
@@ -6350,7 +6925,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 450,
       "atk": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 411,
@@ -6362,7 +6938,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 10,
       "int": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 471,
@@ -6373,7 +6950,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 600,
       "atk": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 475,
@@ -6385,7 +6963,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 479,
@@ -6397,7 +6976,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 80,
       "spd": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 483,
@@ -6408,7 +6988,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 485,
@@ -6421,7 +7002,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 486,
@@ -6434,7 +7016,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 150,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 490,
@@ -6447,7 +7030,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 180,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 492,
@@ -6460,7 +7044,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 180,
       "int": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 494,
@@ -6473,7 +7058,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 497,
@@ -6486,7 +7072,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 498,
@@ -6500,7 +7087,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 110,
       "int": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 504,
@@ -6513,7 +7101,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 160,
       "spd": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 512,
@@ -6523,7 +7112,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "abi": 10
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 516,
@@ -6536,7 +7126,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 145
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 520,
@@ -6549,7 +7140,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 524,
@@ -6561,7 +7153,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 130,
       "spd": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 526,
@@ -6574,7 +7167,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 145,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 528,
@@ -6586,7 +7180,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 160,
       "spd": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 924,
@@ -6598,127 +7193,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 40,
       "atk": 200
     },
-    "dna_requirement": null
-  },
-  {
-    "id": 413,
-    "from_digimon_id": 115,
-    "to_digimon_id": 212,
-    "level_required": 30,
-    "stat_requirements": {
-      "int": 75,
-      "spd": 75
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 415,
-    "from_digimon_id": 116,
-    "to_digimon_id": 146,
-    "level_required": 30,
-    "stat_requirements": {
-      "atk": 95,
-      "spd": 80
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 417,
-    "from_digimon_id": 116,
-    "to_digimon_id": 192,
-    "level_required": 28,
-    "stat_requirements": {
-      "hp": 400,
-      "atk": 80,
-      "int": 70
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 419,
-    "from_digimon_id": 116,
-    "to_digimon_id": 169,
-    "level_required": 28,
-    "stat_requirements": {
-      "atk": 80,
-      "int": 70
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 421,
-    "from_digimon_id": 118,
-    "to_digimon_id": 198,
-    "level_required": 26,
-    "stat_requirements": {
-      "atk": 75,
-      "spd": 80
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 423,
-    "from_digimon_id": 119,
-    "to_digimon_id": 174,
-    "level_required": 30,
-    "stat_requirements": {
-      "sp": 75,
-      "abi": 10,
-      "spd": 100
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 425,
-    "from_digimon_id": 119,
-    "to_digimon_id": 209,
-    "level_required": 30,
-    "stat_requirements": {
-      "hp": 350,
-      "atk": 100,
-      "spd": 75
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 427,
-    "from_digimon_id": 120,
-    "to_digimon_id": 145,
-    "level_required": 26,
-    "stat_requirements": {
-      "def": 110
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 429,
-    "from_digimon_id": 120,
-    "to_digimon_id": 176,
-    "level_required": 30,
-    "stat_requirements": {
-      "hp": 700,
-      "def": 75
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 431,
-    "from_digimon_id": 121,
-    "to_digimon_id": 191,
-    "level_required": 32,
-    "stat_requirements": {},
-    "dna_requirement": null
-  },
-  {
-    "id": 433,
-    "from_digimon_id": 122,
-    "to_digimon_id": 150,
-    "level_required": 30,
-    "stat_requirements": {
-      "atk": 75,
-      "spd": 95
-    },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 437,
@@ -6730,98 +7206,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 60
     },
-    "dna_requirement": null
-  },
-  {
-    "id": 439,
-    "from_digimon_id": 124,
-    "to_digimon_id": 147,
-    "level_required": 30,
-    "stat_requirements": {
-      "abi": 10,
-      "atk": 70,
-      "int": 90
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 441,
-    "from_digimon_id": 124,
-    "to_digimon_id": 192,
-    "level_required": 28,
-    "stat_requirements": {
-      "hp": 400,
-      "atk": 80,
-      "int": 70
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 443,
-    "from_digimon_id": 124,
-    "to_digimon_id": 190,
-    "level_required": 28,
-    "stat_requirements": {
-      "sp": 80,
-      "int": 80
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 447,
-    "from_digimon_id": 125,
-    "to_digimon_id": 202,
-    "level_required": 30,
-    "stat_requirements": {
-      "atk": 105,
-      "spd": 75
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 451,
-    "from_digimon_id": 127,
-    "to_digimon_id": 206,
-    "level_required": 26,
-    "stat_requirements": {
-      "def": 80,
-      "int": 65
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 455,
-    "from_digimon_id": 128,
-    "to_digimon_id": 214,
-    "level_required": 30,
-    "stat_requirements": {
-      "sp": 75,
-      "abi": 10,
-      "int": 95
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 459,
-    "from_digimon_id": 129,
-    "to_digimon_id": 210,
-    "level_required": 30,
-    "stat_requirements": {
-      "sp": 75,
-      "int": 75
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 463,
-    "from_digimon_id": 131,
-    "to_digimon_id": 177,
-    "level_required": 28,
-    "stat_requirements": {
-      "hp": 500,
-      "atk": 95
-    },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": "beast_spirit_of_flame"
   },
   {
     "id": 467,
@@ -6833,7 +7219,250 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": "beast_spirit_of_flame"
+  },
+  {
+    "id": 955,
+    "from_digimon_id": 46,
+    "to_digimon_id": 398,
+    "level_required": 14,
+    "stat_requirements": {
+      "int": 40,
+      "spd": 40
+    },
+    "dna_requirement": null,
+    "item_requirement": "digi_egg_of_hope"
+  },
+  {
+    "id": 413,
+    "from_digimon_id": 115,
+    "to_digimon_id": 212,
+    "level_required": 30,
+    "stat_requirements": {
+      "int": 75,
+      "spd": 75
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 415,
+    "from_digimon_id": 116,
+    "to_digimon_id": 146,
+    "level_required": 30,
+    "stat_requirements": {
+      "atk": 95,
+      "spd": 80
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 417,
+    "from_digimon_id": 116,
+    "to_digimon_id": 192,
+    "level_required": 28,
+    "stat_requirements": {
+      "hp": 400,
+      "atk": 80,
+      "int": 70
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 419,
+    "from_digimon_id": 116,
+    "to_digimon_id": 169,
+    "level_required": 28,
+    "stat_requirements": {
+      "atk": 80,
+      "int": 70
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 421,
+    "from_digimon_id": 118,
+    "to_digimon_id": 198,
+    "level_required": 26,
+    "stat_requirements": {
+      "atk": 75,
+      "spd": 80
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 423,
+    "from_digimon_id": 119,
+    "to_digimon_id": 174,
+    "level_required": 30,
+    "stat_requirements": {
+      "sp": 75,
+      "abi": 10,
+      "spd": 100
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 425,
+    "from_digimon_id": 119,
+    "to_digimon_id": 209,
+    "level_required": 30,
+    "stat_requirements": {
+      "hp": 350,
+      "atk": 100,
+      "spd": 75
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 427,
+    "from_digimon_id": 120,
+    "to_digimon_id": 145,
+    "level_required": 26,
+    "stat_requirements": {
+      "def": 110
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 429,
+    "from_digimon_id": 120,
+    "to_digimon_id": 176,
+    "level_required": 30,
+    "stat_requirements": {
+      "hp": 700,
+      "def": 75
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 431,
+    "from_digimon_id": 121,
+    "to_digimon_id": 191,
+    "level_required": 32,
+    "stat_requirements": {},
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 433,
+    "from_digimon_id": 122,
+    "to_digimon_id": 150,
+    "level_required": 30,
+    "stat_requirements": {
+      "atk": 75,
+      "spd": 95
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 439,
+    "from_digimon_id": 124,
+    "to_digimon_id": 147,
+    "level_required": 30,
+    "stat_requirements": {
+      "abi": 10,
+      "atk": 70,
+      "int": 90
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 441,
+    "from_digimon_id": 124,
+    "to_digimon_id": 192,
+    "level_required": 28,
+    "stat_requirements": {
+      "hp": 400,
+      "atk": 80,
+      "int": 70
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 443,
+    "from_digimon_id": 124,
+    "to_digimon_id": 190,
+    "level_required": 28,
+    "stat_requirements": {
+      "sp": 80,
+      "int": 80
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 447,
+    "from_digimon_id": 125,
+    "to_digimon_id": 202,
+    "level_required": 30,
+    "stat_requirements": {
+      "atk": 105,
+      "spd": 75
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 451,
+    "from_digimon_id": 127,
+    "to_digimon_id": 206,
+    "level_required": 26,
+    "stat_requirements": {
+      "def": 80,
+      "int": 65
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 455,
+    "from_digimon_id": 128,
+    "to_digimon_id": 214,
+    "level_required": 30,
+    "stat_requirements": {
+      "sp": 75,
+      "abi": 10,
+      "int": 95
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 459,
+    "from_digimon_id": 129,
+    "to_digimon_id": 210,
+    "level_required": 30,
+    "stat_requirements": {
+      "sp": 75,
+      "int": 75
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 463,
+    "from_digimon_id": 131,
+    "to_digimon_id": 177,
+    "level_required": 28,
+    "stat_requirements": {
+      "hp": 500,
+      "atk": 95
+    },
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 517,
@@ -6846,7 +7475,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 145
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 519,
@@ -6859,7 +7489,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 130,
       "spd": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 521,
@@ -6872,7 +7503,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 180,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 523,
@@ -6885,7 +7517,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 130,
       "def": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 529,
@@ -6898,7 +7531,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 130,
       "def": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 533,
@@ -6910,7 +7544,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 40,
       "atk": 180
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 537,
@@ -6922,7 +7557,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 145,
       "spd": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 541,
@@ -6935,7 +7571,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 170,
       "int": 135
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 578,
@@ -6948,7 +7585,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 145
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 582,
@@ -6961,7 +7599,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 120,
       "spd": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 586,
@@ -6974,7 +7613,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 135,
       "spd": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 588,
@@ -6986,7 +7626,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 160,
       "spd": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 592,
@@ -6998,7 +7639,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 145,
       "spd": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 594,
@@ -7010,7 +7652,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 596,
@@ -7022,7 +7665,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 145,
       "def": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 598,
@@ -7035,7 +7679,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 145
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 600,
@@ -7047,7 +7692,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 135
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 602,
@@ -7058,7 +7704,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "def": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 606,
@@ -7070,7 +7717,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 145,
       "def": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 608,
@@ -7082,7 +7730,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 610,
@@ -7095,7 +7744,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 150,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 612,
@@ -7107,7 +7757,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 135
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 614,
@@ -7120,7 +7771,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 624,
@@ -7133,7 +7785,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 160,
       "def": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 626,
@@ -7144,7 +7797,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "def": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 628,
@@ -7157,7 +7811,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 632,
@@ -7170,7 +7825,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 140,
       "def": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 640,
@@ -7182,7 +7838,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 40,
       "atk": 180
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 644,
@@ -7195,7 +7852,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 160,
       "def": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 925,
@@ -7208,7 +7866,20 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 155,
       "int": 155
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 956,
+    "from_digimon_id": 380,
+    "to_digimon_id": 399,
+    "level_required": 24,
+    "stat_requirements": {
+      "def": 65,
+      "int": 65
+    },
+    "dna_requirement": null,
+    "item_requirement": "digi_egg_of_light"
   },
   {
     "id": 545,
@@ -7221,7 +7892,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 549,
@@ -7234,7 +7906,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 557,
@@ -7244,7 +7917,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "abi": 10
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 559,
@@ -7257,7 +7931,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 561,
@@ -7271,7 +7946,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 563,
@@ -7284,7 +7960,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "spd": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 565,
@@ -7297,7 +7974,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 135,
       "spd": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 567,
@@ -7310,7 +7988,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 130,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 574,
@@ -7323,7 +8002,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 145,
       "def": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 616,
@@ -7336,7 +8016,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 620,
@@ -7348,7 +8029,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 622,
@@ -7360,7 +8042,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 534,
@@ -7372,7 +8055,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 160,
       "spd": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 536,
@@ -7385,7 +8069,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 538,
@@ -7398,7 +8083,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 120,
       "spd": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 540,
@@ -7410,7 +8096,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 135
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 544,
@@ -7424,7 +8111,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 546,
@@ -7437,7 +8125,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 145,
       "spd": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 548,
@@ -7450,7 +8139,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 550,
@@ -7463,7 +8153,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 120,
       "spd": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 577,
@@ -7477,7 +8168,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 579,
@@ -7492,7 +8184,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 140,
       "int": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 581,
@@ -7505,7 +8198,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 170,
       "int": 135
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 583,
@@ -7517,7 +8211,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "atk": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 585,
@@ -7530,7 +8225,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 120,
       "spd": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 591,
@@ -7543,7 +8239,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 150,
       "spd": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 595,
@@ -7556,7 +8253,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 599,
@@ -7568,7 +8266,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 130,
       "spd": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 603,
@@ -7581,7 +8280,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 607,
@@ -7593,7 +8293,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "def": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 611,
@@ -7606,7 +8307,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 145
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 619,
@@ -7619,7 +8321,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 623,
@@ -7632,7 +8335,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 110,
       "spd": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 631,
@@ -7644,7 +8348,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "spd": 145
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 633,
@@ -7657,7 +8362,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 130,
       "def": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 637,
@@ -7670,7 +8376,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 140,
       "int": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 639,
@@ -7682,7 +8389,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "def": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 641,
@@ -7695,7 +8403,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 160,
       "def": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 643,
@@ -7708,7 +8417,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 180,
       "def": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 645,
@@ -7721,7 +8431,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 100,
       "spd": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 647,
@@ -7734,7 +8445,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 40,
       "int": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 652,
@@ -7746,7 +8458,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 656,
@@ -7759,7 +8472,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 120,
       "spd": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 926,
@@ -7772,7 +8486,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 250,
       "spd": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 552,
@@ -7784,7 +8499,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 130,
       "spd": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 554,
@@ -7796,7 +8512,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 558,
@@ -7808,7 +8525,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 140,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 562,
@@ -7820,7 +8538,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 135
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 566,
@@ -7833,7 +8552,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 120,
       "spd": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 569,
@@ -7846,7 +8566,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 571,
@@ -7859,7 +8580,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 573,
@@ -7871,7 +8593,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "spd": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 627,
@@ -7884,7 +8607,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 145
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 629,
@@ -7899,7 +8623,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 140,
       "int": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 651,
@@ -7912,7 +8637,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 160,
       "def": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 653,
@@ -7925,7 +8651,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 655,
@@ -7937,7 +8664,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 145,
       "spd": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 927,
@@ -7950,7 +8678,21 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 275,
       "spd": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 759,
+    "from_digimon_id": 68,
+    "to_digimon_id": 149,
+    "level_required": 30,
+    "stat_requirements": {
+      "hp": 500,
+      "atk": 120,
+      "def": 60
+    },
+    "dna_requirement": null,
+    "item_requirement": "beast_spirit_of_flame"
   },
   {
     "id": 657,
@@ -7962,7 +8704,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "spd": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 661,
@@ -7975,7 +8718,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 145,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 727,
@@ -7986,7 +8730,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 729,
@@ -7997,7 +8742,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 50,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 731,
@@ -8007,7 +8753,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 500
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 733,
@@ -8018,7 +8765,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 5,
       "atk": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 736,
@@ -8029,7 +8777,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 35
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 738,
@@ -8040,7 +8789,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 130,
       "def": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 740,
@@ -8051,7 +8801,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 744,
@@ -8061,7 +8812,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 500
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 752,
@@ -8072,7 +8824,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 50,
       "spd": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 755,
@@ -8082,7 +8835,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 757,
@@ -8094,19 +8848,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 75
     },
-    "dna_requirement": null
-  },
-  {
-    "id": 759,
-    "from_digimon_id": 68,
-    "to_digimon_id": 149,
-    "level_required": 30,
-    "stat_requirements": {
-      "hp": 500,
-      "atk": 120,
-      "def": 60
-    },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 761,
@@ -8117,7 +8860,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 500,
       "atk": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 763,
@@ -8128,7 +8872,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 110,
       "int": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 765,
@@ -8139,7 +8884,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 95,
       "spd": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 767,
@@ -8150,7 +8896,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 769,
@@ -8162,7 +8909,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 80,
       "spd": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 771,
@@ -8174,7 +8922,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 95,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 663,
@@ -8187,7 +8936,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 100,
       "spd": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 665,
@@ -8200,7 +8950,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 130,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 667,
@@ -8212,7 +8963,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 669,
@@ -8224,7 +8976,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 673,
@@ -8236,7 +8989,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 681,
@@ -8248,7 +9002,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 135,
       "spd": 125
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 685,
@@ -8261,7 +9016,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 110,
       "spd": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 689,
@@ -8274,7 +9030,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 170,
       "int": 150
     },
-    "dna_requirement": 331
+    "dna_requirement": 331,
+    "item_requirement": null
   },
   {
     "id": 693,
@@ -8287,7 +9044,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 150,
       "spd": 150
     },
-    "dna_requirement": 297
+    "dna_requirement": 297,
+    "item_requirement": null
   },
   {
     "id": 697,
@@ -8295,7 +9053,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "to_digimon_id": 266,
     "level_required": 0,
     "stat_requirements": {},
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 701,
@@ -8305,7 +9064,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "abi": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 705,
@@ -8318,7 +9078,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 300,
       "spd": 220
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 711,
@@ -8331,7 +9092,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "def": 200
     },
-    "dna_requirement": 276
+    "dna_requirement": 276,
+    "item_requirement": null
   },
   {
     "id": 713,
@@ -8343,7 +9105,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 30,
       "spd": 250
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 773,
@@ -8355,7 +9118,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 80,
       "spd": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 715,
@@ -8363,7 +9127,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "to_digimon_id": 283,
     "level_required": 0,
     "stat_requirements": {},
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 717,
@@ -8374,7 +9139,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 90,
       "spd": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 719,
@@ -8385,7 +9151,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "atk": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 721,
@@ -8396,7 +9163,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 50,
       "spd": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 723,
@@ -8406,7 +9174,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "abi": 5
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 725,
@@ -8416,7 +9185,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 500
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 664,
@@ -8428,7 +9198,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 140,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 668,
@@ -8440,7 +9211,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 170,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 928,
@@ -8451,7 +9223,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 75,
       "atk": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 670,
@@ -8464,7 +9237,21 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 777,
+    "from_digimon_id": 80,
+    "to_digimon_id": 324,
+    "level_required": 60,
+    "stat_requirements": {
+      "abi": 80,
+      "atk": 120,
+      "def": 145
+    },
+    "dna_requirement": null,
+    "item_requirement": "digi_egg_of_miracles"
   },
   {
     "id": 672,
@@ -8477,7 +9264,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 145
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 676,
@@ -8490,7 +9278,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "int": 120
     },
-    "dna_requirement": 152
+    "dna_requirement": 152,
+    "item_requirement": null
   },
   {
     "id": 730,
@@ -8501,7 +9290,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 50,
       "spd": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 734,
@@ -8512,7 +9302,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 60,
       "spd": 25
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 735,
@@ -8524,7 +9315,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 25,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 739,
@@ -8535,7 +9327,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 130,
       "atk": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 741,
@@ -8546,7 +9339,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 743,
@@ -8557,7 +9351,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 745,
@@ -8568,7 +9363,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 747,
@@ -8579,7 +9375,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 60,
       "spd": 25
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 749,
@@ -8590,7 +9387,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 130,
       "atk": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 751,
@@ -8601,7 +9399,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 756,
@@ -8611,7 +9410,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "def": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 760,
@@ -8622,7 +9422,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 764,
@@ -8633,7 +9434,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 80,
       "int": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 768,
@@ -8644,7 +9446,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 90,
       "spd": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 772,
@@ -8655,7 +9458,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 350,
       "atk": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 775,
@@ -8667,19 +9471,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "int": 75
     },
-    "dna_requirement": null
-  },
-  {
-    "id": 777,
-    "from_digimon_id": 80,
-    "to_digimon_id": 324,
-    "level_required": 60,
-    "stat_requirements": {
-      "abi": 80,
-      "atk": 120,
-      "def": 145
-    },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 678,
@@ -8691,7 +9484,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 170,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 680,
@@ -8704,7 +9498,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "spd": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 682,
@@ -8716,7 +9511,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 684,
@@ -8728,7 +9524,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 135,
       "spd": 125
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 686,
@@ -8742,7 +9539,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 110,
       "int": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 690,
@@ -8756,7 +9554,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 160,
       "spd": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 692,
@@ -8764,7 +9563,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "to_digimon_id": 222,
     "level_required": 0,
     "stat_requirements": {},
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 694,
@@ -8776,7 +9576,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 30,
       "atk": 250
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 696,
@@ -8789,7 +9590,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 185,
       "int": 185
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 698,
@@ -8797,7 +9599,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "to_digimon_id": 265,
     "level_required": 0,
     "stat_requirements": {},
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 700,
@@ -8809,7 +9612,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 155,
       "int": 100
     },
-    "dna_requirement": 226
+    "dna_requirement": 226,
+    "item_requirement": null
   },
   {
     "id": 702,
@@ -8819,7 +9623,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "abi": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 706,
@@ -8827,7 +9632,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "to_digimon_id": 321,
     "level_required": 0,
     "stat_requirements": {},
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 779,
@@ -8838,7 +9644,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 780,
@@ -8850,7 +9657,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 80,
       "int": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 781,
@@ -8862,7 +9670,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 10,
       "atk": 125
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 708,
@@ -8875,7 +9684,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 130,
       "def": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 710,
@@ -8888,7 +9698,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 150,
       "spd": 150
     },
-    "dna_requirement": 228
+    "dna_requirement": 228,
+    "item_requirement": null
   },
   {
     "id": 714,
@@ -8900,7 +9711,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 30,
       "int": 180
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 718,
@@ -8911,7 +9723,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 50,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 722,
@@ -8922,7 +9735,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 55,
       "spd": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 726,
@@ -8933,7 +9747,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 896,
@@ -8944,7 +9759,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 898,
@@ -8957,7 +9773,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 130,
       "spd": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 900,
@@ -8969,7 +9786,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 10,
       "int": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 903,
@@ -8980,7 +9798,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 5,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 929,
@@ -8991,7 +9810,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 35
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 907,
@@ -9003,7 +9823,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "atk": 180
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 824,
@@ -9014,7 +9835,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 70,
       "int": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 826,
@@ -9022,7 +9844,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "to_digimon_id": 191,
     "level_required": 32,
     "stat_requirements": {},
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 828,
@@ -9033,7 +9856,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 60,
       "atk": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 830,
@@ -9044,7 +9868,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 834,
@@ -9057,7 +9882,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 130,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 836,
@@ -9071,7 +9897,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 838,
@@ -9083,7 +9910,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 130,
       "spd": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 840,
@@ -9096,7 +9924,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 842,
@@ -9109,7 +9938,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 160,
       "def": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 846,
@@ -9121,7 +9951,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "atk": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 848,
@@ -9134,7 +9965,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 850,
@@ -9147,7 +9979,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 145,
       "spd": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 854,
@@ -9160,7 +9993,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 180,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 858,
@@ -9172,17 +10006,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 180,
       "spd": 180
     },
-    "dna_requirement": null
-  },
-  {
-    "id": 785,
-    "from_digimon_id": 99,
-    "to_digimon_id": 145,
-    "level_required": 26,
-    "stat_requirements": {
-      "def": 110
-    },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 787,
@@ -9194,7 +10019,32 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 100,
       "spd": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": "beast_spirit_of_light"
+  },
+  {
+    "id": 807,
+    "from_digimon_id": 123,
+    "to_digimon_id": 155,
+    "level_required": 30,
+    "stat_requirements": {
+      "hp": 300,
+      "atk": 100,
+      "spd": 85
+    },
+    "dna_requirement": null,
+    "item_requirement": "beast_spirit_of_light"
+  },
+  {
+    "id": 785,
+    "from_digimon_id": 99,
+    "to_digimon_id": 145,
+    "level_required": 26,
+    "stat_requirements": {
+      "def": 110
+    },
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 789,
@@ -9206,7 +10056,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 70,
       "int": 90
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 791,
@@ -9217,7 +10068,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 70,
       "int": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 793,
@@ -9229,7 +10081,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 70,
       "int": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 795,
@@ -9240,7 +10093,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 90,
       "spd": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 797,
@@ -9251,7 +10105,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 90,
       "spd": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 799,
@@ -9263,7 +10118,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 80,
       "def": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 862,
@@ -9276,7 +10132,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 150,
       "spd": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 870,
@@ -9289,7 +10146,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "spd": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 874,
@@ -9301,7 +10159,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 878,
@@ -9314,7 +10173,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 200
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 882,
@@ -9327,7 +10187,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 110,
       "int": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 886,
@@ -9339,7 +10200,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 155,
       "int": 100
     },
-    "dna_requirement": 272
+    "dna_requirement": 272,
+    "item_requirement": null
   },
   {
     "id": 890,
@@ -9347,7 +10209,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "to_digimon_id": 288,
     "level_required": 0,
     "stat_requirements": {},
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 801,
@@ -9358,7 +10221,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 65,
       "def": 65
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 803,
@@ -9370,7 +10234,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 60,
       "int": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 805,
@@ -9382,19 +10247,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 75
     },
-    "dna_requirement": null
-  },
-  {
-    "id": 807,
-    "from_digimon_id": 123,
-    "to_digimon_id": 155,
-    "level_required": 30,
-    "stat_requirements": {
-      "hp": 300,
-      "atk": 100,
-      "spd": 85
-    },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 809,
@@ -9406,7 +10260,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 100,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 813,
@@ -9417,7 +10272,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 818,
@@ -9429,7 +10285,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 10,
       "int": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 820,
@@ -9441,7 +10298,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 80,
       "def": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 822,
@@ -9453,7 +10311,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 95,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 892,
@@ -9461,7 +10320,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "to_digimon_id": 287,
     "level_required": 0,
     "stat_requirements": {},
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 881,
@@ -9474,7 +10334,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 883,
@@ -9488,7 +10349,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 110,
       "int": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 887,
@@ -9501,7 +10363,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "int": 150
     },
-    "dna_requirement": 287
+    "dna_requirement": 287,
+    "item_requirement": null
   },
   {
     "id": 889,
@@ -9514,7 +10377,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "spd": 150
     },
-    "dna_requirement": 252
+    "dna_requirement": 252,
+    "item_requirement": null
   },
   {
     "id": 930,
@@ -9525,7 +10389,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 35
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 837,
@@ -9538,7 +10403,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "def": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 845,
@@ -9551,7 +10417,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 140,
       "def": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 849,
@@ -9563,7 +10430,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "atk": 180
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 851,
@@ -9576,7 +10444,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 120,
       "spd": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 853,
@@ -9589,7 +10458,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 110,
       "int": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 855,
@@ -9602,7 +10472,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 230,
       "int": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 857,
@@ -9615,7 +10486,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 130,
       "spd": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 861,
@@ -9630,7 +10502,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 140,
       "int": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 863,
@@ -9643,7 +10516,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 865,
@@ -9656,7 +10530,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 867,
@@ -9669,7 +10544,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 160,
       "def": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 869,
@@ -9681,7 +10557,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 145,
       "spd": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 871,
@@ -9694,7 +10571,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 130,
       "def": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 875,
@@ -9707,7 +10585,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 891,
@@ -9720,7 +10599,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "int": 150
     },
-    "dna_requirement": 231
+    "dna_requirement": 231,
+    "item_requirement": null
   },
   {
     "id": 895,
@@ -9731,7 +10611,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 40,
       "spd": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 899,
@@ -9742,7 +10623,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 65,
       "def": 65
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 902,
@@ -9753,7 +10635,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 130,
       "atk": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 904,
@@ -9765,7 +10648,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 95,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 906,
@@ -9777,7 +10661,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 70,
       "int": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 908,
@@ -9790,7 +10675,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 100,
       "spd": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 910,
@@ -9802,7 +10688,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "spd": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 784,
@@ -9813,7 +10700,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 80,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 788,
@@ -9824,7 +10712,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 792,
@@ -9836,7 +10725,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "int": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 796,
@@ -9848,7 +10738,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 800,
@@ -9859,7 +10750,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 80,
       "int": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 804,
@@ -9871,7 +10763,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 75,
       "spd": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 808,
@@ -9882,7 +10775,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 90,
       "spd": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 810,
@@ -9893,7 +10787,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 812,
@@ -9904,7 +10799,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 75,
       "int": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 877,
@@ -9917,7 +10813,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 879,
@@ -9929,7 +10826,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 135
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 814,
@@ -9941,7 +10839,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 85,
       "spd": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 816,
@@ -9952,7 +10851,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 65,
       "int": 65
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 817,
@@ -9964,7 +10864,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 80,
       "spd": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 821,
@@ -9976,7 +10877,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 825,
@@ -9987,7 +10889,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 80,
       "int": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 829,
@@ -9999,7 +10902,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 75,
       "spd": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 833,
@@ -10012,7 +10916,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 230,
       "int": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 1,
@@ -10020,7 +10925,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "to_digimon_id": 10,
     "level_required": 5,
     "stat_requirements": {},
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 493,
@@ -10033,7 +10939,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 508,
@@ -10047,7 +10954,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 513,
@@ -10060,7 +10968,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 514,
@@ -10073,7 +10982,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "spd": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 515,
@@ -10085,7 +10995,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 135
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 525,
@@ -10097,7 +11008,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 130,
       "spd": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 530,
@@ -10110,7 +11022,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 532,
@@ -10122,7 +11035,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "atk": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 542,
@@ -10135,7 +11049,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 130,
       "def": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 547,
@@ -10148,7 +11063,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 135,
       "spd": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 553,
@@ -10161,7 +11077,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 130,
       "spd": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 556,
@@ -10174,7 +11091,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 130,
       "def": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 560,
@@ -10187,7 +11105,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 230,
       "int": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 570,
@@ -10200,7 +11119,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "spd": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 572,
@@ -10213,7 +11133,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 80,
       "int": 180
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 575,
@@ -10226,7 +11147,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 250,
       "spd": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 587,
@@ -10239,7 +11161,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 140,
       "def": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 931,
@@ -10250,83 +11173,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 35
     },
-    "dna_requirement": null
-  },
-  {
-    "id": 4,
-    "from_digimon_id": 2,
-    "to_digimon_id": 8,
-    "level_required": 5,
-    "stat_requirements": {},
-    "dna_requirement": null
-  },
-  {
-    "id": 5,
-    "from_digimon_id": 2,
-    "to_digimon_id": 14,
-    "level_required": 3,
-    "stat_requirements": {
-      "hp": 50
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 7,
-    "from_digimon_id": 3,
-    "to_digimon_id": 9,
-    "level_required": 5,
-    "stat_requirements": {},
-    "dna_requirement": null
-  },
-  {
-    "id": 74,
-    "from_digimon_id": 21,
-    "to_digimon_id": 70,
-    "level_required": 15,
-    "stat_requirements": {
-      "hp": 150,
-      "def": 40
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 86,
-    "from_digimon_id": 23,
-    "to_digimon_id": 85,
-    "level_required": 15,
-    "stat_requirements": {
-      "spd": 50
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 118,
-    "from_digimon_id": 28,
-    "to_digimon_id": 133,
-    "level_required": 14,
-    "stat_requirements": {
-      "hp": 250,
-      "atk": 30
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 135,
-    "from_digimon_id": 31,
-    "to_digimon_id": 127,
-    "level_required": 20,
-    "stat_requirements": {},
-    "dna_requirement": null
-  },
-  {
-    "id": 143,
-    "from_digimon_id": 33,
-    "to_digimon_id": 78,
-    "level_required": 14,
-    "stat_requirements": {
-      "atk": 55
-    },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 169,
@@ -10339,7 +11187,92 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": "digi_egg_of_destiny"
+  },
+  {
+    "id": 4,
+    "from_digimon_id": 2,
+    "to_digimon_id": 8,
+    "level_required": 5,
+    "stat_requirements": {},
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 5,
+    "from_digimon_id": 2,
+    "to_digimon_id": 14,
+    "level_required": 3,
+    "stat_requirements": {
+      "hp": 50
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 7,
+    "from_digimon_id": 3,
+    "to_digimon_id": 9,
+    "level_required": 5,
+    "stat_requirements": {},
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 74,
+    "from_digimon_id": 21,
+    "to_digimon_id": 70,
+    "level_required": 15,
+    "stat_requirements": {
+      "hp": 150,
+      "def": 40
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 86,
+    "from_digimon_id": 23,
+    "to_digimon_id": 85,
+    "level_required": 15,
+    "stat_requirements": {
+      "spd": 50
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 118,
+    "from_digimon_id": 28,
+    "to_digimon_id": 133,
+    "level_required": 14,
+    "stat_requirements": {
+      "hp": 250,
+      "atk": 30
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 135,
+    "from_digimon_id": 31,
+    "to_digimon_id": 127,
+    "level_required": 20,
+    "stat_requirements": {},
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 143,
+    "from_digimon_id": 33,
+    "to_digimon_id": 78,
+    "level_required": 14,
+    "stat_requirements": {
+      "atk": 55
+    },
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 190,
@@ -10350,7 +11283,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 35
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 193,
@@ -10361,7 +11295,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 5,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 212,
@@ -10372,7 +11307,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "atk": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 242,
@@ -10382,7 +11318,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "spd": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 243,
@@ -10394,7 +11331,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 244,
@@ -10404,7 +11342,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "spd": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 258,
@@ -10415,7 +11354,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 45,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 267,
@@ -10426,7 +11366,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 40,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 295,
@@ -10437,7 +11378,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 800,
       "def": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 331,
@@ -10449,7 +11391,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 375,
@@ -10461,7 +11404,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 95,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 376,
@@ -10473,7 +11417,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 10,
       "int": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 381,
@@ -10485,7 +11430,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 70,
       "int": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 400,
@@ -10497,7 +11443,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 80,
       "spd": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 435,
@@ -10509,7 +11456,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 10,
       "spd": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 466,
@@ -10520,7 +11468,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 469,
@@ -10532,7 +11481,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 10,
       "int": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 488,
@@ -10545,7 +11495,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 145,
       "spd": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 932,
@@ -10556,7 +11507,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 590,
@@ -10568,7 +11520,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 135,
       "spd": 125
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 618,
@@ -10581,7 +11534,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 130,
       "spd": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 636,
@@ -10594,7 +11548,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 648,
@@ -10607,7 +11562,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 140,
       "def": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 660,
@@ -10619,7 +11575,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 130,
       "spd": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 666,
@@ -10632,7 +11589,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 250,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 688,
@@ -10645,7 +11603,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 80,
       "int": 180
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 933,
@@ -10656,7 +11615,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 601,
@@ -10666,7 +11626,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "abi": 10
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 635,
@@ -10678,7 +11639,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 40,
       "atk": 180
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 659,
@@ -10690,7 +11652,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "spd": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 677,
@@ -10703,7 +11666,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 250,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 699,
@@ -10714,7 +11678,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 40,
       "atk": 255
     },
-    "dna_requirement": 255
+    "dna_requirement": 255,
+    "item_requirement": null
   },
   {
     "id": 934,
@@ -10725,7 +11690,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 604,
@@ -10738,7 +11704,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 230,
       "int": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 615,
@@ -10750,7 +11717,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 140,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 704,
@@ -10763,7 +11731,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 140,
       "def": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 935,
@@ -10775,7 +11744,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 25,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 634,
@@ -10788,7 +11758,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 709,
@@ -10798,7 +11769,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "abi": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 936,
@@ -10808,7 +11780,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "spd": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 649,
@@ -10821,7 +11794,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 140,
       "int": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 937,
@@ -10832,30 +11806,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 400,
       "atk": 95
     },
-    "dna_requirement": null
-  },
-  {
-    "id": 674,
-    "from_digimon_id": 212,
-    "to_digimon_id": 309,
-    "level_required": 55,
-    "stat_requirements": {
-      "abi": 20,
-      "int": 170,
-      "spd": 130
-    },
-    "dna_requirement": null
-  },
-  {
-    "id": 748,
-    "from_digimon_id": 58,
-    "to_digimon_id": 109,
-    "level_required": 15,
-    "stat_requirements": {
-      "atk": 45,
-      "spd": 50
-    },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 776,
@@ -10868,7 +11820,33 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": "digi_egg_of_destiny"
+  },
+  {
+    "id": 674,
+    "from_digimon_id": 212,
+    "to_digimon_id": 309,
+    "level_required": 55,
+    "stat_requirements": {
+      "abi": 20,
+      "int": 170,
+      "spd": 130
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  {
+    "id": 748,
+    "from_digimon_id": 58,
+    "to_digimon_id": 109,
+    "level_required": 15,
+    "stat_requirements": {
+      "atk": 45,
+      "spd": 50
+    },
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 783,
@@ -10879,7 +11857,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 105,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 832,
@@ -10892,7 +11871,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 180,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 841,
@@ -10903,7 +11883,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "def": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 843,
@@ -10915,7 +11896,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 40,
       "atk": 180
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 844,
@@ -10929,7 +11911,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 859,
@@ -10942,7 +11925,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 866,
@@ -10954,7 +11938,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 180,
       "spd": 180
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 872,
@@ -10966,7 +11951,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 873,
@@ -10979,7 +11965,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 145,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 885,
@@ -10993,7 +11980,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 150,
       "spd": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 894,
@@ -11006,7 +11994,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 50,
       "int": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   {
     "id": 911,
@@ -11019,7 +12008,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 170,
       "int": 150
     },
-    "dna_requirement": 219
+    "dna_requirement": 219,
+    "item_requirement": null
   }
 ],
   byFrom: {
@@ -11030,7 +12020,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 13,
       "level_required": 5,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 3,
@@ -11041,7 +12032,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 5,
         "atk": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 1,
@@ -11049,7 +12041,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 10,
       "level_required": 5,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "2": [
@@ -11061,7 +12054,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "def": 15
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 4,
@@ -11069,7 +12063,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 8,
       "level_required": 5,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 5,
@@ -11079,7 +12074,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "3": [
@@ -11091,7 +12087,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "int": 10
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 7,
@@ -11099,7 +12096,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 9,
       "level_required": 5,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "4": [
@@ -11111,7 +12109,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 15
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 10,
@@ -11119,7 +12118,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 17,
       "level_required": 5,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "5": [
@@ -11129,7 +12129,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 11,
       "level_required": 5,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 12,
@@ -11139,7 +12140,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "int": 15
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "6": [
@@ -11152,7 +12154,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 90,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "7": [
@@ -11164,7 +12167,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 17,
@@ -11175,7 +12179,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 50,
         "def": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 15,
@@ -11186,7 +12191,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 75,
         "def": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 14,
@@ -11197,7 +12203,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 30,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 16,
@@ -11208,7 +12215,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "atk": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 18,
@@ -11219,7 +12227,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 30,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "8": [
@@ -11233,7 +12242,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 20,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 19,
@@ -11243,7 +12253,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 20,
@@ -11253,7 +12264,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 22,
@@ -11263,7 +12275,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "9": [
@@ -11275,7 +12288,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 23,
@@ -11287,7 +12301,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 20,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 27,
@@ -11298,7 +12313,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 20,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 24,
@@ -11309,7 +12325,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 80,
         "atk": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 26,
@@ -11320,7 +12337,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 20,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 28,
@@ -11330,7 +12348,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 35
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "10": [
@@ -11342,7 +12361,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 31,
@@ -11352,7 +12372,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 30,
@@ -11363,7 +12384,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 20,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 32,
@@ -11374,7 +12396,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 30,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "11": [
@@ -11386,7 +12409,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 33,
@@ -11397,7 +12421,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 20,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 35,
@@ -11407,7 +12432,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 37,
@@ -11418,7 +12444,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 20,
         "int": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 36,
@@ -11430,7 +12457,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 80,
         "int": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "12": [
@@ -11443,7 +12471,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 75,
         "def": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 39,
@@ -11453,7 +12482,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 41,
@@ -11464,7 +12494,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 30,
         "int": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 40,
@@ -11475,7 +12506,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 20,
         "int": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "13": [
@@ -11488,7 +12520,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 20,
         "int": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 43,
@@ -11499,7 +12532,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 15,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 45,
@@ -11509,7 +12543,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 44,
@@ -11520,7 +12555,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 15,
         "int": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "14": [
@@ -11534,7 +12570,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 20,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 47,
@@ -11545,7 +12582,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 20,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 49,
@@ -11556,7 +12594,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 75,
         "def": 10
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 48,
@@ -11566,7 +12605,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "def": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "15": [
@@ -11578,7 +12618,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "int": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 51,
@@ -11588,7 +12629,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 53,
@@ -11598,7 +12640,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 52,
@@ -11609,7 +12652,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 15,
         "int": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 928,
@@ -11620,7 +12664,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 75,
         "atk": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "16": [
@@ -11632,7 +12677,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "def": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 55,
@@ -11643,7 +12689,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 75,
         "def": 25
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 57,
@@ -11654,7 +12701,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 75,
         "def": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 56,
@@ -11664,7 +12712,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "def": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "17": [
@@ -11677,7 +12726,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 20,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 59,
@@ -11688,7 +12738,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 20,
         "int": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 61,
@@ -11699,7 +12750,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 30,
         "def": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 60,
@@ -11710,7 +12762,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 20,
         "spd": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "18": [
@@ -11722,7 +12775,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 66,
@@ -11732,29 +12786,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 40
       },
-      "dna_requirement": null
-    },
-    {
-      "id": 63,
-      "from_digimon_id": 18,
-      "to_digimon_id": 105,
-      "level_required": 15,
-      "stat_requirements": {
-        "hp": 150,
-        "atk": 50
-      },
-      "dna_requirement": null
-    },
-    {
-      "id": 65,
-      "from_digimon_id": 18,
-      "to_digimon_id": 114,
-      "level_required": 14,
-      "stat_requirements": {
-        "hp": 150,
-        "atk": 40
-      },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 67,
@@ -11765,7 +12798,32 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "atk": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": "human_spirit_of_flame"
+    },
+    {
+      "id": 63,
+      "from_digimon_id": 18,
+      "to_digimon_id": 105,
+      "level_required": 15,
+      "stat_requirements": {
+        "hp": 150,
+        "atk": 50
+      },
+      "dna_requirement": null,
+      "item_requirement": null
+    },
+    {
+      "id": 65,
+      "from_digimon_id": 18,
+      "to_digimon_id": 114,
+      "level_required": 14,
+      "stat_requirements": {
+        "hp": 150,
+        "atk": 40
+      },
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 64,
@@ -11776,7 +12834,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "19": [
@@ -11789,7 +12848,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 30,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 69,
@@ -11800,7 +12860,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "atk": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 71,
@@ -11810,7 +12871,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "def": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 73,
@@ -11821,7 +12883,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 55,
         "def": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 68,
@@ -11832,7 +12895,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 50,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 72,
@@ -11843,7 +12907,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "atk": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "20": [
@@ -11855,7 +12920,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 719,
@@ -11866,7 +12932,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "atk": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 718,
@@ -11877,7 +12944,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 50,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "21": [
@@ -11891,7 +12959,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 25,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 79,
@@ -11902,7 +12971,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 77,
@@ -11913,7 +12983,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 30,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 76,
@@ -11923,7 +12994,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "abi": 5
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 78,
@@ -11933,7 +13005,20 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "def": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
+    },
+    {
+      "id": 954,
+      "from_digimon_id": 21,
+      "to_digimon_id": 397,
+      "level_required": 14,
+      "stat_requirements": {
+        "atk": 35,
+        "spd": 35
+      },
+      "dna_requirement": null,
+      "item_requirement": "digi_egg_of_reliability"
     },
     {
       "id": 74,
@@ -11944,7 +13029,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "22": [
@@ -11957,7 +13043,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 40,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 81,
@@ -11968,7 +13055,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 35,
         "int": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 84,
@@ -11979,7 +13067,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 40,
         "int": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 80,
@@ -11990,7 +13079,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 82,
@@ -12000,7 +13090,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 85,
@@ -12010,7 +13101,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "23": [
@@ -12023,7 +13115,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 35,
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 91,
@@ -12033,7 +13126,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 88,
@@ -12045,7 +13139,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 25,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 90,
@@ -12056,7 +13151,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 89,
@@ -12067,7 +13163,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 86,
@@ -12077,7 +13174,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "24": [
@@ -12090,7 +13188,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 96,
@@ -12101,7 +13200,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 300,
         "spd": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 92,
@@ -12112,7 +13212,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 94,
@@ -12123,7 +13224,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 30,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 93,
@@ -12134,7 +13236,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 40,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 97,
@@ -12144,7 +13247,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 500
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "25": [
@@ -12156,7 +13260,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 103,
@@ -12167,7 +13272,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 50,
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 98,
@@ -12177,7 +13283,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 100,
@@ -12188,7 +13295,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 102,
@@ -12198,7 +13306,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 101,
@@ -12209,7 +13318,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 300,
         "def": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 930,
@@ -12220,7 +13330,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 35
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "26": [
@@ -12233,7 +13344,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 104,
@@ -12243,7 +13355,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 106,
@@ -12254,7 +13367,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "atk": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 108,
@@ -12265,7 +13379,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 105,
@@ -12276,7 +13391,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 35,
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 109,
@@ -12286,7 +13402,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "27": [
@@ -12299,7 +13416,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 110,
@@ -12309,7 +13427,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 112,
@@ -12320,7 +13439,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 114,
@@ -12331,18 +13451,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 250,
         "atk": 30
       },
-      "dna_requirement": null
-    },
-    {
-      "id": 113,
-      "from_digimon_id": 27,
-      "to_digimon_id": 125,
-      "level_required": 16,
-      "stat_requirements": {
-        "atk": 40,
-        "spd": 35
-      },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 115,
@@ -12353,7 +13463,20 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 45,
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": "human_spirit_of_light"
+    },
+    {
+      "id": 113,
+      "from_digimon_id": 27,
+      "to_digimon_id": 125,
+      "level_required": 16,
+      "stat_requirements": {
+        "atk": 40,
+        "spd": 35
+      },
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "28": [
@@ -12366,7 +13489,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 35,
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 120,
@@ -12376,7 +13500,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 500
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 117,
@@ -12386,7 +13511,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 300
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 119,
@@ -12397,7 +13523,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 5,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 118,
@@ -12408,7 +13535,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 250,
         "atk": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "29": [
@@ -12421,7 +13549,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "atk": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 123,
@@ -12432,7 +13561,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "atk": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 125,
@@ -12442,7 +13572,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 121,
@@ -12453,7 +13584,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "atk": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 122,
@@ -12464,7 +13596,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 50,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 126,
@@ -12475,7 +13608,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "atk": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": "human_spirit_of_flame"
     }
   ],
   "30": [
@@ -12487,7 +13621,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "abi": 5
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 127,
@@ -12498,7 +13633,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 5,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 129,
@@ -12508,7 +13644,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 131,
@@ -12519,7 +13656,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 45,
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": "human_spirit_of_light"
     },
     {
       "id": 130,
@@ -12530,7 +13668,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 5,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "31": [
@@ -12543,7 +13682,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 35,
         "int": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 136,
@@ -12554,7 +13694,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 50,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 133,
@@ -12565,7 +13706,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "atk": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 134,
@@ -12576,7 +13718,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 40,
         "int": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 135,
@@ -12584,7 +13727,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 127,
       "level_required": 20,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "32": [
@@ -12596,7 +13740,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "def": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 137,
@@ -12607,7 +13752,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 139,
@@ -12618,7 +13764,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 35
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 141,
@@ -12629,7 +13776,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 110,
         "def": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 138,
@@ -12639,7 +13787,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "int": 35
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 142,
@@ -12650,7 +13799,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "33": [
@@ -12662,7 +13812,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 148,
@@ -12674,7 +13825,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 25,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 146,
@@ -12685,7 +13837,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "atk": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 145,
@@ -12696,7 +13849,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 50,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 147,
@@ -12707,7 +13861,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 143,
@@ -12717,7 +13872,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "34": [
@@ -12730,7 +13886,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 250,
         "atk": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 150,
@@ -12740,7 +13897,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 300
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 154,
@@ -12751,7 +13909,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 45,
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 149,
@@ -12762,7 +13921,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 151,
@@ -12773,7 +13933,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 40,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 153,
@@ -12784,7 +13945,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 110,
         "def": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "35": [
@@ -12797,7 +13959,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 40,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 156,
@@ -12808,7 +13971,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 158,
@@ -12819,7 +13983,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 30,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 155,
@@ -12829,7 +13994,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 300
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 159,
@@ -12840,7 +14006,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 300,
         "spd": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "36": [
@@ -12853,7 +14020,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 721,
@@ -12864,7 +14032,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 50,
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 723,
@@ -12874,7 +14043,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "abi": 5
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 722,
@@ -12885,7 +14055,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 55,
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "37": [
@@ -12899,7 +14070,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 25,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 165,
@@ -12910,7 +14082,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 163,
@@ -12920,7 +14093,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 160,
@@ -12930,7 +14104,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "int": 35
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 162,
@@ -12941,7 +14116,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 35
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 164,
@@ -12952,7 +14128,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 130,
         "def": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 931,
@@ -12963,7 +14140,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 35
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "38": [
@@ -12975,7 +14153,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 727,
@@ -12986,7 +14165,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 725,
@@ -12996,7 +14176,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 500
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 726,
@@ -13007,7 +14188,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "39": [
@@ -13019,7 +14201,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 300
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 166,
@@ -13030,7 +14213,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 168,
@@ -13040,7 +14224,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 170,
@@ -13051,7 +14236,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 169,
@@ -13064,7 +14250,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": "digi_egg_of_destiny"
     }
   ],
   "40": [
@@ -13077,7 +14264,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 171,
@@ -13088,7 +14276,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 40,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 175,
@@ -13099,7 +14288,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 172,
@@ -13109,7 +14299,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 174,
@@ -13120,7 +14311,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "41": [
@@ -13132,7 +14324,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "def": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 181,
@@ -13143,7 +14336,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 130,
         "def": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 179,
@@ -13154,7 +14348,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 176,
@@ -13164,7 +14359,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "int": 35
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 178,
@@ -13174,7 +14370,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 180,
@@ -13185,7 +14382,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 35
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "42": [
@@ -13198,7 +14396,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 40,
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 729,
@@ -13209,7 +14408,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 50,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 731,
@@ -13219,7 +14419,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 500
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 733,
@@ -13230,7 +14431,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 5,
         "atk": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 730,
@@ -13241,7 +14443,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 50,
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "43": [
@@ -13254,7 +14457,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 736,
@@ -13265,7 +14469,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 35
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 734,
@@ -13276,7 +14481,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 60,
         "spd": 25
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 735,
@@ -13288,7 +14494,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 25,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "44": [
@@ -13301,7 +14508,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 183,
@@ -13312,7 +14520,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 30,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 182,
@@ -13322,7 +14531,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "def": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 184,
@@ -13333,7 +14543,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 186,
@@ -13344,7 +14555,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 130,
         "atk": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "45": [
@@ -13356,7 +14568,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "def": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 189,
@@ -13366,7 +14579,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "abi": 5
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 191,
@@ -13374,7 +14588,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 127,
       "level_required": 20,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 188,
@@ -13384,7 +14599,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "int": 35
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 190,
@@ -13395,7 +14611,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 35
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "46": [
@@ -13407,7 +14624,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 195,
@@ -13419,7 +14637,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 197,
@@ -13430,7 +14649,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 192,
@@ -13441,7 +14661,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 196,
@@ -13452,7 +14673,20 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 5,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
+    },
+    {
+      "id": 955,
+      "from_digimon_id": 46,
+      "to_digimon_id": 398,
+      "level_required": 14,
+      "stat_requirements": {
+        "int": 40,
+        "spd": 40
+      },
+      "dna_requirement": null,
+      "item_requirement": "digi_egg_of_hope"
     },
     {
       "id": 193,
@@ -13463,7 +14697,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 5,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "47": [
@@ -13475,7 +14710,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 202,
@@ -13486,7 +14722,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 55,
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 199,
@@ -13497,7 +14734,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "atk": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 201,
@@ -13508,7 +14746,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 50,
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 203,
@@ -13519,7 +14758,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 55,
         "def": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 200,
@@ -13527,7 +14767,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 127,
       "level_required": 20,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "48": [
@@ -13540,7 +14781,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 205,
@@ -13550,7 +14792,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 207,
@@ -13561,7 +14804,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 300,
         "def": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 209,
@@ -13572,7 +14816,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 204,
@@ -13582,7 +14827,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 500
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 208,
@@ -13592,7 +14838,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 300
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "49": [
@@ -13605,7 +14852,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 214,
@@ -13616,7 +14864,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 40,
         "int": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 211,
@@ -13628,7 +14877,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 213,
@@ -13639,7 +14889,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 5,
         "atk": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 212,
@@ -13650,7 +14901,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "atk": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "50": [
@@ -13663,7 +14915,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 35,
         "spd": 45
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 215,
@@ -13673,7 +14926,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 217,
@@ -13685,7 +14939,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 216,
@@ -13696,7 +14951,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 40,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 218,
@@ -13708,7 +14964,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "51": [
@@ -13720,7 +14977,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 221,
@@ -13731,7 +14989,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 220,
@@ -13741,7 +15000,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 222,
@@ -13752,7 +15012,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "52": [
@@ -13765,7 +15026,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 300,
         "def": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 738,
@@ -13776,7 +15038,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 130,
         "def": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 740,
@@ -13787,7 +15050,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 739,
@@ -13798,7 +15062,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 130,
         "atk": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 741,
@@ -13809,7 +15074,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "53": [
@@ -13823,7 +15089,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 145
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": "digi_egg_of_miracles"
     },
     {
       "id": 225,
@@ -13834,7 +15101,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 35
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 229,
@@ -13845,29 +15113,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 45,
         "spd": 50
       },
-      "dna_requirement": null
-    },
-    {
-      "id": 224,
-      "from_digimon_id": 53,
-      "to_digimon_id": 76,
-      "level_required": 14,
-      "stat_requirements": {
-        "atk": 40,
-        "spd": 40
-      },
-      "dna_requirement": null
-    },
-    {
-      "id": 226,
-      "from_digimon_id": 53,
-      "to_digimon_id": 323,
-      "level_required": 14,
-      "stat_requirements": {
-        "atk": 40,
-        "spd": 40
-      },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 228,
@@ -13878,7 +15125,32 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 45,
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": "human_spirit_of_light"
+    },
+    {
+      "id": 226,
+      "from_digimon_id": 53,
+      "to_digimon_id": 323,
+      "level_required": 14,
+      "stat_requirements": {
+        "atk": 40,
+        "spd": 40
+      },
+      "dna_requirement": null,
+      "item_requirement": "digi_egg_of_courage"
+    },
+    {
+      "id": 224,
+      "from_digimon_id": 53,
+      "to_digimon_id": 76,
+      "level_required": 14,
+      "stat_requirements": {
+        "atk": 40,
+        "spd": 40
+      },
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "54": [
@@ -13890,7 +15162,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 235,
@@ -13901,7 +15174,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 55,
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 233,
@@ -13912,7 +15186,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 250,
         "atk": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 234,
@@ -13923,7 +15198,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 5,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 230,
@@ -13934,7 +15210,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 40,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 232,
@@ -13945,7 +15222,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 35
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "55": [
@@ -13958,7 +15236,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 237,
@@ -13969,7 +15248,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 40,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 238,
@@ -13980,7 +15260,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 30,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 240,
@@ -13990,7 +15271,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 300
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 236,
@@ -14001,7 +15283,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 241,
@@ -14012,7 +15295,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 35,
         "spd": 45
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "56": [
@@ -14025,7 +15309,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 35,
         "spd": 45
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 245,
@@ -14035,7 +15320,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 242,
@@ -14045,7 +15331,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 243,
@@ -14057,7 +15344,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 244,
@@ -14067,7 +15355,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "57": [
@@ -14079,7 +15368,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 300
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 744,
@@ -14089,7 +15379,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 500
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 743,
@@ -14100,7 +15391,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 745,
@@ -14111,7 +15403,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "58": [
@@ -14124,7 +15417,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "atk": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 747,
@@ -14135,7 +15429,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 60,
         "spd": 25
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 749,
@@ -14146,7 +15441,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 130,
         "atk": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 751,
@@ -14157,7 +15453,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 748,
@@ -14168,7 +15465,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 45,
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "59": [
@@ -14180,7 +15478,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 500
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 248,
@@ -14191,7 +15490,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 250,
@@ -14201,7 +15501,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 300
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 249,
@@ -14212,7 +15513,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 300,
         "def": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "60": [
@@ -14225,7 +15527,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 5,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 252,
@@ -14236,7 +15539,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 5,
         "atk": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 253,
@@ -14249,7 +15553,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 240,
         "spd": 180
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "61": [
@@ -14262,7 +15567,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 35,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 754,
@@ -14273,7 +15579,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 40,
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 752,
@@ -14284,7 +15591,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 50,
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 755,
@@ -14294,7 +15602,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "62": [
@@ -14306,7 +15615,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 254,
@@ -14316,7 +15626,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 500
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 256,
@@ -14328,7 +15639,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 257,
@@ -14338,7 +15650,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 259,
@@ -14349,7 +15662,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 35,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 258,
@@ -14360,7 +15674,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 45,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "63": [
@@ -14373,7 +15688,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 35,
         "int": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 264,
@@ -14384,7 +15700,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 261,
@@ -14395,7 +15712,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 263,
@@ -14405,7 +15723,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 265,
@@ -14416,7 +15735,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 45,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 262,
@@ -14427,7 +15747,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 5,
         "atk": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "64": [
@@ -14439,7 +15760,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 266,
@@ -14450,7 +15772,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 270,
@@ -14461,7 +15784,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 269,
@@ -14472,7 +15796,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 271,
@@ -14483,7 +15808,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 267,
@@ -14494,7 +15820,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 40,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "65": [
@@ -14508,7 +15835,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 70,
         "int": 90
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 276,
@@ -14519,7 +15847,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 70,
         "int": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 274,
@@ -14531,7 +15860,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "int": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 273,
@@ -14542,7 +15872,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 800,
         "def": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 275,
@@ -14553,7 +15884,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 110,
         "int": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "66": [
@@ -14566,7 +15898,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 800,
         "atk": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 757,
@@ -14578,7 +15911,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 756,
@@ -14588,7 +15922,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "def": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "67": [
@@ -14601,7 +15936,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 75,
         "spd": 90
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 278,
@@ -14612,7 +15948,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 277,
@@ -14623,7 +15960,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 279,
@@ -14635,7 +15973,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 75,
         "spd": 75
       },
-      "dna_requirement": 115
+      "dna_requirement": 115,
+      "item_requirement": null
     },
     {
       "id": 281,
@@ -14646,7 +15985,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 65,
         "int": 65
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "68": [
@@ -14660,7 +16000,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 100,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 759,
@@ -14672,7 +16013,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": "beast_spirit_of_flame"
     },
     {
       "id": 761,
@@ -14683,7 +16025,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 500,
         "atk": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 760,
@@ -14694,7 +16037,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "69": [
@@ -14707,7 +16051,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 110,
         "int": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 765,
@@ -14718,7 +16063,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 764,
@@ -14729,7 +16075,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "int": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "70": [
@@ -14743,7 +16090,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 85,
         "spd": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 282,
@@ -14753,7 +16101,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "def": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 286,
@@ -14765,7 +16114,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "atk": 125
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 283,
@@ -14776,7 +16126,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "int": 65
       },
-      "dna_requirement": 77
+      "dna_requirement": 77,
+      "item_requirement": null
     },
     {
       "id": 285,
@@ -14788,7 +16139,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "int": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "71": [
@@ -14802,7 +16154,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "int": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 287,
@@ -14813,7 +16166,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 800,
         "atk": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 289,
@@ -14824,7 +16178,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 290,
@@ -14835,7 +16190,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "72": [
@@ -14848,7 +16204,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 500,
         "atk": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 291,
@@ -14860,7 +16217,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 70,
         "int": 90
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 293,
@@ -14871,7 +16229,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 75,
         "int": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 294,
@@ -14882,7 +16241,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 80,
         "int": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "73": [
@@ -14896,7 +16256,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 100,
         "spd": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": "beast_spirit_of_light"
     },
     {
       "id": 767,
@@ -14907,7 +16268,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 768,
@@ -14918,7 +16280,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 90,
         "spd": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "74": [
@@ -14932,7 +16295,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 75,
         "spd": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 297,
@@ -14944,7 +16308,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 60,
         "int": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 295,
@@ -14955,7 +16320,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 800,
         "def": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "75": [
@@ -14969,7 +16335,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 70,
         "int": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 769,
@@ -14981,7 +16348,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "spd": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 771,
@@ -14993,7 +16361,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 772,
@@ -15004,7 +16373,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 350,
         "atk": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "76": [
@@ -15018,7 +16388,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "spd": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 299,
@@ -15030,7 +16401,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "int": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 298,
@@ -15042,7 +16414,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 60,
         "spd": 75
       },
-      "dna_requirement": 108
+      "dna_requirement": 108,
+      "item_requirement": null
     },
     {
       "id": 300,
@@ -15054,7 +16427,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 100,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 302,
@@ -15066,7 +16440,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 90,
         "spd": 75
       },
-      "dna_requirement": 108
+      "dna_requirement": 108,
+      "item_requirement": null
     }
   ],
   "77": [
@@ -15080,7 +16455,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "int": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 303,
@@ -15091,7 +16467,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 307,
@@ -15102,7 +16479,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 65,
         "int": 65
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 304,
@@ -15113,7 +16491,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "int": 65
       },
-      "dna_requirement": 70
+      "dna_requirement": 70,
+      "item_requirement": null
     },
     {
       "id": 306,
@@ -15124,7 +16503,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 90,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "78": [
@@ -15137,7 +16517,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 500,
         "atk": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 311,
@@ -15148,7 +16529,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "int": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 308,
@@ -15159,7 +16541,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 700,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 310,
@@ -15170,7 +16553,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 90,
         "spd": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "79": [
@@ -15183,7 +16567,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 400,
         "atk": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 315,
@@ -15194,7 +16579,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 80,
         "int": 65
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 312,
@@ -15206,7 +16592,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "int": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 314,
@@ -15217,7 +16604,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 60,
         "int": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 316,
@@ -15228,7 +16616,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 700,
         "def": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "80": [
@@ -15242,7 +16631,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "def": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 773,
@@ -15254,19 +16644,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "spd": 70
       },
-      "dna_requirement": null
-    },
-    {
-      "id": 775,
-      "from_digimon_id": 80,
-      "to_digimon_id": 144,
-      "level_required": 28,
-      "stat_requirements": {
-        "atk": 75,
-        "def": 75,
-        "int": 75
-      },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 777,
@@ -15278,7 +16657,21 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 145
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": "digi_egg_of_miracles"
+    },
+    {
+      "id": 775,
+      "from_digimon_id": 80,
+      "to_digimon_id": 144,
+      "level_required": 28,
+      "stat_requirements": {
+        "atk": 75,
+        "def": 75,
+        "int": 75
+      },
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 776,
@@ -15291,7 +16684,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": "digi_egg_of_destiny"
     }
   ],
   "81": [
@@ -15304,7 +16698,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 400,
         "atk": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 319,
@@ -15315,7 +16710,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 90,
         "spd": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 318,
@@ -15326,7 +16722,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "82": [
@@ -15339,7 +16736,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 800,
         "def": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 322,
@@ -15350,7 +16748,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 75,
         "int": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 320,
@@ -15361,7 +16760,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 400,
         "def": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "83": [
@@ -15375,7 +16775,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 70,
         "int": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 324,
@@ -15383,7 +16784,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 191,
       "level_required": 32,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 323,
@@ -15393,7 +16795,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 900
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "84": [
@@ -15407,7 +16810,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 75,
         "spd": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 328,
@@ -15418,7 +16822,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 327,
@@ -15429,7 +16834,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 105,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "85": [
@@ -15442,7 +16848,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 800,
         "atk": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 330,
@@ -15454,7 +16861,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 332,
@@ -15465,7 +16873,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 90,
         "spd": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 331,
@@ -15477,7 +16886,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "86": [
@@ -15491,7 +16901,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "int": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 334,
@@ -15502,7 +16913,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 336,
@@ -15513,7 +16925,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 65,
         "def": 65
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 335,
@@ -15525,7 +16938,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 90,
         "spd": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "87": [
@@ -15539,7 +16953,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 75,
         "spd": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 338,
@@ -15550,7 +16965,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 600,
         "atk": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 339,
@@ -15562,7 +16978,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "int": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "88": [
@@ -15575,19 +16992,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 350,
         "atk": 100
       },
-      "dna_requirement": null
-    },
-    {
-      "id": 340,
-      "from_digimon_id": 88,
-      "to_digimon_id": 156,
-      "level_required": 26,
-      "stat_requirements": {
-        "hp": 800,
-        "atk": 75,
-        "def": 95
-      },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 344,
@@ -15599,7 +17005,21 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": "beast_spirit_of_flame"
+    },
+    {
+      "id": 340,
+      "from_digimon_id": 88,
+      "to_digimon_id": 156,
+      "level_required": 26,
+      "stat_requirements": {
+        "hp": 800,
+        "atk": 75,
+        "def": 95
+      },
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 341,
@@ -15610,7 +17030,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 105,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 343,
@@ -15621,7 +17042,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "89": [
@@ -15635,7 +17057,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 348,
@@ -15646,7 +17069,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 110,
         "int": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 345,
@@ -15657,7 +17081,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 347,
@@ -15669,7 +17094,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 75,
         "spd": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "90": [
@@ -15683,7 +17109,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 352,
@@ -15694,7 +17121,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 450,
         "atk": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 349,
@@ -15706,7 +17134,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 85,
         "spd": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 351,
@@ -15717,7 +17146,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 350,
         "atk": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "91": [
@@ -15730,7 +17160,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 356,
@@ -15741,7 +17172,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 353,
@@ -15753,7 +17185,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 355,
@@ -15764,7 +17197,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 450,
         "atk": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "92": [
@@ -15777,7 +17211,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 360,
@@ -15788,7 +17223,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 75,
         "int": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 357,
@@ -15800,7 +17236,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "int": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 359,
@@ -15811,7 +17248,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 60,
         "int": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "93": [
@@ -15824,7 +17262,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 361,
@@ -15835,7 +17274,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "def": 90
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 363,
@@ -15846,7 +17286,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 800,
         "def": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "94": [
@@ -15860,7 +17301,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 70,
         "int": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 364,
@@ -15870,7 +17312,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 900
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 365,
@@ -15882,7 +17325,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "int": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "95": [
@@ -15896,7 +17340,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 70,
         "def": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 367,
@@ -15908,7 +17353,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "spd": 65
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 369,
@@ -15919,7 +17365,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 80,
         "int": 65
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "96": [
@@ -15933,7 +17380,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "spd": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 779,
@@ -15944,7 +17392,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 780,
@@ -15956,7 +17405,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "int": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "97": [
@@ -15969,7 +17419,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 781,
@@ -15981,7 +17432,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "atk": 125
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 783,
@@ -15992,7 +17444,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 105,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "98": [
@@ -16002,7 +17455,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 191,
       "level_required": 32,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 372,
@@ -16012,7 +17466,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "abi": 10
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 371,
@@ -16022,7 +17477,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "sp": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "99": [
@@ -16036,7 +17492,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 60,
         "int": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 785,
@@ -16046,7 +17503,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "def": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 784,
@@ -16057,7 +17515,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "100": [
@@ -16070,7 +17529,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 60,
         "int": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 373,
@@ -16082,7 +17542,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 375,
@@ -16094,7 +17555,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "101": [
@@ -16108,7 +17570,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 90,
         "spd": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 787,
@@ -16120,7 +17583,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 100,
         "spd": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": "beast_spirit_of_light"
     },
     {
       "id": 789,
@@ -16132,7 +17596,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 70,
         "int": 90
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 788,
@@ -16143,7 +17608,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "102": [
@@ -16156,7 +17622,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 377,
@@ -16167,7 +17634,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 75,
         "int": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 376,
@@ -16179,7 +17647,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "int": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "103": [
@@ -16191,7 +17660,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 900
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 380,
@@ -16203,7 +17673,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "int": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 382,
@@ -16215,7 +17686,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 381,
@@ -16227,7 +17699,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 70,
         "int": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "104": [
@@ -16241,7 +17714,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 791,
@@ -16252,7 +17726,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 70,
         "int": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 793,
@@ -16264,7 +17739,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 70,
         "int": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 792,
@@ -16276,7 +17752,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "int": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "105": [
@@ -16290,7 +17767,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 384,
@@ -16302,7 +17780,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 85,
         "spd": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 386,
@@ -16314,7 +17793,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "atk": 125
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 385,
@@ -16326,7 +17806,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 100,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 934,
@@ -16337,7 +17818,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "106": [
@@ -16351,7 +17833,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "spd": 65
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 388,
@@ -16363,7 +17846,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 70,
         "def": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 389,
@@ -16373,7 +17857,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "sp": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "107": [
@@ -16386,7 +17871,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 390,
@@ -16398,7 +17884,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 70,
         "def": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 392,
@@ -16409,7 +17896,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 80,
         "int": 65
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 394,
@@ -16420,7 +17908,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 60,
         "atk": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 393,
@@ -16431,7 +17920,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 700,
         "def": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "108": [
@@ -16444,7 +17934,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 396,
@@ -16455,7 +17946,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "def": 90
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 398,
@@ -16467,7 +17959,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 90,
         "spd": 75
       },
-      "dna_requirement": 76
+      "dna_requirement": 76,
+      "item_requirement": null
     },
     {
       "id": 397,
@@ -16479,7 +17972,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 60,
         "spd": 75
       },
-      "dna_requirement": 76
+      "dna_requirement": 76,
+      "item_requirement": null
     }
   ],
   "109": [
@@ -16492,7 +17986,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 90,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 797,
@@ -16503,7 +17998,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 90,
         "spd": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 796,
@@ -16515,7 +18011,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 933,
@@ -16526,7 +18023,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "110": [
@@ -16540,7 +18038,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 100,
         "spd": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": "beast_spirit_of_light"
     },
     {
       "id": 799,
@@ -16552,7 +18051,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "def": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 800,
@@ -16563,7 +18063,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 80,
         "int": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "111": [
@@ -16577,7 +18078,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 75,
         "spd": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 401,
@@ -16588,7 +18090,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 75,
         "int": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 400,
@@ -16600,7 +18103,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 80,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "112": [
@@ -16613,7 +18117,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 403,
@@ -16625,7 +18130,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 406,
@@ -16636,7 +18142,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 402,
@@ -16648,7 +18155,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "int": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 405,
@@ -16659,7 +18167,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "113": [
@@ -16671,7 +18180,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "def": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 801,
@@ -16682,7 +18192,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 65,
         "def": 65
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 803,
@@ -16694,7 +18205,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 60,
         "int": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "114": [
@@ -16708,7 +18220,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 410,
@@ -16719,7 +18232,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 407,
@@ -16730,7 +18244,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 409,
@@ -16741,7 +18256,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 450,
         "atk": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "115": [
@@ -16755,7 +18271,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 75,
         "spd": 75
       },
-      "dna_requirement": 67
+      "dna_requirement": 67,
+      "item_requirement": null
     },
     {
       "id": 414,
@@ -16766,7 +18283,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 65,
         "def": 65
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 411,
@@ -16778,7 +18296,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "int": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 413,
@@ -16789,7 +18308,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "116": [
@@ -16803,7 +18323,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 70,
         "int": 90
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 418,
@@ -16814,7 +18335,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 450,
         "atk": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 415,
@@ -16825,7 +18347,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 417,
@@ -16837,7 +18360,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "int": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 419,
@@ -16848,7 +18372,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "int": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "117": [
@@ -16861,7 +18386,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 600,
         "atk": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 805,
@@ -16873,7 +18399,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 804,
@@ -16885,7 +18412,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 75,
         "spd": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "118": [
@@ -16899,7 +18427,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 60,
         "int": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 422,
@@ -16910,7 +18439,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 421,
@@ -16921,7 +18451,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "119": [
@@ -16935,7 +18466,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 426,
@@ -16947,7 +18479,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "spd": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 423,
@@ -16959,7 +18492,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "spd": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 425,
@@ -16971,7 +18505,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 100,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "120": [
@@ -16985,7 +18520,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 70,
         "def": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 427,
@@ -16995,7 +18531,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "def": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 429,
@@ -17006,7 +18543,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 700,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "121": [
@@ -17019,7 +18557,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 600,
         "atk": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 430,
@@ -17031,7 +18570,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "spd": 65
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 431,
@@ -17039,7 +18579,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 191,
       "level_required": 32,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "122": [
@@ -17052,7 +18593,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 75,
         "spd": 90
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 434,
@@ -17063,7 +18605,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 438,
@@ -17074,18 +18617,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 65,
         "int": 65
       },
-      "dna_requirement": null
-    },
-    {
-      "id": 433,
-      "from_digimon_id": 122,
-      "to_digimon_id": 150,
-      "level_required": 30,
-      "stat_requirements": {
-        "atk": 75,
-        "spd": 95
-      },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 437,
@@ -17097,7 +18630,20 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": "beast_spirit_of_flame"
+    },
+    {
+      "id": 433,
+      "from_digimon_id": 122,
+      "to_digimon_id": 150,
+      "level_required": 30,
+      "stat_requirements": {
+        "atk": 75,
+        "spd": 95
+      },
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 435,
@@ -17109,7 +18655,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "spd": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "123": [
@@ -17123,7 +18670,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 100,
         "spd": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": "beast_spirit_of_light"
     },
     {
       "id": 809,
@@ -17135,7 +18683,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 100,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 808,
@@ -17146,7 +18695,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 90,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "124": [
@@ -17160,7 +18710,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 60,
         "int": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 442,
@@ -17172,7 +18723,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "int": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 444,
@@ -17183,7 +18735,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 439,
@@ -17195,7 +18748,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 70,
         "int": 90
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 441,
@@ -17207,7 +18761,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "int": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 443,
@@ -17218,7 +18773,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 80,
         "int": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "125": [
@@ -17231,7 +18787,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 446,
@@ -17243,7 +18800,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 448,
@@ -17254,7 +18812,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 447,
@@ -17265,7 +18824,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 105,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "126": [
@@ -17278,7 +18838,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 810,
@@ -17289,7 +18850,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 812,
@@ -17300,7 +18862,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 75,
         "int": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "127": [
@@ -17314,7 +18877,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "spd": 65
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 450,
@@ -17324,7 +18888,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "sp": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 452,
@@ -17335,7 +18900,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 700,
         "def": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 451,
@@ -17346,7 +18912,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 80,
         "int": 65
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "128": [
@@ -17360,7 +18927,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 454,
@@ -17371,7 +18939,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 456,
@@ -17383,7 +18952,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 90,
         "spd": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 455,
@@ -17395,7 +18965,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "int": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "129": [
@@ -17408,7 +18979,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 400,
         "def": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 458,
@@ -17419,7 +18991,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 700,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 459,
@@ -17430,7 +19003,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 75,
         "int": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "130": [
@@ -17444,7 +19018,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 80,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 460,
@@ -17456,7 +19031,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 75,
         "spd": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 462,
@@ -17467,7 +19043,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 75,
         "spd": 90
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "131": [
@@ -17481,7 +19058,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "int": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 468,
@@ -17492,7 +19070,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 464,
@@ -17504,18 +19083,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 75
       },
-      "dna_requirement": null
-    },
-    {
-      "id": 463,
-      "from_digimon_id": 131,
-      "to_digimon_id": 177,
-      "level_required": 28,
-      "stat_requirements": {
-        "hp": 500,
-        "atk": 95
-      },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 467,
@@ -17527,7 +19096,20 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": "beast_spirit_of_flame"
+    },
+    {
+      "id": 463,
+      "from_digimon_id": 131,
+      "to_digimon_id": 177,
+      "level_required": 28,
+      "stat_requirements": {
+        "hp": 500,
+        "atk": 95
+      },
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 466,
@@ -17538,7 +19120,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "132": [
@@ -17551,7 +19134,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 813,
@@ -17562,7 +19146,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 814,
@@ -17574,7 +19159,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 85,
         "spd": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "133": [
@@ -17587,7 +19173,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 800,
         "atk": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 472,
@@ -17598,7 +19185,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 60,
         "atk": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 471,
@@ -17609,7 +19197,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 600,
         "atk": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 469,
@@ -17621,7 +19210,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "int": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "134": [
@@ -17635,7 +19225,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "int": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 816,
@@ -17646,7 +19237,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 65,
         "int": 65
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 817,
@@ -17658,7 +19250,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 80,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "135": [
@@ -17672,7 +19265,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "spd": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 820,
@@ -17684,7 +19278,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "def": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 822,
@@ -17696,7 +19291,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 821,
@@ -17708,7 +19304,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "136": [
@@ -17721,7 +19318,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "int": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 827,
@@ -17732,7 +19330,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 450,
         "atk": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 824,
@@ -17743,7 +19342,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 70,
         "int": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 826,
@@ -17751,7 +19351,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 191,
       "level_required": 32,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 825,
@@ -17762,7 +19363,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 80,
         "int": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "137": [
@@ -17774,7 +19376,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "def": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 477,
@@ -17786,7 +19389,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "spd": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 474,
@@ -17797,7 +19401,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 400,
         "atk": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 476,
@@ -17808,7 +19413,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 350,
         "atk": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 475,
@@ -17820,7 +19426,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "138": [
@@ -17833,7 +19440,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 60,
         "atk": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 830,
@@ -17844,7 +19452,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 829,
@@ -17856,7 +19465,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 75,
         "spd": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "139": [
@@ -17870,7 +19480,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "spd": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 480,
@@ -17881,7 +19492,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 479,
@@ -17893,7 +19505,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 80,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "140": [
@@ -17906,7 +19519,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 400,
         "def": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 482,
@@ -17917,7 +19531,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "def": 90
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 484,
@@ -17928,7 +19543,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 483,
@@ -17939,7 +19555,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "141": [
@@ -17954,7 +19571,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 145
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 485,
@@ -17967,7 +19585,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 486,
@@ -17980,7 +19599,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 150,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "142": [
@@ -17995,7 +19615,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 200,
         "spd": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 833,
@@ -18008,7 +19629,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 230,
         "int": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 832,
@@ -18021,7 +19643,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 180,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "143": [
@@ -18036,7 +19659,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 130,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 491,
@@ -18049,7 +19673,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 40,
         "int": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 490,
@@ -18062,7 +19687,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 180,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 488,
@@ -18075,7 +19701,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 145,
         "spd": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "144": [
@@ -18090,7 +19717,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 180,
         "int": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 494,
@@ -18103,7 +19731,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 493,
@@ -18116,7 +19745,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "145": [
@@ -18130,7 +19760,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 496,
@@ -18143,7 +19774,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 130,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 497,
@@ -18156,7 +19788,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "146": [
@@ -18171,7 +19804,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 180,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 500,
@@ -18184,7 +19818,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 250,
         "spd": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 501,
@@ -18197,7 +19832,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 200,
         "spd": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 498,
@@ -18211,7 +19847,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 110,
         "int": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "147": [
@@ -18227,7 +19864,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 110,
         "int": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 503,
@@ -18240,7 +19878,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 200
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 506,
@@ -18253,7 +19892,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 110,
         "int": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 505,
@@ -18266,7 +19906,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 200,
         "spd": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 504,
@@ -18279,7 +19920,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 160,
         "spd": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "148": [
@@ -18293,7 +19935,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "spd": 145
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 834,
@@ -18306,7 +19949,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 130,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 836,
@@ -18320,7 +19964,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "149": [
@@ -18335,7 +19980,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "def": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "150": [
@@ -18350,7 +19996,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 507,
@@ -18362,7 +20009,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "spd": 145
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 509,
@@ -18374,7 +20022,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 130,
         "spd": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 508,
@@ -18388,7 +20037,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "151": [
@@ -18403,7 +20053,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 160,
         "spd": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 512,
@@ -18413,7 +20064,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "abi": 10
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 513,
@@ -18426,7 +20078,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 514,
@@ -18439,7 +20092,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "spd": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 515,
@@ -18451,7 +20105,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 135
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "152": [
@@ -18466,7 +20121,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "int": 120
       },
-      "dna_requirement": 214
+      "dna_requirement": 214,
+      "item_requirement": null
     },
     {
       "id": 516,
@@ -18479,7 +20135,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 145
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 517,
@@ -18492,7 +20149,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 145
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 519,
@@ -18505,7 +20163,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 130,
         "spd": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "153": [
@@ -18520,7 +20179,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 150,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 520,
@@ -18533,7 +20193,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 521,
@@ -18546,7 +20207,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 180,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "154": [
@@ -18560,7 +20222,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 524,
@@ -18572,7 +20235,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 130,
         "spd": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 526,
@@ -18585,7 +20249,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 145,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 523,
@@ -18598,7 +20263,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 130,
         "def": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 525,
@@ -18610,7 +20276,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 130,
         "spd": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "155": [
@@ -18624,7 +20291,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 130,
         "spd": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "156": [
@@ -18638,7 +20306,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "def": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 528,
@@ -18650,7 +20319,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 160,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 529,
@@ -18663,7 +20333,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 130,
         "def": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 533,
@@ -18675,7 +20346,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 40,
         "atk": 180
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 530,
@@ -18688,7 +20360,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 532,
@@ -18700,7 +20373,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "atk": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "157": [
@@ -18715,7 +20389,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 130,
         "def": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 840,
@@ -18728,7 +20403,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 841,
@@ -18739,7 +20415,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "def": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "158": [
@@ -18753,7 +20430,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 534,
@@ -18765,7 +20443,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 160,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 536,
@@ -18778,7 +20457,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "159": [
@@ -18793,7 +20473,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 160,
         "def": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 843,
@@ -18805,7 +20486,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 40,
         "atk": 180
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 844,
@@ -18819,7 +20501,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "160": [
@@ -18833,7 +20516,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 940,
@@ -18846,7 +20530,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 537,
@@ -18858,7 +20543,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 145,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 538,
@@ -18871,7 +20557,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 120,
         "spd": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 540,
@@ -18883,7 +20570,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 135
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "161": [
@@ -18898,7 +20586,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 170,
         "int": 135
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 846,
@@ -18910,7 +20599,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "atk": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 848,
@@ -18923,7 +20613,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 845,
@@ -18936,7 +20627,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 140,
         "def": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 849,
@@ -18948,7 +20640,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "atk": 180
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "162": [
@@ -18963,7 +20656,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 130,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 850,
@@ -18976,7 +20670,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 145,
         "spd": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 851,
@@ -18989,7 +20684,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 120,
         "spd": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "163": [
@@ -19004,7 +20700,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 541,
@@ -19017,7 +20714,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 170,
         "int": 135
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 542,
@@ -19030,7 +20728,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 130,
         "def": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "164": [
@@ -19045,7 +20744,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 544,
@@ -19059,7 +20759,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 546,
@@ -19072,7 +20773,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 145,
         "spd": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "165": [
@@ -19087,7 +20789,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 548,
@@ -19100,7 +20803,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 547,
@@ -19113,7 +20817,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 135,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "166": [
@@ -19129,7 +20834,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 550,
@@ -19142,7 +20848,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 120,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 552,
@@ -19154,7 +20861,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 130,
         "spd": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 554,
@@ -19166,7 +20874,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 553,
@@ -19179,7 +20888,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 130,
         "spd": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "167": [
@@ -19194,7 +20904,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 145,
         "def": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 557,
@@ -19204,7 +20915,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "abi": 10
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 556,
@@ -19217,7 +20929,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 130,
         "def": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "168": [
@@ -19232,7 +20945,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 558,
@@ -19244,7 +20958,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 140,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 560,
@@ -19257,7 +20972,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 230,
         "int": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "169": [
@@ -19272,7 +20988,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 180,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 853,
@@ -19285,7 +21002,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 110,
         "int": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 855,
@@ -19298,7 +21016,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 230,
         "int": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "170": [
@@ -19313,7 +21032,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 145
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 561,
@@ -19327,7 +21047,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 563,
@@ -19340,7 +21061,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "spd": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 562,
@@ -19352,7 +21074,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 135
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "171": [
@@ -19367,7 +21090,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 130,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 858,
@@ -19379,7 +21103,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 180,
         "spd": 180
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 857,
@@ -19392,7 +21117,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 130,
         "spd": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "172": [
@@ -19407,7 +21133,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 135,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 567,
@@ -19420,7 +21147,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 130,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 566,
@@ -19433,7 +21161,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 120,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "173": [
@@ -19447,7 +21176,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 861,
@@ -19462,7 +21192,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 140,
         "int": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 859,
@@ -19475,7 +21206,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "174": [
@@ -19490,7 +21222,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 120,
         "spd": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 569,
@@ -19503,7 +21236,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 570,
@@ -19516,7 +21250,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "spd": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "175": [
@@ -19531,7 +21266,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 150,
         "spd": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 863,
@@ -19544,7 +21280,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "176": [
@@ -19559,7 +21296,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 573,
@@ -19571,7 +21309,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "spd": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 572,
@@ -19584,7 +21323,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 80,
         "int": 180
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "177": [
@@ -19598,7 +21338,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 145,
         "def": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 574,
@@ -19611,7 +21352,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 145,
         "def": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 575,
@@ -19624,7 +21366,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 250,
         "spd": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "178": [
@@ -19639,7 +21382,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 140,
         "def": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 865,
@@ -19652,7 +21396,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 866,
@@ -19664,7 +21409,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 180,
         "spd": 180
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "179": [
@@ -19679,7 +21425,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "spd": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 578,
@@ -19692,7 +21439,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 145
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 577,
@@ -19706,7 +21454,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 579,
@@ -19721,7 +21470,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 140,
         "int": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "180": [
@@ -19736,7 +21486,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 867,
@@ -19749,7 +21500,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 160,
         "def": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 869,
@@ -19761,7 +21513,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 145,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "181": [
@@ -19776,7 +21529,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 120,
         "spd": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 581,
@@ -19789,7 +21543,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 170,
         "int": 135
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 583,
@@ -19801,7 +21556,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "atk": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "182": [
@@ -19816,7 +21572,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 180,
         "int": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 586,
@@ -19829,7 +21586,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 135,
         "spd": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 585,
@@ -19842,7 +21600,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 120,
         "spd": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 587,
@@ -19855,7 +21614,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 140,
         "def": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "183": [
@@ -19870,7 +21630,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 130,
         "def": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 588,
@@ -19882,7 +21643,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 160,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 590,
@@ -19894,7 +21656,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 135,
         "spd": 125
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "184": [
@@ -19909,7 +21672,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 150,
         "spd": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "185": [
@@ -19923,7 +21687,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 592,
@@ -19935,7 +21700,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 145,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 594,
@@ -19947,7 +21713,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "186": [
@@ -19962,7 +21729,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "spd": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 871,
@@ -19975,7 +21743,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 130,
         "def": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 872,
@@ -19987,7 +21756,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "187": [
@@ -20001,7 +21771,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 596,
@@ -20013,7 +21784,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 145,
         "def": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 595,
@@ -20026,7 +21798,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "188": [
@@ -20041,7 +21814,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 145
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 600,
@@ -20053,7 +21827,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 135
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 599,
@@ -20065,7 +21840,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 130,
         "spd": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "189": [
@@ -20079,7 +21855,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 875,
@@ -20092,7 +21869,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 873,
@@ -20105,7 +21883,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 145,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "190": [
@@ -20121,7 +21900,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 110,
         "int": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 878,
@@ -20134,7 +21914,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 200
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 877,
@@ -20147,7 +21928,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "191": [
@@ -20160,7 +21942,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "def": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 603,
@@ -20173,7 +21956,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 601,
@@ -20183,7 +21967,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "abi": 10
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "192": [
@@ -20198,7 +21983,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 200
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 606,
@@ -20210,7 +21996,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 145,
         "def": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 607,
@@ -20222,7 +22009,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "def": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 604,
@@ -20235,7 +22023,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 230,
         "int": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "193": [
@@ -20250,7 +22039,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 608,
@@ -20262,7 +22052,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 610,
@@ -20275,7 +22066,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 150,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "194": [
@@ -20290,7 +22082,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 612,
@@ -20302,7 +22095,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 135
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 614,
@@ -20315,7 +22109,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 611,
@@ -20328,7 +22123,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 145
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "195": [
@@ -20343,7 +22139,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 135,
         "spd": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 616,
@@ -20356,7 +22153,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 619,
@@ -20369,7 +22167,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 618,
@@ -20382,7 +22181,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 130,
         "spd": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 615,
@@ -20394,7 +22194,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 140,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "196": [
@@ -20409,7 +22210,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 880,
@@ -20422,7 +22224,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 145,
         "def": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 881,
@@ -20435,7 +22238,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 879,
@@ -20447,7 +22251,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 135
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "197": [
@@ -20462,7 +22267,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 160,
         "spd": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 882,
@@ -20475,7 +22281,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 110,
         "int": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 883,
@@ -20489,7 +22296,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 110,
         "int": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "198": [
@@ -20503,7 +22311,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 620,
@@ -20515,7 +22324,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 622,
@@ -20527,7 +22337,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 623,
@@ -20540,7 +22351,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 110,
         "spd": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "199": [
@@ -20555,7 +22367,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 624,
@@ -20568,7 +22381,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 160,
         "def": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 626,
@@ -20579,7 +22393,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "def": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "200": [
@@ -20594,7 +22409,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 628,
@@ -20607,7 +22423,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 627,
@@ -20620,7 +22437,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 145
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 629,
@@ -20635,7 +22453,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 140,
         "int": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "201": [
@@ -20650,7 +22469,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 140,
         "def": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 631,
@@ -20662,7 +22482,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "spd": 145
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 633,
@@ -20675,7 +22496,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 130,
         "def": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 635,
@@ -20687,7 +22509,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 40,
         "atk": 180
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 634,
@@ -20700,7 +22523,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "202": [
@@ -20715,7 +22539,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 180,
         "def": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 640,
@@ -20727,7 +22552,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 40,
         "atk": 180
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 637,
@@ -20740,7 +22566,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 140,
         "int": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 639,
@@ -20752,7 +22579,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "def": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 636,
@@ -20765,7 +22593,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "203": [
@@ -20780,7 +22609,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 100,
         "spd": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 641,
@@ -20793,7 +22623,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 160,
         "def": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 643,
@@ -20806,7 +22637,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 180,
         "def": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "204": [
@@ -20821,7 +22653,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 180,
         "def": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 646,
@@ -20834,7 +22667,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 140,
         "def": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 644,
@@ -20847,7 +22681,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 160,
         "def": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 645,
@@ -20860,7 +22695,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 100,
         "spd": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 647,
@@ -20873,7 +22709,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 40,
         "int": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "205": [
@@ -20888,7 +22725,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 180,
         "def": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 651,
@@ -20901,7 +22739,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 160,
         "def": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 648,
@@ -20914,7 +22753,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 140,
         "def": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 649,
@@ -20927,7 +22767,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 140,
         "int": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "206": [
@@ -20940,7 +22781,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "def": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 652,
@@ -20952,7 +22794,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 653,
@@ -20965,7 +22808,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "207": [
@@ -20980,7 +22824,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 120,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 655,
@@ -20992,7 +22837,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 145,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 657,
@@ -21004,7 +22850,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "spd": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "208": [
@@ -21019,7 +22866,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 135,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 662,
@@ -21031,7 +22879,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "atk": 180
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 661,
@@ -21044,7 +22893,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 145,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 660,
@@ -21056,7 +22906,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 130,
         "spd": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 659,
@@ -21068,7 +22919,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "spd": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "209": [
@@ -21083,7 +22935,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 100,
         "spd": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 665,
@@ -21096,7 +22949,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 130,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 664,
@@ -21108,7 +22962,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 140,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "210": [
@@ -21122,7 +22977,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 668,
@@ -21134,7 +22990,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 170,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 666,
@@ -21147,7 +23004,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 250,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "211": [
@@ -21161,7 +23019,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 135,
         "spd": 125
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 669,
@@ -21173,7 +23032,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 670,
@@ -21186,7 +23046,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "212": [
@@ -21200,7 +23061,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 672,
@@ -21213,7 +23075,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 145
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 674,
@@ -21225,7 +23088,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 170,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "213": [
@@ -21242,7 +23106,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 250,
         "spd": 170
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "214": [
@@ -21257,7 +23122,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 250,
         "spd": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 676,
@@ -21270,7 +23136,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "int": 120
       },
-      "dna_requirement": 152
+      "dna_requirement": 152,
+      "item_requirement": null
     },
     {
       "id": 678,
@@ -21282,7 +23149,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 170,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 677,
@@ -21295,7 +23163,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 250,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "215": [
@@ -21309,7 +23178,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 915,
@@ -21322,7 +23192,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 681,
@@ -21334,7 +23205,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 135,
         "spd": 125
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 680,
@@ -21347,7 +23219,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "spd": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "216": [
@@ -21361,7 +23234,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "spd": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 685,
@@ -21374,7 +23248,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 110,
         "spd": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 682,
@@ -21386,7 +23261,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 684,
@@ -21398,7 +23274,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 135,
         "spd": 125
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "217": [
@@ -21413,7 +23290,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 160,
         "spd": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 686,
@@ -21427,7 +23305,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 110,
         "int": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 688,
@@ -21440,7 +23319,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 80,
         "int": 180
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "218": [
@@ -21456,7 +23336,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 150,
         "spd": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "219": [
@@ -21471,7 +23352,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 170,
         "int": 150
       },
-      "dna_requirement": 331
+      "dna_requirement": 331,
+      "item_requirement": null
     }
   ],
   "222": [
@@ -21481,7 +23363,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 223,
       "level_required": 0,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 690,
@@ -21495,7 +23378,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 160,
         "spd": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "223": [
@@ -21505,7 +23389,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 222,
       "level_required": 0,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "226": [
@@ -21519,7 +23404,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 155,
         "int": 100
       },
-      "dna_requirement": 272
+      "dna_requirement": 272,
+      "item_requirement": null
     }
   ],
   "228": [
@@ -21534,7 +23420,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 150,
         "spd": 150
       },
-      "dna_requirement": 297
+      "dna_requirement": 297,
+      "item_requirement": null
     }
   ],
   "231": [
@@ -21549,7 +23436,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "int": 150
       },
-      "dna_requirement": 287
+      "dna_requirement": 287,
+      "item_requirement": null
     }
   ],
   "248": [
@@ -21563,7 +23451,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 30,
         "atk": 250
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "252": [
@@ -21578,7 +23467,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "spd": 150
       },
-      "dna_requirement": 278
+      "dna_requirement": 278,
+      "item_requirement": null
     }
   ],
   "255": [
@@ -21591,7 +23481,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 40,
         "atk": 255
       },
-      "dna_requirement": 272
+      "dna_requirement": 272,
+      "item_requirement": null
     }
   ],
   "259": [
@@ -21606,7 +23497,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 180,
         "spd": 170
       },
-      "dna_requirement": 366
+      "dna_requirement": 366,
+      "item_requirement": null
     }
   ],
   "260": [
@@ -21621,7 +23513,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 100,
         "atk": 290
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "262": [
@@ -21636,7 +23529,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 185,
         "int": 185
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "265": [
@@ -21646,7 +23540,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 266,
       "level_required": 0,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "266": [
@@ -21656,7 +23551,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 265,
       "level_required": 0,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "272": [
@@ -21670,7 +23566,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 155,
         "int": 100
       },
-      "dna_requirement": 226
+      "dna_requirement": 226,
+      "item_requirement": null
     },
     {
       "id": 699,
@@ -21681,7 +23578,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 40,
         "atk": 255
       },
-      "dna_requirement": 255
+      "dna_requirement": 255,
+      "item_requirement": null
     }
   ],
   "273": [
@@ -21693,7 +23591,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "abi": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "274": [
@@ -21705,7 +23604,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "abi": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "276": [
@@ -21720,7 +23620,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "def": 200
       },
-      "dna_requirement": 298
+      "dna_requirement": 298,
+      "item_requirement": null
     }
   ],
   "278": [
@@ -21735,7 +23636,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "spd": 150
       },
-      "dna_requirement": 252
+      "dna_requirement": 252,
+      "item_requirement": null
     }
   ],
   "280": [
@@ -21750,7 +23652,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 140,
         "def": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "281": [
@@ -21765,7 +23668,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 300,
         "spd": 220
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "283": [
@@ -21775,7 +23679,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 321,
       "level_required": 0,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "287": [
@@ -21785,7 +23690,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 288,
       "level_required": 0,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 891,
@@ -21798,7 +23704,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "int": 150
       },
-      "dna_requirement": 231
+      "dna_requirement": 231,
+      "item_requirement": null
     }
   ],
   "288": [
@@ -21808,7 +23715,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 287,
       "level_required": 0,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "292": [
@@ -21822,7 +23730,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 200,
         "spd": 200
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "294": [
@@ -21837,7 +23746,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 130,
         "def": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 709,
@@ -21847,7 +23757,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "abi": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "297": [
@@ -21862,7 +23773,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 150,
         "spd": 150
       },
-      "dna_requirement": 228
+      "dna_requirement": 228,
+      "item_requirement": null
     }
   ],
   "298": [
@@ -21877,7 +23789,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "def": 200
       },
-      "dna_requirement": 276
+      "dna_requirement": 276,
+      "item_requirement": null
     }
   ],
   "299": [
@@ -21889,7 +23802,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "abi": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "304": [
@@ -21903,7 +23817,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 30,
         "spd": 250
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "307": [
@@ -21917,7 +23832,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 30,
         "int": 180
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "321": [
@@ -21927,7 +23843,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 283,
       "level_required": 0,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "326": [
@@ -21942,7 +23859,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "328": [
@@ -21955,7 +23873,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 903,
@@ -21966,7 +23885,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 5,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 902,
@@ -21977,7 +23897,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 130,
         "atk": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "329": [
@@ -21990,7 +23911,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 904,
@@ -22002,7 +23924,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 906,
@@ -22014,7 +23937,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 70,
         "int": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "330": [
@@ -22029,7 +23953,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 907,
@@ -22041,7 +23966,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "atk": 180
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 908,
@@ -22054,7 +23980,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 100,
         "spd": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 910,
@@ -22066,7 +23993,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "spd": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "331": [
@@ -22081,7 +24009,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 170,
         "int": 150
       },
-      "dna_requirement": 219
+      "dna_requirement": 219,
+      "item_requirement": null
     }
   ],
   "333": [
@@ -22094,7 +24023,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 35,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 896,
@@ -22105,7 +24035,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 895,
@@ -22116,7 +24047,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 40,
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 894,
@@ -22129,7 +24061,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 50,
         "int": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "335": [
@@ -22144,7 +24077,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 130,
         "spd": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 900,
@@ -22156,7 +24090,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "int": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 899,
@@ -22167,7 +24102,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 65,
         "def": 65
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "342": [
@@ -22182,7 +24118,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 160,
         "spd": 135
       },
-      "dna_requirement": 343
+      "dna_requirement": 343,
+      "item_requirement": null
     }
   ],
   "343": [
@@ -22197,7 +24134,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 160,
         "spd": 135
       },
-      "dna_requirement": 342
+      "dna_requirement": 342,
+      "item_requirement": null
     }
   ],
   "345": [
@@ -22209,7 +24147,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "346": [
@@ -22222,7 +24161,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 385,
         "atk": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "347": [
@@ -22237,7 +24177,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 175,
         "def": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "348": [
@@ -22252,7 +24193,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 165,
         "spd": 165
       },
-      "dna_requirement": 351
+      "dna_requirement": 351,
+      "item_requirement": null
     }
   ],
   "350": [
@@ -22267,7 +24209,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "spd": 165
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "351": [
@@ -22282,7 +24225,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 165,
         "spd": 165
       },
-      "dna_requirement": 348
+      "dna_requirement": 348,
+      "item_requirement": null
     }
   ],
   "353": [
@@ -22295,7 +24239,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 55,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "354": [
@@ -22308,7 +24253,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 115,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "355": [
@@ -22322,7 +24268,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 40,
         "atk": 200
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 925,
@@ -22335,7 +24282,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 155,
         "int": 155
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "359": [
@@ -22350,7 +24298,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 275,
         "spd": 145
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 927,
@@ -22363,7 +24312,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 275,
         "spd": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "363": [
@@ -22376,7 +24326,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 35
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 935,
@@ -22388,7 +24339,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 25,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 936,
@@ -22398,7 +24350,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "364": [
@@ -22411,7 +24364,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 600,
         "atk": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 932,
@@ -22422,7 +24376,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 937,
@@ -22433,7 +24388,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 400,
         "atk": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "365": [
@@ -22448,7 +24404,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 942,
@@ -22460,7 +24417,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 145,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 943,
@@ -22472,7 +24430,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "366": [
@@ -22487,7 +24446,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 180,
         "spd": 170
       },
-      "dna_requirement": 259
+      "dna_requirement": 259,
+      "item_requirement": null
     }
   ],
   "368": [
@@ -22502,7 +24462,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "379": [
@@ -22514,7 +24475,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "int": 45
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "380": [
@@ -22528,7 +24490,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "int": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 948,
@@ -22539,7 +24502,20 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 85,
         "spd": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
+    },
+    {
+      "id": 956,
+      "from_digimon_id": 380,
+      "to_digimon_id": 399,
+      "level_required": 24,
+      "stat_requirements": {
+        "def": 65,
+        "int": 65
+      },
+      "dna_requirement": null,
+      "item_requirement": "digi_egg_of_light"
     }
   ],
   "383": [
@@ -22552,7 +24528,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 330,
         "def": 35
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "384": [
@@ -22565,7 +24542,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 85,
         "spd": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "385": [
@@ -22579,7 +24557,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ]
 },
@@ -22594,7 +24573,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 5,
         "atk": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "7": [
@@ -22606,7 +24586,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 15
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "8": [
@@ -22616,7 +24597,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 8,
       "level_required": 5,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "9": [
@@ -22626,7 +24608,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 9,
       "level_required": 5,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "10": [
@@ -22636,7 +24619,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 10,
       "level_required": 5,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "11": [
@@ -22646,7 +24630,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 11,
       "level_required": 5,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "12": [
@@ -22658,7 +24643,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "int": 10
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "13": [
@@ -22668,7 +24654,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 13,
       "level_required": 5,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "14": [
@@ -22680,7 +24667,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "15": [
@@ -22692,7 +24680,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "int": 15
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "16": [
@@ -22704,7 +24693,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "def": 15
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "17": [
@@ -22714,7 +24704,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 17,
       "level_required": 5,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "18": [
@@ -22726,7 +24717,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "19": [
@@ -22738,7 +24730,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "20": [
@@ -22751,7 +24744,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 90,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "21": [
@@ -22764,7 +24758,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 75,
         "def": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "22": [
@@ -22777,7 +24772,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 20,
         "int": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "23": [
@@ -22791,7 +24787,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 20,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "24": [
@@ -22803,7 +24800,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "int": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "25": [
@@ -22816,7 +24814,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 20,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "26": [
@@ -22829,7 +24828,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 15,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "27": [
@@ -22843,7 +24843,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 20,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "28": [
@@ -22856,7 +24857,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 80,
         "atk": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "29": [
@@ -22869,7 +24871,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 30,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "30": [
@@ -22882,7 +24885,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 20,
         "int": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "31": [
@@ -22895,7 +24899,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 20,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "32": [
@@ -22907,7 +24912,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "def": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "33": [
@@ -22919,7 +24925,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "34": [
@@ -22931,7 +24938,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "35": [
@@ -22944,7 +24952,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 15,
         "int": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "36": [
@@ -22957,7 +24966,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 20,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "37": [
@@ -22970,7 +24980,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 75,
         "def": 25
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "38": [
@@ -22982,7 +24993,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "39": [
@@ -22994,7 +25006,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "40": [
@@ -23006,7 +25019,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "def": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "41": [
@@ -23019,7 +25033,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 75,
         "def": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "42": [
@@ -23032,7 +25047,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 30,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "43": [
@@ -23045,7 +25061,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 50,
         "def": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "44": [
@@ -23058,7 +25075,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 20,
         "spd": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "45": [
@@ -23071,7 +25089,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 75,
         "def": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "46": [
@@ -23084,7 +25103,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 20,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "47": [
@@ -23097,7 +25117,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "atk": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "48": [
@@ -23109,7 +25130,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "49": [
@@ -23121,7 +25143,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "50": [
@@ -23134,7 +25157,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 20,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "51": [
@@ -23146,7 +25170,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "52": [
@@ -23158,7 +25183,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "53": [
@@ -23171,7 +25197,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 20,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "54": [
@@ -23184,7 +25211,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 20,
         "int": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "55": [
@@ -23196,7 +25224,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "56": [
@@ -23208,7 +25237,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "57": [
@@ -23221,7 +25251,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 75,
         "def": 10
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "58": [
@@ -23233,7 +25264,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 35
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "59": [
@@ -23245,7 +25277,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "60": [
@@ -23259,7 +25292,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 80,
         "int": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "61": [
@@ -23272,7 +25306,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 30,
         "int": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "62": [
@@ -23286,7 +25321,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 20,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "63": [
@@ -23299,7 +25335,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 15,
         "int": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "64": [
@@ -23311,7 +25348,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "def": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "65": [
@@ -23324,7 +25362,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 80,
@@ -23335,7 +25374,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 266,
@@ -23346,7 +25386,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "66": [
@@ -23359,7 +25400,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 110,
         "def": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 153,
@@ -23370,7 +25412,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 110,
         "def": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "67": [
@@ -23382,7 +25425,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 220,
@@ -23392,7 +25436,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 242,
@@ -23402,7 +25447,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "68": [
@@ -23415,7 +25461,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "atk": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": "human_spirit_of_flame"
     },
     {
       "id": 126,
@@ -23426,7 +25473,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "atk": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": "human_spirit_of_flame"
     }
   ],
   "69": [
@@ -23439,7 +25487,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 50,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 729,
@@ -23450,7 +25499,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 50,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 718,
@@ -23461,7 +25511,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 50,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "70": [
@@ -23474,7 +25525,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 149,
@@ -23485,7 +25537,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 74,
@@ -23496,7 +25549,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "71": [
@@ -23508,7 +25562,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 300
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 167,
@@ -23518,7 +25573,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 300
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 155,
@@ -23528,7 +25584,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 300
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "72": [
@@ -23541,7 +25598,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 35,
         "int": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 260,
@@ -23552,7 +25610,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 35,
         "int": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 81,
@@ -23563,21 +25622,11 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 35,
         "int": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "73": [
-    {
-      "id": 131,
-      "from_digimon_id": 30,
-      "to_digimon_id": 73,
-      "level_required": 15,
-      "stat_requirements": {
-        "hp": 45,
-        "spd": 55
-      },
-      "dna_requirement": null
-    },
     {
       "id": 115,
       "from_digimon_id": 27,
@@ -23587,7 +25636,20 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 45,
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": "human_spirit_of_light"
+    },
+    {
+      "id": 131,
+      "from_digimon_id": 30,
+      "to_digimon_id": 73,
+      "level_required": 15,
+      "stat_requirements": {
+        "hp": 45,
+        "spd": 55
+      },
+      "dna_requirement": null,
+      "item_requirement": "human_spirit_of_light"
     },
     {
       "id": 228,
@@ -23598,7 +25660,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 45,
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": "human_spirit_of_light"
     }
   ],
   "74": [
@@ -23610,7 +25673,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 500
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 254,
@@ -23620,7 +25684,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 500
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 204,
@@ -23630,7 +25695,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 500
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 744,
@@ -23640,7 +25706,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 500
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "75": [
@@ -23653,7 +25720,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 35,
         "spd": 45
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 246,
@@ -23664,7 +25732,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 35,
         "spd": 45
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 241,
@@ -23675,7 +25744,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 35,
         "spd": 45
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "76": [
@@ -23688,7 +25758,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 192,
@@ -23699,7 +25770,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 224,
@@ -23710,7 +25782,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "77": [
@@ -23723,7 +25796,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 5,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 127,
@@ -23734,7 +25808,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 5,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 193,
@@ -23745,7 +25820,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 5,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "78": [
@@ -23757,7 +25833,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 82,
@@ -23767,7 +25844,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 143,
@@ -23777,7 +25855,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "79": [
@@ -23789,7 +25868,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "def": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 187,
@@ -23799,7 +25879,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "def": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 182,
@@ -23809,7 +25890,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "def": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "80": [
@@ -23822,7 +25904,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 130,
         "def": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 164,
@@ -23833,7 +25916,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 130,
         "def": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 738,
@@ -23844,7 +25928,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 130,
         "def": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "81": [
@@ -23856,7 +25941,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 144,
@@ -23866,7 +25952,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 104,
@@ -23876,7 +25963,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 936,
@@ -23886,7 +25974,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "82": [
@@ -23899,7 +25988,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 40,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 216,
@@ -23910,7 +26000,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 40,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 267,
@@ -23921,7 +26012,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 40,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "83": [
@@ -23934,7 +26026,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 156,
@@ -23945,7 +26038,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 236,
@@ -23956,7 +26050,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "84": [
@@ -23969,7 +26064,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 261,
@@ -23980,7 +26076,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 166,
@@ -23991,7 +26088,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 896,
@@ -24002,7 +26100,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "85": [
@@ -24014,7 +26113,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 110,
@@ -24024,7 +26124,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 86,
@@ -24034,7 +26135,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "86": [
@@ -24047,7 +26149,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 35,
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 116,
@@ -24058,7 +26161,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 35,
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 105,
@@ -24069,7 +26173,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 35,
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "87": [
@@ -24083,7 +26188,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 211,
@@ -24095,7 +26201,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 217,
@@ -24107,7 +26214,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "88": [
@@ -24120,7 +26228,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 50,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 122,
@@ -24131,7 +26240,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 50,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 145,
@@ -24142,7 +26252,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 50,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "89": [
@@ -24155,7 +26266,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "atk": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 106,
@@ -24166,7 +26278,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "atk": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 133,
@@ -24177,7 +26290,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "atk": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 719,
@@ -24188,7 +26302,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "atk": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 212,
@@ -24199,7 +26314,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "atk": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "90": [
@@ -24211,7 +26327,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 198,
@@ -24221,7 +26338,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 178,
@@ -24231,7 +26349,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "91": [
@@ -24244,7 +26363,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "atk": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 123,
@@ -24255,7 +26375,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "atk": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 146,
@@ -24266,7 +26387,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "atk": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "92": [
@@ -24278,7 +26400,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "int": 35
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 160,
@@ -24288,7 +26411,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "int": 35
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 176,
@@ -24298,7 +26422,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "int": 35
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 188,
@@ -24308,7 +26433,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "int": 35
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "93": [
@@ -24320,7 +26446,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 205,
@@ -24330,7 +26457,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 172,
@@ -24340,7 +26468,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "94": [
@@ -24353,7 +26482,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 40,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 93,
@@ -24364,7 +26494,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 40,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 237,
@@ -24375,7 +26506,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 40,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "95": [
@@ -24389,7 +26521,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 25,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 75,
@@ -24401,7 +26534,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 25,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 88,
@@ -24413,7 +26547,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 25,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "96": [
@@ -24426,7 +26561,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 60,
         "spd": 25
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 747,
@@ -24437,7 +26573,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 60,
         "spd": 25
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "97": [
@@ -24451,7 +26588,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 25,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 735,
@@ -24463,7 +26601,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 25,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 935,
@@ -24475,7 +26614,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 25,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "98": [
@@ -24487,7 +26627,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "abi": 5
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 76,
@@ -24497,7 +26638,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "abi": 5
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 189,
@@ -24507,7 +26649,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "abi": 5
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 723,
@@ -24517,7 +26660,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "abi": 5
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "99": [
@@ -24530,7 +26674,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 79,
@@ -24541,7 +26686,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 142,
@@ -24552,7 +26698,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "100": [
@@ -24565,7 +26712,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 30,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 77,
@@ -24576,7 +26724,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 30,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 183,
@@ -24587,7 +26736,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 30,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "101": [
@@ -24600,7 +26750,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 50,
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 752,
@@ -24611,7 +26762,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 50,
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 730,
@@ -24622,7 +26774,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 50,
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "102": [
@@ -24635,7 +26788,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 206,
@@ -24646,7 +26800,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 248,
@@ -24657,7 +26812,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 745,
@@ -24668,7 +26824,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "103": [
@@ -24681,7 +26838,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 30,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 238,
@@ -24692,7 +26850,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 30,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 158,
@@ -24703,7 +26862,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 30,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "104": [
@@ -24716,7 +26876,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 300,
         "spd": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 159,
@@ -24727,7 +26888,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 300,
         "spd": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "105": [
@@ -24740,7 +26902,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "atk": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 121,
@@ -24751,7 +26914,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "atk": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 199,
@@ -24762,7 +26926,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "atk": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "106": [
@@ -24775,7 +26940,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 89,
@@ -24786,7 +26952,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 179,
@@ -24797,7 +26964,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 726,
@@ -24808,7 +26976,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "107": [
@@ -24821,7 +26990,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 35
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 162,
@@ -24832,7 +27002,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 35
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 180,
@@ -24843,7 +27014,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 35
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 190,
@@ -24854,7 +27026,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 35
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "108": [
@@ -24867,7 +27040,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 222,
@@ -24878,7 +27052,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 269,
@@ -24889,7 +27064,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 740,
@@ -24900,7 +27076,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "109": [
@@ -24913,7 +27090,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 45,
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 229,
@@ -24924,7 +27102,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 45,
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 748,
@@ -24935,7 +27114,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 45,
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "110": [
@@ -24948,7 +27128,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 50,
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 721,
@@ -24959,7 +27140,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 50,
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "111": [
@@ -24972,7 +27154,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 40,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 151,
@@ -24983,7 +27166,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 40,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 230,
@@ -24994,7 +27178,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 40,
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "112": [
@@ -25006,7 +27191,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "def": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 71,
@@ -25016,7 +27202,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "def": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 78,
@@ -25026,7 +27213,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "def": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "113": [
@@ -25039,7 +27227,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 209,
@@ -25050,7 +27239,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 743,
@@ -25061,7 +27251,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "114": [
@@ -25074,7 +27265,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "atk": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 65,
@@ -25085,7 +27277,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "atk": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 72,
@@ -25096,7 +27289,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "atk": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "115": [
@@ -25108,7 +27302,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 231,
@@ -25118,7 +27313,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 168,
@@ -25128,7 +27324,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 755,
@@ -25138,7 +27335,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "116": [
@@ -25151,7 +27349,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 5,
         "atk": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 213,
@@ -25162,7 +27361,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 5,
         "atk": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 262,
@@ -25173,7 +27373,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 5,
         "atk": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 733,
@@ -25184,7 +27385,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 5,
         "atk": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "117": [
@@ -25197,7 +27399,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 45,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 258,
@@ -25208,7 +27411,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 45,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "118": [
@@ -25221,7 +27425,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 300,
         "def": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 101,
@@ -25232,7 +27437,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 300,
         "def": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 207,
@@ -25243,7 +27449,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 300,
         "def": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 249,
@@ -25254,7 +27461,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 300,
         "def": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "119": [
@@ -25267,7 +27475,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 111,
@@ -25278,7 +27487,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 184,
@@ -25289,7 +27499,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 751,
@@ -25300,7 +27511,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "120": [
@@ -25313,7 +27525,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 90,
@@ -25324,7 +27537,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 147,
@@ -25335,7 +27549,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 727,
@@ -25346,7 +27561,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "121": [
@@ -25359,7 +27575,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 239,
@@ -25370,7 +27587,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 112,
@@ -25381,7 +27599,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 150,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "122": [
@@ -25395,7 +27614,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 218,
@@ -25407,7 +27627,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 243,
@@ -25419,7 +27640,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "123": [
@@ -25432,7 +27654,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 55,
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 235,
@@ -25443,7 +27666,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 55,
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 722,
@@ -25454,7 +27678,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 55,
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "124": [
@@ -25467,7 +27692,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 40,
         "int": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 84,
@@ -25478,7 +27704,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 40,
         "int": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 134,
@@ -25489,7 +27716,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 40,
         "int": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "125": [
@@ -25502,7 +27730,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 35
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 225,
@@ -25513,7 +27742,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 35
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 232,
@@ -25524,7 +27754,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 35
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 736,
@@ -25535,7 +27766,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 35
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "126": [
@@ -25548,7 +27780,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "127": [
@@ -25558,7 +27791,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 127,
       "level_required": 20,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 200,
@@ -25566,7 +27800,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 127,
       "level_required": 20,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 135,
@@ -25574,7 +27809,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 127,
       "level_required": 20,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "128": [
@@ -25586,7 +27822,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 85,
@@ -25596,7 +27833,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 257,
@@ -25606,7 +27844,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 263,
@@ -25616,7 +27855,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "int": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "129": [
@@ -25628,7 +27868,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 300
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 117,
@@ -25638,7 +27879,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 300
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 240,
@@ -25648,7 +27890,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 300
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 250,
@@ -25658,7 +27901,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 300
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 208,
@@ -25668,7 +27912,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 300
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "130": [
@@ -25680,7 +27925,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 129,
@@ -25690,7 +27936,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 244,
@@ -25700,7 +27947,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "131": [
@@ -25712,7 +27960,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 125,
@@ -25722,7 +27971,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 163,
@@ -25732,7 +27982,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 245,
@@ -25742,7 +27993,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "132": [
@@ -25755,7 +28007,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 55,
         "def": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 203,
@@ -25766,7 +28019,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 55,
         "def": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "133": [
@@ -25779,7 +28033,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 250,
         "atk": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 114,
@@ -25790,7 +28045,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 250,
         "atk": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 233,
@@ -25801,7 +28057,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 250,
         "atk": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 118,
@@ -25812,7 +28069,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 250,
         "atk": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "134": [
@@ -25825,7 +28083,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 170,
@@ -25836,7 +28095,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "135": [
@@ -25849,7 +28109,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 130,
         "atk": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 739,
@@ -25860,7 +28121,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 130,
         "atk": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 749,
@@ -25871,7 +28133,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 130,
         "atk": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 902,
@@ -25882,7 +28145,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 130,
         "atk": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "136": [
@@ -25894,7 +28158,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 500
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 97,
@@ -25904,7 +28169,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 500
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 731,
@@ -25914,7 +28180,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 500
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 725,
@@ -25924,7 +28191,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 500
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "137": [
@@ -25936,7 +28204,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 720,
@@ -25946,7 +28215,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 102,
@@ -25956,7 +28226,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 109,
@@ -25966,7 +28237,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "138": [
@@ -25979,7 +28251,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 35,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 897,
@@ -25990,7 +28263,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 35,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 259,
@@ -26001,7 +28275,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 35,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "139": [
@@ -26014,7 +28289,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 5,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 130,
@@ -26025,7 +28301,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 5,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 234,
@@ -26036,7 +28313,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 5,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 196,
@@ -26047,7 +28325,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 5,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 903,
@@ -26058,7 +28337,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 5,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "140": [
@@ -26071,7 +28351,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 175,
@@ -26082,7 +28363,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 270,
@@ -26093,7 +28375,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 741,
@@ -26104,7 +28387,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "141": [
@@ -26117,7 +28401,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 400,
         "def": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 457,
@@ -26128,7 +28413,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 400,
         "def": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 320,
@@ -26139,7 +28425,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 400,
         "def": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "142": [
@@ -26152,7 +28439,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 110,
         "int": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 275,
@@ -26163,7 +28451,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 110,
         "int": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 763,
@@ -26174,7 +28463,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 110,
         "int": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "143": [
@@ -26188,7 +28478,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 75,
         "spd": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 326,
@@ -26200,7 +28491,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 75,
         "spd": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 460,
@@ -26212,7 +28504,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 75,
         "spd": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 804,
@@ -26224,7 +28517,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 75,
         "spd": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 829,
@@ -26236,7 +28530,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 75,
         "spd": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "144": [
@@ -26250,7 +28545,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "int": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 312,
@@ -26262,7 +28558,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "int": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 402,
@@ -26274,7 +28571,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "int": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 775,
@@ -26286,7 +28584,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "int": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 792,
@@ -26298,7 +28597,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "int": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "145": [
@@ -26310,7 +28610,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "def": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 802,
@@ -26320,7 +28621,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "def": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 282,
@@ -26330,7 +28632,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "def": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 427,
@@ -26340,7 +28643,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "def": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 756,
@@ -26350,7 +28654,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "def": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 785,
@@ -26360,7 +28665,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "def": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "146": [
@@ -26373,7 +28679,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 345,
@@ -26384,7 +28691,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 415,
@@ -26395,7 +28703,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 765,
@@ -26406,7 +28715,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "147": [
@@ -26420,7 +28730,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 70,
         "int": 90
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 416,
@@ -26432,7 +28743,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 70,
         "int": 90
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 291,
@@ -26444,7 +28756,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 70,
         "int": 90
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 439,
@@ -26456,7 +28769,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 70,
         "int": 90
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 789,
@@ -26468,7 +28782,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 70,
         "int": 90
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "148": [
@@ -26482,7 +28797,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "spd": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 778,
@@ -26494,7 +28810,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "spd": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 769,
@@ -26506,7 +28823,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "spd": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "149": [
@@ -26520,7 +28838,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": "beast_spirit_of_flame"
     },
     {
       "id": 437,
@@ -26532,7 +28851,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": "beast_spirit_of_flame"
     },
     {
       "id": 467,
@@ -26544,7 +28864,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": "beast_spirit_of_flame"
     },
     {
       "id": 759,
@@ -26556,7 +28877,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": "beast_spirit_of_flame"
     }
   ],
   "150": [
@@ -26569,7 +28891,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 277,
@@ -26580,7 +28903,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 433,
@@ -26591,7 +28915,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 779,
@@ -26602,7 +28927,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "151": [
@@ -26616,7 +28942,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "spd": 65
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 449,
@@ -26628,7 +28955,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "spd": 65
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 367,
@@ -26640,7 +28968,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "spd": 65
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 430,
@@ -26652,7 +28981,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "spd": 65
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "152": [
@@ -26666,7 +28996,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "int": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 376,
@@ -26678,7 +29009,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "int": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 469,
@@ -26690,7 +29022,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "int": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "153": [
@@ -26703,7 +29036,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "def": 90
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 361,
@@ -26714,7 +29048,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "def": 90
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 482,
@@ -26725,7 +29060,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "def": 90
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "154": [
@@ -26738,7 +29074,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 303,
@@ -26749,7 +29086,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 434,
@@ -26760,7 +29098,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "155": [
@@ -26774,7 +29113,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 100,
         "spd": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": "beast_spirit_of_light"
     },
     {
       "id": 798,
@@ -26786,7 +29126,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 100,
         "spd": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": "beast_spirit_of_light"
     },
     {
       "id": 787,
@@ -26798,7 +29139,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 100,
         "spd": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": "beast_spirit_of_light"
     },
     {
       "id": 807,
@@ -26810,7 +29152,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 100,
         "spd": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": "beast_spirit_of_light"
     }
   ],
   "156": [
@@ -26824,7 +29167,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 340,
@@ -26836,7 +29180,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 403,
@@ -26848,7 +29193,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 821,
@@ -26860,7 +29206,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "157": [
@@ -26873,7 +29220,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 700,
         "def": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 393,
@@ -26884,7 +29232,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 700,
         "def": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 452,
@@ -26895,7 +29244,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 700,
         "def": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "158": [
@@ -26908,7 +29258,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 404,
@@ -26919,7 +29270,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 905,
@@ -26930,7 +29282,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 811,
@@ -26941,7 +29294,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 483,
@@ -26952,7 +29306,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "159": [
@@ -26966,7 +29321,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "atk": 125
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 286,
@@ -26978,7 +29334,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "atk": 125
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 781,
@@ -26990,7 +29347,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "atk": 125
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "160": [
@@ -27003,7 +29361,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 400,
         "atk": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 317,
@@ -27014,7 +29373,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 400,
         "atk": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 474,
@@ -27025,7 +29385,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 400,
         "atk": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 937,
@@ -27036,7 +29397,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 400,
         "atk": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "161": [
@@ -27050,7 +29412,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "spd": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 819,
@@ -27062,7 +29425,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "spd": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 426,
@@ -27074,7 +29438,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "spd": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 773,
@@ -27086,7 +29451,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "spd": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "162": [
@@ -27099,7 +29465,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 60,
         "atk": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 472,
@@ -27110,7 +29477,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 60,
         "atk": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 828,
@@ -27121,7 +29489,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 60,
         "atk": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "163": [
@@ -27135,7 +29504,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 453,
@@ -27147,7 +29517,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 446,
@@ -27159,7 +29530,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 805,
@@ -27171,7 +29543,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 796,
@@ -27183,7 +29556,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "164": [
@@ -27196,7 +29570,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "int": 65
       },
-      "dna_requirement": 77
+      "dna_requirement": 77,
+      "item_requirement": null
     },
     {
       "id": 304,
@@ -27207,7 +29582,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "int": 65
       },
-      "dna_requirement": 70
+      "dna_requirement": 70,
+      "item_requirement": null
     }
   ],
   "165": [
@@ -27220,7 +29596,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 800,
         "def": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 363,
@@ -27231,7 +29608,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 800,
         "def": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 273,
@@ -27242,7 +29620,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 800,
         "def": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 295,
@@ -27253,7 +29632,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 800,
         "def": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "166": [
@@ -27267,7 +29647,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 75,
         "spd": 75
       },
-      "dna_requirement": 67
+      "dna_requirement": 67,
+      "item_requirement": null
     },
     {
       "id": 279,
@@ -27279,7 +29660,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 75,
         "spd": 75
       },
-      "dna_requirement": 115
+      "dna_requirement": 115,
+      "item_requirement": null
     }
   ],
   "167": [
@@ -27293,7 +29675,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 70,
         "def": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 368,
@@ -27305,7 +29688,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 70,
         "def": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 388,
@@ -27317,7 +29701,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 70,
         "def": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 390,
@@ -27329,7 +29714,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 70,
         "def": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "168": [
@@ -27343,7 +29729,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 85,
         "spd": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 384,
@@ -27355,7 +29742,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 85,
         "spd": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 349,
@@ -27367,7 +29755,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 85,
         "spd": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 814,
@@ -27379,7 +29768,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 85,
         "spd": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "169": [
@@ -27392,7 +29782,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "int": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 311,
@@ -27403,7 +29794,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "int": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 419,
@@ -27414,7 +29806,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "int": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 764,
@@ -27425,7 +29818,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "int": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "170": [
@@ -27438,7 +29832,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 800,
         "atk": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 758,
@@ -27449,7 +29844,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 800,
         "atk": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 287,
@@ -27460,7 +29856,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 800,
         "atk": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 470,
@@ -27471,7 +29868,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 800,
         "atk": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "171": [
@@ -27484,7 +29882,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 90,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 795,
@@ -27495,7 +29894,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 90,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 808,
@@ -27506,7 +29906,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 90,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "172": [
@@ -27520,7 +29921,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 75,
         "spd": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 296,
@@ -27532,7 +29934,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 75,
         "spd": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 347,
@@ -27544,7 +29947,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 75,
         "spd": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "173": [
@@ -27557,7 +29961,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 70,
         "int": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 824,
@@ -27568,7 +29973,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 70,
         "int": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 791,
@@ -27579,7 +29985,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 70,
         "int": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "174": [
@@ -27593,7 +30000,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "spd": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 423,
@@ -27605,7 +30013,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "spd": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 435,
@@ -27617,7 +30026,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "spd": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "175": [
@@ -27631,7 +30041,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 90,
         "spd": 75
       },
-      "dna_requirement": 76
+      "dna_requirement": 76,
+      "item_requirement": null
     },
     {
       "id": 302,
@@ -27643,7 +30054,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 90,
         "spd": 75
       },
-      "dna_requirement": 108
+      "dna_requirement": 108,
+      "item_requirement": null
     }
   ],
   "176": [
@@ -27656,7 +30068,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 700,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 458,
@@ -27667,7 +30080,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 700,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 429,
@@ -27678,7 +30092,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 700,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "177": [
@@ -27691,7 +30106,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 500,
         "atk": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 309,
@@ -27702,7 +30118,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 500,
         "atk": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 463,
@@ -27713,7 +30130,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 500,
         "atk": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 761,
@@ -27724,7 +30142,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 500,
         "atk": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "178": [
@@ -27738,7 +30157,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "def": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 799,
@@ -27750,7 +30170,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "def": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 820,
@@ -27762,7 +30183,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "def": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "179": [
@@ -27774,7 +30196,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 900
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 364,
@@ -27784,7 +30207,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 900
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 323,
@@ -27794,7 +30218,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "hp": 900
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "180": [
@@ -27807,7 +30232,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 356,
@@ -27818,7 +30244,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 290,
@@ -27829,7 +30256,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 813,
@@ -27840,7 +30268,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "181": [
@@ -27854,7 +30283,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 330,
@@ -27866,7 +30296,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 353,
@@ -27878,7 +30309,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 373,
@@ -27890,7 +30322,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 822,
@@ -27902,7 +30335,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "182": [
@@ -27915,7 +30349,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 358,
@@ -27926,7 +30361,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 454,
@@ -27937,7 +30373,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 405,
@@ -27948,7 +30385,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 767,
@@ -27959,7 +30397,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "183": [
@@ -27972,7 +30411,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 60,
         "int": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 359,
@@ -27983,7 +30423,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 60,
         "int": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 314,
@@ -27994,7 +30435,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 60,
         "int": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "184": [
@@ -28008,7 +30450,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 60,
         "spd": 75
       },
-      "dna_requirement": 108
+      "dna_requirement": 108,
+      "item_requirement": null
     },
     {
       "id": 397,
@@ -28020,7 +30463,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 60,
         "spd": 75
       },
-      "dna_requirement": 76
+      "dna_requirement": 76,
+      "item_requirement": null
     }
   ],
   "185": [
@@ -28034,7 +30478,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 475,
@@ -28046,7 +30491,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 757,
@@ -28058,7 +30504,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 331,
@@ -28070,7 +30517,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "186": [
@@ -28083,7 +30531,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 65,
         "def": 65
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 414,
@@ -28094,7 +30543,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 65,
         "def": 65
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 801,
@@ -28105,7 +30555,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 65,
         "def": 65
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 899,
@@ -28116,7 +30567,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 65,
         "def": 65
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "187": [
@@ -28130,7 +30582,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 60,
         "int": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 440,
@@ -28142,7 +30595,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 60,
         "int": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 786,
@@ -28154,7 +30608,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 60,
         "int": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 297,
@@ -28166,7 +30621,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 60,
         "int": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 803,
@@ -28178,7 +30634,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 60,
         "int": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "188": [
@@ -28192,7 +30649,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 80,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 479,
@@ -28204,7 +30662,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 80,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 817,
@@ -28216,7 +30675,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 80,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 400,
@@ -28228,7 +30688,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 80,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "189": [
@@ -28241,7 +30702,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 65,
         "int": 65
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 281,
@@ -28252,7 +30714,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 65,
         "int": 65
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 438,
@@ -28263,7 +30726,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 65,
         "int": 65
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 816,
@@ -28274,7 +30738,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 65,
         "int": 65
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "190": [
@@ -28287,7 +30752,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 80,
         "int": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 443,
@@ -28298,7 +30764,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 80,
         "int": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 800,
@@ -28309,7 +30776,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 80,
         "int": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 825,
@@ -28320,7 +30788,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 80,
         "int": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "191": [
@@ -28330,7 +30799,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 191,
       "level_required": 32,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 324,
@@ -28338,7 +30808,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 191,
       "level_required": 32,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 431,
@@ -28346,7 +30817,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 191,
       "level_required": 32,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 826,
@@ -28354,7 +30826,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 191,
       "level_required": 32,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "192": [
@@ -28368,7 +30841,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "int": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 465,
@@ -28380,7 +30854,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "int": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 417,
@@ -28392,7 +30867,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "int": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 441,
@@ -28404,7 +30880,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "int": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 780,
@@ -28416,7 +30893,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "int": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "193": [
@@ -28428,7 +30906,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "sp": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 389,
@@ -28438,7 +30917,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "sp": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 450,
@@ -28448,7 +30928,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "sp": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "194": [
@@ -28462,7 +30943,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "int": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 380,
@@ -28474,7 +30956,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "int": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 365,
@@ -28486,7 +30969,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 75,
         "int": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "195": [
@@ -28500,7 +30984,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "int": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 299,
@@ -28512,7 +30997,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "int": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 285,
@@ -28524,7 +31010,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "int": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 818,
@@ -28536,7 +31023,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "int": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "196": [
@@ -28549,7 +31037,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 406,
@@ -28560,7 +31049,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 784,
@@ -28571,7 +31061,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 80,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "197": [
@@ -28584,7 +31075,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 760,
@@ -28595,7 +31087,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 788,
@@ -28606,7 +31099,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "198": [
@@ -28619,7 +31113,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 289,
@@ -28630,7 +31125,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 318,
@@ -28641,7 +31137,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 421,
@@ -28652,7 +31149,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 830,
@@ -28663,7 +31161,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "199": [
@@ -28676,7 +31175,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 407,
@@ -28687,7 +31187,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 466,
@@ -28698,7 +31199,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "200": [
@@ -28712,7 +31214,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 70,
         "int": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 366,
@@ -28724,7 +31227,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 70,
         "int": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 770,
@@ -28736,7 +31240,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 70,
         "int": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 793,
@@ -28748,7 +31253,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 70,
         "int": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 906,
@@ -28760,7 +31266,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 70,
         "int": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 381,
@@ -28772,7 +31279,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 70,
         "int": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "201": [
@@ -28786,7 +31294,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 408,
@@ -28798,7 +31307,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 771,
@@ -28810,7 +31320,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 375,
@@ -28822,7 +31333,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "202": [
@@ -28835,7 +31347,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 105,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 327,
@@ -28846,7 +31359,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 105,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 447,
@@ -28857,7 +31371,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 105,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 783,
@@ -28868,7 +31383,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 105,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "203": [
@@ -28881,7 +31397,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 350,
         "atk": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 351,
@@ -28892,7 +31409,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 350,
         "atk": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 476,
@@ -28903,7 +31421,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 350,
         "atk": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 772,
@@ -28914,7 +31433,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 350,
         "atk": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "204": [
@@ -28927,7 +31447,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 450,
         "atk": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 352,
@@ -28938,7 +31459,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 450,
         "atk": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 355,
@@ -28949,7 +31471,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 450,
         "atk": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 418,
@@ -28960,7 +31483,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 450,
         "atk": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 409,
@@ -28971,7 +31495,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 450,
         "atk": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "205": [
@@ -28984,7 +31509,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 343,
@@ -28995,7 +31521,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 410,
@@ -29006,7 +31533,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 448,
@@ -29017,7 +31545,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "def": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "206": [
@@ -29030,7 +31559,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 80,
         "int": 65
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 315,
@@ -29041,7 +31571,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 80,
         "int": 65
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 369,
@@ -29052,7 +31583,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 80,
         "int": 65
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 451,
@@ -29063,7 +31595,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 80,
         "int": 65
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "207": [
@@ -29076,7 +31609,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 600,
         "atk": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 432,
@@ -29087,7 +31621,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 600,
         "atk": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 806,
@@ -29098,7 +31633,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 600,
         "atk": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 338,
@@ -29109,7 +31645,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 600,
         "atk": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 471,
@@ -29120,7 +31657,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 600,
         "atk": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "208": [
@@ -29133,7 +31671,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 75,
         "spd": 90
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 436,
@@ -29144,7 +31683,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 75,
         "spd": 90
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 462,
@@ -29155,7 +31695,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 75,
         "spd": 90
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "209": [
@@ -29169,7 +31710,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 100,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 300,
@@ -29181,7 +31723,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 100,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 385,
@@ -29193,7 +31736,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 100,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 425,
@@ -29205,7 +31749,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 100,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 809,
@@ -29217,7 +31762,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 100,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "210": [
@@ -29230,7 +31776,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 75,
         "int": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 377,
@@ -29241,7 +31788,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 75,
         "int": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 459,
@@ -29252,7 +31800,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 75,
         "int": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 812,
@@ -29263,7 +31812,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 75,
         "int": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "211": [
@@ -29276,7 +31826,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 480,
@@ -29287,7 +31838,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 484,
@@ -29298,7 +31850,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "212": [
@@ -29311,7 +31864,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 422,
@@ -29322,7 +31876,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 413,
@@ -29333,7 +31888,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 810,
@@ -29344,7 +31900,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 75,
         "spd": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "213": [
@@ -29359,7 +31916,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 240,
         "spd": 180
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "214": [
@@ -29373,7 +31931,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "int": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 339,
@@ -29385,7 +31944,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "int": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 442,
@@ -29397,7 +31957,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "int": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 455,
@@ -29409,7 +31970,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "int": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 900,
@@ -29421,7 +31983,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "int": 95
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "215": [
@@ -29434,7 +31997,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 90,
         "spd": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 332,
@@ -29445,7 +32009,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 90,
         "spd": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 310,
@@ -29456,7 +32021,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 90,
         "spd": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 768,
@@ -29467,7 +32033,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 90,
         "spd": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 797,
@@ -29478,7 +32045,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 90,
         "spd": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "216": [
@@ -29492,7 +32060,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 90,
         "spd": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 335,
@@ -29504,7 +32073,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 90,
         "spd": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 456,
@@ -29516,7 +32086,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 90,
         "spd": 70
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "217": [
@@ -29529,7 +32100,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 75,
         "int": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 293,
@@ -29540,7 +32112,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 75,
         "int": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 401,
@@ -29551,7 +32124,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 75,
         "int": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "218": [
@@ -29566,7 +32140,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 200,
         "spd": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 831,
@@ -29579,7 +32154,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 200,
         "spd": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 505,
@@ -29592,7 +32168,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 200,
         "spd": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "219": [
@@ -29607,7 +32184,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 170,
         "int": 135
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 541,
@@ -29620,7 +32198,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 170,
         "int": 135
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 581,
@@ -29633,7 +32212,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 170,
         "int": 135
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "220": [
@@ -29647,7 +32227,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "spd": 145
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 507,
@@ -29659,7 +32240,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "spd": 145
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 631,
@@ -29671,7 +32253,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "spd": 145
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "221": [
@@ -29685,7 +32268,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 495,
@@ -29697,7 +32281,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 608,
@@ -29709,7 +32294,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 652,
@@ -29721,7 +32307,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "222": [
@@ -29736,7 +32323,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 150,
         "spd": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 692,
@@ -29744,7 +32332,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 222,
       "level_required": 0,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 862,
@@ -29757,7 +32346,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 150,
         "spd": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "223": [
@@ -29767,7 +32357,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 223,
       "level_required": 0,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "224": [
@@ -29783,7 +32374,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 544,
@@ -29797,7 +32389,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 577,
@@ -29811,7 +32404,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 844,
@@ -29825,7 +32419,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "225": [
@@ -29840,7 +32435,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 130,
         "spd": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 857,
@@ -29853,7 +32449,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 130,
         "spd": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 553,
@@ -29866,7 +32463,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 130,
         "spd": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 618,
@@ -29879,7 +32477,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 130,
         "spd": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "226": [
@@ -29894,7 +32493,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 145,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 661,
@@ -29907,7 +32507,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 145,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 873,
@@ -29920,7 +32521,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 145,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "227": [
@@ -29936,7 +32538,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 110,
         "int": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 876,
@@ -29950,7 +32553,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 110,
         "int": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 498,
@@ -29964,7 +32568,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 110,
         "int": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 686,
@@ -29978,7 +32583,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 110,
         "int": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 883,
@@ -29992,7 +32598,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 110,
         "int": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "228": [
@@ -30007,7 +32614,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 160,
         "def": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 644,
@@ -30020,7 +32628,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 160,
         "def": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 641,
@@ -30033,7 +32642,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 160,
         "def": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "229": [
@@ -30048,7 +32658,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 145
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 598,
@@ -30061,7 +32672,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 145
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "230": [
@@ -30076,7 +32688,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 100,
         "spd": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 645,
@@ -30089,7 +32702,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 100,
         "spd": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 663,
@@ -30102,7 +32716,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 100,
         "spd": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 908,
@@ -30115,7 +32730,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 100,
         "spd": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "231": [
@@ -30130,7 +32746,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "def": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "232": [
@@ -30145,7 +32762,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 636,
@@ -30158,7 +32776,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "233": [
@@ -30173,7 +32792,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 130,
         "def": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "234": [
@@ -30188,7 +32808,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 145,
         "def": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 880,
@@ -30201,7 +32822,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 145,
         "def": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 574,
@@ -30214,7 +32836,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 145,
         "def": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "235": [
@@ -30229,7 +32852,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "spd": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 870,
@@ -30242,7 +32866,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "spd": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 514,
@@ -30255,7 +32880,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "spd": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "236": [
@@ -30270,7 +32896,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 135,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 565,
@@ -30283,7 +32910,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 135,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 547,
@@ -30296,7 +32924,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 135,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "237": [
@@ -30311,7 +32940,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 485,
@@ -30324,7 +32954,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 520,
@@ -30337,7 +32968,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 548,
@@ -30350,7 +32982,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 863,
@@ -30363,7 +32996,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "238": [
@@ -30378,7 +33012,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 110,
         "int": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 882,
@@ -30391,7 +33026,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 110,
         "int": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 853,
@@ -30404,7 +33040,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 110,
         "int": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "239": [
@@ -30418,7 +33055,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 160,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 588,
@@ -30430,7 +33068,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 160,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 534,
@@ -30442,7 +33081,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 160,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "240": [
@@ -30456,7 +33096,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 554,
@@ -30468,7 +33109,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 874,
@@ -30480,7 +33122,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "241": [
@@ -30495,7 +33138,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 180,
         "int": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 492,
@@ -30508,7 +33152,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 180,
         "int": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "242": [
@@ -30523,7 +33168,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 40,
         "int": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 647,
@@ -30536,7 +33182,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 40,
         "int": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "243": [
@@ -30551,7 +33198,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 145,
         "spd": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 850,
@@ -30564,7 +33212,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 145,
         "spd": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 488,
@@ -30577,7 +33226,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 145,
         "spd": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "244": [
@@ -30592,7 +33242,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 909,
@@ -30605,7 +33256,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 619,
@@ -30618,7 +33270,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 634,
@@ -30631,7 +33284,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "245": [
@@ -30645,7 +33299,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 145,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 537,
@@ -30657,7 +33312,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 145,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 592,
@@ -30669,7 +33325,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 145,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 655,
@@ -30681,7 +33338,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 145,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 869,
@@ -30693,7 +33351,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 145,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "246": [
@@ -30708,7 +33367,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 120,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 656,
@@ -30721,7 +33381,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 120,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 566,
@@ -30734,7 +33395,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 120,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "247": [
@@ -30748,7 +33410,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 180,
         "spd": 180
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 866,
@@ -30760,7 +33423,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 180,
         "spd": 180
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "248": [
@@ -30774,7 +33438,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 140,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 664,
@@ -30786,7 +33451,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 140,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 615,
@@ -30798,7 +33464,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 140,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "249": [
@@ -30812,7 +33479,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 30,
         "atk": 250
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "250": [
@@ -30827,7 +33495,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 130,
         "def": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 523,
@@ -30840,7 +33509,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 130,
         "def": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 871,
@@ -30853,7 +33523,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 130,
         "def": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 542,
@@ -30866,7 +33537,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 130,
         "def": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 556,
@@ -30879,7 +33551,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 130,
         "def": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "251": [
@@ -30894,7 +33567,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 120,
         "spd": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 582,
@@ -30907,7 +33581,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 120,
         "spd": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 851,
@@ -30920,7 +33595,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 120,
         "spd": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "252": [
@@ -30935,7 +33611,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 130,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 665,
@@ -30948,7 +33625,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 130,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 834,
@@ -30961,7 +33639,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 130,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "253": [
@@ -30976,7 +33655,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 569,
@@ -30989,7 +33669,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 875,
@@ -31002,7 +33683,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "254": [
@@ -31016,7 +33698,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 620,
@@ -31028,7 +33711,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 669,
@@ -31040,7 +33724,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "255": [
@@ -31054,7 +33739,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "def": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 607,
@@ -31066,7 +33752,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "def": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 639,
@@ -31078,7 +33765,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "def": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "256": [
@@ -31093,7 +33781,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 670,
@@ -31106,7 +33795,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 848,
@@ -31119,7 +33809,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 865,
@@ -31132,7 +33823,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 493,
@@ -31145,7 +33837,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "257": [
@@ -31160,7 +33853,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 559,
@@ -31173,7 +33867,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 571,
@@ -31186,7 +33881,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 877,
@@ -31199,7 +33895,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "258": [
@@ -31214,7 +33911,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 140,
         "def": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "259": [
@@ -31229,7 +33927,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 130,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 489,
@@ -31242,7 +33941,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 130,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 496,
@@ -31255,7 +33955,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 130,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 567,
@@ -31268,7 +33969,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 130,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "260": [
@@ -31283,7 +33985,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 180,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 490,
@@ -31296,7 +33999,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 180,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 521,
@@ -31309,7 +34013,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 180,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 854,
@@ -31322,7 +34027,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 180,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 832,
@@ -31335,7 +34041,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 180,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "261": [
@@ -31350,7 +34057,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 230,
         "int": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 833,
@@ -31363,7 +34071,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 230,
         "int": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 560,
@@ -31376,7 +34085,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 230,
         "int": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 604,
@@ -31389,7 +34099,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 230,
         "int": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "262": [
@@ -31404,7 +34115,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 140,
         "int": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 649,
@@ -31417,7 +34129,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 140,
         "int": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "263": [
@@ -31433,7 +34146,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 836,
@@ -31447,7 +34161,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 508,
@@ -31461,7 +34176,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "264": [
@@ -31476,7 +34192,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 140,
         "def": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 845,
@@ -31489,7 +34206,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 140,
         "def": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 587,
@@ -31502,7 +34220,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 140,
         "def": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "265": [
@@ -31517,7 +34236,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 120,
         "spd": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 585,
@@ -31530,7 +34250,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 120,
         "spd": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 698,
@@ -31538,7 +34259,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 265,
       "level_required": 0,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "266": [
@@ -31548,7 +34270,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 266,
       "level_required": 0,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "267": [
@@ -31562,7 +34285,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "atk": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 846,
@@ -31574,7 +34298,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "atk": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 532,
@@ -31586,7 +34311,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "atk": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "268": [
@@ -31601,7 +34327,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 614,
@@ -31614,7 +34341,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 859,
@@ -31627,7 +34355,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "269": [
@@ -31642,7 +34371,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 494,
@@ -31655,7 +34385,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 653,
@@ -31668,7 +34399,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "270": [
@@ -31682,7 +34414,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 135
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 879,
@@ -31694,7 +34427,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 135
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 515,
@@ -31706,7 +34440,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 135
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "271": [
@@ -31721,7 +34456,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 200
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 605,
@@ -31734,7 +34470,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 200
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 878,
@@ -31747,7 +34484,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 200
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "272": [
@@ -31761,7 +34499,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 593,
@@ -31773,7 +34512,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 621,
@@ -31785,7 +34525,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 682,
@@ -31797,7 +34538,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 872,
@@ -31809,7 +34551,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "273": [
@@ -31824,7 +34567,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 160,
         "spd": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 884,
@@ -31837,7 +34581,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 160,
         "spd": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 511,
@@ -31850,7 +34595,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 160,
         "spd": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 504,
@@ -31863,7 +34609,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 160,
         "spd": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "274": [
@@ -31878,7 +34625,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 549,
@@ -31891,7 +34639,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 595,
@@ -31904,7 +34653,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 840,
@@ -31917,7 +34667,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "275": [
@@ -31929,7 +34680,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "abi": 10
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 512,
@@ -31939,7 +34691,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "abi": 10
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 557,
@@ -31949,7 +34702,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "abi": 10
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 601,
@@ -31959,7 +34713,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "abi": 10
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "276": [
@@ -31974,7 +34729,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 140,
         "def": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 632,
@@ -31987,7 +34743,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 140,
         "def": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 648,
@@ -32000,7 +34757,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 140,
         "def": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "277": [
@@ -32013,7 +34771,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "def": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 602,
@@ -32024,7 +34783,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "def": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 626,
@@ -32035,7 +34795,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "def": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 841,
@@ -32046,7 +34807,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "def": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "278": [
@@ -32061,7 +34823,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 160,
         "def": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 842,
@@ -32074,7 +34837,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 160,
         "def": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 867,
@@ -32087,7 +34851,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 160,
         "def": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "279": [
@@ -32102,7 +34867,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 145
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 578,
@@ -32115,7 +34881,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 145
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 611,
@@ -32128,7 +34895,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 145
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 627,
@@ -32141,7 +34909,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 145
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "280": [
@@ -32156,7 +34925,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 150,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 486,
@@ -32169,7 +34939,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 150,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 610,
@@ -32182,7 +34953,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 150,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "281": [
@@ -32197,7 +34969,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 250,
         "spd": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 575,
@@ -32210,7 +34983,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 250,
         "spd": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "282": [
@@ -32225,7 +34999,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 300,
         "spd": 220
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "283": [
@@ -32235,7 +35010,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 283,
       "level_required": 0,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 572,
@@ -32248,7 +35024,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 80,
         "int": 180
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 688,
@@ -32261,7 +35038,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 80,
         "int": 180
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "284": [
@@ -32275,7 +35053,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 130,
         "spd": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 599,
@@ -32287,7 +35066,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 130,
         "spd": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 552,
@@ -32299,7 +35079,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 130,
         "spd": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "285": [
@@ -32314,7 +35095,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 145
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 517,
@@ -32327,7 +35109,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 145
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 672,
@@ -32340,7 +35123,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 145
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "286": [
@@ -32354,7 +35138,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 145,
         "def": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 596,
@@ -32366,7 +35151,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 145,
         "def": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 606,
@@ -32378,7 +35164,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 145,
         "def": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "287": [
@@ -32392,7 +35179,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 130,
         "spd": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 892,
@@ -32400,7 +35188,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 287,
       "level_required": 0,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "288": [
@@ -32410,7 +35199,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 288,
       "level_required": 0,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "289": [
@@ -32425,7 +35215,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "int": 120
       },
-      "dna_requirement": 214
+      "dna_requirement": 214,
+      "item_requirement": null
     },
     {
       "id": 676,
@@ -32438,7 +35229,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "int": 120
       },
-      "dna_requirement": 152
+      "dna_requirement": 152,
+      "item_requirement": null
     }
   ],
   "290": [
@@ -32452,7 +35244,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 135
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 612,
@@ -32464,7 +35257,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 135
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 562,
@@ -32476,7 +35270,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 135
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "291": [
@@ -32490,7 +35285,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "spd": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 573,
@@ -32502,7 +35298,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "spd": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 657,
@@ -32514,7 +35311,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "spd": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 910,
@@ -32526,7 +35324,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "spd": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 659,
@@ -32538,7 +35337,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "spd": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "292": [
@@ -32552,7 +35352,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 943,
@@ -32564,7 +35365,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 594,
@@ -32576,7 +35378,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 622,
@@ -32588,7 +35391,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "293": [
@@ -32602,7 +35406,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 200,
         "spd": 200
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "294": [
@@ -32617,7 +35422,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 130,
         "def": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 529,
@@ -32630,7 +35436,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 130,
         "def": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 633,
@@ -32643,7 +35450,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 130,
         "def": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "295": [
@@ -32657,7 +35465,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 40,
         "atk": 180
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 640,
@@ -32669,7 +35478,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 40,
         "atk": 180
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 635,
@@ -32681,7 +35491,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 40,
         "atk": 180
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 843,
@@ -32693,7 +35504,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 40,
         "atk": 180
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "296": [
@@ -32708,7 +35520,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 603,
@@ -32721,7 +35534,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 881,
@@ -32734,7 +35548,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 513,
@@ -32747,7 +35562,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "297": [
@@ -32762,7 +35578,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "spd": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 680,
@@ -32775,7 +35592,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "spd": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 570,
@@ -32788,7 +35606,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "spd": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "298": [
@@ -32802,7 +35621,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 135,
         "spd": 125
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 681,
@@ -32814,7 +35634,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 135,
         "spd": 125
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 684,
@@ -32826,7 +35647,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 135,
         "spd": 125
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 590,
@@ -32838,7 +35660,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 135,
         "spd": 125
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "299": [
@@ -32853,7 +35676,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 628,
@@ -32866,7 +35690,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 530,
@@ -32879,7 +35704,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "300": [
@@ -32894,7 +35720,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 110,
         "spd": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 685,
@@ -32907,7 +35734,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 110,
         "spd": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "301": [
@@ -32922,7 +35750,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 180,
         "def": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 650,
@@ -32935,7 +35764,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 180,
         "def": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 643,
@@ -32948,7 +35778,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 180,
         "def": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "302": [
@@ -32965,7 +35796,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 140,
         "int": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 629,
@@ -32980,7 +35812,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 140,
         "int": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 861,
@@ -32995,7 +35828,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 140,
         "int": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "303": [
@@ -33010,7 +35844,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 250,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 677,
@@ -33023,7 +35858,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 250,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "304": [
@@ -33037,7 +35873,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 130,
         "spd": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 525,
@@ -33049,7 +35886,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 130,
         "spd": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 660,
@@ -33061,7 +35899,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 130,
         "spd": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "305": [
@@ -33075,7 +35914,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 30,
         "spd": 250
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "306": [
@@ -33090,7 +35930,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 135,
         "spd": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 586,
@@ -33103,7 +35944,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 135,
         "spd": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "307": [
@@ -33117,7 +35959,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 667,
@@ -33129,7 +35972,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 673,
@@ -33141,7 +35985,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "308": [
@@ -33155,7 +36000,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 30,
         "int": 180
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "309": [
@@ -33169,7 +36015,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 170,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 678,
@@ -33181,7 +36028,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 170,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 674,
@@ -33193,7 +36041,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 170,
         "spd": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "310": [
@@ -33208,7 +36057,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 100,
         "atk": 290
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "311": [
@@ -33224,7 +36074,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 150,
         "spd": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "312": [
@@ -33239,7 +36090,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 170,
         "int": 150
       },
-      "dna_requirement": 331
+      "dna_requirement": 331,
+      "item_requirement": null
     },
     {
       "id": 911,
@@ -33252,7 +36104,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 170,
         "int": 150
       },
-      "dna_requirement": 219
+      "dna_requirement": 219,
+      "item_requirement": null
     }
   ],
   "313": [
@@ -33268,7 +36121,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 160,
         "spd": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "314": [
@@ -33283,7 +36137,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "spd": 150
       },
-      "dna_requirement": 278
+      "dna_requirement": 278,
+      "item_requirement": null
     },
     {
       "id": 889,
@@ -33296,7 +36151,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "spd": 150
       },
-      "dna_requirement": 252
+      "dna_requirement": 252,
+      "item_requirement": null
     }
   ],
   "315": [
@@ -33311,7 +36167,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 150,
         "spd": 150
       },
-      "dna_requirement": 297
+      "dna_requirement": 297,
+      "item_requirement": null
     },
     {
       "id": 710,
@@ -33324,7 +36181,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 150,
         "spd": 150
       },
-      "dna_requirement": 228
+      "dna_requirement": 228,
+      "item_requirement": null
     }
   ],
   "316": [
@@ -33339,7 +36197,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "def": 200
       },
-      "dna_requirement": 298
+      "dna_requirement": 298,
+      "item_requirement": null
     },
     {
       "id": 711,
@@ -33352,7 +36211,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "def": 200
       },
-      "dna_requirement": 276
+      "dna_requirement": 276,
+      "item_requirement": null
     }
   ],
   "317": [
@@ -33365,7 +36225,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 40,
         "atk": 255
       },
-      "dna_requirement": 272
+      "dna_requirement": 272,
+      "item_requirement": null
     },
     {
       "id": 699,
@@ -33376,7 +36237,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 40,
         "atk": 255
       },
-      "dna_requirement": 255
+      "dna_requirement": 255,
+      "item_requirement": null
     }
   ],
   "318": [
@@ -33390,7 +36252,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 155,
         "int": 100
       },
-      "dna_requirement": 226
+      "dna_requirement": 226,
+      "item_requirement": null
     },
     {
       "id": 886,
@@ -33402,7 +36265,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 155,
         "int": 100
       },
-      "dna_requirement": 272
+      "dna_requirement": 272,
+      "item_requirement": null
     }
   ],
   "319": [
@@ -33417,7 +36281,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "int": 150
       },
-      "dna_requirement": 287
+      "dna_requirement": 287,
+      "item_requirement": null
     },
     {
       "id": 891,
@@ -33430,7 +36295,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 150,
         "int": 150
       },
-      "dna_requirement": 231
+      "dna_requirement": 231,
+      "item_requirement": null
     }
   ],
   "320": [
@@ -33445,7 +36311,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 185,
         "int": 185
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "321": [
@@ -33455,7 +36322,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "to_digimon_id": 321,
       "level_required": 0,
       "stat_requirements": {},
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "322": [
@@ -33472,7 +36340,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 250,
         "spd": 170
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "323": [
@@ -33485,7 +36354,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": "digi_egg_of_courage"
     }
   ],
   "324": [
@@ -33499,7 +36369,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 145
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": "digi_egg_of_miracles"
     },
     {
       "id": 777,
@@ -33511,7 +36382,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 120,
         "def": 145
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": "digi_egg_of_miracles"
     }
   ],
   "325": [
@@ -33526,7 +36398,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": "digi_egg_of_destiny"
     },
     {
       "id": 776,
@@ -33539,7 +36412,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 120,
         "int": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": "digi_egg_of_destiny"
     }
   ],
   "326": [
@@ -33552,7 +36426,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 30,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "327": [
@@ -33567,7 +36442,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "328": [
@@ -33580,7 +36456,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 30,
         "def": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "329": [
@@ -33593,7 +36470,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 737,
@@ -33604,7 +36482,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 901,
@@ -33615,7 +36494,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "def": 40
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "330": [
@@ -33629,7 +36509,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 382,
@@ -33641,7 +36522,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 904,
@@ -33653,7 +36535,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 95,
         "def": 75
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "331": [
@@ -33667,7 +36550,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "atk": 180
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 907,
@@ -33679,7 +36563,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "atk": 180
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 849,
@@ -33691,7 +36576,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "atk": 180
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "332": [
@@ -33703,7 +36589,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "abi": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 701,
@@ -33713,7 +36600,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "abi": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 702,
@@ -33723,7 +36611,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "abi": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 709,
@@ -33733,7 +36622,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "abi": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "333": [
@@ -33746,7 +36636,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 20,
         "int": 30
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "334": [
@@ -33761,7 +36652,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 50,
         "int": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "335": [
@@ -33774,7 +36666,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 40,
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 754,
@@ -33785,7 +36678,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 40,
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 895,
@@ -33796,7 +36690,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "sp": 40,
         "spd": 50
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "336": [
@@ -33811,7 +36706,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 130,
         "spd": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "342": [
@@ -33826,7 +36722,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 180,
         "def": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "343": [
@@ -33841,7 +36738,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 100
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "344": [
@@ -33856,7 +36754,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 160,
         "spd": 135
       },
-      "dna_requirement": 343
+      "dna_requirement": 343,
+      "item_requirement": null
     },
     {
       "id": 913,
@@ -33869,7 +36768,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 160,
         "spd": 135
       },
-      "dna_requirement": 342
+      "dna_requirement": 342,
+      "item_requirement": null
     }
   ],
   "346": [
@@ -33881,7 +36781,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "atk": 60
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "347": [
@@ -33894,7 +36795,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 385,
         "atk": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "348": [
@@ -33909,7 +36811,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 175,
         "def": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "351": [
@@ -33924,7 +36827,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "spd": 165
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "352": [
@@ -33939,7 +36843,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 165,
         "spd": 165
       },
-      "dna_requirement": 351
+      "dna_requirement": 351,
+      "item_requirement": null
     },
     {
       "id": 921,
@@ -33952,7 +36857,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 165,
         "spd": 165
       },
-      "dna_requirement": 348
+      "dna_requirement": 348,
+      "item_requirement": null
     }
   ],
   "354": [
@@ -33965,7 +36871,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 55,
         "spd": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "355": [
@@ -33978,7 +36885,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 115,
         "spd": 80
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "356": [
@@ -33992,7 +36900,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 40,
         "atk": 200
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "357": [
@@ -34007,7 +36916,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 155,
         "int": 155
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "360": [
@@ -34022,7 +36932,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 250,
         "spd": 140
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "361": [
@@ -34037,7 +36948,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 275,
         "spd": 150
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "363": [
@@ -34050,7 +36962,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 75,
         "atk": 20
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "364": [
@@ -34063,7 +36976,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 35
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 930,
@@ -34074,7 +36988,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 35
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 931,
@@ -34085,7 +37000,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 40,
         "spd": 35
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "365": [
@@ -34098,7 +37014,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 933,
@@ -34109,7 +37026,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 934,
@@ -34120,7 +37038,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "atk": 75,
         "spd": 55
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "366": [
@@ -34135,7 +37054,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 940,
@@ -34148,7 +37068,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 941,
@@ -34161,7 +37082,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "spd": 120
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "367": [
@@ -34176,7 +37098,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 180,
         "spd": 170
       },
-      "dna_requirement": 259
+      "dna_requirement": 259,
+      "item_requirement": null
     },
     {
       "id": 945,
@@ -34189,7 +37112,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 180,
         "spd": 170
       },
-      "dna_requirement": 366
+      "dna_requirement": 366,
+      "item_requirement": null
     }
   ],
   "368": [
@@ -34203,7 +37127,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 10,
         "int": 110
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "369": [
@@ -34217,7 +37142,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "abi": 20,
         "int": 130
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "380": [
@@ -34229,7 +37155,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "stat_requirements": {
         "int": 45
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "381": [
@@ -34244,7 +37171,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "def": 130,
         "int": 160
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "382": [
@@ -34259,7 +37187,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 275,
         "spd": 145
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "384": [
@@ -34272,7 +37201,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "hp": 330,
         "def": 35
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     }
   ],
   "385": [
@@ -34285,7 +37215,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 85,
         "spd": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
     },
     {
       "id": 952,
@@ -34296,7 +37227,50 @@ export const EVOLUTION_LOOKUP_TABLE = {
         "int": 85,
         "spd": 85
       },
-      "dna_requirement": null
+      "dna_requirement": null,
+      "item_requirement": null
+    }
+  ],
+  "397": [
+    {
+      "id": 954,
+      "from_digimon_id": 21,
+      "to_digimon_id": 397,
+      "level_required": 14,
+      "stat_requirements": {
+        "atk": 35,
+        "spd": 35
+      },
+      "dna_requirement": null,
+      "item_requirement": "digi_egg_of_reliability"
+    }
+  ],
+  "398": [
+    {
+      "id": 955,
+      "from_digimon_id": 46,
+      "to_digimon_id": 398,
+      "level_required": 14,
+      "stat_requirements": {
+        "int": 40,
+        "spd": 40
+      },
+      "dna_requirement": null,
+      "item_requirement": "digi_egg_of_hope"
+    }
+  ],
+  "399": [
+    {
+      "id": 956,
+      "from_digimon_id": 380,
+      "to_digimon_id": 399,
+      "level_required": 24,
+      "stat_requirements": {
+        "def": 65,
+        "int": 65
+      },
+      "dna_requirement": null,
+      "item_requirement": "digi_egg_of_light"
     }
   ]
 },
@@ -34310,7 +37284,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 40,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "37-95": {
     "id": 161,
@@ -34322,7 +37297,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 25,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "37-99": {
     "id": 165,
@@ -34333,7 +37309,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "40-102": {
     "id": 173,
@@ -34344,7 +37321,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "4-7": {
     "id": 9,
@@ -34354,7 +37332,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 15
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "41-79": {
     "id": 177,
@@ -34364,7 +37343,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "def": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "41-80": {
     "id": 181,
@@ -34375,7 +37355,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 130,
       "def": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "44-140": {
     "id": 185,
@@ -34386,7 +37367,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "342-344": {
     "id": 912,
@@ -34399,7 +37381,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 160,
       "spd": 135
     },
-    "dna_requirement": 343
+    "dna_requirement": 343,
+    "item_requirement": null
   },
   "364-207": {
     "id": 938,
@@ -34410,7 +37393,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 600,
       "atk": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "7-18": {
     "id": 13,
@@ -34420,7 +37404,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "7-43": {
     "id": 17,
@@ -34431,7 +37416,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 50,
       "def": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "8-62": {
     "id": 21,
@@ -34443,7 +37429,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 20,
       "spd": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "9-33": {
     "id": 25,
@@ -34453,7 +37440,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "10-19": {
     "id": 29,
@@ -34463,7 +37451,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "11-51": {
     "id": 34,
@@ -34473,7 +37462,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "spd": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "12-21": {
     "id": 38,
@@ -34484,7 +37474,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 75,
       "def": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "13-22": {
     "id": 42,
@@ -34495,7 +37486,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 20,
       "int": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "14-23": {
     "id": 46,
@@ -34507,7 +37499,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 20,
       "spd": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "15-24": {
     "id": 50,
@@ -34517,7 +37510,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "int": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "16-32": {
     "id": 54,
@@ -34527,7 +37521,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "def": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "17-25": {
     "id": 58,
@@ -34538,7 +37533,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 20,
       "spd": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "18-90": {
     "id": 62,
@@ -34548,7 +37544,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "18-131": {
     "id": 66,
@@ -34558,7 +37555,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "19-100": {
     "id": 70,
@@ -34569,7 +37567,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 30,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "21-95": {
     "id": 75,
@@ -34581,7 +37580,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 25,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "21-99": {
     "id": 79,
@@ -34592,7 +37592,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "22-111": {
     "id": 83,
@@ -34603,7 +37604,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 40,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "23-86": {
     "id": 87,
@@ -34614,7 +37616,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 35,
       "spd": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "23-137": {
     "id": 91,
@@ -34624,7 +37627,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "24-121": {
     "id": 95,
@@ -34635,7 +37639,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "25-81": {
     "id": 99,
@@ -34645,7 +37650,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "spd": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "25-101": {
     "id": 103,
@@ -34656,7 +37662,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 50,
       "spd": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "26-119": {
     "id": 107,
@@ -34667,7 +37674,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "27-119": {
     "id": 111,
@@ -34678,7 +37686,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "28-86": {
     "id": 116,
@@ -34689,7 +37698,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 35,
       "spd": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "28-136": {
     "id": 120,
@@ -34699,7 +37709,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 500
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "29-114": {
     "id": 124,
@@ -34710,7 +37721,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "atk": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "30-98": {
     "id": 128,
@@ -34720,7 +37732,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "abi": 5
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "31-72": {
     "id": 132,
@@ -34731,7 +37744,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 35,
       "int": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "31-69": {
     "id": 136,
@@ -34742,7 +37756,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 50,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "32-112": {
     "id": 140,
@@ -34752,7 +37767,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "def": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "33-81": {
     "id": 144,
@@ -34762,7 +37778,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "spd": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "33-97": {
     "id": 148,
@@ -34774,7 +37791,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 25,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "34-133": {
     "id": 152,
@@ -34785,7 +37803,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 250,
       "atk": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "83-200": {
     "id": 325,
@@ -34797,7 +37816,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 70,
       "int": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "85-170": {
     "id": 329,
@@ -34808,7 +37828,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 800,
       "atk": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "86-192": {
     "id": 333,
@@ -34820,7 +37841,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 80,
       "int": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "87-172": {
     "id": 337,
@@ -34832,7 +37854,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 75,
       "spd": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "46-115": {
     "id": 194,
@@ -34842,7 +37865,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "88-203": {
     "id": 342,
@@ -34853,7 +37877,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 350,
       "atk": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "89-163": {
     "id": 346,
@@ -34865,7 +37890,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "90-201": {
     "id": 350,
@@ -34877,7 +37903,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 95,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "91-182": {
     "id": 354,
@@ -34888,7 +37915,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "92-182": {
     "id": 358,
@@ -34899,7 +37927,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "93-158": {
     "id": 362,
@@ -34910,7 +37939,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "94-200": {
     "id": 366,
@@ -34922,7 +37952,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 70,
       "int": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "98-191": {
     "id": 370,
@@ -34930,7 +37961,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "to_digimon_id": 191,
     "level_required": 32,
     "stat_requirements": {},
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "343-344": {
     "id": 913,
@@ -34943,7 +37975,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 160,
       "spd": 135
     },
-    "dna_requirement": 342
+    "dna_requirement": 342,
+    "item_requirement": null
   },
   "365-366": {
     "id": 939,
@@ -34956,82 +37989,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "spd": 120
     },
-    "dna_requirement": null
-  },
-  "47-90": {
-    "id": 198,
-    "from_digimon_id": 47,
-    "to_digimon_id": 90,
-    "level_required": 16,
-    "stat_requirements": {
-      "atk": 55
-    },
-    "dna_requirement": null
-  },
-  "47-123": {
-    "id": 202,
-    "from_digimon_id": 47,
-    "to_digimon_id": 123,
-    "level_required": 16,
-    "stat_requirements": {
-      "atk": 55,
-      "spd": 50
-    },
-    "dna_requirement": null
-  },
-  "48-102": {
-    "id": 206,
-    "from_digimon_id": 48,
-    "to_digimon_id": 102,
-    "level_required": 14,
-    "stat_requirements": {
-      "hp": 150,
-      "int": 40
-    },
-    "dna_requirement": null
-  },
-  "49-65": {
-    "id": 210,
-    "from_digimon_id": 49,
-    "to_digimon_id": 65,
-    "level_required": 15,
-    "stat_requirements": {
-      "atk": 40,
-      "int": 40
-    },
-    "dna_requirement": null
-  },
-  "49-124": {
-    "id": 214,
-    "from_digimon_id": 49,
-    "to_digimon_id": 124,
-    "level_required": 13,
-    "stat_requirements": {
-      "sp": 40,
-      "int": 30
-    },
-    "dna_requirement": null
-  },
-  "50-75": {
-    "id": 219,
-    "from_digimon_id": 50,
-    "to_digimon_id": 75,
-    "level_required": 14,
-    "stat_requirements": {
-      "atk": 35,
-      "spd": 45
-    },
-    "dna_requirement": null
-  },
-  "51-130": {
-    "id": 223,
-    "from_digimon_id": 51,
-    "to_digimon_id": 130,
-    "level_required": 14,
-    "stat_requirements": {
-      "spd": 50
-    },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "53-324": {
     "id": 227,
@@ -35043,7 +38002,90 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 145
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": "digi_egg_of_miracles"
+  },
+  "47-90": {
+    "id": 198,
+    "from_digimon_id": 47,
+    "to_digimon_id": 90,
+    "level_required": 16,
+    "stat_requirements": {
+      "atk": 55
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "47-123": {
+    "id": 202,
+    "from_digimon_id": 47,
+    "to_digimon_id": 123,
+    "level_required": 16,
+    "stat_requirements": {
+      "atk": 55,
+      "spd": 50
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "48-102": {
+    "id": 206,
+    "from_digimon_id": 48,
+    "to_digimon_id": 102,
+    "level_required": 14,
+    "stat_requirements": {
+      "hp": 150,
+      "int": 40
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "49-65": {
+    "id": 210,
+    "from_digimon_id": 49,
+    "to_digimon_id": 65,
+    "level_required": 15,
+    "stat_requirements": {
+      "atk": 40,
+      "int": 40
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "49-124": {
+    "id": 214,
+    "from_digimon_id": 49,
+    "to_digimon_id": 124,
+    "level_required": 13,
+    "stat_requirements": {
+      "sp": 40,
+      "int": 30
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "50-75": {
+    "id": 219,
+    "from_digimon_id": 50,
+    "to_digimon_id": 75,
+    "level_required": 14,
+    "stat_requirements": {
+      "atk": 35,
+      "spd": 45
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "51-130": {
+    "id": 223,
+    "from_digimon_id": 51,
+    "to_digimon_id": 130,
+    "level_required": 14,
+    "stat_requirements": {
+      "spd": 50
+    },
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "54-115": {
     "id": 231,
@@ -35053,7 +38095,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "54-123": {
     "id": 235,
@@ -35064,7 +38107,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 55,
       "spd": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "55-121": {
     "id": 239,
@@ -35075,7 +38119,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "59-74": {
     "id": 247,
@@ -35085,7 +38130,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 500
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "60-77": {
     "id": 251,
@@ -35096,7 +38142,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 5,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "62-85": {
     "id": 255,
@@ -35106,7 +38153,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "spd": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "63-72": {
     "id": 260,
@@ -35117,7 +38165,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 35,
       "int": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "63-113": {
     "id": 264,
@@ -35128,7 +38177,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "64-93": {
     "id": 268,
@@ -35138,7 +38188,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "65-147": {
     "id": 272,
@@ -35150,7 +38201,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 70,
       "int": 90
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "65-173": {
     "id": 276,
@@ -35161,7 +38213,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 70,
       "int": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "67-208": {
     "id": 280,
@@ -35172,7 +38225,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 75,
       "spd": 90
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "70-168": {
     "id": 284,
@@ -35184,7 +38238,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 85,
       "spd": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "71-194": {
     "id": 288,
@@ -35196,7 +38251,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "int": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "72-177": {
     "id": 292,
@@ -35207,7 +38263,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 500,
       "atk": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "74-172": {
     "id": 296,
@@ -35219,7 +38276,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 75,
       "spd": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "76-148": {
     "id": 301,
@@ -35231,7 +38289,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 80,
       "spd": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "77-195": {
     "id": 305,
@@ -35243,7 +38302,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 10,
       "int": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "78-177": {
     "id": 309,
@@ -35254,7 +38314,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 500,
       "atk": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "79-160": {
     "id": 313,
@@ -35265,7 +38326,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 400,
       "atk": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "81-160": {
     "id": 317,
@@ -35276,7 +38338,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 400,
       "atk": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "82-165": {
     "id": 321,
@@ -35287,7 +38350,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 800,
       "def": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "137-145": {
     "id": 473,
@@ -35297,7 +38361,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "def": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "137-161": {
     "id": 477,
@@ -35309,7 +38374,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 80,
       "spd": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "140-141": {
     "id": 481,
@@ -35320,7 +38386,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 400,
       "def": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "146-260": {
     "id": 499,
@@ -35333,7 +38400,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 180,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "103-179": {
     "id": 379,
@@ -35343,7 +38411,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 900
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "146-281": {
     "id": 500,
@@ -35356,7 +38425,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 250,
       "spd": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "146-218": {
     "id": 501,
@@ -35369,7 +38439,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 200,
       "spd": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "147-227": {
     "id": 502,
@@ -35383,7 +38454,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 110,
       "int": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "147-271": {
     "id": 503,
@@ -35396,7 +38468,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 200
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "147-238": {
     "id": 506,
@@ -35409,7 +38482,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 110,
       "int": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "150-244": {
     "id": 510,
@@ -35422,7 +38496,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "152-289": {
     "id": 518,
@@ -35435,7 +38510,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "int": 120
     },
-    "dna_requirement": 214
+    "dna_requirement": 214,
+    "item_requirement": null
   },
   "153-280": {
     "id": 522,
@@ -35448,7 +38524,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 150,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "154-240": {
     "id": 527,
@@ -35460,7 +38537,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "156-255": {
     "id": 531,
@@ -35472,7 +38550,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "def": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "158-254": {
     "id": 535,
@@ -35484,7 +38563,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "160-272": {
     "id": 539,
@@ -35496,7 +38576,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "163-257": {
     "id": 543,
@@ -35509,7 +38590,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "204-342": {
     "id": 914,
@@ -35522,7 +38604,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 180,
       "def": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "160-366": {
     "id": 940,
@@ -35535,7 +38618,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "spd": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "105-156": {
     "id": 383,
@@ -35547,7 +38631,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "106-151": {
     "id": 387,
@@ -35559,7 +38644,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "spd": 65
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "107-199": {
     "id": 391,
@@ -35570,7 +38656,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "108-146": {
     "id": 395,
@@ -35581,7 +38668,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 95,
       "spd": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "111-143": {
     "id": 399,
@@ -35593,7 +38681,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 75,
       "spd": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "112-158": {
     "id": 404,
@@ -35604,7 +38693,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "114-201": {
     "id": 408,
@@ -35616,7 +38706,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 95,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "115-166": {
     "id": 412,
@@ -35628,7 +38719,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 75,
       "spd": 75
     },
-    "dna_requirement": 67
+    "dna_requirement": 67,
+    "item_requirement": null
   },
   "116-147": {
     "id": 416,
@@ -35640,7 +38732,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 70,
       "int": 90
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "118-187": {
     "id": 420,
@@ -35652,7 +38745,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 60,
       "int": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "119-181": {
     "id": 424,
@@ -35664,7 +38758,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 95,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "166-263": {
     "id": 551,
@@ -35678,7 +38773,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "167-234": {
     "id": 555,
@@ -35691,7 +38787,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 145,
       "def": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "120-167": {
     "id": 428,
@@ -35703,7 +38800,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 70,
       "def": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "121-207": {
     "id": 432,
@@ -35714,7 +38812,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 600,
       "atk": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "122-208": {
     "id": 436,
@@ -35725,7 +38824,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 75,
       "spd": 90
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "124-187": {
     "id": 440,
@@ -35737,7 +38837,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 60,
       "int": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "125-150": {
     "id": 445,
@@ -35748,7 +38849,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "127-151": {
     "id": 449,
@@ -35760,7 +38862,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "spd": 65
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "128-163": {
     "id": 453,
@@ -35772,7 +38875,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "129-141": {
     "id": 457,
@@ -35783,7 +38887,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 400,
       "def": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "130-188": {
     "id": 461,
@@ -35795,7 +38900,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 80,
       "spd": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "131-192": {
     "id": 465,
@@ -35807,7 +38913,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 80,
       "int": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "206-277": {
     "id": 654,
@@ -35818,7 +38925,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "def": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "208-236": {
     "id": 658,
@@ -35831,7 +38939,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 135,
       "spd": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "208-331": {
     "id": 662,
@@ -35843,7 +38952,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "atk": 180
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "170-279": {
     "id": 564,
@@ -35856,7 +38966,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 145
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "211-298": {
     "id": 671,
@@ -35868,7 +38979,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 135,
       "spd": 125
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "213-322": {
     "id": 675,
@@ -35883,7 +38995,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 250,
       "spd": 170
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "215-292": {
     "id": 679,
@@ -35895,7 +39008,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "216-291": {
     "id": 683,
@@ -35907,7 +39021,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "spd": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "217-273": {
     "id": 687,
@@ -35920,7 +39035,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 160,
       "spd": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "222-223": {
     "id": 691,
@@ -35928,7 +39044,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "to_digimon_id": 223,
     "level_required": 0,
     "stat_requirements": {},
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "260-310": {
     "id": 695,
@@ -35941,7 +39058,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 100,
       "atk": 290
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "276-316": {
     "id": 703,
@@ -35954,7 +39072,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "def": 200
     },
-    "dna_requirement": 298
+    "dna_requirement": 298,
+    "item_requirement": null
   },
   "292-293": {
     "id": 707,
@@ -35966,7 +39085,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 200,
       "spd": 200
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "174-251": {
     "id": 568,
@@ -35979,7 +39099,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 120,
       "spd": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "299-332": {
     "id": 712,
@@ -35989,7 +39110,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "abi": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "255-317": {
     "id": 716,
@@ -36000,7 +39122,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 40,
       "atk": 255
     },
-    "dna_requirement": 272
+    "dna_requirement": 272,
+    "item_requirement": null
   },
   "20-137": {
     "id": 720,
@@ -36010,7 +39133,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "215-343": {
     "id": 915,
@@ -36023,7 +39147,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "196-366": {
     "id": 941,
@@ -36036,7 +39161,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "spd": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "177-286": {
     "id": 576,
@@ -36048,7 +39174,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 145,
       "def": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "179-235": {
     "id": 580,
@@ -36061,7 +39188,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "spd": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "182-241": {
     "id": 584,
@@ -36074,7 +39202,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 180,
       "int": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "183-294": {
     "id": 589,
@@ -36087,7 +39216,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 130,
       "def": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "185-272": {
     "id": 593,
@@ -36099,7 +39229,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "187-307": {
     "id": 597,
@@ -36111,7 +39242,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "192-271": {
     "id": 605,
@@ -36124,7 +39256,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 200
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "193-269": {
     "id": 609,
@@ -36137,7 +39270,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "194-299": {
     "id": 613,
@@ -36150,7 +39284,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "195-306": {
     "id": 617,
@@ -36163,7 +39298,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 135,
       "spd": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "198-272": {
     "id": 621,
@@ -36175,7 +39311,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "199-274": {
     "id": 625,
@@ -36188,7 +39325,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "36-329": {
     "id": 724,
@@ -36199,7 +39337,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "38-128": {
     "id": 728,
@@ -36209,7 +39348,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "42-335": {
     "id": 732,
@@ -36220,7 +39360,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 40,
       "spd": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "43-329": {
     "id": 737,
@@ -36231,7 +39372,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "200-268": {
     "id": 630,
@@ -36244,7 +39386,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "202-301": {
     "id": 638,
@@ -36257,7 +39400,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 180,
       "def": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "203-230": {
     "id": 642,
@@ -36270,7 +39414,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 100,
       "spd": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "204-276": {
     "id": 646,
@@ -36283,7 +39428,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 140,
       "def": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "205-301": {
     "id": 650,
@@ -36296,7 +39442,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 180,
       "def": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "61-138": {
     "id": 753,
@@ -36307,7 +39454,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 35,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "75-200": {
     "id": 770,
@@ -36319,7 +39467,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 70,
       "int": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "80-178": {
     "id": 774,
@@ -36331,7 +39480,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 80,
       "def": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "173-221": {
     "id": 860,
@@ -36343,7 +39493,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "178-264": {
     "id": 864,
@@ -36356,7 +39507,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 140,
       "def": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "180-237": {
     "id": 868,
@@ -36369,7 +39521,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "190-227": {
     "id": 876,
@@ -36383,7 +39536,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 110,
       "int": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "196-234": {
     "id": 880,
@@ -36396,7 +39550,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 145,
       "def": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "197-273": {
     "id": 884,
@@ -36409,7 +39564,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 160,
       "spd": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "252-314": {
     "id": 888,
@@ -36422,7 +39578,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "spd": 150
     },
-    "dna_requirement": 278
+    "dna_requirement": 278,
+    "item_requirement": null
   },
   "326-327": {
     "id": 893,
@@ -36435,7 +39592,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "spd": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "333-138": {
     "id": 897,
@@ -36446,7 +39604,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 35,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "328-329": {
     "id": 901,
@@ -36457,7 +39616,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "329-158": {
     "id": 905,
@@ -36468,7 +39628,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "330-244": {
     "id": 909,
@@ -36481,7 +39642,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "345-346": {
     "id": 916,
@@ -36491,7 +39653,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "365-245": {
     "id": 942,
@@ -36503,92 +39666,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 145,
       "spd": 120
     },
-    "dna_requirement": null
-  },
-  "1-13": {
-    "id": 2,
-    "from_digimon_id": 1,
-    "to_digimon_id": 13,
-    "level_required": 5,
-    "stat_requirements": {},
-    "dna_requirement": null
-  },
-  "1-6": {
-    "id": 3,
-    "from_digimon_id": 1,
-    "to_digimon_id": 6,
-    "level_required": 8,
-    "stat_requirements": {
-      "abi": 5,
-      "atk": 55
-    },
-    "dna_requirement": null
-  },
-  "52-118": {
-    "id": 742,
-    "from_digimon_id": 52,
-    "to_digimon_id": 118,
-    "level_required": 16,
-    "stat_requirements": {
-      "hp": 300,
-      "def": 30
-    },
-    "dna_requirement": null
-  },
-  "57-129": {
-    "id": 746,
-    "from_digimon_id": 57,
-    "to_digimon_id": 129,
-    "level_required": 12,
-    "stat_requirements": {
-      "hp": 300
-    },
-    "dna_requirement": null
-  },
-  "58-89": {
-    "id": 750,
-    "from_digimon_id": 58,
-    "to_digimon_id": 89,
-    "level_required": 16,
-    "stat_requirements": {
-      "hp": 150,
-      "atk": 40
-    },
-    "dna_requirement": null
-  },
-  "61-335": {
-    "id": 754,
-    "from_digimon_id": 61,
-    "to_digimon_id": 335,
-    "level_required": 14,
-    "stat_requirements": {
-      "sp": 40,
-      "spd": 50
-    },
-    "dna_requirement": null
-  },
-  "66-170": {
-    "id": 758,
-    "from_digimon_id": 66,
-    "to_digimon_id": 170,
-    "level_required": 30,
-    "stat_requirements": {
-      "hp": 800,
-      "atk": 75
-    },
-    "dna_requirement": null
-  },
-  "68-209": {
-    "id": 762,
-    "from_digimon_id": 68,
-    "to_digimon_id": 209,
-    "level_required": 30,
-    "stat_requirements": {
-      "hp": 350,
-      "atk": 100,
-      "spd": 75
-    },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "73-155": {
     "id": 766,
@@ -36600,66 +39679,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 100,
       "spd": 85
     },
-    "dna_requirement": null
-  },
-  "96-148": {
-    "id": 778,
-    "from_digimon_id": 96,
-    "to_digimon_id": 148,
-    "level_required": 30,
-    "stat_requirements": {
-      "abi": 10,
-      "atk": 80,
-      "spd": 95
-    },
-    "dna_requirement": null
-  },
-  "97-180": {
-    "id": 782,
-    "from_digimon_id": 97,
-    "to_digimon_id": 180,
-    "level_required": 28,
-    "stat_requirements": {
-      "atk": 75,
-      "def": 75
-    },
-    "dna_requirement": null
-  },
-  "99-187": {
-    "id": 786,
-    "from_digimon_id": 99,
-    "to_digimon_id": 187,
-    "level_required": 26,
-    "stat_requirements": {
-      "hp": 850,
-      "atk": 60,
-      "int": 60
-    },
-    "dna_requirement": null
-  },
-  "101-216": {
-    "id": 790,
-    "from_digimon_id": 101,
-    "to_digimon_id": 216,
-    "level_required": 28,
-    "stat_requirements": {
-      "hp": 400,
-      "atk": 90,
-      "spd": 70
-    },
-    "dna_requirement": null
-  },
-  "104-330": {
-    "id": 794,
-    "from_digimon_id": 104,
-    "to_digimon_id": 330,
-    "level_required": 30,
-    "stat_requirements": {
-      "hp": 400,
-      "atk": 95,
-      "def": 75
-    },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": "beast_spirit_of_light"
   },
   "110-155": {
     "id": 798,
@@ -36671,7 +39692,165 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 100,
       "spd": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": "beast_spirit_of_light"
+  },
+  "1-13": {
+    "id": 2,
+    "from_digimon_id": 1,
+    "to_digimon_id": 13,
+    "level_required": 5,
+    "stat_requirements": {},
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "1-6": {
+    "id": 3,
+    "from_digimon_id": 1,
+    "to_digimon_id": 6,
+    "level_required": 8,
+    "stat_requirements": {
+      "abi": 5,
+      "atk": 55
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "52-118": {
+    "id": 742,
+    "from_digimon_id": 52,
+    "to_digimon_id": 118,
+    "level_required": 16,
+    "stat_requirements": {
+      "hp": 300,
+      "def": 30
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "57-129": {
+    "id": 746,
+    "from_digimon_id": 57,
+    "to_digimon_id": 129,
+    "level_required": 12,
+    "stat_requirements": {
+      "hp": 300
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "58-89": {
+    "id": 750,
+    "from_digimon_id": 58,
+    "to_digimon_id": 89,
+    "level_required": 16,
+    "stat_requirements": {
+      "hp": 150,
+      "atk": 40
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "61-335": {
+    "id": 754,
+    "from_digimon_id": 61,
+    "to_digimon_id": 335,
+    "level_required": 14,
+    "stat_requirements": {
+      "sp": 40,
+      "spd": 50
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "66-170": {
+    "id": 758,
+    "from_digimon_id": 66,
+    "to_digimon_id": 170,
+    "level_required": 30,
+    "stat_requirements": {
+      "hp": 800,
+      "atk": 75
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "68-209": {
+    "id": 762,
+    "from_digimon_id": 68,
+    "to_digimon_id": 209,
+    "level_required": 30,
+    "stat_requirements": {
+      "hp": 350,
+      "atk": 100,
+      "spd": 75
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "96-148": {
+    "id": 778,
+    "from_digimon_id": 96,
+    "to_digimon_id": 148,
+    "level_required": 30,
+    "stat_requirements": {
+      "abi": 10,
+      "atk": 80,
+      "spd": 95
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "97-180": {
+    "id": 782,
+    "from_digimon_id": 97,
+    "to_digimon_id": 180,
+    "level_required": 28,
+    "stat_requirements": {
+      "atk": 75,
+      "def": 75
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "99-187": {
+    "id": 786,
+    "from_digimon_id": 99,
+    "to_digimon_id": 187,
+    "level_required": 26,
+    "stat_requirements": {
+      "hp": 850,
+      "atk": 60,
+      "int": 60
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "101-216": {
+    "id": 790,
+    "from_digimon_id": 101,
+    "to_digimon_id": 216,
+    "level_required": 28,
+    "stat_requirements": {
+      "hp": 400,
+      "atk": 90,
+      "spd": 70
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "104-330": {
+    "id": 794,
+    "from_digimon_id": 104,
+    "to_digimon_id": 330,
+    "level_required": 30,
+    "stat_requirements": {
+      "hp": 400,
+      "atk": 95,
+      "def": 75
+    },
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "113-145": {
     "id": 802,
@@ -36681,7 +39860,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "def": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "117-207": {
     "id": 806,
@@ -36692,7 +39872,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 600,
       "atk": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "126-158": {
     "id": 811,
@@ -36703,7 +39884,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "132-205": {
     "id": 815,
@@ -36714,7 +39896,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "135-161": {
     "id": 819,
@@ -36726,7 +39909,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 80,
       "spd": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "136-169": {
     "id": 823,
@@ -36737,7 +39921,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 80,
       "int": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "136-204": {
     "id": 827,
@@ -36748,7 +39933,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 450,
       "atk": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "142-218": {
     "id": 831,
@@ -36761,7 +39947,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 200,
       "spd": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "148-220": {
     "id": 835,
@@ -36773,7 +39960,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "spd": 145
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "157-250": {
     "id": 839,
@@ -36786,7 +39974,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 130,
       "def": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "161-219": {
     "id": 847,
@@ -36799,7 +39988,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 170,
       "int": 135
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "162-259": {
     "id": 852,
@@ -36812,7 +40002,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 130,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "171-252": {
     "id": 856,
@@ -36825,7 +40016,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 130,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "2-16": {
     "id": 6,
@@ -36835,7 +40027,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "def": 15
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "3-12": {
     "id": 8,
@@ -36845,7 +40038,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "int": 10
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "24-104": {
     "id": 96,
@@ -36856,7 +40050,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 300,
       "spd": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "25-78": {
     "id": 98,
@@ -36866,7 +40061,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "25-84": {
     "id": 100,
@@ -36877,7 +40073,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "25-137": {
     "id": 102,
@@ -36887,7 +40084,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "26-81": {
     "id": 104,
@@ -36897,7 +40095,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "spd": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "26-89": {
     "id": 106,
@@ -36908,7 +40107,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "atk": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "26-120": {
     "id": 108,
@@ -36919,7 +40119,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "27-85": {
     "id": 110,
@@ -36929,7 +40130,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "spd": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "27-121": {
     "id": 112,
@@ -36940,7 +40142,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "27-133": {
     "id": 114,
@@ -36951,7 +40154,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 250,
       "atk": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "346-347": {
     "id": 917,
@@ -36962,7 +40166,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 385,
       "atk": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "365-292": {
     "id": 943,
@@ -36974,7 +40179,20 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "18-68": {
+    "id": 67,
+    "from_digimon_id": 18,
+    "to_digimon_id": 68,
+    "level_required": 15,
+    "stat_requirements": {
+      "hp": 150,
+      "atk": 50
+    },
+    "dna_requirement": null,
+    "item_requirement": "human_spirit_of_flame"
   },
   "4-17": {
     "id": 10,
@@ -36982,7 +40200,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "to_digimon_id": 17,
     "level_required": 5,
     "stat_requirements": {},
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "5-11": {
     "id": 11,
@@ -36990,7 +40209,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "to_digimon_id": 11,
     "level_required": 5,
     "stat_requirements": {},
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "7-41": {
     "id": 15,
@@ -37001,7 +40221,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 75,
       "def": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "8-59": {
     "id": 19,
@@ -37011,7 +40232,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "9-27": {
     "id": 23,
@@ -37023,7 +40245,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 20,
       "spd": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "9-36": {
     "id": 27,
@@ -37034,7 +40257,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 20,
       "spd": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "10-49": {
     "id": 31,
@@ -37044,7 +40268,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "spd": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "11-46": {
     "id": 33,
@@ -37055,7 +40280,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 20,
       "spd": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "11-56": {
     "id": 35,
@@ -37065,7 +40291,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "spd": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "11-333": {
     "id": 37,
@@ -37076,7 +40303,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 20,
       "int": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "12-39": {
     "id": 39,
@@ -37086,7 +40314,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "spd": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "12-61": {
     "id": 41,
@@ -37097,7 +40326,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 30,
       "int": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "13-26": {
     "id": 43,
@@ -37108,7 +40338,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 15,
       "spd": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "13-38": {
     "id": 45,
@@ -37118,7 +40349,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "spd": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "14-50": {
     "id": 47,
@@ -37129,7 +40361,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 20,
       "spd": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "14-57": {
     "id": 49,
@@ -37140,7 +40373,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 75,
       "def": 10
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "15-34": {
     "id": 51,
@@ -37150,7 +40384,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "15-55": {
     "id": 53,
@@ -37160,7 +40395,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "16-37": {
     "id": 55,
@@ -37171,7 +40407,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 75,
       "def": 25
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "16-45": {
     "id": 57,
@@ -37182,7 +40419,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 75,
       "def": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "17-30": {
     "id": 59,
@@ -37193,7 +40431,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 20,
       "int": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "17-328": {
     "id": 61,
@@ -37204,7 +40443,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 30,
       "def": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "18-105": {
     "id": 63,
@@ -37215,7 +40455,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "atk": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "18-114": {
     "id": 65,
@@ -37226,18 +40467,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "atk": 40
     },
-    "dna_requirement": null
-  },
-  "18-68": {
-    "id": 67,
-    "from_digimon_id": 18,
-    "to_digimon_id": 68,
-    "level_required": 15,
-    "stat_requirements": {
-      "hp": 150,
-      "atk": 50
-    },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "19-91": {
     "id": 69,
@@ -37248,7 +40479,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "atk": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "19-112": {
     "id": 71,
@@ -37258,7 +40490,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "def": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "19-132": {
     "id": 73,
@@ -37269,7 +40502,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 55,
       "def": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "21-100": {
     "id": 77,
@@ -37280,7 +40514,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 30,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "22-72": {
     "id": 81,
@@ -37291,7 +40526,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 35,
       "int": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "22-124": {
     "id": 84,
@@ -37302,7 +40538,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 40,
       "int": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "23-95": {
     "id": 88,
@@ -37314,7 +40551,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 25,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "23-120": {
     "id": 90,
@@ -37325,7 +40563,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "24-83": {
     "id": 92,
@@ -37336,7 +40575,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "24-103": {
     "id": 94,
@@ -37347,7 +40587,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 30,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "5-15": {
     "id": 12,
@@ -37357,7 +40598,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "int": 15
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "7-29": {
     "id": 14,
@@ -37368,7 +40610,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 30,
       "spd": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "7-47": {
     "id": 16,
@@ -37379,7 +40622,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "atk": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "29-91": {
     "id": 123,
@@ -37390,7 +40634,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "atk": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "29-131": {
     "id": 125,
@@ -37400,7 +40645,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "30-77": {
     "id": 127,
@@ -37411,7 +40657,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 5,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "30-130": {
     "id": 129,
@@ -37421,18 +40668,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "spd": 50
     },
-    "dna_requirement": null
-  },
-  "30-73": {
-    "id": 131,
-    "from_digimon_id": 30,
-    "to_digimon_id": 73,
-    "level_required": 15,
-    "stat_requirements": {
-      "hp": 45,
-      "spd": 55
-    },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "31-89": {
     "id": 133,
@@ -37443,7 +40680,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "atk": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "32-70": {
     "id": 137,
@@ -37454,7 +40692,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "32-107": {
     "id": 139,
@@ -37465,7 +40704,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 35
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "32-66": {
     "id": 141,
@@ -37476,7 +40716,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 110,
       "def": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "347-348": {
     "id": 918,
@@ -37489,7 +40730,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 175,
       "def": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "366-367": {
     "id": 944,
@@ -37502,7 +40744,32 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 180,
       "spd": 170
     },
-    "dna_requirement": 259
+    "dna_requirement": 259,
+    "item_requirement": null
+  },
+  "27-73": {
+    "id": 115,
+    "from_digimon_id": 27,
+    "to_digimon_id": 73,
+    "level_required": 15,
+    "stat_requirements": {
+      "hp": 45,
+      "spd": 55
+    },
+    "dna_requirement": null,
+    "item_requirement": "human_spirit_of_light"
+  },
+  "30-73": {
+    "id": 131,
+    "from_digimon_id": 30,
+    "to_digimon_id": 73,
+    "level_required": 15,
+    "stat_requirements": {
+      "hp": 45,
+      "spd": 55
+    },
+    "dna_requirement": null,
+    "item_requirement": "human_spirit_of_light"
   },
   "7-326": {
     "id": 18,
@@ -37513,7 +40780,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 30,
       "spd": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "8-48": {
     "id": 20,
@@ -37523,7 +40791,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "8-52": {
     "id": 22,
@@ -37533,7 +40802,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "spd": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "9-28": {
     "id": 24,
@@ -37544,7 +40814,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 80,
       "atk": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "9-53": {
     "id": 26,
@@ -37555,7 +40826,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 20,
       "spd": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "9-58": {
     "id": 28,
@@ -37565,7 +40837,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 35
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "10-31": {
     "id": 30,
@@ -37576,7 +40849,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 20,
       "spd": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "10-42": {
     "id": 32,
@@ -37587,7 +40861,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 30,
       "spd": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "11-60": {
     "id": 36,
@@ -37599,7 +40874,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 80,
       "int": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "12-54": {
     "id": 40,
@@ -37610,7 +40886,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 20,
       "int": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "13-63": {
     "id": 44,
@@ -37621,7 +40898,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 15,
       "int": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "14-64": {
     "id": 48,
@@ -37631,7 +40909,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "def": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "15-35": {
     "id": 52,
@@ -37642,7 +40921,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 15,
       "int": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "16-40": {
     "id": 56,
@@ -37652,7 +40932,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "def": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "17-44": {
     "id": 60,
@@ -37663,7 +40944,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 20,
       "spd": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "18-106": {
     "id": 64,
@@ -37674,7 +40956,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "19-88": {
     "id": 68,
@@ -37685,7 +40968,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 50,
       "spd": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "19-114": {
     "id": 72,
@@ -37696,7 +40980,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "atk": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "21-98": {
     "id": 76,
@@ -37706,7 +40991,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "abi": 5
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "21-112": {
     "id": 78,
@@ -37716,7 +41002,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "def": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "22-65": {
     "id": 80,
@@ -37727,7 +41014,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "22-78": {
     "id": 82,
@@ -37737,7 +41025,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "22-128": {
     "id": 85,
@@ -37747,7 +41036,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "23-106": {
     "id": 89,
@@ -37758,7 +41048,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "24-94": {
     "id": 93,
@@ -37769,7 +41060,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 40,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "24-136": {
     "id": 97,
@@ -37779,7 +41071,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 500
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "25-118": {
     "id": 101,
@@ -37790,7 +41083,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 300,
       "def": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "26-86": {
     "id": 105,
@@ -37801,7 +41095,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 35,
       "spd": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "26-137": {
     "id": 109,
@@ -37811,7 +41106,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "27-125": {
     "id": 113,
@@ -37822,18 +41118,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 35
     },
-    "dna_requirement": null
-  },
-  "27-73": {
-    "id": 115,
-    "from_digimon_id": 27,
-    "to_digimon_id": 73,
-    "level_required": 15,
-    "stat_requirements": {
-      "hp": 45,
-      "spd": 55
-    },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "28-129": {
     "id": 117,
@@ -37843,7 +41129,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 300
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "28-139": {
     "id": 119,
@@ -37854,7 +41141,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 5,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "29-105": {
     "id": 121,
@@ -37865,7 +41153,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "atk": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "29-88": {
     "id": 122,
@@ -37876,18 +41165,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 50,
       "spd": 20
     },
-    "dna_requirement": null
-  },
-  "29-68": {
-    "id": 126,
-    "from_digimon_id": 29,
-    "to_digimon_id": 68,
-    "level_required": 15,
-    "stat_requirements": {
-      "hp": 150,
-      "atk": 50
-    },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "30-139": {
     "id": 130,
@@ -37898,7 +41177,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 5,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "31-124": {
     "id": 134,
@@ -37909,7 +41189,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 40,
       "int": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "55-94": {
     "id": 237,
@@ -37920,7 +41201,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 40,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "55-103": {
     "id": 238,
@@ -37931,7 +41213,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 30,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "55-129": {
     "id": 240,
@@ -37941,7 +41224,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 300
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "56-75": {
     "id": 246,
@@ -37952,7 +41236,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 35,
       "spd": 45
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "59-102": {
     "id": 248,
@@ -37963,7 +41248,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "59-129": {
     "id": 250,
@@ -37973,7 +41259,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 300
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "60-116": {
     "id": 252,
@@ -37984,7 +41271,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 5,
       "atk": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "62-74": {
     "id": 254,
@@ -37994,7 +41282,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 500
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "62-87": {
     "id": 256,
@@ -38006,7 +41295,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "350-351": {
     "id": 919,
@@ -38019,7 +41309,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "spd": 165
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "259-367": {
     "id": 945,
@@ -38032,7 +41323,20 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 180,
       "spd": 170
     },
-    "dna_requirement": 366
+    "dna_requirement": 366,
+    "item_requirement": null
+  },
+  "29-68": {
+    "id": 126,
+    "from_digimon_id": 29,
+    "to_digimon_id": 68,
+    "level_required": 15,
+    "stat_requirements": {
+      "hp": 150,
+      "atk": 50
+    },
+    "dna_requirement": null,
+    "item_requirement": "human_spirit_of_flame"
   },
   "32-92": {
     "id": 138,
@@ -38042,7 +41346,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "int": 35
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "32-99": {
     "id": 142,
@@ -38053,7 +41358,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "33-91": {
     "id": 146,
@@ -38064,7 +41370,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "atk": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "34-71": {
     "id": 150,
@@ -38074,7 +41381,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 300
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "34-109": {
     "id": 154,
@@ -38085,7 +41393,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 45,
       "spd": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "35-83": {
     "id": 156,
@@ -38096,7 +41405,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "35-103": {
     "id": 158,
@@ -38107,7 +41417,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 30,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "37-131": {
     "id": 163,
@@ -38117,7 +41428,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "39-71": {
     "id": 167,
@@ -38127,7 +41439,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 300
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "40-82": {
     "id": 171,
@@ -38138,7 +41451,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 40,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "40-140": {
     "id": 175,
@@ -38149,7 +41463,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "41-106": {
     "id": 179,
@@ -38160,7 +41475,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "44-100": {
     "id": 183,
@@ -38171,7 +41487,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 30,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "45-79": {
     "id": 187,
@@ -38181,7 +41498,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "def": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "45-98": {
     "id": 189,
@@ -38191,7 +41509,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "abi": 5
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "45-127": {
     "id": 191,
@@ -38199,7 +41518,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "to_digimon_id": 127,
     "level_required": 20,
     "stat_requirements": {},
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "46-122": {
     "id": 195,
@@ -38211,7 +41531,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "46-134": {
     "id": 197,
@@ -38222,7 +41543,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "47-105": {
     "id": 199,
@@ -38233,7 +41555,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "atk": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "47-110": {
     "id": 201,
@@ -38244,7 +41567,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 50,
       "spd": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "47-132": {
     "id": 203,
@@ -38255,7 +41579,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 55,
       "def": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "48-93": {
     "id": 205,
@@ -38265,7 +41590,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "48-118": {
     "id": 207,
@@ -38276,7 +41602,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 300,
       "def": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "48-113": {
     "id": 209,
@@ -38287,7 +41614,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "49-87": {
     "id": 211,
@@ -38299,7 +41627,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "49-116": {
     "id": 213,
@@ -38310,7 +41639,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 5,
       "atk": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "50-67": {
     "id": 215,
@@ -38320,7 +41650,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "spd": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "50-87": {
     "id": 217,
@@ -38332,7 +41663,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "51-76": {
     "id": 221,
@@ -38343,7 +41675,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "53-125": {
     "id": 225,
@@ -38354,7 +41687,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 35
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "53-109": {
     "id": 229,
@@ -38365,7 +41699,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 45,
       "spd": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "54-133": {
     "id": 233,
@@ -38376,7 +41711,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 250,
       "atk": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "33-88": {
     "id": 145,
@@ -38387,7 +41723,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 50,
       "spd": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "33-120": {
     "id": 147,
@@ -38398,7 +41735,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "54-139": {
     "id": 234,
@@ -38409,7 +41747,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 5,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "55-83": {
     "id": 236,
@@ -38420,7 +41759,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "55-75": {
     "id": 241,
@@ -38431,7 +41771,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 35,
       "spd": 45
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "56-131": {
     "id": 245,
@@ -38441,7 +41782,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "59-118": {
     "id": 249,
@@ -38452,7 +41794,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 300,
       "def": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "60-213": {
     "id": 253,
@@ -38465,7 +41808,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 240,
       "spd": 180
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "62-128": {
     "id": 257,
@@ -38475,7 +41819,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "62-138": {
     "id": 259,
@@ -38486,7 +41831,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 35,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "63-84": {
     "id": 261,
@@ -38497,7 +41843,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "63-128": {
     "id": 263,
@@ -38507,7 +41854,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "63-117": {
     "id": 265,
@@ -38518,7 +41866,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 45,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "348-352": {
     "id": 920,
@@ -38531,7 +41880,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 165,
       "spd": 165
     },
-    "dna_requirement": 351
+    "dna_requirement": 351,
+    "item_requirement": null
   },
   "379-380": {
     "id": 946,
@@ -38541,7 +41891,32 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "int": 45
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "53-73": {
+    "id": 228,
+    "from_digimon_id": 53,
+    "to_digimon_id": 73,
+    "level_required": 15,
+    "stat_requirements": {
+      "hp": 45,
+      "spd": 55
+    },
+    "dna_requirement": null,
+    "item_requirement": "human_spirit_of_light"
+  },
+  "53-323": {
+    "id": 226,
+    "from_digimon_id": 53,
+    "to_digimon_id": 323,
+    "level_required": 14,
+    "stat_requirements": {
+      "atk": 40,
+      "spd": 40
+    },
+    "dna_requirement": null,
+    "item_requirement": "digi_egg_of_courage"
   },
   "34-70": {
     "id": 149,
@@ -38552,7 +41927,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "34-111": {
     "id": 151,
@@ -38563,7 +41939,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 40,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "34-66": {
     "id": 153,
@@ -38574,7 +41951,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 110,
       "def": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "35-71": {
     "id": 155,
@@ -38584,7 +41962,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 300
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "35-104": {
     "id": 159,
@@ -38595,7 +41974,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 300,
       "spd": 30
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "37-92": {
     "id": 160,
@@ -38605,7 +41985,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "int": 35
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "37-107": {
     "id": 162,
@@ -38616,7 +41997,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 35
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "37-80": {
     "id": 164,
@@ -38627,7 +42009,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 130,
       "def": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "39-84": {
     "id": 166,
@@ -38638,7 +42021,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "39-115": {
     "id": 168,
@@ -38648,7 +42032,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "39-134": {
     "id": 170,
@@ -38659,7 +42044,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "40-93": {
     "id": 172,
@@ -38669,7 +42055,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "40-108": {
     "id": 174,
@@ -38680,7 +42067,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "41-92": {
     "id": 176,
@@ -38690,7 +42078,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "int": 35
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "41-90": {
     "id": 178,
@@ -38700,7 +42089,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "atk": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "41-107": {
     "id": 180,
@@ -38711,7 +42101,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 35
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "44-79": {
     "id": 182,
@@ -38721,7 +42112,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "def": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "44-119": {
     "id": 184,
@@ -38732,7 +42124,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "44-135": {
     "id": 186,
@@ -38743,7 +42136,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 130,
       "atk": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "45-92": {
     "id": 188,
@@ -38753,7 +42147,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "int": 35
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "46-76": {
     "id": 192,
@@ -38764,7 +42159,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "46-139": {
     "id": 196,
@@ -38775,7 +42171,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 5,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "47-127": {
     "id": 200,
@@ -38783,7 +42180,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "to_digimon_id": 127,
     "level_required": 20,
     "stat_requirements": {},
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "48-74": {
     "id": 204,
@@ -38793,7 +42191,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 500
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "48-129": {
     "id": 208,
@@ -38803,7 +42202,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 300
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "50-82": {
     "id": 216,
@@ -38814,7 +42214,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 40,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "50-122": {
     "id": 218,
@@ -38826,7 +42227,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "51-67": {
     "id": 220,
@@ -38836,7 +42238,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "spd": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "51-108": {
     "id": 222,
@@ -38847,7 +42250,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "53-76": {
     "id": 224,
@@ -38858,29 +42262,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 40
     },
-    "dna_requirement": null
-  },
-  "53-323": {
-    "id": 226,
-    "from_digimon_id": 53,
-    "to_digimon_id": 323,
-    "level_required": 14,
-    "stat_requirements": {
-      "atk": 40,
-      "spd": 40
-    },
-    "dna_requirement": null
-  },
-  "53-73": {
-    "id": 228,
-    "from_digimon_id": 53,
-    "to_digimon_id": 73,
-    "level_required": 15,
-    "stat_requirements": {
-      "hp": 45,
-      "spd": 55
-    },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "54-111": {
     "id": 230,
@@ -38891,7 +42274,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 40,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "54-125": {
     "id": 232,
@@ -38902,7 +42286,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 35
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "63-116": {
     "id": 262,
@@ -38913,7 +42298,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 5,
       "atk": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "64-65": {
     "id": 266,
@@ -38924,7 +42310,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "64-140": {
     "id": 270,
@@ -38935,7 +42322,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "351-352": {
     "id": 921,
@@ -38948,7 +42336,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 165,
       "spd": 165
     },
-    "dna_requirement": 348
+    "dna_requirement": 348,
+    "item_requirement": null
   },
   "91-180": {
     "id": 356,
@@ -38959,7 +42348,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "92-217": {
     "id": 360,
@@ -38970,7 +42360,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 75,
       "int": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "94-179": {
     "id": 364,
@@ -38980,7 +42371,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 900
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "95-167": {
     "id": 368,
@@ -38992,7 +42384,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 70,
       "def": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "98-275": {
     "id": 372,
@@ -39002,7 +42395,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "abi": 10
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "100-183": {
     "id": 374,
@@ -39013,7 +42407,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 60,
       "int": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "102-212": {
     "id": 378,
@@ -39024,7 +42419,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "103-194": {
     "id": 380,
@@ -39036,7 +42432,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "int": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "103-330": {
     "id": 382,
@@ -39048,7 +42445,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 95,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "105-168": {
     "id": 384,
@@ -39060,7 +42458,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 85,
       "spd": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "105-159": {
     "id": 386,
@@ -39072,7 +42471,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 10,
       "atk": 125
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "106-167": {
     "id": 388,
@@ -39084,7 +42484,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 70,
       "def": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "107-167": {
     "id": 390,
@@ -39096,7 +42497,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 70,
       "def": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "107-206": {
     "id": 392,
@@ -39107,7 +42509,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 80,
       "int": 65
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "107-162": {
     "id": 394,
@@ -39118,7 +42521,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 60,
       "atk": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "108-153": {
     "id": 396,
@@ -39129,7 +42533,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 95,
       "def": 90
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "108-175": {
     "id": 398,
@@ -39141,7 +42546,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 90,
       "spd": 75
     },
-    "dna_requirement": 76
+    "dna_requirement": 76,
+    "item_requirement": null
   },
   "380-368": {
     "id": 947,
@@ -39153,7 +42559,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 10,
       "int": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "380-385": {
     "id": 948,
@@ -39164,7 +42571,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 85,
       "spd": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "383-384": {
     "id": 951,
@@ -39175,7 +42583,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 330,
       "def": 35
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "384-385": {
     "id": 952,
@@ -39186,7 +42595,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 85,
       "spd": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "385-369": {
     "id": 953,
@@ -39198,264 +42608,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 130
     },
-    "dna_requirement": null
-  },
-  "65-214": {
-    "id": 274,
-    "from_digimon_id": 65,
-    "to_digimon_id": 214,
-    "level_required": 30,
-    "stat_requirements": {
-      "sp": 75,
-      "abi": 10,
-      "int": 95
-    },
-    "dna_requirement": null
-  },
-  "67-154": {
-    "id": 278,
-    "from_digimon_id": 67,
-    "to_digimon_id": 154,
-    "level_required": 30,
-    "stat_requirements": {
-      "atk": 75,
-      "spd": 75
-    },
-    "dna_requirement": null
-  },
-  "70-145": {
-    "id": 282,
-    "from_digimon_id": 70,
-    "to_digimon_id": 145,
-    "level_required": 26,
-    "stat_requirements": {
-      "def": 110
-    },
-    "dna_requirement": null
-  },
-  "70-159": {
-    "id": 286,
-    "from_digimon_id": 70,
-    "to_digimon_id": 159,
-    "level_required": 30,
-    "stat_requirements": {
-      "hp": 400,
-      "abi": 10,
-      "atk": 125
-    },
-    "dna_requirement": null
-  },
-  "72-147": {
-    "id": 291,
-    "from_digimon_id": 72,
-    "to_digimon_id": 147,
-    "level_required": 30,
-    "stat_requirements": {
-      "abi": 10,
-      "atk": 70,
-      "int": 90
-    },
-    "dna_requirement": null
-  },
-  "72-217": {
-    "id": 293,
-    "from_digimon_id": 72,
-    "to_digimon_id": 217,
-    "level_required": 28,
-    "stat_requirements": {
-      "sp": 75,
-      "int": 100
-    },
-    "dna_requirement": null
-  },
-  "74-187": {
-    "id": 297,
-    "from_digimon_id": 74,
-    "to_digimon_id": 187,
-    "level_required": 26,
-    "stat_requirements": {
-      "hp": 850,
-      "atk": 60,
-      "int": 60
-    },
-    "dna_requirement": null
-  },
-  "76-195": {
-    "id": 299,
-    "from_digimon_id": 76,
-    "to_digimon_id": 195,
-    "level_required": 30,
-    "stat_requirements": {
-      "sp": 80,
-      "abi": 10,
-      "int": 80
-    },
-    "dna_requirement": null
-  },
-  "77-154": {
-    "id": 303,
-    "from_digimon_id": 77,
-    "to_digimon_id": 154,
-    "level_required": 30,
-    "stat_requirements": {
-      "atk": 75,
-      "spd": 75
-    },
-    "dna_requirement": null
-  },
-  "77-189": {
-    "id": 307,
-    "from_digimon_id": 77,
-    "to_digimon_id": 189,
-    "level_required": 26,
-    "stat_requirements": {
-      "sp": 65,
-      "int": 65
-    },
-    "dna_requirement": null
-  },
-  "78-169": {
-    "id": 311,
-    "from_digimon_id": 78,
-    "to_digimon_id": 169,
-    "level_required": 28,
-    "stat_requirements": {
-      "atk": 80,
-      "int": 70
-    },
-    "dna_requirement": null
-  },
-  "79-206": {
-    "id": 315,
-    "from_digimon_id": 79,
-    "to_digimon_id": 206,
-    "level_required": 26,
-    "stat_requirements": {
-      "def": 80,
-      "int": 65
-    },
-    "dna_requirement": null
-  },
-  "81-215": {
-    "id": 319,
-    "from_digimon_id": 81,
-    "to_digimon_id": 215,
-    "level_required": 28,
-    "stat_requirements": {
-      "atk": 90,
-      "spd": 85
-    },
-    "dna_requirement": null
-  },
-  "82-210": {
-    "id": 322,
-    "from_digimon_id": 82,
-    "to_digimon_id": 210,
-    "level_required": 30,
-    "stat_requirements": {
-      "sp": 75,
-      "int": 75
-    },
-    "dna_requirement": null
-  },
-  "83-191": {
-    "id": 324,
-    "from_digimon_id": 83,
-    "to_digimon_id": 191,
-    "level_required": 32,
-    "stat_requirements": {},
-    "dna_requirement": null
-  },
-  "84-143": {
-    "id": 326,
-    "from_digimon_id": 84,
-    "to_digimon_id": 143,
-    "level_required": 28,
-    "stat_requirements": {
-      "atk": 65,
-      "int": 75,
-      "spd": 85
-    },
-    "dna_requirement": null
-  },
-  "84-211": {
-    "id": 328,
-    "from_digimon_id": 84,
-    "to_digimon_id": 211,
-    "level_required": 28,
-    "stat_requirements": {
-      "atk": 75,
-      "spd": 75
-    },
-    "dna_requirement": null
-  },
-  "85-181": {
-    "id": 330,
-    "from_digimon_id": 85,
-    "to_digimon_id": 181,
-    "level_required": 30,
-    "stat_requirements": {
-      "hp": 400,
-      "atk": 95,
-      "def": 75
-    },
-    "dna_requirement": null
-  },
-  "85-215": {
-    "id": 332,
-    "from_digimon_id": 85,
-    "to_digimon_id": 215,
-    "level_required": 28,
-    "stat_requirements": {
-      "atk": 90,
-      "spd": 85
-    },
-    "dna_requirement": null
-  },
-  "86-198": {
-    "id": 334,
-    "from_digimon_id": 86,
-    "to_digimon_id": 198,
-    "level_required": 26,
-    "stat_requirements": {
-      "atk": 75,
-      "spd": 80
-    },
-    "dna_requirement": null
-  },
-  "86-186": {
-    "id": 336,
-    "from_digimon_id": 86,
-    "to_digimon_id": 186,
-    "level_required": 26,
-    "stat_requirements": {
-      "atk": 65,
-      "def": 65
-    },
-    "dna_requirement": null
-  },
-  "87-207": {
-    "id": 338,
-    "from_digimon_id": 87,
-    "to_digimon_id": 207,
-    "level_required": 26,
-    "stat_requirements": {
-      "hp": 600,
-      "atk": 60
-    },
-    "dna_requirement": null
-  },
-  "88-156": {
-    "id": 340,
-    "from_digimon_id": 88,
-    "to_digimon_id": 156,
-    "level_required": 26,
-    "stat_requirements": {
-      "hp": 800,
-      "atk": 75,
-      "def": 95
-    },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "88-149": {
     "id": 344,
@@ -39467,7 +42621,288 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": "beast_spirit_of_flame"
+  },
+  "65-214": {
+    "id": 274,
+    "from_digimon_id": 65,
+    "to_digimon_id": 214,
+    "level_required": 30,
+    "stat_requirements": {
+      "sp": 75,
+      "abi": 10,
+      "int": 95
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "67-154": {
+    "id": 278,
+    "from_digimon_id": 67,
+    "to_digimon_id": 154,
+    "level_required": 30,
+    "stat_requirements": {
+      "atk": 75,
+      "spd": 75
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "70-145": {
+    "id": 282,
+    "from_digimon_id": 70,
+    "to_digimon_id": 145,
+    "level_required": 26,
+    "stat_requirements": {
+      "def": 110
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "70-159": {
+    "id": 286,
+    "from_digimon_id": 70,
+    "to_digimon_id": 159,
+    "level_required": 30,
+    "stat_requirements": {
+      "hp": 400,
+      "abi": 10,
+      "atk": 125
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "72-147": {
+    "id": 291,
+    "from_digimon_id": 72,
+    "to_digimon_id": 147,
+    "level_required": 30,
+    "stat_requirements": {
+      "abi": 10,
+      "atk": 70,
+      "int": 90
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "72-217": {
+    "id": 293,
+    "from_digimon_id": 72,
+    "to_digimon_id": 217,
+    "level_required": 28,
+    "stat_requirements": {
+      "sp": 75,
+      "int": 100
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "74-187": {
+    "id": 297,
+    "from_digimon_id": 74,
+    "to_digimon_id": 187,
+    "level_required": 26,
+    "stat_requirements": {
+      "hp": 850,
+      "atk": 60,
+      "int": 60
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "76-195": {
+    "id": 299,
+    "from_digimon_id": 76,
+    "to_digimon_id": 195,
+    "level_required": 30,
+    "stat_requirements": {
+      "sp": 80,
+      "abi": 10,
+      "int": 80
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "77-154": {
+    "id": 303,
+    "from_digimon_id": 77,
+    "to_digimon_id": 154,
+    "level_required": 30,
+    "stat_requirements": {
+      "atk": 75,
+      "spd": 75
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "77-189": {
+    "id": 307,
+    "from_digimon_id": 77,
+    "to_digimon_id": 189,
+    "level_required": 26,
+    "stat_requirements": {
+      "sp": 65,
+      "int": 65
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "78-169": {
+    "id": 311,
+    "from_digimon_id": 78,
+    "to_digimon_id": 169,
+    "level_required": 28,
+    "stat_requirements": {
+      "atk": 80,
+      "int": 70
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "79-206": {
+    "id": 315,
+    "from_digimon_id": 79,
+    "to_digimon_id": 206,
+    "level_required": 26,
+    "stat_requirements": {
+      "def": 80,
+      "int": 65
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "81-215": {
+    "id": 319,
+    "from_digimon_id": 81,
+    "to_digimon_id": 215,
+    "level_required": 28,
+    "stat_requirements": {
+      "atk": 90,
+      "spd": 85
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "82-210": {
+    "id": 322,
+    "from_digimon_id": 82,
+    "to_digimon_id": 210,
+    "level_required": 30,
+    "stat_requirements": {
+      "sp": 75,
+      "int": 75
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "83-191": {
+    "id": 324,
+    "from_digimon_id": 83,
+    "to_digimon_id": 191,
+    "level_required": 32,
+    "stat_requirements": {},
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "84-143": {
+    "id": 326,
+    "from_digimon_id": 84,
+    "to_digimon_id": 143,
+    "level_required": 28,
+    "stat_requirements": {
+      "atk": 65,
+      "int": 75,
+      "spd": 85
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "84-211": {
+    "id": 328,
+    "from_digimon_id": 84,
+    "to_digimon_id": 211,
+    "level_required": 28,
+    "stat_requirements": {
+      "atk": 75,
+      "spd": 75
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "85-181": {
+    "id": 330,
+    "from_digimon_id": 85,
+    "to_digimon_id": 181,
+    "level_required": 30,
+    "stat_requirements": {
+      "hp": 400,
+      "atk": 95,
+      "def": 75
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "85-215": {
+    "id": 332,
+    "from_digimon_id": 85,
+    "to_digimon_id": 215,
+    "level_required": 28,
+    "stat_requirements": {
+      "atk": 90,
+      "spd": 85
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "86-198": {
+    "id": 334,
+    "from_digimon_id": 86,
+    "to_digimon_id": 198,
+    "level_required": 26,
+    "stat_requirements": {
+      "atk": 75,
+      "spd": 80
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "86-186": {
+    "id": 336,
+    "from_digimon_id": 86,
+    "to_digimon_id": 186,
+    "level_required": 26,
+    "stat_requirements": {
+      "atk": 65,
+      "def": 65
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "87-207": {
+    "id": 338,
+    "from_digimon_id": 87,
+    "to_digimon_id": 207,
+    "level_required": 26,
+    "stat_requirements": {
+      "hp": 600,
+      "atk": 60
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "88-156": {
+    "id": 340,
+    "from_digimon_id": 88,
+    "to_digimon_id": 156,
+    "level_required": 26,
+    "stat_requirements": {
+      "hp": 800,
+      "atk": 75,
+      "def": 95
+    },
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "89-142": {
     "id": 348,
@@ -39478,7 +42913,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 110,
       "int": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "90-204": {
     "id": 352,
@@ -39489,7 +42925,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 450,
       "atk": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "64-108": {
     "id": 269,
@@ -39500,7 +42937,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "353-354": {
     "id": 922,
@@ -39511,7 +42949,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 55,
       "spd": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "368-381": {
     "id": 949,
@@ -39524,7 +42963,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "359-382": {
     "id": 950,
@@ -39537,7 +42977,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 275,
       "spd": 145
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "64-126": {
     "id": 271,
@@ -39548,7 +42989,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "86-216": {
     "id": 335,
@@ -39560,7 +43002,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 90,
       "spd": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "87-214": {
     "id": 339,
@@ -39572,7 +43015,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 10,
       "int": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "88-202": {
     "id": 341,
@@ -39583,7 +43027,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 105,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "88-205": {
     "id": 343,
@@ -39594,7 +43039,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "89-146": {
     "id": 345,
@@ -39605,7 +43051,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 95,
       "spd": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "89-172": {
     "id": 347,
@@ -39617,7 +43064,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 75,
       "spd": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "90-168": {
     "id": 349,
@@ -39629,7 +43077,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 85,
       "spd": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "90-203": {
     "id": 351,
@@ -39640,7 +43089,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 350,
       "atk": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "91-181": {
     "id": 353,
@@ -39652,7 +43102,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 95,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "91-204": {
     "id": 355,
@@ -39663,7 +43114,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 450,
       "atk": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "92-144": {
     "id": 357,
@@ -39675,7 +43127,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "int": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "92-183": {
     "id": 359,
@@ -39686,7 +43139,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 60,
       "int": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "93-153": {
     "id": 361,
@@ -39697,7 +43151,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 95,
       "def": 90
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "93-165": {
     "id": 363,
@@ -39708,7 +43163,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 800,
       "def": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "94-194": {
     "id": 365,
@@ -39720,7 +43176,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "int": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "95-151": {
     "id": 367,
@@ -39732,7 +43189,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "spd": 65
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "95-206": {
     "id": 369,
@@ -39743,7 +43201,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 80,
       "int": 65
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "98-193": {
     "id": 371,
@@ -39753,7 +43212,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "sp": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "100-181": {
     "id": 373,
@@ -39765,7 +43225,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 95,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "102-210": {
     "id": 377,
@@ -39776,7 +43237,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 75,
       "int": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "65-165": {
     "id": 273,
@@ -39787,7 +43249,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 800,
       "def": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "65-142": {
     "id": 275,
@@ -39798,7 +43261,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 110,
       "int": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "67-150": {
     "id": 277,
@@ -39809,7 +43273,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "67-166": {
     "id": 279,
@@ -39821,7 +43286,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 75,
       "spd": 75
     },
-    "dna_requirement": 115
+    "dna_requirement": 115,
+    "item_requirement": null
   },
   "67-189": {
     "id": 281,
@@ -39832,7 +43298,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 65,
       "int": 65
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "70-164": {
     "id": 283,
@@ -39843,7 +43310,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "int": 65
     },
-    "dna_requirement": 77
+    "dna_requirement": 77,
+    "item_requirement": null
   },
   "70-195": {
     "id": 285,
@@ -39855,7 +43323,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 10,
       "int": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "71-170": {
     "id": 287,
@@ -39866,7 +43335,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 800,
       "atk": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "71-198": {
     "id": 289,
@@ -39877,7 +43347,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "71-180": {
     "id": 290,
@@ -39888,7 +43359,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "72-190": {
     "id": 294,
@@ -39899,7 +43371,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 80,
       "int": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "76-184": {
     "id": 298,
@@ -39911,7 +43384,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 60,
       "spd": 75
     },
-    "dna_requirement": 108
+    "dna_requirement": 108,
+    "item_requirement": null
   },
   "76-209": {
     "id": 300,
@@ -39923,7 +43397,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 100,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "76-175": {
     "id": 302,
@@ -39935,7 +43410,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 90,
       "spd": 75
     },
-    "dna_requirement": 108
+    "dna_requirement": 108,
+    "item_requirement": null
   },
   "77-164": {
     "id": 304,
@@ -39946,7 +43422,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "int": 65
     },
-    "dna_requirement": 70
+    "dna_requirement": 70,
+    "item_requirement": null
   },
   "77-171": {
     "id": 306,
@@ -39957,7 +43434,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 90,
       "spd": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "78-176": {
     "id": 308,
@@ -39968,7 +43446,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 700,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "78-215": {
     "id": 310,
@@ -39979,7 +43458,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 90,
       "spd": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "79-144": {
     "id": 312,
@@ -39991,7 +43471,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "int": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "79-183": {
     "id": 314,
@@ -40002,7 +43483,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 60,
       "int": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "79-157": {
     "id": 316,
@@ -40013,7 +43495,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 700,
       "def": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "81-198": {
     "id": 318,
@@ -40024,7 +43507,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "82-141": {
     "id": 320,
@@ -40035,7 +43519,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 400,
       "def": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "83-179": {
     "id": 323,
@@ -40045,7 +43530,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 900
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "84-202": {
     "id": 327,
@@ -40056,7 +43542,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 105,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "105-209": {
     "id": 385,
@@ -40068,7 +43555,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 100,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "354-355": {
     "id": 923,
@@ -40079,7 +43567,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 115,
       "spd": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "106-193": {
     "id": 389,
@@ -40089,7 +43578,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "sp": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "107-157": {
     "id": 393,
@@ -40100,7 +43590,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 700,
       "def": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "108-184": {
     "id": 397,
@@ -40112,7 +43603,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 60,
       "spd": 75
     },
-    "dna_requirement": 76
+    "dna_requirement": 76,
+    "item_requirement": null
   },
   "131-196": {
     "id": 468,
@@ -40123,7 +43615,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 80,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "133-170": {
     "id": 470,
@@ -40134,7 +43627,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 800,
       "atk": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "133-162": {
     "id": 472,
@@ -40145,7 +43639,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 60,
       "atk": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "137-160": {
     "id": 474,
@@ -40156,7 +43651,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 400,
       "atk": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "137-203": {
     "id": 476,
@@ -40167,7 +43663,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 350,
       "atk": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "139-174": {
     "id": 478,
@@ -40179,7 +43676,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 10,
       "spd": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "139-211": {
     "id": 480,
@@ -40190,7 +43688,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "140-153": {
     "id": 482,
@@ -40201,7 +43700,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 95,
       "def": 90
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "140-211": {
     "id": 484,
@@ -40212,7 +43712,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "141-285": {
     "id": 487,
@@ -40225,7 +43726,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 145
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "143-259": {
     "id": 489,
@@ -40238,7 +43740,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 130,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "143-242": {
     "id": 491,
@@ -40251,7 +43754,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 40,
       "int": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "145-221": {
     "id": 495,
@@ -40263,7 +43767,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "145-259": {
     "id": 496,
@@ -40276,7 +43781,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 130,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "147-218": {
     "id": 505,
@@ -40289,7 +43795,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 200,
       "spd": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "150-220": {
     "id": 507,
@@ -40301,7 +43808,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "spd": 145
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "150-304": {
     "id": 509,
@@ -40313,7 +43821,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 130,
       "spd": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "151-273": {
     "id": 511,
@@ -40326,7 +43835,20 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 160,
       "spd": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "21-397": {
+    "id": 954,
+    "from_digimon_id": 21,
+    "to_digimon_id": 397,
+    "level_required": 14,
+    "stat_requirements": {
+      "atk": 35,
+      "spd": 35
+    },
+    "dna_requirement": null,
+    "item_requirement": "digi_egg_of_reliability"
   },
   "111-217": {
     "id": 401,
@@ -40337,7 +43859,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 75,
       "int": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "112-156": {
     "id": 403,
@@ -40349,7 +43872,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "112-196": {
     "id": 406,
@@ -40360,7 +43884,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 80,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "114-205": {
     "id": 410,
@@ -40371,7 +43896,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "115-186": {
     "id": 414,
@@ -40382,7 +43908,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 65,
       "def": 65
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "116-204": {
     "id": 418,
@@ -40393,7 +43920,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 450,
       "atk": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "118-212": {
     "id": 422,
@@ -40404,7 +43932,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "119-161": {
     "id": 426,
@@ -40416,7 +43945,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 80,
       "spd": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "121-151": {
     "id": 430,
@@ -40428,7 +43958,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "spd": 65
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "122-154": {
     "id": 434,
@@ -40439,7 +43970,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "122-189": {
     "id": 438,
@@ -40450,7 +43982,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 65,
       "int": 65
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "124-214": {
     "id": 442,
@@ -40462,7 +43995,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 10,
       "int": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "124-197": {
     "id": 444,
@@ -40473,7 +44007,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "125-163": {
     "id": 446,
@@ -40485,7 +44020,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "125-205": {
     "id": 448,
@@ -40496,7 +44032,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "127-193": {
     "id": 450,
@@ -40506,7 +44043,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "sp": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "127-157": {
     "id": 452,
@@ -40517,7 +44055,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 700,
       "def": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "128-182": {
     "id": 454,
@@ -40528,7 +44067,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "128-216": {
     "id": 456,
@@ -40540,7 +44080,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 90,
       "spd": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "129-176": {
     "id": 458,
@@ -40551,7 +44092,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 700,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "130-143": {
     "id": 460,
@@ -40563,7 +44105,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 75,
       "spd": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "130-208": {
     "id": 462,
@@ -40574,7 +44117,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 75,
       "spd": 90
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "131-185": {
     "id": 464,
@@ -40586,7 +44130,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "112-144": {
     "id": 402,
@@ -40598,7 +44143,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "int": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "112-182": {
     "id": 405,
@@ -40609,7 +44155,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "114-199": {
     "id": 407,
@@ -40620,7 +44167,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "114-204": {
     "id": 409,
@@ -40631,7 +44179,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 450,
       "atk": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "115-152": {
     "id": 411,
@@ -40643,7 +44192,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 10,
       "int": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "133-207": {
     "id": 471,
@@ -40654,7 +44204,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 600,
       "atk": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "137-185": {
     "id": 475,
@@ -40666,7 +44217,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "139-188": {
     "id": 479,
@@ -40678,7 +44230,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 80,
       "spd": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "140-158": {
     "id": 483,
@@ -40689,7 +44242,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "141-237": {
     "id": 485,
@@ -40702,7 +44256,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "141-280": {
     "id": 486,
@@ -40715,7 +44270,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 150,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "143-260": {
     "id": 490,
@@ -40728,7 +44284,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 180,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "144-241": {
     "id": 492,
@@ -40741,7 +44298,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 180,
       "int": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "144-269": {
     "id": 494,
@@ -40754,7 +44312,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "145-296": {
     "id": 497,
@@ -40767,7 +44326,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "146-227": {
     "id": 498,
@@ -40781,7 +44341,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 110,
       "int": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "147-273": {
     "id": 504,
@@ -40794,7 +44355,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 160,
       "spd": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "151-275": {
     "id": 512,
@@ -40804,7 +44366,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "abi": 10
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "152-229": {
     "id": 516,
@@ -40817,7 +44380,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 145
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "153-237": {
     "id": 520,
@@ -40830,7 +44394,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "154-284": {
     "id": 524,
@@ -40842,7 +44407,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 130,
       "spd": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "154-226": {
     "id": 526,
@@ -40855,7 +44421,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 145,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "156-239": {
     "id": 528,
@@ -40867,7 +44434,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 160,
       "spd": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "355-356": {
     "id": 924,
@@ -40879,127 +44447,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 40,
       "atk": 200
     },
-    "dna_requirement": null
-  },
-  "115-212": {
-    "id": 413,
-    "from_digimon_id": 115,
-    "to_digimon_id": 212,
-    "level_required": 30,
-    "stat_requirements": {
-      "int": 75,
-      "spd": 75
-    },
-    "dna_requirement": null
-  },
-  "116-146": {
-    "id": 415,
-    "from_digimon_id": 116,
-    "to_digimon_id": 146,
-    "level_required": 30,
-    "stat_requirements": {
-      "atk": 95,
-      "spd": 80
-    },
-    "dna_requirement": null
-  },
-  "116-192": {
-    "id": 417,
-    "from_digimon_id": 116,
-    "to_digimon_id": 192,
-    "level_required": 28,
-    "stat_requirements": {
-      "hp": 400,
-      "atk": 80,
-      "int": 70
-    },
-    "dna_requirement": null
-  },
-  "116-169": {
-    "id": 419,
-    "from_digimon_id": 116,
-    "to_digimon_id": 169,
-    "level_required": 28,
-    "stat_requirements": {
-      "atk": 80,
-      "int": 70
-    },
-    "dna_requirement": null
-  },
-  "118-198": {
-    "id": 421,
-    "from_digimon_id": 118,
-    "to_digimon_id": 198,
-    "level_required": 26,
-    "stat_requirements": {
-      "atk": 75,
-      "spd": 80
-    },
-    "dna_requirement": null
-  },
-  "119-174": {
-    "id": 423,
-    "from_digimon_id": 119,
-    "to_digimon_id": 174,
-    "level_required": 30,
-    "stat_requirements": {
-      "sp": 75,
-      "abi": 10,
-      "spd": 100
-    },
-    "dna_requirement": null
-  },
-  "119-209": {
-    "id": 425,
-    "from_digimon_id": 119,
-    "to_digimon_id": 209,
-    "level_required": 30,
-    "stat_requirements": {
-      "hp": 350,
-      "atk": 100,
-      "spd": 75
-    },
-    "dna_requirement": null
-  },
-  "120-145": {
-    "id": 427,
-    "from_digimon_id": 120,
-    "to_digimon_id": 145,
-    "level_required": 26,
-    "stat_requirements": {
-      "def": 110
-    },
-    "dna_requirement": null
-  },
-  "120-176": {
-    "id": 429,
-    "from_digimon_id": 120,
-    "to_digimon_id": 176,
-    "level_required": 30,
-    "stat_requirements": {
-      "hp": 700,
-      "def": 75
-    },
-    "dna_requirement": null
-  },
-  "121-191": {
-    "id": 431,
-    "from_digimon_id": 121,
-    "to_digimon_id": 191,
-    "level_required": 32,
-    "stat_requirements": {},
-    "dna_requirement": null
-  },
-  "122-150": {
-    "id": 433,
-    "from_digimon_id": 122,
-    "to_digimon_id": 150,
-    "level_required": 30,
-    "stat_requirements": {
-      "atk": 75,
-      "spd": 95
-    },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "122-149": {
     "id": 437,
@@ -41011,98 +44460,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 60
     },
-    "dna_requirement": null
-  },
-  "124-147": {
-    "id": 439,
-    "from_digimon_id": 124,
-    "to_digimon_id": 147,
-    "level_required": 30,
-    "stat_requirements": {
-      "abi": 10,
-      "atk": 70,
-      "int": 90
-    },
-    "dna_requirement": null
-  },
-  "124-192": {
-    "id": 441,
-    "from_digimon_id": 124,
-    "to_digimon_id": 192,
-    "level_required": 28,
-    "stat_requirements": {
-      "hp": 400,
-      "atk": 80,
-      "int": 70
-    },
-    "dna_requirement": null
-  },
-  "124-190": {
-    "id": 443,
-    "from_digimon_id": 124,
-    "to_digimon_id": 190,
-    "level_required": 28,
-    "stat_requirements": {
-      "sp": 80,
-      "int": 80
-    },
-    "dna_requirement": null
-  },
-  "125-202": {
-    "id": 447,
-    "from_digimon_id": 125,
-    "to_digimon_id": 202,
-    "level_required": 30,
-    "stat_requirements": {
-      "atk": 105,
-      "spd": 75
-    },
-    "dna_requirement": null
-  },
-  "127-206": {
-    "id": 451,
-    "from_digimon_id": 127,
-    "to_digimon_id": 206,
-    "level_required": 26,
-    "stat_requirements": {
-      "def": 80,
-      "int": 65
-    },
-    "dna_requirement": null
-  },
-  "128-214": {
-    "id": 455,
-    "from_digimon_id": 128,
-    "to_digimon_id": 214,
-    "level_required": 30,
-    "stat_requirements": {
-      "sp": 75,
-      "abi": 10,
-      "int": 95
-    },
-    "dna_requirement": null
-  },
-  "129-210": {
-    "id": 459,
-    "from_digimon_id": 129,
-    "to_digimon_id": 210,
-    "level_required": 30,
-    "stat_requirements": {
-      "sp": 75,
-      "int": 75
-    },
-    "dna_requirement": null
-  },
-  "131-177": {
-    "id": 463,
-    "from_digimon_id": 131,
-    "to_digimon_id": 177,
-    "level_required": 28,
-    "stat_requirements": {
-      "hp": 500,
-      "atk": 95
-    },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": "beast_spirit_of_flame"
   },
   "131-149": {
     "id": 467,
@@ -41114,7 +44473,250 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": "beast_spirit_of_flame"
+  },
+  "46-398": {
+    "id": 955,
+    "from_digimon_id": 46,
+    "to_digimon_id": 398,
+    "level_required": 14,
+    "stat_requirements": {
+      "int": 40,
+      "spd": 40
+    },
+    "dna_requirement": null,
+    "item_requirement": "digi_egg_of_hope"
+  },
+  "115-212": {
+    "id": 413,
+    "from_digimon_id": 115,
+    "to_digimon_id": 212,
+    "level_required": 30,
+    "stat_requirements": {
+      "int": 75,
+      "spd": 75
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "116-146": {
+    "id": 415,
+    "from_digimon_id": 116,
+    "to_digimon_id": 146,
+    "level_required": 30,
+    "stat_requirements": {
+      "atk": 95,
+      "spd": 80
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "116-192": {
+    "id": 417,
+    "from_digimon_id": 116,
+    "to_digimon_id": 192,
+    "level_required": 28,
+    "stat_requirements": {
+      "hp": 400,
+      "atk": 80,
+      "int": 70
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "116-169": {
+    "id": 419,
+    "from_digimon_id": 116,
+    "to_digimon_id": 169,
+    "level_required": 28,
+    "stat_requirements": {
+      "atk": 80,
+      "int": 70
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "118-198": {
+    "id": 421,
+    "from_digimon_id": 118,
+    "to_digimon_id": 198,
+    "level_required": 26,
+    "stat_requirements": {
+      "atk": 75,
+      "spd": 80
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "119-174": {
+    "id": 423,
+    "from_digimon_id": 119,
+    "to_digimon_id": 174,
+    "level_required": 30,
+    "stat_requirements": {
+      "sp": 75,
+      "abi": 10,
+      "spd": 100
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "119-209": {
+    "id": 425,
+    "from_digimon_id": 119,
+    "to_digimon_id": 209,
+    "level_required": 30,
+    "stat_requirements": {
+      "hp": 350,
+      "atk": 100,
+      "spd": 75
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "120-145": {
+    "id": 427,
+    "from_digimon_id": 120,
+    "to_digimon_id": 145,
+    "level_required": 26,
+    "stat_requirements": {
+      "def": 110
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "120-176": {
+    "id": 429,
+    "from_digimon_id": 120,
+    "to_digimon_id": 176,
+    "level_required": 30,
+    "stat_requirements": {
+      "hp": 700,
+      "def": 75
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "121-191": {
+    "id": 431,
+    "from_digimon_id": 121,
+    "to_digimon_id": 191,
+    "level_required": 32,
+    "stat_requirements": {},
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "122-150": {
+    "id": 433,
+    "from_digimon_id": 122,
+    "to_digimon_id": 150,
+    "level_required": 30,
+    "stat_requirements": {
+      "atk": 75,
+      "spd": 95
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "124-147": {
+    "id": 439,
+    "from_digimon_id": 124,
+    "to_digimon_id": 147,
+    "level_required": 30,
+    "stat_requirements": {
+      "abi": 10,
+      "atk": 70,
+      "int": 90
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "124-192": {
+    "id": 441,
+    "from_digimon_id": 124,
+    "to_digimon_id": 192,
+    "level_required": 28,
+    "stat_requirements": {
+      "hp": 400,
+      "atk": 80,
+      "int": 70
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "124-190": {
+    "id": 443,
+    "from_digimon_id": 124,
+    "to_digimon_id": 190,
+    "level_required": 28,
+    "stat_requirements": {
+      "sp": 80,
+      "int": 80
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "125-202": {
+    "id": 447,
+    "from_digimon_id": 125,
+    "to_digimon_id": 202,
+    "level_required": 30,
+    "stat_requirements": {
+      "atk": 105,
+      "spd": 75
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "127-206": {
+    "id": 451,
+    "from_digimon_id": 127,
+    "to_digimon_id": 206,
+    "level_required": 26,
+    "stat_requirements": {
+      "def": 80,
+      "int": 65
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "128-214": {
+    "id": 455,
+    "from_digimon_id": 128,
+    "to_digimon_id": 214,
+    "level_required": 30,
+    "stat_requirements": {
+      "sp": 75,
+      "abi": 10,
+      "int": 95
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "129-210": {
+    "id": 459,
+    "from_digimon_id": 129,
+    "to_digimon_id": 210,
+    "level_required": 30,
+    "stat_requirements": {
+      "sp": 75,
+      "int": 75
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "131-177": {
+    "id": 463,
+    "from_digimon_id": 131,
+    "to_digimon_id": 177,
+    "level_required": 28,
+    "stat_requirements": {
+      "hp": 500,
+      "atk": 95
+    },
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "152-285": {
     "id": 517,
@@ -41127,7 +44729,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 145
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "152-225": {
     "id": 519,
@@ -41140,7 +44743,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 130,
       "spd": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "153-260": {
     "id": 521,
@@ -41153,7 +44757,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 180,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "154-250": {
     "id": 523,
@@ -41166,7 +44771,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 130,
       "def": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "156-294": {
     "id": 529,
@@ -41179,7 +44785,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 130,
       "def": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "156-295": {
     "id": 533,
@@ -41191,7 +44798,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 40,
       "atk": 180
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "160-245": {
     "id": 537,
@@ -41203,7 +44811,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 145,
       "spd": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "163-219": {
     "id": 541,
@@ -41216,7 +44825,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 170,
       "int": 135
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "179-279": {
     "id": 578,
@@ -41229,7 +44839,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 145
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "181-251": {
     "id": 582,
@@ -41242,7 +44853,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 120,
       "spd": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "182-306": {
     "id": 586,
@@ -41255,7 +44867,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 135,
       "spd": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "183-239": {
     "id": 588,
@@ -41267,7 +44880,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 160,
       "spd": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "185-245": {
     "id": 592,
@@ -41279,7 +44893,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 145,
       "spd": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "185-292": {
     "id": 594,
@@ -41291,7 +44906,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "187-286": {
     "id": 596,
@@ -41303,7 +44919,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 145,
       "def": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "188-229": {
     "id": 598,
@@ -41316,7 +44933,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 145
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "188-290": {
     "id": 600,
@@ -41328,7 +44946,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 135
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "191-277": {
     "id": 602,
@@ -41339,7 +44958,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "def": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "192-286": {
     "id": 606,
@@ -41351,7 +44971,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 145,
       "def": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "193-221": {
     "id": 608,
@@ -41363,7 +44984,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "193-280": {
     "id": 610,
@@ -41376,7 +44998,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 150,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "194-290": {
     "id": 612,
@@ -41388,7 +45011,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 135
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "194-268": {
     "id": 614,
@@ -41401,7 +45025,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "199-228": {
     "id": 624,
@@ -41414,7 +45039,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 160,
       "def": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "199-277": {
     "id": 626,
@@ -41425,7 +45051,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "def": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "200-299": {
     "id": 628,
@@ -41438,7 +45065,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "201-276": {
     "id": 632,
@@ -41451,7 +45079,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 140,
       "def": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "202-295": {
     "id": 640,
@@ -41463,7 +45092,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 40,
       "atk": 180
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "204-228": {
     "id": 644,
@@ -41476,7 +45106,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 160,
       "def": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "355-357": {
     "id": 925,
@@ -41489,7 +45120,20 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 155,
       "int": 155
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "380-399": {
+    "id": 956,
+    "from_digimon_id": 380,
+    "to_digimon_id": 399,
+    "level_required": 24,
+    "stat_requirements": {
+      "def": 65,
+      "int": 65
+    },
+    "dna_requirement": null,
+    "item_requirement": "digi_egg_of_light"
   },
   "164-232": {
     "id": 545,
@@ -41502,7 +45146,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "165-274": {
     "id": 549,
@@ -41515,7 +45160,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "167-275": {
     "id": 557,
@@ -41525,7 +45171,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "abi": 10
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "168-257": {
     "id": 559,
@@ -41538,7 +45185,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "170-224": {
     "id": 561,
@@ -41552,7 +45200,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "170-297": {
     "id": 563,
@@ -41565,7 +45214,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "spd": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "172-236": {
     "id": 565,
@@ -41578,7 +45228,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 135,
       "spd": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "172-259": {
     "id": 567,
@@ -41591,7 +45242,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 130,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "177-234": {
     "id": 574,
@@ -41604,7 +45256,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 145,
       "def": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "195-253": {
     "id": 616,
@@ -41617,7 +45270,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "198-254": {
     "id": 620,
@@ -41629,7 +45283,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "198-292": {
     "id": 622,
@@ -41641,7 +45296,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "158-239": {
     "id": 534,
@@ -41653,7 +45309,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 160,
       "spd": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "158-256": {
     "id": 536,
@@ -41666,7 +45323,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "160-265": {
     "id": 538,
@@ -41679,7 +45337,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 120,
       "spd": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "160-270": {
     "id": 540,
@@ -41691,7 +45350,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 135
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "164-224": {
     "id": 544,
@@ -41705,7 +45365,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "164-243": {
     "id": 546,
@@ -41718,7 +45379,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 145,
       "spd": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "165-237": {
     "id": 548,
@@ -41731,7 +45393,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "166-246": {
     "id": 550,
@@ -41744,7 +45407,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 120,
       "spd": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "179-224": {
     "id": 577,
@@ -41758,7 +45422,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "179-302": {
     "id": 579,
@@ -41773,7 +45438,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 140,
       "int": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "181-219": {
     "id": 581,
@@ -41786,7 +45452,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 170,
       "int": 135
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "181-267": {
     "id": 583,
@@ -41798,7 +45465,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "atk": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "182-265": {
     "id": 585,
@@ -41811,7 +45479,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 120,
       "spd": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "184-222": {
     "id": 591,
@@ -41824,7 +45493,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 150,
       "spd": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "187-274": {
     "id": 595,
@@ -41837,7 +45507,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "188-284": {
     "id": 599,
@@ -41849,7 +45520,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 130,
       "spd": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "191-296": {
     "id": 603,
@@ -41862,7 +45534,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "192-255": {
     "id": 607,
@@ -41874,7 +45547,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "def": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "194-279": {
     "id": 611,
@@ -41887,7 +45561,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 145
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "195-244": {
     "id": 619,
@@ -41900,7 +45575,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "198-300": {
     "id": 623,
@@ -41913,7 +45589,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 110,
       "spd": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "201-220": {
     "id": 631,
@@ -41925,7 +45602,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "spd": 145
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "201-294": {
     "id": 633,
@@ -41938,7 +45616,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 130,
       "def": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "202-262": {
     "id": 637,
@@ -41951,7 +45630,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 140,
       "int": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "202-255": {
     "id": 639,
@@ -41963,7 +45643,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "def": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "203-228": {
     "id": 641,
@@ -41976,7 +45657,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 160,
       "def": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "203-301": {
     "id": 643,
@@ -41989,7 +45671,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 180,
       "def": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "204-230": {
     "id": 645,
@@ -42002,7 +45685,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 100,
       "spd": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "204-242": {
     "id": 647,
@@ -42015,7 +45699,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 40,
       "int": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "206-221": {
     "id": 652,
@@ -42027,7 +45712,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "207-246": {
     "id": 656,
@@ -42040,7 +45726,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 120,
       "spd": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "214-360": {
     "id": 926,
@@ -42053,7 +45740,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 250,
       "spd": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "166-284": {
     "id": 552,
@@ -42065,7 +45753,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 130,
       "spd": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "166-240": {
     "id": 554,
@@ -42077,7 +45766,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "168-248": {
     "id": 558,
@@ -42089,7 +45779,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 140,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "170-290": {
     "id": 562,
@@ -42101,7 +45792,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 135
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "172-246": {
     "id": 566,
@@ -42114,7 +45806,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 120,
       "spd": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "174-253": {
     "id": 569,
@@ -42127,7 +45820,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "176-257": {
     "id": 571,
@@ -42140,7 +45834,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "176-291": {
     "id": 573,
@@ -42152,7 +45847,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "spd": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "200-279": {
     "id": 627,
@@ -42165,7 +45861,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 145
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "200-302": {
     "id": 629,
@@ -42180,7 +45877,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 140,
       "int": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "205-278": {
     "id": 651,
@@ -42193,7 +45891,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 160,
       "def": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "206-269": {
     "id": 653,
@@ -42206,7 +45905,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "207-245": {
     "id": 655,
@@ -42218,7 +45918,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 145,
       "spd": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "359-361": {
     "id": 927,
@@ -42231,7 +45932,21 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 275,
       "spd": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "68-149": {
+    "id": 759,
+    "from_digimon_id": 68,
+    "to_digimon_id": 149,
+    "level_required": 30,
+    "stat_requirements": {
+      "hp": 500,
+      "atk": 120,
+      "def": 60
+    },
+    "dna_requirement": null,
+    "item_requirement": "beast_spirit_of_flame"
   },
   "207-291": {
     "id": 657,
@@ -42243,7 +45958,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "spd": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "208-226": {
     "id": 661,
@@ -42256,7 +45972,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 145,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "38-120": {
     "id": 727,
@@ -42267,7 +45984,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "42-69": {
     "id": 729,
@@ -42278,7 +45996,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 50,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "42-136": {
     "id": 731,
@@ -42288,7 +46007,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 500
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "42-116": {
     "id": 733,
@@ -42299,7 +46019,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 5,
       "atk": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "43-125": {
     "id": 736,
@@ -42310,7 +46031,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 35
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "52-80": {
     "id": 738,
@@ -42321,7 +46043,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 130,
       "def": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "52-108": {
     "id": 740,
@@ -42332,7 +46055,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "57-74": {
     "id": 744,
@@ -42342,7 +46066,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 500
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "61-101": {
     "id": 752,
@@ -42353,7 +46078,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 50,
       "spd": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "61-115": {
     "id": 755,
@@ -42363,7 +46089,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "66-185": {
     "id": 757,
@@ -42375,19 +46102,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 75
     },
-    "dna_requirement": null
-  },
-  "68-149": {
-    "id": 759,
-    "from_digimon_id": 68,
-    "to_digimon_id": 149,
-    "level_required": 30,
-    "stat_requirements": {
-      "hp": 500,
-      "atk": 120,
-      "def": 60
-    },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "68-177": {
     "id": 761,
@@ -42398,7 +46114,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 500,
       "atk": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "69-142": {
     "id": 763,
@@ -42409,7 +46126,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 110,
       "int": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "69-146": {
     "id": 765,
@@ -42420,7 +46138,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 95,
       "spd": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "73-182": {
     "id": 767,
@@ -42431,7 +46150,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "75-148": {
     "id": 769,
@@ -42443,7 +46163,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 80,
       "spd": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "75-201": {
     "id": 771,
@@ -42455,7 +46176,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 95,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "209-230": {
     "id": 663,
@@ -42468,7 +46190,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 100,
       "spd": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "209-252": {
     "id": 665,
@@ -42481,7 +46204,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 130,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "210-307": {
     "id": 667,
@@ -42493,7 +46217,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "211-254": {
     "id": 669,
@@ -42505,7 +46230,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "212-307": {
     "id": 673,
@@ -42517,7 +46243,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "215-298": {
     "id": 681,
@@ -42529,7 +46256,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 135,
       "spd": 125
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "216-300": {
     "id": 685,
@@ -42542,7 +46270,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 110,
       "spd": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "219-312": {
     "id": 689,
@@ -42555,7 +46284,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 170,
       "int": 150
     },
-    "dna_requirement": 331
+    "dna_requirement": 331,
+    "item_requirement": null
   },
   "228-315": {
     "id": 693,
@@ -42568,7 +46298,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 150,
       "spd": 150
     },
-    "dna_requirement": 297
+    "dna_requirement": 297,
+    "item_requirement": null
   },
   "265-266": {
     "id": 697,
@@ -42576,7 +46307,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "to_digimon_id": 266,
     "level_required": 0,
     "stat_requirements": {},
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "273-332": {
     "id": 701,
@@ -42586,7 +46318,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "abi": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "281-282": {
     "id": 705,
@@ -42599,7 +46332,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 300,
       "spd": 220
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "298-316": {
     "id": 711,
@@ -42612,7 +46346,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "def": 200
     },
-    "dna_requirement": 276
+    "dna_requirement": 276,
+    "item_requirement": null
   },
   "304-305": {
     "id": 713,
@@ -42624,7 +46359,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 30,
       "spd": 250
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "80-161": {
     "id": 773,
@@ -42636,7 +46372,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 80,
       "spd": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "321-283": {
     "id": 715,
@@ -42644,7 +46381,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "to_digimon_id": 283,
     "level_required": 0,
     "stat_requirements": {},
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "6-20": {
     "id": 717,
@@ -42655,7 +46393,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 90,
       "spd": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "20-89": {
     "id": 719,
@@ -42666,7 +46405,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "atk": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "36-110": {
     "id": 721,
@@ -42677,7 +46417,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 50,
       "spd": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "36-98": {
     "id": 723,
@@ -42687,7 +46428,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "abi": 5
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "38-136": {
     "id": 725,
@@ -42697,7 +46439,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "hp": 500
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "209-248": {
     "id": 664,
@@ -42709,7 +46452,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 140,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "210-309": {
     "id": 668,
@@ -42721,7 +46465,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 170,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "15-363": {
     "id": 928,
@@ -42732,7 +46477,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 75,
       "atk": 20
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "211-256": {
     "id": 670,
@@ -42745,7 +46491,21 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "80-324": {
+    "id": 777,
+    "from_digimon_id": 80,
+    "to_digimon_id": 324,
+    "level_required": 60,
+    "stat_requirements": {
+      "abi": 80,
+      "atk": 120,
+      "def": 145
+    },
+    "dna_requirement": null,
+    "item_requirement": "digi_egg_of_miracles"
   },
   "212-285": {
     "id": 672,
@@ -42758,7 +46518,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 145
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "214-289": {
     "id": 676,
@@ -42771,7 +46532,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "int": 120
     },
-    "dna_requirement": 152
+    "dna_requirement": 152,
+    "item_requirement": null
   },
   "42-101": {
     "id": 730,
@@ -42782,7 +46544,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 50,
       "spd": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "43-96": {
     "id": 734,
@@ -42793,7 +46556,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 60,
       "spd": 25
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "43-97": {
     "id": 735,
@@ -42805,7 +46569,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 25,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "52-135": {
     "id": 739,
@@ -42816,7 +46581,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 130,
       "atk": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "52-140": {
     "id": 741,
@@ -42827,7 +46593,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "57-113": {
     "id": 743,
@@ -42838,7 +46605,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "57-102": {
     "id": 745,
@@ -42849,7 +46617,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "58-96": {
     "id": 747,
@@ -42860,7 +46629,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 60,
       "spd": 25
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "58-135": {
     "id": 749,
@@ -42871,7 +46641,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 130,
       "atk": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "58-119": {
     "id": 751,
@@ -42882,7 +46653,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "66-145": {
     "id": 756,
@@ -42892,7 +46664,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "def": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "68-197": {
     "id": 760,
@@ -42903,7 +46676,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "69-169": {
     "id": 764,
@@ -42914,7 +46688,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 80,
       "int": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "73-215": {
     "id": 768,
@@ -42925,7 +46700,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 90,
       "spd": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "75-203": {
     "id": 772,
@@ -42936,7 +46712,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 350,
       "atk": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "80-144": {
     "id": 775,
@@ -42948,19 +46725,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "int": 75
     },
-    "dna_requirement": null
-  },
-  "80-324": {
-    "id": 777,
-    "from_digimon_id": 80,
-    "to_digimon_id": 324,
-    "level_required": 60,
-    "stat_requirements": {
-      "abi": 80,
-      "atk": 120,
-      "def": 145
-    },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "214-309": {
     "id": 678,
@@ -42972,7 +46738,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 170,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "215-297": {
     "id": 680,
@@ -42985,7 +46752,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "spd": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "216-272": {
     "id": 682,
@@ -42997,7 +46765,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "216-298": {
     "id": 684,
@@ -43009,7 +46778,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 135,
       "spd": 125
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "217-227": {
     "id": 686,
@@ -43023,7 +46793,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 110,
       "int": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "222-313": {
     "id": 690,
@@ -43037,7 +46808,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 160,
       "spd": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "223-222": {
     "id": 692,
@@ -43045,7 +46817,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "to_digimon_id": 222,
     "level_required": 0,
     "stat_requirements": {},
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "248-249": {
     "id": 694,
@@ -43057,7 +46830,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 30,
       "atk": 250
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "262-320": {
     "id": 696,
@@ -43070,7 +46844,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 185,
       "int": 185
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "266-265": {
     "id": 698,
@@ -43078,7 +46853,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "to_digimon_id": 265,
     "level_required": 0,
     "stat_requirements": {},
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "272-318": {
     "id": 700,
@@ -43090,7 +46866,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 155,
       "int": 100
     },
-    "dna_requirement": 226
+    "dna_requirement": 226,
+    "item_requirement": null
   },
   "274-332": {
     "id": 702,
@@ -43100,7 +46877,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "abi": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "283-321": {
     "id": 706,
@@ -43108,7 +46886,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "to_digimon_id": 321,
     "level_required": 0,
     "stat_requirements": {},
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "96-150": {
     "id": 779,
@@ -43119,7 +46898,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "96-192": {
     "id": 780,
@@ -43131,7 +46911,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 80,
       "int": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "97-159": {
     "id": 781,
@@ -43143,7 +46924,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 10,
       "atk": 125
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "294-233": {
     "id": 708,
@@ -43156,7 +46938,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 130,
       "def": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "297-315": {
     "id": 710,
@@ -43169,7 +46952,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 150,
       "spd": 150
     },
-    "dna_requirement": 228
+    "dna_requirement": 228,
+    "item_requirement": null
   },
   "307-308": {
     "id": 714,
@@ -43181,7 +46965,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 30,
       "int": 180
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "20-69": {
     "id": 718,
@@ -43192,7 +46977,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 50,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "36-123": {
     "id": 722,
@@ -43203,7 +46989,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 55,
       "spd": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "38-106": {
     "id": 726,
@@ -43214,7 +47001,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "333-84": {
     "id": 896,
@@ -43225,7 +47013,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "335-336": {
     "id": 898,
@@ -43238,7 +47027,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 130,
       "spd": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "335-214": {
     "id": 900,
@@ -43250,7 +47040,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 10,
       "int": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "328-139": {
     "id": 903,
@@ -43261,7 +47052,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 5,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "363-364": {
     "id": 929,
@@ -43272,7 +47064,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 35
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "330-331": {
     "id": 907,
@@ -43284,7 +47077,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "atk": 180
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "136-173": {
     "id": 824,
@@ -43295,7 +47089,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 70,
       "int": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "136-191": {
     "id": 826,
@@ -43303,7 +47098,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "to_digimon_id": 191,
     "level_required": 32,
     "stat_requirements": {},
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "138-162": {
     "id": 828,
@@ -43314,7 +47110,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 60,
       "atk": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "138-198": {
     "id": 830,
@@ -43325,7 +47122,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "148-252": {
     "id": 834,
@@ -43338,7 +47136,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 130,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "148-263": {
     "id": 836,
@@ -43352,7 +47151,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "155-287": {
     "id": 838,
@@ -43364,7 +47164,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 130,
       "spd": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "157-274": {
     "id": 840,
@@ -43377,7 +47178,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "159-278": {
     "id": 842,
@@ -43390,7 +47192,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 160,
       "def": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "161-267": {
     "id": 846,
@@ -43402,7 +47205,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "atk": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "161-256": {
     "id": 848,
@@ -43415,7 +47219,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "162-243": {
     "id": 850,
@@ -43428,7 +47233,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 145,
       "spd": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "169-260": {
     "id": 854,
@@ -43441,7 +47247,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 180,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "171-247": {
     "id": 858,
@@ -43453,17 +47260,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 180,
       "spd": 180
     },
-    "dna_requirement": null
-  },
-  "99-145": {
-    "id": 785,
-    "from_digimon_id": 99,
-    "to_digimon_id": 145,
-    "level_required": 26,
-    "stat_requirements": {
-      "def": 110
-    },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "101-155": {
     "id": 787,
@@ -43475,7 +47273,32 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 100,
       "spd": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": "beast_spirit_of_light"
+  },
+  "123-155": {
+    "id": 807,
+    "from_digimon_id": 123,
+    "to_digimon_id": 155,
+    "level_required": 30,
+    "stat_requirements": {
+      "hp": 300,
+      "atk": 100,
+      "spd": 85
+    },
+    "dna_requirement": null,
+    "item_requirement": "beast_spirit_of_light"
+  },
+  "99-145": {
+    "id": 785,
+    "from_digimon_id": 99,
+    "to_digimon_id": 145,
+    "level_required": 26,
+    "stat_requirements": {
+      "def": 110
+    },
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "101-147": {
     "id": 789,
@@ -43487,7 +47310,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 70,
       "int": 90
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "104-173": {
     "id": 791,
@@ -43498,7 +47322,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 70,
       "int": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "104-200": {
     "id": 793,
@@ -43510,7 +47335,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 70,
       "int": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "109-171": {
     "id": 795,
@@ -43521,7 +47347,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 90,
       "spd": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "109-215": {
     "id": 797,
@@ -43532,7 +47359,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 90,
       "spd": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "110-178": {
     "id": 799,
@@ -43544,7 +47372,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 80,
       "def": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "175-222": {
     "id": 862,
@@ -43557,7 +47386,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 150,
       "spd": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "186-235": {
     "id": 870,
@@ -43570,7 +47400,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "spd": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "189-240": {
     "id": 874,
@@ -43582,7 +47413,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "190-271": {
     "id": 878,
@@ -43595,7 +47427,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 200
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "197-238": {
     "id": 882,
@@ -43608,7 +47441,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 110,
       "int": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "226-318": {
     "id": 886,
@@ -43620,7 +47454,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 155,
       "int": 100
     },
-    "dna_requirement": 272
+    "dna_requirement": 272,
+    "item_requirement": null
   },
   "287-288": {
     "id": 890,
@@ -43628,7 +47463,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "to_digimon_id": 288,
     "level_required": 0,
     "stat_requirements": {},
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "113-186": {
     "id": 801,
@@ -43639,7 +47475,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 65,
       "def": 65
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "113-187": {
     "id": 803,
@@ -43651,7 +47488,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 60,
       "int": 60
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "117-163": {
     "id": 805,
@@ -43663,19 +47501,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 75
     },
-    "dna_requirement": null
-  },
-  "123-155": {
-    "id": 807,
-    "from_digimon_id": 123,
-    "to_digimon_id": 155,
-    "level_required": 30,
-    "stat_requirements": {
-      "hp": 300,
-      "atk": 100,
-      "spd": 85
-    },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "123-209": {
     "id": 809,
@@ -43687,7 +47514,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 100,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "132-180": {
     "id": 813,
@@ -43698,7 +47526,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "134-195": {
     "id": 818,
@@ -43710,7 +47539,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 10,
       "int": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "135-178": {
     "id": 820,
@@ -43722,7 +47552,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 80,
       "def": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "135-181": {
     "id": 822,
@@ -43734,7 +47565,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 95,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "288-287": {
     "id": 892,
@@ -43742,7 +47574,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "to_digimon_id": 287,
     "level_required": 0,
     "stat_requirements": {},
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "196-296": {
     "id": 881,
@@ -43755,7 +47588,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "197-227": {
     "id": 883,
@@ -43769,7 +47603,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 110,
       "int": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "231-319": {
     "id": 887,
@@ -43782,7 +47617,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "int": 150
     },
-    "dna_requirement": 287
+    "dna_requirement": 287,
+    "item_requirement": null
   },
   "278-314": {
     "id": 889,
@@ -43795,7 +47631,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "spd": 150
     },
-    "dna_requirement": 252
+    "dna_requirement": 252,
+    "item_requirement": null
   },
   "25-364": {
     "id": 930,
@@ -43806,7 +47643,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 35
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "149-231": {
     "id": 837,
@@ -43819,7 +47657,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "def": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "161-264": {
     "id": 845,
@@ -43832,7 +47671,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 140,
       "def": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "161-331": {
     "id": 849,
@@ -43844,7 +47684,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "atk": 180
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "162-251": {
     "id": 851,
@@ -43857,7 +47698,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 120,
       "spd": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "169-238": {
     "id": 853,
@@ -43870,7 +47712,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 110,
       "int": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "169-261": {
     "id": 855,
@@ -43883,7 +47726,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 230,
       "int": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "171-225": {
     "id": 857,
@@ -43896,7 +47740,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 130,
       "spd": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "173-302": {
     "id": 861,
@@ -43911,7 +47756,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 140,
       "int": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "175-237": {
     "id": 863,
@@ -43924,7 +47770,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "178-256": {
     "id": 865,
@@ -43937,7 +47784,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "180-278": {
     "id": 867,
@@ -43950,7 +47798,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 160,
       "def": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "180-245": {
     "id": 869,
@@ -43962,7 +47811,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 145,
       "spd": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "186-250": {
     "id": 871,
@@ -43975,7 +47825,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 130,
       "def": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "189-253": {
     "id": 875,
@@ -43988,7 +47839,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "287-319": {
     "id": 891,
@@ -44001,7 +47853,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "int": 150
     },
-    "dna_requirement": 231
+    "dna_requirement": 231,
+    "item_requirement": null
   },
   "333-335": {
     "id": 895,
@@ -44012,7 +47865,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 40,
       "spd": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "335-186": {
     "id": 899,
@@ -44023,7 +47877,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 65,
       "def": 65
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "328-135": {
     "id": 902,
@@ -44034,7 +47889,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 130,
       "atk": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "329-330": {
     "id": 904,
@@ -44046,7 +47902,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 95,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "329-200": {
     "id": 906,
@@ -44058,7 +47915,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 70,
       "int": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "330-230": {
     "id": 908,
@@ -44071,7 +47929,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 100,
       "spd": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "330-291": {
     "id": 910,
@@ -44083,7 +47942,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "spd": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "99-196": {
     "id": 784,
@@ -44094,7 +47954,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 80,
       "def": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "101-197": {
     "id": 788,
@@ -44105,7 +47966,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "104-144": {
     "id": 792,
@@ -44117,7 +47979,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 75,
       "int": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "109-163": {
     "id": 796,
@@ -44129,7 +47992,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "110-190": {
     "id": 800,
@@ -44140,7 +48004,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 80,
       "int": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "117-143": {
     "id": 804,
@@ -44152,7 +48017,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 75,
       "spd": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "123-171": {
     "id": 808,
@@ -44163,7 +48029,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 90,
       "spd": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "126-212": {
     "id": 810,
@@ -44174,7 +48041,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "126-210": {
     "id": 812,
@@ -44185,7 +48053,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 75,
       "int": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "190-257": {
     "id": 877,
@@ -44198,7 +48067,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "196-270": {
     "id": 879,
@@ -44210,7 +48080,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 135
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "132-168": {
     "id": 814,
@@ -44222,7 +48093,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 85,
       "spd": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "134-189": {
     "id": 816,
@@ -44233,7 +48105,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 65,
       "int": 65
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "134-188": {
     "id": 817,
@@ -44245,7 +48118,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 80,
       "spd": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "135-156": {
     "id": 821,
@@ -44257,7 +48131,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 95
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "136-190": {
     "id": 825,
@@ -44268,7 +48143,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 80,
       "int": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "138-143": {
     "id": 829,
@@ -44280,7 +48156,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 75,
       "spd": 85
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "142-261": {
     "id": 833,
@@ -44293,7 +48170,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 230,
       "int": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "1-10": {
     "id": 1,
@@ -44301,7 +48179,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "to_digimon_id": 10,
     "level_required": 5,
     "stat_requirements": {},
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "144-256": {
     "id": 493,
@@ -44314,7 +48193,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "150-263": {
     "id": 508,
@@ -44328,7 +48208,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "151-296": {
     "id": 513,
@@ -44341,7 +48222,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "151-235": {
     "id": 514,
@@ -44354,7 +48236,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "spd": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "151-270": {
     "id": 515,
@@ -44366,7 +48249,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 135
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "154-304": {
     "id": 525,
@@ -44378,7 +48262,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 130,
       "spd": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "156-299": {
     "id": 530,
@@ -44391,7 +48276,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "156-267": {
     "id": 532,
@@ -44403,7 +48289,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "atk": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "163-250": {
     "id": 542,
@@ -44416,7 +48303,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 130,
       "def": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "165-236": {
     "id": 547,
@@ -44429,7 +48317,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 135,
       "spd": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "166-225": {
     "id": 553,
@@ -44442,7 +48331,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 130,
       "spd": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "167-250": {
     "id": 556,
@@ -44455,7 +48345,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 130,
       "def": 110
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "168-261": {
     "id": 560,
@@ -44468,7 +48359,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 230,
       "int": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "174-297": {
     "id": 570,
@@ -44481,7 +48373,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "spd": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "176-283": {
     "id": 572,
@@ -44494,7 +48387,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 80,
       "int": 180
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "177-281": {
     "id": 575,
@@ -44507,7 +48401,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 250,
       "spd": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "182-264": {
     "id": 587,
@@ -44520,7 +48415,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 140,
       "def": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "37-364": {
     "id": 931,
@@ -44531,83 +48427,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 40,
       "spd": 35
     },
-    "dna_requirement": null
-  },
-  "2-8": {
-    "id": 4,
-    "from_digimon_id": 2,
-    "to_digimon_id": 8,
-    "level_required": 5,
-    "stat_requirements": {},
-    "dna_requirement": null
-  },
-  "2-14": {
-    "id": 5,
-    "from_digimon_id": 2,
-    "to_digimon_id": 14,
-    "level_required": 3,
-    "stat_requirements": {
-      "hp": 50
-    },
-    "dna_requirement": null
-  },
-  "3-9": {
-    "id": 7,
-    "from_digimon_id": 3,
-    "to_digimon_id": 9,
-    "level_required": 5,
-    "stat_requirements": {},
-    "dna_requirement": null
-  },
-  "21-70": {
-    "id": 74,
-    "from_digimon_id": 21,
-    "to_digimon_id": 70,
-    "level_required": 15,
-    "stat_requirements": {
-      "hp": 150,
-      "def": 40
-    },
-    "dna_requirement": null
-  },
-  "23-85": {
-    "id": 86,
-    "from_digimon_id": 23,
-    "to_digimon_id": 85,
-    "level_required": 15,
-    "stat_requirements": {
-      "spd": 50
-    },
-    "dna_requirement": null
-  },
-  "28-133": {
-    "id": 118,
-    "from_digimon_id": 28,
-    "to_digimon_id": 133,
-    "level_required": 14,
-    "stat_requirements": {
-      "hp": 250,
-      "atk": 30
-    },
-    "dna_requirement": null
-  },
-  "31-127": {
-    "id": 135,
-    "from_digimon_id": 31,
-    "to_digimon_id": 127,
-    "level_required": 20,
-    "stat_requirements": {},
-    "dna_requirement": null
-  },
-  "33-78": {
-    "id": 143,
-    "from_digimon_id": 33,
-    "to_digimon_id": 78,
-    "level_required": 14,
-    "stat_requirements": {
-      "atk": 55
-    },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "39-325": {
     "id": 169,
@@ -44620,7 +48441,92 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": "digi_egg_of_destiny"
+  },
+  "2-8": {
+    "id": 4,
+    "from_digimon_id": 2,
+    "to_digimon_id": 8,
+    "level_required": 5,
+    "stat_requirements": {},
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "2-14": {
+    "id": 5,
+    "from_digimon_id": 2,
+    "to_digimon_id": 14,
+    "level_required": 3,
+    "stat_requirements": {
+      "hp": 50
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "3-9": {
+    "id": 7,
+    "from_digimon_id": 3,
+    "to_digimon_id": 9,
+    "level_required": 5,
+    "stat_requirements": {},
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "21-70": {
+    "id": 74,
+    "from_digimon_id": 21,
+    "to_digimon_id": 70,
+    "level_required": 15,
+    "stat_requirements": {
+      "hp": 150,
+      "def": 40
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "23-85": {
+    "id": 86,
+    "from_digimon_id": 23,
+    "to_digimon_id": 85,
+    "level_required": 15,
+    "stat_requirements": {
+      "spd": 50
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "28-133": {
+    "id": 118,
+    "from_digimon_id": 28,
+    "to_digimon_id": 133,
+    "level_required": 14,
+    "stat_requirements": {
+      "hp": 250,
+      "atk": 30
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "31-127": {
+    "id": 135,
+    "from_digimon_id": 31,
+    "to_digimon_id": 127,
+    "level_required": 20,
+    "stat_requirements": {},
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "33-78": {
+    "id": 143,
+    "from_digimon_id": 33,
+    "to_digimon_id": 78,
+    "level_required": 14,
+    "stat_requirements": {
+      "atk": 55
+    },
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "45-107": {
     "id": 190,
@@ -44631,7 +48537,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "def": 35
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "46-77": {
     "id": 193,
@@ -44642,7 +48549,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 5,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "49-89": {
     "id": 212,
@@ -44653,7 +48561,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 150,
       "atk": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "56-67": {
     "id": 242,
@@ -44663,7 +48572,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "spd": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "56-122": {
     "id": 243,
@@ -44675,7 +48585,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 40,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "56-130": {
     "id": 244,
@@ -44685,7 +48596,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "spd": 50
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "62-117": {
     "id": 258,
@@ -44696,7 +48608,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 45,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "64-82": {
     "id": 267,
@@ -44707,7 +48620,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 40,
       "int": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "74-165": {
     "id": 295,
@@ -44718,7 +48632,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 800,
       "def": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "85-185": {
     "id": 331,
@@ -44730,7 +48645,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "100-201": {
     "id": 375,
@@ -44742,7 +48658,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 95,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "102-152": {
     "id": 376,
@@ -44754,7 +48671,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 10,
       "int": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "103-200": {
     "id": 381,
@@ -44766,7 +48684,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "sp": 70,
       "int": 70
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "111-188": {
     "id": 400,
@@ -44778,7 +48697,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 80,
       "spd": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "122-174": {
     "id": 435,
@@ -44790,7 +48710,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 10,
       "spd": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "131-199": {
     "id": 466,
@@ -44801,7 +48722,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "def": 80
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "133-152": {
     "id": 469,
@@ -44813,7 +48735,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 10,
       "int": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "143-243": {
     "id": 488,
@@ -44826,7 +48749,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 145,
       "spd": 100
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "364-365": {
     "id": 932,
@@ -44837,7 +48761,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "183-298": {
     "id": 590,
@@ -44849,7 +48774,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 135,
       "spd": 125
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "195-225": {
     "id": 618,
@@ -44862,7 +48788,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 130,
       "spd": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "202-232": {
     "id": 636,
@@ -44875,7 +48802,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "205-276": {
     "id": 648,
@@ -44888,7 +48816,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 140,
       "def": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "208-304": {
     "id": 660,
@@ -44900,7 +48829,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 130,
       "spd": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "210-303": {
     "id": 666,
@@ -44913,7 +48843,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 250,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "217-283": {
     "id": 688,
@@ -44926,7 +48857,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 80,
       "int": 180
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "109-365": {
     "id": 933,
@@ -44937,7 +48869,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "191-275": {
     "id": 601,
@@ -44947,7 +48880,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "abi": 10
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "201-295": {
     "id": 635,
@@ -44959,7 +48893,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 40,
       "atk": 180
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "208-291": {
     "id": 659,
@@ -44971,7 +48906,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 150,
       "spd": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "214-303": {
     "id": 677,
@@ -44984,7 +48920,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 250,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "272-317": {
     "id": 699,
@@ -44995,7 +48932,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 40,
       "atk": 255
     },
-    "dna_requirement": 255
+    "dna_requirement": 255,
+    "item_requirement": null
   },
   "105-365": {
     "id": 934,
@@ -45006,7 +48944,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 75,
       "spd": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "192-261": {
     "id": 604,
@@ -45019,7 +48958,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 230,
       "int": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "195-248": {
     "id": 615,
@@ -45031,7 +48971,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 140,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "280-258": {
     "id": 704,
@@ -45044,7 +48985,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 140,
       "def": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "363-97": {
     "id": 935,
@@ -45056,7 +48998,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 25,
       "spd": 40
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "201-244": {
     "id": 634,
@@ -45069,7 +49012,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "294-332": {
     "id": 709,
@@ -45079,7 +49023,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "abi": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "363-81": {
     "id": 936,
@@ -45089,7 +49034,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
     "stat_requirements": {
       "spd": 55
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "205-262": {
     "id": 649,
@@ -45102,7 +49048,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 140,
       "int": 140
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "364-160": {
     "id": 937,
@@ -45113,30 +49060,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "hp": 400,
       "atk": 95
     },
-    "dna_requirement": null
-  },
-  "212-309": {
-    "id": 674,
-    "from_digimon_id": 212,
-    "to_digimon_id": 309,
-    "level_required": 55,
-    "stat_requirements": {
-      "abi": 20,
-      "int": 170,
-      "spd": 130
-    },
-    "dna_requirement": null
-  },
-  "58-109": {
-    "id": 748,
-    "from_digimon_id": 58,
-    "to_digimon_id": 109,
-    "level_required": 15,
-    "stat_requirements": {
-      "atk": 45,
-      "spd": 50
-    },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "80-325": {
     "id": 776,
@@ -45149,7 +49074,33 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 120,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": "digi_egg_of_destiny"
+  },
+  "212-309": {
+    "id": 674,
+    "from_digimon_id": 212,
+    "to_digimon_id": 309,
+    "level_required": 55,
+    "stat_requirements": {
+      "abi": 20,
+      "int": 170,
+      "spd": 130
+    },
+    "dna_requirement": null,
+    "item_requirement": null
+  },
+  "58-109": {
+    "id": 748,
+    "from_digimon_id": 58,
+    "to_digimon_id": 109,
+    "level_required": 15,
+    "stat_requirements": {
+      "atk": 45,
+      "spd": 50
+    },
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "97-202": {
     "id": 783,
@@ -45160,7 +49111,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 105,
       "spd": 75
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "142-260": {
     "id": 832,
@@ -45173,7 +49125,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 180,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "157-277": {
     "id": 841,
@@ -45184,7 +49137,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "def": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "159-295": {
     "id": 843,
@@ -45196,7 +49150,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 40,
       "atk": 180
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "159-224": {
     "id": 844,
@@ -45210,7 +49165,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 130,
       "int": 120
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "173-268": {
     "id": 859,
@@ -45223,7 +49179,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 20,
       "int": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "178-247": {
     "id": 866,
@@ -45235,7 +49192,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 180,
       "spd": 180
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "186-272": {
     "id": 872,
@@ -45247,7 +49205,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "atk": 120,
       "def": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "189-226": {
     "id": 873,
@@ -45260,7 +49219,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 145,
       "spd": 130
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "218-311": {
     "id": 885,
@@ -45274,7 +49234,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "int": 150,
       "spd": 160
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "333-334": {
     "id": 894,
@@ -45287,7 +49248,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "abi": 50,
       "int": 150
     },
-    "dna_requirement": null
+    "dna_requirement": null,
+    "item_requirement": null
   },
   "331-312": {
     "id": 911,
@@ -45300,7 +49262,8 @@ export const EVOLUTION_LOOKUP_TABLE = {
       "def": 170,
       "int": 150
     },
-    "dna_requirement": 219
+    "dna_requirement": 219,
+    "item_requirement": null
   }
 },
 } as const;

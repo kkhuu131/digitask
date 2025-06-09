@@ -148,7 +148,7 @@ const AdminDigimonManager = () => {
   const [evolutionSearchTerm, setEvolutionSearchTerm] = useState('');
   
   // Derived values for filters
-  const digimonStages = ['Baby', 'In-Training', 'Rookie', 'Champion', 'Ultimate', 'Mega', 'Ultra'];
+  const digimonStages = ['Baby', 'In-Training', 'Rookie', 'Champion', 'Ultimate', 'Mega', 'Ultra', 'Armor'];
   const digimonTypes = ['Vaccine', 'Data', 'Virus', 'Free'];
   const digimonAttributes = ['Neutral', 'Fire', 'Water', 'Plant', 'Electric', 'Wind', 'Earth', 'Light', 'Dark'];
   

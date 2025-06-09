@@ -10,6 +10,7 @@ import { ANIMATED_DIGIMON } from "../constants/animatedDigimonList";
 import { DIGIMON_LOOKUP_TABLE } from "../constants/digimonLookup";
 import DigimonSprite from "@/components/DigimonSprite";
 import { UserDigimon } from "../store/petStore";
+import { useInventoryStore } from "../store/inventoryStore";
 // import DigimonSprite from "../components/DigimonSprite";
 
 // Neemon's dialogue lines
@@ -34,6 +35,7 @@ const generateRandomAvatarUnlock = () => {
 const DigimonStorePage: React.FC = () => {
   const { bits, digicoins, fetchCurrency, spendCurrency } = useCurrencyStore();
   const { userDigimon, allUserDigimon, fetchUserDigimon } = useDigimonStore();
+  const { fetchInventory, items } = useInventoryStore();
   const { user } = useAuthStore();
   const [processingPurchase, setProcessingPurchase] = useState<string | null>(null);
   const [filterCategory, setFilterCategory] = useState<ItemCategory | "all">("all");
@@ -49,6 +51,8 @@ const DigimonStorePage: React.FC = () => {
   ]);
   const [showXAntibodyModal, setShowXAntibodyModal] = useState(false);
   const [digimonForXAntibody, setDigimonForXAntibody] = useState<UserDigimon[]>([]);
+  // Add state to track item quantities
+  const [itemQuantities, setItemQuantities] = useState<Record<string, number>>({});
   
   // Set categories for filtering
   const categories = [
@@ -72,7 +76,20 @@ const DigimonStorePage: React.FC = () => {
     fetchCurrency();
     fetchUserDigimon();
     fetchUserStats();
-  }, [fetchCurrency, fetchUserDigimon, userDigimon, allUserDigimon]);
+    fetchInventory();
+  }, [fetchCurrency, fetchUserDigimon, fetchInventory]);
+
+  // Add a separate useEffect to update item quantities whenever inventory changes
+  useEffect(() => {
+    const quantities: Record<string, number> = {};
+    
+    // Map inventory items to their quantities
+    items.forEach(item => {
+      quantities[item.item_id] = item.quantity;
+    });
+    
+    setItemQuantities(quantities);
+  }, [items]);
 
   // Add a SEPARATE useEffect just for the dialogue that only runs ONCE on component mount
   useEffect(() => {
@@ -352,15 +369,8 @@ const DigimonStorePage: React.FC = () => {
               }
               
               // Check if user already has this specific avatar variant
-              const { data: existingItem, error: checkError } = await supabase
-                .from('user_inventory')
-                .select('id')
-                .eq('user_id', user.id)
-                .eq('item_id', avatarUnlock);
-                
-              if (checkError) throw checkError;
-              
-              if (existingItem && existingItem.length > 0) {
+              const quantity = await useInventoryStore.getState().fetchItemQuantity(avatarUnlock);
+              if (quantity > 0) {
                 // If they already have it, try again
                 useNotificationStore.getState().addNotification({
                   type: "info",
@@ -407,36 +417,19 @@ const DigimonStorePage: React.FC = () => {
               message: `Discovered #${discoveredDigimon.id} ${discoveredDigimon.name}!`,
             });
             
-            // Consume the inventory item if it's already in inventory
-            const { data: existingItem } = await supabase
-              .from('user_inventory')
-              .select('id, quantity')
-              .eq('user_id', user.id)
-              .eq('item_id', item.id)
-              .single();
-
-            if (existingItem) {
-              if (existingItem.quantity > 1) {
-                // Reduce quantity by 1
-                await supabase
-                  .from('user_inventory')
-                  .update({ quantity: existingItem.quantity - 1 })
-                  .eq('id', existingItem.id);
-              } else {
-                // Remove if last one
-                await supabase
-                  .from('user_inventory')
-                  .delete()
-                  .eq('id', existingItem.id);
-              }
+            // Directly check if the user has the item using our inventory store
+            const itemQuantity = await useInventoryStore.getState().fetchItemQuantity(item.id);
+            if (itemQuantity > 0) {
+              // User has the item, use it from inventory
+              await useInventoryStore.getState().useItem(item.id);
             } else {
               // Add the item to the user's inventory (if bought directly)
               const { error } = await supabase
-                .from('user_inventory')
+                .from("user_inventory")
                 .insert({
                   user_id: user.id,
                   item_id: item.id,
-                  quantity: item.effect!.value,
+                  quantity: typeof item.effect?.value === 'number' ? item.effect.value : 1,
                   item_type: item.category,
                 });
 
@@ -451,28 +444,23 @@ const DigimonStorePage: React.FC = () => {
               message: `Purchased ${item.name} and added to inventory!`,
             });
 
-            // if user already has the item, update the quantity
-            const { data: existingItem } = await supabase
-              .from('user_inventory')
-              .select('id, quantity')
-              .eq('user_id', user.id)
-              .eq('item_id', item.id)
-              .single();
-
-            if (existingItem) {
-              // update the quantity
-              await supabase
-                .from('user_inventory')
-                .update({ quantity: existingItem.quantity + item.effect!.value })
-                .eq('id', existingItem.id);
+            // Directly check if the user has the item using our inventory store
+            const itemQuantity = await useInventoryStore.getState().fetchItemQuantity(item.id);
+            if (itemQuantity > 0) {
+              // User already has this item, update quantity
+              await useInventoryStore.getState().addItem(
+                item.id, 
+                typeof item.effect?.value === 'number' ? item.effect.value : 1,
+                item.category
+              );
             } else {
               // Add the item to the user's inventory
               const { error } = await supabase
-                .from('user_inventory')
+                .from("user_inventory")
                 .insert({
                   user_id: user.id,
                   item_id: item.id,
-                  quantity: item.effect!.value,
+                  quantity: typeof item.effect?.value === 'number' ? item.effect.value : 1,
                   item_type: item.category,
                 });
 
@@ -737,7 +725,15 @@ const DigimonStorePage: React.FC = () => {
                       />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-bold text-gray-800">{item.name}</h3>
+                      <div className="flex flex-col sm:flex-row sm:items-start">
+                        <h3 className="font-bold text-gray-800 mr-auto">{item.name}</h3>
+                        {/* Show item quantity if it's an inventory item and the user has at least one */}
+                        {item.applyType === ItemApplyType.INVENTORY && itemQuantities[item.id] > 0 && (
+                          <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full mt-1 sm:mt-0 self-start whitespace-nowrap">
+                            Owned: {itemQuantities[item.id]}
+                          </span>
+                        )}
+                      </div>
                       <div className="text-xs text-gray-500 mb-1">{item.category}</div>
                       <p className="text-sm text-gray-700 mb-2">{item.description}</p>
                       <div className="flex justify-between items-center">

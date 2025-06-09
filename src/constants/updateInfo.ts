@@ -1,4 +1,4 @@
-export const CURRENT_VERSION = "1.4.2";
+export const CURRENT_VERSION = "1.5.0";
 
 export const UPDATE_CHANGES = {
   "1.0.1": [
@@ -91,5 +91,11 @@ export const UPDATE_CHANGES = {
     "What to expect in future updates:",
     "Item requirements for some existing evolutions (ex. Armor evolutions).",
     "Mobile app version in the works, so expect slower updates.",
+  ],
+  "1.5.0": [
+    "Added Evolution items to the store!",
+    "Some existing and new evolutions now require these items to evolve.",
+    "More Digimon have been added, check patch notes for more information.",
+    "Made task completion into a single database call, hopefully fixing some bugs.",
   ],
 };

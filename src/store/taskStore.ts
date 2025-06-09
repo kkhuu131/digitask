@@ -234,180 +234,64 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         ),
       }));
 
-      // Then perform the actual update in the background
+      // Call the RPC function to complete the task in a single database call
       const { data: userData } = await supabase.auth.getUser();
       if (!userData.user) return;
 
-      // Update the task in the database
-      const { error } = await supabase
-        .from("tasks")
-        .update({
-          is_completed: true,
-          completed_at: new Date().toISOString(),
-        })
-        .eq("id", id);
+      const { data, error } = await supabase.rpc("complete_task_all_triggers", {
+        p_task_id: id,
+        p_user_id: userData.user.id,
+        p_auto_allocate: autoAllocate,
+      });
 
       if (error) throw error;
 
-      // Replace the feedDigimon call with feedMultipleDigimon
-      const expPoints = Math.round(
-        getExpPoints(task) * get().getExpMultiplier()
-      );
-      const reserveExp = await useDigimonStore
-        .getState()
-        .feedMultipleDigimon(expPoints);
+      // Update the local saved stats from the result
+      if (data.saved_stats) {
+        localStorage.setItem("savedStats", JSON.stringify(data.saved_stats));
+      }
+
+      // Update the pet store's userDailyStatGains
+      useDigimonStore.getState().fetchUserDailyStatGains();
 
       // Dispatch event to notify components that a task was completed
       window.dispatchEvent(new Event("task-completed"));
 
-      // Check if we've reached the daily stat cap
-      const { canGain, remaining } = await useDigimonStore
-        .getState()
-        .checkStatCap();
+      // Prepare notification message based on the response
+      let notificationMessage = "";
+      const digimonName =
+        useDigimonStore.getState().userDigimon?.name || "Active Digimon";
 
-      if (!canGain) {
-        useNotificationStore.getState().addNotification({
-          message:
-            "You've reached your stat gain limit for today. You can still complete tasks, but no more stat points will be gained until tomorrow.",
-          type: "info",
-        });
-      } else if (task.category) {
-        const boostValue = getStatPoints(task);
-        const adjustedBoostValue = Math.min(boostValue, remaining);
-
-        if (
-          autoAllocate &&
-          isUnderStatCap(useDigimonStore.getState().userDigimon)
-        ) {
-          // Get current daily_stat_gains from profile
-          const { data: profileData, error: profileError } = await supabase
-            .from("profiles")
-            .select("daily_stat_gains")
-            .eq("id", userData.user.id)
-            .single();
-
-          if (profileError) {
-            console.error("Error fetching daily stat gains:", profileError);
-            throw profileError;
-          }
-
-          // Calculate new daily stat gains
-          const newDailyGains =
-            (profileData.daily_stat_gains || 0) + adjustedBoostValue;
-
-          // Update daily_stat_gains in profile
-          const { error: updateError } = await supabase
-            .from("profiles")
-            .update({
-              daily_stat_gains: newDailyGains,
-            })
-            .eq("id", userData.user.id);
-
-          if (updateError) {
-            console.error("Error updating daily stat gains:", updateError);
-            throw updateError;
-          }
-
-          // Apply stat boost to active Digimon
-          await useDigimonStore
-            .getState()
-            .increaseStat(task.category as StatCategory, adjustedBoostValue);
-
-          // Update the pet store's userDailyStatGains
-          useDigimonStore.getState().fetchUserDailyStatGains();
-
-          useNotificationStore.getState().addNotification({
-            message: `${
-              useDigimonStore.getState().userDigimon?.name || "Active Digimon"
-            } gained ${expPoints} exp and ${adjustedBoostValue} ${
-              task.category
-            }!\nReserve Digimon gained ${reserveExp} exp!`,
-            type: "success",
-          });
-        } else {
-          // Get current saved stats from the database
-          const { data: profileData, error: profileError } = await supabase
-            .from("profiles")
-            .select("saved_stats, daily_stat_gains")
-            .eq("id", userData.user.id)
-            .single();
-
-          if (profileError) {
-            console.error("Error fetching saved stats:", profileError);
-            throw profileError;
-          }
-
-          // Update saved stats
-          const savedStats = profileData.saved_stats || {
-            HP: 0,
-            SP: 0,
-            ATK: 0,
-            DEF: 0,
-            INT: 0,
-            SPD: 0,
-          };
-
-          savedStats[task.category] =
-            (savedStats[task.category] || 0) + adjustedBoostValue;
-
-          // Calculate new daily stat gains
-          const newDailyGains =
-            (profileData.daily_stat_gains || 0) + adjustedBoostValue;
-
-          // Save to database
-          const { error: updateError } = await supabase
-            .from("profiles")
-            .update({
-              saved_stats: savedStats,
-              daily_stat_gains: newDailyGains,
-            })
-            .eq("id", userData.user.id);
-
-          if (updateError) {
-            console.error("Error updating saved stats:", updateError);
-            throw updateError;
-          }
-
-          // Also update localStorage for immediate UI feedback
-          localStorage.setItem("savedStats", JSON.stringify(savedStats));
-
-          // Update the pet store's userDailyStatGains
-          useDigimonStore.getState().fetchUserDailyStatGains();
-
-          if (autoAllocate) {
-            useNotificationStore.getState().addNotification({
-              message: `Digimon has reached its stat cap, ${adjustedBoostValue} ${
-                task.category
-              } points were saved!\n${
-                useDigimonStore.getState().userDigimon?.name || "Active Digimon"
-              } gained ${expPoints} exp!\nReserve Digimon gained ${reserveExp} exp!`,
-              type: "success",
-            });
-          } else {
-            useNotificationStore.getState().addNotification({
-              message: `${adjustedBoostValue} ${
-                task.category
-              } saved for later!\n${
-                useDigimonStore.getState().userDigimon?.name || "Active Digimon"
-              } gained ${expPoints} exp!\nReserve Digimon gained ${reserveExp} exp!`,
-              type: "success",
-            });
-          }
-        }
+      if (!data.stat_category) {
+        // No category, just show XP gains
+        notificationMessage = `${digimonName} gained ${data.exp_points} exp!\nReserve Digimon gained ${data.reserve_exp} exp!`;
+      } else if (data.auto_allocated) {
+        // Auto-allocated to active Digimon
+        notificationMessage = `${digimonName} gained ${data.exp_points} exp and ${data.stat_points} ${data.stat_category}!\nReserve Digimon gained ${data.reserve_exp} exp!`;
+      } else if (autoAllocate) {
+        // Tried to auto-allocate but Digimon reached stat cap
+        notificationMessage = `Digimon has reached its stat cap, ${data.stat_points} ${data.stat_category} points were saved!\n${digimonName} gained ${data.exp_points} exp!\nReserve Digimon gained ${data.reserve_exp} exp!`;
       } else {
-        useNotificationStore.getState().addNotification({
-          message: `${
-            useDigimonStore.getState().userDigimon?.name || "Active Digimon"
-          } gained ${expPoints} exp!\nReserve Digimon gained ${reserveExp} exp!`,
-          type: "success",
-        });
+        // Stat points were saved for later
+        notificationMessage = `${data.stat_points} ${data.stat_category} saved for later!\n${digimonName} gained ${data.exp_points} exp!\nReserve Digimon gained ${data.reserve_exp} exp!`;
       }
+
+      // Show notification
+      useNotificationStore.getState().addNotification({
+        message: notificationMessage,
+        type: "success",
+      });
 
       // Check for level up
       await useDigimonStore.getState().checkLevelUp();
 
-      // Check daily quota
-      await get().checkDailyQuota();
+      // Check for daily quota completion
+      if (data.daily_quota.quota_completed) {
+        await get().completeDailyQuota();
+      }
+
+      // Update local quota data
+      await get().fetchDailyQuota();
     } catch (error) {
       console.error("Error completing task:", error);
 

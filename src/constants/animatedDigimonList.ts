@@ -1,5 +1,5 @@
 // Auto-generated file - DO NOT EDIT MANUALLY
-// Generated on 2025-05-27T07:53:46.278Z
+// Generated on 2025-06-09T07:30:55.423Z
 
 export const ANIMATED_DIGIMON = [
   "Aegisdramon",
@@ -312,8 +312,8 @@ export const ANIMATED_DIGIMON = [
   "Kentaurosmon X",
   "Keramon",
   "Keramon X",
-  "Kerpymon (Evil)",
-  "Kerpymon (Evil) X",
+  "Kerpymon (Blk)",
+  "Kerpymon (Blk) X",
   "Kerpymon (Good)",
   "Kerpymon (Good) X",
   "Ketomon",
@@ -485,13 +485,13 @@ export const ANIMATED_DIGIMON = [
   "Petitmon",
   "Phantomon",
   "Phascomon",
-  "Piccolomon",
   "Pickmon",
   "Pidmon",
-  "Piemon",
+  "Piedmon",
   "Pipimon",
   "Piranimon",
   "Pitchmon",
+  "Piximon",
   "PlatinumNumemon",
   "PlatinumScumon",
   "Plesiomon",
@@ -571,6 +571,7 @@ export const ANIMATED_DIGIMON = [
   "Shellmon",
   "ShimaUnimon",
   "ShinMonzaemon",
+  "ShogunGekomon",
   "Shootmon",
   "Siesamon X",
   "Sirenmon",
@@ -612,7 +613,6 @@ export const ANIMATED_DIGIMON = [
   "Togemon",
   "Togemon X",
   "Tokomon X",
-  "TonosamaGekomon",
   "TorikaraBallmon",
   "Tortamon",
   "ToyAgumon",

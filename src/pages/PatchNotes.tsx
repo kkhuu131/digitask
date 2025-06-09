@@ -26,6 +26,41 @@ const PatchNotes = () => {
         <div className="mb-6">
             <div className="flex items-center mb-2">
               <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
+              <h3 className="text-lg font-medium ml-2">Evolution Items</h3>
+              <span className="text-sm text-gray-500 ml-auto">June 8, 2025</span>
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <li>Added Evolution items (Digi-Eggs and Spirits) to the store!</li>
+            <li>Some existing evolutions now require these items to evolve.</li>
+            <li>These include:</li>
+            <ul>
+              <li>Digi-Egg of Courage (for Flamedramon)</li>
+              <li>Digi-Egg of Miracles (for Magnamon)</li>
+              <li>Digi-Egg of Destiny (for Rapidmon (Armor))</li>
+              <li>Digi-Egg of Reliability (for Submarimon)</li>
+              <li>Digi-Egg of Hope (for Pegasusmon X)</li>
+              <li>Digi-Egg of Light (for Nefertimon X)</li>
+              <li>Human Spirit of Flame (for Agunimon)</li>
+              <li>Human Spirit of Light (for Lobomon)</li>
+              <li>Beast Spirit of Flame (for BurningGreymon)</li>
+              <li>Beast Spirit of Light (for KendoGarurumon)</li>
+            </ul>
+            <li>These items are one-time use, and can be purchased in the store.</li>
+            <li>New Digimon have been added:</li>
+              <ul>
+                <li>Armor evolutions</li>
+                <li>X-Antibody Evolutions:</li>
+                <li>All Great Demon Lords X-Forms</li>
+                <li>Sakuyamon X</li>
+                <li>Justimon X</li>
+                <li>Rapidmon X</li>
+              </ul>
+            <li>Made task completion into a single database call, hopefully fixing some bugs.</li>
+            <li>Coming soon: Rasenmon line, Hexeblaumon line, and more X-Antibody/Armor evolutions.</li>
+            </ul>
+          </div>
+        <div className="mb-6">
+            <div className="flex items-center mb-2">
               <h3 className="text-lg font-medium ml-2">Small Update</h3>
               <span className="text-sm text-gray-500 ml-auto">June 2, 2025</span>
             </div>

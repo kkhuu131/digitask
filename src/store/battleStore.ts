@@ -1371,7 +1371,6 @@ export const useBattleStore = create<BattleState>((set, get) => {
           created_at,
           user_team,
           opponent_team,
-          turns,
           user:profiles!team_battles_user_id_fkey1(username),
           opponent:profiles!team_battles_opponent_id_fkey(username)
         `
