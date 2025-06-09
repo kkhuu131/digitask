@@ -1,7 +1,5 @@
 import { create } from "zustand";
 import { supabase } from "../lib/supabase";
-import { useNotificationStore } from "./notificationStore";
-import { useAuthStore } from "./authStore";
 
 export interface InventoryItem {
   id: string;

@@ -1,8 +1,7 @@
 import { create } from "zustand";
 import { supabase } from "../lib/supabase";
-import { isUnderStatCap, useDigimonStore } from "./petStore";
+import { useDigimonStore } from "./petStore";
 import { useNotificationStore } from "./notificationStore";
-import { StatCategory } from "../utils/categoryDetection";
 import { useAuthStore } from "../store/authStore";
 import { useTitleStore } from "./titleStore";
 
