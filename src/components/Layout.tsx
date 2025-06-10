@@ -1,8 +1,9 @@
 import { ReactNode, useState, useRef, useEffect } from 'react';
 import { useAuthStore } from '../store/authStore';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { useDigimonStore } from "../store/petStore";
 import { motion, AnimatePresence } from "framer-motion";
+import ThemeToggle from './ThemeToggle';
+
 interface LayoutProps {
   children: ReactNode;
 }
@@ -35,12 +36,12 @@ const NavDropdown = ({
   }, []);
   
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className="relative flex items-center h-full" ref={dropdownRef}>
       <button
-        className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+        className={`inline-flex items-center px-1 pb-2 border-b-2 text-sm font-medium ${
           isActive
-            ? "border-primary-500 text-gray-900"
-            : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+            ? "border-primary-500 text-gray-900 dark:border-accent-500 dark:text-gray-100"
+            : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-100 dark:hover:border-gray-500"
         }`}
         onClick={() => setIsOpen(!isOpen)}
       >
@@ -51,7 +52,7 @@ const NavDropdown = ({
       </button>
       
       {isOpen && (
-        <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+        <div className="absolute left-0 top-full mt-1 w-48 rounded-md shadow-lg bg-white dark:bg-dark-200 ring-1 ring-black ring-opacity-5 z-10">
           <div className="py-1" role="menu" aria-orientation="vertical">
             {children}
           </div>
@@ -62,8 +63,7 @@ const NavDropdown = ({
 };
 
 const Layout = ({ children }: LayoutProps) => {
-  const { user, userProfile, signOut, isAdmin } = useAuthStore();
-  const { userDigimon } = useDigimonStore();
+  const { user, userProfile, signOut, } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
   const [activeMenu, setActiveMenu] = useState<'digimon' | 'battle' | 'more' | null>(null);
@@ -97,242 +97,249 @@ const Layout = ({ children }: LayoutProps) => {
   };
   
   return (
-    <div className="min-h-screen bg-gray-50 pb-16 md:pb-0">
-      <header className="bg-white shadow-sm hidden md:block">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <div className="flex-shrink-0 flex items-center">
-              <Link to="/" className="flex items-center">
-                <img 
-                  src="/assets/digimon/agumon_professor.png" 
-                  alt="Digitask Logo" 
-                  className="h-8 w-8 mr-2"
-                  style={{ imageRendering: "pixelated" }}
-                />
-                <span className="text-xl font-bold text-primary-600">Digitask</span>
-              </Link>
-            </div>
-            
-            {userDigimon && (
-              <div className="hidden md:flex ml-6 space-x-4">
-                <Link
-                  to="/"
-                  className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                    isActive("/")
-                      ? "border-primary-500 text-gray-900"
-                      : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                  }`}
-                >
-                  Dashboard
-                </Link>
-                <NavDropdown 
-                  label="Digimon" 
-                  isActive={isAnyActive(["/party", "/digifarm"])}
-                >
-                  <Link
-                    to="/party"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    onClick={() => setActiveMenu(null)}
-                  >
-                    Party
+    <div className="flex flex-col min-h-screen">
+      {user && (
+        <header className="bg-white dark:bg-dark-300 shadow-sm border-b border-gray-200 dark:border-dark-200 hidden sm:block">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between h-16">
+              <div className="flex">
+                <div className="flex-shrink-0 flex items-center">
+                  <img src="/assets/digimon/agumon_professor.png" alt="Digitask" className="h-8 w-8 mr-2" />
+                  <Link to="/" className="text-xl font-bold text-primary-600 dark:text-gray-100">
+                    Digitask
                   </Link>
+                </div>
+                <div className="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-8 h-16">
                   <Link
-                    to="/digifarm"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    onClick={() => setActiveMenu(null)}
+                    to="/"
+                    className={`inline-flex items-center px-1 pb-2 border-b-2 text-sm font-medium ${
+                      isActive("/")
+                        ? "border-primary-500 text-gray-900 dark:border-accent-500 dark:text-gray-100"
+                        : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-100 dark:hover:border-gray-500"
+                    }`}
                   >
-                    DigiFarm
+                    Dashboard
                   </Link>
-                </NavDropdown>
-                <NavDropdown 
-                  label="Play" 
-                  isActive={isAnyActive(["/battle", "/digimon-dex"])}
-                >
-                  <Link
-                    to="/battle"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    onClick={() => setActiveMenu(null)}
+                  
+                  <NavDropdown 
+                    label="Digimon" 
+                    isActive={isAnyActive(["/party", "/digifarm", "/digimon-dex"])}
                   >
-                    Arena
-                  </Link>
-                  <Link
-                    to="/campaign"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    onClick={() => setActiveMenu(null)}
+                    <Link
+                      to="/party"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-100 dark:hover:text-white"
+                      onClick={() => setActiveMenu(null)}
+                    >
+                      Party
+                    </Link>
+                    <Link
+                      to="/digifarm"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-100 dark:hover:text-white"
+                      onClick={() => setActiveMenu(null)}
+                    >
+                      Digifarm
+                    </Link>
+                    <Link
+                      to="/digimon-dex"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-100 dark:hover:text-white"
+                      onClick={() => setActiveMenu(null)}
+                    >
+                      DigiDex
+                    </Link>
+                  </NavDropdown>
+                  
+                  <NavDropdown 
+                    label="Battle" 
+                    isActive={isAnyActive(["/battle", "/campaign", "/store"])}
                   >
-                    Campaign
-                  </Link>
-                  <Link
-                    to="/store"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    onClick={() => setActiveMenu(null)}
+                    <Link
+                      to="/battle"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-100 dark:hover:text-white"
+                      onClick={() => setActiveMenu(null)}
+                    >
+                      Arena
+                    </Link>
+                    <Link
+                      to="/campaign"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-100 dark:hover:text-white"
+                      onClick={() => setActiveMenu(null)}
+                    >
+                      Campaign
+                    </Link>
+                    <Link
+                      to="/store"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-100 dark:hover:text-white"
+                      onClick={() => setActiveMenu(null)}
+                    >
+                      Store
+                    </Link>
+                  </NavDropdown>
+                  
+                  <NavDropdown 
+                    label="Community" 
+                    isActive={isAnyActive(["/user-search", "/leaderboard"])}
                   >
-                    Store
-                  </Link>
-                  <Link
-                    to="/digimon-dex"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    onClick={() => setActiveMenu(null)}
+                    <Link
+                      to="/user-search"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-100 dark:hover:text-white"
+                      onClick={() => setActiveMenu(null)}
+                    >
+                      Find Players
+                    </Link>
+                    <Link
+                      to="/leaderboard"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-100 dark:hover:text-white"
+                      onClick={() => setActiveMenu(null)}
+                    >
+                      Leaderboard
+                    </Link>
+                  </NavDropdown>
+                  
+                  <NavDropdown 
+                    label="Help" 
+                    isActive={isAnyActive(["/tutorial", "/patch-notes"])}
                   >
-                    DigiDex
-                  </Link>
-                </NavDropdown>
-                
-                <NavDropdown 
-                  label="Community" 
-                  isActive={isAnyActive(["/user-search", "/leaderboard"])}
-                >
-                  <Link
-                    to="/user-search"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    onClick={() => setActiveMenu(null)}
-                  >
-                    Find Players
-                  </Link>
-                  <Link
-                    to="/leaderboard"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    onClick={() => setActiveMenu(null)}
-                  >
-                    Leaderboard
-                  </Link>
-                </NavDropdown>
-                
-                <NavDropdown 
-                  label="Help" 
-                  isActive={isAnyActive(["/tutorial", "/patch-notes"])}
-                >
-                  <Link
-                    to="/tutorial"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    onClick={() => setActiveMenu(null)}
-                  >
-                    Tutorial
-                  </Link>
-                  <Link
-                    to="/patch-notes"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    onClick={() => setActiveMenu(null)}
-                  >
-                    Patch Notes
-                  </Link>
-                  <Link
-                    to="/settings"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    onClick={() => setActiveMenu(null)}
-                  >
-                    Settings
-                  </Link>
-                </NavDropdown>
+                    <Link
+                      to="/tutorial"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-100 dark:hover:text-white"
+                      onClick={() => setActiveMenu(null)}
+                    >
+                      Tutorial
+                    </Link>
+                    <Link
+                      to="/patch-notes"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-100 dark:hover:text-white"
+                      onClick={() => setActiveMenu(null)}
+                    >
+                      Patch Notes
+                    </Link>
+                    <Link
+                      to="/settings"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-100 dark:hover:text-white"
+                      onClick={() => setActiveMenu(null)}
+                    >
+                      Settings
+                    </Link>
+                  </NavDropdown>
+                </div>
               </div>
-            )}
-            
-            {isAdmin && (
-              <NavDropdown 
-                label="Admin" 
-                isActive={isAnyActive(['/admin'])}
-              >
+              
+              <div className="hidden sm:ml-6 sm:flex sm:items-center space-x-4">
+                {/* Theme Toggle */}
+                <ThemeToggle />
+                
+                {/* User Avatar - links to profile */}
                 <Link
-                  to="/admin/reports"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  onClick={() => setActiveMenu(null)}
+                  to={`/profile/name/${userProfile?.username}`}
+                  className="flex items-center justify-center"
+                  title="View Profile"
                 >
-                  Reports
+                  <img
+                    src={userProfile?.avatar_url || "/assets/digimon/agumon_professor.png"}
+                    alt="Profile"
+                    title={userProfile?.display_name || userProfile?.username || "User Profile"}
+                    className="h-8 w-8 rounded-full object-cover border-2 border-gray-200 dark:border-gray-600 hover:border-primary-500 dark:hover:border-accent-500 transition-colors"
+                  />
                 </Link>
-                <Link
-                  to="/admin/digimon-editor"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  onClick={() => setActiveMenu(null)}
-                >
-                  Editor
-                </Link>
-                <Link
-                  to="/admin/digimon-manager"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  onClick={() => setActiveMenu(null)}
-                >
-                  Database Manager
-                </Link>
-                <Link
-                  to="/admin/titles"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  onClick={() => setActiveMenu(null)}
-                >
-                  Titles
-                </Link>
-              </NavDropdown>
-            )}
-            
-            <div className="flex items-center space-x-4">
-              {user && (
-                <>
-                  <Link to="/profile" className="text-sm text-gray-700 hover:text-primary-600 hidden md:inline">
-                    <div className="flex-shrink-0 h-11 w-11 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden mr-3">
-                      <img
-                        draggable="false"
-                        src={userProfile?.avatar_url || "/assets/digimon/agumon_professor.png"}
-                        alt={"avatar"}
-                        className="w-8 h-8 cursor-pointer"
-                        style={{
-                          imageRendering: "pixelated",
-                          transformOrigin: "center center",
-                          position: "relative",
-                          display: "block",
-                          margin: "0 auto",
-                        }}
-                        onError={(e) => {
-                          // Fallback if image doesn't load
-                          (e.target as HTMLImageElement).src = "/assets/digimon/agumon_professor.png";
-                        }}
-                      />
-                    </div>
-                  </Link>
-                  <button
-                    onClick={handleSignOut}
-                    className="btn-outline text-sm"
-                  >
-                    Sign Out
-                  </button>
-                </>
-              )}
+                
+                {/* Profile dropdown */}
+                <div className="ml-3 relative">
+                  <div>
+                    <button
+                      type="button"
+                      className="bg-white dark:bg-dark-200 rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-accent-500"
+                      id="user-menu"
+                      aria-expanded="false"
+                      aria-haspopup="true"
+                      onClick={handleSignOut}
+                    >
+                      <span className="sr-only">Sign out</span>
+                      <svg
+                        className="h-6 w-8 rounded-full text-gray-500 dark:text-gray-300"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </header>
+        </header>
+      )}
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {children}
+      {/* Mobile header - just shows the logo */}
+      {user && (
+        <header className="bg-white dark:bg-dark-300 shadow-sm border-b border-gray-200 dark:border-dark-200 sm:hidden">
+          <div className="flex justify-between items-center h-14 px-4">
+            <div className="flex items-center">
+              <img src="/assets/digimon/agumon_professor.png" alt="Digitask" className="h-8 w-8 mr-2" />
+              <Link to="/" className="text-xl font-bold text-primary-600 dark:text-gray-100">
+                Digitask
+              </Link>
+            </div>
+            <div className="flex items-center space-x-3">
+              <ThemeToggle />
+              
+              <Link
+                to={`/profile/name/${userProfile?.username}`}
+                className="flex items-center justify-center"
+                title="View Profile"
+              >
+                <img
+                  src={userProfile?.avatar_url || "/assets/digimon/agumon_professor.png"}
+                  alt="Profile"
+                  title={userProfile?.display_name || userProfile?.username || "User Profile"}
+                  className="h-8 w-8 rounded-full object-cover border-2 border-gray-200 dark:border-gray-600 hover:border-primary-500 dark:hover:border-accent-500 transition-colors"
+                />
+              </Link>
+            </div>
+          </div>
+        </header>
+      )}
+      
+      <main className="flex-grow bg-gray-50 dark:bg-dark-400 transition-colors duration-200 pb-16 sm:pb-0">
+        <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 px-4">
+          {children}
+        </div>
       </main>
       
-      {/* Bottom navigation for mobile */}
-      {userDigimon && (
-        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-[9999]">
-          <div className="flex justify-around items-center">
-            <Link 
-              to="/" 
-              className={`flex flex-col items-center justify-center py-2 ${
-                isActive("/") ? "text-primary-600" : "text-gray-500"
-              }`}
-            >
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-              </svg>
-              <span className="text-xs mt-1">Home</span>
-            </Link>
-
-            
-
-              <div className="relative">
-              <button
-                onClick={() => handleMenuClick('digimon')}
+      {user && (
+        <div className="sm:hidden fixed bottom-0 inset-x-0 bg-white dark:bg-dark-300 border-t border-gray-200 dark:border-dark-200 z-10 shadow-lg">
+          <div className="grid grid-cols-4 px-4 py-1">
+            <div className="relative">
+              <Link
+                to="/"
                 className={`flex flex-col items-center justify-center py-2 ${
-                  activeMenu === 'digimon' || isActive("/party") || isActive("/digifarm") 
-                    ? "text-primary-600" 
-                    : "text-gray-500"
+                  isActive("/") ? "text-primary-600 dark:text-accent-500" : "text-gray-500 dark:text-gray-400"
                 }`}
               >
                 <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                <span className="text-xs mt-1">Home</span>
+              </Link>
+            </div>
+            
+            <div className="relative">
+              <button
+                onClick={() => handleMenuClick('digimon')}
+                className={`flex flex-col items-center justify-center py-2 ${
+                  activeMenu === 'digimon' || isActive("/party") || isActive("/digifarm") || isActive("/digimon-dex")
+                    ? "text-primary-600 dark:text-accent-500" 
+                    : "text-gray-500 dark:text-gray-400"
+                }`}
+              >
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
                 <span className="text-xs mt-1">Digimon</span>
               </button>
@@ -344,28 +351,38 @@ const Layout = ({ children }: LayoutProps) => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 20 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-white rounded-lg shadow-lg border border-gray-200 w-36 overflow-hidden"
+                    className="absolute bottom-full mb-2 left-0 bg-white dark:bg-dark-300 rounded-lg shadow-lg border border-gray-200 dark:border-dark-200 w-48 overflow-hidden"
                   >
                     <div className="py-1">
                       <Link
                         to="/party"
                         className={`flex items-center px-4 py-2 text-sm ${
-                          isActive("/party") ? "bg-primary-50 text-primary-700" : "text-gray-700 hover:bg-gray-100"
+                          isActive("/party") ? "bg-primary-50 text-primary-700 dark:bg-dark-200 dark:text-accent-400" : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-200"
                         }`}
                         onClick={() => setActiveMenu(null)}
                       >
-                        <span className="mr-2">👥</span>
+                        <span className="mr-2">🐾</span>
                         Party
                       </Link>
                       <Link
                         to="/digifarm"
                         className={`flex items-center px-4 py-2 text-sm ${
-                          isActive("/digifarm") ? "bg-primary-50 text-primary-700" : "text-gray-700 hover:bg-gray-100"
+                          isActive("/digifarm") ? "bg-primary-50 text-primary-700 dark:bg-dark-200 dark:text-accent-400" : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-200"
                         }`}
                         onClick={() => setActiveMenu(null)}
                       >
-                        <span className="mr-2">🌾</span>
-                        DigiFarm
+                        <span className="mr-2">🌱</span>
+                        Digifarm
+                      </Link>
+                      <Link
+                        to="/digimon-dex"
+                        className={`flex items-center px-4 py-2 text-sm ${
+                          isActive("/digimon-dex") ? "bg-primary-50 text-primary-700 dark:bg-dark-200 dark:text-accent-400" : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-200"
+                        }`}
+                        onClick={() => setActiveMenu(null)}
+                      >
+                        <span className="mr-2">🌟</span>
+                        DigiDex
                       </Link>
                     </div>
                   </motion.div>
@@ -378,8 +395,8 @@ const Layout = ({ children }: LayoutProps) => {
                 onClick={() => handleMenuClick('battle')}
                 className={`flex flex-col items-center justify-center py-2 ${
                   activeMenu === 'battle' || isActive("/battle") || isActive("/campaign") 
-                    ? "text-primary-600" 
-                    : "text-gray-500"
+                    ? "text-primary-600 dark:text-accent-500" 
+                    : "text-gray-500 dark:text-gray-400"
                 }`}
               >
                 <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -395,13 +412,13 @@ const Layout = ({ children }: LayoutProps) => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 20 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute bottom-full mb-2 right-0 bg-white rounded-lg shadow-lg border border-gray-200 w-36 overflow-hidden"
+                    className="absolute bottom-full mb-2 right-0 bg-white dark:bg-dark-300 rounded-lg shadow-lg border border-gray-200 dark:border-dark-200 w-36 overflow-hidden"
                   >
                     <div className="py-1">
                       <Link
                         to="/battle"
                         className={`flex items-center px-4 py-2 text-sm ${
-                          isActive("/battle") ? "bg-primary-50 text-primary-700" : "text-gray-700 hover:bg-gray-100"
+                          isActive("/battle") ? "bg-primary-50 text-primary-700 dark:bg-dark-200 dark:text-accent-400" : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-200"
                         }`}
                         onClick={() => setActiveMenu(null)}
                       >
@@ -411,7 +428,7 @@ const Layout = ({ children }: LayoutProps) => {
                       <Link
                         to="/campaign"
                         className={`flex items-center px-4 py-2 text-sm ${
-                          isActive("/campaign") ? "bg-primary-50 text-primary-700" : "text-gray-700 hover:bg-gray-100"
+                          isActive("/campaign") ? "bg-primary-50 text-primary-700 dark:bg-dark-200 dark:text-accent-400" : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-200"
                         }`}
                         onClick={() => setActiveMenu(null)}
                       >
@@ -421,7 +438,7 @@ const Layout = ({ children }: LayoutProps) => {
                       <Link
                         to="/store"
                         className={`flex items-center px-4 py-2 text-sm ${
-                          isActive("/store") ? "bg-primary-50 text-primary-700" : "text-gray-700 hover:bg-gray-100"
+                          isActive("/store") ? "bg-primary-50 text-primary-700 dark:bg-dark-200 dark:text-accent-400" : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-200"
                         }`}
                         onClick={() => setActiveMenu(null)}
                       >
@@ -434,25 +451,13 @@ const Layout = ({ children }: LayoutProps) => {
               </AnimatePresence>
             </div>
             
-            <Link 
-              to="/digimon-dex" 
-              className={`flex flex-col items-center justify-center py-2 ${
-                isActive("/digimon-dex") ? "text-primary-600" : "text-gray-500"
-              }`}
-            >
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-              </svg>
-              <span className="text-xs mt-1">DigiDex</span>
-            </Link>
-            
             <div className="relative">
               <button
                 onClick={() => handleMenuClick('more')}
                 className={`flex flex-col items-center justify-center py-2 ${
                   activeMenu === 'more' || isAnyActive(moreNavItems.map(item => item.path)) 
-                    ? "text-primary-600" 
-                    : "text-gray-500"
+                    ? "text-primary-600 dark:text-accent-500" 
+                    : "text-gray-500 dark:text-gray-400"
                 }`}
               >
                 <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -468,7 +473,7 @@ const Layout = ({ children }: LayoutProps) => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 20 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute bottom-full mb-2 right-0 bg-white rounded-lg shadow-lg border border-gray-200 w-48 overflow-hidden"
+                    className="absolute bottom-full mb-2 right-0 bg-white dark:bg-dark-300 rounded-lg shadow-lg border border-gray-200 dark:border-dark-200 w-48 overflow-hidden"
                   >
                     <div className="py-1">
                       {moreNavItems.map((item) => (
@@ -476,7 +481,7 @@ const Layout = ({ children }: LayoutProps) => {
                           key={item.path}
                           to={item.path}
                           className={`flex items-center px-4 py-2 text-sm ${
-                            isActive(item.path) ? "bg-primary-50 text-primary-700" : "text-gray-700 hover:bg-gray-100"
+                            isActive(item.path) ? "bg-primary-50 text-primary-700 dark:bg-dark-200 dark:text-accent-400" : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-200"
                           }`}
                           onClick={() => setActiveMenu(null)}
                         >
@@ -484,6 +489,15 @@ const Layout = ({ children }: LayoutProps) => {
                           {item.label}
                         </Link>
                       ))}
+
+                      {/* Add theme toggle button to mobile menu */}
+                      <div className="flex items-center justify-between px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-200">
+                        <span className="flex items-center">
+                          <span className="mr-2">🎨</span>
+                          Theme
+                        </span>
+                        <ThemeToggle />
+                      </div>
                     </div>
                   </motion.div>
                 )}
@@ -501,9 +515,9 @@ const Layout = ({ children }: LayoutProps) => {
         />
       )}
       
-      <footer className="bg-white border-t border-gray-200 mt-auto">
+      <footer className="bg-white dark:bg-dark-300 border-t border-gray-200 dark:border-dark-200 mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="py-4 text-center text-sm text-gray-500">
+          <div className="py-4 text-center text-sm text-gray-500 dark:text-gray-400">
             This is a fan project. Digimon™ is owned by Bandai/Toei Animation.
           </div>
         </div>

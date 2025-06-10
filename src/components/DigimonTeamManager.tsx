@@ -66,14 +66,14 @@ const SortableDigimonCard = ({
         style={style}
         className={`
           border-2 border-dashed rounded-md flex items-center justify-center
-          ${isTeam ? 'border-gray-300' : 'border-gray-200'}
+          ${isTeam ? 'border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-700'}
           transition-colors duration-200
           w-full aspect-square
         `}
         {...attributes}
         {...listeners}
       >
-        <p className={`text-xs text-center ${isTeam ? 'text-gray-400' : 'text-gray-300'}`}>
+        <p className={`text-xs text-center ${isTeam ? 'text-gray-400 dark:text-gray-500' : 'text-gray-300 dark:text-gray-600'}`}>
           Drop Here
         </p>
       </div>
@@ -90,7 +90,7 @@ const SortableDigimonCard = ({
       style={style}
       {...attributes}
       {...listeners}
-      className="border rounded-md relative w-full aspect-square select-none overflow-hidden bg-white cursor-move card-container"
+      className="border rounded-md relative w-full aspect-square select-none overflow-hidden bg-white dark:bg-dark-200 cursor-move card-container dark:border-dark-300"
     >
       {/* Type/Attribute icon - with responsive size */}
       {digimon.digimon?.type && digimon.digimon?.attribute && (
@@ -128,15 +128,15 @@ const SortableDigimonCard = ({
         {/* Additional info for larger cards - using container query class */}
         <div className="large-card-content hidden w-full mt-2">
           {/* Name */}
-          <p className="text-xs text-center font-medium truncate w-full">
+          <p className="text-xs text-center font-medium truncate w-full dark:text-gray-200">
             {digimon.name || digimon.digimon?.name || 'Digimon'}
           </p>
           
           {/* Simple EXP bar */}
           <div className="w-full mt-1 px-1">
-            <div className="w-full h-1 bg-gray-200 rounded-full overflow-hidden">
+            <div className="w-full h-1 bg-gray-200 dark:bg-dark-100 rounded-full overflow-hidden">
               <div 
-                className="h-full bg-blue-500" 
+                className="h-full bg-blue-500 dark:bg-accent-500" 
                 style={{ width: `${expPercentage}%` }}
               />
             </div>
@@ -156,8 +156,8 @@ const DigimonContainer = ({
   isTeam: boolean;
 }) => {
   return (
-    <div className="bg-gray-50 p-2 xs:p-3 rounded-lg">
-      <h3 className="text-base xs:text-lg font-semibold mb-1 xs:mb-2">{isTeam ? 'Team' : 'Reserve'}</h3>
+    <div className="bg-gray-50 dark:bg-dark-300 p-2 xs:p-3 rounded-lg">
+      <h3 className="text-base xs:text-lg font-semibold mb-1 xs:mb-2 dark:text-gray-100">{isTeam ? 'Team' : 'Reserve'}</h3>
       <SortableContext items={items.map(item => item.id)} strategy={rectSortingStrategy}>
         <div className={`grid ${isTeam ? 'grid-cols-3' : 'grid-cols-3'} gap-1 xs:gap-2 sm:gap-3 max-w-3xl mx-auto`}>
           {items.map(item => (
@@ -331,35 +331,40 @@ const DigimonTeamManager = () => {
   };
 
   return (
-    <div>
-      <h2 className="text-xl font-bold mb-2">Team Management</h2>
-      <p className="text-sm text-gray-600 mb-4">
-        Drag and drop to arrange your team.
-      </p>
-      
+    <div className="space-y-4">
+      {/* Team explanation */}
+      <div className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+        <p>Set up to 3 Digimon on your team for battles. Drag and drop to arrange your team.</p>
+      </div>
+
+      {/* DnD Context */}
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <div className="space-y-2">
+        <div className="space-y-6">
           <DigimonContainer items={teamItems} isTeam={true} />
           <DigimonContainer items={reserveItems} isTeam={false} />
         </div>
         
         <DragOverlay>
           {activeId ? (
-            <div className="opacity-80">
+            <div className="opacity-80 w-20 h-20">
               <SortableDigimonCard
                 id={activeId.toString()}
                 digimon={getActiveItem()?.digimon || null}
-                isTeam={getActiveItem()?.isTeam || false}
+                isTeam={(getActiveItem()?.isTeam || false)}
               />
             </div>
           ) : null}
         </DragOverlay>
       </DndContext>
+      
+      <div className="text-xs text-gray-500 dark:text-gray-400 mt-4">
+        <p>Note: Only Digimon on your team can participate in battles. Your team's max size is 3.</p>
+      </div>
     </div>
   );
 };

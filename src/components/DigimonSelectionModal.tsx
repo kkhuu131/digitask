@@ -124,29 +124,29 @@ const DigimonSelectionModal: React.FC<DigimonSelectionModalProps> = ({
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
-        className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+        className="bg-white dark:bg-dark-300 rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
       >
         <div className="p-6">
-          <h2 className="text-2xl font-bold mb-4">Choose Your Digimon</h2>
+          <h2 className="text-2xl font-bold mb-4 dark:text-gray-100">Choose Your Digimon</h2>
           
           {isNXChance && (
-            <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
-              <p className="text-yellow-700">
+            <div className="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-400 dark:border-yellow-600 p-4 mb-6">
+              <p className="text-yellow-700 dark:text-yellow-300">
                 <span className="font-bold">Easter Egg!</span> You can choose from rare NX Digimon in addition to the starters! These are special, weaker versions of the original, that can't evolve or devolve.
               </p>
             </div>
           )}
           
           {error && (
-            <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
-              <p className="text-red-700">{error}</p>
+            <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 dark:border-red-600 p-4 mb-4">
+              <p className="text-red-700 dark:text-red-300">{error}</p>
             </div>
           )}
           
           {loading ? (
             <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500 mx-auto"></div>
-              <p className="mt-4 text-gray-600">Loading Digimon options...</p>
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500 dark:border-amber-500 mx-auto"></div>
+              <p className="mt-4 text-gray-600 dark:text-gray-300">Loading Digimon options...</p>
             </div>
           ) : (
             <>
@@ -157,8 +157,8 @@ const DigimonSelectionModal: React.FC<DigimonSelectionModalProps> = ({
                     onClick={() => setSelectedDigimon(digimon.id)}
                     className={`border rounded-lg p-4 cursor-pointer transition-all ${
                       selectedDigimon === digimon.id
-                        ? "border-primary-500 bg-primary-50 ring-2 ring-primary-300"
-                        : "border-gray-200 hover:border-primary-300"
+                        ? "border-primary-500 dark:border-amber-500 bg-primary-50 dark:bg-amber-900/20 ring-2 ring-primary-300 dark:ring-amber-600/50"
+                        : "border-gray-200 dark:border-gray-700 dark:bg-dark-200 hover:border-primary-300 dark:hover:border-amber-600"
                     }`}
                   >
                     <div className="flex flex-col items-center">
@@ -174,15 +174,15 @@ const DigimonSelectionModal: React.FC<DigimonSelectionModalProps> = ({
                           }}
                         />
                       </div>
-                      <h3 className="font-medium text-center">{digimon.name}</h3>
-                      <p className="text-xs text-gray-500 text-center">
+                      <h3 className="font-medium text-center dark:text-gray-200">{digimon.name}</h3>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
                         {digimon.type}/{digimon.attribute}
                       </p>
-                      <p className="text-xs text-gray-500 text-center">
+                      <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
                         {digimon.stage}
                       </p>
                       {digimon.id >= 337 && digimon.id <= 341 && (
-                        <span className="mt-1 px-2 py-0.5 bg-yellow-100 text-yellow-800 text-xs rounded-full">
+                        <span className="mt-1 px-2 py-0.5 bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300 text-xs rounded-full">
                           NX
                         </span>
                       )}
@@ -194,7 +194,7 @@ const DigimonSelectionModal: React.FC<DigimonSelectionModalProps> = ({
               <div className="flex justify-end space-x-4">
                 <button
                   onClick={onClose}
-                  className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                  className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-dark-200 dark:bg-dark-200"
                 >
                   Cancel
                 </button>
@@ -203,8 +203,8 @@ const DigimonSelectionModal: React.FC<DigimonSelectionModalProps> = ({
                   disabled={!selectedDigimon || isSubmitting}
                   className={`px-4 py-2 rounded-md text-white ${
                     selectedDigimon && !isSubmitting
-                      ? "bg-primary-600 hover:bg-primary-700"
-                      : "bg-gray-400 cursor-not-allowed"
+                      ? "bg-primary-600 dark:bg-amber-600 hover:bg-primary-700 dark:hover:bg-amber-700"
+                      : "bg-gray-400 dark:bg-gray-600 cursor-not-allowed"
                   }`}
                 >
                   {isSubmitting ? "Claiming..." : "Claim"}

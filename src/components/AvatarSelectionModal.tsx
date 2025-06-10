@@ -128,12 +128,12 @@ const AvatarSelectionModal = ({ isOpen, onClose, onSelect }: AvatarSelectionModa
   
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+      <div className="bg-white dark:bg-dark-300 rounded-lg p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">Choose Your Avatar</h2>
+          <h2 className="text-xl font-bold dark:text-white">Choose Your Avatar</h2>
           <button 
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
+            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white"
           >
             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -141,13 +141,13 @@ const AvatarSelectionModal = ({ isOpen, onClose, onSelect }: AvatarSelectionModa
           </button>
         </div>
         
-        <p className="mb-4 text-gray-600">
+        <p className="mb-4 text-gray-600 dark:text-gray-300">
           Select a Digimon sprite to use as your profile avatar.
         </p>
         
         {loading ? (
           <div className="text-center py-8">
-            <p className="text-gray-500">Loading available avatars...</p>
+            <p className="text-gray-500 dark:text-gray-400">Loading available avatars...</p>
           </div>
         ) : (
           <>
@@ -162,7 +162,7 @@ const AvatarSelectionModal = ({ isOpen, onClose, onSelect }: AvatarSelectionModa
                       onSelect(sprite.sprite_url);
                       onClose();
                     }}
-                    className="bg-gradient-to-br from-amber-50 to-amber-100 rounded-lg p-2 hover:bg-amber-200 transition-colors flex flex-col items-center justify-center aspect-square relative border-2 border-amber-300"
+                    className="bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/60 dark:to-amber-800/70 rounded-lg p-2 hover:bg-amber-200 dark:hover:bg-amber-700 transition-colors flex flex-col items-center justify-center aspect-square relative border-2 border-amber-300 dark:border-amber-600"
                   >
                     <img 
                       src={sprite.sprite_url} 
@@ -175,7 +175,7 @@ const AvatarSelectionModal = ({ isOpen, onClose, onSelect }: AvatarSelectionModa
                         }
                       }}
                     />
-                    <div className="text-xs text-center mt-1 text-amber-800 font-medium truncate w-full">
+                    <div className="text-xs text-center mt-1 text-amber-800 dark:text-amber-300 font-medium truncate w-full">
                       {sprite.item_id ? sprite.item_id.split('_')[2] : sprite.name}
                     </div>
                   </button>
@@ -191,7 +191,7 @@ const AvatarSelectionModal = ({ isOpen, onClose, onSelect }: AvatarSelectionModa
                       onSelect(sprite.sprite_url);
                       onClose();
                     }}
-                    className="bg-gray-100 rounded-lg p-2 hover:bg-gray-200 transition-colors flex flex-col items-center justify-center aspect-square relative"
+                    className="bg-gray-100 dark:bg-dark-200 rounded-lg p-2 hover:bg-gray-200 dark:hover:bg-dark-100 transition-colors flex flex-col items-center justify-center aspect-square relative"
                   >
                     <img 
                       src={sprite.sprite_url} 
@@ -213,7 +213,7 @@ const AvatarSelectionModal = ({ isOpen, onClose, onSelect }: AvatarSelectionModa
                 .map((sprite) => (
                   <button
                     key={sprite.sprite_url}
-                    className="bg-gray-100 rounded-lg p-2 opacity-50 cursor-not-allowed flex flex-col items-center justify-center aspect-square relative"
+                    className="bg-gray-100 dark:bg-dark-200 rounded-lg p-2 opacity-50 cursor-not-allowed flex flex-col items-center justify-center aspect-square relative"
                   >
                     <img 
                       src={sprite.sprite_url} 
@@ -226,7 +226,7 @@ const AvatarSelectionModal = ({ isOpen, onClose, onSelect }: AvatarSelectionModa
                         }
                       }}
                     />
-                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
+                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 dark:bg-opacity-50">
                       <span>🔒</span>
                     </div>
                   </button>
@@ -234,7 +234,7 @@ const AvatarSelectionModal = ({ isOpen, onClose, onSelect }: AvatarSelectionModa
             </div>
             
             {availableSprites.length === 0 && (
-              <p className="text-center py-8 text-gray-500">
+              <p className="text-center py-8 text-gray-500 dark:text-gray-400">
                 You haven't discovered any Digimon with sprites yet. Battle to discover more!
               </p>
             )}

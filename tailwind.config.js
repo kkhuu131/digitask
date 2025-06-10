@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  darkMode: "class",
   theme: {
     extend: {
       colors: {
@@ -30,6 +31,30 @@ export default {
           900: "#4c1d95",
           950: "#2e1065",
         },
+        accent: {
+          50: "#fffbeb",
+          100: "#fef3c7",
+          200: "#fde68a",
+          300: "#fcd34d",
+          400: "#fbbf24",
+          500: "#f59e0b",
+          600: "#d97706",
+          700: "#b45309",
+          800: "#92400e",
+          900: "#78350f",
+          950: "#451a03",
+        },
+        dark: {
+          100: "#1e293b",
+          200: "#1a2234",
+          300: "#151b2d",
+          400: "#111827",
+          500: "#0f1623",
+          600: "#0d131e",
+          700: "#0a0f17",
+          800: "#060911",
+          900: "#030509",
+        },
       },
       fontFamily: {
         sans: ["Inter", "sans-serif"],
@@ -43,7 +68,15 @@ export default {
         "2xl": "1536px",
         xs: "320px",
       },
+      backdropBlur: {
+        xs: "2px",
+      },
+      boxShadow: {
+        soft: "0 2px 10px 0 rgba(0, 0, 0, 0.05)",
+        card: "0 4px 12px rgba(0, 0, 0, 0.08)",
+        "card-dark": "0 4px 12px rgba(0, 0, 0, 0.25)",
+      },
     },
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/forms")],
 };

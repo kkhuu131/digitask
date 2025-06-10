@@ -38,23 +38,23 @@ const PreparationModal: React.FC<PreparationModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6">
+      <div className="bg-white dark:bg-dark-300 rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6">
         {/* Header */}
         <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-bold">{opponent.profile.display_name}</h2>
+          <h2 className="text-2xl font-bold dark:text-gray-100">{opponent.profile.display_name}</h2>
           <button 
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
+            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
           >
             ✕
           </button>
         </div>
 
-        <h3 className="text-md text-gray-500 mb-4">Stage {opponent.id}</h3>
+        <h3 className="text-md text-gray-500 dark:text-gray-400 mb-4">Stage {opponent.id}</h3>
 
         {/* Opponent Team Section */}
         <div className="mb-4">
-          <div className="flex gap-4 justify-center p-4 bg-gray-50 rounded-lg">
+          <div className="flex gap-4 justify-center p-4 bg-gray-50 dark:bg-dark-200 rounded-lg">
             {opponent.team.map((member) => (
               <div key={member.id} className="text-center flex flex-col items-center">
                 <DigimonSprite
@@ -70,8 +70,8 @@ const PreparationModal: React.FC<PreparationModalProps> = ({
                     showTooltip={true}
                   />
                 </div>
-                <p className="text-sm mt-1">{member.digimon.name}</p>
-                <p className="text-xs text-gray-600">Lv. {member.current_level}</p>
+                <p className="text-sm mt-1 dark:text-gray-200">{member.digimon.name}</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400">Lv. {member.current_level}</p>
               </div>
             ))}
           </div>
@@ -79,7 +79,7 @@ const PreparationModal: React.FC<PreparationModalProps> = ({
 
         {opponent.description && (
           <div className="mb-4">
-            <p className="text-sm text-center text-gray-600"><i>{opponent.description}</i></p>
+            <p className="text-sm text-center text-gray-600 dark:text-gray-400"><i>{opponent.description}</i></p>
           </div>
         )}
 
@@ -91,8 +91,8 @@ const PreparationModal: React.FC<PreparationModalProps> = ({
             className={`
               px-4 py-2 rounded-lg text-white font-semibold
               ${(isUnlocked && teamDigimon.length > 0)
-                ? 'bg-blue-500 hover:bg-blue-600'
-                : 'bg-gray-300 cursor-not-allowed'
+                ? 'bg-blue-500 dark:bg-accent-600 hover:bg-blue-600 dark:hover:bg-accent-700'
+                : 'bg-gray-300 dark:bg-gray-600 cursor-not-allowed'
               }
             `}
           >
@@ -163,17 +163,17 @@ const CampaignNode: React.FC<{
       disabled={!isUnlocked}
       className={`
         relative w-[4.25rem] sm:w-40 rounded-lg p-1 sm:p-4 transition-all text-xs sm:text-base
-        ${isUnlocked ? 'bg-white shadow-md hover:shadow-lg' : 'bg-gray-100'}
-        ${isNext ? 'ring-2 ring-green-500' : ''}
+        ${isUnlocked ? 'bg-white dark:bg-dark-200 shadow-md hover:shadow-lg dark:shadow-dark-100' : 'bg-gray-100 dark:bg-dark-400'}
+        ${isNext ? 'ring-2 ring-green-500 dark:ring-green-600' : ''}
         ${isPast ? 'opacity-50' : ''}
         ${!isUnlocked ? 'cursor-not-allowed' : 'cursor-pointer'}
       `}
     >
       <div className="flex justify-between items-center mb-1 sm:mb-2">
-        <h3 className="font-bold text-[8px] sm:text-[14px] truncate max-w-[70%]">
+        <h3 className="font-bold text-[8px] sm:text-[14px] truncate max-w-[70%] dark:text-gray-200">
           {isUnlocked ? stage.profile.display_name : "???"}
         </h3>
-        <span className="text-[8px] sm:text-[14px] text-gray-500">
+        <span className="text-[8px] sm:text-[14px] text-gray-500 dark:text-gray-400">
           {stage.id}
         </span>
       </div>
@@ -216,13 +216,13 @@ const CampaignNode: React.FC<{
                 <div className="w-3 h-3 sm:w-6 sm:h-6" />
               )}
             </div>
-            <p className="text-[8px] sm:text-xs h-2 sm:h-4 flex items-center">
+            <p className="text-[8px] sm:text-xs h-2 sm:h-4 flex items-center dark:text-gray-300">
               {isUnlocked ? `${member.current_level}` : "???"}
             </p>
           </div>
         ))}
       </div>
-      <span className="text-[8px] sm:text-[14px] text-gray-500">
+      <span className="text-[8px] sm:text-[14px] text-gray-500 dark:text-gray-400">
           Power: {Math.round(calculateCampaignTeamPower(stage.team))}
         </span>
     </button>
@@ -382,23 +382,23 @@ const Campaign: React.FC = () => {
   return (
     <>
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-4">Campaign</h1>
+      <h1 className="text-2xl font-bold mb-4 dark:text-gray-100">Campaign</h1>
       
       {/* Add the speed control near the top */}
       <div className="mb-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-600 dark:text-gray-300">
           Battle against these teams to progress and earn titles. Levels will be capped at the opponent's max level + 5.
         </p>
         <BattleSpeedControl />
       </div>
       
       {/* Campaign Map */}
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-white dark:bg-dark-300 rounded-lg shadow-md dark:shadow-lg p-6 dark:border dark:border-dark-200">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">Digital World</h2>
+          <h2 className="text-2xl font-bold dark:text-gray-100">Digital World</h2>
           <button
             onClick={scrollToCurrentStage}
-            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm"
+            className="px-4 py-2 bg-blue-500 dark:bg-accent-600 hover:bg-blue-600 dark:hover:bg-accent-700 text-white rounded-lg text-sm"
           >
             Go to Stage {highestStageCleared + 1}
           </button>
@@ -407,7 +407,7 @@ const Campaign: React.FC = () => {
         {/* Scrollable container */}
         <div 
           ref={gridRef}
-          className="h-[600px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
+          className="h-[600px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-gray-100 dark:scrollbar-track-dark-200"
         >
           <div className="relative py-8">
             {stageLevels.map(level => {
@@ -421,9 +421,9 @@ const Campaign: React.FC = () => {
                   {/* Arc Title - only show if this is the first level containing stages from this arc */}
                   {isFirstStageInArc && (
                     <div className="text-center mb-6">
-                      <h2 className="text-2xl font-bold text-indigo-700">{arc.title}</h2>
+                      <h2 className="text-2xl font-bold text-indigo-700 dark:text-indigo-300">{arc.title}</h2>
                       {arc.description && (
-                        <p className="text-sm text-gray-600 mt-1">{arc.description}</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{arc.description}</p>
                       )}
                     </div>
                   )}

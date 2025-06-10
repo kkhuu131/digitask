@@ -10,10 +10,10 @@ const BattleSpeedControl: React.FC = () => {
   };
   
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 bg-white p-3 rounded-lg shadow-sm">
-      <span className="text-sm font-medium text-gray-700">Speed</span>
+    <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 bg-white dark:bg-dark-300 p-3 rounded-lg shadow-sm">
+      <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Speed</span>
       <div className="flex items-center w-full pb-2">
-        <span className="text-xs text-gray-500 mr-2">1x</span>
+        <span className="text-xs text-gray-500 dark:text-gray-400 mr-2">1x</span>
         <div className="relative flex-1">
           <input
             type="range"
@@ -22,7 +22,7 @@ const BattleSpeedControl: React.FC = () => {
             step="1"
             value={speedMultiplier}
             onChange={handleSpeedChange}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer touch-action-manipulation"
+            className="w-full h-2 bg-gray-200 dark:bg-dark-100 rounded-lg appearance-none cursor-pointer touch-action-manipulation"
             style={{
               WebkitAppearance: 'none',
               appearance: 'none'
@@ -47,6 +47,10 @@ const BattleSpeedControl: React.FC = () => {
               box-shadow: 0 0 2px rgba(0,0,0,0.2);
             }
             
+            .dark input[type=range]::-webkit-slider-thumb {
+              background: #f59e0b;
+            }
+            
             input[type=range]::-moz-range-thumb {
               height: 20px;
               width: 20px;
@@ -57,12 +61,20 @@ const BattleSpeedControl: React.FC = () => {
               box-shadow: 0 0 2px rgba(0,0,0,0.2);
             }
             
+            .dark input[type=range]::-moz-range-thumb {
+              background: #f59e0b;
+            }
+            
             input[type=range]::-webkit-slider-runnable-track {
               width: 100%;
               height: 4px;
               cursor: pointer;
               background: #ddd;
               border-radius: 4px;
+            }
+            
+            .dark input[type=range]::-webkit-slider-runnable-track {
+              background: #374151;
             }
             
             input[type=range]::-moz-range-track {
@@ -73,12 +85,16 @@ const BattleSpeedControl: React.FC = () => {
               border-radius: 4px;
             }
             
+            .dark input[type=range]::-moz-range-track {
+              background: #374151;
+            }
+            
             input[type=range]:focus {
               outline: none;
             }
           `}} />
         </div>
-        <span className="text-xs text-gray-500 ml-2">4x</span>
+        <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">4x</span>
       </div>
     </div>
   );

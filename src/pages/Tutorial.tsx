@@ -27,13 +27,13 @@ const ManualSection = ({ title, children }: { title: string; children: React.Rea
   const contentRef = useRef<HTMLDivElement>(null);
   
   return (
-    <div className="mb-6 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+    <div className="mb-6 bg-white dark:bg-dark-300 rounded-lg shadow-sm border border-gray-200 dark:border-dark-200 overflow-hidden">
       <button 
-        className="w-full px-4 py-3 flex justify-between items-center bg-blue-50 hover:bg-blue-100 transition-colors"
+        className="w-full px-4 py-3 flex justify-between items-center bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <h3 className="text-xl font-semibold text-blue-800">{title}</h3>
-        <FaChevronUp className={`text-blue-800 transition-transform ${isOpen ? '' : 'transform rotate-180'}`} />
+        <h3 className="text-xl font-semibold text-blue-800 dark:text-blue-300">{title}</h3>
+        <FaChevronUp className={`text-blue-800 dark:text-blue-300 transition-transform ${isOpen ? '' : 'transform rotate-180'}`} />
       </button>
       
       <AnimatePresence initial={false}>
@@ -44,7 +44,7 @@ const ManualSection = ({ title, children }: { title: string; children: React.Rea
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <div ref={contentRef} className="px-3 py-3">
+            <div ref={contentRef} className="px-3 py-3 dark:text-gray-200">
               {children}
             </div>
           </motion.div>
@@ -92,8 +92,8 @@ const Tutorial = () => {
                 style={{ imageRendering: "pixelated" }}
               />
               <div>
-                <h2 className="text-2xl font-bold">Welcome</h2>
-                <p className="text-gray-600 italic">Your guide to the Digital World</p>
+                <h2 className="text-2xl font-bold dark:text-gray-100">Welcome</h2>
+                <p className="text-gray-600 dark:text-gray-400 italic">Your guide to the Digital World</p>
               </div>
             </div>
             
@@ -118,7 +118,7 @@ const Tutorial = () => {
                   <p className="mb-4">
                     Keep your Digimon happy and healthy, earn experience points for your Digimon, complete your daily quota, and build a streak for increased experience points.
                   </p>
-                  <p className="text-yellow-600 font-medium mb-4">
+                  <p className="text-yellow-600 dark:text-yellow-400 font-medium mb-4">
                     Missing your daily quota or any task will decrease your Digimon's happiness!
                   </p>
                 </div>
@@ -251,8 +251,8 @@ const Tutorial = () => {
                 style={{ imageRendering: "pixelated" }}
               />
               <div>
-                <h2 className="text-2xl font-bold">Digimon Care</h2>
-                <p className="text-gray-600 italic">Nurture your digital companions</p>
+                <h2 className="text-2xl font-bold dark:text-gray-100">Digimon Care</h2>
+                <p className="text-gray-600 dark:text-gray-400 italic">Nurture your digital companions</p>
               </div>
             </div>
             
@@ -823,37 +823,37 @@ const Tutorial = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4 md:p-6">
-      <h1 className="text-3xl font-bold text-center mb-8">Bokomon's Manual</h1>
-
-      {/* Navigation Tabs */}
+    <div className="max-w-6xl mx-auto px-4 py-6">
+      <h1 className="text-3xl font-bold mb-8 dark:text-gray-100">Tutorial</h1>
+      
       <div className="flex flex-col md:flex-row gap-6">
-        {/* Sidebar */}
-        <div className="w-full md:w-1/4">
-          <ul className="flex flex-row md:flex-col overflow-x-auto md:overflow-visible space-x-2 md:space-x-0 md:space-y-2 pb-2 md:pb-0">
-            {sections.map((section) => (
-              <li key={section.id} className="flex-shrink-0">
-                <button
-                  onClick={() => setActiveSection(section.id)}
-                  className={`w-full text-left px-4 py-2 rounded flex items-center space-x-3 ${
-                    activeSection === section.id
-                      ? "bg-primary-500 text-white"
-                      : "hover:bg-gray-100"
-                  }`}
-                >
-                  <span className="text-lg">{section.icon}</span>
-                  <span className="whitespace-nowrap">{section.title}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
+        <div className="md:w-1/5">
+          <div className="bg-white dark:bg-dark-300 rounded-lg shadow-sm p-4 sticky top-20 border border-gray-200 dark:border-dark-200">
+            <h2 className="text-lg font-semibold mb-4 dark:text-gray-100">Sections</h2>
+            <ul className="space-y-2">
+              {sections.map((section) => (
+                <li key={section.id}>
+                  <button
+                    onClick={() => setActiveSection(section.id)}
+                    className={`flex items-center w-full px-3 py-2 rounded-md transition-colors ${
+                      activeSection === section.id
+                        ? "bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300"
+                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-200"
+                    }`}
+                  >
+                    <span className="mr-2">{section.icon}</span>
+                    {section.title}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
-
-        {/* Content Area */}
+        
         <div 
           ref={contentRef}
-          className="w-full md:w-3/4 bg-white p-4 md:p-6 rounded-lg shadow overflow-y-auto"
-          style={{ maxHeight: 'calc(100vh - 200px)' }}
+          className="md:w-4/5 bg-white dark:bg-dark-300 rounded-lg shadow-sm p-4 border border-gray-200 dark:border-dark-200 overflow-y-auto"
+          style={{ maxHeight: "calc(100vh - 120px)" }}
         >
           {renderContent()}
         </div>

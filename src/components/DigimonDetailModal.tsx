@@ -193,11 +193,11 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
     
     return (
       <div className="flex items-center justify-between">
-        <div className="font-medium">{label}</div>
+        <div className="font-medium dark:text-gray-200">{label}</div>
         <div className="flex items-center">
           <div className="text-right mr-2">
-            <span className="font-semibold">{baseValue}</span>
-            <span className={bonusValue > 0 ? "text-green-600 ml-1" : "text-gray-400 ml-1"}>
+            <span className="font-semibold dark:text-gray-200">{baseValue}</span>
+            <span className={bonusValue > 0 ? "text-green-600 dark:text-green-400 ml-1" : "text-gray-400 ml-1"}>
               {bonusValue > 0 ? `(+${bonusValue})` : ""}
             </span>
           </div>
@@ -205,12 +205,12 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
           {/* Allocation Button */}
           {belongsToCurrentUser && statValue > 0 && isUnderStatCap(selectedDigimon) && (
             <button 
-              className="w-6 h-6 bg-indigo-100 hover:bg-indigo-200 text-indigo-800 rounded-full flex items-center justify-center relative"
+              className="w-6 h-6 bg-indigo-100 hover:bg-indigo-200 text-indigo-800 dark:bg-amber-800/30 dark:hover:bg-amber-700/50 dark:text-amber-300 rounded-full flex items-center justify-center relative"
               onClick={() => allocateStat(lowerLabel as StatType)}
               disabled={allocating}
             >
               <span className="text-xs">+</span>
-              <span className="absolute -top-2 -right-2 bg-indigo-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center text-[10px]">
+              <span className="absolute -top-2 -right-2 bg-indigo-500 dark:bg-amber-600 text-white dark:text-amber-50 text-xs rounded-full w-4 h-4 flex items-center justify-center text-[10px]">
                 {statValue}
               </span>
             </button>
@@ -406,7 +406,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
       }}
     >
       <div 
-        className="bg-white rounded-lg px-6 pb-4 pt-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto relative"
+        className="bg-white dark:bg-dark-300 rounded-lg px-6 pb-4 pt-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto relative"
         onClick={(e) => e.stopPropagation()}
       >
           {/* X Button */}
@@ -415,7 +415,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
               e.stopPropagation();
               onClose();
             }}
-            className="absolute top-3 right-3 p-1 text-gray-500 hover:text-gray-700"
+            className="absolute top-3 right-3 p-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -443,7 +443,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                     value={newName}
                     onChange={(e) => setNewName(e.target.value)}
                     onKeyDown={(e) => handleKeyDown(e, selectedDigimon.id)}
-                    className="px-2 py-1 border border-gray-300 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="px-2 py-1 border border-gray-300 dark:border-dark-100 rounded-md text-gray-800 dark:text-gray-200 dark:bg-dark-200 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-accent-500"
                     maxLength={20}
                     placeholder={selectedDigimon.digimon?.name || "Enter nickname"}
                     autoFocus
@@ -471,7 +471,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                 </div>
               ) : (
                 <div className="flex items-center justify-center mb-2">
-                  <h4 className="text-xl font-semibold mr-1">
+                  <h4 className="text-xl font-semibold mr-1 dark:text-gray-100">
                     {selectedDigimon.name || selectedDigimon.digimon?.name}
                   </h4>
                   <button
@@ -479,7 +479,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                       e.stopPropagation(); // Prevent event bubbling
                       handleEditName(selectedDigimon.id, selectedDigimon.name, selectedDigimon.digimon?.name || "");
                     }}
-                    className="p-1 text-gray-500 hover:text-gray-700 z-10" // Add z-index
+                    className="p-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 z-10" // Add z-index
                     title="Edit name"
                     type="button" // Explicitly set button type
                   >
@@ -490,26 +490,26 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                 </div>
               )}
               <div className="flex justify-center space-x-2">
-                <span className="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                <span className="text-sm bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 px-2 py-1 rounded">
                   Lv. {selectedDigimon.current_level}
                 </span>
                 {selectedDigimon.is_on_team && (
-                  <span className="text-sm bg-green-100 text-green-800 px-2 py-1 rounded">
+                  <span className="text-sm bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 px-2 py-1 rounded">
                     Team
                   </span>
                 )}
                 {selectedDigimon.is_active && (
-                  <span className="text-sm bg-purple-100 text-purple-800 px-2 py-1 rounded">
+                  <span className="text-sm bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 px-2 py-1 rounded">
                     Active
                   </span>
                 )}
                 {selectedDigimon.has_x_antibody && (
-                <div className="text-sm bg-purple-100 text-purple-800 px-2 py-1 rounded">
-                  <span className="text-sm font-medium text-indigo-600">X-Antibody</span>
+                <div className="text-sm bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 px-2 py-1 rounded">
+                  <span className="text-sm font-medium text-indigo-600 dark:text-indigo-300">X-Antibody</span>
                 </div>
               )}
               </div>
-              <div className="grid grid-cols-2 gap-x-1 text-sm text-gray-500 mt-2">
+              <div className="grid grid-cols-2 gap-x-1 text-sm text-gray-500 dark:text-gray-400 mt-2">
                 <p className="text-right">Age:</p>
                 <p className="text-left">{calculateAgeDays(selectedDigimon.created_at)} days</p>
 
@@ -519,7 +519,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
             </div>
 
             {/* Description - fix the nesting issue */}
-            <div className="text-center text-gray-600 text-sm mt-1 mb-2 flex flex-wrap items-center justify-center gap-x-1">
+            <div className="text-center text-gray-600 dark:text-gray-300 text-sm mt-1 mb-2 flex flex-wrap items-center justify-center gap-x-1">
               <span>{`${selectedDigimon.digimon?.name} is a `}</span>
               <TypeAttributeIcon
                 type={selectedDigimon.digimon?.type as DigimonType}
@@ -533,10 +533,10 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
             <div className="w-full space-y-4 mb-6 mt-4">
               <div>
                 <div className="flex justify-between text-sm mb-1">
-                  <span>Happiness</span>
-                  <span>{selectedDigimon.happiness}%</span>
+                  <span className="dark:text-gray-300">Happiness</span>
+                  <span className="dark:text-gray-300">{selectedDigimon.happiness}%</span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2.5">
+                <div className="w-full bg-gray-200 dark:bg-dark-100 rounded-full h-2.5">
                   <div 
                     className={`h-2.5 rounded-full ${
                       selectedDigimon.happiness >= 60 ? 'bg-green-500' : 
@@ -550,18 +550,18 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
               
               <div>
                 <div className="flex justify-between text-sm mb-1">
-                  <span>Experience</span>
-                  <span>{selectedDigimon.experience_points}/{selectedDigimon.current_level * 20}</span>
+                  <span className="dark:text-gray-300">Experience</span>
+                  <span className="dark:text-gray-300">{selectedDigimon.experience_points}/{selectedDigimon.current_level * 20}</span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2.5">
+                <div className="w-full bg-gray-200 dark:bg-dark-100 rounded-full h-2.5">
                   <div 
-                    className="bg-blue-600 h-2.5 rounded-full" 
+                    className="bg-blue-600 dark:bg-accent-500 h-2.5 rounded-full" 
                     style={{ 
                       width: `${Math.min(100, (selectedDigimon.experience_points / (selectedDigimon.current_level * 20)) * 100)}%` 
                     }}
                   ></div>
                 </div>
-                <div className="text-xs text-gray-500 text-right mt-1">
+                <div className="text-xs text-gray-500 dark:text-gray-400 text-right mt-1">
                   {20 * selectedDigimon.current_level * (selectedDigimon.current_level - 1) / 2 + selectedDigimon.experience_points} Total EXP
                 </div>
               </div>
@@ -571,12 +571,12 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
           {/* Right column */}
           <div className="flex flex-col h-full md:w-3/5">
             <div className="flex-grow">
-              <h4 className="text-lg font-semibold mb-2">Stats</h4>
+              <h4 className="text-lg font-semibold mb-2 dark:text-gray-100">Stats</h4>
 
               {/* Add a section showing total available stat points if any */}
               {Object.values(savedStats).some(val => val > 0) && belongsToCurrentUser && (
-                <div className="mb-3 p-2 bg-indigo-50 border border-indigo-200 rounded-lg">
-                  <p className="text-sm text-indigo-800">
+                <div className="mb-3 p-2 bg-indigo-50 dark:bg-amber-900/20 border border-indigo-200 dark:border-amber-700/50 rounded-lg">
+                  <p className="text-sm text-indigo-800 dark:text-amber-200">
                     {isUnderStatCap(selectedDigimon) ? "You have saved stat points to allocate! " + getRemainingStatPoints(selectedDigimon) + " stat points until cap." : "This Digimon has reached its stat cap. Increase its ABI through evolution and devolution to unlock more stat points."}
                   </p>
                 </div>
@@ -594,7 +594,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
               
               {/* Evolution Options - Only show for the current user's Digimon */}
               <div className="mt-4">
-                <h4 className="font-semibold text-sm mb-2">Evolution Options</h4>
+                <h4 className="font-semibold text-sm mb-2 dark:text-gray-200">Evolution Options</h4>
                 {belongsToCurrentUser ? (
                   evolutionOptions.length > 0 ? (
                     <div className="grid grid-cols-3 gap-2">
@@ -695,8 +695,8 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                             key={option.id}
                             className={`border rounded-lg p-2 ${
                               canEvolve 
-                                ? "border-primary-300 bg-primary-50" 
-                                : "border-gray-300 bg-gray-50 opacity-70"
+                                ? "border-primary-300 dark:border-amber-700/50 bg-primary-50 dark:bg-amber-900/20" 
+                                : "border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-dark-200 opacity-70"
                             }`}
                           >
                             <div className="flex items-center">
@@ -721,11 +721,11 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                                 )}
                               </div>
                               <div className="flex-1 hidden sm:block">
-                                <p className="font-medium text-sm">
+                                <p className="font-medium text-sm dark:text-gray-200">
                                   {discovered ? option.name : "???"}
                                 </p>
                                 <div className="flex justify-between">
-                                  <p className="text-xs text-gray-500">
+                                  <p className="text-xs text-gray-500 dark:text-gray-400">
                                     {discovered ? option.stage : "Unknown"}
                                   </p>
                                 </div>
@@ -736,10 +736,10 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                       })}
                     </div>
                   ) : (
-                    <p className="text-gray-500 text-sm">No evolution options available.</p>
+                    <p className="text-gray-500 dark:text-gray-400 text-sm">No evolution options available.</p>
                   )
                 ) : (
-                  <p className="text-gray-500 text-sm">Evolution options are only visible to the Digimon's owner.</p>
+                  <p className="text-gray-500 dark:text-gray-400 text-sm">Evolution options are only visible to the Digimon's owner.</p>
                 )}
               </div>
             </div>
@@ -755,7 +755,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                 onSetActive(selectedDigimon.id);
                 onClose();
               }}
-              className="flex-1 bg-indigo-100 text-indigo-800 rounded hover:bg-indigo-200 py-2 px-4"
+              className="flex-1 bg-indigo-100 dark:bg-amber-900/30 text-indigo-800 dark:text-amber-200 rounded hover:bg-indigo-200 dark:hover:bg-amber-800/50 py-2 px-4"
             >
               Set Active
             </button>
@@ -763,7 +763,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
           
           {/* Active indicator - show instead of Set Active button if already active */}
           {selectedDigimon.is_active && (
-            <div className="flex-1 bg-blue-100 text-blue-800 py-2 px-4 rounded text-center">
+            <div className="flex-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 py-2 px-4 rounded text-center">
               Active
             </div>
           )}
@@ -772,7 +772,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
           {belongsToCurrentUser && (
             <button
               onClick={() => setShowEvolutionModal(true)}
-              className="flex-1 bg-indigo-100 text-indigo-800 rounded hover:bg-indigo-200 py-2 px-4"
+              className="flex-1 bg-indigo-100 dark:bg-amber-900/30 text-indigo-800 dark:text-amber-200 rounded hover:bg-indigo-200 dark:hover:bg-amber-800/50 py-2 px-4"
             >
               Digivolve
             </button>
@@ -782,7 +782,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
           {belongsToCurrentUser && (
             <button
               onClick={() => setShowDevolutionModal(true)}
-              className="flex-1 bg-indigo-100 text-indigo-800 rounded hover:bg-indigo-200 py-2 px-4"
+              className="flex-1 bg-indigo-100 dark:bg-amber-900/30 text-indigo-800 dark:text-amber-200 rounded hover:bg-indigo-200 dark:hover:bg-amber-800/50 py-2 px-4"
             >
               De-Digivolve
             </button>

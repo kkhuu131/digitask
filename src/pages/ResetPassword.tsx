@@ -72,21 +72,21 @@ const ResetPassword = () => {
         <h1 className="text-2xl font-bold mb-6">Reset Your Password</h1>
         
         {error && (
-          <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
-            <p className="text-sm text-red-700">{error}</p>
+          <div className="bg-red-50 dark:bg-red-900/30 border-l-4 border-red-500 dark:border-red-600 p-4 mb-4">
+            <p className="text-sm text-red-700 dark:text-red-200">{error}</p>
           </div>
         )}
         
         {success ? (
-          <div className="bg-green-50 border-l-4 border-green-500 p-4 mb-4">
-            <p className="text-sm text-green-700">
+          <div className="bg-green-50 dark:bg-green-900/30 border-l-4 border-green-500 dark:border-green-600 p-4 mb-4">
+            <p className="text-sm text-green-700 dark:text-green-200">
               Your password has been successfully reset. You will be redirected to the login page.
             </p>
           </div>
         ) : (
           <form onSubmit={handleResetPassword}>
             <div className="mb-4">
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 New Password
               </label>
               <input
@@ -94,13 +94,13 @@ const ResetPassword = () => {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-dark-200 dark:text-gray-200 rounded-md"
                 required
               />
             </div>
             
             <div className="mb-6">
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Confirm New Password
               </label>
               <input
@@ -108,7 +108,7 @@ const ResetPassword = () => {
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-dark-200 dark:text-gray-200 rounded-md"
                 required
               />
             </div>

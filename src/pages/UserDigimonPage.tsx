@@ -319,20 +319,20 @@ const UserDigimonPage = () => {
           <MilestoneProgress />
         </div>
 
-        <div className="card mb-6">
-          <h1 className="text-2xl font-bold mb-4">Party</h1>
-          <p className="text-gray-600 mb-6">
+        <div className="card dark:bg-dark-300 dark:border-dark-200">
+          <h1 className="text-2xl font-bold mb-4 dark:text-gray-100">Party</h1>
+          <p className="text-gray-600 dark:text-gray-300 mb-6">
             You can have up to 12 Digimon total. 
             Only one Digimon can be active at a time.
           </p>
 
           {error && (
-            <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
-              <p className="text-sm text-red-700">{error}</p>
+            <div className="bg-red-50 dark:bg-red-900/30 border-l-4 border-red-500 p-4 mb-4">
+              <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
             </div>
           )}
 
-          <h2 className="text-xl font-semibold mb-4">Digimon Details</h2>
+          <h2 className="text-xl font-semibold mb-4 dark:text-gray-200">Digimon Details</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...allUserDigimon]
               .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
@@ -341,12 +341,12 @@ const UserDigimonPage = () => {
               return (
                 <div 
                   key={digimon.id} 
-                  className={`digimon-card-${digimon.id} border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer relative`}
+                  className={`digimon-card-${digimon.id} border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer relative dark:border-dark-200 dark:bg-dark-200`}
                   onClick={() => handleShowDetailModal(digimon.id)}
                 >
                   {/* Add TypeAttributeIcon in the top right corner */}
                   {digimon.digimon?.type && digimon.digimon?.attribute && (
-                    <div className="absolute top-2 right-2 z-10 bg-white bg-opacity-75 p-1 rounded">
+                    <div className="absolute top-2 right-2 z-10 bg-white bg-opacity-75 dark:bg-dark-100 dark:bg-opacity-50 p-1 rounded">
                       <TypeAttributeIcon 
                         type={digimon.digimon.type as DigimonType} 
                         attribute={digimon.digimon.attribute as DigimonAttribute}
@@ -359,23 +359,23 @@ const UserDigimonPage = () => {
                     <div className="flex flex-col mb-2">
                       {/* Name section */}
                       <div className="flex items-center justify-between">
-                        <h3 className="font-bold text-lg mb-1 digimon-name">
+                        <h3 className="font-bold text-lg mb-1 digimon-name dark:text-gray-100">
                           {digimon.name || digimon.digimon?.name}
                         </h3>
                       </div>
                       
                       {/* Tags row */}
                       <div className="flex space-x-2 mt-1">
-                        <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                        <span className="text-xs bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-200 px-2 py-1 rounded">
                           Lv. {digimon.current_level}
                         </span>
                         {digimon.is_on_team && (
-                          <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+                          <span className="text-xs bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-200 px-2 py-1 rounded">
                             Team
                           </span>
                         )}
                         {digimon.is_active && (
-                          <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
+                          <span className="text-xs bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-200 px-2 py-1 rounded">
                             Active
                           </span>
                         )}
@@ -412,7 +412,7 @@ const UserDigimonPage = () => {
                     </div>
                     
                     {/* Age display */}
-                    <div className="text-xs text-gray-500 text-center mb-2">
+                    <div className="text-xs text-gray-500 dark:text-gray-400 text-center mb-2">
                       Age: {calculateAgeDays(digimon.created_at)} days
                     </div>
                     
@@ -425,15 +425,15 @@ const UserDigimonPage = () => {
                         }}
                         className={`text-sm px-3 py-1 rounded ${
                           digimon.is_active 
-                            ? "bg-gray-100 text-gray-400 cursor-default" 
-                            : "bg-primary-100 text-primary-700 hover:bg-primary-200"
+                            ? "bg-gray-100 dark:bg-dark-100 text-gray-400 dark:text-gray-500 cursor-default" 
+                            : "bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-800/30"
                         }`}
                         disabled={digimon.is_active || switchingDigimon}
                       >
                         {digimon.is_active ? "Active" : switchingDigimon ? "Setting..." : "Set Active"}
                       </button>
                       
-                      <div className="text-sm text-gray-500">
+                      <div className="text-sm text-gray-500 dark:text-gray-400">
                         Click for details
                       </div>
                     </div>
@@ -443,7 +443,7 @@ const UserDigimonPage = () => {
             })}
             
             {allUserDigimon.length < 12 && (
-              <div className="border border-dashed border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center text-gray-400">
+              <div className="border border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 flex flex-col items-center justify-center text-gray-400 dark:text-gray-500">
                 <div className="w-24 h-24 flex items-center justify-center mb-3">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />

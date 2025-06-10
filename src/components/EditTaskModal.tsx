@@ -71,25 +71,120 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
     return { value, label };
   });
 
-  // Update the customSelectStyles object to properly handle z-indexing
+  // Update the customSelectStyles object to properly handle z-indexing and dark mode
   const customSelectStyles = {
-    control: (provided: any) => ({
+    control: (provided: any, state: any) => ({
       ...provided,
       minHeight: '38px',
-      borderColor: '#D1D5DB',
+      borderColor: state.isFocused ? '#6366F1' : '#D1D5DB',
+      backgroundColor: 'var(--bg-input, white)',
+      color: 'var(--text-primary, #111827)',
       boxShadow: 'none',
       '&:hover': {
         borderColor: '#9CA3AF',
+      },
+      // Add dark mode styles
+      '@media (prefers-color-scheme: dark)': {
+        borderColor: state.isFocused ? '#F59E0B' : '#4B5563',
+        backgroundColor: '#1F2937',
+        color: '#F3F4F6',
       }
     }),
     menu: (provided: any) => ({
       ...provided,
       zIndex: 9999, // Ensure menu appears above modal
+      backgroundColor: 'var(--bg-dropdown, white)',
+      // Add dark mode styles
+      '@media (prefers-color-scheme: dark)': {
+        backgroundColor: '#1F2937',
+        border: '1px solid #374151',
+        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.25)',
+      }
     }),
     menuPortal: (provided: any) => ({
       ...provided,
       zIndex: 9999, // Ensure menu portal appears above modal
-    })
+    }),
+    option: (provided: any, state: any) => ({
+      ...provided,
+      backgroundColor: state.isSelected 
+        ? 'var(--bg-selected, #6366F1)' 
+        : state.isFocused 
+          ? 'var(--bg-hover, #F3F4F6)' 
+          : 'var(--bg-dropdown, white)',
+      color: state.isSelected 
+        ? 'white' 
+        : 'var(--text-primary, #111827)',
+      '&:hover': {
+        backgroundColor: state.isSelected 
+          ? 'var(--bg-selected, #6366F1)' 
+          : 'var(--bg-hover, #F3F4F6)',
+      },
+      // Add dark mode styles
+      '@media (prefers-color-scheme: dark)': {
+        backgroundColor: state.isSelected 
+          ? '#F59E0B' 
+          : state.isFocused 
+            ? '#374151' 
+            : '#1F2937',
+        color: state.isSelected 
+          ? '#111827' 
+          : '#F3F4F6',
+        '&:hover': {
+          backgroundColor: state.isSelected 
+            ? '#F59E0B' 
+            : '#374151',
+        }
+      }
+    }),
+    singleValue: (provided: any) => ({
+      ...provided,
+      color: 'var(--text-primary, #111827)',
+      // Add dark mode styles
+      '@media (prefers-color-scheme: dark)': {
+        color: '#F3F4F6',
+      }
+    }),
+    input: (provided: any) => ({
+      ...provided,
+      color: 'var(--text-primary, #111827)',
+      // Add dark mode styles
+      '@media (prefers-color-scheme: dark)': {
+        color: '#F3F4F6',
+      }
+    }),
+    multiValue: (provided: any) => ({
+      ...provided,
+      backgroundColor: 'var(--bg-chip, #E5E7EB)',
+      // Add dark mode styles
+      '@media (prefers-color-scheme: dark)': {
+        backgroundColor: '#374151',
+      }
+    }),
+    multiValueLabel: (provided: any) => ({
+      ...provided,
+      color: 'var(--text-primary, #111827)',
+      // Add dark mode styles
+      '@media (prefers-color-scheme: dark)': {
+        color: '#F3F4F6',
+      }
+    }),
+    multiValueRemove: (provided: any) => ({
+      ...provided,
+      color: 'var(--text-secondary, #6B7280)',
+      '&:hover': {
+        backgroundColor: 'var(--bg-hover-remove, #F87171)',
+        color: 'white',
+      },
+      // Add dark mode styles
+      '@media (prefers-color-scheme: dark)': {
+        color: '#9CA3AF',
+        '&:hover': {
+          backgroundColor: '#EF4444',
+          color: 'white',
+        }
+      }
+    }),
   };
   
   // Set minimum date and default date/time when component mounts or task type changes
@@ -210,18 +305,18 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
   
   return (
     <div className={`fixed inset-0 z-50 overflow-y-auto ${isOpen ? '' : 'hidden'}`}>
-      <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+      <div className="flex items-center justify-center min-h-screen px-4 py-6 text-center">
         <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-          <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+          <div className="absolute inset-0 bg-gray-500 dark:bg-gray-900 opacity-75"></div>
         </div>
 
-        <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+        <div className="inline-block w-full align-middle bg-white dark:bg-dark-300 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg mx-auto">
           <form onSubmit={handleSubmit} className="p-6 space-y-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">Edit Task</h3>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Edit Task</h3>
 
             {/* Description */}
             <div>
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Description
               </label>
               <input
@@ -229,13 +324,13 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
                 id="description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-accent-500 dark:focus:border-accent-500 bg-white dark:bg-dark-200 text-gray-900 dark:text-gray-100"
               />
             </div>
 
             {/* Notes */}
             <div>
-              <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="notes" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Notes (optional)
               </label>
               <textarea
@@ -243,45 +338,45 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-accent-500 dark:focus:border-accent-500 bg-white dark:bg-dark-200 text-gray-900 dark:text-gray-100"
               />
             </div>
 
             {/* Task Type */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Task Type</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Task Type</label>
               <div className="flex flex-col sm:grid sm:grid-cols-3 gap-2">
-                <label className="flex items-center p-2 border rounded-md hover:bg-gray-50 cursor-pointer">
+                <label className="flex items-center p-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-dark-400 cursor-pointer bg-white dark:bg-dark-200">
                   <input
                     type="radio"
                     value="daily"
                     checked={taskType === "daily"}
                     onChange={(e) => setTaskType(e.target.value as "daily" | "one-time" | "recurring")}
-                    className="h-4 w-4 text-primary-600"
+                    className="h-4 w-4 text-primary-600 dark:text-accent-500"
                   />
-                  <span className="ml-2 text-sm">Daily</span>
+                  <span className="ml-2 text-sm text-gray-900 dark:text-gray-100">Daily</span>
                 </label>
                 
-                <label className="flex items-center p-2 border rounded-md hover:bg-gray-50 cursor-pointer">
+                <label className="flex items-center p-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-dark-400 cursor-pointer bg-white dark:bg-dark-200">
                   <input
                     type="radio"
                     value="recurring"
                     checked={taskType === "recurring"}
                     onChange={(e) => setTaskType(e.target.value as "daily" | "one-time" | "recurring")}
-                    className="h-4 w-4 text-primary-600"
+                    className="h-4 w-4 text-primary-600 dark:text-accent-500"
                   />
-                  <span className="ml-2 text-sm">Recurring</span>
+                  <span className="ml-2 text-sm text-gray-900 dark:text-gray-100">Recurring</span>
                 </label>
                 
-                <label className="flex items-center p-2 border rounded-md hover:bg-gray-50 cursor-pointer">
+                <label className="flex items-center p-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-dark-400 cursor-pointer bg-white dark:bg-dark-200">
                   <input
                     type="radio"
                     value="one-time"
                     checked={taskType === "one-time"}
                     onChange={(e) => setTaskType(e.target.value as "daily" | "one-time" | "recurring")}
-                    className="h-4 w-4 text-primary-600"
+                    className="h-4 w-4 text-primary-600 dark:text-accent-500"
                   />
-                  <span className="ml-2 text-sm">One-time</span>
+                  <span className="ml-2 text-sm text-gray-900 dark:text-gray-100">One-time</span>
                 </label>
               </div>
             </div>
@@ -289,15 +384,15 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
             {/* Recurring Days Selection */}
             {taskType === "recurring" && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Repeat on these days:
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   {DAYS_OF_WEEK.map(day => (
-                    <label key={day} className="flex items-center p-2 border rounded-md hover:bg-gray-50 cursor-pointer">
+                    <label key={day} className="flex items-center p-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-dark-400 cursor-pointer bg-white dark:bg-dark-200">
                       <input
                         type="checkbox"
-                        className="h-4 w-4 text-primary-600 rounded"
+                        className="h-4 w-4 text-primary-600 dark:text-accent-500 rounded"
                         checked={recurringDays.includes(day)}
                         onChange={() => {
                           if (recurringDays.includes(day)) {
@@ -307,7 +402,7 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
                           }
                         }}
                       />
-                      <span className="ml-2 text-sm">{day}</span>
+                      <span className="ml-2 text-sm text-gray-900 dark:text-gray-100">{day}</span>
                     </label>
                   ))}
                 </div>
@@ -317,7 +412,7 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
             {/* Due Date - only show for one-time tasks */}
             {taskType === "one-time" && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Due Date & Time
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -326,7 +421,7 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
                     value={dueDate}
                     min={minDate}
                     onChange={(e) => setDueDate(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-accent-500 dark:focus:border-accent-500 bg-white dark:bg-dark-200 text-gray-900 dark:text-gray-100"
                   />
                   <Select
                     options={timeOptions}
@@ -336,6 +431,19 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
                     styles={customSelectStyles}
                     menuPortalTarget={document.body}
                     menuPosition="fixed"
+                    classNamePrefix="react-select"
+                    theme={(theme) => ({
+                      ...theme,
+                      colors: {
+                        ...theme.colors,
+                        primary: 'var(--color-primary, #6366F1)',
+                        primary25: 'var(--color-primary-light, #EEF2FF)',
+                        neutral0: 'var(--bg-input, white)',
+                        neutral10: 'var(--bg-hover, #F3F4F6)',
+                        neutral20: 'var(--border-color, #D1D5DB)',
+                        neutral80: 'var(--text-primary, #111827)',
+                      },
+                    })}
                   />
                 </div>
               </div>
@@ -343,15 +451,29 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
 
             {/* Category */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Category</label>
               <Select
                 options={categoryOptions}
                 value={categoryOptions.find(opt => opt.value === category)}
                 onChange={(selected) => setCategory(selected?.value as StatCategory)}
-                className="w-full"
+                className="w-full react-select-container"
+                classNamePrefix="react-select"
                 styles={customSelectStyles}
                 menuPortalTarget={document.body}
                 menuPosition="fixed"
+                theme={(theme) => ({
+                  ...theme,
+                  colors: {
+                    ...theme.colors,
+                    primary: 'var(--color-primary, #6366F1)',
+                    primary25: 'var(--color-primary-light, #EEF2FF)',
+                    neutral0: 'var(--bg-input, white)',
+                    neutral10: 'var(--bg-hover, #F3F4F6)',
+                    neutral20: 'var(--border-color, #D1D5DB)',
+                    neutral80: 'var(--text-primary, #111827)',
+                  },
+                  borderRadius: 6,
+                })}
               />
             </div>
 
@@ -360,14 +482,14 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-dark-200 hover:bg-gray-50 dark:hover:bg-dark-400"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting || !isFormValid()}
-                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 disabled:bg-primary-300"
+                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 dark:bg-accent-600 hover:bg-primary-700 dark:hover:bg-accent-700 disabled:bg-primary-300 dark:disabled:bg-accent-300"
               >
                 {isSubmitting ? 'Saving...' : 'Save Changes'}
               </button>

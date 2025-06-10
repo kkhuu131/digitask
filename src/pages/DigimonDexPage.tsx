@@ -26,7 +26,7 @@ const DigimonDexPage = () => {
     <>
     <div className="max-w-6xl mx-auto">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Digidex</h1>
+        <h1 className="text-2xl font-bold dark:text-gray-100">Digidex</h1>
         
         <button 
           onClick={() => setShowEvolutionGraph(!showEvolutionGraph)}

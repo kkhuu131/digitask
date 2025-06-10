@@ -51,10 +51,12 @@ const UserTitles: React.FC<UserTitlesProps> = ({ titles: initialTitles, isOwnPro
   }, [initialTitles]);
   
   // Get displayed titles (up to 3)
-  const displayedTitles = titles
-    .filter(title => title.is_displayed)
-    .sort((a, b) => new Date(b.earned_at).getTime() - new Date(a.earned_at).getTime())
-    .slice(0, 3);
+  const displayedTitles = titles && titles.length > 0 
+    ? titles
+        .filter(title => title && title.is_displayed)
+        .sort((a, b) => new Date(b.earned_at).getTime() - new Date(a.earned_at).getTime())
+        .slice(0, 3)
+    : [];
 
 
   const getTierPriority = (tier: string): number => {
@@ -68,7 +70,9 @@ const UserTitles: React.FC<UserTitlesProps> = ({ titles: initialTitles, isOwnPro
   };
   
   // All titles for selection in edit mode
-  const allTitles = titles.sort((a, b) => getTierPriority(b.title?.tier || 'bronze') - getTierPriority(a.title?.tier || 'bronze'));
+  const allTitles = titles && titles.length > 0 
+    ? titles.sort((a, b) => getTierPriority(b.title?.tier || 'bronze') - getTierPriority(a.title?.tier || 'bronze'))
+    : [];
   
   const toggleTitleDisplay = (titleId: number, currentlyDisplayed: boolean) => {
     // Update local state for the clicked title
@@ -103,8 +107,8 @@ const UserTitles: React.FC<UserTitlesProps> = ({ titles: initialTitles, isOwnPro
       try {
         // Find titles that have changed
         const changedTitles = titles.filter(title => {
-          const originalTitle = initialTitles.find(t => t.id === title.id);
-          return originalTitle && originalTitle.is_displayed !== title.is_displayed;
+          const originalTitle = initialTitles?.find(t => t?.id === title?.id);
+          return originalTitle && title && originalTitle.is_displayed !== title.is_displayed;
         });
         
         if (changedTitles.length > 0) {
@@ -151,18 +155,6 @@ const UserTitles: React.FC<UserTitlesProps> = ({ titles: initialTitles, isOwnPro
   
   return (
     <div>
-      {/* Header with title and edit button */}
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold">Titles</h2>
-        {isOwnProfile && (
-          <button 
-            onClick={handleEditModeToggle}
-            className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm flex items-center"
-          >
-            {isEditMode ? 'Done' : 'Edit'}
-          </button>
-        )}
-      </div>
       
       {!isEditMode ? (
         // Display mode - show up to 3 displayed titles with tier-specific styling
@@ -259,6 +251,18 @@ const UserTitles: React.FC<UserTitlesProps> = ({ titles: initialTitles, isOwnPro
           </div>
         </div>
       )}
+      {/* Header with title and edit button */}
+      <div className="flex justify-between items-center mt-4">
+        {/* <h2 className="text-xl font-bold">Titles</h2> */}
+        {isOwnProfile && (
+          <button 
+            onClick={handleEditModeToggle}
+            className="px-3 py-1 bg-blue-500 dark:bg-accent-500 text-white rounded hover:bg-blue-600 dark:hover:bg-accent-600 text-sm flex items-center"
+          >
+            {isEditMode ? 'Done' : 'Edit'}
+          </button>
+        )}
+      </div>
     </div>
   );
 };

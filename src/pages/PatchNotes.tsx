@@ -1,4 +1,3 @@
-
 const PatchNotes = () => {
   return (
     <div className="max-w-4xl mx-auto">
@@ -7,29 +6,40 @@ const PatchNotes = () => {
         <p className="text-gray-600 mb-6">
           Stay informed about recent changes and upcoming features for Digitask.
         </p>
-        <div className="my-6 p-4 bg-indigo-50 rounded-lg">
-          <h3 className="font-medium text-indigo-800 mb-2">Have a suggestion?</h3>
-          <p className="text-indigo-700 text-sm mb-3">
+        <div className="my-6 p-4 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg">
+          <h3 className="font-medium text-indigo-800 dark:text-indigo-200 mb-2">Have a suggestion?</h3>
+          <p className="text-indigo-700 dark:text-indigo-300 text-sm mb-3">
             We're constantly improving Digitask based on user feedback. If you have ideas for new features or improvements, let us know!
           </p>
           <a 
             href="https://forms.gle/HrgybGG7BL1xj5wg6" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="inline-block text-sm bg-indigo-100 hover:bg-indigo-200 text-indigo-800 px-3 py-1 rounded-full transition-colors"
+            className="inline-block text-sm bg-indigo-100 dark:bg-indigo-800/50 hover:bg-indigo-200 dark:hover:bg-indigo-700/50 text-indigo-800 dark:text-indigo-200 px-3 py-1 rounded-full transition-colors"
           >
             Submit Feedback
           </a>
         </div>
-        <div className="border-b pb-2 mb-6">
-        <h2 className="text-xl font-semibold mb-4">Recent Updates</h2>
+        <div className="border-b dark:border-dark-200 pb-2 mb-6">
+        <h2 className="text-xl font-semibold mb-4 dark:text-gray-100">Recent Updates</h2>
         <div className="mb-6">
             <div className="flex items-center mb-2">
-              <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
-              <h3 className="text-lg font-medium ml-2">Evolution Items</h3>
-              <span className="text-sm text-gray-500 ml-auto">June 8, 2025</span>
+              <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
+              <h3 className="text-lg font-medium ml-2 dark:text-gray-200">Dark Mode!</h3>
+              <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">June 10, 2025</span>
             </div>
-            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
+            <li>Added Dark mode!</li>
+            <li>Restyled some UI elements and pages.</li>
+            <li>DigiFarm page, Store page, and more have been restyled.</li>
+            </ul>
+          </div>
+        <div className="mb-6">
+            <div className="flex items-center mb-2">
+                  <h3 className="text-lg font-medium ml-2 dark:text-gray-200">Evolution Items</h3>
+              <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">June 8, 2025</span>
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
             <li>Added Evolution items (Digi-Eggs and Spirits) to the store!</li>
             <li>Some existing evolutions now require these items to evolve.</li>
             <li>These include:</li>
@@ -64,7 +74,7 @@ const PatchNotes = () => {
               <h3 className="text-lg font-medium ml-2">Small Update</h3>
               <span className="text-sm text-gray-500 ml-auto">June 2, 2025</span>
             </div>
-            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
             <li>Nerfed Wild Digimon battles in Arena, so they're more easier to win.</li>
             <li>For the difficulties, easy should feel like almost always win, mediums 50/50, and hard should be beatable if your type/attributes matchup counter them.</li>
             <li>Made some UI more responsive (ex. Stat Cap Meter after completing tasks).</li>
@@ -78,7 +88,7 @@ const PatchNotes = () => {
               <h3 className="text-lg font-medium ml-2">Arena Matchmaking Rework</h3>
               <span className="text-sm text-gray-500 ml-auto">May 28, 2025</span>
             </div>
-            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
             <li>Better Arena battle matchmaking (strength is determined by stats not level).</li>
             <li>Example for reasoning behind this was level 1 Ultimate Digimon were the same as a level 1 Baby Digimon.</li>
             <li>As such, battles may seem harder than before, so bit rewards have been overall increased.</li>
@@ -93,7 +103,7 @@ const PatchNotes = () => {
               <h3 className="text-lg font-medium ml-2">X-Antibody Rework!</h3>
               <span className="text-sm text-gray-500 ml-auto">May 26, 2025</span>
             </div>
-            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
             <li>X-Antibody item has been reworked to be a permanent application to a Digimon, allowing it to freely switch between X-Antibody and regular forms.</li>
             <li>Cost has also been reduced to 3000 bits.</li>
             <li>Added more X-Antibody Digimon!</li>
@@ -112,7 +122,7 @@ const PatchNotes = () => {
               <h3 className="text-lg font-medium ml-2">DigiFarm, Store, and more!</h3>
               <span className="text-sm text-gray-500 ml-auto">May 25, 2025</span>
             </div>
-            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
             <li>Added <b>DigiFarm</b>! Send Digimon that you want to keep, but don't want to use, to the DigiFarm!</li>
             <li>These Digimon won't gain any experience, and they can be freely moved back.</li>
             <li>The limit for your active Party still remains 12, but you can have a potentially unlimited number in the DigiFarm.</li>
@@ -141,7 +151,7 @@ const PatchNotes = () => {
               <h3 className="text-lg font-medium ml-2">Title Tiers, Apollomon and GraceNovamon line!</h3>
               <span className="text-sm text-gray-500 ml-auto">May 22, 2025</span>
             </div>
-            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
             <li>Added tiers to Titles, so they are visually distinct from each other based on their difficulty.</li>
             <li>Added Apollomon line and GraceNovamon to the game!</li>
             <li>These includes Coronamon, Firamon, Flaremon, and Apollomon, which DNA Digivolve into GraceNovamon with Dianamon.</li>
@@ -152,11 +162,11 @@ const PatchNotes = () => {
           </div>
           <div className="mb-6">
             <div className="flex items-center mb-2">
-              <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
-              <h3 className="text-lg font-medium ml-2">New Titles!</h3>
-              <span className="text-sm text-gray-500 ml-auto">May 21, 2025</span>
+              <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
+              <h3 className="text-lg font-medium ml-2 dark:text-gray-200">New Titles!</h3>
+              <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">May 21, 2025</span>
             </div>
-            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
             <li>New titles are added for reaching new milestones for daily quota streaks.</li>
             <li>Updated avatar sprites and Digidex to use the new sprites from the animation update.</li>
             <li>Battle animations now use the new sprites, animating the Digimon attacking/defending, or victory/defeat.</li>
@@ -169,7 +179,7 @@ const PatchNotes = () => {
               <h3 className="text-lg font-medium ml-2">X-Antibody, Bokomon and Neemon!</h3>
               <span className="text-sm text-gray-500 ml-auto">May 20, 2025</span>
             </div>
-            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
             <li>Introducing <b>X-Antibody Digimon</b>! These are mutated variants of the original Digimon, providing a 10% boost to all stats.</li>
             <li>If a Digimon has an X-Antibody form, you will see a new button in the Evolution window.</li>
             <li>Unlike digivolution, you can transform back and forth between the original and X-Antibody forms without losing levels.</li>
@@ -196,7 +206,7 @@ const PatchNotes = () => {
               <h3 className="text-lg font-medium ml-2">Animation Update</h3>
               <span className="text-sm text-gray-500 ml-auto">May 19, 2025</span>
             </div>
-            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
             <li>Several Digimon sprites have gotten animations/new sprites (ex. idle animation, happy, sad, sleeping)</li>
             <li>Source: <a href="https://drive.google.com/drive/folders/1EgoXHwlXNiurD4X_9WEgoyzm9OuWf_tf" target="_blank" rel="noopener noreferrer">https://drive.google.com/drive/folders/1EgoXHwlXNiurD4X_9WEgoyzm9OuWf_tf</a></li>
             <li>Unfortunately, I couldn't find sprites for all Digimon, so many Digimon are still static.</li>
@@ -208,7 +218,7 @@ const PatchNotes = () => {
               <h3 className="text-lg font-medium ml-2">UI Changes, 3 New Digimon</h3>
               <span className="text-sm text-gray-500 ml-auto">May 17, 2025</span>
             </div>
-            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
             <li>Completed tasks that are recurring or daily can now still be edited.</li>
             <li>Improved Digimon team card UI.</li>
             <li>Added 3 new Digimon: BlitzGreymon, CresGarurumon, and Omnimon Alter-S</li>
@@ -221,7 +231,7 @@ const PatchNotes = () => {
               <h3 className="text-lg font-medium ml-2">Big Update: Campaign Mode, Titles, and more</h3>
               <span className="text-sm text-gray-500 ml-auto">May 15, 2025</span>
             </div>
-            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
             <li><b>Campaign mode is now available!</b> The first 60 stages are made and follows a similar journey to Digimon Adventure.</li>
             <li>This mode is just meant to be something you slowly do over time, or have something to work towards with the strength of your Digimon. Progress the stages at your own pace, and expect to be added in the future. </li>
             <li>Some stages offer multiple options (A, B, C, for example), and only clearing one is required to progress.</li>
@@ -239,11 +249,11 @@ const PatchNotes = () => {
           </div>
           <div className="mb-6">
             <div className="flex items-center mb-2">
-              <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
-              <h3 className="text-lg font-medium ml-2">Minor Changes</h3>
-              <span className="text-sm text-gray-500 ml-auto">May 9, 2025</span>
+              <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
+              <h3 className="text-lg font-medium ml-2 dark:text-gray-200">Minor Changes</h3>
+              <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">May 9, 2025</span>
             </div>
-            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
             <li>Updated task list UI to be more compact on mobile.</li>
             <li>Final stat calculations fixed, bonus stats were being applied multiplicatively instead of additively.</li>
             <li>Users are now suggested a category in task creation, but can change it freely during creation.</li>
@@ -256,7 +266,7 @@ const PatchNotes = () => {
               <h3 className="text-lg font-medium ml-2">Minor Changes</h3>
               <span className="text-sm text-gray-500 ml-auto">May 7, 2025</span>
             </div>
-            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
               <li>Digimon species data and evolution paths are saved locally, so should reduce the load on the server.</li>
               <li>Fixed rare battle bug where turn animations would get out of sync.</li>
               <li><b>Campaign mode is coming soon</b>, where you fight a series of progressively harder pre-made battles.</li>
@@ -269,7 +279,7 @@ const PatchNotes = () => {
               <h3 className="text-lg font-medium ml-2">ABI Rewards, Bug Fixes</h3>
               <span className="text-sm text-gray-500 ml-auto">May 6, 2025</span>
             </div>
-            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
               <li>Digimon created before the update recieved ABI depending on their stage. Rookie: 5, Champion: 8, Ultimate: 15, Mega: 20</li>
               <li>Digimon with bonus stats that exceeded their ABI cap were granted the ABI needed to reach the cap (at most 25 ABI).</li>
               <li>Note: Digimon were not granted both of these ABI rewards, only whichever was higher.</li>
@@ -283,7 +293,7 @@ const PatchNotes = () => {
               <h3 className="text-lg font-medium ml-2">ABI System</h3>
               <span className="text-sm text-gray-500 ml-auto">May 5, 2025</span>
             </div>
-            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
               <li>ABI (or Ability) is now a stat that can be increased by evolving or devolving Digimon.</li>
               <li>ABI is used to calculate the cap of total bonus stats a Digimon can have (50 + ABI/2).</li>
               <li>You will not be able to allocate bonus stats to a Digimon once it has reached or past its cap, auto allocation will instead save the stats.</li>
@@ -305,7 +315,7 @@ const PatchNotes = () => {
               <h3 className="text-lg font-medium ml-2">Playground Mode and Personality System</h3>
               <span className="text-sm text-gray-500 ml-auto">April 26, 2025</span>
             </div>
-            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
               <li>Playground mode is now available. Allows you to play and interact with all your Digimon.</li>
               <li>Mode is currently just cosmetic, and provides no benefits.</li>
               <li>Digimon are now randomly assigned a personality, each increasing one of their stats by 5% (applied after bonus stats).</li>
@@ -319,7 +329,7 @@ const PatchNotes = () => {
               <h3 className="text-lg font-medium ml-2">Enhanced Wild Encounter Generation</h3>
               <span className="text-sm text-gray-500 ml-auto">April 26, 2025</span>
             </div>
-            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
               <li>Battle options now have a 33% chance to force a wild encounter even if there's a real opponent</li>
               <li>Wild encounters have a chance to all be the same Type, or same Attribute to add some variety.</li>
               <li>Wild encounters have a chance of being an Alpha + Minions, meaning one of the Digimon will be a higher stage and level than the others.</li>
@@ -333,7 +343,7 @@ const PatchNotes = () => {
               <h3 className="text-lg font-medium ml-2">Digidex Graph Display</h3>
               <span className="text-sm text-gray-500 ml-auto">April 25, 2025</span>
             </div>
-            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
               <li>Added a new way to visualize Digidex data (only on desktop resolutions)</li>
               <li>Completing your daily quota will now reward the whole team with 100 EXP</li>
             </ul>
@@ -343,7 +353,7 @@ const PatchNotes = () => {
               <h3 className="text-lg font-medium ml-2">Recurring Tasks</h3>
               <span className="text-sm text-gray-500 ml-auto">April 24, 2025</span>
             </div>
-            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
               <li>New Task Type: Recurring. These are different from Daily tasks.</li>
               <li>You can set these to refresh on specific days of the week (every Sunday and Saturday, or every weekday, for example).</li>
               <li>They give the same rewards as Daily tasks, 50 EXP and 2 stat points.</li>
@@ -355,7 +365,7 @@ const PatchNotes = () => {
               <h3 className="text-lg font-medium ml-2">Digivolution and De-digivolution Update</h3>
               <span className="text-sm text-gray-500 ml-auto">April 23, 2025</span>
             </div>
-            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
               <li>Digivolving and De-digivolution will now reset the Digimon's level back to 1, but convert experience to bonus stats.</li>
               <li>Digivolving will reward +1 points to all stats per 1000 experience points.</li>
               <li>De-digivolution will reward +1 points to all stats per 1500 experince points.</li>
@@ -369,7 +379,7 @@ const PatchNotes = () => {
               <h3 className="text-lg font-medium ml-2">De-digivolution, EXP Rework, UI Updates</h3>
               <span className="text-sm text-gray-500 ml-auto">April 22, 2025</span>
             </div>
-            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
               <li>Added icons for Digimon Types and Attributes (credit to <a href="https://www.deviantart.com/sergiogransol/art/Digimon-Icons-Official-and-Fanmade-947832465" target="_blank" rel="noopener noreferrer">SergioGranSol</a>)</li>
               <li>De-digivolution is now possible, allowing Digimon to revert to a previously discovered Digimon, for now it will come at no costs. Future updates to this system will happen soon!</li>
               <li>Future changes: Reworked EXP system</li>
@@ -381,7 +391,7 @@ const PatchNotes = () => {
               <h3 className="text-lg font-medium ml-2">Task Updates</h3>
               <span className="text-sm text-gray-500 ml-auto">April 21, 2025</span>
             </div>
-            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
               <li>Tasks can now have notes, to add additional details</li>
               <li>Tasks can now be edited after creation</li>
               <li>Daily tasks give 2 stats pts, from 1. One-time tasks give 3.</li>
@@ -392,7 +402,7 @@ const PatchNotes = () => {
               <h3 className="text-lg font-medium ml-2">Reworks</h3>
               <span className="text-sm text-gray-500 ml-auto">April 20, 2025</span>
             </div>
-            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
               <li>Removed health from Digimon; felt that it was too punishing when there's already incentive to do tasks</li>
               <li>Milestone rewards now give a selectable starter Digimon, rather than random</li>
               <li>Added report feature for inappropriate content</li>
@@ -404,7 +414,7 @@ const PatchNotes = () => {
               <h3 className="text-lg font-medium ml-2">Profiles and Leaderboards</h3>
               <span className="text-sm text-gray-500 ml-auto">April 19, 2025</span>
             </div>
-            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
               <li>Added a profile page for each user, showing their Digimon and player stats</li>
               <li>Leaderboard page showing the top players based on battles and streaks</li>
               <li>A page to search and view other user profiles</li>
@@ -418,7 +428,7 @@ const PatchNotes = () => {
               <h3 className="text-lg font-medium ml-2">Reworked Stat Cap System</h3>
               <span className="text-sm text-gray-500 ml-auto">April 18, 2025</span>
             </div>
-            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
               <li>Based on suggestion, the stats gained from tasks can now be automatically applied to active Digimon or saved for later use</li>
               <li>Stat cap isn't on a Digimon-by-Digimon basis anymore, but cumulative</li>
               <li>The stat cap is now 2 + 2 per Digimon you own</li>
@@ -432,7 +442,7 @@ const PatchNotes = () => {
               <h3 className="text-lg font-medium ml-2">Battle System Improvements</h3>
               <span className="text-sm text-gray-500 ml-auto">April 16, 2025</span>
             </div>
-            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
               <li>Added tooltips to show Digimon names, types, and attributes in battle</li>
               <li>Improved battle option generation with better level scaling</li>
               <li>Battle options now persist between page refreshes</li>
@@ -446,7 +456,7 @@ const PatchNotes = () => {
               <h3 className="text-lg font-medium">Team Management</h3>
               <span className="text-sm text-gray-500 ml-auto">April 12, 2025</span>
             </div>
-            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
               <li>Added drag-and-drop team management</li>
               <li>Improved Digimon card design with more information</li>
               <li>Added experience progress bars</li>
@@ -459,7 +469,7 @@ const PatchNotes = () => {
               <h3 className="text-lg font-medium">Initial Beta Release</h3>
               <span className="text-sm text-gray-500 ml-auto">April 8, 2025</span>
             </div>
-            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
               <li>Launched Digitask beta with core task management</li>
               <li>Introduced Digimon raising system</li>
               <li>Added basic battle functionality</li>

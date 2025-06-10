@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getExpPoints, getStatPoints, Task, useTaskStore } from "../store/taskStore";
+import { Task, useTaskStore } from "../store/taskStore";
 import Select from 'react-select';
 import { 
   StatCategory, 
@@ -23,8 +23,6 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
   const [dueDate, setDueDate] = useState<string>("");
   const [dueTime, setDueTime] = useState<string>("12:00"); // Default to noon
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [minDate, setMinDate] = useState<string>("");
-  const [minTime, setMinTime] = useState<string>("");
   const [category, setCategory] = useState<StatCategory | null>(null);
   const [detectedCategory, setDetectedCategory] = useState<StatCategory | null>(null);
   const [notes, setNotes] = useState("");
@@ -37,8 +35,6 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
     
     // Format as YYYY-MM-DD for the date input
     const formattedDate = today.toLocaleDateString('en-CA'); // en-CA uses YYYY-MM-DD format
-    
-    setMinDate(formattedDate);
     
     // If no date is selected yet, default to today
     if (!dueDate) {
@@ -70,41 +66,12 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
       const formattedMinutes = adjustedMinutes.toString().padStart(2, '0');
       const currentTime = `${formattedHours}:${formattedMinutes}`;
       
-      setMinTime(currentTime);
-      
       // If current time is after selected time, update selected time
       if (dueTime < currentTime) {
         setDueTime(currentTime);
       }
-    } else {
-      // If date is in the future, any time is valid
-      setMinTime("00:00");
     }
   };
-
-  const generateTimeOptions = (minTime: string): { value: string; label: string }[] => {
-    const options: { value: string; label: string }[] = [];
-
-    const [minHour, minMinute] = minTime.split(':').map(Number);
-    const start = minHour * 60 + minMinute;
-    const end = 23 * 60 + 55;
-
-    for (let time = start; time <= end; time += 5) {
-      const hours24 = Math.floor(time / 60);
-      const minutes = time % 60;
-      const hours12 = hours24 % 12 === 0 ? 12 : hours24 % 12;
-      const ampm = hours24 >= 12 ? 'PM' : 'AM';
-
-      const value = `${String(hours24).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-      const label = `${hours12}:${String(minutes).padStart(2, '0')} ${ampm}`;
-
-      options.push({ value, label });
-    }
-
-    return options;
-  };
-  
-  const timeOptions = generateTimeOptions(minTime);
   
   // Add a new effect to detect category when description changes
   useEffect(() => {
@@ -164,31 +131,19 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
       setIsSubmitting(false);
     }
   };
-  
-  const getTaskPreview = (): Partial<Task> => {
-    return {
-      description: description.trim(),
-      notes: notes.trim() || null,
-      category: category || detectedCategory,
-      is_daily: taskType === "daily",
-      recurring_days: taskType === "recurring" ? recurringDays : null,
-      due_date: taskType === "one-time" && dueDate ? 
-        new Date(`${dueDate}T${dueTime}`).toISOString() : null
-    };
-  };
 
   return (
     <form onSubmit={handleSubmit} className="card mb-6">
       <h2 className="text-lg font-semibold mb-4">Add New Task</h2>
       
       <div className="mb-4">
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
           Task Description
         </label>
         <input
           type="text"
           id="description"
-          className="input"
+          className="input dark:bg-dark-300"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="What do you need to do?"
@@ -197,13 +152,13 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
         
         {/* Show detected category */}
         {detectedCategory && (
-          <div className="mt-2 text-sm text-gray-600">
+          <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">
             <span className="font-medium">Suggested category:</span> {categoryIcons[detectedCategory]} {detectedCategory}
           </div>
         )}
 
         {!detectedCategory && description.trim().length > 2 && (
-          <label htmlFor="category" className="block text-sm font-medium text-gray-700 mt-2">
+          <label htmlFor="category" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mt-2">
             Couldn't detect a category - what should this task improve?
           </label>
         )}
@@ -217,137 +172,201 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
             onChange={(selected) => setCategory(selected?.value || null)}
             placeholder="Select a category"
             className="mt-1"
+            classNames={{
+              control: (state) => 
+                `!bg-white dark:!bg-dark-300 !border-gray-300 dark:!border-dark-100 !shadow-none ${
+                  state.isFocused ? '!border-primary-500 dark:!border-accent-500' : ''
+                }`,
+              menu: () => "!bg-white dark:!bg-dark-200 !border dark:!border-dark-100",
+              option: (state) => 
+                `${state.isSelected 
+                  ? '!bg-primary-100 !text-primary-800 dark:!bg-primary-900/30 dark:!text-primary-300' 
+                  : state.isFocused 
+                    ? '!bg-gray-100 dark:!bg-dark-300' 
+                    : 'dark:!text-gray-300'
+                }`,
+              singleValue: () => "dark:!text-gray-200",
+              placeholder: () => "dark:!text-gray-400",
+            }}
           />
         </div>
       </div>
       
       <div className="mb-4">
-        <label htmlFor="notes" className="block text-sm font-medium text-gray-700">
-          Notes (optional)
-        </label>
-        <textarea
-          id="notes"
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-          rows={3}
-          className="input mt-1"
-          placeholder="Add any additional details or notes"
-        />
-      </div>
-      
-      <div className="mb-4 text-sm">
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
           Task Type
         </label>
-        <div className="flex space-x-4">
-          <label className="inline-flex items-center">
-            <input
-              type="radio"
-              className="form-radio"
-              name="taskType"
-              value="daily"
-              checked={taskType === "daily"}
-              onChange={() => setTaskType("daily")}
-            />
-            <span className="ml-2">Daily</span>
-          </label>
-          
-          <label className="inline-flex items-center">
-            <input
-              type="radio"
-              className="form-radio"
-              name="taskType"
-              value="recurring"
-              checked={taskType === "recurring"}
-              onChange={() => setTaskType("recurring")}
-            />
-            <span className="ml-2">Recurring</span>
-          </label>
-          
-          <label className="inline-flex items-center">
-            <input
-              type="radio"
-              className="form-radio"
-              name="taskType"
-              value="one-time"
-              checked={taskType === "one-time"}
-              onChange={() => setTaskType("one-time")}
-            />
-            <span className="ml-2">One-time</span>
-          </label>
+        <div className="flex space-x-2 mb-2">
+          <button
+            type="button"
+            onClick={() => setTaskType("one-time")}
+            className={`flex-1 px-3 py-2 text-sm rounded-md transition-colors ${
+              taskType === "one-time"
+                ? "bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-dark-200 dark:text-gray-300 dark:hover:bg-dark-100"
+            }`}
+          >
+            One-time
+          </button>
+          <button
+            type="button"
+            onClick={() => setTaskType("daily")}
+            className={`flex-1 px-3 py-2 text-sm rounded-md transition-colors ${
+              taskType === "daily"
+                ? "bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-dark-200 dark:text-gray-300 dark:hover:bg-dark-100"
+            }`}
+          >
+            Daily
+          </button>
+          <button
+            type="button"
+            onClick={() => setTaskType("recurring")}
+            className={`flex-1 px-3 py-2 text-sm rounded-md transition-colors ${
+              taskType === "recurring"
+                ? "bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-dark-200 dark:text-gray-300 dark:hover:bg-dark-100"
+            }`}
+          >
+            Recurring
+          </button>
         </div>
-      </div>
-      
-      {/* Recurring days selection */}
-      {taskType === "recurring" && (
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Repeat on these days:
-          </label>
-          <div className="grid grid-cols-4 gap-2">
-            {DAYS_OF_WEEK.map(day => (
-              <label key={day} className="inline-flex items-center text-sm">
-                <input
-                  type="checkbox"
-                  className="form-checkbox"
-                  checked={recurringDays.includes(day)}
-                  onChange={() => {
+        
+        {/* Conditional fields based on task type */}
+        {taskType === "one-time" && (
+          <div className="space-y-2">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
+              <div className="flex-1 mb-2 sm:mb-0">
+                <label htmlFor="due-date" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Due Date
+                </label>
+                <div className="relative">
+                  <input
+                    type="date"
+                    id="due-date"
+                    className="input dark:bg-dark-300"
+                    value={dueDate}
+                    onChange={(e) => setDueDate(e.target.value)}
+                    min={new Date().toISOString().split('T')[0]}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="flex-1">
+                <label htmlFor="due-time" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Due Time
+                </label>
+                <div className="relative">
+                  <input
+                    type="time"
+                    id="due-time"
+                    className="input dark:bg-dark-300 oor"
+                    value={dueTime}
+                    onChange={(e) => setDueTime(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {taskType === "recurring" && (
+          <div className="mt-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Recurs On
+            </label>
+            <div className="grid grid-cols-7 gap-1">
+              {DAYS_OF_WEEK.map((day) => (
+                <button
+                  key={day}
+                  type="button"
+                  onClick={() => {
                     if (recurringDays.includes(day)) {
                       setRecurringDays(recurringDays.filter(d => d !== day));
                     } else {
                       setRecurringDays([...recurringDays, day]);
                     }
                   }}
-                />
-                <span className="ml-2">{day}</span>
-              </label>
-            ))}
-          </div>
-        </div>
-      )}
-      
-      {/* Due date for one-time tasks */}
-      {taskType === "one-time" && (
-        <div className="mt-4">
-          <label htmlFor="due_date" className="block text-sm font-medium text-gray-700">
-            Due Date
-          </label>
-          <div className="mt-1 mb-4 flex space-x-2 text-sm">
-            <input
-              type="date"
-              id="due_date"
-              name="due_date"
-              value={dueDate}
-              min={minDate}
-              onChange={(e) => setDueDate(e.target.value)}
-              className="w-1/2 shadow-sm focus:ring-primary-500 focus:border-primary-500 block sm:text-sm border-gray-300 rounded-md"
-            />
-            <div className="w-1/2">
-              <Select
-                options={timeOptions}
-                value={timeOptions.find((opt) => opt.value === dueTime)}
-                onChange={(selected) => setDueTime(selected?.value || '')}
-                placeholder="Select time"
-              />
+                  className={`py-1 text-xs rounded-md ${
+                    recurringDays.includes(day)
+                      ? "bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-dark-200 dark:text-gray-300 dark:hover:bg-dark-100"
+                  }`}
+                >
+                  {day.substring(0, 3)}
+                </button>
+              ))}
             </div>
+            {recurringDays.length === 0 && (
+              <p className="mt-1 text-xs text-red-500">
+                Please select at least one day
+              </p>
+            )}
           </div>
-        </div>
-      )}
-
-      {/* Add a section showing how many exp points and stat points the task will give */}
-      <div className="mb-4">
-        <p className="text-sm text-gray-700">
-          This task will give you {getExpPoints(getTaskPreview() as Task)} exp points and {getStatPoints(getTaskPreview() as Task)} stat points.
-        </p>
+        )}
       </div>
-      <div className="flex justify-end">
+      
+      <div className="mb-4">
+        <label htmlFor="notes" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          Notes (optional)
+        </label>
+        <textarea
+          id="notes"
+          className="input min-h-[60px] dark:bg-dark-300"
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+          placeholder="Any details or notes about this task"
+        />
+      </div>
+      
+      <div className="flex justify-between items-center">
         <button
           type="submit"
           className="btn-primary"
-          disabled={isSubmitting || !description.trim() || (taskType === "recurring" && recurringDays.length === 0)}
+          disabled={isSubmitting || (taskType === "recurring" && recurringDays.length === 0)}
         >
           {isSubmitting ? "Adding..." : "Add Task"}
         </button>
+        
+        {/* Task preview */}
+        <div className="text-sm text-gray-500 dark:text-gray-400">
+          {description && (
+            <div className="bg-gray-50 dark:bg-dark-400 p-2 rounded-md border border-gray-200 dark:border-dark-300 max-w-xs">
+              <p className="font-medium">{description}</p>
+              <div className="flex flex-wrap gap-1 mt-1">
+                {category || detectedCategory ? (
+                  <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300">
+                    {categoryIcons[category as StatCategory || detectedCategory as StatCategory]} {category || detectedCategory}
+                  </span>
+                ) : null}
+                
+                {taskType === "daily" ? (
+                  <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
+                    Daily
+                  </span>
+                ) : null}
+                
+                {taskType === "recurring" && recurringDays.length > 0 ? (
+                  <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300">
+                    {recurringDays.map(d => d.substring(0, 3)).join(", ")}
+                  </span>
+                ) : null}
+                
+                {taskType === "one-time" && dueDate ? (
+                  <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-gray-100 text-gray-800 dark:bg-dark-300 dark:text-gray-300">
+                    {new Date(`${dueDate}T${dueTime}`).toLocaleDateString('en-US', { 
+                      month: 'short', 
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
+                  </span>
+                ) : null}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </form>
   );

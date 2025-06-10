@@ -150,7 +150,7 @@ const Battle = () => {
     <>
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
-        <h1 className="text-2xl font-bold">Arena</h1>
+        <h1 className="text-2xl font-bold dark:text-gray-100">Arena</h1>
         <BattleSpeedControl />
       </div>
       
@@ -168,34 +168,34 @@ const Battle = () => {
           {/* Battle Options Section */}
           <div className="card">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">Choose Opponent</h2>
+              <h2 className="text-xl font-bold dark:text-gray-100">Choose Opponent</h2>
             
               <div className="flex items-center space-x-4">
                 {/* Refresh button - only visible in development environment */}
                 {import.meta.env.DEV && (
                   <button
                     onClick={() => getBattleOptions(true)}
-                    className="text-sm px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded-md transition-colors"
+                    className="text-sm px-3 py-1 bg-gray-200 dark:bg-dark-200 hover:bg-gray-300 dark:hover:bg-dark-100 text-gray-800 dark:text-gray-200 rounded-md transition-colors"
                     disabled={loading}
                   >
                     {loading ? "Refreshing..." : "Refresh Options"}
                   </button>
                 )}
-                <div className="text-xs sm:text-base">
-                <span className="font-medium">Daily Battles:</span> {dailyBattlesRemaining} left
+                <div className="text-xs sm:text-base dark:text-gray-200">
+                <span className="font-medium dark:text-gray-200">Daily Battles:</span> {dailyBattlesRemaining} left
                 </div>
               </div>
             </div>
             
             {error && (
-              <div className="mb-4 bg-red-50 border-l-4 border-red-500 p-4">
-                <p className="text-sm text-red-700">{error}</p>
+              <div className="mb-4 bg-red-50 dark:bg-red-900/30 border-l-4 border-red-500 p-4">
+                <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
               </div>
             )}
             
             {loading ? (
               <div className="flex justify-center py-8">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500 dark:border-amber-500"></div>
               </div>
             ) : (
               <>
@@ -205,20 +205,20 @@ const Battle = () => {
                       key={option.id}
                       className={`border rounded-lg p-2 sm:p-4 transition-colors ${
                         selectedOption === option.id 
-                          ? 'border-primary-500 bg-primary-50' 
-                          : 'border-gray-200'
+                          ? 'border-primary-500 dark:border-amber-500 bg-primary-50 dark:bg-amber-900/20' 
+                          : 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-dark-200'
                       }`}
                     >
                       <div className="flex justify-between items-center mb-2 sm:mb-3">
                         <span className={`px-1 sm:px-2 py-0.5 sm:py-1 rounded text-[10px] sm:text-xs font-medium ${
-                          option.difficulty === 'easy' ? 'bg-green-100 text-green-800' :
-                          option.difficulty === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-red-100 text-red-800'
+                          option.difficulty === 'easy' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' :
+                          option.difficulty === 'medium' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300' :
+                          'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'
                         }`}>
                           {option.difficulty.charAt(0).toUpperCase() + option.difficulty.slice(1)}
                         </span>
                         
-                        <span className="text-xs sm:text-sm font-medium text-gray-700 truncate max-w-[120px]">
+                        <span className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 truncate max-w-[120px]">
                           {option.isWild ? 'Wild Digimon' : option.team.display_name || option.team.username}
                         </span>
                       </div>
@@ -244,13 +244,13 @@ const Battle = () => {
                                 />
                               </div>
                               {/* Tooltip */}
-                              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none">
+                              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none z-10">
                                 {digimon.name}
                               </div>
                             </div>
             
                             {digimon.type && digimon.attribute && (
-                              <div className="text-[10px] sm:text-xs text-gray-500">
+                              <div className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">
                                 <div className="flex justify-center mb-1">
                                   <TypeAttributeIcon
                                     type={digimon.type as DigimonType}
@@ -263,7 +263,7 @@ const Battle = () => {
                                 
                               </div>
                             )}
-                            <div className="text-[10px] sm:text-xs mt-1">Lv.{digimon.current_level}</div>
+                            <div className="text-[10px] sm:text-xs mt-1 dark:text-gray-300">Lv.{digimon.current_level}</div>
                           </div>
                         ))}
                       </div>
@@ -285,12 +285,12 @@ const Battle = () => {
                 </div>
                 
                 {/* Informational footer */}
-                <div className="text-center text-sm text-gray-500 mt-2 border-t pt-3">
+                <div className="text-center text-sm text-gray-500 dark:text-gray-400 mt-2 border-t dark:border-gray-700 pt-3">
                   <p>Battles reward all your digimon with experience. Battle options refresh after each battle.</p>
                 </div>
                 
                 {battleOptions.length === 0 && !loading && (
-                  <div className="text-center py-8 text-gray-500">
+                  <div className="text-center py-8 text-gray-500 dark:text-gray-400">
                     <p>No battle options available. Try adding more Digimon to your team and refresh the page.</p>
                   </div>
                 )}
@@ -305,7 +305,7 @@ const Battle = () => {
           </div>
           
           <div className="card">
-            <h2 className="text-xl font-bold mb-4">Battle History</h2>
+            <h2 className="text-xl font-bold mb-4 dark:text-gray-100">Battle History</h2>
             <BattleHistory 
               teamBattles={teamBattleHistory} 
             />

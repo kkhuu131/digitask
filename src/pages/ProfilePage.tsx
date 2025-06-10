@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import { useDigimonStore, UserDigimon } from "../store/petStore";
 import { supabase } from "../lib/supabase";
-import calculateBaseStat from "../utils/digimonStatCalculation";
+import { calculateFinalStats } from "../utils/digimonStatCalculation";
 import DigimonDetailModal from "../components/DigimonDetailModal";
 import AvatarSelectionModal from "../components/AvatarSelectionModal";
 import ReportButton from '../components/ReportButton';
@@ -39,14 +39,13 @@ const ProfilePage = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedDetailDigimon, setSelectedDetailDigimon] = useState<UserDigimon | null>(null);
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
-  const [isUpdatingAvatar, setIsUpdatingAvatar] = useState(false);
   const [userTitles, setUserTitles] = useState<UserTitle[]>([]);
   const { fetchUserTitles } = useTitleStore();
   
   // Determine if viewing own profile
-  const isOwnProfile = !id && !username || 
+  const isOwnProfile = Boolean(!id && !username || 
                       (id && id === user?.id) || 
-                      (username && username === userProfile?.username);
+                      (username && username === userProfile?.username));
   
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -206,7 +205,6 @@ const ProfilePage = () => {
   const handleAvatarUpdate = async (spriteUrl: string) => {
     if (!user || user.id !== profileData?.id) return;
     
-    setIsUpdatingAvatar(true);
     try {
       const { error } = await supabase
         .from('profiles')
@@ -220,8 +218,6 @@ const ProfilePage = () => {
       
     } catch (err) {
       console.error("Error updating avatar:", err);
-    } finally {
-      setIsUpdatingAvatar(false);
     }
   };
 
@@ -260,237 +256,176 @@ const ProfilePage = () => {
   }
   
   return (
-    <>
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="max-w-6xl mx-auto px-4 py-6">
       {loading ? (
-        <div className="text-center py-12">
-          <p>Loading profile...</p>
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500 dark:border-accent-400"></div>
         </div>
       ) : error ? (
-        <div className="text-center py-12">
-          <p className="text-red-500">{error}</p>
+        <div className="text-center p-8">
+          <h2 className="text-xl text-red-600 dark:text-red-400 font-bold mb-4">Error</h2>
+          <p className="text-gray-600 dark:text-gray-300">{error}</p>
+          <button 
+            onClick={() => navigate('/')} 
+            className="mt-4 px-4 py-2 bg-primary-500 dark:bg-accent-500 text-white rounded-md hover:bg-primary-600 dark:hover:bg-accent-600 transition-colors"
+          >
+            Return Home
+          </button>
         </div>
-      ) : (
+      ) : profileData ? (
         <>
           {/* Profile Header */}
-          <div className="card mb-6">
-            <div className="flex flex-col md:flex-row gap-6">
-              {/* Avatar Section */}
-              <div className="flex flex-col items-center">
-                <div 
-                  className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden mb-2"
-                  onClick={isOwnProfile ? () => setIsAvatarModalOpen(true) : undefined}
-                  style={{ cursor: isOwnProfile ? 'pointer' : 'default' }}
-                >
-                  {isUpdatingAvatar ? (
-                    <div className="animate-pulse bg-gray-300 w-full h-full"></div>
-                  ) : profileData.avatar_url ? (
+          <div className="bg-white dark:bg-dark-300 rounded-lg shadow-sm border border-gray-200 dark:border-dark-200 p-6 mb-6">
+            {/* Avatar and Username */}
+            <div className="flex flex-col md:flex-row items-center gap-4 mb-6">
+              <div className="relative">
+                <div className="w-32 h-32 rounded-full bg-gray-100 dark:bg-dark-200 flex items-center justify-center overflow-hidden border-4 border-primary-100 dark:border-dark-100">
+                  {profileData.avatar_url ? (
                     <img 
                       src={profileData.avatar_url} 
                       alt={profileData.username}
-                      className="w-20 h-20 object-contain"
-                      style={{ imageRendering: "pixelated" }}
-                    />
-                  ) : favoriteDigimon ? (
-                    <img 
-                      src={favoriteDigimon.digimon?.sprite_url} 
-                      alt={favoriteDigimon.name}
-                      className="w-24 h-24 object-contain"
-                      style={{ imageRendering: "pixelated" }}
+                      className="w-24 h-24 object-cover"
+                      style={{ imageRendering: 'pixelated' }}
                     />
                   ) : (
-                    <span className="text-4xl text-gray-400">👤</span>
+                    <div className="text-gray-400 dark:text-gray-500 text-2xl">
+                      {profileData.username.charAt(0).toUpperCase()}
+                    </div>
                   )}
                 </div>
+                
                 {isOwnProfile && (
                   <button 
                     onClick={() => setIsAvatarModalOpen(true)}
-                    className="text-xs text-primary-600 hover:underline"
+                    className="absolute bottom-0 right-0 bg-primary-500 dark:bg-accent-500 text-white p-1.5 rounded-full hover:bg-primary-600 dark:hover:bg-accent-600 transition-colors"
+                    aria-label="Change avatar"
                   >
-                    Change Avatar
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                    </svg>
                   </button>
                 )}
               </div>
               
-              {/* Profile Info */}
-              <div className="flex-1">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
-                  <h1 className="text-2xl font-bold">{profileData.username}</h1>
-                  <div className="text-sm text-gray-500">
-                    Joined {new Date(profileData.created_at).toLocaleDateString()}
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
-                  <div className="text-center p-2 bg-gray-50 rounded">
-                    <div className="text-2xl font-bold text-primary-600">{discoveryPercentage()}%</div>
-                    <div className="text-xs text-gray-500">DigiDex</div>
-                  </div>
-                  
-                  <div className="text-center p-2 bg-gray-50 rounded">
-                    <div className="text-2xl font-bold text-primary-600">{profileData.battles_won}</div>
-                    <div className="text-xs text-gray-500">Battles Won</div>
-                  </div>
-                  
-                  <div className="text-center p-2 bg-gray-50 rounded">
-                    <div className="text-2xl font-bold text-primary-600">{profileData.battles_completed || 0}</div>
-                    <div className="text-xs text-gray-500">Battles Completed</div>
-                  </div>
-                  
-                  <div className="text-center p-2 bg-gray-50 rounded">
-                    <div className="text-2xl font-bold text-primary-600">
-                      {profileData.battles_completed ? 
-                        Math.round((profileData.battles_won / profileData.battles_completed) * 100) : 0}%
-                    </div>
-                    <div className="text-xs text-gray-500">Win Rate</div>
-                  </div>
-                  
-                  <div className="text-center p-2 bg-gray-50 rounded">
-                    <div className="text-2xl font-bold text-primary-600">{profileData.current_streak}</div>
-                    <div className="text-xs text-gray-500">Day Streak</div>
-                  </div>
-                </div>
+              <div>
+                <h1 className="text-2xl font-bold text-center md:text-left dark:text-gray-100">{profileData.username}</h1>
               </div>
             </div>
             
-            {user?.id !== profileData.id && (
-              <div className="mt-4 pt-4 border-t border-gray-200 flex justify-end">
-                <ReportButton 
-                  userId={profileData.id} 
-                  username={profileData.username} 
-                  variant="icon" 
-                />
+            {/* Stats */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              <div className="bg-primary-50 dark:bg-primary-900/20 p-4 rounded-lg text-center">
+                <div className="text-primary-600 dark:text-primary-400 text-sm font-medium">Victories</div>
+                <div className="text-gray-900 dark:text-gray-100 text-lg font-bold">{profileData.battles_won}</div>
+              </div>
+              <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg text-center">
+                <div className="text-green-600 dark:text-green-400 text-sm font-medium">Win Rate</div>
+                <div className="text-gray-900 dark:text-gray-100 text-lg font-bold">
+                  {profileData.battles_completed > 0 
+                    ? `${Math.round((profileData.battles_won / profileData.battles_completed) * 100)}%` 
+                    : '0%'}
+                </div>
+              </div>
+              <div className="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-lg text-center">
+                <div className="text-amber-600 dark:text-amber-400 text-sm font-medium">Streak</div>
+                <div className="text-gray-900 dark:text-gray-100 text-lg font-bold">{profileData.current_streak} days</div>
+              </div>
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg text-center">
+                <div className="text-blue-600 dark:text-blue-400 text-sm font-medium">DigiDex</div>
+                <div className="text-gray-900 dark:text-gray-100 text-lg font-bold">{discoveryPercentage()}%</div>
+              </div>
+            </div>
+            
+            {/* Titles */}
+            <div className="flex flex-wrap gap-2 justify-center md:justify-start">
+              <UserTitles 
+                titles={userTitles} 
+                isOwnProfile={isOwnProfile}
+              />
+            </div>
+            
+            {!isOwnProfile && (
+              <div className="mt-4 pt-4 border-t border-gray-200 dark:border-dark-200 flex justify-end">
+                <ReportButton userId={profileData.id} username={profileData.username} />
               </div>
             )}
-          </div>
-
-          {/* Titles Section */}
-          <div className="card my-6">
-            <UserTitles 
-              titles={userTitles}
-              isOwnProfile={isOwnProfile || false}
-            />
           </div>
           
           {/* Favorite Digimon */}
           {favoriteDigimon && (
-            <div className="card mb-6">
-              <h2 className="text-xl font-bold mb-4">Partner Digimon</h2>
-              <div className="flex flex-col md:flex-row gap-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-24 h-24 flex items-center justify-center">
-                    <DigimonSprite
-                      digimonName={favoriteDigimon.digimon?.name || ""}
-                      fallbackSpriteUrl={favoriteDigimon.digimon?.sprite_url || "/assets/pet/egg.svg"}
-                      happiness={favoriteDigimon.happiness}
-                      size="md"
-                      enableHopping={true}
-                    />
-                  </div>
-                  
-                  <div>
-                    <h3 className="text-lg font-semibold">{favoriteDigimon.name}</h3>
-                    <p className="text-gray-600">Level {favoriteDigimon.current_level}</p>
-                    <p className="text-sm text-gray-500">
-                      {favoriteDigimon.digimon?.type}/{favoriteDigimon.digimon?.attribute}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      Stage: {favoriteDigimon.digimon?.stage}
-                    </p>
-                  </div>
+            <div className="bg-white dark:bg-dark-300 rounded-lg shadow-sm border border-gray-200 dark:border-dark-200 p-6 mb-6">
+              <h2 className="text-xl font-bold mb-4 dark:text-gray-100">
+                {isOwnProfile ? 'Active Digimon' : `${profileData.username}'s Active Digimon`}
+              </h2>
+              
+              <div className="flex flex-col md:flex-row items-center gap-6">
+                <div className="w-32 h-32 flex items-center justify-center">
+                  <DigimonSprite
+                    digimonName={favoriteDigimon.digimon?.name || ""}
+                    fallbackSpriteUrl={favoriteDigimon.digimon?.sprite_url || ""}
+                    size="lg"
+                    showHappinessAnimations={true}
+                    happiness={favoriteDigimon.happiness}
+                  />
                 </div>
                 
-                {/* Stats Display */}
-                <div className="flex-1 mt-4 md:mt-0">
-                  <div className="grid grid-cols-2 gap-x-8 gap-y-2">
-                    <div className="flex justify-between">
-                      <span className="font-medium text-red-700">HP</span>
-                      <span>
-                        {Math.round(calculateBaseStat(
-                          favoriteDigimon.current_level,
-                          favoriteDigimon.digimon?.hp_level1 ?? 0,
-                          favoriteDigimon.digimon?.hp ?? 0,
-                          favoriteDigimon.digimon?.hp_level99 ?? 0
-                        ))}
-                        {favoriteDigimon.hp_bonus > 0 && (
-                          <span className="text-green-600 ml-1">(+{favoriteDigimon.hp_bonus})</span>
-                        )}
+                <div className="flex-grow">
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+                    <h3 className="text-lg font-bold dark:text-gray-100">
+                      {favoriteDigimon.name || favoriteDigimon.digimon?.name}
+                      <span className="ml-2 text-sm font-normal text-gray-500 dark:text-gray-400">
+                        Lv. {favoriteDigimon.current_level}
                       </span>
-                    </div>
+                    </h3>
                     
-                    <div className="flex justify-between">
-                      <span className="font-medium text-yellow-600">SP</span>
-                      <span>
-                        {Math.round(calculateBaseStat(
-                          favoriteDigimon.current_level,
-                          favoriteDigimon.digimon?.sp_level1 ?? 0,
-                          favoriteDigimon.digimon?.sp ?? 0,
-                          favoriteDigimon.digimon?.sp_level99 ?? 0
-                        ))}
-                        {favoriteDigimon.sp_bonus > 0 && (
-                          <span className="text-green-600 ml-1">(+{favoriteDigimon.sp_bonus})</span>
-                        )}
-                      </span>
+                    <div className="mt-2 md:mt-0">
+                      <button
+                        onClick={() => handleDigimonClick(favoriteDigimon)}
+                        className="text-sm px-3 py-1.5 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-md hover:bg-primary-200 dark:hover:bg-primary-800/30"
+                      >
+                        View Details
+                      </button>
                     </div>
-                    
-                    <div className="flex justify-between">
-                      <span className="font-medium text-orange-600">ATK</span>
-                      <span>
-                        {Math.round(calculateBaseStat(
-                          favoriteDigimon.current_level,
-                          favoriteDigimon.digimon?.atk_level1 ?? 0,
-                          favoriteDigimon.digimon?.atk ?? 0,
-                          favoriteDigimon.digimon?.atk_level99 ?? 0
-                        ))}
-                        {favoriteDigimon.atk_bonus > 0 && (
-                          <span className="text-green-600 ml-1">(+{favoriteDigimon.atk_bonus})</span>
-                        )}
-                      </span>
+                  </div>
+
+
+                  {/* Stats */}
+                  <div className="grid grid-cols-3 md:grid-cols-6 gap-2 mt-4">
+                    <div className="bg-gray-50 dark:bg-dark-200 p-1.5 rounded text-center">
+                      <div className="text-xs text-gray-500 dark:text-gray-400">HP</div>
+                      <div className="font-medium dark:text-gray-200">
+                        {calculateFinalStats(favoriteDigimon).hp}
+                      </div>
                     </div>
-                    
-                    <div className="flex justify-between">
-                      <span className="font-medium text-blue-600">DEF</span>
-                      <span>
-                        {Math.round(calculateBaseStat(
-                          favoriteDigimon.current_level,
-                          favoriteDigimon.digimon?.def_level1 ?? 0,
-                          favoriteDigimon.digimon?.def ?? 0,
-                          favoriteDigimon.digimon?.def_level99 ?? 0
-                        ))}
-                        {favoriteDigimon.def_bonus > 0 && (
-                          <span className="text-green-600 ml-1">(+{favoriteDigimon.def_bonus})</span>
-                        )}
-                      </span>
+                    <div className="bg-gray-50 dark:bg-dark-200 p-1.5 rounded text-center">
+                      <div className="text-xs text-gray-500 dark:text-gray-400">SP</div>
+                      <div className="font-medium dark:text-gray-200">
+                        {calculateFinalStats(favoriteDigimon).sp}
+                      </div>
                     </div>
-                    
-                    <div className="flex justify-between">
-                      <span className="font-medium text-purple-600">INT</span>
-                      <span>
-                        {Math.round(calculateBaseStat(
-                          favoriteDigimon.current_level,
-                          favoriteDigimon.digimon?.int_level1 ?? 0,
-                          favoriteDigimon.digimon?.int ?? 0,
-                          favoriteDigimon.digimon?.int_level99 ?? 0
-                        ))}
-                        {favoriteDigimon.int_bonus > 0 && (
-                          <span className="text-green-600 ml-1">(+{favoriteDigimon.int_bonus})</span>
-                        )}
-                      </span>
+                    <div className="bg-gray-50 dark:bg-dark-200 p-1.5 rounded text-center">
+                      <div className="text-xs text-gray-500 dark:text-gray-400">ATK</div>
+                      <div className="font-medium dark:text-gray-200">
+                        {calculateFinalStats(favoriteDigimon).atk}
+                      </div>
                     </div>
-                    
-                    <div className="flex justify-between">
-                      <span className="font-medium text-green-600">SPD</span>
-                      <span>
-                        {Math.round(calculateBaseStat(
-                          favoriteDigimon.current_level,
-                          favoriteDigimon.digimon?.spd_level1 ?? 0,
-                          favoriteDigimon.digimon?.spd ?? 0,
-                          favoriteDigimon.digimon?.spd_level99 ?? 0
-                        ))}
-                        {favoriteDigimon.spd_bonus > 0 && (
-                          <span className="text-green-600 ml-1">(+{favoriteDigimon.spd_bonus})</span>
-                        )}
-                      </span>
+                    <div className="bg-gray-50 dark:bg-dark-200 p-1.5 rounded text-center">
+                      <div className="text-xs text-gray-500 dark:text-gray-400">DEF</div>
+                      <div className="font-medium dark:text-gray-200">
+                        {calculateFinalStats(favoriteDigimon).def}
+                      </div>
+                    </div>
+                    <div className="bg-gray-50 dark:bg-dark-200 p-1.5 rounded text-center">
+                      <div className="text-xs text-gray-500 dark:text-gray-400">INT</div>
+                      <div className="font-medium dark:text-gray-200">
+                        {calculateFinalStats(favoriteDigimon).int}
+                      </div>
+                    </div>
+                    <div className="bg-gray-50 dark:bg-dark-200 p-1.5 rounded text-center">
+                      <div className="text-xs text-gray-500 dark:text-gray-400">SPD</div>
+                      <div className="font-medium dark:text-gray-200">
+                        {calculateFinalStats(favoriteDigimon).spd}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -499,67 +434,73 @@ const ProfilePage = () => {
           )}
           
           {/* Digimon Collection */}
-          <div className="card">
-            <h2 className="text-xl font-bold mb-4">Digimon Collection</h2>
+          <div className="bg-white dark:bg-dark-300 rounded-lg shadow-sm border border-gray-200 dark:border-dark-200 p-6">
+            <h2 className="text-xl font-bold mb-4 dark:text-gray-100">
+              {isOwnProfile ? 'My Digimon' : `${profileData.username}'s Digimon`}
+            </h2>
             
             {userDigimon.length === 0 ? (
-              <p className="text-gray-500">No Digimon in collection yet.</p>
+              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                No Digimon yet
+              </div>
             ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 {userDigimon.map(digimon => (
                   <div 
-                    key={digimon.id} 
-                    className="border rounded-lg p-3 text-center cursor-pointer hover:bg-gray-50 transition-colors"
+                    key={digimon.id}
                     onClick={() => handleDigimonClick(digimon)}
+                    className="bg-gray-50 dark:bg-dark-200 p-4 rounded-lg border border-gray-200 dark:border-dark-400 cursor-pointer hover:shadow-md transition-shadow flex flex-col items-center"
                   >
-                    <div className="w-16 h-16 mx-auto mb-2 flex items-center justify-center">
+                    <div className="w-16 h-16 flex items-center justify-center">
                       <DigimonSprite
                         digimonName={digimon.digimon?.name || ""}
-                        fallbackSpriteUrl={digimon.digimon?.sprite_url || "/assets/pet/egg.svg"}
-                        happiness={digimon.happiness}
+                        fallbackSpriteUrl={digimon.digimon?.sprite_url || ""}
                         size="sm"
                         showHappinessAnimations={false}
-                        enableHopping={false}
                       />
                     </div>
-                    <div className="font-medium">{digimon.name || digimon.digimon?.name}</div>
-                    <div className="text-xs text-gray-500">Lv. {digimon.current_level}</div>
+                    <div className="mt-2 text-center">
+                      <div className="font-medium text-sm truncate max-w-full dark:text-gray-200">
+                        {digimon.name || digimon.digimon?.name}
+                      </div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">Lv. {digimon.current_level}</div>
+                    </div>
+                    {/* {digimon.is_active && (
+                      <div className="mt-1 px-2 py-0.5 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-xs rounded-full">
+                        Active
+                      </div>
+                    )} */}
                   </div>
                 ))}
               </div>
             )}
           </div>
           
-          {/* Detail Modal */}
+          {/* Modals */}
           {selectedDetailDigimon && (
             <DigimonDetailModal
               selectedDigimon={selectedDetailDigimon}
               onClose={() => setSelectedDetailDigimon(null)}
-              // Only pass these props if it's the user's own profile
-              {...(isOwnProfile ? {
-                onSetActive: async (digimonId) => {
-                  await useDigimonStore.getState().setActiveDigimon(digimonId);
-                  // Refresh the data after setting active
-                  const active = allUserDigimon.find(d => d.id === digimonId);
-                  if (active) setFavoriteDigimon(active);
-                },
-                onShowEvolution: (digimonId: number) => {
-                  console.log("Show evolution for", digimonId);
-                }
-              } : {})}
             />
           )}
           
-          <AvatarSelectionModal 
-            isOpen={isAvatarModalOpen}
-            onClose={() => setIsAvatarModalOpen(false)}
-            onSelect={handleAvatarUpdate}
-          />
+          {isAvatarModalOpen && (
+            <AvatarSelectionModal
+              isOpen={isAvatarModalOpen}
+              onClose={() => setIsAvatarModalOpen(false)}
+              onSelect={handleAvatarUpdate}
+            />
+          )}
         </>
+      ) : null}
+      
+      {isOwnProfile && (
+        <PageTutorial 
+          tutorialId="profile_intro" 
+          steps={profilePageTutorialSteps} 
+        />
       )}
     </div>
-    <PageTutorial tutorialId="profile_page_intro" steps={profilePageTutorialSteps} />
-    </>
   );
 };
 

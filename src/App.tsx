@@ -22,7 +22,7 @@ import Debug from './pages/Debug';
 import ResetPassword from "./pages/ResetPassword";
 import AuthCallback from "./pages/AuthCallback";
 import Battle from './pages/Battle';
-import ProfileSettings from './pages/ProfileSettings';
+import Settings from './pages/Settings';
 import UserDigimonPage from './pages/UserDigimonPage';
 import Tutorial from './pages/Tutorial';
 import PatchNotes from './pages/PatchNotes';
@@ -569,7 +569,7 @@ function App() {
         <Route path="/settings" element={
           <ProtectedRoute>
             <Layout>
-              <ProfileSettings />
+              <Settings />
             </Layout>
           </ProtectedRoute>
         } />

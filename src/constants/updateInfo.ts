@@ -1,4 +1,4 @@
-export const CURRENT_VERSION = "1.5.0";
+export const CURRENT_VERSION = "1.5.1";
 
 export const UPDATE_CHANGES = {
   "1.0.1": [
@@ -98,4 +98,5 @@ export const UPDATE_CHANGES = {
     "More Digimon have been added, check patch notes for more information.",
     "Made task completion into a single database call, hopefully fixing some bugs.",
   ],
+  "1.5.1": ["Added Dark mode!", "Restyled some UI elements and pages."],
 };

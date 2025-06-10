@@ -441,7 +441,7 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
         </AnimatePresence>
         
         {/* Mood indicator */}
-        <div className="absolute bottom-0 right-0 bg-white rounded-full p-1 shadow-md">
+        <div className="absolute bottom-0 right-0 bg-white dark:bg-gray-700 rounded-full p-1 shadow-md">
           {isSleeping ? (
             <span className="text-2xl">💤</span>
           ) : userDigimon.happiness > 80 ? (
@@ -462,7 +462,7 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
             <span>Happiness</span>
             <span>{userDigimon.happiness.toFixed(0)}%</span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2.5">
+          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
             <div 
               className={`h-2.5 rounded-full ${
                 happinessPercentage >= 60 ? 'bg-green-500' : 
@@ -481,7 +481,7 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
             <span>Level {currentLevel}</span>
             <span>{currentXP.toFixed(0)}/{xpForNextLevel.toFixed(0)} XP</span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2.5">
+          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
             <div 
               className="h-2.5 rounded-full bg-purple-500" 
               style={{ width: `${xpPercentage}%` }}

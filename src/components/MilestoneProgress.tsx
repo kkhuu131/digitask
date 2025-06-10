@@ -93,7 +93,7 @@ const MilestoneProgress = () => {
               disabled={!shouldBeAbleToClaimDigimon || isProcessingClaim}
               className={`w-full py-2 px-4 rounded-md text-white font-medium ${
                 shouldBeAbleToClaimDigimon && !isProcessingClaim
-                  ? "bg-primary-600 hover:bg-primary-700"
+                  ? "bg-primary-600 hover:bg-primary-700 dark:bg-accent-600 dark:hover:bg-accent-700"
                   : "bg-gray-400 cursor-not-allowed"
               }`}
             >

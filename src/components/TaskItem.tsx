@@ -47,7 +47,6 @@ const formatRecurringDays = (days: string[]): string => {
 
 const TaskItem: React.FC<TaskItemProps> = ({ task, onComplete, onDelete }) => {
   const [isTaskOverdue, setIsTaskOverdue] = useState(false);
-  const [showNotes, setShowNotes] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
@@ -113,14 +112,14 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onComplete, onDelete }) => {
   };
 
   return (
-    <div className={`border-b border-gray-200 p-0 py-2 sm:p-4 ${task.is_completed ? 'bg-gray-50' : ''} relative`}>
+    <div className={`border-b border-gray-200 dark:border-dark-100 p-0 py-2 sm:p-4 ${task.is_completed ? 'bg-gray-50 dark:bg-dark-500/50' : 'dark:bg-dark-300'} relative`}>
       <div className="flex items-center gap-2 sm:gap-3">
         {/* Action Buttons - Absolutely positioned */}
         <div className="absolute right-1 top-1 flex flex-col-reverse sm:flex-row items-center gap-1 flex-shrink-0">
           {(!task.is_completed || !task.due_date) && (
             <button
               onClick={() => setShowEditModal(true)}
-              className="px-1 pt-1 sm:p-1 text-gray-400 hover:text-blue-500"
+              className="px-1 pt-1 sm:p-1 text-gray-400 hover:text-blue-500 dark:text-gray-500 dark:hover:text-accent-400"
             >
               <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
@@ -130,7 +129,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onComplete, onDelete }) => {
 
           <button
             onClick={() => onDelete(task.id)}
-            className="pt-1 sm:p-1 sm:py-2 sm:pr-2 text-gray-400 hover:text-red-500"
+            className="pt-1 sm:p-1 sm:py-2 sm:pr-2 text-gray-400 hover:text-red-500 dark:text-gray-500 dark:hover:text-red-400"
           >
             <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -143,8 +142,8 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onComplete, onDelete }) => {
           onClick={() => !task.is_completed && onComplete(task.id)}
           className={`flex-shrink-0 w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 flex items-center justify-center transition-colors ml-2 sm:ml-0 ${
             task.is_completed 
-              ? "bg-green-500 border-green-500" 
-              : "border-gray-300 hover:border-green-500"
+              ? "bg-green-500 border-green-500 dark:bg-green-600 dark:border-green-600" 
+              : "border-gray-300 hover:border-green-500 dark:border-dark-100 dark:hover:border-accent-500"
           }`}
           disabled={task.is_completed}
         >
@@ -159,7 +158,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onComplete, onDelete }) => {
         <div className="flex-1 min-w-0 text-left pr-2 sm:pr-0">
           {/* Description */}
           <div className="flex items-start justify-between gap-2">
-            <p className={`text-xs sm:text-base pr-8 sm:pr-14 ${task.is_completed ? 'line-through text-gray-500' : 'text-gray-800'}`}>
+            <p className={`text-xs sm:text-base pr-8 sm:pr-14 ${task.is_completed ? 'line-through text-gray-500 dark:text-gray-400' : 'text-gray-800 dark:text-gray-200'}`}>
               {task.description}
             </p>
           </div>
@@ -167,31 +166,31 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onComplete, onDelete }) => {
           {/* Tags Row */}
           <div className="flex flex-wrap gap-1 mt-1 items-center text-[10px] sm:text-xs text-left">
             {task.category && (
-              <span className="px-1.5 py-0.5 rounded-full bg-purple-100 text-purple-800">
+              <span className="px-1.5 py-0.5 rounded-full bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300">
                 {categoryIcons[task.category as StatCategory]} {task.category}
               </span>
             )}
             
             {task.is_daily && (
-              <span className="px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-800">
+              <span className="px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
                 Daily
               </span>
             )}
             
             {isTaskOverdue && !task.is_completed && !task.is_daily && (
-              <span className="px-1.5 py-0.5 rounded-full bg-red-100 text-red-800">
+              <span className="px-1.5 py-0.5 rounded-full bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300">
                 Overdue
               </span>
             )}
             
             {task.recurring_days && task.recurring_days.length > 0 && (
-              <span className="px-1.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800">
+              <span className="px-1.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300">
                 {formatRecurringDays(task.recurring_days)}
               </span>
             )}
             
             {!task.is_daily && !task.recurring_days && (
-              <span className="text-gray-500">
+              <span className="text-gray-500 dark:text-gray-400">
                 {formatDueDate(task.due_date)}
               </span>
             )}
@@ -199,27 +198,8 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onComplete, onDelete }) => {
 
           {/* Notes section */}
           {task.notes && (
-            <div className="mt-1 text-left">
-              <button 
-                onClick={() => setShowNotes(!showNotes)}
-                className="text-[10px] sm:text-xs text-blue-600 hover:text-blue-800 flex items-center"
-              >
-                <svg 
-                  className={`w-2 h-2 sm:w-3 sm:h-3 mr-1 transition-transform ${showNotes ? 'rotate-90' : ''}`} 
-                  fill="none" 
-                  stroke="currentColor" 
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
-                </svg>
-                {showNotes ? 'Hide notes' : 'Show notes'}
-              </button>
-              
-              {showNotes && (
-                <div className="mt-1 text-left text-[11px] sm:text-sm text-gray-800 bg-gray-50 p-1.5 sm:p-2 rounded">
-                  {task.notes}
-                </div>
-              )}
+            <div className="mt-1 text-xs sm:text-sm text-gray-500 dark:text-gray-400 max-w-md">
+              {task.notes}
             </div>
           )}
         </div>
