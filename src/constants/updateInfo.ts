@@ -1,4 +1,4 @@
-export const CURRENT_VERSION = "1.5.1";
+export const CURRENT_VERSION = "1.5.2";
 
 export const UPDATE_CHANGES = {
   "1.0.1": [
@@ -99,4 +99,8 @@ export const UPDATE_CHANGES = {
     "Made task completion into a single database call, hopefully fixing some bugs.",
   ],
   "1.5.1": ["Added Dark mode!", "Restyled some UI elements and pages."],
+  "1.5.2": [
+    "Fixed bug where due dates couldn't be made on the current day.",
+    "Improved dark mode UI for Task Item.",
+  ],
 };

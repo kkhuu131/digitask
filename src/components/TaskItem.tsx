@@ -143,7 +143,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onComplete, onDelete }) => {
           className={`flex-shrink-0 w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 flex items-center justify-center transition-colors ml-2 sm:ml-0 ${
             task.is_completed 
               ? "bg-green-500 border-green-500 dark:bg-green-600 dark:border-green-600" 
-              : "border-gray-300 hover:border-green-500 dark:border-dark-100 dark:hover:border-accent-500"
+              : "border-gray-300 hover:border-green-500 dark:border-gray-600 dark:hover:border-accent-500"
           }`}
           disabled={task.is_completed}
         >

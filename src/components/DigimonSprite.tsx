@@ -195,7 +195,7 @@ const DigimonSprite: React.FC<DigimonSpriteProps> = ({
               onClick={handleSpriteClick}
               onError={(e) => {
                 // Fallback if image doesn't load
-                (e.target as HTMLImageElement).src = "/assets/pet/egg.svg";
+                (e.target as HTMLImageElement).src = "/assets/digimon/agumon_professor.png";
               }}
             />
           </motion.div>

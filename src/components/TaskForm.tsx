@@ -28,7 +28,7 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
   const [notes, setNotes] = useState("");
   const [recurringDays, setRecurringDays] = useState<string[]>([]);
 
-  // Set minimum date to today when component mounts
+  // Set default date to today when component mounts
   useEffect(() => {
     // Get today's date in local timezone
     const today = new Date();
@@ -41,22 +41,22 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
       setDueDate(formattedDate);
     }
     
-    // Update minimum time if date is today
-    updateMinTime(formattedDate);
+    // Initialize time value
+    updateMinTime();
   }, []);
   
   // Update minimum time whenever date changes
   useEffect(() => {
-    updateMinTime(dueDate);
+    updateMinTime();
   }, [dueDate]);
 
   // Function to update minimum time based on selected date
-  const updateMinTime = (selectedDate: string) => {
-    // Get today's date in YYYY-MM-DD format in local timezone
-    const today = new Date().toLocaleDateString('en-CA');
+  const updateMinTime = () => {
+    // This function now simply ensures time values are properly formatted
+    // We've removed the restriction that tasks must be in the future
     
-    if (selectedDate === today) {
-      // If date is today, minimum time should be current time rounded up to next 5 minutes
+    // If no due time is set, default to current time rounded up to next 5 minutes
+    if (!dueTime) {
       const now = new Date();
       const minutes = Math.ceil(now.getMinutes() / 5) * 5;
       const hours = minutes === 60 ? now.getHours() + 1 : now.getHours();
@@ -66,10 +66,7 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
       const formattedMinutes = adjustedMinutes.toString().padStart(2, '0');
       const currentTime = `${formattedHours}:${formattedMinutes}`;
       
-      // If current time is after selected time, update selected time
-      if (dueTime < currentTime) {
-        setDueTime(currentTime);
-      }
+      setDueTime(currentTime);
     }
   };
   
@@ -247,7 +244,6 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
                     className="input dark:bg-dark-300"
                     value={dueDate}
                     onChange={(e) => setDueDate(e.target.value)}
-                    min={new Date().toISOString().split('T')[0]}
                     required
                   />
                 </div>
