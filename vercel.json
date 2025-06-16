@@ -3,7 +3,7 @@
   "outputDirectory": "dist",
   "functions": {
     "api/bokomon.ts": {
-      "runtime": "nodejs18.x"
+      "runtime": "nodejs20.x"
     }
   },
   "rewrites": [
