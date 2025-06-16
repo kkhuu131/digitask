@@ -39,6 +39,19 @@ export const BokomonAssistant = () => {
     setIsLoading(true);
 
     try {
+      // Check if we're in development (where the API is available)
+      const isDevelopment = import.meta.env.DEV;
+      
+      if (!isDevelopment) {
+        // In production, show a message that Bokomon is not available
+        setMessages(prev => [...prev, { 
+          role: 'assistant', 
+          content: 'Sorry! Bokomon is currently only available in development mode. The AI assistant feature requires server-side processing that isn\'t available in the current deployment setup.' 
+        }]);
+        setIsLoading(false);
+        return;
+      }
+
       const response = await fetch('/api/bokomon', {
         method: 'POST',
         headers: {
