@@ -9,6 +9,11 @@
       }
     }
   ],
+  "functions": {
+    "api/bokomon.ts": {
+      "runtime": "@vercel/node"
+    }
+  },
   "rewrites": [
     {
       "source": "/(.*)",
