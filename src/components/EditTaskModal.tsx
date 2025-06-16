@@ -30,8 +30,6 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
     "one-time"
   );
   const [recurringDays, setRecurringDays] = useState<string[]>(task.recurring_days || []);
-  const [minDate, setMinDate] = useState<string>("");
-  const [minTime, setMinTime] = useState<string>("");
   
   // Initialize date and time from task's due date
   useEffect(() => {
@@ -42,220 +40,20 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
       const taskDueDate = dueDateTime.toLocaleDateString('en-CA');
       setDueDate(taskDueDate);
       
-      // Format time as HH:MM, rounding to nearest 5 minutes
+      // Format time as HH:MM
       const hours = dueDateTime.getHours();
       const minutes = dueDateTime.getMinutes();
-      const roundedMinutes = Math.round(minutes / 5) * 5;
-      const adjustedHours = roundedMinutes === 60 ? hours + 1 : hours;
-      const adjustedMinutes = roundedMinutes === 60 ? 0 : roundedMinutes;
       
-      const formattedHours = adjustedHours.toString().padStart(2, '0');
-      const formattedMinutes = adjustedMinutes.toString().padStart(2, '0');
+      const formattedHours = hours.toString().padStart(2, '0');
+      const formattedMinutes = minutes.toString().padStart(2, '0');
       setDueTime(`${formattedHours}:${formattedMinutes}`);
     }
   }, [task]);
-  
-  // Generate time options for the select dropdown with 5-minute intervals
-  const timeOptions = Array.from({ length: 24 * 12 }, (_, i) => {
-    const hour = Math.floor(i / 12);
-    const minute = (i % 12) * 5;
-    const formattedHour = hour.toString().padStart(2, '0');
-    const formattedMinute = minute.toString().padStart(2, '0');
-    const value = `${formattedHour}:${formattedMinute}`;
-    
-    // Format for display (12-hour clock)
-    const displayHour = hour % 12 || 12;
-    const period = hour < 12 ? 'AM' : 'PM';
-    const label = `${displayHour}:${formattedMinute.padStart(2, '0')} ${period}`;
-    
-    return { value, label };
-  });
-
-  // Update the customSelectStyles object to properly handle z-indexing and dark mode
-  const customSelectStyles = {
-    control: (provided: any, state: any) => ({
-      ...provided,
-      minHeight: '38px',
-      borderColor: state.isFocused ? '#6366F1' : '#D1D5DB',
-      backgroundColor: 'var(--bg-input, white)',
-      color: 'var(--text-primary, #111827)',
-      boxShadow: 'none',
-      '&:hover': {
-        borderColor: '#9CA3AF',
-      },
-      // Add dark mode styles
-      '@media (prefers-color-scheme: dark)': {
-        borderColor: state.isFocused ? '#F59E0B' : '#4B5563',
-        backgroundColor: '#1F2937',
-        color: '#F3F4F6',
-      }
-    }),
-    menu: (provided: any) => ({
-      ...provided,
-      zIndex: 9999, // Ensure menu appears above modal
-      backgroundColor: 'var(--bg-dropdown, white)',
-      // Add dark mode styles
-      '@media (prefers-color-scheme: dark)': {
-        backgroundColor: '#1F2937',
-        border: '1px solid #374151',
-        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.25)',
-      }
-    }),
-    menuPortal: (provided: any) => ({
-      ...provided,
-      zIndex: 9999, // Ensure menu portal appears above modal
-    }),
-    option: (provided: any, state: any) => ({
-      ...provided,
-      backgroundColor: state.isSelected 
-        ? 'var(--bg-selected, #6366F1)' 
-        : state.isFocused 
-          ? 'var(--bg-hover, #F3F4F6)' 
-          : 'var(--bg-dropdown, white)',
-      color: state.isSelected 
-        ? 'white' 
-        : 'var(--text-primary, #111827)',
-      '&:hover': {
-        backgroundColor: state.isSelected 
-          ? 'var(--bg-selected, #6366F1)' 
-          : 'var(--bg-hover, #F3F4F6)',
-      },
-      // Add dark mode styles
-      '@media (prefers-color-scheme: dark)': {
-        backgroundColor: state.isSelected 
-          ? '#F59E0B' 
-          : state.isFocused 
-            ? '#374151' 
-            : '#1F2937',
-        color: state.isSelected 
-          ? '#111827' 
-          : '#F3F4F6',
-        '&:hover': {
-          backgroundColor: state.isSelected 
-            ? '#F59E0B' 
-            : '#374151',
-        }
-      }
-    }),
-    singleValue: (provided: any) => ({
-      ...provided,
-      color: 'var(--text-primary, #111827)',
-      // Add dark mode styles
-      '@media (prefers-color-scheme: dark)': {
-        color: '#F3F4F6',
-      }
-    }),
-    input: (provided: any) => ({
-      ...provided,
-      color: 'var(--text-primary, #111827)',
-      // Add dark mode styles
-      '@media (prefers-color-scheme: dark)': {
-        color: '#F3F4F6',
-      }
-    }),
-    multiValue: (provided: any) => ({
-      ...provided,
-      backgroundColor: 'var(--bg-chip, #E5E7EB)',
-      // Add dark mode styles
-      '@media (prefers-color-scheme: dark)': {
-        backgroundColor: '#374151',
-      }
-    }),
-    multiValueLabel: (provided: any) => ({
-      ...provided,
-      color: 'var(--text-primary, #111827)',
-      // Add dark mode styles
-      '@media (prefers-color-scheme: dark)': {
-        color: '#F3F4F6',
-      }
-    }),
-    multiValueRemove: (provided: any) => ({
-      ...provided,
-      color: 'var(--text-secondary, #6B7280)',
-      '&:hover': {
-        backgroundColor: 'var(--bg-hover-remove, #F87171)',
-        color: 'white',
-      },
-      // Add dark mode styles
-      '@media (prefers-color-scheme: dark)': {
-        color: '#9CA3AF',
-        '&:hover': {
-          backgroundColor: '#EF4444',
-          color: 'white',
-        }
-      }
-    }),
-  };
-  
-  // Set minimum date and default date/time when component mounts or task type changes
-  useEffect(() => {
-    // Get today's date in local timezone
-    const today = new Date();
-    const formattedDate = today.toLocaleDateString('en-CA'); // en-CA uses YYYY-MM-DD format
-    setMinDate(formattedDate);
-
-    // If switching to one-time task or initializing
-    if (taskType === "one-time") {
-      // If no date is set yet, default to today
-      if (!dueDate) {
-        setDueDate(formattedDate);
-      }
-      
-      // Update minimum time and default time if needed
-      updateMinTime(dueDate || formattedDate);
-    }
-  }, [taskType]);
-
-  // Update minimum time whenever date changes
-  useEffect(() => {
-    if (taskType === "one-time") {
-      updateMinTime(dueDate);
-    }
-  }, [dueDate]);
-
-  // Function to update minimum time based on selected date
-  const updateMinTime = (selectedDate: string) => {
-    const today = new Date().toLocaleDateString('en-CA');
-    
-    if (selectedDate === today) {
-      // If date is today, minimum time should be current time rounded up to next 5 minutes
-      const now = new Date();
-      const minutes = Math.ceil(now.getMinutes() / 5) * 5;
-      const hours = minutes === 60 ? now.getHours() + 1 : now.getHours();
-      const adjustedMinutes = minutes === 60 ? 0 : minutes;
-      
-      const formattedHours = hours.toString().padStart(2, '0');
-      const formattedMinutes = adjustedMinutes.toString().padStart(2, '0');
-      const minTimeValue = `${formattedHours}:${formattedMinutes}`;
-      
-      setMinTime(minTimeValue);
-      
-      // If current time is before min time or no time is set, set to min time
-      if (!dueTime || dueTime < minTimeValue) {
-        setDueTime(minTimeValue);
-      }
-    } else {
-      setMinTime("00:00");
-    }
-  };
 
   // Validate the form
   const isFormValid = () => {
     if (!description.trim()) return false;
     if (taskType === "recurring" && recurringDays.length === 0) return false;
-    if (taskType === "one-time") {
-      if (!dueDate) return false;
-      
-      const selectedDateTime = new Date(`${dueDate}T${dueTime}`);
-      const now = new Date();
-      
-      // Check if selected date/time is in the past
-      if (selectedDateTime < now) return false;
-      
-      // If it's today, check against minimum time
-      const today = new Date().toLocaleDateString('en-CA');
-      if (dueDate === today && dueTime < minTime) return false;
-    }
     return true;
   };
 
@@ -409,42 +207,36 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
               </div>
             )}
 
-            {/* Due Date - only show for one-time tasks */}
+            {/* Due Date & Time - only show for one-time tasks */}
             {taskType === "one-time" && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Due Date & Time
-                </label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  <input
-                    type="date"
-                    value={dueDate}
-                    min={minDate}
-                    onChange={(e) => setDueDate(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-accent-500 dark:focus:border-accent-500 bg-white dark:bg-dark-200 text-gray-900 dark:text-gray-100"
-                  />
-                  <Select
-                    options={timeOptions}
-                    value={timeOptions.find((opt) => opt.value === dueTime)}
-                    onChange={(selected) => setDueTime(selected?.value || '')}
-                    className="w-full"
-                    styles={customSelectStyles}
-                    menuPortalTarget={document.body}
-                    menuPosition="fixed"
-                    classNamePrefix="react-select"
-                    theme={(theme) => ({
-                      ...theme,
-                      colors: {
-                        ...theme.colors,
-                        primary: 'var(--color-primary, #6366F1)',
-                        primary25: 'var(--color-primary-light, #EEF2FF)',
-                        neutral0: 'var(--bg-input, white)',
-                        neutral10: 'var(--bg-hover, #F3F4F6)',
-                        neutral20: 'var(--border-color, #D1D5DB)',
-                        neutral80: 'var(--text-primary, #111827)',
-                      },
-                    })}
-                  />
+              <div className="space-y-2">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
+                  <div className="flex-1 mb-2 sm:mb-0">
+                    <label htmlFor="due-date" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      Due Date
+                    </label>
+                    <input
+                      type="date"
+                      id="due-date"
+                      value={dueDate}
+                      onChange={(e) => setDueDate(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-accent-500 dark:focus:border-accent-500 bg-white dark:bg-dark-200 text-gray-900 dark:text-gray-100"
+                      required
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <label htmlFor="due-time" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      Due Time
+                    </label>
+                    <input
+                      type="time"
+                      id="due-time"
+                      value={dueTime}
+                      onChange={(e) => setDueTime(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-accent-500 dark:focus:border-accent-500 bg-white dark:bg-dark-200 text-gray-900 dark:text-gray-100"
+                      required
+                    />
+                  </div>
                 </div>
               </div>
             )}
@@ -456,24 +248,23 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
                 options={categoryOptions}
                 value={categoryOptions.find(opt => opt.value === category)}
                 onChange={(selected) => setCategory(selected?.value as StatCategory)}
-                className="w-full react-select-container"
-                classNamePrefix="react-select"
-                styles={customSelectStyles}
-                menuPortalTarget={document.body}
-                menuPosition="fixed"
-                theme={(theme) => ({
-                  ...theme,
-                  colors: {
-                    ...theme.colors,
-                    primary: 'var(--color-primary, #6366F1)',
-                    primary25: 'var(--color-primary-light, #EEF2FF)',
-                    neutral0: 'var(--bg-input, white)',
-                    neutral10: 'var(--bg-hover, #F3F4F6)',
-                    neutral20: 'var(--border-color, #D1D5DB)',
-                    neutral80: 'var(--text-primary, #111827)',
-                  },
-                  borderRadius: 6,
-                })}
+                className="w-full"
+                classNames={{
+                  control: (state) => 
+                    `!bg-white dark:!bg-dark-200 !border-gray-300 dark:!border-gray-600 !shadow-none ${
+                      state.isFocused ? '!border-primary-500 dark:!border-accent-500' : ''
+                    }`,
+                  menu: () => "!bg-white dark:!bg-dark-200 !border !border-gray-300 dark:!border-gray-600",
+                  option: (state) => 
+                    `${state.isSelected 
+                      ? '!bg-primary-100 !text-primary-800 dark:!bg-primary-900/30 dark:!text-primary-300' 
+                      : state.isFocused 
+                        ? '!bg-gray-100 dark:!bg-dark-300' 
+                        : '!text-gray-900 dark:!text-gray-300'
+                    }`,
+                  singleValue: () => "!text-gray-900 dark:!text-gray-100",
+                  placeholder: () => "!text-gray-500 dark:!text-gray-400",
+                }}
               />
             </div>
 

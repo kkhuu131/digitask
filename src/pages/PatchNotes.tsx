@@ -1,3 +1,4 @@
+
 const PatchNotes = () => {
   return (
     <div className="max-w-4xl mx-auto">
@@ -25,6 +26,25 @@ const PatchNotes = () => {
         <div className="mb-6">
             <div className="flex items-center mb-2">
               <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
+              <h3 className="text-lg font-medium ml-2 dark:text-gray-200">Bokomon Assistant, Weekly Bosses</h3>
+              <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">June 16, 2025</span>
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
+            <li>Added Bokomon as a chat assistant!</li>
+            <li>You can ask it questions about Digimon or the website.</li>
+            <li>This is just a fun, experimental feature, so use it as you please!</li>
+            <li>Weekly Bosses are now in testing! This week will just be a test of the format, so expect some bugs.</li>
+            <li>Weekly Bosses come in 2 phases:.</li>
+            <li>The first phase which lasts M-F is the community effort, where you can contribute by completing tasks to weaken the boss.</li>
+            <li>The second phase which lasts Sat-Sun is the battle phase, where you can battle the boss to decrease its HP.</li>
+            <li>Rewards will be probably be some mix of bits, exp, titles, and items.</li>
+            <li>New Digimon: Ancient Digimon, Sovereigns!</li>
+            <li>Fixed bug where 5% personality buff was not being applied when checking for evolution.</li>
+            <li>Fixed bug where bonus stats were not being given from tasks.</li>
+            </ul>
+          </div>
+        <div className="mb-6">
+            <div className="flex items-center mb-2">
               <h3 className="text-lg font-medium ml-2 dark:text-gray-200">Dark Mode!</h3>
               <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">June 10, 2025</span>
             </div>

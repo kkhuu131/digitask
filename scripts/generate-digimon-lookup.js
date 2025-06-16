@@ -38,7 +38,7 @@ async function generateDigimonLookup() {
   const tsOutput = `// AUTO-GENERATED FILE. DO NOT EDIT DIRECTLY.
   // Generated from Supabase digimon table
   
-  import type { Digimon } from "../src/store/petStore";
+  import type { Digimon } from "../store/petStore";
   
   export const DIGIMON_LOOKUP_TABLE: Record<number, Digimon> = ${JSON.stringify(
     lookup,

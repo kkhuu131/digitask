@@ -1,5 +1,5 @@
 // Auto-generated file - DO NOT EDIT MANUALLY
-// Generated on 2025-06-09T07:30:55.423Z
+// Generated on 2025-06-13T09:19:19.584Z
 
 export const ANIMATED_DIGIMON = [
   "Aegisdramon",
@@ -20,9 +20,11 @@ export const ANIMATED_DIGIMON = [
   "Alphamon",
   "Alphamon Ouryuken",
   "Alraumon",
-  "AncientBeatmon",
-  "AncientMegatheriumon",
-  "AncientMermaimon",
+  "AncientBeetlemon",
+  "AncientGarurumon",
+  "AncientGreymon",
+  "AncientMegatheriummon",
+  "AncientMermaidmon",
   "AncientSphinxmon",
   "Andromon",
   "Angemon",
@@ -45,10 +47,12 @@ export const ANIMATED_DIGIMON = [
   "AtlurKabuterimon (Red)",
   "AxeKnightmon",
   "AxeKnightmon X",
+  "Azulongmon",
   "Baalmon",
   "Baboongamon",
   "Babydmon",
   "Bagramon",
+  "Baihumon",
   "Bakemon",
   "Bakumon",
   "BanchoLeomon",
@@ -181,6 +185,7 @@ export const ANIMATED_DIGIMON = [
   "Ebemon",
   "Ebemon X",
   "Ebidramon",
+  "Ebonwumon",
   "Ekakimon",
   "Elecmon",
   "Elecmon (Violet)",
@@ -669,6 +674,7 @@ export const ANIMATED_DIGIMON = [
   "Yuramon",
   "Zenimon",
   "Zerimon",
+  "Zhuqiaomon",
   "Zudomon",
   "Zurumon"
 ];

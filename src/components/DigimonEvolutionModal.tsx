@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { EvolutionOption, UserDigimon, expToBoostPoints } from "../store/petStore";
-import calculateBaseStat from "../utils/digimonStatCalculation";
+import calculateBaseStat, { calculateFinalStats } from "../utils/digimonStatCalculation";
 import EvolutionAnimation from "./EvolutionAnimation";
 import { DIGIMON_LOOKUP_TABLE } from "@/constants/digimonLookup";
 import DigimonDNASelectionModal from './DigimonDNASelectionModal';
@@ -213,47 +213,7 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
                 let statRequirementsList: { name: string; current: number; required: number; meets: boolean }[] = [];
 
                 if (!isDevolution) {
-                  const baseHP = calculateBaseStat(
-                    selectedDigimon.current_level,
-                    selectedDigimon.digimon?.hp_level1 ?? 0,
-                    selectedDigimon.digimon?.hp ?? 0,
-                    selectedDigimon.digimon?.hp_level99 ?? 0
-                  );
-
-                  const baseSP = calculateBaseStat(
-                    selectedDigimon.current_level,
-                    selectedDigimon.digimon?.sp_level1 ?? 0,
-                    selectedDigimon.digimon?.sp ?? 0,
-                    selectedDigimon.digimon?.sp_level99 ?? 0
-                  );
-
-                  const baseATK = calculateBaseStat(
-                    selectedDigimon.current_level,
-                    selectedDigimon.digimon?.atk_level1 ?? 0,
-                    selectedDigimon.digimon?.atk ?? 0,
-                    selectedDigimon.digimon?.atk_level99 ?? 0
-                  );
-
-                  const baseDEF = calculateBaseStat(
-                    selectedDigimon.current_level,
-                    selectedDigimon.digimon?.def_level1 ?? 0,
-                    selectedDigimon.digimon?.def ?? 0,
-                    selectedDigimon.digimon?.def_level99 ?? 0
-                  );
-
-                  const baseINT = calculateBaseStat(
-                    selectedDigimon.current_level,
-                    selectedDigimon.digimon?.int_level1 ?? 0,
-                    selectedDigimon.digimon?.int ?? 0,
-                    selectedDigimon.digimon?.int_level99 ?? 0
-                  );
-
-                  const baseSPD = calculateBaseStat(
-                    selectedDigimon.current_level,
-                    selectedDigimon.digimon?.spd_level1 ?? 0,
-                    selectedDigimon.digimon?.spd ?? 0,
-                    selectedDigimon.digimon?.spd_level99 ?? 0
-                  );
+                  const finalStats = calculateFinalStats(selectedDigimon);
 
                   const meetsLevelRequirement = selectedDigimon.current_level >= option.level_required;
 
@@ -263,7 +223,7 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
                     const statReqs = option.stat_requirements;
                     
                     if (statReqs.hp && statReqs.hp > 0) {
-                      const currentHP = baseHP + 10 * (selectedDigimon.hp_bonus || 0);
+                      const currentHP = finalStats.hp;
                       if (currentHP < statReqs.hp) meetsStatRequirements = false;
                       statRequirementsList.push({
                         name: 'HP',
@@ -274,7 +234,7 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
                     }
                     
                     if (statReqs.sp && statReqs.sp > 0) {
-                      const currentSP = baseSP + (selectedDigimon.sp_bonus || 0);
+                      const currentSP = finalStats.sp;
                       if (currentSP < statReqs.sp) meetsStatRequirements = false;
                       statRequirementsList.push({
                         name: 'SP',
@@ -285,7 +245,7 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
                     }
                     
                     if (statReqs.atk && statReqs.atk > 0) {
-                      const currentATK = baseATK + (selectedDigimon.atk_bonus || 0);
+                      const currentATK = finalStats.atk;
                       if (currentATK < statReqs.atk) meetsStatRequirements = false;
                       statRequirementsList.push({
                         name: 'ATK',
@@ -296,7 +256,7 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
                     }
                     
                     if (statReqs.def && statReqs.def > 0) {
-                      const currentDEF = baseDEF + (selectedDigimon.def_bonus || 0);
+                      const currentDEF = finalStats.def;
                       if (currentDEF < statReqs.def) meetsStatRequirements = false;
                       statRequirementsList.push({
                         name: 'DEF',
@@ -307,7 +267,7 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
                     }
                     
                     if (statReqs.int && statReqs.int > 0) {
-                      const currentINT = baseINT + (selectedDigimon.int_bonus || 0);
+                      const currentINT = finalStats.int;
                       if (currentINT < statReqs.int) meetsStatRequirements = false;
                       statRequirementsList.push({
                         name: 'INT',
@@ -318,7 +278,7 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
                     }
                     
                     if (statReqs.spd && statReqs.spd > 0) {
-                      const currentSPD = baseSPD + (selectedDigimon.spd_bonus || 0);
+                      const currentSPD = finalStats.spd;
                       if (currentSPD < statReqs.spd) meetsStatRequirements = false;
                       statRequirementsList.push({
                         name: 'SPD',

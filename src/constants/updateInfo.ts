@@ -1,4 +1,4 @@
-export const CURRENT_VERSION = "1.5.2";
+export const CURRENT_VERSION = "1.6.0";
 
 export const UPDATE_CHANGES = {
   "1.0.1": [
@@ -102,5 +102,10 @@ export const UPDATE_CHANGES = {
   "1.5.2": [
     "Fixed bug where due dates couldn't be made on the current day.",
     "Improved dark mode UI for Task Item.",
+  ],
+  "1.6.0": [
+    "Added Bokomon as a chat assistant!.",
+    "Weekly Bosses are now in testing!",
+    "Fixed some stat-related bugs",
   ],
 };

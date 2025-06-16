@@ -9,6 +9,8 @@ import 'reactflow/dist/style.css';
 import UpdateNotification from './components/UpdateNotification';
 import { useOnboardingStore } from './store/onboardingStore';
 import React from 'react';
+import { BokomonAssistant } from './components/bokomon-assistant/BokomonAssistant';
+import WeeklyBossTestingPanel from './components/WeeklyBossTestingPanel';
 
 // Pages
 import Login from './pages/Login';
@@ -499,197 +501,190 @@ function App() {
 
   return (
     <Router>
-      <Routes>
-        {
-          process.env.NODE_ENV === 'development' && (
+      <div className="min-h-screen bg-gray-50">
+        <Routes>
+          {process.env.NODE_ENV === 'development' && (
             <Route path="/debug" element={<Debug />} />
-          )
-        }
-        <Route path="/landing" element={<LandingPage />} />
-        <Route path="/" element={
-          user ? (
+          )}
+          <Route path="/landing" element={<LandingPage />} />
+          <Route path="/" element={
+            user ? (
+              <ProtectedRoute>
+                <Layout>
+                  <HomeRouteContent />
+                </Layout>
+              </ProtectedRoute>
+            ) : (
+              <LandingPage />
+            )
+          } />
+          <Route path="/dashboard" element={<Navigate to="/" replace />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
+          
+          <Route path="/digimon-dex" element={
             <ProtectedRoute>
               <Layout>
-                <HomeRouteContent />
+                <DigimonDexPage />
               </Layout>
             </ProtectedRoute>
-          ) : (
-            <LandingPage />
-          )
-        } />
-        <Route path="/dashboard" element={
-          <Navigate to="/" replace />
-        } />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/auth/callback" element={<AuthCallback />} />
-        
-        <Route path="/digimon-dex" element={
-          <ProtectedRoute>
-            <Layout>
-              <DigimonDexPage />
-            </Layout>
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/battle" element={
-          <ProtectedRoute>
-            <Layout>
-              <Battle />
-            </Layout>
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/profile" element={
-          <ProtectedRoute>
-            <Layout>
-              <ProfilePage />
-            </Layout>
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/profile/user/:id" element={
-          <ProtectedRoute>
-            <Layout>
-              <ProfilePage />
-            </Layout>
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/profile/name/:username" element={
-          <ProtectedRoute>
-            <Layout>
-              <ProfilePage />
-            </Layout>
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/settings" element={
-          <ProtectedRoute>
-            <Layout>
-              <Settings />
-            </Layout>
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/party" element={
-          <ProtectedRoute>
-            <Layout>
-              <UserDigimonPage />
-            </Layout>
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/tutorial" element={
-          <ProtectedRoute>
-            <Layout>
-              <Tutorial />
-            </Layout>
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/patch-notes" element={
-          <ProtectedRoute>
-            <Layout>
-              <PatchNotes />
-            </Layout>
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/user-search" element={
-          <ProtectedRoute>
-            <Layout>
-              <UserSearchPage />
-            </Layout>
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/leaderboard" element={
-          <ProtectedRoute>
-            <Layout>
-              <LeaderboardPage />
-            </Layout>
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/admin/reports" element={
-          <ProtectedRoute>
-            <Layout>
-              <AdminReportsPage />
-            </Layout>
-          </ProtectedRoute>
-        } />
-
-        <Route path="/admin/digimon-editor" element={
-          <ProtectedRoute>
-            <Layout>
-              <AdminDigimonEditor />
-            </Layout>
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/admin/digimon-manager" element={
-          <ProtectedRoute>
-            <Layout>
-              <AdminDigimonManager />
-            </Layout>
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/digifarm" element={
-          <ProtectedRoute>
-            <Layout>
-              <DigimonPlayground />
-            </Layout>
-          </ProtectedRoute>
-        } />
-        
-        <Route 
-          path="/create-pet" 
-          element={
+          } />
+          
+          <Route path="/battle" element={
+            <ProtectedRoute>
+              <Layout>
+                <Battle />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <Layout>
+                <ProfilePage />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/profile/user/:id" element={
+            <ProtectedRoute>
+              <Layout>
+                <ProfilePage />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/profile/name/:username" element={
+            <ProtectedRoute>
+              <Layout>
+                <ProfilePage />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/settings" element={
+            <ProtectedRoute>
+              <Layout>
+                <Settings />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/party" element={
+            <ProtectedRoute>
+              <Layout>
+                <UserDigimonPage />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/tutorial" element={
+            <ProtectedRoute>
+              <Layout>
+                <Tutorial />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/patch-notes" element={
+            <ProtectedRoute>
+              <Layout>
+                <PatchNotes />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/user-search" element={
+            <ProtectedRoute>
+              <Layout>
+                <UserSearchPage />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/leaderboard" element={
+            <ProtectedRoute>
+              <Layout>
+                <LeaderboardPage />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/admin/reports" element={
+            <ProtectedRoute>
+              <Layout>
+                <AdminReportsPage />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/admin/digimon-editor" element={
+            <ProtectedRoute>
+              <Layout>
+                <AdminDigimonEditor />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/admin/digimon-manager" element={
+            <ProtectedRoute>
+              <Layout>
+                <AdminDigimonManager />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/digifarm" element={
+            <ProtectedRoute>
+              <Layout>
+                <DigimonPlayground />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/create-pet" element={
             <RequireAuth allowNoDigimon={true}>
               <CreatePet />
             </RequireAuth>
-          } 
-        />
-        
-        <Route path="/campaign" element={
-          <ProtectedRoute>
-            <Layout>
-              <Campaign />
-            </Layout>
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/admin/titles" element={
-          <ProtectedRoute>
-            <Layout>
-              <AdminTitlesPage />
-            </Layout>
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/onboarding" element={
-          <OnboardingWrapper />
-        } />
-        
-        <Route path="/roster" element={<RosterPage />} />
-        
-        <Route path="/store" element={
-          <ProtectedRoute>
-            <Layout>
-              <DigimonStorePage />
-            </Layout>
-          </ProtectedRoute>
-        } />
-        
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-      
-      <NotificationCenter />
-      <UpdateNotification />
+          } />
+          
+          <Route path="/campaign" element={
+            <ProtectedRoute>
+              <Layout>
+                <Campaign />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/admin/titles" element={
+            <ProtectedRoute>
+              <Layout>
+                <AdminTitlesPage />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/onboarding" element={<OnboardingWrapper />} />
+          <Route path="/roster" element={<RosterPage />} />
+          
+          <Route path="/store" element={
+            <ProtectedRoute>
+              <Layout>
+                <DigimonStorePage />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+        <NotificationCenter />
+        <UpdateNotification />
+        <BokomonAssistant />
+        {/* <WeeklyBossTestingPanel /> */}
+      </div>
     </Router>
   );
 }

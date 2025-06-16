@@ -120,7 +120,7 @@ const DigimonSprite: React.FC<DigimonSpriteProps> = ({
     xs: "w-8 h-8",
     sm: "w-16 h-16",
     md: "w-32 h-32",
-    lg: "w-64 h-64",
+    lg: "w-40 h-40",
     xl: "w-128 h-128"
   };
   

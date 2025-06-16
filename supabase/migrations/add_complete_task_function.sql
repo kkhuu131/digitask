@@ -181,6 +181,15 @@ BEGIN
     RAISE WARNING 'Error updating experience points or happiness: %', SQLERRM;
   END;
   
+  -- STEP 3.5: Contribute to weekly boss event (if active)
+  BEGIN
+    -- Contribute task progress to boss raid
+    PERFORM contribute_boss_progress(p_user_id, 1, v_quota_completed);
+  EXCEPTION WHEN OTHERS THEN
+    -- If there's an error with boss progress, continue with task completion
+    RAISE WARNING 'Error contributing to boss progress: %', SQLERRM;
+  END;
+
   -- STEP 4: Handle stat allocation
   BEGIN
     -- Get the user's profile with daily_stat_gains
