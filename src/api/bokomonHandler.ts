@@ -7,8 +7,8 @@ import dotenv from "dotenv";
 // Load environment variables
 dotenv.config();
 
-// Get API key from environment variables
-const apiKey = process.env.OPENAI_API_KEY || process.env.VITE_OPENAI_API_KEY;
+// Get API key from environment variables (server-side only)
+const apiKey = process.env.OPENAI_API_KEY;
 
 if (!apiKey) {
   throw new Error(
