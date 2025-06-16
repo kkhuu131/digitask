@@ -10,7 +10,7 @@ import UpdateNotification from './components/UpdateNotification';
 import { useOnboardingStore } from './store/onboardingStore';
 import React from 'react';
 import { BokomonAssistant } from './components/bokomon-assistant/BokomonAssistant';
-import WeeklyBossTestingPanel from './components/WeeklyBossTestingPanel';
+// // WeeklyBossTestingPanel is conditionally imported in WeeklyBossRaid component
 
 // Pages
 import Login from './pages/Login';

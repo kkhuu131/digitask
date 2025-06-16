@@ -1,6 +1,6 @@
-import express, { Request, Response, RequestHandler } from "express";
+import express, { RequestHandler } from "express";
 import cors from "cors";
-import { handleBokomonMessage } from "./src/api/bokomon";
+import { handleBokomonMessage } from "./src/api/bokomonHandler";
 import { rateLimiter } from "./src/utils/rateLimiter";
 import dotenv from "dotenv";
 
@@ -48,26 +48,23 @@ const bokomonHandler: RequestHandler = async (req, res) => {
     // Process message
     const response = await handleBokomonMessage(message);
 
-    // Track token usage (assuming response includes token count)
+    // Track basic usage (simplified since we don't have token count)
     const currentUsage = tokenUsage.get(clientId.toString()) || 0;
-    tokenUsage.set(
-      clientId.toString(),
-      currentUsage + (response.usage?.total_tokens || 0)
-    );
+    tokenUsage.set(clientId.toString(), currentUsage + 1);
 
-    // Check if user has exceeded token limit (e.g., 1000 tokens per hour)
-    if (currentUsage > 1000) {
+    // Check if user has exceeded request limit (e.g., 100 requests per hour)
+    if (currentUsage > 100) {
       res.status(429).json({
-        error: "Token limit exceeded",
+        error: "Request limit exceeded",
         message:
-          "You have reached your token limit for this period. Please try again later.",
+          "You have reached your request limit for this period. Please try again later.",
         resetIn: 3600000, // 1 hour
       });
       return;
     }
 
     res.json({
-      response: response.content,
+      response: response.response,
       rateLimit: {
         remaining: rateLimit.remaining,
         resetIn: rateLimit.resetIn,

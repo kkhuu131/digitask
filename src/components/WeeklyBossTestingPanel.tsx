@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useWeeklyBossStore } from '../store/weeklyBossStore';
 import { useNotificationStore } from '../store/notificationStore';
 import { supabase } from '../lib/supabase';
-import { Settings, Play, RefreshCw, Award, Zap, Target } from 'lucide-react';
+import { Settings, RefreshCw, Award, Zap, Target } from 'lucide-react';
 
 const WeeklyBossTestingPanel: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -133,7 +133,7 @@ const WeeklyBossTestingPanel: React.FC = () => {
         };
       }
 
-      const { data, error } = await supabase.rpc(functionName, rpcParams);
+      const { error } = await supabase.rpc(functionName, rpcParams);
 
       if (error) throw error;
 

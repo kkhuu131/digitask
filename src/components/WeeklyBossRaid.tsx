@@ -6,7 +6,7 @@ import DigimonSprite from './DigimonSprite';
 import TypeAttributeIcon from './TypeAttributeIcon';
 import TeamBattleAnimation from './TeamBattleAnimation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Shield, Sword, Clock, Users, Trophy, Gift } from 'lucide-react';
+import { Play, Shield, Sword, Clock, Trophy, Gift } from 'lucide-react';
 import { digimonLookup } from '@/utils/digimonLookup';
 import { DigimonType, DigimonAttribute } from '../store/battleStore';
 
@@ -124,7 +124,6 @@ const WeeklyBossRaid = () => {
     );
   }
 
-  const progressPercentage = getProgressPercentage();
   const bossHealthPercentage = getBossHealthPercentage();
   const daysRemaining = getDaysRemaining();
   const rewardTier = getRewardTier();

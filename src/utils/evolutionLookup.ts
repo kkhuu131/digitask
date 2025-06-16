@@ -26,7 +26,7 @@ Object.values(EVOLUTION_LOOKUP_TABLE.all).forEach((path: EvolutionPath) => {
   evolutionLookup[path.from_digimon_id].evolvesTo.push(path);
 });
 
-export function searchEvolutionData(name: string): EvolutionData[] {
+export function searchEvolutionData(_name: string): EvolutionData[] {
   // This would need to be updated to search by Digimon ID rather than name
   // since the evolution data uses IDs, not names
   return Object.values(evolutionLookup);

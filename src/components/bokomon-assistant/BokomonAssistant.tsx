@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Dialog, DialogContent, DialogTrigger } from '@radix-ui/react-dialog';
-import { MessageSquare, X, Send } from 'lucide-react';
+import { X, Send } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface Message {

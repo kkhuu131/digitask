@@ -1,10 +1,8 @@
 import OpenAI from "openai";
-import { searchDigimonData } from "../utils/digimonLookup";
-import { searchEvolutionData } from "../utils/evolutionLookup";
+import { searchDigimonData, digimonLookup } from "../utils/digimonLookup";
 import { tutorialContent } from "../utils/tutorialContent";
-import dotenv from "dotenv";
-import { digimonLookup } from "../utils/digimonLookup";
 import { evolutionLookup } from "../utils/evolutionLookup";
+import dotenv from "dotenv";
 
 // Load environment variables
 dotenv.config();

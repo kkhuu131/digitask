@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { EvolutionOption, UserDigimon, expToBoostPoints } from "../store/petStore";
-import calculateBaseStat, { calculateFinalStats } from "../utils/digimonStatCalculation";
+import { calculateFinalStats } from "../utils/digimonStatCalculation";
 import EvolutionAnimation from "./EvolutionAnimation";
 import { DIGIMON_LOOKUP_TABLE } from "@/constants/digimonLookup";
 import DigimonDNASelectionModal from './DigimonDNASelectionModal';

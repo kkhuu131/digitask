@@ -1,14 +1,11 @@
 import { create } from "zustand";
 import { supabase } from "../lib/supabase";
 import { useDigimonStore, UserDigimon } from "./petStore";
-import { useBattleStore } from "./battleStore";
+// useBattleStore not needed in this file
 import { useNotificationStore } from "./notificationStore";
 import { useCurrencyStore } from "./currencyStore";
 import { DIGIMON_LOOKUP_TABLE } from "../constants/digimonLookup";
-import {
-  calculateFinalStats,
-  calculateBaseDigimonPowerRating,
-} from "../utils/digimonStatCalculation";
+import { calculateFinalStats } from "../utils/digimonStatCalculation";
 
 // Types
 export interface PresetBossConfig {
@@ -384,7 +381,7 @@ export const useWeeklyBossStore = create<WeeklyBossState>((set, get) => ({
       set({ loading: true, error: null });
 
       // First check if the tables exist by trying to query preset_boss_configs
-      const { data: tableCheck, error: tableError } = await supabase
+      const { error: tableError } = await supabase
         .from("preset_boss_configs")
         .select("id")
         .limit(1);
