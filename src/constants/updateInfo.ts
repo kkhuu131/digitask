@@ -1,4 +1,4 @@
-export const CURRENT_VERSION = "1.6.0";
+export const CURRENT_VERSION = "1.6.1";
 
 export const UPDATE_CHANGES = {
   "1.0.1": [
@@ -107,5 +107,9 @@ export const UPDATE_CHANGES = {
     "Added Bokomon as a chat assistant!.",
     "Weekly Bosses are now in testing!",
     "Fixed some stat-related bugs",
+  ],
+  "1.6.1": [
+    "Updated Team Manager UI to be cleaner and more compact.",
+    "Fixed bug where Weekly Boss page did not work on mobile.",
   ],
 };

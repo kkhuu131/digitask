@@ -24,7 +24,6 @@ const WeeklyBossRaid = () => {
     startBossBattle,
     claimRewards,
     clearCurrentBattle,
-    debugContribution,
     checkDailyBossBattleLimit,
     getPhaseDescription,
     getDaysRemaining,
@@ -132,12 +131,12 @@ const WeeklyBossRaid = () => {
   return (
     <div className="space-y-6">
       {/* Boss Header */}
-      <div className="bg-gradient-to-r from-red-500 to-purple-600 rounded-lg p-6 text-white">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold mb-2">{currentEvent.boss_name}</h1>
-            <p className="text-red-100 mb-2">{currentEvent.boss_description}</p>
-            <div className="flex items-center gap-4 text-sm">
+      <div className="bg-gradient-to-r from-red-500 to-purple-600 rounded-lg p-4 sm:p-6 text-white">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="flex-1">
+            <h1 className="text-2xl sm:text-3xl font-bold mb-2">{currentEvent.boss_name}</h1>
+            <p className="text-red-100 mb-2 text-sm sm:text-base">{currentEvent.boss_description}</p>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm">
               <span className="flex items-center gap-1">
                 <Clock className="h-4 w-4" />
                 {daysRemaining} days remaining
@@ -148,17 +147,17 @@ const WeeklyBossRaid = () => {
               </span> */}
             </div>
           </div>
-          <div className="text-right">
-            <div className="text-4xl font-bold mb-1">#{currentEvent.boss_config?.rotation_order}</div>
+          <div className="text-center sm:text-right flex-shrink-0">
+            <div className="text-3xl sm:text-4xl font-bold mb-1">#{currentEvent.boss_config?.rotation_order}</div>
             <div className="text-sm opacity-80">Week {currentEvent.week_start_date}</div>
           </div>
         </div>
       </div>
 
       {/* Phase Status */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border dark:border-gray-700">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold dark:text-gray-100">
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-4 sm:p-6 border dark:border-gray-700">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0 mb-4">
+          <h2 className="text-lg sm:text-xl font-semibold dark:text-gray-100">
             Phase {currentEvent.phase}: {currentEvent.phase === 1 ? 'Weakening' : currentEvent.phase === 2 ? 'Battle' : 'Complete'}
           </h2>
           <div className="flex items-center gap-2">
@@ -167,7 +166,7 @@ const WeeklyBossRaid = () => {
             {currentEvent.phase === 3 && <Trophy className="h-5 w-5 text-yellow-500" />}
           </div>
         </div>
-        <p className="text-gray-600 dark:text-gray-300 mb-4">{getPhaseDescription()}</p>
+        <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm sm:text-base">{getPhaseDescription()}</p>
 
         {/* Phase 1: Progress Bar */}
         {currentEvent.phase === 1 && (
@@ -189,14 +188,6 @@ const WeeklyBossRaid = () => {
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
               Complete tasks to contribute to the community effort!
             </p>
-            
-            {/* Temporary Debug Button */}
-            <button
-              onClick={debugContribution}
-              className="mt-2 px-3 py-1 bg-yellow-500 hover:bg-yellow-600 text-white text-xs rounded"
-            >
-              Debug: Test Contribution
-            </button>
           </div>
         )}
 
@@ -205,7 +196,10 @@ const WeeklyBossRaid = () => {
           <div>
             <div className="flex justify-between text-sm mb-2">
               <span>Boss Health</span>
-              <span>{currentEvent.boss_current_hp.toLocaleString()} / {currentEvent.boss_max_hp.toLocaleString()}</span>
+              <span className="text-right">
+                <span className="hidden sm:inline">{currentEvent.boss_current_hp.toLocaleString()} / {currentEvent.boss_max_hp.toLocaleString()}</span>
+                <span className="sm:hidden">{Math.round(currentEvent.boss_current_hp / 1000)}K / {Math.round(currentEvent.boss_max_hp / 1000)}K</span>
+              </span>
             </div>
             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 mb-2">
               <div
@@ -217,7 +211,7 @@ const WeeklyBossRaid = () => {
               Battle the boss with your team to deal damage!
             </p>
             <div className="mt-3 pt-3 border-t dark:border-gray-600">
-              <div className="flex justify-between items-center text-sm">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-0 text-sm">
                 <span className="font-medium dark:text-gray-300">Daily Boss Battles:</span>
                 <span className={`font-semibold ${
                   dailyBossBattlesRemaining > 0 
@@ -237,9 +231,9 @@ const WeeklyBossRaid = () => {
 
       {/* Boss Sprite and Info */}
       {currentEvent.boss_config && (
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border dark:border-gray-700">
-          <div className="flex items-center gap-6">
-            <div className="relative">
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-4 sm:p-6 border dark:border-gray-700">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+            <div className="relative flex justify-center sm:justify-start">
               <DigimonSprite
                 digimonName={digimonLookup[currentEvent.boss_config.boss_digimon_id].name}
                 size="lg"
@@ -252,23 +246,25 @@ const WeeklyBossRaid = () => {
               )}
             </div>
             <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
-                <TypeAttributeIcon 
-                  type={digimonLookup[currentEvent.boss_config.boss_digimon_id].type as DigimonType} 
-                  attribute={digimonLookup[currentEvent.boss_config.boss_digimon_id].attribute as DigimonAttribute}
-                  size="sm"
-                />
-                <span className="text-lg font-semibold dark:text-gray-100">Level 99</span>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
+                <div className="flex items-center gap-2">
+                  <TypeAttributeIcon 
+                    type={digimonLookup[currentEvent.boss_config.boss_digimon_id].type as DigimonType} 
+                    attribute={digimonLookup[currentEvent.boss_config.boss_digimon_id].attribute as DigimonAttribute}
+                    size="sm"
+                  />
+                  <span className="text-lg font-semibold dark:text-gray-100">Level 99</span>
+                </div>
                 <span className="text-sm text-gray-500 dark:text-gray-400">
                   {currentEvent.boss_config.stat_multiplier}x Stats
                 </span>
               </div>
-              <div className="grid grid-cols-2 gap-4 text-sm">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                 <div>
                   <span className="font-medium">Special Abilities:</span>
                   <ul className="mt-1 space-y-1">
                     {currentEvent.boss_config.special_abilities.map((ability, index) => (
-                      <li key={index} className="text-gray-600 dark:text-gray-300">
+                      <li key={index} className="text-gray-600 dark:text-gray-300 break-words">
                         • {ability}
                       </li>
                     ))}
@@ -288,8 +284,8 @@ const WeeklyBossRaid = () => {
 
       {/* Battle Section */}
       {currentEvent.phase === 2 && (
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border dark:border-gray-700">
-          <h3 className="text-xl font-semibold mb-4 dark:text-gray-100">Battle Arena</h3>
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-4 sm:p-6 border dark:border-gray-700">
+          <h3 className="text-lg sm:text-xl font-semibold mb-4 dark:text-gray-100">Battle Arena</h3>
           
           {teamDigimon.length === 0 ? (
             <div className="text-center py-8">
@@ -298,7 +294,7 @@ const WeeklyBossRaid = () => {
                   <p className="text-amber-600 dark:text-amber-400 mb-2 font-semibold">
                     ⚠️ Phase 1 participation required!
                   </p>
-                  <p className="text-gray-600 dark:text-gray-400 mb-4">
+                  <p className="text-gray-600 dark:text-gray-400 mb-4 text-sm sm:text-base">
                     You must complete tasks during weekdays (Phase 1) to participate in boss battles.
                   </p>
                   <p className="text-sm text-gray-500 dark:text-gray-500">
@@ -307,7 +303,7 @@ const WeeklyBossRaid = () => {
                 </div>
               ) : (
                 <div>
-                  <p className="text-gray-600 dark:text-gray-400 mb-4">
+                  <p className="text-gray-600 dark:text-gray-400 mb-4 text-sm sm:text-base">
                     You need at least one Digimon on your team to battle the boss.
                   </p>
                   <p className="text-sm text-gray-500 dark:text-gray-500">
@@ -318,7 +314,7 @@ const WeeklyBossRaid = () => {
             </div>
           ) : (
             <div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                 {teamDigimon.map((digimon) => (
                   <div key={digimon.id} className="border dark:border-gray-600 rounded-lg p-3">
                     <div className="flex items-center gap-3">
@@ -326,8 +322,10 @@ const WeeklyBossRaid = () => {
                         digimonName={digimonLookup[digimon.digimon_id].name}
                         fallbackSpriteUrl={digimonLookup[digimon.digimon_id].sprite_url}
                       />
-                      <div>
-                        <div className="font-medium dark:text-gray-100">{digimon.name || digimonLookup[digimon.digimon_id].name}</div>
+                      <div className="min-w-0 flex-1">
+                        <div className="font-medium dark:text-gray-100 truncate">
+                          {digimon.name || digimonLookup[digimon.digimon_id].name}
+                        </div>
                         <div className="text-sm text-gray-500 dark:text-gray-400">
                           Level {digimon.current_level}
                         </div>
@@ -342,7 +340,7 @@ const WeeklyBossRaid = () => {
                   <button
                     onClick={startBossBattle}
                     disabled={battleLoading}
-                    className="flex items-center gap-2 bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white px-8 py-3 rounded-lg font-semibold transition-colors"
+                    className="flex items-center gap-2 bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white px-6 sm:px-8 py-3 rounded-lg font-semibold transition-colors text-sm sm:text-base"
                   >
                     {battleLoading ? (
                       <>
@@ -357,8 +355,8 @@ const WeeklyBossRaid = () => {
                     )}
                   </button>
                 ) : (
-                  <div className="text-center">
-                    <p className="text-gray-600 dark:text-gray-400 mb-2">
+                  <div className="text-center px-4">
+                    <p className="text-gray-600 dark:text-gray-400 mb-2 text-sm sm:text-base break-words">
                       {currentEvent.is_defeated ? 'Boss has been defeated!' : 
                        (!userParticipation || userParticipation.tasks_contributed <= 0) ? 
                        'Phase 1 participation required! Complete tasks during weekdays to unlock battles.' :
@@ -376,43 +374,45 @@ const WeeklyBossRaid = () => {
 
       {/* User Progress */}
       {userParticipation && (
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border dark:border-gray-700">
-          <h3 className="text-xl font-semibold mb-4 dark:text-gray-100 flex items-center gap-2">
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-4 sm:p-6 border dark:border-gray-700">
+          <h3 className="text-lg sm:text-xl font-semibold mb-4 dark:text-gray-100 flex items-center gap-2">
             <Trophy className="h-5 w-5" />
             Your Progress
           </h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4">
             <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+              <div className="text-xl sm:text-2xl font-bold text-blue-600 dark:text-blue-400">
                 {userParticipation.tasks_contributed}
               </div>
-              <div className="text-sm text-gray-500 dark:text-gray-400">Tasks Contributed</div>
+              <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Tasks Contributed</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-red-600 dark:text-red-400">
+              <div className="text-xl sm:text-2xl font-bold text-red-600 dark:text-red-400">
                 {userParticipation.battle_attempts}
               </div>
-              <div className="text-sm text-gray-500 dark:text-gray-400">Battle Attempts</div>
+              <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Battle Attempts</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
-                {userParticipation.total_damage_dealt.toLocaleString()}
+              <div className="text-xl sm:text-2xl font-bold text-yellow-600 dark:text-yellow-400">
+                <span className="hidden sm:inline">{userParticipation.total_damage_dealt.toLocaleString()}</span>
+                <span className="sm:hidden">{Math.round(userParticipation.total_damage_dealt / 1000)}K</span>
               </div>
-              <div className="text-sm text-gray-500 dark:text-gray-400">Total Damage</div>
+              <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Total Damage</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
-                {userParticipation.best_single_damage.toLocaleString()}
+              <div className="text-xl sm:text-2xl font-bold text-purple-600 dark:text-purple-400">
+                <span className="hidden sm:inline">{userParticipation.best_single_damage.toLocaleString()}</span>
+                <span className="sm:hidden">{Math.round(userParticipation.best_single_damage / 1000)}K</span>
               </div>
-              <div className="text-sm text-gray-500 dark:text-gray-400">Best Single Hit</div>
+              <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Best Single Hit</div>
             </div>
           </div>
 
           {/* Participation Tier */}
           <div className="mb-4">
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
               <span className="font-medium dark:text-gray-100">Participation Level:</span>
-              <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+              <span className={`px-2 py-1 rounded-full text-xs font-semibold self-start ${
                 rewardTier >= 3 ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200' :
                 rewardTier >= 2 ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200' :
                 rewardTier >= 1 ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200' :
@@ -426,7 +426,7 @@ const WeeklyBossRaid = () => {
           {/* Rewards Section */}
           {rewards && (
             <div className="border-t dark:border-gray-600 pt-4">
-              <div className="flex items-center justify-between mb-3">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
                 <h4 className="font-semibold dark:text-gray-100 flex items-center gap-2">
                   <Gift className="h-4 w-4" />
                   Available Rewards
@@ -434,13 +434,13 @@ const WeeklyBossRaid = () => {
                 {!userParticipation.rewards_claimed && currentEvent.phase === 3 && (
                   <button
                     onClick={claimRewards}
-                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
+                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium self-start sm:self-auto"
                   >
                     Claim Rewards
                   </button>
                 )}
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
                 <div className="text-center">
                   <div className="font-semibold text-yellow-600 dark:text-yellow-400">
                     {rewards.bits.toLocaleString()}
@@ -455,7 +455,7 @@ const WeeklyBossRaid = () => {
                 </div>
                 {rewards.title && (
                   <div className="text-center">
-                    <div className="font-semibold text-purple-600 dark:text-purple-400">
+                    <div className="font-semibold text-purple-600 dark:text-purple-400 break-words">
                       {rewards.title}
                     </div>
                     <div className="text-gray-500 dark:text-gray-400">Title</div>
@@ -463,7 +463,7 @@ const WeeklyBossRaid = () => {
                 )}
                 {rewards.special_item && (
                   <div className="text-center">
-                    <div className="font-semibold text-green-600 dark:text-green-400">
+                    <div className="font-semibold text-green-600 dark:text-green-400 break-words">
                       {rewards.special_item}
                     </div>
                     <div className="text-gray-500 dark:text-gray-400">Special Item</div>

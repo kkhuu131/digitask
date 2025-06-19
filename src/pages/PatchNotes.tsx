@@ -26,6 +26,16 @@ const PatchNotes = () => {
         <div className="mb-6">
             <div className="flex items-center mb-2">
               <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
+              <h3 className="text-lg font-medium ml-2 dark:text-gray-200">Small Update</h3>
+              <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">June 19, 2025</span>
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
+            <li>Updated Team Manager UI to be cleaner and more compact.</li>
+            <li>Fixed bug where Weekly Boss page did not work on mobile.</li>
+            </ul>
+          </div>
+        <div className="mb-6">
+            <div className="flex items-center mb-2">
               <h3 className="text-lg font-medium ml-2 dark:text-gray-200">Bokomon Assistant, Weekly Bosses</h3>
               <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">June 16, 2025</span>
             </div>

@@ -150,20 +150,19 @@ const Battle = () => {
   }
 
   const tabs = [
-    { name: 'Arena Battle', component: 'arena' },
+    { name: 'Arena', component: 'arena' },
     { name: 'Weekly Boss', component: 'boss' },
-    { name: 'Team Manager', component: 'team' },
-    { name: 'Battle History', component: 'history' }
+    { name: 'History', component: 'history' }
   ];
 
   return (
     <>
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
-        <h1 className="text-2xl font-bold dark:text-gray-100">Battle Arena</h1>
+        <h1 className="text-2xl font-bold dark:text-gray-100">Battle</h1>
         <BattleSpeedControl />
       </div>
-
+      
       <Tab.Group selectedIndex={selectedTab} onChange={setSelectedTab}>
         <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1 mb-6">
           {tabs.map((tab) => (
@@ -185,169 +184,182 @@ const Battle = () => {
         <Tab.Panels>
           {/* Arena Battle Tab */}
           <Tab.Panel>
-            {showBattleAnimation ? (
+      {showBattleAnimation ? (
               currentTeamBattle ? (
-                <TeamBattleAnimation 
-                  teamBattle={currentTeamBattle}
-                  onComplete={handleBattleComplete} 
-                />
+            <TeamBattleAnimation 
+              teamBattle={currentTeamBattle}
+              onComplete={handleBattleComplete} 
+            />
               ) : null
+      ) : (
+              <div>
+
+                {/* Battle Options Main Content */}
+                <div className="lg:col-span-2 order-1 lg:order-2">
+          <div className="card">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold dark:text-gray-100">Choose Opponent</h2>
+            
+              <div className="flex items-center space-x-4">
+                {/* Refresh button - only visible in development environment */}
+                {import.meta.env.DEV && (
+                  <button
+                    onClick={() => getBattleOptions(true)}
+                    className="text-sm px-3 py-1 bg-gray-200 dark:bg-dark-200 hover:bg-gray-300 dark:hover:bg-dark-100 text-gray-800 dark:text-gray-200 rounded-md transition-colors"
+                    disabled={loading}
+                  >
+                    {loading ? "Refreshing..." : "Refresh Options"}
+                  </button>
+                )}
+                <div className="text-xs sm:text-base dark:text-gray-200">
+                <span className="font-medium dark:text-gray-200">Daily Battles:</span> {dailyBattlesRemaining} left
+                </div>
+              </div>
+            </div>
+            
+            {error && (
+              <div className="mb-4 bg-red-50 dark:bg-red-900/30 border-l-4 border-red-500 p-4">
+                <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
+              </div>
+            )}
+            
+            {loading ? (
+              <div className="flex justify-center py-8">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500 dark:border-amber-500"></div>
+              </div>
             ) : (
-              <div className="space-y-6">
-                {/* Battle Options Section */}
-                <div className="card">
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-bold dark:text-gray-100">Choose Opponent</h2>
-                  
-                    <div className="flex items-center space-x-4">
-                      {/* Refresh button - only visible in development environment */}
-                      {import.meta.env.DEV && (
-                        <button
-                          onClick={() => getBattleOptions(true)}
-                          className="text-sm px-3 py-1 bg-gray-200 dark:bg-dark-200 hover:bg-gray-300 dark:hover:bg-dark-100 text-gray-800 dark:text-gray-200 rounded-md transition-colors"
-                          disabled={loading}
-                        >
-                          {loading ? "Refreshing..." : "Refresh Options"}
-                        </button>
-                      )}
-                      <div className="text-xs sm:text-base dark:text-gray-200">
-                      <span className="font-medium dark:text-gray-200">Daily Battles:</span> {dailyBattlesRemaining} left
+              <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mb-4">
+                  {battleOptions.map((option) => (
+                    <div 
+                      key={option.id}
+                      className={`border rounded-lg p-2 sm:p-4 transition-colors ${
+                        selectedOption === option.id 
+                          ? 'border-primary-500 dark:border-amber-500 bg-primary-50 dark:bg-amber-900/20' 
+                          : 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-dark-200'
+                      }`}
+                    >
+                      <div className="flex justify-between items-center mb-2 sm:mb-3">
+                        <span className={`px-1 sm:px-2 py-0.5 sm:py-1 rounded text-[10px] sm:text-xs font-medium ${
+                          option.difficulty === 'easy' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' :
+                          option.difficulty === 'medium' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300' :
+                          'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'
+                        }`}>
+                          {option.difficulty.charAt(0).toUpperCase() + option.difficulty.slice(1)}
+                        </span>
+                        
+                        <span className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 truncate max-w-[120px]">
+                          {option.isWild ? 'Wild Digimon' : option.team.display_name || option.team.username}
+                        </span>
                       </div>
-                    </div>
-                  </div>
-                  
-                  {error && (
-                    <div className="mb-4 bg-red-50 dark:bg-red-900/30 border-l-4 border-red-500 p-4">
-                      <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
-                    </div>
-                  )}
-                  
-                  {loading ? (
-                    <div className="flex justify-center py-8">
-                      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500 dark:border-amber-500"></div>
-                    </div>
-                  ) : (
-                    <>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                        {battleOptions.map((option) => (
-                          <div 
-                            key={option.id}
-                            className={`border rounded-lg p-2 sm:p-4 transition-colors ${
-                              selectedOption === option.id 
-                                ? 'border-primary-500 dark:border-amber-500 bg-primary-50 dark:bg-amber-900/20' 
-                                : 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-dark-200'
-                            }`}
-                          >
-                            <div className="flex justify-between items-center mb-2 sm:mb-3">
-                              <span className={`px-1 sm:px-2 py-0.5 sm:py-1 rounded text-[10px] sm:text-xs font-medium ${
-                                option.difficulty === 'easy' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' :
-                                option.difficulty === 'medium' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300' :
-                                'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'
-                              }`}>
-                                {option.difficulty.charAt(0).toUpperCase() + option.difficulty.slice(1)}
-                              </span>
-                              
-                              <span className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 truncate max-w-[120px]">
-                                {option.isWild ? 'Wild Digimon' : option.team.display_name || option.team.username}
-                              </span>
+                      
+                      <div className="flex justify-center items-center space-x-1 sm:space-x-2 mb-2 sm:mb-3 min-h-[60px] sm:min-h-[80px]">
+                        {option.team.digimon.map((digimon) => (
+                          <div key={`${digimon.id}-${digimon.name}`} className="text-center flex-1 flex flex-col items-center">
+                            <div className="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center relative group">
+                              <div className="hidden sm:block">
+                                <DigimonSprite 
+                                  digimonName={digimon.name} 
+                                  fallbackSpriteUrl={digimon.sprite_url}
+                                  showHappinessAnimations={false}
+                                  size="sm" 
+                                />
+                              </div>
+                              <div className="block sm:hidden">
+                                <DigimonSprite 
+                                  digimonName={digimon.name} 
+                                  fallbackSpriteUrl={digimon.sprite_url} 
+                                  size="xs" 
+                                  showHappinessAnimations={false}
+                                />
+                              </div>
+                              {/* Tooltip */}
+                              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none z-10">
+                                {digimon.name}
+                              </div>
                             </div>
-                            
-                            <div className="flex justify-center items-center space-x-1 sm:space-x-2 mb-2 sm:mb-3 min-h-[60px] sm:min-h-[80px]">
-                              {option.team.digimon.map((digimon) => (
-                                <div key={`${digimon.id}-${digimon.name}`} className="text-center flex-1 flex flex-col items-center">
-                                  <div className="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center relative group">
-                                    <div className="hidden sm:block">
-                                      <DigimonSprite 
-                                        digimonName={digimon.name} 
-                                        fallbackSpriteUrl={digimon.sprite_url}
-                                        showHappinessAnimations={false}
-                                        size="sm" 
-                                      />
-                                    </div>
-                                    <div className="block sm:hidden">
-                                      <DigimonSprite 
-                                        digimonName={digimon.name} 
-                                        fallbackSpriteUrl={digimon.sprite_url} 
-                                        size="xs" 
-                                        showHappinessAnimations={false}
-                                      />
-                                    </div>
-                                    {/* Tooltip */}
-                                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none z-10">
-                                      {digimon.name}
-                                    </div>
-                                  </div>
-                  
-                                  {digimon.type && digimon.attribute && (
-                                    <div className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">
-                                      <div className="flex justify-center mb-1">
-                                        <TypeAttributeIcon
-                                          type={digimon.type as DigimonType}
-                                          attribute={digimon.attribute as DigimonAttribute}
-                                          size="sm"
-                                          showLabel={false}
-                                          showTooltip={true}
-                                        />
-                                      </div>
-                                    </div>
-                                  )}
-                                  <div className="text-[10px] sm:text-xs mt-1 dark:text-gray-300">Lv.{digimon.current_level}</div>
+            
+                            {digimon.type && digimon.attribute && (
+                              <div className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">
+                                <div className="flex justify-center mb-1">
+                                  <TypeAttributeIcon
+                                    type={digimon.type as DigimonType}
+                                    attribute={digimon.attribute as DigimonAttribute}
+                                    size="sm"
+                                    showLabel={false}
+                                    showTooltip={true}
+                                  />
                                 </div>
-                              ))}
-                            </div>
-                            
-                            <button
-                              onClick={() => handleStartBattle(option.id)}
-                              disabled={loading || localLoading || dailyBattlesRemaining <= 0 || teamDigimon.length < 1}
-                              className={`btn-primary w-full text-xs sm:text-sm py-1 sm:py-2 ${
-                                (loading || localLoading || dailyBattlesRemaining <= 0 || teamDigimon.length < 1) 
-                                  ? 'opacity-50 cursor-not-allowed' 
-                                  : ''
-                              }`}
-                            >
-                              {loading || localLoading ? "Starting..." : 
-                               dailyBattlesRemaining <= 0 ? "No battles" : teamDigimon.length < 1 ? "Need team" : "Battle!"}
-                            </button>
+                              </div>
+                            )}
+                            <div className="text-[10px] sm:text-xs mt-1 dark:text-gray-300">Lv.{digimon.current_level}</div>
                           </div>
                         ))}
                       </div>
                       
-                      {/* Informational footer */}
-                      <div className="text-center text-sm text-gray-500 dark:text-gray-400 mt-2 border-t dark:border-gray-700 pt-3">
-                        <p>Battles reward all your digimon with experience. Battle options refresh after each battle.</p>
-                      </div>
-                      
-                      {battleOptions.length === 0 && !loading && (
-                        <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                          <p>No battle options available. Try adding more Digimon to your team and refresh the page.</p>
-                        </div>
-                      )}
-                    </>
-                  )}
+                      <button
+                        onClick={() => handleStartBattle(option.id)}
+                        disabled={loading || localLoading || dailyBattlesRemaining <= 0 || teamDigimon.length < 1}
+                        className={`btn-primary w-full text-xs sm:text-sm py-1 sm:py-2 ${
+                          (loading || localLoading || dailyBattlesRemaining <= 0 || teamDigimon.length < 1) 
+                            ? 'opacity-50 cursor-not-allowed' 
+                            : ''
+                        }`}
+                      >
+                        {loading || localLoading ? "Starting..." : 
+                         dailyBattlesRemaining <= 0 ? "No battles" : teamDigimon.length < 1 ? "Need team" : "Battle!"}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                
+                {/* Informational footer */}
+                <div className="text-center text-sm text-gray-500 dark:text-gray-400 mt-2 border-t dark:border-gray-700 pt-3">
+                  <p>Battles reward all your digimon with experience. Battle options refresh after each battle.</p>
+                </div>
+                
+                {battleOptions.length === 0 && !loading && (
+                  <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                    <p>No battle options available. Try adding more Digimon to your team and refresh the page.</p>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+                </div>
+                                {/* Team Manager Sidebar */}
+                                <div className="">
+                  <div className="">
+                    <DigimonTeamManager />
+                  </div>
                 </div>
               </div>
             )}
           </Tab.Panel>
-
+          
           {/* Weekly Boss Tab */}
           <Tab.Panel>
-            <WeeklyBossRaid />
-          </Tab.Panel>
-
-          {/* Team Manager Tab */}
-          <Tab.Panel>
-            <div className="card">
+            <div>
+              {/* Weekly Boss Main Content */}
+              <div className="lg:col-span-2 order-1 lg:order-2">
+                <WeeklyBossRaid />
+              </div>
+              {/* Team Manager Sidebar */}
+              <div className="">
+                <div className="">
               <DigimonTeamManager />
+                </div>
+              </div>
             </div>
           </Tab.Panel>
 
           {/* Battle History Tab */}
           <Tab.Panel>
-            <div className="card">
-              <h2 className="text-xl font-bold mb-4 dark:text-gray-100">Battle History</h2>
-              <BattleHistory 
-                teamBattles={teamBattleHistory} 
-              />
+          <div className="card">
+            <h2 className="text-xl font-bold mb-4 dark:text-gray-100">Battle History</h2>
+            <BattleHistory 
+              teamBattles={teamBattleHistory} 
+            />
             </div>
           </Tab.Panel>
         </Tab.Panels>

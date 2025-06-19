@@ -24,6 +24,7 @@ import {
   rectSortingStrategy
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+
 // Define types for our items
 interface DigimonItem {
   id: string;
@@ -65,17 +66,27 @@ const SortableDigimonCard = ({
         ref={setNodeRef}
         style={style}
         className={`
-          border-2 border-dashed rounded-md flex items-center justify-center
-          ${isTeam ? 'border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-700'}
-          transition-colors duration-200
+          border-2 border-dashed rounded-xl flex items-center justify-center cursor-pointer
+          ${isTeam 
+            ? 'border-blue-400 dark:border-blue-500 bg-blue-100/60 dark:bg-blue-900/40 min-h-[100px] sm:min-h-[140px] hover:bg-blue-200/60 dark:hover:bg-blue-800/60' 
+            : 'border-gray-400 dark:border-gray-500 bg-gray-100/60 dark:bg-gray-800/60 hover:bg-gray-200/60 dark:hover:bg-gray-700/60'
+          }
+          transition-all duration-200 hover:scale-105 hover:border-solid
           w-full aspect-square
         `}
         {...attributes}
         {...listeners}
       >
-        <p className={`text-xs text-center ${isTeam ? 'text-gray-400 dark:text-gray-500' : 'text-gray-300 dark:text-gray-600'}`}>
-          Drop Here
-        </p>
+        <div className="flex items-center justify-center h-full">
+          {/* Centered, subtle + symbol */}
+          <svg className={`w-6 h-6 ${
+            isTeam 
+              ? 'text-blue-300 dark:text-blue-600' 
+              : 'text-gray-300 dark:text-gray-600'
+          }`} fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
+          </svg>
+        </div>
       </div>
     );
   }
@@ -90,56 +101,95 @@ const SortableDigimonCard = ({
       style={style}
       {...attributes}
       {...listeners}
-      className="border rounded-md relative w-full aspect-square select-none overflow-hidden bg-white dark:bg-dark-200 cursor-move card-container dark:border-dark-300"
+      className={`
+        relative w-full aspect-square rounded-xl overflow-hidden cursor-move select-none
+        ${isTeam 
+          ? 'min-h-[100px] sm:min-h-[140px] bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/40 dark:to-blue-800/40 border-2 border-blue-200 dark:border-blue-700'
+          : 'bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700'
+        }
+        hover:shadow-lg transition-all duration-200 hover:scale-105
+        group
+      `}
     >
-      {/* Type/Attribute icon - with responsive size */}
+      {/* Background pattern */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="w-full h-full bg-repeat opacity-20" 
+             style={{ 
+               backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000' fill-opacity='0.1'%3E%3Ccircle cx='3' cy='3' r='1'/%3E%3C/g%3E%3C/svg%3E")`,
+               backgroundSize: '20px 20px'
+             }}
+        />
+      </div>
+
+      {/* Type/Attribute icon - top left */}
       {digimon.digimon?.type && digimon.digimon?.attribute && (
-        <div className="absolute top-0.5 left-0.5 z-10 select-none small-icon">
-          <TypeAttributeIcon
-            type={digimon.digimon.type as DigimonType}
-            attribute={digimon.digimon.attribute as DigimonAttribute}
-            size="sm"
-            showLabel={false}
-          />
+        <div className="absolute top-1 left-1 z-20">
+          <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-md p-0.5 shadow-sm">
+            <TypeAttributeIcon
+              type={digimon.digimon.type as DigimonType}
+              attribute={digimon.digimon.attribute as DigimonAttribute}
+              size="sm"
+              showLabel={false}
+            />
+          </div>
         </div>
       )}
       
-      {/* Level badge - with responsive size */}
-      <div className="absolute bottom-0.5 right-0.5 bg-black bg-opacity-60 text-white text-[8px] px-1 py-0.5 rounded select-none z-10 small-level">
-        Lv.{digimon.current_level}
+      {/* Level badge - top right */}
+      <div className="absolute top-1 right-1 z-20">
+        <div className={`bg-gradient-to-r from-yellow-400 to-yellow-500 text-yellow-900 font-bold rounded-md shadow-sm text-center ${
+          isTeam 
+            ? 'text-[9px] sm:text-[10px] px-1 py-0.5' 
+            : 'text-[10px] px-1.5 py-0.5'
+        }`}>
+          {isTeam ? digimon.current_level : `Lv.${digimon.current_level}`}
+        </div>
       </div>
       
-      {/* Transparent overlay to ensure the entire card is draggable */}
-      <div className="absolute inset-0 z-0"></div>
-      
-      {/* Sprite container with flex centering and max size */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center p-3 z-0">
-        <div className="relative w-full h-full max-w-[80px] max-h-[80px] mx-auto flex items-center justify-center">
+      {/* Main sprite area - responsive sizing */}
+      <div className={`absolute inset-0 flex flex-col items-center justify-center px-2 ${
+        isTeam 
+          ? 'pt-12 sm:pt-8 pb-8 sm:pb-10' 
+          : 'pt-6 pb-8'
+      }`}>
+        <div className={`relative w-full aspect-square flex items-center justify-center ${
+          isTeam 
+            ? 'max-w-[50px] sm:max-w-[90px]' 
+            : 'max-w-[90px] sm:max-w-[110px]'
+        }`}>
           <DigimonSprite
             digimonName={digimon.digimon?.name || ""}
             fallbackSpriteUrl={digimon.digimon?.sprite_url || "/assets/digimon/agumon_professor.png"}
             happiness={digimon.happiness}
             size="sm"
-            showHappinessAnimations={digimon.is_on_team}
+            showHappinessAnimations={true}
             enableHopping={false}
           />
         </div>
-        
-        {/* Additional info for larger cards - using container query class */}
-        <div className="large-card-content hidden w-full mt-2">
+      </div>
+
+      {/* Compact footer with name and minimal progress */}
+      <div className={`absolute bottom-0 left-0 right-0 z-20 ${
+        isTeam ? 'p-1 sm:p-1.5' : 'p-1.5'
+      }`}>
+        <div className="bg-white/85 dark:bg-gray-800/85 backdrop-blur-sm rounded-md px-2 py-1">
           {/* Name */}
-          <p className="text-xs text-center font-medium truncate w-full dark:text-gray-200">
+          <p className={`font-medium text-center text-gray-800 dark:text-gray-200 truncate ${
+            isTeam 
+              ? 'text-[9px] sm:text-[11px] mb-0.5' 
+              : 'text-[11px] mb-0.5'
+          }`}>
             {digimon.name || digimon.digimon?.name || 'Digimon'}
           </p>
           
-          {/* Simple EXP bar */}
-          <div className="w-full mt-1 px-1">
-            <div className="w-full h-1 bg-gray-200 dark:bg-dark-100 rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-blue-500 dark:bg-accent-500" 
-                style={{ width: `${expPercentage}%` }}
-              />
-            </div>
+          {/* Minimal progress bar */}
+          <div className={`w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden ${
+            isTeam ? 'h-0.5 sm:h-1' : 'h-0.5'
+          }`}>
+            <div 
+              className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-300" 
+              style={{ width: `${expPercentage}%` }}
+            />
           </div>
         </div>
       </div>
@@ -156,12 +206,60 @@ const DigimonContainer = ({
   isTeam: boolean;
 }) => {
   return (
-    <div className="bg-gray-50 dark:bg-dark-300 p-2 xs:p-3 rounded-lg">
-      <h3 className="text-base xs:text-lg font-semibold mb-1 xs:mb-2 dark:text-gray-100">{isTeam ? 'Team' : 'Reserve'}</h3>
+    <div className={`
+      rounded-2xl p-4 sm:p-6 border-2
+      ${isTeam 
+        ? 'bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border-blue-200 dark:border-blue-800'
+        : 'bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800/50 dark:to-gray-900/50 border-gray-200 dark:border-gray-700'
+      }
+    `}>
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-3">
+          <div className={`
+            w-10 h-10 rounded-xl flex items-center justify-center
+            ${isTeam 
+              ? 'bg-blue-500 text-white' 
+              : 'bg-gray-500 text-white'
+            }
+          `}>
+            {isTeam ? (
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+              </svg>
+            ) : (
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path  fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+              </svg>
+            )}
+          </div>
+          <div>
+            <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-100">
+              {isTeam ? 'Team' : 'Reserve'}
+            </h3>
+          </div>
+        </div>
+        
+        {/* Team member count */}
+        <div className={`
+          px-3 py-1 rounded-full text-sm font-medium
+          ${isTeam 
+            ? 'bg-blue-100 text-blue-800 dark:bg-blue-800/30 dark:text-blue-300'
+            : 'bg-gray-100 text-gray-800 dark:bg-gray-700/50 dark:text-gray-300'
+          }
+        `}>
+          {items.filter(item => item.digimon).length}/{isTeam ? 3 : 12}
+        </div>
+      </div>
+
+      {/* Grid */}
       <SortableContext items={items.map(item => item.id)} strategy={rectSortingStrategy}>
-        <div className={`grid ${isTeam ? 'grid-cols-3' : 'grid-cols-3'} gap-1 xs:gap-2 sm:gap-3 max-w-3xl mx-auto`}>
+        <div className={`
+          grid gap-3 sm:gap-6
+          ${isTeam ? 'grid-cols-2 sm:grid-cols-3' : 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6'}
+        `}>
           {items.map(item => (
-            <div key={item.id} className="max-w-[160px] w-full mx-auto">
+            <div key={item.id} className="w-full max-w-[200px] mx-auto">
               <SortableDigimonCard
                 id={item.id}
                 digimon={item.digimon}
@@ -222,8 +320,8 @@ const DigimonTeamManager = () => {
       digimon
     }));
     
-    // Add empty slots to reserve if needed
-    while (reserve.length < 6) {
+    // Add empty slots to reserve if needed (fewer empty slots)
+    while (reserve.length < 12) {
       reserve.push({
         id: `reserve-empty-${reserve.length}`,
         isTeam: false,
@@ -304,8 +402,19 @@ const DigimonTeamManager = () => {
       
       // Only proceed if we're dragging a Digimon (not an empty slot)
       if (activeItem?.digimon) {
+        console.log('Drag operation:', {
+          activeId,
+          overId,
+          isActiveTeam,
+          isOverTeam,
+          activeDigimon: activeItem.digimon.name,
+          overDigimon: overItem?.digimon?.name || 'empty slot',
+          activeOnTeam: activeItem.digimon.is_on_team
+        });
+
         // If dropping onto another Digimon, swap them
         if (overItem?.digimon) {
+          console.log('Swapping Digimon');
           // Determine which is team and which is reserve
           const teamDigimon = isActiveTeam ? activeItem.digimon : overItem.digimon;
           const reserveDigimon = isActiveTeam ? overItem.digimon : activeItem.digimon;
@@ -320,9 +429,24 @@ const DigimonTeamManager = () => {
             await setTeamMember(activeItem.digimon.id, !activeItem.digimon.is_on_team);
           }
         } 
-        // If dropping onto an empty slot, just toggle team membership
+        // If dropping onto an empty slot, handle based on direction
         else {
-          await setTeamMember(activeItem.digimon.id, !activeItem.digimon.is_on_team);
+          console.log('Dropping onto empty slot');
+          // If dragging from team to reserve, remove from team
+          if (isActiveTeam && !isOverTeam) {
+            console.log('Removing from team');
+            await setTeamMember(activeItem.digimon.id, false);
+          }
+          // If dragging from reserve to team, add to team
+          else if (!isActiveTeam && isOverTeam) {
+            console.log('Adding to team');
+            await setTeamMember(activeItem.digimon.id, true);
+          }
+          // Otherwise, just toggle
+          else {
+            console.log('Toggling team membership');
+            await setTeamMember(activeItem.digimon.id, !activeItem.digimon.is_on_team);
+          }
         }
       }
     }
@@ -331,11 +455,7 @@ const DigimonTeamManager = () => {
   };
 
   return (
-    <div className="space-y-4">
-      {/* Team explanation */}
-      <div className="text-sm text-gray-600 dark:text-gray-300 mb-4">
-        <p>Set up to 3 Digimon on your team for battles. Drag and drop to arrange your team.</p>
-      </div>
+    <div className="space-y-8 max-w-7xl mx-auto p-4">
 
       {/* DnD Context */}
       <DndContext
@@ -344,14 +464,14 @@ const DigimonTeamManager = () => {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <div className="space-y-6">
+        <div className="space-y-8">
           <DigimonContainer items={teamItems} isTeam={true} />
           <DigimonContainer items={reserveItems} isTeam={false} />
         </div>
         
         <DragOverlay>
           {activeId ? (
-            <div className="opacity-80 w-20 h-20">
+            <div className="opacity-90 w-32 h-32 transform rotate-6 scale-105">
               <SortableDigimonCard
                 id={activeId.toString()}
                 digimon={getActiveItem()?.digimon || null}
@@ -361,10 +481,6 @@ const DigimonTeamManager = () => {
           ) : null}
         </DragOverlay>
       </DndContext>
-      
-      <div className="text-xs text-gray-500 dark:text-gray-400 mt-4">
-        <p>Note: Only Digimon on your team can participate in battles. Your team's max size is 3.</p>
-      </div>
     </div>
   );
 };
