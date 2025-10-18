@@ -9,7 +9,7 @@ import 'reactflow/dist/style.css';
 import UpdateNotification from './components/UpdateNotification';
 import { useOnboardingStore } from './store/onboardingStore';
 import React from 'react';
-import { BokomonAssistant } from './components/bokomon-assistant/BokomonAssistant';
+// import { BokomonAssistant } from './components/bokomon-assistant/BokomonAssistant';
 // // WeeklyBossTestingPanel is conditionally imported in WeeklyBossRaid component
 
 // Pages
@@ -312,7 +312,7 @@ function App() {
     initCurrentSession();
     
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      async (event: any, session: any) => {
         console.log("Auth state change:", event, { 
           hasSession: !!session,
           appInitState: appInit,
@@ -682,7 +682,7 @@ function App() {
         </Routes>
         <NotificationCenter />
         <UpdateNotification />
-        <BokomonAssistant />
+        {/* <BokomonAssistant /> */}
         {/* <WeeklyBossTestingPanel /> */}
       </div>
     </Router>
