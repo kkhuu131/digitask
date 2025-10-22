@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { useDigimonStore } from "../store/petStore";
 import { useBattleStore, DigimonAttribute, DigimonType } from "../store/battleStore";
+import { useInteractiveBattleStore } from "../store/interactiveBattleStore";
 import BattleHistory from "../components/BattleHistory";
 import TeamBattleAnimation from "../components/TeamBattleAnimation";
+import InteractiveBattle from "../components/InteractiveBattle";
 import DigimonTeamManager from "../components/DigimonTeamManager";
 import WeeklyBossRaid from "../components/WeeklyBossRaid";
 import { useAuthStore } from "../store/authStore";
@@ -11,6 +13,7 @@ import BattleSpeedControl from "../components/BattleSpeedControl";
 import PageTutorial from "../components/PageTutorial";
 import { DialogueStep } from "../components/DigimonDialogue";
 import DigimonSprite from "@/components/DigimonSprite";
+import { DIGIMON_LOOKUP_TABLE } from "../constants/digimonLookup";
 import { Tab } from '@headlessui/react';
 
 const Battle = () => {
@@ -27,6 +30,11 @@ const Battle = () => {
     dailyBattlesRemaining,
     checkDailyBattleLimit,
   } = useBattleStore();
+  const { 
+    isBattleActive: isInteractiveBattleActive,
+    startInteractiveBattle,
+    endBattle: endInteractiveBattle,
+  } = useInteractiveBattleStore();
   const { user } = useAuthStore();
 
   useEffect(() => {
@@ -51,6 +59,7 @@ const Battle = () => {
   const [showBattleAnimation, setShowBattleAnimation] = useState(false);
   const [localLoading, setLocalLoading] = useState(false);
   const [selectedTab, setSelectedTab] = useState(0);
+  const [battleMode, setBattleMode] = useState<'auto' | 'interactive'>('auto');
 
   const teamDigimon = allUserDigimon.filter(d => d.is_on_team);
 
@@ -78,10 +87,60 @@ const Battle = () => {
     try {
       setLocalLoading(true); // Set local loading state immediately
       setSelectedOption(optionId);
-      await selectAndStartBattle(optionId);
+      
+      if (battleMode === 'interactive') {
+        // Start interactive battle
+        const option = battleOptions.find(opt => opt.id === optionId);
+        if (option) {
+          const userTeamData = teamDigimon.map(d => ({
+            ...d,
+            digimon: DIGIMON_LOOKUP_TABLE[String(d.digimon_id)],
+          }));
+          const opponentTeamData = option.team.digimon.map((d: any) => ({
+            ...d,
+            digimon_id: d.digimon_id || d.id, // Use digimon_id if available, otherwise use id
+            digimon: DIGIMON_LOOKUP_TABLE[String(d.digimon_id || d.id)],
+          }));
+          
+          // Debug logging
+          console.log('Starting interactive battle with:', {
+            userTeamData: userTeamData.map(d => ({ 
+              id: d.id, 
+              name: d.name, 
+              digimon_id: d.digimon_id, 
+              hasDigimon: !!d.digimon,
+              digimonName: d.digimon?.name,
+              fullData: d
+            })),
+            opponentTeamData: opponentTeamData.map(d => ({ 
+              id: d.id, 
+              name: d.name, 
+              digimon_id: d.digimon_id, 
+              hasDigimon: !!d.digimon,
+              digimonName: d.digimon?.name,
+              fullData: d
+            }))
+          });
+          
+          await startInteractiveBattle(userTeamData, opponentTeamData);
+        }
+      } else {
+        // Start auto battle (existing logic)
+        await selectAndStartBattle(optionId);
+      }
     } finally {
       setLocalLoading(false); // Reset local loading state when done
     }
+  };
+
+  const handleInteractiveBattleComplete = async (result: { winner: 'user' | 'opponent'; turns: any[] }) => {
+    // End the interactive battle
+    endInteractiveBattle();
+    
+    // Refresh data
+    fetchAllUserDigimon();
+    checkDailyBattleLimit();
+    useBattleStore.getState().fetchTeamBattleHistory();
   };
 
   const handleBattleComplete = () => {
@@ -191,6 +250,10 @@ const Battle = () => {
               onComplete={handleBattleComplete} 
             />
               ) : null
+      ) : isInteractiveBattleActive ? (
+        <InteractiveBattle 
+          onBattleComplete={handleInteractiveBattleComplete}
+        />
       ) : (
               <div>
 
@@ -201,6 +264,33 @@ const Battle = () => {
               <h2 className="text-xl font-bold dark:text-gray-100">Choose Opponent</h2>
             
               <div className="flex items-center space-x-4">
+                {/* Battle Mode Toggle */}
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm font-medium dark:text-gray-200">Mode:</span>
+                  <div className="flex bg-gray-200 dark:bg-gray-700 rounded-lg p-1">
+                    <button
+                      onClick={() => setBattleMode('auto')}
+                      className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
+                        battleMode === 'auto'
+                          ? 'bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm'
+                          : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                      }`}
+                    >
+                      Auto
+                    </button>
+                    <button
+                      onClick={() => setBattleMode('interactive')}
+                      className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
+                        battleMode === 'interactive'
+                          ? 'bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm'
+                          : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                      }`}
+                    >
+                      Interactive
+                    </button>
+                  </div>
+                </div>
+                
                 {/* Refresh button - only visible in development environment */}
                 {import.meta.env.DEV && (
                   <button

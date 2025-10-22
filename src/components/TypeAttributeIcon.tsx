@@ -140,7 +140,7 @@ const TypeAttributeIcon: React.FC<TypeAttributeIconProps> = ({
           style={{ imageRendering: 'pixelated' }}
           onError={(e) => {
             console.error(`Failed to load image: ${imagePath}`);
-            (e.target as HTMLImageElement).src = '/assets/type-attribute/unknown_neutral.png';
+            (e.target as HTMLImageElement).src = '/assets/type-attribute/free_neutral.png';
           }}
         />
       </div>

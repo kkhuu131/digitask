@@ -147,11 +147,12 @@ Digitask is a productivity application that combines the concept of virtual pets
 
 | Category | Stat Boost | Example Tasks |
 |----------|------------|---------------|
-| 🏃‍♂️ **Physical** | HP & Attack | "Go to gym", "Run 5km", "Do push-ups" |
-| 🧠 **Mental** | Intelligence | "Study for 2 hours", "Read a book", "Learn coding" |
-| ⚡ **Speed** | Speed | "Complete work quickly", "Practice typing" |
-| 🛡️ **Defense** | Defense | "Meditate", "Get enough sleep", "Eat healthy" |
-| 💪 **Spirit** | SP | "Practice mindfulness", "Help others" |
+| ❤️ **HP** | Health & Vitality | "Get 8 hours sleep", "Drink water", "Take breaks", "Self-care" |
+| ✨ **SP** | Mental Energy | "Meditate", "Journal", "Mindfulness", "Breathe exercises" |
+| 💪 **ATK** | Physical Strength | "Go to gym", "Run 5km", "Do push-ups", "Exercise" |
+| 🛡️ **DEF** | Planning & Organization | "Plan week", "Organize room", "Budget", "Stress management" |
+| 🧠 **INT** | Intelligence | "Study for 2 hours", "Read a book", "Learn coding", "Research" |
+| ⚡ **SPD** | Speed & Efficiency | "Quick errands", "Time management", "Fast tasks", "Routine" |
 
 </div>
 

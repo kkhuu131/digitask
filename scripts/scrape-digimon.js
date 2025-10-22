@@ -17,7 +17,7 @@ const supabase = createClient(
 );
 
 // Base URL for the Digimon database website
-const baseUrl = "https://digidb.io";
+const baseUrl = "https://web.archive.org/web/20250211125133/https://digidb.io";
 
 // Create directory for sprite images
 const spritesDir = path.join(process.cwd(), "public", "assets", "digimon");
