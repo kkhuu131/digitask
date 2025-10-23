@@ -2,14 +2,14 @@ import { useState, useEffect } from "react";
 import { useDigimonStore } from "../store/petStore";
 import { useBattleStore, DigimonAttribute, DigimonType } from "../store/battleStore";
 import { useInteractiveBattleStore } from "../store/interactiveBattleStore";
+import { useTaskStore } from "../store/taskStore";
+import { useCurrencyStore } from "../store/currencyStore";
 import BattleHistory from "../components/BattleHistory";
-import TeamBattleAnimation from "../components/TeamBattleAnimation";
+// import TeamBattleAnimation from "../components/TeamBattleAnimation"; // Removed - using interactive battles only
 import InteractiveBattle from "../components/InteractiveBattle";
 import DigimonTeamManager from "../components/DigimonTeamManager";
-import WeeklyBossRaid from "../components/WeeklyBossRaid";
 import { useAuthStore } from "../store/authStore";
 import TypeAttributeIcon from "../components/TypeAttributeIcon";
-import BattleSpeedControl from "../components/BattleSpeedControl";
 import PageTutorial from "../components/PageTutorial";
 import { DialogueStep } from "../components/DigimonDialogue";
 import DigimonSprite from "@/components/DigimonSprite";
@@ -21,12 +21,9 @@ const Battle = () => {
   const { 
     battleOptions,
     getBattleOptions,
-    selectAndStartBattle,
-    currentTeamBattle,
     teamBattleHistory,
     loading, 
     error, 
-    clearCurrentTeamBattle,
     dailyBattlesRemaining,
     checkDailyBattleLimit,
   } = useBattleStore();
@@ -56,20 +53,12 @@ const Battle = () => {
   }, [user?.id]); // Add user ID as a dependency
   
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
-  const [showBattleAnimation, setShowBattleAnimation] = useState(false);
   const [localLoading, setLocalLoading] = useState(false);
   const [selectedTab, setSelectedTab] = useState(0);
-  const [battleMode, setBattleMode] = useState<'auto' | 'interactive'>('auto');
 
   const teamDigimon = allUserDigimon.filter(d => d.is_on_team);
 
-  useEffect(() => {
-    // If we have a current battle result but aren't showing the animation,
-    // that means we just got a battle result and should show the animation
-    if ((currentTeamBattle) && !showBattleAnimation) {
-      setShowBattleAnimation(true);
-    }
-  }, [currentTeamBattle, showBattleAnimation]);
+  // Removed auto battle animation logic - using interactive battles only
 
   useEffect(() => {
     const loadBattleData = async () => {
@@ -88,78 +77,150 @@ const Battle = () => {
       setLocalLoading(true); // Set local loading state immediately
       setSelectedOption(optionId);
       
-      if (battleMode === 'interactive') {
-        // Start interactive battle
-        const option = battleOptions.find(opt => opt.id === optionId);
-        if (option) {
-          const userTeamData = teamDigimon.map(d => ({
-            ...d,
-            digimon: DIGIMON_LOOKUP_TABLE[String(d.digimon_id)],
-          }));
-          const opponentTeamData = option.team.digimon.map((d: any) => ({
-            ...d,
-            digimon_id: d.digimon_id || d.id, // Use digimon_id if available, otherwise use id
-            digimon: DIGIMON_LOOKUP_TABLE[String(d.digimon_id || d.id)],
-          }));
-          
-          // Debug logging
-          console.log('Starting interactive battle with:', {
-            userTeamData: userTeamData.map(d => ({ 
-              id: d.id, 
-              name: d.name, 
-              digimon_id: d.digimon_id, 
-              hasDigimon: !!d.digimon,
-              digimonName: d.digimon?.name,
-              fullData: d
-            })),
-            opponentTeamData: opponentTeamData.map(d => ({ 
-              id: d.id, 
-              name: d.name, 
-              digimon_id: d.digimon_id, 
-              hasDigimon: !!d.digimon,
-              digimonName: d.digimon?.name,
-              fullData: d
-            }))
-          });
-          
-          await startInteractiveBattle(userTeamData, opponentTeamData);
-        }
-      } else {
-        // Start auto battle (existing logic)
-        await selectAndStartBattle(optionId);
+      // Start interactive battle
+      const option = battleOptions.find(opt => opt.id === optionId);
+      if (option) {
+        const userTeamData = teamDigimon.map(d => ({
+          ...d,
+          digimon: DIGIMON_LOOKUP_TABLE[d.digimon_id as keyof typeof DIGIMON_LOOKUP_TABLE],
+        }));
+        const opponentTeamData = option.team.digimon.map((d: any) => ({
+          ...d,
+          digimon_id: d.digimon_id || d.id,
+          digimon: DIGIMON_LOOKUP_TABLE[d.digimon_id || d.id as keyof typeof DIGIMON_LOOKUP_TABLE],
+        }));
+        
+        console.log('Starting interactive battle with:', {
+          userTeamData: userTeamData.map(d => ({ 
+            id: d.id, 
+            name: d.name, 
+            digimon_id: d.digimon_id, 
+            hasDigimon: !!d.digimon,
+            digimonName: d.digimon?.name,
+            fullData: d
+          })),
+          opponentTeamData: opponentTeamData.map(d => ({ 
+            id: d.id, 
+            name: d.name, 
+            digimon_id: d.digimon_id, 
+            hasDigimon: !!d.digimon,
+            digimonName: d.digimon?.name,
+            fullData: d
+          }))
+        });
+        
+        await startInteractiveBattle(userTeamData, opponentTeamData);
       }
     } finally {
       setLocalLoading(false); // Reset local loading state when done
     }
   };
 
-  const handleInteractiveBattleComplete = async (result: { winner: 'user' | 'opponent'; turns: any[] }) => {
-    // End the interactive battle
-    endInteractiveBattle();
+  const handleInteractiveBattleComplete = async (result: { winner: 'user' | 'opponent'; turns: any[]; userDigimon?: any[] }) => {
+    console.log('Interactive battle complete:', result);
     
-    // Refresh data
-    fetchAllUserDigimon();
-    checkDailyBattleLimit();
-    useBattleStore.getState().fetchTeamBattleHistory();
+    try {
+      // Get the current battle option to determine difficulty and XP rewards
+      const currentOption = battleOptions.find(opt => opt.id === selectedOption);
+      if (!currentOption) {
+        console.error('No current battle option found');
+        endInteractiveBattle();
+        return;
+      }
+
+      console.log('Found current option:', currentOption);
+
+      // Calculate XP rewards similar to auto battle
+      const BASE_XP_GAIN = {
+        easy: 30,
+        medium: 50,
+        hard: 70,
+      };
+
+      const expModifier = 0.025;
+      
+      // Calculate opponent team average level (we need to get this from the battle data)
+      // For now, we'll use a simplified calculation
+      const opponentLevel = 25; // Default level, could be improved by passing this data
+      const userLevel = teamDigimon.reduce((sum, d) => sum + d.current_level, 0) / teamDigimon.length;
+      
+      let xpGain = BASE_XP_GAIN[currentOption.difficulty] * (1 + expModifier * (opponentLevel - userLevel));
+      
+      // Reduce XP for losses
+      if (result.winner !== 'user') xpGain *= 0.12;
+      
+      xpGain = Math.max(xpGain, 20);
+      xpGain = Math.floor(xpGain);
+
+      // Get the XP multiplier from taskStore
+      const expMultiplier = useTaskStore.getState().getExpMultiplier();
+      xpGain = Math.round(xpGain * expMultiplier);
+
+      console.log('Calculated XP gain:', xpGain);
+
+      // Apply XP to all Digimon - use the same method as auto battles
+      console.log('About to apply XP rewards...');
+      
+      // Use the same XP application method as auto battles to avoid issues
+      try {
+        await useDigimonStore.getState().feedAllDigimon(xpGain);
+        console.log('XP rewards applied successfully');
+      } catch (error) {
+        console.error('Error applying XP rewards:', error);
+        // Continue with battle completion even if XP fails
+      }
+
+      // Award bits based on difficulty and outcome (same logic as auto battles)
+      const calculateBitsReward = (difficulty: string, playerWon: boolean): number => {
+        if (playerWon) {
+          switch (difficulty) {
+            case "hard": return 200;
+            case "medium": return 100;
+            case "easy": return 75;
+            default: return 75;
+          }
+        } else {
+          switch (difficulty) {
+            case "hard": return 40;
+            case "medium": return 50;
+            case "easy": return 50;
+            default: return 50;
+          }
+        }
+      };
+
+      const bitsReward = calculateBitsReward(currentOption.difficulty, result.winner === 'user');
+      if (bitsReward > 0) {
+        // Add the bits to the player's currency
+        const currencyStore = useCurrencyStore.getState();
+        currencyStore.addCurrency("bits", bitsReward);
+        console.log(`Bits reward applied: ${bitsReward}`);
+      }
+
+      // End the interactive battle
+      console.log('Ending interactive battle...');
+      endInteractiveBattle();
+      
+      // Refresh data (same as auto battle)
+      console.log('Refreshing data...');
+      fetchAllUserDigimon();
+      checkDailyBattleLimit();
+      useBattleStore.getState().fetchTeamBattleHistory();
+      
+      // Force refresh battle options immediately
+      console.log('Refreshing battle options...');
+      getBattleOptions(true);
+      setSelectedOption(null);
+      
+      console.log('Interactive battle completion finished successfully');
+    } catch (error) {
+      console.error('Error in handleInteractiveBattleComplete:', error);
+      // Still try to end the battle even if there's an error
+      endInteractiveBattle();
+    }
   };
 
-  const handleBattleComplete = () => {
-    setShowBattleAnimation(false);
-    clearCurrentTeamBattle();
-    
-    // Fetch the battle history after clearing the current battle
-    useBattleStore.getState().fetchTeamBattleHistory();
-    
-    // Refresh all user Digimon data to update XP and levels in the UI
-    useDigimonStore.getState().fetchAllUserDigimon();
-    
-    // Refresh the daily battle limit to update the counter
-    checkDailyBattleLimit();
-    
-    // Force refresh battle options immediately
-    getBattleOptions(true);
-    setSelectedOption(null);
-  };
+  // Removed auto battle completion handler - using interactive battles only
 
   const digimonPageTutorialSteps: DialogueStep[] = [
     {
@@ -210,7 +271,6 @@ const Battle = () => {
 
   const tabs = [
     { name: 'Arena', component: 'arena' },
-    { name: 'Weekly Boss', component: 'boss' },
     { name: 'History', component: 'history' }
   ];
 
@@ -219,7 +279,7 @@ const Battle = () => {
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
         <h1 className="text-2xl font-bold dark:text-gray-100">Battle</h1>
-        <BattleSpeedControl />
+        {/* <BattleSpeedControl /> */}
       </div>
       
       <Tab.Group selectedIndex={selectedTab} onChange={setSelectedTab}>
@@ -243,18 +303,14 @@ const Battle = () => {
         <Tab.Panels>
           {/* Arena Battle Tab */}
           <Tab.Panel>
-      {showBattleAnimation ? (
-              currentTeamBattle ? (
-            <TeamBattleAnimation 
-              teamBattle={currentTeamBattle}
-              onComplete={handleBattleComplete} 
+      {isInteractiveBattleActive ? (
+            <InteractiveBattle
+              onBattleComplete={handleInteractiveBattleComplete}
+              userDigimon={teamDigimon}
+              battleOption={battleOptions.find(opt => opt.id === selectedOption)}
+              showRewards={true}
             />
-              ) : null
-      ) : isInteractiveBattleActive ? (
-        <InteractiveBattle 
-          onBattleComplete={handleInteractiveBattleComplete}
-        />
-      ) : (
+          ) : (
               <div>
 
                 {/* Battle Options Main Content */}
@@ -264,32 +320,6 @@ const Battle = () => {
               <h2 className="text-xl font-bold dark:text-gray-100">Choose Opponent</h2>
             
               <div className="flex items-center space-x-4">
-                {/* Battle Mode Toggle */}
-                <div className="flex items-center space-x-2">
-                  <span className="text-sm font-medium dark:text-gray-200">Mode:</span>
-                  <div className="flex bg-gray-200 dark:bg-gray-700 rounded-lg p-1">
-                    <button
-                      onClick={() => setBattleMode('auto')}
-                      className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
-                        battleMode === 'auto'
-                          ? 'bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm'
-                          : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-                      }`}
-                    >
-                      Auto
-                    </button>
-                    <button
-                      onClick={() => setBattleMode('interactive')}
-                      className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
-                        battleMode === 'interactive'
-                          ? 'bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm'
-                          : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-                      }`}
-                    >
-                      Interactive
-                    </button>
-                  </div>
-                </div>
                 
                 {/* Refresh button - only visible in development environment */}
                 {import.meta.env.DEV && (
@@ -426,22 +456,7 @@ const Battle = () => {
               </div>
             )}
           </Tab.Panel>
-          
-          {/* Weekly Boss Tab */}
-          <Tab.Panel>
-            <div>
-              {/* Weekly Boss Main Content */}
-              <div className="lg:col-span-2 order-1 lg:order-2">
-                <WeeklyBossRaid />
-              </div>
-              {/* Team Manager Sidebar */}
-              <div className="">
-                <div className="">
-              <DigimonTeamManager />
-                </div>
-              </div>
-            </div>
-          </Tab.Panel>
+        
 
           {/* Battle History Tab */}
           <Tab.Panel>

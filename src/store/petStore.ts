@@ -1172,6 +1172,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
   checkLevelUp: async () => {
     try {
+
       const { userDigimon } = get();
       if (!userDigimon) return;
 
@@ -1207,7 +1208,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
           },
         });
 
-        // Check if there's enough XP for another level up
+        // Check if there's enough XP for another level up (with recursion depth tracking)
         if (remainingXP > 0) {
           await get().checkLevelUp();
         }

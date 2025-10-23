@@ -204,7 +204,7 @@ const generateBattleOption = (powerRating: number, difficulty: string) => {
     }
 
     const enemyDigimon = {
-      id: randomDigimon.digimon_id,
+      id: randomDigimon.digimon_id+"-"+i,
       name: randomDigimon.name,
       current_level: bestLevel, // Use the level we found
       sprite_url: randomDigimon.sprite_url,

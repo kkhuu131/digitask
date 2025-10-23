@@ -1,15 +1,15 @@
 import React, { useEffect, useState, useRef } from "react";
 import { CAMPAIGN_OPPONENTS, getBaseStage, isStageUnlocked, getArcForStage } from "../constants/campaignOpponents";
-import { DigimonAttribute, DigimonType, useBattleStore } from "../store/battleStore";
+import { DigimonAttribute, DigimonType } from "../store/battleStore";
 import { useDigimonStore } from "../store/petStore";
-import TeamBattleAnimation from "../components/TeamBattleAnimation";
+import { useInteractiveBattleStore } from "../store/interactiveBattleStore";
+import InteractiveBattle from "../components/InteractiveBattle";
 import DigimonTeamManager from "../components/DigimonTeamManager";
 import { DIGIMON_LOOKUP_TABLE } from "../constants/digimonLookup";
 import TypeAttributeIcon from "@/components/TypeAttributeIcon";
 import { supabase } from "../lib/supabase";
 import { useTitleStore } from "../store/titleStore";
 import { useAuthStore } from "../store/authStore";
-import BattleSpeedControl from "../components/BattleSpeedControl";
 import PageTutorial from "../components/PageTutorial";
 import { DialogueStep } from "../components/DigimonDialogue";
 import DigimonSprite from "@/components/DigimonSprite";
@@ -21,6 +21,9 @@ interface PreparationModalProps {
   onStartBattle: () => void;
   isUnlocked: boolean;
   isPast: boolean;
+  isBattleActive?: boolean;
+  onBattleComplete?: (result: { winner: 'user' | 'opponent'; turns: any[]; userDigimon?: any[] }) => void;
+  userDigimon?: any[];
 }
 
 const PreparationModal: React.FC<PreparationModalProps> = ({
@@ -29,7 +32,10 @@ const PreparationModal: React.FC<PreparationModalProps> = ({
   onClose,
   onStartBattle,
   isUnlocked,
-  isPast
+  isPast,
+  isBattleActive = false,
+  onBattleComplete,
+  userDigimon = []
 }) => {
   const { allUserDigimon } = useDigimonStore();
   const teamDigimon = allUserDigimon.filter(d => d.is_on_team);
@@ -39,18 +45,36 @@ const PreparationModal: React.FC<PreparationModalProps> = ({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white dark:bg-dark-300 rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6">
-        {/* Header */}
-        <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-bold dark:text-gray-100">{opponent.profile.display_name}</h2>
-          <button 
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-          >
-            ✕
-          </button>
-        </div>
+        {isBattleActive ? (
+          // Battle View
+          <div className="h-full">
+            {/* Battle Header */}
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold dark:text-gray-100">{opponent.profile.display_name}</h2>
+              <span className="text-md text-gray-500 dark:text-gray-400">Stage {opponent.id}</span>
+            </div>
+            
+            <InteractiveBattle
+              onBattleComplete={onBattleComplete || (() => {})}
+              userDigimon={userDigimon}
+              showRewards={false} // Campaign battles don't give rewards
+            />
+          </div>
+        ) : (
+          // Preparation View
+          <>
+            {/* Header */}
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold dark:text-gray-100">{opponent.profile.display_name}</h2>
+              <button 
+                onClick={onClose}
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              >
+                ✕
+              </button>
+            </div>
 
-        <h3 className="text-md text-gray-500 dark:text-gray-400 mb-4">Stage {opponent.id}</h3>
+            <h3 className="text-md text-gray-500 dark:text-gray-400 mb-4">Stage {opponent.id}</h3>
 
         {/* Opponent Team Section */}
         <div className="mb-4">
@@ -106,10 +130,12 @@ const PreparationModal: React.FC<PreparationModalProps> = ({
           </button>
         </div>
 
-        {/* Team Manager Section */}
-        <div className="mt-4 mb-8">
-          <DigimonTeamManager />
-        </div>
+            {/* Team Manager Section */}
+            <div className="mt-4 mb-8">
+              <DigimonTeamManager />
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
@@ -232,9 +258,10 @@ const CampaignNode: React.FC<{
 const Campaign: React.FC = () => {
   const { allUserDigimon, fetchAllUserDigimon } = useDigimonStore();
   const {
-    currentTeamBattle,
-    clearCurrentTeamBattle,
-  } = useBattleStore();
+    isBattleActive: isInteractiveBattleActive,
+    startInteractiveBattle,
+    endBattle: endInteractiveBattle,
+  } = useInteractiveBattleStore();
   const { checkCampaignTitles } = useTitleStore();
   const { user } = useAuthStore();
 
@@ -260,7 +287,6 @@ const Campaign: React.FC = () => {
     fetchHighestStageCleared();
   }, [user]);
 
-  const [showBattleAnimation, setShowBattleAnimation] = useState(false);
   const [highestStageCleared, setHighestStageCleared] = useState(0);
   const [selectedOpponentIndex, setSelectedOpponentIndex] = useState<number | null>(null);
   const [currentBattleStageId, setCurrentBattleStageId] = useState<string | null>(null);
@@ -299,32 +325,24 @@ const Campaign: React.FC = () => {
       // Store the current battle stage ID as a string
       setCurrentBattleStageId(opponent.id);
       
-      const battleResult = await useBattleStore.getState().simulateCampaignBattle(
-        userTeamData,
-        opponent.team,
-        opponent.hint,
-        opponent.description
-      );
+      // Start interactive battle
+      await startInteractiveBattle(userTeamData, opponent.team);
       
-      useBattleStore.setState({
-        currentTeamBattle: battleResult
-      });
-      
-      setSelectedOpponentIndex(null); // Close modal
-      setShowBattleAnimation(true);
+      // Modal stays open to show battle
     } catch (error) {
       console.error("Error starting campaign battle:", error);
       alert("Failed to start battle. Please try again.");
     }
   };
 
-  const handleBattleComplete = async () => {
-    setShowBattleAnimation(false);
-    clearCurrentTeamBattle();
+  const handleInteractiveBattleComplete = async (result: { winner: 'user' | 'opponent'; turns: any[]; userDigimon?: any[] }) => {
+    console.log('Campaign battle complete:', result);
+    
+    // End the interactive battle
+    endInteractiveBattle();
     
     // If battle was won and we have a current battle stage ID
-    if (currentTeamBattle?.winner_id === user?.id && currentBattleStageId !== null) {
-      // No need to convert to string since we're already storing it as a string
+    if (result.winner === 'user' && currentBattleStageId !== null) {
       const baseStage = getBaseStage(currentBattleStageId);
       
       if (baseStage > highestStageCleared) {
@@ -343,8 +361,9 @@ const Campaign: React.FC = () => {
       }
     }
     
-    // Clear the current battle stage ID
+    // Clear the current battle stage ID and close the modal
     setCurrentBattleStageId(null);
+    setSelectedOpponentIndex(null);
     
     // Refresh Digimon data
     fetchAllUserDigimon();
@@ -389,7 +408,6 @@ const Campaign: React.FC = () => {
         <p className="text-sm text-gray-600 dark:text-gray-300">
           Battle against these teams to progress and earn titles. Levels will be capped at the opponent's max level + 5.
         </p>
-        <BattleSpeedControl />
       </div>
       
       {/* Campaign Map */}
@@ -468,16 +486,13 @@ const Campaign: React.FC = () => {
           onStartBattle={handleStartBattle}
           isUnlocked={isStageUnlocked(CAMPAIGN_OPPONENTS[selectedOpponentIndex].id, highestStageCleared)}
           isPast={getBaseStage(CAMPAIGN_OPPONENTS[selectedOpponentIndex].id) <= highestStageCleared}
+          isBattleActive={isInteractiveBattleActive}
+          onBattleComplete={handleInteractiveBattleComplete}
+          userDigimon={teamDigimon}
         />
       )}
 
-      {/* Battle Animation */}
-      {showBattleAnimation && currentTeamBattle && (
-        <TeamBattleAnimation
-          teamBattle={currentTeamBattle}
-          onComplete={handleBattleComplete}
-        />
-      )}
+      {/* Interactive Battle is now handled inside the modal */}
     </div>
     <PageTutorial tutorialId="campaign_intro" steps={campaignPageTutorialSteps} />
     </>

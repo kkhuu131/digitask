@@ -110,8 +110,8 @@ const getTurnOrder = (userTeam: BattleDigimon[], opponentTeam: BattleDigimon[]):
 
 // Helper function to calculate damage
 const calculateDamage = (attacker: BattleDigimon, target: BattleDigimon): { damage: number; isCritical: boolean; isMiss: boolean } => {
-  const missChance = 0.05; // 5% miss chance
-  const criticalChance = 0.125; // 12.5% critical chance
+  const missChance = 0.05;
+  const criticalChance = 0.125;
   
   const isMiss = Math.random() < missChance;
   if (isMiss) return { damage: 0, isCritical: false, isMiss: true };
@@ -119,11 +119,15 @@ const calculateDamage = (attacker: BattleDigimon, target: BattleDigimon): { dama
   const isCritical = Math.random() < criticalChance;
   const critMultiplier = isCritical ? 1.5 : 1;
   
-  // Use higher of ATK or INT for damage calculation
-  const attackPower = Math.max(attacker.stats.atk, attacker.stats.int);
-  const defense = target.stats.def;
+  let attackPower = attacker.stats.atk;
+  let defense = target.stats.def;
+
+  if (attacker.stats.int > attacker.stats.atk) {
+    attackPower = attacker.stats.int;
+    defense = target.stats.int;
+  }
   
-  const baseDamage = Math.max(1, (attackPower - defense)*10);
+  const baseDamage = Math.max(1, (attackPower/defense)*100);
   const damageMultiplier = 0.8 + Math.random() * 0.4; // 0.8 to 1.2x variance
   
   const damage = Math.floor(baseDamage * damageMultiplier * critMultiplier);
