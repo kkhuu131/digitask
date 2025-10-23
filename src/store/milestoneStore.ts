@@ -80,7 +80,7 @@ export const useMilestoneStore = create<MilestoneState>((set, get) => ({
         .eq("is_in_storage", false)
         .eq("user_id", userData.user.id);
 
-      if (userDigimonCount && userDigimonCount[0]?.count >= 12) {
+      if (userDigimonCount && userDigimonCount[0]?.count >= 9) {
         set({
           loading: false,
           error: "Your active party is full. Please move a Digimon to storage.",

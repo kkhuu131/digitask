@@ -549,6 +549,7 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
           isDevolution={true}
         />
       )}
+
     </div>
   );
 };

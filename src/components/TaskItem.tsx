@@ -7,6 +7,9 @@ interface TaskItemProps {
   task: Task;
   onComplete: (id: string) => void;
   onDelete: (id: string) => void;
+  isSelected?: boolean;
+  onSelect?: (id: string) => void;
+  compact?: boolean;
 }
 
 const DAY_ABBREVIATIONS: Record<string, string> = {
@@ -45,9 +48,17 @@ const formatRecurringDays = (days: string[]): string => {
   return sortedDays.map(day => DAY_ABBREVIATIONS[day]).join(', ');
 };
 
-const TaskItem: React.FC<TaskItemProps> = ({ task, onComplete, onDelete }) => {
+const TaskItem: React.FC<TaskItemProps> = ({ 
+  task, 
+  onComplete, 
+  onDelete, 
+  isSelected = false, 
+  onSelect,
+  compact = false 
+}) => {
   const [isTaskOverdue, setIsTaskOverdue] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
     const checkOverdue = () => {
@@ -112,8 +123,20 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onComplete, onDelete }) => {
   };
 
   return (
-    <div className={`border-b border-gray-200 dark:border-dark-100 p-0 py-2 sm:p-4 ${task.is_completed ? 'bg-gray-50 dark:bg-dark-500/50' : 'dark:bg-dark-300'} relative`}>
+    <div className={`border-b border-gray-200 dark:border-dark-100 p-0 py-2 sm:p-4 ${task.is_completed ? 'bg-gray-50 dark:bg-dark-500/50' : 'dark:bg-dark-300'} relative ${
+      isSelected ? 'bg-primary-50 dark:bg-primary-900/20 border-primary-200 dark:border-primary-800' : ''
+    }`}>
       <div className="flex items-center gap-2 sm:gap-3">
+        {/* Selection checkbox */}
+        {onSelect && (
+          <input
+            type="checkbox"
+            checked={isSelected}
+            onChange={() => onSelect(task.id)}
+            className="w-4 h-4 text-primary-600 dark:text-primary-400 bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded focus:ring-primary-500 dark:focus:ring-primary-400"
+          />
+        )}
+
         {/* Action Buttons - Absolutely positioned */}
         <div className="absolute right-1 top-1 flex flex-col-reverse sm:flex-row items-center gap-1 flex-shrink-0">
           {(!task.is_completed || !task.due_date) && (
@@ -158,9 +181,14 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onComplete, onDelete }) => {
         <div className="flex-1 min-w-0 text-left pr-2 sm:pr-0">
           {/* Description */}
           <div className="flex items-start justify-between gap-2">
-            <p className={`text-xs sm:text-base pr-8 sm:pr-14 ${task.is_completed ? 'line-through text-gray-500 dark:text-gray-400' : 'text-gray-800 dark:text-gray-200'}`}>
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className={`text-xs sm:text-base pr-8 sm:pr-14 text-left ${
+                task.is_completed ? 'line-through text-gray-500 dark:text-gray-400' : 'text-gray-800 dark:text-gray-200'
+              } ${compact ? 'hover:text-primary-600 dark:hover:text-primary-400' : ''}`}
+            >
               {task.description}
-            </p>
+            </button>
           </div>
 
           {/* Tags Row */}
@@ -168,6 +196,36 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onComplete, onDelete }) => {
             {task.category && (
               <span className="px-1.5 py-0.5 rounded-full bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300">
                 {categoryIcons[task.category as StatCategory]} {task.category}
+              </span>
+            )}
+            
+            {/* Difficulty Badge */}
+            {task.difficulty && (
+              <span className={`px-1.5 py-0.5 rounded-full text-xs font-medium ${
+                task.difficulty === 'easy' 
+                  ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+                  : task.difficulty === 'medium'
+                  ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
+                  : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
+              }`}>
+                {task.difficulty === 'easy' ? '⭐' : 
+                 task.difficulty === 'medium' ? '⭐⭐' : 
+                 '⭐⭐⭐'}
+              </span>
+            )}
+            
+            {/* Priority Badge */}
+            {task.priority && (
+              <span className={`px-1.5 py-0.5 rounded-full text-xs font-medium ${
+                task.priority === 'low' 
+                  ? 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300'
+                  : task.priority === 'medium'
+                  ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
+                  : 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300'
+              }`}>
+                {task.priority === 'low' ? 'Low' : 
+                 task.priority === 'medium' ? 'Medium' : 
+                 'High'}
               </span>
             )}
             
@@ -196,10 +254,23 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onComplete, onDelete }) => {
             )}
           </div>
 
-          {/* Notes section */}
-          {task.notes && (
-            <div className="mt-1 text-xs sm:text-sm text-gray-500 dark:text-gray-400 max-w-md">
-              {task.notes}
+          {/* Expanded content */}
+          {isExpanded && (
+            <div className="mt-2 space-y-2">
+              {/* Notes section */}
+              {task.notes && (
+                <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 max-w-md">
+                  <strong>Notes:</strong> {task.notes}
+                </div>
+              )}
+
+              {/* Task details */}
+              <div className="text-xs text-gray-500 dark:text-gray-400">
+                <div>Created: {new Date(task.created_at).toLocaleDateString()}</div>
+                {task.completed_at && (
+                  <div>Completed: {new Date(task.completed_at).toLocaleDateString()}</div>
+                )}
+              </div>
             </div>
           )}
         </div>

@@ -30,6 +30,8 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
     "one-time"
   );
   const [recurringDays, setRecurringDays] = useState<string[]>(task.recurring_days || []);
+  const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard'>(task.difficulty || 'medium');
+  const [priority, setPriority] = useState<'low' | 'medium' | 'high'>(task.priority || 'medium');
   
   // Initialize date and time from task's due date
   useEffect(() => {
@@ -67,6 +69,8 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
         description,
         notes: notes || null,
         category: category as string,
+        difficulty,
+        priority,
       };
       
       // Update task type and related fields
@@ -108,6 +112,7 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
           <div className="absolute inset-0 bg-gray-500 dark:bg-gray-900 opacity-75"></div>
         </div>
 
+
         <div className="inline-block w-full align-middle bg-white dark:bg-dark-300 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg mx-auto">
           <form onSubmit={handleSubmit} className="p-6 space-y-6">
             <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Edit Task</h3>
@@ -123,6 +128,7 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-accent-500 dark:focus:border-accent-500 bg-white dark:bg-dark-200 text-gray-900 dark:text-gray-100"
+                placeholder="What do you need to do?"
               />
             </div>
 
@@ -137,73 +143,82 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
                 onChange={(e) => setNotes(e.target.value)}
                 rows={3}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-accent-500 dark:focus:border-accent-500 bg-white dark:bg-dark-200 text-gray-900 dark:text-gray-100"
+                placeholder="Any details or notes about this task"
               />
             </div>
 
             {/* Task Type */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Task Type</label>
-              <div className="flex flex-col sm:grid sm:grid-cols-3 gap-2">
-                <label className="flex items-center p-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-dark-400 cursor-pointer bg-white dark:bg-dark-200">
-                  <input
-                    type="radio"
-                    value="daily"
-                    checked={taskType === "daily"}
-                    onChange={(e) => setTaskType(e.target.value as "daily" | "one-time" | "recurring")}
-                    className="h-4 w-4 text-primary-600 dark:text-accent-500"
-                  />
-                  <span className="ml-2 text-sm text-gray-900 dark:text-gray-100">Daily</span>
-                </label>
-                
-                <label className="flex items-center p-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-dark-400 cursor-pointer bg-white dark:bg-dark-200">
-                  <input
-                    type="radio"
-                    value="recurring"
-                    checked={taskType === "recurring"}
-                    onChange={(e) => setTaskType(e.target.value as "daily" | "one-time" | "recurring")}
-                    className="h-4 w-4 text-primary-600 dark:text-accent-500"
-                  />
-                  <span className="ml-2 text-sm text-gray-900 dark:text-gray-100">Recurring</span>
-                </label>
-                
-                <label className="flex items-center p-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-dark-400 cursor-pointer bg-white dark:bg-dark-200">
-                  <input
-                    type="radio"
-                    value="one-time"
-                    checked={taskType === "one-time"}
-                    onChange={(e) => setTaskType(e.target.value as "daily" | "one-time" | "recurring")}
-                    className="h-4 w-4 text-primary-600 dark:text-accent-500"
-                  />
-                  <span className="ml-2 text-sm text-gray-900 dark:text-gray-100">One-time</span>
-                </label>
+              <div className="flex space-x-2 mb-2">
+                <button
+                  type="button"
+                  onClick={() => setTaskType("one-time")}
+                  className={`flex-1 px-3 py-2 text-sm rounded-md transition-colors ${
+                    taskType === "one-time"
+                      ? "bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-dark-200 dark:text-gray-300 dark:hover:bg-dark-100"
+                  }`}
+                >
+                  One-time
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTaskType("daily")}
+                  className={`flex-1 px-3 py-2 text-sm rounded-md transition-colors ${
+                    taskType === "daily"
+                      ? "bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-dark-200 dark:text-gray-300 dark:hover:bg-dark-100"
+                  }`}
+                >
+                  Daily
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTaskType("recurring")}
+                  className={`flex-1 px-3 py-2 text-sm rounded-md transition-colors ${
+                    taskType === "recurring"
+                      ? "bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-dark-200 dark:text-gray-300 dark:hover:bg-dark-100"
+                  }`}
+                >
+                  Recurring
+                </button>
               </div>
             </div>
 
-            {/* Recurring Days Selection */}
             {taskType === "recurring" && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Repeat on these days:
+              <div className="mt-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Recurs On
                 </label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  {DAYS_OF_WEEK.map(day => (
-                    <label key={day} className="flex items-center p-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-dark-400 cursor-pointer bg-white dark:bg-dark-200">
-                      <input
-                        type="checkbox"
-                        className="h-4 w-4 text-primary-600 dark:text-accent-500 rounded"
-                        checked={recurringDays.includes(day)}
-                        onChange={() => {
-                          if (recurringDays.includes(day)) {
-                            setRecurringDays(recurringDays.filter(d => d !== day));
-                          } else {
-                            setRecurringDays([...recurringDays, day]);
-                          }
-                        }}
-                      />
-                      <span className="ml-2 text-sm text-gray-900 dark:text-gray-100">{day}</span>
-                    </label>
+                <div className="grid grid-cols-7 gap-1">
+                  {DAYS_OF_WEEK.map((day) => (
+                    <button
+                      key={day}
+                      type="button"
+                      onClick={() => {
+                        if (recurringDays.includes(day)) {
+                          setRecurringDays(recurringDays.filter(d => d !== day));
+                        } else {
+                          setRecurringDays([...recurringDays, day]);
+                        }
+                      }}
+                      className={`py-1 text-xs rounded-md ${
+                        recurringDays.includes(day)
+                          ? "bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300"
+                          : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-dark-200 dark:text-gray-300 dark:hover:bg-dark-100"
+                      }`}
+                    >
+                      {day.substring(0, 3)}
+                    </button>
                   ))}
                 </div>
+                {recurringDays.length === 0 && (
+                  <p className="mt-1 text-xs text-red-500">
+                    Please select at least one day
+                  </p>
+                )}
               </div>
             )}
 
@@ -241,9 +256,40 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
               </div>
             )}
 
+            {/* Difficulty & Priority */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Difficulty & Priority
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <select
+                    value={difficulty}
+                    onChange={(e) => setDifficulty(e.target.value as 'easy' | 'medium' | 'hard')}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-accent-500 dark:focus:border-accent-500 bg-white dark:bg-dark-200 text-gray-900 dark:text-gray-100"
+                  >
+                    <option value="easy">Easy ⭐</option>
+                    <option value="medium">Medium ⭐⭐</option>
+                    <option value="hard">Hard ⭐⭐⭐</option>
+                  </select>
+                </div>
+                <div>
+                  <select
+                    value={priority}
+                    onChange={(e) => setPriority(e.target.value as 'low' | 'medium' | 'high')}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-accent-500 dark:focus:border-accent-500 bg-white dark:bg-dark-200 text-gray-900 dark:text-gray-100"
+                  >
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High (+reward multiplier)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
             {/* Category */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Category</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category</label>
               <Select
                 options={categoryOptions}
                 value={categoryOptions.find(opt => opt.value === category)}

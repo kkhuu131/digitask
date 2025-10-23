@@ -27,6 +27,8 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
   const [detectedCategory, setDetectedCategory] = useState<StatCategory | null>(null);
   const [notes, setNotes] = useState("");
   const [recurringDays, setRecurringDays] = useState<string[]>([]);
+  const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard'>('medium');
+  const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('medium');
 
   // Set default date to today when component mounts
   useEffect(() => {
@@ -103,6 +105,8 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
         category: category || detectedCategory,
         is_daily: taskType === "daily",
         recurring_days: taskType === "recurring" ? recurringDays : null,
+        difficulty,
+        priority,
       };
       
       // Add due date for one-time tasks
@@ -130,8 +134,7 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="card mb-6">
-      <h2 className="text-lg font-semibold mb-4">Add New Task</h2>
+    <form onSubmit={handleSubmit}>
       
       <div className="mb-4">
         <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -189,6 +192,36 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
         </div>
       </div>
       
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          Difficulty & Priority
+        </label>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <select
+              value={difficulty}
+              onChange={(e) => setDifficulty(e.target.value as 'easy' | 'medium' | 'hard')}
+              className="input dark:bg-dark-300"
+            >
+              <option value="easy">Easy ⭐</option>
+              <option value="medium">Medium ⭐⭐</option>
+              <option value="hard">Hard ⭐⭐⭐</option>
+            </select>
+          </div>
+          <div>
+            <select
+              value={priority}
+              onChange={(e) => setPriority(e.target.value as 'low' | 'medium' | 'high')}
+              className="input dark:bg-dark-300"
+            >
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High (+reward multiplier)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
           Task Type
@@ -337,6 +370,32 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
                   </span>
                 ) : null}
                 
+                {/* Difficulty badge */}
+                <span className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-xs ${
+                  difficulty === 'easy' 
+                    ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+                    : difficulty === 'medium'
+                    ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
+                    : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
+                }`}>
+                  {difficulty === 'easy' ? '⭐' : 
+                   difficulty === 'medium' ? '⭐⭐' : 
+                   '⭐⭐⭐'}
+                </span>
+                
+                {/* Priority badge */}
+                <span className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-xs ${
+                  priority === 'low' 
+                    ? 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300'
+                    : priority === 'medium'
+                    ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
+                    : 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300'
+                }`}>
+                  {priority === 'low' ? 'Low' : 
+                   priority === 'medium' ? 'Medium' : 
+                   'High'}
+                </span>
+                
                 {taskType === "daily" ? (
                   <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
                     Daily
@@ -359,6 +418,31 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
                     })}
                   </span>
                 ) : null}
+              </div>
+              
+              {/* Expected rewards preview */}
+              <div className="mt-2 text-xs text-gray-600 dark:text-gray-400">
+                <div className="font-medium mb-1">Expected Rewards:</div>
+                <div className="space-y-1">
+                  <div>
+                    EXP: {(() => {
+                      const baseExp = taskType === "daily" ? 75 : taskType === "recurring" ? 75 : 100;
+                      const difficultyMultiplier = difficulty === 'easy' ? 0.7 : difficulty === 'medium' ? 1.0 : 1.5;
+                      const priorityMultiplier = priority === 'low' ? 0.8 : priority === 'medium' ? 1.0 : 1.3;
+                      return Math.round(baseExp * difficultyMultiplier * priorityMultiplier);
+                    })()} (Active) / {Math.round((() => {
+                      const baseExp = taskType === "daily" ? 75 : taskType === "recurring" ? 75 : 100;
+                      const difficultyMultiplier = difficulty === 'easy' ? 0.7 : difficulty === 'medium' ? 1.0 : 1.5;
+                      const priorityMultiplier = priority === 'low' ? 0.8 : priority === 'medium' ? 1.0 : 1.3;
+                      return baseExp * difficultyMultiplier * priorityMultiplier * 0.5;
+                    })())} (Reserve)
+                  </div>
+                  {category || detectedCategory ? (
+                    <div>
+                      Stats: {difficulty === 'hard' ? '2' : '1'} {category || detectedCategory} point{difficulty === 'hard' ? 's' : ''}
+                    </div>
+                  ) : null}
+                </div>
               </div>
             </div>
           )}

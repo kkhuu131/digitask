@@ -97,7 +97,7 @@ const MilestoneProgress = () => {
                   : "bg-gray-400 cursor-not-allowed"
               }`}
             >
-              {hasMaxDigimon ? "Maximum Party Size (12)" :
+              {hasMaxDigimon ? "Maximum Party Size (9)" :
                isProcessingClaim ? "Processing..." :
                shouldBeAbleToClaimDigimon ? "Hatch a Digimon 🥚" : "Reach ABI Threshold to Claim"}
             </button>

@@ -38,6 +38,9 @@ export interface Task {
   completed_at: string | null;
   category: string | null;
   notes: string | null;
+  // New fields for task differentiation
+  difficulty?: "easy" | "medium" | "hard";
+  priority?: "low" | "medium" | "high";
 }
 
 interface DailyQuota {
@@ -129,6 +132,9 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         ...task,
         // Ensure notes is properly formatted (empty string becomes null)
         notes: task.notes && task.notes.trim() ? task.notes.trim() : null,
+        // Provide sensible defaults for new fields
+        difficulty: task.difficulty || "medium",
+        priority: task.priority || "medium",
       };
 
       const { data: userData } = await supabase.auth.getUser();

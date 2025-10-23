@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useDigimonStore } from "../store/petStore";
 import { useTaskStore } from "../store/taskStore";
 import Digimon from "../components/Digimon";
+import PartyMembersGrid from "../components/PartyMembersGrid";
 import TaskForm from "../components/TaskForm";
 import TaskList from "../components/TaskList";
 import StatProgressMeter from "@/components/StatProgressMeter";
@@ -18,6 +19,7 @@ const Dashboard: React.FC = () => {
   
   // Add state to force re-render when tasks are completed
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [showTaskForm, setShowTaskForm] = useState(false);
   
   useEffect(() => {
     fetchUserDigimon();
@@ -155,6 +157,11 @@ const Dashboard: React.FC = () => {
             evolutionOptions={evolutionOptions}
             key={`digimon-${refreshTrigger}`} // Add key to force re-render
           />
+          
+          {/* Party Members Grid */}
+          <div className="mt-4">
+            <PartyMembersGrid />
+          </div>
           <div className="card my-6">
             <div className="flex justify-between items-center mb-2">
               <h3 className="text-lg font-semibold dark:text-gray-100">Daily Quota</h3>
@@ -196,7 +203,6 @@ const Dashboard: React.FC = () => {
         </div>
         
         <div className="lg:col-span-2">
-          <TaskForm />
           
           {taskError && (
             <div className="bg-red-50 dark:bg-red-900/30 border-l-4 border-red-500 dark:border-red-600 p-4 mb-6">
@@ -227,7 +233,18 @@ const Dashboard: React.FC = () => {
           </div>
           
           <div className="card px-0 sm:px-4">
-            <h2 className="text-xl font-bold text-center sm:text-left dark:text-gray-100">Your Tasks</h2>
+            <div className="flex justify-between items-center mb-4 px-4">
+              <h2 className="text-xl font-bold text-center sm:text-left dark:text-gray-100">Your Tasks</h2>
+              <button
+                onClick={() => setShowTaskForm(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 dark:bg-amber-600 dark:hover:bg-amber-700 text-white rounded-lg transition-colors text-sm font-medium"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Add Task
+              </button>
+            </div>
             <TaskList />
           </div>
           
@@ -264,6 +281,35 @@ const Dashboard: React.FC = () => {
           )}
         </div>
       </div>
+      
+      {/* Task Form Modal */}
+      {showTaskForm && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex items-center justify-center min-h-screen px-4 py-6 text-center">
+            <div className="fixed inset-0 transition-opacity" aria-hidden="true">
+              <div className="absolute inset-0 bg-gray-500 dark:bg-gray-900 opacity-75" onClick={() => setShowTaskForm(false)}></div>
+            </div>
+
+            <div className="inline-block w-full align-middle bg-white dark:bg-dark-300 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg mx-auto">
+              <div className="p-6">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Add New Task</h3>
+                  <button
+                    onClick={() => setShowTaskForm(false)}
+                    className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                  </button>
+                </div>
+                <TaskForm onTaskCreated={() => setShowTaskForm(false)} />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
       <PageTutorial tutorialId="dashboard_intro" steps={dashboardTutorialSteps} />
     </>
   );

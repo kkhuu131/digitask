@@ -225,7 +225,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
   devolutionPathsCache: {},
   storageDigimon: [],
   activePartyCount: 0,
-  maxActivePartySize: 12,
+  maxActivePartySize: 9,
 
   fetchDiscoveredDigimon: async () => {
     try {
@@ -1554,102 +1554,21 @@ export const useDigimonStore = create<PetState>((set, get) => ({
   },
 
   checkStatCap: async () => {
-    try {
-      // Get the current user
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) return { canGain: false, remaining: 0, cap: 0 };
-
-      // Get the user's profile with daily_stat_gains
-      const { data: profileData, error } = await supabase
-        .from("profiles")
-        .select("daily_stat_gains, last_stat_reset")
-        .eq("id", userData.user.id)
-        .single();
-
-      if (error) throw error;
-
-      // Calculate the cap based on the number of digimon owned
-      const cap = get().calculateDailyStatCap();
-
-      // Calculate remaining points
-      const remaining = Math.max(0, cap - (profileData.daily_stat_gains || 0));
-
-      // Update the local state
-      set({ userDailyStatGains: profileData.daily_stat_gains || 0 });
-
-      return {
-        canGain: remaining > 0,
-        remaining,
-        cap,
-      };
-    } catch (error) {
-      console.error("Error checking stat cap:", error);
-      return { canGain: false, remaining: 0, cap: 0 };
-    }
+    // Daily stat cap system removed - users can now gain unlimited stats per day
+    return { canGain: true, remaining: 999999, cap: 999999 };
   },
 
-  // Add a helper function to calculate the daily stat cap
+  // Daily stat cap calculation removed
   calculateDailyStatCap: () => {
-    // Base cap of 2 + 2 per digimon owned
-    return 3 + 1 * get().allUserDigimon.length;
+    // No cap - return a very high number
+    return 999999;
   },
 
+  // Daily stat gains tracking removed
   fetchUserDailyStatGains: async () => {
-    try {
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) return 0;
-
-      // First check if the profile exists
-      const { data: profileExists, error: checkError } = await supabase
-        .from("profiles")
-        .select("id")
-        .eq("id", userData.user.id);
-
-      if (checkError || !profileExists || profileExists.length === 0) {
-        console.error("Profile not found, creating one");
-
-        // Create a profile if it doesn't exist
-        const username =
-          userData.user.user_metadata?.username ||
-          userData.user.email?.split("@")[0] ||
-          `user_${Date.now()}`;
-
-        await supabase.from("profiles").insert([
-          {
-            id: userData.user.id,
-            username,
-            display_name: username,
-            saved_stats: { HP: 0, SP: 0, ATK: 0, DEF: 0, INT: 0, SPD: 0 },
-            daily_stat_gains: 0,
-            last_stat_reset: new Date().toISOString(),
-            battles_won: 0,
-            battles_completed: 0,
-          },
-        ]);
-
-        return 0;
-      }
-
-      // Now fetch the daily_stat_gains
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("daily_stat_gains")
-        .eq("id", userData.user.id)
-        .single();
-
-      if (error) {
-        console.error("Error fetching user daily stat gains:", error);
-        return 0;
-      }
-
-      // Update the store state
-      set({ userDailyStatGains: data?.daily_stat_gains || 0 });
-
-      return data?.daily_stat_gains || 0;
-    } catch (error) {
-      console.error("Error fetching user daily stat gains:", error);
-      return 0;
-    }
+    // No longer needed - daily stat cap removed
+    set({ userDailyStatGains: 0 });
+    return 0;
   },
 
   updateDigimonName: async (digimonId: string, newName: string) => {

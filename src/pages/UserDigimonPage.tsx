@@ -254,7 +254,7 @@ const UserDigimonPage = () => {
     },
     {
       speaker: 'neemon',
-      text: "Ooh, look at all these Digimon! You can have up to 12 different ones in your party!"
+      text: "Ooh, look at all these Digimon! You can have up to 9 different ones in your party!"
     },
     {
       speaker: 'bokomon',
@@ -322,7 +322,7 @@ const UserDigimonPage = () => {
         <div className="card dark:bg-dark-300 dark:border-dark-200">
           <h1 className="text-2xl font-bold mb-4 dark:text-gray-100">Party</h1>
           <p className="text-gray-600 dark:text-gray-300 mb-6">
-            You can have up to 12 Digimon total. 
+            You can have up to 9 Digimon total. 
             Only one Digimon can be active at a time.
           </p>
 
@@ -442,7 +442,7 @@ const UserDigimonPage = () => {
               );
             })}
             
-            {allUserDigimon.length < 12 && (
+            {allUserDigimon.length < 9 && (
               <div className="border border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 flex flex-col items-center justify-center text-gray-400 dark:text-gray-500">
                 <div className="w-24 h-24 flex items-center justify-center mb-3">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
