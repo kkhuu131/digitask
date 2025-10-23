@@ -12,7 +12,7 @@ import PageTutorial from '../components/PageTutorial';
 import { DialogueStep } from '../components/DigimonDialogue';
 
 const Dashboard: React.FC = () => {
-  const { userDigimon, digimonData, evolutionOptions, fetchUserDigimon, error: digimonError, } = useDigimonStore();
+  const { userDigimon, digimonData, evolutionOptions, fetchUserDigimon, fetchAllUserDigimon, error: digimonError, } = useDigimonStore();
   const { fetchTasks, dailyQuota, error: taskError, getExpMultiplier } = useTaskStore();
   const navigate = useNavigate();
   const { checkForNewTitles } = useTitleStore();
@@ -23,13 +23,15 @@ const Dashboard: React.FC = () => {
   
   useEffect(() => {
     fetchUserDigimon();
+    fetchAllUserDigimon();
     fetchTasks();
-  }, [fetchUserDigimon, fetchTasks]);
+  }, [fetchUserDigimon, fetchAllUserDigimon, fetchTasks]);
   
   // Add listener for task completion to refresh Digimon data
   useEffect(() => {
     const handleTaskComplete = () => {
       fetchUserDigimon();
+      fetchAllUserDigimon();
       setRefreshTrigger(prev => prev + 1);
     };
     
@@ -38,7 +40,7 @@ const Dashboard: React.FC = () => {
     return () => {
       window.removeEventListener('task-completed', handleTaskComplete);
     };
-  }, [fetchUserDigimon]);
+  }, [fetchUserDigimon, fetchAllUserDigimon]);
   
   useEffect(() => {
     const checkUserDigimon = async () => {

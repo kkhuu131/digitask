@@ -1,4 +1,4 @@
-export const CURRENT_VERSION = "1.6.1";
+export const CURRENT_VERSION = "2.0.0";
 
 export const UPDATE_CHANGES = {
   "1.0.1": [
@@ -111,5 +111,11 @@ export const UPDATE_CHANGES = {
   "1.6.1": [
     "Updated Team Manager UI to be cleaner and more compact.",
     "Fixed bug where Weekly Boss page did not work on mobile.",
+  ],
+  "2.0.0": [
+    "Battle System Reworked: Target selection",
+    "Task System Update: Priority and Difficulty added",
+    "Daily Bonus Stat Cap Removed",
+    "Improved UI for battles, dashboard, and tasks screens",
   ],
 };

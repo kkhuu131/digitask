@@ -1,4 +1,5 @@
 
+
 const PatchNotes = () => {
   return (
     <div className="max-w-4xl mx-auto">
@@ -22,10 +23,63 @@ const PatchNotes = () => {
           </a>
         </div>
         <div className="border-b dark:border-dark-200 pb-2 mb-6">
-        <h2 className="text-xl font-semibold mb-4 dark:text-gray-100">Recent Updates</h2>
+        <h2 className="text-xl font-semibold mb-4 dark:text-gray-100">Patch Notes</h2>
         <div className="mb-6">
             <div className="flex items-center mb-2">
               <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
+              <h3 className="text-lg font-medium ml-2 dark:text-gray-200">Core Mechanics Rework</h3>
+              <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">October 23, 2025</span>
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
+            <li>
+              <div>Battle System Rework</div>
+              <ul className="pl-6 list-[circle] marker:text-indigo-500">
+                <li>
+                  Rather than the whole battle being predetermined before animations, battles are now interactive and turn-by-turn
+                  <ul className="pl-6 list-[square] marker:text-indigo-400">
+                    <li>Each turn players select their Digimon's target for the attack</li>
+                    <li>Can see the type/attribute multiplier for the attack before confirming</li>
+                    <li>Auto mode still available for those who still prefer it</li>
+                  </ul>
+                </li>
+                <li>
+                  Visual Turn Order panel shows the order of upcoming turns
+                </li>
+              </ul>
+            </li>
+            <li>
+              <div>Task System Update</div>
+              <ul className="pl-6 list-[circle] marker:text-indigo-500">
+                <li>Priority and Difficulty added
+                  <ul className="pl-6 list-[square] marker:text-indigo-400">
+                    <li>Rather than all tasks feeling the same; giving the same level of rewards even if one task may be more difficult than another, you can now set the priority and difficulty of tasks.</li>
+                    <li>Not just cosmetic, difficulty affects the base amount of exp and stats gained from a task, and priority applies a exp multiplier.</li>
+                    <li>Priority can take on: Low, Medium, and High and gives a 0.8x, 1.0x, and 1.3x exp multiplier respectively.</li>
+                    <li>Difficulty can take on: Easy⭐, Medium⭐⭐, and Hard⭐⭐⭐ and gives a 0.7x, 1.0x, and 1.5x exp multiplier respectively. Easy/Medium give 1 stat point, while Hard gives 2.</li>
+                    <li>⚠️Subject to change: These multipliers are subject to change in the future, so expect some tweaking.</li>
+                    <li>Default priority and difficulty is Medium, so tasks will still feel the same as before.</li>
+                    <li></li>
+                  </ul>
+
+                </li>
+              </ul>
+            </li>
+            <li>The Max Party size has been decrease from 12 to 9. I felt like managing 12 different Digimon at a time was too much to really focus on.</li>
+            <li>Daily Bonus Stat Cap Removed: Having a cap worked against the feeling of progression</li>
+            <li>Improved UI for battles, dashboard, and tasks screens</li>
+            <li>Your party can now be viewed in a more compact view on the dashboard screen</li>
+            <li>Plans for future:</li>
+            <ul className="pl-6 list-[square] marker:text-indigo-400">
+              <li>Possibly adding in moves and blocking to battles, based on their learnset from Cyber Sleuth</li>
+              <li>Adding in new Digimon from Time Stranger, however I'd need to find a rip of their dot sprites (32x32)</li>
+              <li>Possibly using realtime weather/time of day to influence things (some evolutions can only happen during certain times of day or weather?, or some types/attributes get buffed)</li>
+              <li>More priority levels to choose from</li>
+              <li>More task types to choose from</li>
+            </ul>
+            </ul>
+          </div>
+        <div className="mb-6">
+            <div className="flex items-center mb-2">
               <h3 className="text-lg font-medium ml-2 dark:text-gray-200">Small Update</h3>
               <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">June 19, 2025</span>
             </div>

@@ -193,11 +193,25 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
       </div>
       
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-          Difficulty & Priority
-        </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Priority
+          </label>
+            <select
+              value={priority}
+              onChange={(e) => setPriority(e.target.value as 'low' | 'medium' | 'high')}
+              className="input dark:bg-dark-300"
+            >
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
           <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Difficulty
+          </label>
             <select
               value={difficulty}
               onChange={(e) => setDifficulty(e.target.value as 'easy' | 'medium' | 'hard')}
@@ -206,17 +220,6 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
               <option value="easy">Easy ⭐</option>
               <option value="medium">Medium ⭐⭐</option>
               <option value="hard">Hard ⭐⭐⭐</option>
-            </select>
-          </div>
-          <div>
-            <select
-              value={priority}
-              onChange={(e) => setPriority(e.target.value as 'low' | 'medium' | 'high')}
-              className="input dark:bg-dark-300"
-            >
-              <option value="low">Low</option>
-              <option value="medium">Medium</option>
-              <option value="high">High (+reward multiplier)</option>
             </select>
           </div>
         </div>
@@ -363,26 +366,8 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
           {description && (
             <div className="bg-gray-50 dark:bg-dark-400 p-2 rounded-md border border-gray-200 dark:border-dark-300 max-w-xs">
               <p className="font-medium">{description}</p>
+              
               <div className="flex flex-wrap gap-1 mt-1">
-                {category || detectedCategory ? (
-                  <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300">
-                    {categoryIcons[category as StatCategory || detectedCategory as StatCategory]} {category || detectedCategory}
-                  </span>
-                ) : null}
-                
-                {/* Difficulty badge */}
-                <span className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-xs ${
-                  difficulty === 'easy' 
-                    ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
-                    : difficulty === 'medium'
-                    ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
-                    : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
-                }`}>
-                  {difficulty === 'easy' ? '⭐' : 
-                   difficulty === 'medium' ? '⭐⭐' : 
-                   '⭐⭐⭐'}
-                </span>
-                
                 {/* Priority badge */}
                 <span className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-xs ${
                   priority === 'low' 
@@ -395,6 +380,11 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
                    priority === 'medium' ? 'Medium' : 
                    'High'}
                 </span>
+                {category || detectedCategory ? (
+                  <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300">
+                    {categoryIcons[category as StatCategory || detectedCategory as StatCategory]} {category || detectedCategory}
+                  </span>
+                ) : null}
                 
                 {taskType === "daily" ? (
                   <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
@@ -418,14 +408,26 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
                     })}
                   </span>
                 ) : null}
+
+                {/* Difficulty badge */}
+                <span className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-xs ${
+                  difficulty === 'easy' 
+                    ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+                    : difficulty === 'medium'
+                    ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
+                    : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
+                }`}>
+                  {difficulty === 'easy' ? '⭐' : 
+                   difficulty === 'medium' ? '⭐⭐' : 
+                   '⭐⭐⭐'}
+                </span>
               </div>
               
               {/* Expected rewards preview */}
               <div className="mt-2 text-xs text-gray-600 dark:text-gray-400">
-                <div className="font-medium mb-1">Expected Rewards:</div>
                 <div className="space-y-1">
                   <div>
-                    EXP: {(() => {
+                    EXP {(() => {
                       const baseExp = taskType === "daily" ? 75 : taskType === "recurring" ? 75 : 100;
                       const difficultyMultiplier = difficulty === 'easy' ? 0.7 : difficulty === 'medium' ? 1.0 : 1.5;
                       const priorityMultiplier = priority === 'low' ? 0.8 : priority === 'medium' ? 1.0 : 1.3;
@@ -439,7 +441,7 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
                   </div>
                   {category || detectedCategory ? (
                     <div>
-                      Stats: {difficulty === 'hard' ? '2' : '1'} {category || detectedCategory} point{difficulty === 'hard' ? 's' : ''}
+                      {difficulty === 'hard' ? '2' : '1'} {category || detectedCategory}
                     </div>
                   ) : null}
                 </div>

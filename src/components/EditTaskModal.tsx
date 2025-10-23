@@ -132,19 +132,66 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
               />
             </div>
 
-            {/* Notes */}
+            {/* Category */}
             <div>
-              <label htmlFor="notes" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Notes (optional)
-              </label>
-              <textarea
-                id="notes"
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                rows={3}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-accent-500 dark:focus:border-accent-500 bg-white dark:bg-dark-200 text-gray-900 dark:text-gray-100"
-                placeholder="Any details or notes about this task"
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category</label>
+              <Select
+                options={categoryOptions}
+                value={categoryOptions.find(opt => opt.value === category)}
+                onChange={(selected) => setCategory(selected?.value as StatCategory)}
+                className="w-full"
+                classNames={{
+                  control: (state) => 
+                    `!bg-white dark:!bg-dark-200 !border-gray-300 dark:!border-gray-600 !shadow-none ${
+                      state.isFocused ? '!border-primary-500 dark:!border-accent-500' : ''
+                    }`,
+                  menu: () => "!bg-white dark:!bg-dark-200 !border !border-gray-300 dark:!border-gray-600",
+                  option: (state) => 
+                    `${state.isSelected 
+                      ? '!bg-primary-100 !text-primary-800 dark:!bg-primary-900/30 dark:!text-primary-300' 
+                      : state.isFocused 
+                        ? '!bg-gray-100 dark:!bg-dark-300' 
+                        : '!text-gray-900 dark:!text-gray-300'
+                    }`,
+                  singleValue: () => "!text-gray-900 dark:!text-gray-100",
+                  placeholder: () => "!text-gray-500 dark:!text-gray-400",
+                }}
               />
+            </div>
+
+            {/* Difficulty & Priority */}
+            <div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Priority
+                  </label>
+                  <select
+                    value={priority}
+                    onChange={(e) => setPriority(e.target.value as 'low' | 'medium' | 'high')}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-accent-500 dark:focus:border-accent-500 bg-white dark:bg-dark-200 text-gray-900 dark:text-gray-100"
+                  >
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Difficulty
+                  </label>
+                  <select
+                    value={difficulty}
+                    onChange={(e) => setDifficulty(e.target.value as 'easy' | 'medium' | 'hard')}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-accent-500 dark:focus:border-accent-500 bg-white dark:bg-dark-200 text-gray-900 dark:text-gray-100"
+                  >
+                    <option value="easy">Easy ⭐</option>
+                    <option value="medium">Medium ⭐⭐</option>
+                    <option value="hard">Hard ⭐⭐⭐</option>
+                  </select>
+                </div>
+                
+              </div>
             </div>
 
             {/* Task Type */}
@@ -256,61 +303,18 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
               </div>
             )}
 
-            {/* Difficulty & Priority */}
+            {/* Notes */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Difficulty & Priority
+              <label htmlFor="notes" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Notes (optional)
               </label>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <select
-                    value={difficulty}
-                    onChange={(e) => setDifficulty(e.target.value as 'easy' | 'medium' | 'hard')}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-accent-500 dark:focus:border-accent-500 bg-white dark:bg-dark-200 text-gray-900 dark:text-gray-100"
-                  >
-                    <option value="easy">Easy ⭐</option>
-                    <option value="medium">Medium ⭐⭐</option>
-                    <option value="hard">Hard ⭐⭐⭐</option>
-                  </select>
-                </div>
-                <div>
-                  <select
-                    value={priority}
-                    onChange={(e) => setPriority(e.target.value as 'low' | 'medium' | 'high')}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-accent-500 dark:focus:border-accent-500 bg-white dark:bg-dark-200 text-gray-900 dark:text-gray-100"
-                  >
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High (+reward multiplier)</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            {/* Category */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category</label>
-              <Select
-                options={categoryOptions}
-                value={categoryOptions.find(opt => opt.value === category)}
-                onChange={(selected) => setCategory(selected?.value as StatCategory)}
-                className="w-full"
-                classNames={{
-                  control: (state) => 
-                    `!bg-white dark:!bg-dark-200 !border-gray-300 dark:!border-gray-600 !shadow-none ${
-                      state.isFocused ? '!border-primary-500 dark:!border-accent-500' : ''
-                    }`,
-                  menu: () => "!bg-white dark:!bg-dark-200 !border !border-gray-300 dark:!border-gray-600",
-                  option: (state) => 
-                    `${state.isSelected 
-                      ? '!bg-primary-100 !text-primary-800 dark:!bg-primary-900/30 dark:!text-primary-300' 
-                      : state.isFocused 
-                        ? '!bg-gray-100 dark:!bg-dark-300' 
-                        : '!text-gray-900 dark:!text-gray-300'
-                    }`,
-                  singleValue: () => "!text-gray-900 dark:!text-gray-100",
-                  placeholder: () => "!text-gray-500 dark:!text-gray-400",
-                }}
+              <textarea
+                id="notes"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                rows={3}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-accent-500 dark:focus:border-accent-500 bg-white dark:bg-dark-200 text-gray-900 dark:text-gray-100"
+                placeholder="Any details or notes about this task"
               />
             </div>
 
