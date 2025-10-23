@@ -458,37 +458,54 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
       
       <div className="w-full space-y-3">
         <div>
-          <div className="flex justify-between text-sm mb-1">
+          <div className="flex items-center gap-2 mb-1">
+            {/* Heart icon directly left of the bar - fixed width */}
+            <div className="flex items-center justify-center w-8 h-4 flex-shrink-0">
+              <span className="text-red-500 text-sm">❤️</span>
+            </div>
+            
+            {/* Happiness Progress Bar */}
+            <div className="flex-1 bg-gray-300 dark:bg-gray-600 rounded-full h-1.5 overflow-hidden">
+              <div 
+                className={`h-full transition-all duration-300 ${
+                  happinessPercentage >= 60 ? 'bg-green-500' : 
+                  happinessPercentage >= 30 ? 'bg-yellow-500' : 
+                  'bg-red-500'
+                }`}
+                style={{ width: `${happinessPercentage}%` }}
+              />
+            </div>
+          </div>
+          
+          {/* Happiness details below */}
+          <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
             <span>Happiness</span>
             <span>{userDigimon.happiness.toFixed(0)}%</span>
-          </div>
-          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
-            <div 
-              className={`h-2.5 rounded-full ${
-                happinessPercentage >= 60 ? 'bg-green-500' : 
-                happinessPercentage >= 30 ? 'bg-yellow-500' : 
-                'bg-red-500'
-              }`}
-              style={{ 
-                width: `${happinessPercentage}%`,
-              }}
-            ></div>
           </div>
         </div>
         
         <div>
-          <div className="flex justify-between text-sm mb-1">
-            <span>Level {currentLevel}</span>
+          <div className="flex items-center gap-2 mb-1">
+            {/* Level text directly left of the bar - fixed width */}
+            <div className="flex items-center justify-center w-8 h-4 flex-shrink-0">
+              <span className="text-xs font-bold text-gray-700 dark:text-gray-300 bg-white/80 dark:bg-gray-800/80 px-1 rounded">
+                Lv{currentLevel}
+              </span>
+            </div>
+            
+            {/* Experience Progress Bar */}
+            <div className="flex-1 bg-gray-300 dark:bg-gray-600 rounded-full h-1.5 overflow-hidden">
+              <div 
+                className="bg-purple-500 h-full transition-all duration-300"
+                style={{ width: `${xpPercentage}%` }}
+              />
+            </div>
+          </div>
+          
+          {/* XP details below */}
+          <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
             <span>{currentXP.toFixed(0)}/{xpForNextLevel.toFixed(0)} XP</span>
-          </div>
-          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
-            <div 
-              className="h-2.5 rounded-full bg-purple-500" 
-              style={{ width: `${xpPercentage}%` }}
-            ></div>
-          </div>
-          <div className="text-xs text-gray-500 text-right mt-1">
-            {20 * currentLevel * (currentLevel - 1) / 2 + currentXP} Total EXP
+            <span>{20 * currentLevel * (currentLevel - 1) / 2 + currentXP} Total EXP</span>
           </div>
         </div>
       </div>

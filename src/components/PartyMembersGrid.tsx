@@ -27,7 +27,7 @@ const PartyMembersGrid: React.FC = () => {
           return (
             <div
               key={digimon.id}
-              className="relative bg-gray-100 dark:bg-dark-200 rounded-lg p-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-dark-400 transition-colors"
+              className="relative bg-gray-100 dark:bg-dark-200 rounded-lg p-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-dark-400 transition-colors "
               onClick={() => {
                 setSelectedDigimon(digimon);
                 setShowModal(true);
@@ -71,7 +71,7 @@ const PartyMembersGrid: React.FC = () => {
                 </span>
                 
                 {/* Experience Progress Bar */}
-                <div className="flex-1 bg-gray-300 dark:bg-gray-600 rounded-full h-1.5 overflow-hidden">
+                <div className="flex-1 bg-gray-300 dark:bg-gray-600 rounded-full h-1.5 overflow-hidden mr-1">
                   <div 
                     className="bg-purple-500 h-full transition-all duration-300"
                     style={{ width: `${expProgress}%` }}
