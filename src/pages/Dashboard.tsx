@@ -5,7 +5,7 @@ import Digimon from "../components/Digimon";
 import PartyMembersGrid from "../components/PartyMembersGrid";
 import TaskForm from "../components/TaskForm";
 import TaskList from "../components/TaskList";
-import StatProgressMeter from "@/components/StatProgressMeter";
+import TaskHeatmap from "../components/TaskHeatmap";
 import { useNavigate } from "react-router-dom";
 import { useTitleStore } from '../store/titleStore';
 import PageTutorial from '../components/PageTutorial';
@@ -199,9 +199,6 @@ const Dashboard: React.FC = () => {
             </p>
           </div>
 
-          <div className="card my-6">
-            <StatProgressMeter />
-          </div>
         </div>
         
         <div className="lg:col-span-2">
@@ -212,43 +209,28 @@ const Dashboard: React.FC = () => {
             </div>
           )}
           
-          <div className="bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-400 dark:border-blue-500 p-4 mb-6">
-            <div className="flex">
-              <div className="flex-shrink-0">
-                <svg className="h-5 w-5 text-blue-400 dark:text-blue-300" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <div className="ml-3">
-                <p className="text-sm text-blue-700 dark:text-blue-200">
-                  <span className="font-medium">Daily tasks and quotas</span> get reset each day at {(() => {
-                    const resetTime = new Date();
-                    resetTime.setUTCHours(8, 0, 0, 0);
-                    
-                    return resetTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                  })()} (8:00 UTC).
-                  <br />
-                  <span className="font-medium">One-time tasks</span> include specific due dates and times.
-                </p>
-              </div>
-            </div>
-          </div>
           
-          <div className="card px-0 sm:px-4">
-            <div className="flex justify-between items-center mb-4 px-4">
-              <h2 className="text-xl font-bold text-center sm:text-left dark:text-gray-100">Your Tasks</h2>
-              <button
-                onClick={() => setShowTaskForm(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 dark:bg-amber-600 dark:hover:bg-amber-700 text-white rounded-lg transition-colors text-sm font-medium"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path>
-                </svg>
-                Add Task
-              </button>
-            </div>
-            <TaskList />
-          </div>
+          
+           {/* Task Activity Heatmap */}
+           <div className="mb-6">
+             <TaskHeatmap />
+           </div>
+           
+           <div className="card px-0 sm:px-4">
+             <div className="flex justify-between items-center mb-4 px-4">
+               <h2 className="text-xl font-bold text-center sm:text-left dark:text-gray-100">Your Tasks</h2>
+               <button
+                 onClick={() => setShowTaskForm(true)}
+                 className="flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 dark:bg-amber-600 dark:hover:bg-amber-700 text-white rounded-lg transition-colors text-sm font-medium"
+               >
+                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path>
+                 </svg>
+                 Add Task
+               </button>
+             </div>
+             <TaskList />
+           </div>
           
           {process.env.NODE_ENV === 'development' && (
             <div className="mt-4 text-xs text-gray-500 dark:text-gray-400">
