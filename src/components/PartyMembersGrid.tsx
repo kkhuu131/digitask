@@ -5,7 +5,7 @@ import TypeAttributeIcon from './TypeAttributeIcon';
 import DigimonSprite from './DigimonSprite';
 
 const PartyMembersGrid: React.FC = () => {
-  const { allUserDigimon, userDigimon } = useDigimonStore();
+  const { allUserDigimon, userDigimon, setActiveDigimon } = useDigimonStore();
   const [showModal, setShowModal] = useState(false);
   const [selectedDigimon, setSelectedDigimon] = useState<UserDigimon | null>(null);
 
@@ -91,10 +91,14 @@ const PartyMembersGrid: React.FC = () => {
             setShowModal(false);
             setSelectedDigimon(null);
           }}
-          onSetActive={async () => {
-            // Handle setting as active - this will be handled by the parent component
-            setShowModal(false);
-            setSelectedDigimon(null);
+          onSetActive={async (digimonId: string) => {
+            try {
+              await setActiveDigimon(digimonId);
+              setShowModal(false);
+              setSelectedDigimon(null);
+            } catch (error) {
+              console.error('Error setting active Digimon:', error);
+            }
           }}
           onNameChange={(updatedDigimon) => {
             // Update the store directly
