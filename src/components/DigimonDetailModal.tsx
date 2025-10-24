@@ -532,37 +532,56 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
             {/* Status bars - keep as is */}
             <div className="w-full space-y-4 mb-6 mt-4">
               <div>
-                <div className="flex justify-between text-sm mb-1">
-                  <span className="dark:text-gray-300">Happiness</span>
-                  <span className="dark:text-gray-300">{selectedDigimon.happiness}%</span>
+                <div className="flex items-center gap-2 mb-1">
+                  {/* Heart icon directly left of the bar - fixed width */}
+                  <div className="flex items-center justify-center w-8 h-4 flex-shrink-0">
+                    <span className="text-red-500 text-sm">❤️</span>
+                  </div>
+                  
+                  {/* Happiness Progress Bar */}
+                  <div className="flex-1 bg-gray-300 dark:bg-gray-600 rounded-full h-1.5 overflow-hidden">
+                    <div 
+                      className={`h-full transition-all duration-300 ${
+                        selectedDigimon.happiness >= 60 ? 'bg-green-500' : 
+                        selectedDigimon.happiness >= 30 ? 'bg-yellow-500' : 
+                        'bg-red-500'
+                      }`}
+                      style={{ width: `${selectedDigimon.happiness}%` }}
+                    />
+                  </div>
                 </div>
-                <div className="w-full bg-gray-200 dark:bg-dark-100 rounded-full h-2.5">
-                  <div 
-                    className={`h-2.5 rounded-full ${
-                      selectedDigimon.happiness >= 60 ? 'bg-green-500' : 
-                      selectedDigimon.happiness >= 30 ? 'bg-yellow-500' : 
-                      'bg-red-500'
-                    }`} 
-                    style={{ width: `${selectedDigimon.happiness}%` }}
-                  ></div>
+                
+                {/* Happiness details below */}
+                <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  <span>Happiness</span>
+                  <span>{selectedDigimon.happiness}%</span>
                 </div>
               </div>
               
               <div>
-                <div className="flex justify-between text-sm mb-1">
-                  <span className="dark:text-gray-300">Experience</span>
-                  <span className="dark:text-gray-300">{selectedDigimon.experience_points}/{selectedDigimon.current_level * 20}</span>
+                <div className="flex items-center gap-2 mb-1">
+                  {/* Level text directly left of the bar - fixed width */}
+                  <div className="flex items-center justify-center w-8 h-4 flex-shrink-0">
+                    <span className="text-xs font-bold text-gray-700 dark:text-gray-300 bg-white/80 dark:bg-gray-800/80 px-1 rounded">
+                      Lv{selectedDigimon.current_level}
+                    </span>
+                  </div>
+                  
+                  {/* Experience Progress Bar */}
+                  <div className="flex-1 bg-gray-300 dark:bg-gray-600 rounded-full h-1.5 overflow-hidden">
+                    <div 
+                      className="bg-purple-500 h-full transition-all duration-300"
+                      style={{ 
+                        width: `${Math.min(100, (selectedDigimon.experience_points / (selectedDigimon.current_level * 20)) * 100)}%` 
+                      }}
+                    />
+                  </div>
                 </div>
-                <div className="w-full bg-gray-200 dark:bg-dark-100 rounded-full h-2.5">
-                  <div 
-                    className="bg-blue-600 dark:bg-accent-500 h-2.5 rounded-full" 
-                    style={{ 
-                      width: `${Math.min(100, (selectedDigimon.experience_points / (selectedDigimon.current_level * 20)) * 100)}%` 
-                    }}
-                  ></div>
-                </div>
-                <div className="text-xs text-gray-500 dark:text-gray-400 text-right mt-1">
-                  {20 * selectedDigimon.current_level * (selectedDigimon.current_level - 1) / 2 + selectedDigimon.experience_points} Total EXP
+                
+                {/* Experience details below */}
+                <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  <span>{selectedDigimon.experience_points}/{selectedDigimon.current_level * 20} XP</span>
+                  <span>{20 * selectedDigimon.current_level * (selectedDigimon.current_level - 1) / 2 + selectedDigimon.experience_points} Total EXP</span>
                 </div>
               </div>
             </div>

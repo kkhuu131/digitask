@@ -4,6 +4,7 @@ import { useBattleStore, DigimonAttribute, DigimonType } from "../store/battleSt
 import { useInteractiveBattleStore } from "../store/interactiveBattleStore";
 import { useTaskStore } from "../store/taskStore";
 import { useCurrencyStore } from "../store/currencyStore";
+import { supabase } from "../lib/supabase";
 import BattleHistory from "../components/BattleHistory";
 // import TeamBattleAnimation from "../components/TeamBattleAnimation"; // Removed - using interactive battles only
 import InteractiveBattle from "../components/InteractiveBattle";
@@ -195,6 +196,18 @@ const Battle = () => {
         const currencyStore = useCurrencyStore.getState();
         currencyStore.addCurrency("bits", bitsReward);
         console.log(`Bits reward applied: ${bitsReward}`);
+      }
+
+      // Decrement daily battle limit (same as auto battle)
+      console.log('Decrementing daily battle limit...');
+      const { data: limitCheck, error: limitError } = await supabase.rpc(
+        "check_and_increment_battle_limit"
+      );
+      
+      if (limitError) {
+        console.error("Error decrementing battle limit:", limitError);
+      } else if (!limitCheck) {
+        console.warn("Battle limit check failed, but continuing with completion");
       }
 
       // End the interactive battle
