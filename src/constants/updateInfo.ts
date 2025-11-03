@@ -1,4 +1,4 @@
-export const CURRENT_VERSION = "2.0.0";
+export const CURRENT_VERSION = "2.1.0";
 
 export const UPDATE_CHANGES = {
   "1.0.1": [
@@ -117,5 +117,10 @@ export const UPDATE_CHANGES = {
     "Task System Update: Priority and Difficulty added",
     "Daily Bonus Stat Cap Removed",
     "Improved UI for battles, dashboard, and tasks screens",
+  ],
+  "2.1.0": [
+    "Task Rewards Rework: All task types (one-time, daily, recurring) now give the same amount of base rewards (100 exp, 1 stat point).",
+    "XP multipliers from streaks are now capped at 2.0x.",
+    "Fixed bug where daily quota and streaks were not being updated correctly.",
   ],
 };

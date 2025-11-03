@@ -1,5 +1,4 @@
 
-
 const PatchNotes = () => {
   return (
     <div className="max-w-4xl mx-auto">
@@ -24,9 +23,25 @@ const PatchNotes = () => {
         </div>
         <div className="border-b dark:border-dark-200 pb-2 mb-6">
         <h2 className="text-xl font-semibold mb-4 dark:text-gray-100">Patch Notes</h2>
+
+        <div className="mb-6">
+          <div className="flex items-center mb-2">
+          <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
+            <h3 className="text-lg font-medium ml-2 dark:text-gray-200">Task Rewards Adjustments</h3>
+            <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">November 2, 2025</span>
+          </div>
+          <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
+            <li>All task types (one-time, daily, recurring) now give the same amount of base rewards (100 exp, 1 stat point).</li>
+            <li>XP multipliers from streaks are now capped at 2.0x.</li>
+            <li>Priority XP multipliers are now (0.5x, 1.0x, and 1.5x) respectively.</li>
+            <li>Difficulty XP multipliers are now (0.5x, 1.0x, and 1.5x) respectively.</li>
+            <li>These updates should hopefully make non-streak/early progression rewarding, and make numbers more consistent/readable.</li>
+            <li>Fixed bug where daily quota and streaks were not being updated correctly.</li>
+          </ul>
+        </div>
+        
         <div className="mb-6">
             <div className="flex items-center mb-2">
-              <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
               <h3 className="text-lg font-medium ml-2 dark:text-gray-200">Core Mechanics Rework</h3>
               <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">October 23, 2025</span>
             </div>
@@ -79,15 +94,15 @@ const PatchNotes = () => {
             </ul>
           </div>
         <div className="mb-6">
-            <div className="flex items-center mb-2">
-              <h3 className="text-lg font-medium ml-2 dark:text-gray-200">Small Update</h3>
-              <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">June 19, 2025</span>
-            </div>
-            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
+          <div className="flex items-center mb-2">
+            <h3 className="text-lg font-medium ml-2 dark:text-gray-200">Small Update</h3>
+            <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">June 19, 2025</span>
+          </div>
+          <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
             <li>Updated Team Manager UI to be cleaner and more compact.</li>
             <li>Fixed bug where Weekly Boss page did not work on mobile.</li>
-            </ul>
-          </div>
+          </ul>
+        </div>
         <div className="mb-6">
             <div className="flex items-center mb-2">
               <h3 className="text-lg font-medium ml-2 dark:text-gray-200">Bokomon Assistant, Weekly Bosses</h3>

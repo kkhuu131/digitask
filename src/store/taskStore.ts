@@ -224,8 +224,6 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     }
   },
 
-  // Rookie: 5, Champion 10, Ultimate: 20, Mega: 50
-
   completeTask: async (id: string, autoAllocate: boolean = false) => {
     try {
       // Get the current task
@@ -593,7 +591,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     const streak = dailyQuota.current_streak;
     if (streak <= 1) return 1.0;
 
-    return Math.min(1.0 + (streak - 1) * 0.1, 2.5);
+    return Math.min(1.0 + (streak - 1) * 0.1, 2.0);
   },
 
   editTask: async (id, updates) => {
