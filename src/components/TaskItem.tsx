@@ -257,8 +257,8 @@ const TaskItem: React.FC<TaskItemProps> = ({
           {/* Expanded content */}
           {isExpanded && (
             <div className="mt-2 space-y-2">
-              {/* Notes section */}
-              {task.notes && (
+          {/* Notes section */}
+          {task.notes && (
                 <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 max-w-md">
                   <strong>Notes:</strong> {task.notes}
                 </div>

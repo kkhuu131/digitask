@@ -21,10 +21,17 @@ DECLARE
   yesterday_date date;
   today_date date;
   user_record RECORD;
+  users_processed_count integer;
 BEGIN
-  -- Get yesterday's date (the day when tasks were actually completed)
-  yesterday_date := CURRENT_DATE - INTERVAL '1 day';
-  today_date := CURRENT_DATE;
+  -- Get dates in PST timezone (America/Los_Angeles)
+  -- This ensures the "day cutoff" is based on PST, not UTC
+  today_date := (NOW() AT TIME ZONE 'America/Los_Angeles')::date;
+  yesterday_date := today_date - INTERVAL '1 day';
+  
+  -- Get count of users to process before resetting
+  SELECT COUNT(*) INTO users_processed_count 
+  FROM public.daily_quotas 
+  WHERE completed_today > 0;
   
   -- Process each user's daily quota
   FOR user_record IN 
@@ -48,11 +55,10 @@ BEGIN
   UPDATE public.daily_quotas 
   SET 
     completed_today = 0,
-    penalized_tasks = ARRAY[]::text[],
-    last_reset = today_date;
+    penalized_tasks = ARRAY[]::text[];
     
   RAISE NOTICE 'Processed daily quotas for % users on %', 
-    (SELECT COUNT(*) FROM public.daily_quotas WHERE completed_today > 0), today_date;
+    users_processed_count, today_date;
 END;
 $$ LANGUAGE plpgsql;
 

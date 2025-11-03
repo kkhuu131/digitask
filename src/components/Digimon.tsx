@@ -462,16 +462,16 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
             {/* Heart icon directly left of the bar - fixed width */}
             <div className="flex items-center justify-center w-8 h-4 flex-shrink-0">
               <span className="text-red-500 text-sm">❤️</span>
-            </div>
+          </div>
             
             {/* Happiness Progress Bar */}
             <div className="flex-1 bg-gray-300 dark:bg-gray-600 rounded-full h-1.5 overflow-hidden">
-              <div 
+            <div 
                 className={`h-full transition-all duration-300 ${
-                  happinessPercentage >= 60 ? 'bg-green-500' : 
-                  happinessPercentage >= 30 ? 'bg-yellow-500' : 
-                  'bg-red-500'
-                }`}
+                happinessPercentage >= 60 ? 'bg-green-500' : 
+                happinessPercentage >= 30 ? 'bg-yellow-500' : 
+                'bg-red-500'
+              }`}
                 style={{ width: `${happinessPercentage}%` }}
               />
             </div>
@@ -491,13 +491,13 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
               <span className="text-xs font-bold text-gray-700 dark:text-gray-300 bg-white/80 dark:bg-gray-800/80 px-1 rounded">
                 Lv{currentLevel}
               </span>
-            </div>
+          </div>
             
             {/* Experience Progress Bar */}
             <div className="flex-1 bg-gray-300 dark:bg-gray-600 rounded-full h-1.5 overflow-hidden">
-              <div 
+            <div 
                 className="bg-purple-500 h-full transition-all duration-300"
-                style={{ width: `${xpPercentage}%` }}
+              style={{ width: `${xpPercentage}%` }}
               />
             </div>
           </div>

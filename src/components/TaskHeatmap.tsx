@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import CalendarHeatmap from 'react-calendar-heatmap';
 import 'react-calendar-heatmap/dist/styles.css';
-import './TaskHeatmap.css';
 import { useTaskStore } from '../store/taskStore';
 
 interface TaskHistoryEntry {
@@ -18,9 +17,8 @@ const TaskHeatmap: React.FC = () => {
   const lastFetchedRef = useRef<number | null>(null);
 
   useEffect(() => {
-    // Check if mobile on mount and resize
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768); // md breakpoint
+      setIsMobile(window.innerWidth < 768);
     };
     
     checkMobile();
@@ -104,47 +102,78 @@ const TaskHeatmap: React.FC = () => {
 
   return (
     <div className="bg-white dark:bg-dark-200 rounded-lg p-6">
+      {/* Inline styles for SVG fills (can't use Tailwind for SVG fill colors) */}
+      <style>{`
+        .react-calendar-heatmap {
+          width: 100%;
+        }
+        .react-calendar-heatmap .color-empty {
+          fill: #ebedf0;
+        }
+        .react-calendar-heatmap .color-scale-1 {
+          fill: #c6e48b;
+        }
+        .react-calendar-heatmap .color-scale-2 {
+          fill: #7bc96f;
+        }
+        .react-calendar-heatmap .color-scale-3 {
+          fill: #239a3b;
+        }
+        .dark .react-calendar-heatmap .color-empty {
+          fill: #374151;
+        }
+        .dark .react-calendar-heatmap .color-scale-1 {
+          fill: #065f46;
+        }
+        .dark .react-calendar-heatmap .color-scale-2 {
+          fill: #047857;
+        }
+        .dark .react-calendar-heatmap .color-scale-3 {
+          fill: #10b981;
+        }
+      `}</style>
+      
       <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">
         Task Activity
       </h3>
       
-      
       {/* Calendar Heatmap */}
-      <div>
-        <CalendarHeatmap
-          startDate={new Date(Date.now() - (isMobile ? 120 : 365) * 24 * 60 * 60 * 1000)}
-          endDate={new Date()}
-          values={history.map(entry => {
-            // Create date in local timezone to avoid UTC shift
-            const [year, month, day] = entry.date.split('-').map(Number);
-            const dateObj = new Date(year, month - 1, day);
-            
-            return {
-              date: dateObj,
-              count: entry.tasks_completed
-            };
-          })}
-          classForValue={(value) => {
-            if (!value) {
-              return 'color-empty';
-            }
-            if (value.count === 0) {
-              return 'color-empty';
-            }
-            if (value.count <= 2) {
-              return 'color-scale-1';
-            }
-            if (value.count <= 4) {
-              return 'color-scale-2';
-            }
-            return 'color-scale-3';
-          }}
-          showWeekdayLabels={true}
-        />
+      <div className="w-full overflow-x-auto">
+        <div>
+          <CalendarHeatmap
+            startDate={new Date(Date.now() - (isMobile ? 120 : 365) * 24 * 60 * 60 * 1000)}
+            endDate={new Date()}
+            values={history.map(entry => {
+              const [year, month, day] = entry.date.split('-').map(Number);
+              const dateObj = new Date(year, month - 1, day);
+              
+              return {
+                date: dateObj,
+                count: entry.tasks_completed
+              };
+            })}
+            classForValue={(value) => {
+              if (!value) {
+                return 'color-empty';
+              }
+              if (value.count === 0) {
+                return 'color-empty';
+              }
+              if (value.count <= 2) {
+                return 'color-scale-1';
+              }
+              if (value.count <= 3) {
+                return 'color-scale-2';
+              }
+              return 'color-scale-3';
+            }}
+            showWeekdayLabels={true}
+          />
+        </div>
       </div>
       
       {/* Stats */}
-      <div className="flex gap-6 text-sm">
+      <div className="flex gap-6 text-sm mt-4">
         <div className="flex items-center gap-2">
           <span className="text-gray-600 dark:text-gray-400">Current Streak:</span>
           <span className="font-semibold text-green-600 dark:text-green-400">

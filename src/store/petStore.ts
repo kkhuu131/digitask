@@ -1568,7 +1568,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
   fetchUserDailyStatGains: async () => {
     // No longer needed - daily stat cap removed
     set({ userDailyStatGains: 0 });
-    return 0;
+        return 0;
   },
 
   updateDigimonName: async (digimonId: string, newName: string) => {
