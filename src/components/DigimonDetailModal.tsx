@@ -22,10 +22,10 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
   selectedDigimon,
   onClose,
   onSetActive,
-  onNameChange,
   className = "",
 }) => {
   const { discoveredDigimon, evolveDigimon, devolveDigimon, allUserDigimon } = useDigimonStore();
+  const [localDigimon, setLocalDigimon] = useState<UserDigimon | null>(selectedDigimon);
   const [editingName, setEditingName] = useState<string | null>(null);
   const [newName, setNewName] = useState("");
   const [isAnimating, setIsAnimating] = useState(false);
@@ -42,18 +42,22 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
   const [evolutionOptions, setEvolutionOptions] = useState<EvolutionOption[]>([]);
 
   useEffect(() => {
+    setLocalDigimon(selectedDigimon);
+  }, [selectedDigimon]);
+
+  useEffect(() => {
     // Check if the Digimon belongs to the current user
     const checkOwnership = async () => {
       const { data: userData } = await supabase.auth.getUser();
-      if (userData.user && selectedDigimon) {
-        setBelongsToCurrentUser(userData.user.id === selectedDigimon.user_id);
+      if (userData.user && localDigimon) {
+        setBelongsToCurrentUser(userData.user.id === localDigimon.user_id);
       } else {
         setBelongsToCurrentUser(false);
       }
     };
     
     checkOwnership();
-  }, [selectedDigimon]);
+  }, [localDigimon]);
 
   useEffect(() => {
     // Load saved stats from localStorage and database
@@ -89,7 +93,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
     const upperType = statType.toUpperCase();
     const availablePoints = savedStats[upperType] || 0;
 
-    if (availablePoints <= 0 || allocating || !selectedDigimon) return;
+    if (availablePoints <= 0 || allocating || !localDigimon) return;
     
     try {
       setAllocating(true);
@@ -103,20 +107,18 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
       
       // Calculate the new bonus value
       const statField = `${statType.toLowerCase()}_bonus`;
-      const currentBonus = (selectedDigimon as any)[statField] || 0;
+      const currentBonus = (localDigimon as any)[statField] || 0;
       const newBonus = currentBonus + 1;
 
       // 1. OPTIMISTIC UPDATE: Immediately update the UI with the new value
       // Create a copy of the selectedDigimon with the updated stat
       const updatedDigimon = {
-        ...selectedDigimon,
+        ...localDigimon,
         [statField]: newBonus
       };
       
       // 2. Update the local state immediately
-      if (onNameChange) {
-        onNameChange(updatedDigimon);
-      }
+      setLocalDigimon(updatedDigimon);
       
       // 3. Update the global store state immediately for UI consistency
       useDigimonStore.getState().updateDigimonInStore(updatedDigimon);
@@ -129,19 +131,17 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
 
       // 5. Now perform the actual database update in the background
       const { error } = await supabase.rpc('allocate_stat', {
-        p_digimon_id: selectedDigimon.id,
+        p_digimon_id: localDigimon.id,
         p_stat_type: upperType,
         p_user_id: userData.user.id
       });
 
       if (error) {
         // If error, revert the optimistic update
-        if (onNameChange) {
-          onNameChange(selectedDigimon); // Revert to original
-        }
+        setLocalDigimon(localDigimon);
         
         // Revert the store update
-        useDigimonStore.getState().updateDigimonInStore(selectedDigimon);
+        useDigimonStore.getState().updateDigimonInStore(localDigimon);
         
         // Revert the savedStats
         const originalSavedStats = { ...savedStats };
@@ -203,7 +203,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
           </div>
           
           {/* Allocation Button */}
-          {belongsToCurrentUser && statValue > 0 && isUnderStatCap(selectedDigimon) && (
+          {belongsToCurrentUser && statValue > 0 && isUnderStatCap(localDigimon) && (
             <button 
               className="w-6 h-6 bg-indigo-100 hover:bg-indigo-200 text-indigo-800 dark:bg-amber-800/30 dark:hover:bg-amber-700/50 dark:text-amber-300 rounded-full flex items-center justify-center relative"
               onClick={() => allocateStat(lowerLabel as StatType)}
@@ -217,7 +217,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
           )}
           
           {/* Placeholder for when there are no stats to allocate */}
-          {(statValue <= 0 || !belongsToCurrentUser || !isUnderStatCap(selectedDigimon)) && (
+          {(statValue <= 0 || !belongsToCurrentUser || !isUnderStatCap(localDigimon)) && (
             <div className="w-6"></div>
           )}
         </div>
@@ -225,7 +225,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
     );
   };
 
-  if (!selectedDigimon) return null;
+  if (!localDigimon) return null;
 
   // Add a helper function to calculate age in days
   const calculateAgeDays = (createdAt: string): number => {
@@ -272,8 +272,9 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
       
       // IMPORTANT: Create a modified copy of selectedDigimon with the new name
       // This is crucial for the UI to update immediately
-      const updatedDigimon = {
-        ...selectedDigimon,
+      if (!localDigimon) return;
+      const updatedDigimon: UserDigimon = {
+        ...localDigimon,
         name: nameToSave
       };
       
@@ -284,9 +285,8 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
       
       // This is the key part - directly update the parent component's state
       // by passing the updated digimon back through a callback
-      if (onNameChange) {
-        onNameChange(updatedDigimon);
-      }
+      setLocalDigimon(updatedDigimon);
+      useDigimonStore.getState().updateDigimonInStore(updatedDigimon);
     } catch (error) {
       console.error("Error updating Digimon name:", error);
       alert("Failed to update name. Please try again.");
@@ -313,13 +313,14 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
     return discoveredDigimon.includes(digimonId);
   };
 
-  const stats = calculateFinalStats(selectedDigimon);
+  const stats = calculateFinalStats(localDigimon);
 
   // Handle evolution
   const handleEvolution = async (toDigimonId: number) => {
     try {
       setEvolutionError(null);
-      await evolveDigimon(toDigimonId, selectedDigimon.id);
+      if (!localDigimon) return;
+      await evolveDigimon(toDigimonId, localDigimon.id);
       onClose();
     } catch (error) {
       console.error("Evolution error:", error);
@@ -333,7 +334,8 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
       setDevolutionError(null);
       setShowDevolutionModal(false);
       onClose();
-      await devolveDigimon(toDigimonId, selectedDigimon.id);
+      if (!localDigimon) return;
+      await devolveDigimon(toDigimonId, localDigimon.id);
     } catch (error) {
       setDevolutionError((error as Error).message);
     }
@@ -342,26 +344,26 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
   // Add this useEffect to fetch devolution options when the modal opens
   useEffect(() => {
     const loadDevolutionOptions = async () => {
-      if (!selectedDigimon || !selectedDigimon.digimon_id) return;
+      if (!localDigimon || !localDigimon.digimon_id) return;
       
-      const options = await useDigimonStore.getState().fetchDevolutionOptions(selectedDigimon.digimon_id);
+      const options = await useDigimonStore.getState().fetchDevolutionOptions(localDigimon.digimon_id);
       setDevolutionOptions(options);
     };
     
     loadDevolutionOptions();
-  }, [selectedDigimon]);
+  }, [localDigimon]);
 
   // Add this useEffect to fetch evolution options when the modal opens or digimon changes
   useEffect(() => {
     const loadEvolutionOptions = async () => {
-      if (!selectedDigimon || !selectedDigimon.digimon_id) return;
+      if (!localDigimon || !localDigimon.digimon_id) return;
       
-      const options = await useDigimonStore.getState().fetchEvolutionOptions(selectedDigimon.digimon_id);
+      const options = await useDigimonStore.getState().fetchEvolutionOptions(localDigimon.digimon_id);
       setEvolutionOptions(options);
     };
     
     loadEvolutionOptions();
-  }, [selectedDigimon]);
+  }, [localDigimon]);
 
   const digimonDetailModalTutorialSteps: DialogueStep[] = [
     {
@@ -382,7 +384,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
     },
     {
       speaker: 'neemon',
-      text: `Ooh, your Digimon's personality is ${selectedDigimon.personality}!`
+      text: `Ooh, your Digimon's personality is ${localDigimon.personality}!`
     },
     {
       speaker: 'bokomon',
@@ -427,30 +429,30 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
           <div className="md:w-2/5 flex flex-col items-center">
             <div className="w-32 h-32 flex items-center justify-center mt-4 mb-8">
               <DigimonSprite
-                digimonName={selectedDigimon.digimon?.name || ""}
-                fallbackSpriteUrl={selectedDigimon.digimon?.sprite_url || "/assets/pet/egg.svg"}
-                happiness={selectedDigimon.happiness}
+                digimonName={localDigimon.digimon?.name || ""}
+                fallbackSpriteUrl={localDigimon.digimon?.sprite_url || "/assets/pet/egg.svg"}
+                happiness={localDigimon.happiness}
                 size="lg"
                 onClick={handleModalSpriteClick}
               />
             </div>
             
             <div className="text-center mb-1">
-              {editingName === selectedDigimon.id ? (
+              {editingName === (localDigimon?.id || null) ? (
                 <div className="flex items-center justify-center mb-2">
                   <input
                     type="text"
                     value={newName}
                     onChange={(e) => setNewName(e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(e, selectedDigimon.id)}
+                    onKeyDown={(e) => handleKeyDown(e, localDigimon.id)}
                     className="px-2 py-1 border border-gray-300 dark:border-dark-100 rounded-md text-gray-800 dark:text-gray-200 dark:bg-dark-200 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-accent-500"
                     maxLength={20}
-                    placeholder={selectedDigimon.digimon?.name || "Enter nickname"}
+                    placeholder={localDigimon.digimon?.name || "Enter nickname"}
                     autoFocus
                   />
                   <div className="flex ml-1">
                     <button
-                      onClick={() => handleSaveName(selectedDigimon.id)}
+                      onClick={() => handleSaveName(localDigimon.id)}
                       className="p-1 bg-green-100 text-green-600 hover:bg-green-200 rounded-md"
                       title="Save name (or press Enter)"
                     >
@@ -471,13 +473,14 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                 </div>
               ) : (
                 <div className="flex items-center justify-center mb-2">
-                  <h4 className="text-xl font-semibold mr-1 dark:text-gray-100">
-                    {selectedDigimon.name || selectedDigimon.digimon?.name}
-                  </h4>
+          <h4 className="text-xl font-semibold mr-1 dark:text-gray-100">
+            {localDigimon.name || localDigimon.digimon?.name}
+          </h4>
                   <button
                     onClick={(e) => {
                       e.stopPropagation(); // Prevent event bubbling
-                      handleEditName(selectedDigimon.id, selectedDigimon.name, selectedDigimon.digimon?.name || "");
+                      if (!localDigimon) return;
+                      handleEditName(localDigimon.id, localDigimon.name, localDigimon.digimon?.name || "");
                     }}
                     className="p-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 z-10" // Add z-index
                     title="Edit name"
@@ -491,19 +494,19 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
               )}
               <div className="flex justify-center space-x-2">
                 <span className="text-sm bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 px-2 py-1 rounded">
-                  Lv. {selectedDigimon.current_level}
+                  Lv. {localDigimon.current_level}
                 </span>
-                {selectedDigimon.is_on_team && (
+                {localDigimon.is_on_team && (
                   <span className="text-sm bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 px-2 py-1 rounded">
                     Team
                   </span>
                 )}
-                {selectedDigimon.is_active && (
+                {localDigimon.is_active && (
                   <span className="text-sm bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 px-2 py-1 rounded">
                     Active
                   </span>
                 )}
-                {selectedDigimon.has_x_antibody && (
+                {localDigimon.has_x_antibody && (
                 <div className="text-sm bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 px-2 py-1 rounded">
                   <span className="text-sm font-medium text-indigo-600 dark:text-indigo-300">X-Antibody</span>
                 </div>
@@ -511,23 +514,23 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
               </div>
               <div className="grid grid-cols-2 gap-x-1 text-sm text-gray-500 dark:text-gray-400 mt-2">
                 <p className="text-right">Age:</p>
-                <p className="text-left">{calculateAgeDays(selectedDigimon.created_at)} days</p>
+                <p className="text-left">{calculateAgeDays(localDigimon.created_at)} days</p>
 
                 <p className="text-right">Personality:</p>
-                <p className="text-left">{selectedDigimon.personality}</p>
+                <p className="text-left">{localDigimon.personality}</p>
               </div>
             </div>
 
             {/* Description - fix the nesting issue */}
             <div className="text-center text-gray-600 dark:text-gray-300 text-sm mt-1 mb-2 flex flex-wrap items-center justify-center gap-x-1">
-              <span>{`${selectedDigimon.digimon?.name} is a `}</span>
+              <span>{`${localDigimon.digimon?.name} is a `}</span>
               <TypeAttributeIcon
-                type={selectedDigimon.digimon?.type as DigimonType}
-                attribute={selectedDigimon.digimon?.attribute as DigimonAttribute}
+                type={localDigimon.digimon?.type as DigimonType}
+                attribute={localDigimon.digimon?.attribute as DigimonAttribute}
                 size="sm"
                 showLabel={false}
               />
-              <span>{`${selectedDigimon.digimon?.attribute} ${selectedDigimon.digimon?.type}, ${selectedDigimon.digimon?.stage} Digimon.`}</span>
+              <span>{`${localDigimon.digimon?.attribute} ${localDigimon.digimon?.type}, ${localDigimon.digimon?.stage} Digimon.`}</span>
             </div>
             {/* Status bars - keep as is */}
             <div className="w-full space-y-4 mb-6 mt-4">
@@ -542,11 +545,11 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                   <div className="flex-1 bg-gray-300 dark:bg-gray-600 rounded-full h-1.5 overflow-hidden">
                     <div 
                       className={`h-full transition-all duration-300 ${
-                        selectedDigimon.happiness >= 60 ? 'bg-green-500' : 
-                        selectedDigimon.happiness >= 30 ? 'bg-yellow-500' : 
+                        localDigimon.happiness >= 60 ? 'bg-green-500' : 
+                        localDigimon.happiness >= 30 ? 'bg-yellow-500' : 
                         'bg-red-500'
                       }`}
-                      style={{ width: `${selectedDigimon.happiness}%` }}
+                      style={{ width: `${localDigimon.happiness}%` }}
                     />
                   </div>
                 </div>
@@ -554,7 +557,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                 {/* Happiness details below */}
                 <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
                   <span>Happiness</span>
-                  <span>{selectedDigimon.happiness}%</span>
+                  <span>{localDigimon.happiness}%</span>
                 </div>
               </div>
               
@@ -563,7 +566,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                   {/* Level text directly left of the bar - fixed width */}
                   <div className="flex items-center justify-center w-8 h-4 flex-shrink-0">
                     <span className="text-xs font-bold text-gray-700 dark:text-gray-300 bg-white/80 dark:bg-gray-800/80 px-1 rounded">
-                      Lv{selectedDigimon.current_level}
+                      Lv{localDigimon.current_level}
                     </span>
                   </div>
                   
@@ -572,7 +575,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                     <div 
                       className="bg-purple-500 h-full transition-all duration-300"
                       style={{ 
-                        width: `${Math.min(100, (selectedDigimon.experience_points / (selectedDigimon.current_level * 20)) * 100)}%` 
+                        width: `${Math.min(100, (localDigimon.experience_points / (localDigimon.current_level * 20)) * 100)}%` 
                       }}
                     />
                   </div>
@@ -580,8 +583,8 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                 
                 {/* Experience details below */}
                 <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  <span>{selectedDigimon.experience_points}/{selectedDigimon.current_level * 20} XP</span>
-                  <span>{20 * selectedDigimon.current_level * (selectedDigimon.current_level - 1) / 2 + selectedDigimon.experience_points} Total EXP</span>
+                  <span>{localDigimon.experience_points}/{localDigimon.current_level * 20} XP</span>
+                  <span>{20 * localDigimon.current_level * (localDigimon.current_level - 1) / 2 + localDigimon.experience_points} Total EXP</span>
                 </div>
               </div>
             </div>
@@ -593,22 +596,28 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
               <h4 className="text-lg font-semibold mb-2 dark:text-gray-100">Stats</h4>
 
               {/* Add a section showing total available stat points if any */}
-              {Object.values(savedStats).some(val => val > 0) && belongsToCurrentUser && (
+              {belongsToCurrentUser && (
                 <div className="mb-3 p-2 bg-indigo-50 dark:bg-amber-900/20 border border-indigo-200 dark:border-amber-700/50 rounded-lg">
                   <p className="text-sm text-indigo-800 dark:text-amber-200">
-                    {isUnderStatCap(selectedDigimon) ? "You have saved stat points to allocate! " + getRemainingStatPoints(selectedDigimon) + " stat points until cap." : "This Digimon has reached its stat cap. Increase its ABI through evolution and devolution to unlock more stat points."}
+                    {isUnderStatCap(localDigimon) ? (
+                      <>
+                        Remaining bonus stats Digimon can have is {getRemainingStatPoints(localDigimon)}. Increase by raising the Digimon's ABI.
+                      </>
+                    ) : (
+                      "This Digimon has reached its stat cap. Increase its ABI through evolution and devolution to unlock more stat points."
+                    )}
                   </p>
                 </div>
               )}
 
               <div className="space-y-3 mb-4">
-                {renderStatRow("HP", stats.hp, selectedDigimon.hp_bonus)}
-                {renderStatRow("SP", stats.sp, selectedDigimon.sp_bonus)}
-                {renderStatRow("ATK", stats.atk, selectedDigimon.atk_bonus)}
-                {renderStatRow("DEF", stats.def, selectedDigimon.def_bonus)}
-                {renderStatRow("INT", stats.int, selectedDigimon.int_bonus)}
-                {renderStatRow("SPD", stats.spd, selectedDigimon.spd_bonus)}
-                {renderStatRow("ABI", selectedDigimon.abi, 0)}
+                {renderStatRow("HP", stats.hp, localDigimon.hp_bonus)}
+                {renderStatRow("SP", stats.sp, localDigimon.sp_bonus)}
+                {renderStatRow("ATK", stats.atk, localDigimon.atk_bonus)}
+                {renderStatRow("DEF", stats.def, localDigimon.def_bonus)}
+                {renderStatRow("INT", stats.int, localDigimon.int_bonus)}
+                {renderStatRow("SPD", stats.spd, localDigimon.spd_bonus)}
+                {renderStatRow("ABI", localDigimon.abi, 0)}
               </div>
               
               {/* Evolution Options - Only show for the current user's Digimon */}
@@ -620,49 +629,49 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                       {evolutionOptions.map((option) => {
                         // Calculate base stats for current level
                         const baseHP = calculateBaseStat(
-                          selectedDigimon.current_level,
-                          selectedDigimon.digimon?.hp_level1 ?? 0,
-                          selectedDigimon.digimon?.hp ?? 0,
-                          selectedDigimon.digimon?.hp_level99 ?? 0
+                          localDigimon.current_level,
+                          localDigimon.digimon?.hp_level1 ?? 0,
+                          localDigimon.digimon?.hp ?? 0,
+                          localDigimon.digimon?.hp_level99 ?? 0
                         );
                         
                         const baseSP = calculateBaseStat(
-                          selectedDigimon.current_level,
-                          selectedDigimon.digimon?.sp_level1 ?? 0,
-                          selectedDigimon.digimon?.sp ?? 0,
-                          selectedDigimon.digimon?.sp_level99 ?? 0
+                          localDigimon.current_level,
+                          localDigimon.digimon?.sp_level1 ?? 0,
+                          localDigimon.digimon?.sp ?? 0,
+                          localDigimon.digimon?.sp_level99 ?? 0
                         );
                         
                         const baseATK = calculateBaseStat(
-                          selectedDigimon.current_level,
-                          selectedDigimon.digimon?.atk_level1 ?? 0,
-                          selectedDigimon.digimon?.atk ?? 0,
-                          selectedDigimon.digimon?.atk_level99 ?? 0
+                          localDigimon.current_level,
+                          localDigimon.digimon?.atk_level1 ?? 0,
+                          localDigimon.digimon?.atk ?? 0,
+                          localDigimon.digimon?.atk_level99 ?? 0
                         );
                         
                         const baseDEF = calculateBaseStat(
-                          selectedDigimon.current_level,
-                          selectedDigimon.digimon?.def_level1 ?? 0,
-                          selectedDigimon.digimon?.def ?? 0,
-                          selectedDigimon.digimon?.def_level99 ?? 0
+                          localDigimon.current_level,
+                          localDigimon.digimon?.def_level1 ?? 0,
+                          localDigimon.digimon?.def ?? 0,
+                          localDigimon.digimon?.def_level99 ?? 0
                         );
                         
                         const baseINT = calculateBaseStat(
-                          selectedDigimon.current_level,
-                          selectedDigimon.digimon?.int_level1 ?? 0,
-                          selectedDigimon.digimon?.int ?? 0,
-                          selectedDigimon.digimon?.int_level99 ?? 0
+                          localDigimon.current_level,
+                          localDigimon.digimon?.int_level1 ?? 0,
+                          localDigimon.digimon?.int ?? 0,
+                          localDigimon.digimon?.int_level99 ?? 0
                         );
                         
                         const baseSPD = calculateBaseStat(
-                          selectedDigimon.current_level,
-                          selectedDigimon.digimon?.spd_level1 ?? 0,
-                          selectedDigimon.digimon?.spd ?? 0,
-                          selectedDigimon.digimon?.spd_level99 ?? 0
+                          localDigimon.current_level,
+                          localDigimon.digimon?.spd_level1 ?? 0,
+                          localDigimon.digimon?.spd ?? 0,
+                          localDigimon.digimon?.spd_level99 ?? 0
                         );
                         
                         // Check level requirement
-                        const meetsLevelRequirement = selectedDigimon.current_level >= option.level_required;
+                        const meetsLevelRequirement = localDigimon.current_level >= option.level_required;
                         
                         // Check stat requirements
                         let meetsStatRequirements = true;
@@ -671,37 +680,37 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                           const statReqs = option.stat_requirements;
                           
                           if (statReqs.hp && statReqs.hp > 0) {
-                            const currentHP = baseHP + 10 * (selectedDigimon.hp_bonus || 0);
+                            const currentHP = baseHP + 10 * (localDigimon.hp_bonus || 0);
                             if (currentHP < statReqs.hp) meetsStatRequirements = false;
                           }
                           
                           if (statReqs.sp && statReqs.sp > 0) {
-                            const currentSP = baseSP + (selectedDigimon.sp_bonus || 0);
+                            const currentSP = baseSP + (localDigimon.sp_bonus || 0);
                             if (currentSP < statReqs.sp) meetsStatRequirements = false;
                           }
                           
                           if (statReqs.atk && statReqs.atk > 0) {
-                            const currentATK = baseATK + (selectedDigimon.atk_bonus || 0);
+                            const currentATK = baseATK + (localDigimon.atk_bonus || 0);
                             if (currentATK < statReqs.atk) meetsStatRequirements = false;
                           }
                           
                           if (statReqs.def && statReqs.def > 0) {
-                            const currentDEF = baseDEF + (selectedDigimon.def_bonus || 0);
+                            const currentDEF = baseDEF + (localDigimon.def_bonus || 0);
                             if (currentDEF < statReqs.def) meetsStatRequirements = false;
                           }
                           
                           if (statReqs.int && statReqs.int > 0) {
-                            const currentINT = baseINT + (selectedDigimon.int_bonus || 0);
+                            const currentINT = baseINT + (localDigimon.int_bonus || 0);
                             if (currentINT < statReqs.int) meetsStatRequirements = false;
                           }
                           
                           if (statReqs.spd && statReqs.spd > 0) {
-                            const currentSPD = baseSPD + (selectedDigimon.spd_bonus || 0);
+                            const currentSPD = baseSPD + (localDigimon.spd_bonus || 0);
                             if (currentSPD < statReqs.spd) meetsStatRequirements = false;
                           }
 
                           if (statReqs.abi && statReqs.abi > 0) {
-                            const currentABI = selectedDigimon.abi || 0;
+                            const currentABI = localDigimon.abi || 0;
                             if (currentABI < statReqs.abi) meetsStatRequirements = false;
                           }
                         }
@@ -768,10 +777,10 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
         {/* Update the buttons section at the bottom of the modal */}
         <div className="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0 w-full mt-4">
           {/* All the buttons */}
-          {!selectedDigimon.is_active && onSetActive && (
+          {!localDigimon.is_active && onSetActive && (
             <button
               onClick={() => {
-                onSetActive(selectedDigimon.id);
+                onSetActive(localDigimon.id);
                 onClose();
               }}
               className="flex-1 bg-indigo-100 dark:bg-amber-900/30 text-indigo-800 dark:text-amber-200 rounded hover:bg-indigo-200 dark:hover:bg-amber-800/50 py-2 px-4"
@@ -781,7 +790,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
           )}
           
           {/* Active indicator - show instead of Set Active button if already active */}
-          {selectedDigimon.is_active && (
+          {localDigimon.is_active && (
             <div className="flex-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 py-2 px-4 rounded text-center">
               Active
             </div>
@@ -818,7 +827,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
           // This will be called after the animation completes
           onClose();
         }}
-        selectedDigimon={selectedDigimon}
+        selectedDigimon={localDigimon as UserDigimon}
         options={evolutionOptions}
         onEvolve={handleEvolution}
         isDevolution={false}
@@ -831,7 +840,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
       <DigimonEvolutionModal
         isOpen={showDevolutionModal}
         onClose={() => setShowDevolutionModal(false)}
-        selectedDigimon={selectedDigimon}
+        selectedDigimon={localDigimon as UserDigimon}
         options={devolutionOptions}
         onEvolve={handleDevolution}
         isDevolution={true}
