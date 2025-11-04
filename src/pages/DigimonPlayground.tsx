@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import PageTutorial from '../components/PageTutorial';
 import { DialogueStep } from '../components/DigimonDialogue';
 import DigimonSprite from '../components/DigimonSprite';
+import TypeAttributeIcon from '../components/TypeAttributeIcon';
 import { ANIMATED_DIGIMON } from '../constants/animatedDigimonList';
 import { Tab, TabList, TabPanel, TabPanels, TabGroup} from '@headlessui/react';
 
@@ -549,10 +550,10 @@ const DigimonPlayground: React.FC = () => {
     <div className="max-w-6xl mx-auto px-4 py-6">
       <div className="flex flex-col md:flex-row gap-6">
         {/* Reduced width for playground area */}
-        <div className="w-full md:w-3/5">
+        <div className="w-full md:w-1/2">
           <div className="mb-4">
             <h1 className="text-2xl font-bold mb-2 dark:text-gray-100">DigiFarm</h1>
-            <p className="text-gray-600 dark:text-gray-300">Your Digimon hang out here when they're not with you.</p>
+            <p className="text-gray-600 dark:text-gray-300">This is where you store Digimon that you aren't using in your party.</p>
           </div>
           
           {/* Playground Area - this is where the Digimon move around */}
@@ -636,9 +637,8 @@ const DigimonPlayground: React.FC = () => {
       </div>
         
         {/* Increased width for management panel */}
-        <div className="w-full md:w-2/5">
+        <div className="w-full md:w-1/2">
           <div className="bg-white dark:bg-dark-300 rounded-lg shadow-sm border border-gray-200 dark:border-dark-200 p-4">
-            <h2 className="text-lg font-bold mb-4 dark:text-gray-100">Digimon Management</h2>
       
       <TabGroup selectedIndex={selectedTab} onChange={setSelectedTab}>
               <TabList className="flex space-x-1 rounded-lg bg-gray-100 dark:bg-dark-200 p-1 mb-4">
@@ -652,7 +652,7 @@ const DigimonPlayground: React.FC = () => {
                     }`
                   }
                 >
-                  Active Party
+                  Party
           </Tab>
           <Tab 
             className={({ selected }) =>
@@ -664,7 +664,7 @@ const DigimonPlayground: React.FC = () => {
                     }`
                   }
                 >
-                  Storage
+                  DigiFarm
           </Tab>
         </TabList>
         
@@ -674,8 +674,8 @@ const DigimonPlayground: React.FC = () => {
                     Manage your active Digimon party. You can have up to {maxActivePartySize} Digimon.
                   </p>
                   
-                  {/* Active Party List - now in 2 columns */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[500px] overflow-y-auto pr-1">
+                  {/* Active Party Grid - compact cards matching party style */}
+                  <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-2 max-h-[500px] overflow-y-auto pr-1">
                     {allUserDigimon
                       .filter(digimon => !digimon.is_in_storage)
                       .sort((a, b) => {
@@ -684,43 +684,57 @@ const DigimonPlayground: React.FC = () => {
                         return 0;
                       })
                       .map(digimon => (
-                        <div 
-                          key={digimon.id} 
-                          className={`
-                            p-2 border rounded-md flex items-center 
-                            ${digimon.is_active ? 'bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-700' : 'bg-white dark:bg-dark-200 border-gray-200 dark:border-dark-400'}
-                          `}
+                        <div
+                          key={digimon.id}
+                          className={`relative bg-gray-50 dark:bg-dark-200 rounded-lg p-2 border ${digimon.is_active ? 'border-purple-300 dark:border-purple-700' : 'border-gray-200 dark:border-dark-400'}`}
                         >
-                          <div className="w-10 h-10 flex-shrink-0">
-                            <DigimonSprite 
-                              digimonName={digimon.digimon?.name || ""}
-                              fallbackSpriteUrl={digimon.digimon?.sprite_url || ""}
+                          {/* Active badge */}
+                          {digimon.is_active && (
+                            <div className="absolute top-1 left-1 text-[10px] px-1 rounded bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-200">Active</div>
+                          )}
+                          {/* Type icon */}
+                          {digimon.digimon?.type && digimon.digimon?.attribute && (
+                            <div className="absolute top-1 right-1 z-10">
+                              <TypeAttributeIcon 
+                                type={digimon.digimon.type as any} 
+                                attribute={digimon.digimon.attribute as any} 
+                                size="sm" 
+                              />
+                            </div>
+                          )}
+                          <div className="w-full aspect-square flex items-center justify-center">
+                            <DigimonSprite
+                              digimonName={digimon.digimon?.name || ''}
+                              fallbackSpriteUrl={digimon.digimon?.sprite_url || ''}
                               size="xs"
                               showHappinessAnimations={false}
                             />
                           </div>
-                          <div className="ml-2 flex-grow min-w-0">
-                            <div className="font-medium text-sm truncate dark:text-gray-200">
-                              {digimon.name || digimon.digimon?.name}
+                          {/* Level + exp bar */}
+                          <div className="absolute bottom-1 left-1 right-1 flex items-center gap-1">
+                            <span className="text-xs font-bold text-gray-700 dark:text-gray-300 bg-white/80 dark:bg-gray-800/80 px-1 rounded">{digimon.current_level}</span>
+                            <div className="flex-1 bg-gray-300 dark:bg-gray-600 rounded-full h-1.5 overflow-hidden">
+                              {(() => {
+                                const expForCurrentLevel = digimon.current_level * 20;
+                                const expProgress = Math.min(100, (digimon.experience_points / expForCurrentLevel) * 100);
+                                return <div className="bg-purple-500 h-full transition-all" style={{ width: `${expProgress}%` }} />;
+                              })()}
                             </div>
-                            <div className="text-xs text-gray-500 dark:text-gray-400">Level {digimon.current_level}</div>
-                          </div>
                             <button
                               onClick={() => handleTransferToStorage(digimon.id)}
-                            disabled={transferringDigimon === digimon.id || digimon.is_active}
-                            className={`
-                              text-xs ml-2 py-1 px-2 rounded 
-                              ${
-                                transferringDigimon === digimon.id
-                                  ? 'bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-400'
-                                  : digimon.is_active
-                                  ? 'bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
-                                  : 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-800/30'
-                              }
-                            `}
-                          >
-                            {transferringDigimon === digimon.id ? '...' : 'Send'}
+                              disabled={transferringDigimon === digimon.id || digimon.is_active}
+                              className={`text-[10px] px-2 py-0.5 rounded flex items-center justify-center ${transferringDigimon === digimon.id ? 'bg-gray-200 dark:bg-gray-600 text-gray-500' : digimon.is_active ? 'bg-gray-200 dark:bg-gray-600 text-gray-500 cursor-not-allowed' : 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-800/30'}`}
+                              title="Send to Storage"
+                              aria-label="Send to Storage"
+                            >
+                              {transferringDigimon === digimon.id ? '...' : (
+                                // Arrow pointing right
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                                  <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l5 5a1 1 0 010 1.414l-5 5a1 1 0 11-1.414-1.414L13.586 11H4a1 1 0 110-2h9.586l-3.293-3.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                                </svg>
+                              )}
                             </button>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -731,53 +745,62 @@ const DigimonPlayground: React.FC = () => {
                     Your Digimon in storage. These Digimon don't receive experience or participate in battles.
                   </p>
                   
-                  {/* Storage List - now in 2 columns */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[500px] overflow-y-auto pr-1">
+                  {/* Storage Grid - compact cards matching party style */}
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 max-h-[500px] overflow-y-auto pr-1">
                     {storageDigimon.length === 0 ? (
                       <div className="text-center py-8 text-gray-500 dark:text-gray-400 col-span-2">
                         No Digimon in storage
                     </div>
                   ) : (
                       storageDigimon.map(digimon => (
-                        <div 
-                          key={digimon.id} 
-                          className="p-2 border border-gray-200 dark:border-dark-400 rounded-md flex items-center bg-white dark:bg-dark-200"
+                        <div
+                          key={digimon.id}
+                          className="relative bg-white dark:bg-dark-200 rounded-lg p-2 border border-gray-200 dark:border-dark-400"
                         >
-                          <div className="w-10 h-10 flex-shrink-0">
+                          {/* Type icon */}
+                          {digimon.digimon?.type && digimon.digimon?.attribute && (
+                            <div className="absolute top-1 right-1 z-10">
+                              <TypeAttributeIcon 
+                                type={digimon.digimon.type as any} 
+                                attribute={digimon.digimon.attribute as any} 
+                                size="sm" 
+                              />
+                            </div>
+                          )}
+                          <div className="w-full aspect-square flex items-center justify-center">
                             <DigimonSprite 
-                              digimonName={digimon.digimon?.name || ""}
-                              fallbackSpriteUrl={digimon.digimon?.sprite_url || ""}
+                              digimonName={digimon.digimon?.name || ''}
+                              fallbackSpriteUrl={digimon.digimon?.sprite_url || ''}
                               size="xs"
                               showHappinessAnimations={false}
                             />
                           </div>
-                          <div className="ml-2 flex-grow min-w-0">
-                            <div className="font-medium text-sm truncate dark:text-gray-200">
-                              {digimon.name || digimon.digimon?.name}
+                          <div className="absolute bottom-1 left-1 right-1 flex items-center gap-1">
+                            <span className="text-xs font-bold text-gray-700 dark:text-gray-300 bg-white/80 dark:bg-gray-800/80 px-1 rounded">{digimon.current_level}</span>
+                            <div className="flex-1 bg-gray-300 dark:bg-gray-600 rounded-full h-1.5 overflow-hidden">
+                              {(() => {
+                                const expForCurrentLevel = digimon.current_level * 20;
+                                const expProgress = Math.min(100, (digimon.experience_points / expForCurrentLevel) * 100);
+                                return <div className="bg-green-500 h-full transition-all" style={{ width: `${expProgress}%` }} />;
+                              })()}
                             </div>
-                            <div className="text-xs text-gray-500 dark:text-gray-400">Level {digimon.current_level}</div>
+                            <button
+                              onClick={() => handleTransferToActiveParty(digimon.id)}
+                              disabled={transferringDigimon === digimon.id || activePartyCount >= maxActivePartySize}
+                              className={`text-[10px] px-2 py-0.5 rounded flex items-center justify-center ${transferringDigimon === digimon.id ? 'bg-gray-200 dark:bg-gray-600 text-gray-500' : activePartyCount >= maxActivePartySize ? 'bg-gray-200 dark:bg-gray-600 text-gray-500 cursor-not-allowed' : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-800/30'}`}
+                              title={activePartyCount >= maxActivePartySize ? 'Party Full' : 'Add to Party'}
+                              aria-label={activePartyCount >= maxActivePartySize ? 'Party Full' : 'Add to Party'}
+                            >
+                              {transferringDigimon === digimon.id 
+                                ? '...' 
+                                : (
+                                  // Plus icon
+                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+                                  </svg>
+                                )}
+                            </button>
                           </div>
-                          <button
-                            onClick={() => handleTransferToActiveParty(digimon.id)}
-                            disabled={transferringDigimon === digimon.id || activePartyCount >= maxActivePartySize}
-                            className={`
-                              text-xs ml-2 py-1 px-2 rounded 
-                              ${
-                                transferringDigimon === digimon.id
-                                  ? 'bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-400'
-                                : activePartyCount >= maxActivePartySize
-                                  ? 'bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
-                                  : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-800/30'
-                              }
-                            `}
-                          >
-                            {transferringDigimon === digimon.id 
-                              ? '...' 
-                              : activePartyCount >= maxActivePartySize
-                              ? 'Party Full'
-                              : 'Add'
-                            }
-                          </button>
                         </div>
                       ))
                     )}

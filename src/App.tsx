@@ -25,7 +25,6 @@ import ResetPassword from "./pages/ResetPassword";
 import AuthCallback from "./pages/AuthCallback";
 import Battle from './pages/Battle';
 import Settings from './pages/Settings';
-import UserDigimonPage from './pages/UserDigimonPage';
 import Tutorial from './pages/Tutorial';
 import PatchNotes from './pages/PatchNotes';
 import ProfilePage from './pages/ProfilePage';
@@ -569,14 +568,6 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <Settings />
-              </Layout>
-            </ProtectedRoute>
-          } />
-          
-          <Route path="/party" element={
-            <ProtectedRoute>
-              <Layout>
-                <UserDigimonPage />
               </Layout>
             </ProtectedRoute>
           } />

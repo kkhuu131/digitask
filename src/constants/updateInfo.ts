@@ -1,4 +1,4 @@
-export const CURRENT_VERSION = "2.1.0";
+export const CURRENT_VERSION = "2.1.1";
 
 export const UPDATE_CHANGES = {
   "1.0.1": [
@@ -122,5 +122,10 @@ export const UPDATE_CHANGES = {
     "Task Rewards Rework: All task types (one-time, daily, recurring) now give the same amount of base rewards (100 exp, 1 stat point).",
     "XP multipliers from streaks are now capped at 2.0x.",
     "Fixed bug where daily quota and streaks were not being updated correctly.",
+  ],
+  "2.1.1": [
+    "Several UI and QoL improvements, including dashboard and team manager.",
+    "Fixed bug where storage Digimon were recieving EXP.",
+    "REMINDER: Max Party Size is now 9, if you have 12 send some to the DigiFarm as unexpected results may occur."
   ],
 };

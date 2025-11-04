@@ -636,22 +636,6 @@ const DigimonStorePage: React.FC = () => {
         <h1 className="text-2xl font-bold dark:text-gray-100">Neemon's Store</h1>
       </div>
 
-      {/* User Stats Display */}
-      <div className="mb-8 bg-white dark:bg-dark-300 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-700">
-        <h2 className="text-lg font-semibold mb-3 dark:text-gray-100">Your Bonus Stats</h2>
-        <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
-          {Object.entries(userStats).map(([stat, value]) => (
-            <div key={stat} className="bg-gray-50 dark:bg-dark-200 p-3 rounded-lg text-center">
-              <div className="text-xs text-gray-500 dark:text-gray-400">{stat}</div>
-              <div className="font-bold text-lg dark:text-gray-200">{value}</div>
-            </div>
-          ))}
-        </div>
-        <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">
-          These are bonus stats you can allocate to your Digimon from their profile page.
-        </p>
-      </div>
-
       {/* Store Items */}
       <div className="bg-white dark:bg-dark-300 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
         <Tab.Group>

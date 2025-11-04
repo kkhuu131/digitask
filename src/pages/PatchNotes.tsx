@@ -27,6 +27,20 @@ const PatchNotes = () => {
         <div className="mb-6">
           <div className="flex items-center mb-2">
           <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
+            <h3 className="text-lg font-medium ml-2 dark:text-gray-200">UI and QoL Improvements</h3>
+            <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">November 4, 2025</span>
+          </div>
+          <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
+            <li>Several UI and QoL improvements, including dashboard and team manager.</li>
+            <li>The Party page has been removed, as all functionality has been moved to the Dashboard</li>
+            <li>Team Manager and DigiFarm now have more compact UI</li>
+            <li>Fixed bug where storage Digimon were recieving EXP.</li>
+            <li>REMINDER: Max Party Size is now 9, if you have 12 send some to the DigiFarm as unexpected results may occur.</li>
+          </ul>
+        </div>
+
+        <div className="mb-6">
+          <div className="flex items-center mb-2">
             <h3 className="text-lg font-medium ml-2 dark:text-gray-200">Task Rewards Adjustments</h3>
             <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">November 2, 2025</span>
           </div>

@@ -19,8 +19,9 @@ const MilestoneProgress = () => {
   const [isNXChance, setIsNXChance] = useState(false);
   const [isProcessingClaim, setIsProcessingClaim] = useState(false);
   
-  const hasMaxDigimon = allUserDigimon.length >= 12;
-  const shouldBeAbleToClaimDigimon = getABITotal() >= getABIThreshold() && !hasMaxDigimon;
+  const hasMaxDigimon = allUserDigimon.length >= 9;
+  // Allow claiming even if party is full; excess claims go to storage
+  const shouldBeAbleToClaimDigimon = getABITotal() >= getABIThreshold();
   
   useEffect(() => {
     fetchMilestones();
@@ -62,7 +63,11 @@ const MilestoneProgress = () => {
   return (
     <>
       <div className="card">
-        <h2 className="text-xl font-bold mb-4">Milestone Progress 🥚</h2>
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+            🥚 Hatchery
+          </h2>
+        </div>
         
         {error && (
           <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
@@ -70,36 +75,36 @@ const MilestoneProgress = () => {
           </div>
         )}
         
-        <div className="space-y-6">
+        <div className="space-y-3">
           <div>
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium">ABI</span>
-              <span className="text-sm text-gray-500">{getABITotal()} / {getABIThreshold()}</span>
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">ABI Progress</span>
+              <span className="text-xs text-gray-600 dark:text-gray-300 font-medium">{getABITotal()} / {getABIThreshold()}</span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2.5">
-              <div 
-                className="bg-blue-600 h-2.5 rounded-full" 
+            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
+              <div
+                className="h-1.5 rounded-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 transition-all"
                 style={{ width: `${Math.min(100, (getABITotal() / getABIThreshold() * 100))}%` }}
-              ></div>
+              />
             </div>
-            <p className="text-xs text-gray-500 mt-1">
-              Reach a total of {getABIThreshold()} ABI to claim a Digimon. ABI can be earned by evolving or devolving Digimon.
-            </p>
+            <div className="mt-1 flex items-center justify-between text-[11px] text-gray-500 dark:text-gray-400">
+              <span>Earn ABI by evolving or devolving.</span>
+              <span className="flex items-center gap-1">Unlock a new Digimon</span>
+            </div>
           </div>
-          
-          <div className="mt-4">
+
+          <div className="mt-2">
             <button
               onClick={handleOpenSelectionModal}
               disabled={!shouldBeAbleToClaimDigimon || isProcessingClaim}
-              className={`w-full py-2 px-4 rounded-md text-white font-medium ${
+              className={`w-full py-1.5 px-3 rounded-md text-sm font-medium ${
                 shouldBeAbleToClaimDigimon && !isProcessingClaim
-                  ? "bg-primary-600 hover:bg-primary-700 dark:bg-accent-600 dark:hover:bg-accent-700"
-                  : "bg-gray-400 cursor-not-allowed"
+                  ? "text-white bg-primary-600 hover:bg-primary-700 dark:bg-amber-600 dark:hover:bg-amber-700"
+                  : "text-gray-200 bg-gray-400/70 dark:bg-gray-700/60 cursor-not-allowed"
               }`}
             >
-              {hasMaxDigimon ? "Maximum Party Size (9)" :
-               isProcessingClaim ? "Processing..." :
-               shouldBeAbleToClaimDigimon ? "Hatch a Digimon 🥚" : "Reach ABI Threshold to Claim"}
+              {isProcessingClaim ? "Processing..." :
+               shouldBeAbleToClaimDigimon ? (hasMaxDigimon ? "Claim (to Storage)" : "Claim") : "🔒 Claim"}
             </button>
           </div>
         </div>

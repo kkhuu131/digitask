@@ -6,9 +6,11 @@ import { useNotificationStore } from "./notificationStore";
 export const ABI_MILESTONES = [2, 5, 10, 15, 20, 30, 50, 75, 100, 150, 200];
 
 export function getABIThreshold() {
-  const teamSize =
-    useDigimonStore.getState().allUserDigimon.length +
-    useDigimonStore.getState().storageDigimon.length;
+  const partyCount = useDigimonStore.getState().allUserDigimon.length;
+  const storageCount = useDigimonStore.getState().storageDigimon.length;
+  const teamSizeRaw = partyCount + storageCount;
+  // Ensure minimum index of 0 for thresholds (first milestone) when data not yet loaded
+  const teamSize = Math.max(1, teamSizeRaw);
   return ABI_MILESTONES[teamSize - 1] || 200 + (teamSize - 11) * 50;
 }
 
@@ -42,6 +44,13 @@ export const useMilestoneStore = create<MilestoneState>((set, get) => ({
   fetchMilestones: async () => {
     try {
       set({ loading: true, error: null });
+      // Ensure digimon lists are loaded before computing thresholds
+      try {
+        await useDigimonStore.getState().fetchAllUserDigimon();
+        await useDigimonStore.getState().fetchStorageDigimon();
+      } catch (e) {
+        // Non-fatal: proceed with whatever is loaded
+      }
       set({
         loading: false,
         canClaimDigimon: get().checkCanClaimDigimon(),
@@ -73,20 +82,14 @@ export const useMilestoneStore = create<MilestoneState>((set, get) => ({
         return false;
       }
 
-      // Check if user already has max Digimon
+      // Get active party count to decide storage placement
       const { data: userDigimonCount } = await supabase
         .from("user_digimon")
         .select("count")
         .eq("is_in_storage", false)
         .eq("user_id", userData.user.id);
-
-      if (userDigimonCount && userDigimonCount[0]?.count >= 9) {
-        set({
-          loading: false,
-          error: "Your active party is full. Please move a Digimon to storage.",
-        });
-        return false;
-      }
+      const partyCount = userDigimonCount?.[0]?.count ?? 0;
+      const goesToStorage = partyCount >= 9;
 
       // Create the new Digimon
       const { error: createError } = await supabase
@@ -99,18 +102,22 @@ export const useMilestoneStore = create<MilestoneState>((set, get) => ({
           experience_points: 0,
           current_level: 1,
           is_active: false,
+          is_in_storage: goesToStorage,
         });
 
       useDigimonStore.getState().addDiscoveredDigimon(digimonId);
 
       if (createError) throw createError;
 
-      // Refresh the user's Digimon list
+      // Refresh the user's Digimon lists
       await useDigimonStore.getState().fetchAllUserDigimon();
+      await useDigimonStore.getState().fetchStorageDigimon();
 
       // Show success notification
       useNotificationStore.getState().addNotification({
-        message: `You've claimed a new Digimon! Check your collection.`,
+        message: goesToStorage
+          ? `You've claimed a new Digimon! Your party is full, so it was sent to DigiFarm storage.`
+          : `You've claimed a new Digimon!`,
         type: "success",
       });
 

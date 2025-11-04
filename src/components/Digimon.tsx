@@ -30,6 +30,9 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
   const [showHeart, setShowHeart] = useState(false);
   const [lookDirection, setLookDirection] = useState(2.5);
   
+  // Track level up sprite animation (happy/cheer alternating)
+  const [levelUpSpriteType, setLevelUpSpriteType] = useState<SpriteType | null>(null);
+  
   // Refs to track previous values
   const prevLevelRef = useRef(userDigimon.current_level);
   const prevXPRef = useRef(userDigimon.experience_points);
@@ -92,6 +95,12 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
   useEffect(() => {
     if (!hasAnimatedSprites) return;
     
+    // If level up animation is active, use that sprite type instead
+    if (levelUpSpriteType) {
+      setCurrentSpriteType(levelUpSpriteType);
+      return;
+    }
+    
     // Update sprite every 0.75 seconds for idle animation
     const interval = setInterval(() => {
       if (isLevelingUp || isStatIncreasing) return;
@@ -118,7 +127,7 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
     }, 750);
     
     return () => clearInterval(interval);
-  }, [hasAnimatedSprites, userDigimon.happiness, isLevelingUp, isStatIncreasing, spriteToggle, isSleeping]);
+  }, [hasAnimatedSprites, userDigimon.happiness, isLevelingUp, isStatIncreasing, spriteToggle, isSleeping, levelUpSpriteType]);
   
   // Function to get the current sprite URL
   const getCurrentSpriteUrl = () => {
@@ -172,17 +181,29 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
     setIsLevelingUp(true);
     setShowHeart(true);
     
+    // Start with happy sprite
+    setLevelUpSpriteType('happy');
+    
+    // Alternate between happy and cheer every 500ms
+    let spriteToggle = true;
+    const interval = setInterval(() => {
+      setLevelUpSpriteType(spriteToggle ? 'cheer' : 'happy');
+      spriteToggle = !spriteToggle;
+    }, 500);
+    
     // Look left and right sequence
     setTimeout(() => setLookDirection(-2.5), 200);
     setTimeout(() => setLookDirection(2.5), 400);
     setTimeout(() => setLookDirection(-2.5), 600);
     setTimeout(() => setLookDirection(2.5), 800);
     
-    // End animations
+    // Stop animation after 3 seconds
     setTimeout(() => {
+      clearInterval(interval);
       setIsLevelingUp(false);
       setShowHeart(false);
-    }, 1500);
+      setLevelUpSpriteType(null);
+    }, 3000);
   };
   
   // Function to trigger stat increase animation
@@ -380,15 +401,19 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
               ? "hop" 
               : isStatIncreasing 
                 ? "statIncrease" 
+                : availableEvolutions.length > 0
+                  ? { y: [0, -5, 0, -3, 0, -5, 0] } // Hopping animation for evolution-ready
                 : hasAnimatedSprites 
                   ? { y: 0 } // No up/down animation for animated sprites
                   : { y: [0, -10, 0] } // Keep up/down only for non-animated sprites
           }
           variants={levelUpVariants}
           transition={
-            !isLevelingUp && !isStatIncreasing && !hasAnimatedSprites
-              ? { repeat: Infinity, duration: 2 } 
-              : undefined
+            availableEvolutions.length > 0
+              ? { duration: 1, repeat: Infinity, repeatType: "loop", repeatDelay: 1 }
+              : !isLevelingUp && !isStatIncreasing && !hasAnimatedSprites
+                ? { repeat: Infinity, duration: 2 } 
+                : undefined
           }
           className="w-40 h-40 flex items-center justify-center"
           onClick={(e) => {
@@ -488,17 +513,32 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
           <div className="flex items-center gap-2 mb-1">
             {/* Level text directly left of the bar - fixed width */}
             <div className="flex items-center justify-center w-8 h-4 flex-shrink-0">
-              <span className="text-xs font-bold text-gray-700 dark:text-gray-300 bg-white/80 dark:bg-gray-800/80 px-1 rounded">
+              <span className={`text-xs font-bold px-1 rounded transition-all duration-300 ${
+                isLevelingUp 
+                  ? 'text-yellow-600 dark:text-yellow-400 bg-yellow-200/90 dark:bg-yellow-900/60 animate-pulse shadow-[0_0_8px_rgba(250,204,21,0.8)]' 
+                  : 'text-gray-700 dark:text-gray-300 bg-white/80 dark:bg-gray-800/80'
+              }`}>
                 Lv{currentLevel}
               </span>
           </div>
             
             {/* Experience Progress Bar */}
-            <div className="flex-1 bg-gray-300 dark:bg-gray-600 rounded-full h-1.5 overflow-hidden">
+            <div className="flex-1 bg-gray-300 dark:bg-gray-600 rounded-full h-1.5 overflow-hidden relative">
             <div 
-                className="bg-purple-500 h-full transition-all duration-300"
+                className={`h-full transition-all duration-300 ${
+                  isLevelingUp 
+                    ? 'bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 animate-pulse shadow-[0_0_8px_rgba(250,204,21,0.6)]' 
+                    : 'bg-purple-500'
+                }`}
               style={{ width: `${xpPercentage}%` }}
               />
+              {/* Glow effect overlay */}
+              {isLevelingUp && (
+                <div 
+                  className="absolute inset-0 bg-yellow-400/40 rounded-full blur-sm animate-pulse"
+                  style={{ width: `${xpPercentage}%` }}
+                />
+              )}
             </div>
           </div>
           

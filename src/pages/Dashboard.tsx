@@ -10,10 +10,11 @@ import { useNavigate } from "react-router-dom";
 import { useTitleStore } from '../store/titleStore';
 import PageTutorial from '../components/PageTutorial';
 import { DialogueStep } from '../components/DigimonDialogue';
+import MilestoneProgress from "@/components/MilestoneProgress";
 
 const Dashboard: React.FC = () => {
   const { userDigimon, digimonData, evolutionOptions, fetchUserDigimon, fetchAllUserDigimon, error: digimonError, } = useDigimonStore();
-  const { fetchTasks, dailyQuota, error: taskError, getExpMultiplier } = useTaskStore();
+  const { fetchTasks, error: taskError } = useTaskStore();
   const navigate = useNavigate();
   const { checkForNewTitles } = useTitleStore();
   
@@ -63,11 +64,9 @@ const Dashboard: React.FC = () => {
     checkForNewTitles();
   }, [checkForNewTitles]);
   
-  const DAILY_QUOTA_REQUIREMENT = 3.0; // Should match the quota in taskStore.ts
+  // Quota requirement is handled within TaskHeatmap
 
-  const quotaPercentage = Math.min(100, ((dailyQuota?.completed_today || 0) / DAILY_QUOTA_REQUIREMENT) * 100);
-  const streak = dailyQuota?.current_streak || 0;
-  const expMultiplier = getExpMultiplier();
+  // Quota display moved into TaskHeatmap; keep requirement for copy text
   
   const dashboardTutorialSteps: DialogueStep[] = [
     {
@@ -123,7 +122,7 @@ const Dashboard: React.FC = () => {
   
   return (
     <>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Beta Notice Banner */}
         <div className="lg:col-span-3 bg-indigo-50 dark:bg-indigo-900/30 border-l-4 border-indigo-500 dark:border-indigo-600 p-4 rounded-r-md shadow-sm">
           <div className="flex">
@@ -157,46 +156,17 @@ const Dashboard: React.FC = () => {
             userDigimon={userDigimon} 
             digimonData={digimonData} 
             evolutionOptions={evolutionOptions}
-            key={`digimon-${refreshTrigger}`} // Add key to force re-render
+            key={`digimon-${refreshTrigger}`}
           />
           
           {/* Party Members Grid */}
           <div className="mt-4">
             <PartyMembersGrid />
           </div>
-          <div className="card my-6">
-            <div className="flex justify-between items-center mb-2">
-              <h3 className="text-lg font-semibold dark:text-gray-100">Daily Quota</h3>
-              {streak > 0 && (
-                <div className="flex items-center bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-200 px-2 py-1 rounded-full text-sm">
-                  <span className="mr-1">🔥</span>
-                  <span>x{streak} day streak</span>
-                  {streak > 1 && (
-                    <span className="ml-1 text-xs font-semibold">(×{expMultiplier.toFixed(1)} XP)</span>
-                  )}
-                </div>
-              )}
-            </div>
-            
-            <div className="flex justify-between text-sm mb-1 dark:text-gray-300">
-              <span>Tasks Completed Today</span>
-              <span>{dailyQuota?.completed_today || 0}/{DAILY_QUOTA_REQUIREMENT}</span>
-            </div>
-            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 my-2">
-              <div 
-                className={`h-2.5 rounded-full ${
-                  quotaPercentage >= 100 ? 'bg-green-500 dark:bg-green-400' : 
-                  quotaPercentage >= 66 ? 'bg-yellow-500 dark:bg-yellow-400' : 
-                  'bg-red-500 dark:bg-red-400'
-                }`}
-                style={{ 
-                  width: `${quotaPercentage}%`
-                }}
-              ></div>
-            </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-              Complete at least {DAILY_QUOTA_REQUIREMENT} tasks daily to maintain a streak and earn extra XP.
-            </p>
+
+
+          <div className="my-4">
+            <MilestoneProgress />
           </div>
 
         </div>
@@ -211,58 +181,28 @@ const Dashboard: React.FC = () => {
           
           
           
-           {/* Task Activity Heatmap */}
-           <div className="mb-6">
-             <TaskHeatmap />
-           </div>
+           {/* Task Activity Heatmap with integrated Quota */}
+          <div className="mb-4">
+            <TaskHeatmap />
+          </div>
            
-           <div className="card px-0 sm:px-4">
-             <div className="flex justify-between items-center mb-4 px-4">
-               <h2 className="text-xl font-bold text-center sm:text-left dark:text-gray-100">Your Tasks</h2>
-               <button
-                 onClick={() => setShowTaskForm(true)}
-                 className="flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 dark:bg-amber-600 dark:hover:bg-amber-700 text-white rounded-lg transition-colors text-sm font-medium"
-               >
-                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path>
-                 </svg>
-                 Add Task
-               </button>
-             </div>
-             <TaskList />
-           </div>
-          
-          {process.env.NODE_ENV === 'development' && (
-            <div className="mt-4 text-xs text-gray-500 dark:text-gray-400">
-              <button 
-                onClick={() => useTaskStore.getState().debugOverdueTasks()}
-                className="underline mr-2"
-              >
-                Debug Overdue Tasks
-              </button>
+           
+          <div className="card px-0 sm:px-4">
+            <div className="flex justify-between items-center mb-4 px-4">
+              <h2 className="text-xl font-bold text-center sm:text-left dark:text-gray-100">Your Tasks</h2>
               
-              <button 
-                onClick={() => useDigimonStore.getState().fetchUserDigimon()}
-                className="underline mr-2"
+              <button
+                onClick={() => setShowTaskForm(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 dark:bg-amber-600 dark:hover:bg-amber-700 text-white rounded-lg transition-colors text-sm font-medium"
               >
-                Refresh Digimon Data
-              </button>
-              
-              <button 
-                onClick={() => useDigimonStore.getState().testPenalty()}
-                className="underline mr-2"
-              >
-                Test Penalty
-              </button>
-              
-              <button 
-                onClick={() => useDigimonStore.getState().debugHealth()}
-                className="underline"
-              >
-                Debug Health
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Add Task
               </button>
             </div>
-          )}
+            <TaskList />
+          </div>
         </div>
       </div>
       

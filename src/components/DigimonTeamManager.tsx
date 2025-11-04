@@ -66,13 +66,12 @@ const SortableDigimonCard = ({
         ref={setNodeRef}
         style={style}
         className={`
-          border-2 border-dashed rounded-xl flex items-center justify-center cursor-pointer
+          w-full aspect-square rounded-lg border-2 border-dashed flex items-center justify-center cursor-pointer
           ${isTeam 
-            ? 'border-blue-400 dark:border-blue-500 bg-blue-100/60 dark:bg-blue-900/40 min-h-[100px] sm:min-h-[140px] hover:bg-blue-200/60 dark:hover:bg-blue-800/60' 
-            : 'border-gray-400 dark:border-gray-500 bg-gray-100/60 dark:bg-gray-800/60 hover:bg-gray-200/60 dark:hover:bg-gray-700/60'
+            ? 'border-purple-300 dark:border-purple-700 bg-purple-50/40 dark:bg-purple-900/20 hover:bg-purple-100/50' 
+            : 'border-gray-300 dark:border-dark-500 bg-gray-50 dark:bg-dark-300 hover:bg-gray-100/70'
           }
-          transition-all duration-200 hover:scale-105 hover:border-solid
-          w-full aspect-square
+          transition-colors
         `}
         {...attributes}
         {...listeners}
@@ -81,8 +80,8 @@ const SortableDigimonCard = ({
           {/* Centered, subtle + symbol */}
           <svg className={`w-6 h-6 ${
             isTeam 
-              ? 'text-blue-300 dark:text-blue-600' 
-              : 'text-gray-300 dark:text-gray-600'
+              ? 'text-purple-400 dark:text-purple-500' 
+              : 'text-gray-300 dark:text-gray-500'
           }`} fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
           </svg>
@@ -102,29 +101,19 @@ const SortableDigimonCard = ({
       {...attributes}
       {...listeners}
       className={`
-        relative w-full aspect-square rounded-xl overflow-hidden cursor-move select-none
+        relative w-full aspect-square rounded-lg overflow-hidden cursor-move select-none
         ${isTeam 
-          ? 'min-h-[100px] sm:min-h-[140px] bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/40 dark:to-blue-800/40 border-2 border-blue-200 dark:border-blue-700'
-          : 'bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700'
+          ? 'bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-700' 
+          : 'bg-gray-100 dark:bg-dark-200 border border-gray-200 dark:border-dark-400'
         }
-        hover:shadow-lg transition-all duration-200 hover:scale-105
+        hover:bg-gray-200 dark:hover:bg-dark-300 transition-colors
         group
       `}
     >
-      {/* Background pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="w-full h-full bg-repeat opacity-20" 
-             style={{ 
-               backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000' fill-opacity='0.1'%3E%3Ccircle cx='3' cy='3' r='1'/%3E%3C/g%3E%3C/svg%3E")`,
-               backgroundSize: '20px 20px'
-             }}
-        />
-      </div>
-
-      {/* Type/Attribute icon - top left */}
+      {/* Type/Attribute icon - top right */}
       {digimon.digimon?.type && digimon.digimon?.attribute && (
-        <div className="absolute top-1 left-1 z-20">
-          <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-md p-0.5 shadow-sm">
+        <div className="absolute top-1 right-1 z-20">
+          <div className="bg-white/80 dark:bg-gray-800/80 rounded p-0.5 shadow-sm">
             <TypeAttributeIcon
               type={digimon.digimon.type as DigimonType}
               attribute={digimon.digimon.attribute as DigimonAttribute}
@@ -135,62 +124,44 @@ const SortableDigimonCard = ({
         </div>
       )}
       
-      {/* Level badge - top right */}
-      <div className="absolute top-1 right-1 z-20">
-        <div className={`bg-gradient-to-r from-yellow-400 to-yellow-500 text-yellow-900 font-bold rounded-md shadow-sm text-center ${
-          isTeam 
-            ? 'text-[9px] sm:text-[10px] px-1 py-0.5' 
-            : 'text-[10px] px-1.5 py-0.5'
-        }`}>
-          {isTeam ? digimon.current_level : `Lv.${digimon.current_level}`}
-        </div>
-      </div>
-      
-      {/* Main sprite area - responsive sizing */}
-      <div className={`absolute inset-0 flex flex-col items-center justify-center px-2 ${
-        isTeam 
-          ? 'pt-12 sm:pt-8 pb-8 sm:pb-10' 
-          : 'pt-6 pb-8'
-      }`}>
-        <div className={`relative w-full aspect-square flex items-center justify-center ${
-          isTeam 
-            ? 'max-w-[50px] sm:max-w-[90px]' 
-            : 'max-w-[90px] sm:max-w-[110px]'
-        }`}>
-          <DigimonSprite
-            digimonName={digimon.digimon?.name || ""}
-            fallbackSpriteUrl={digimon.digimon?.sprite_url || "/assets/digimon/agumon_professor.png"}
-            happiness={digimon.happiness}
-            size="sm"
-            showHappinessAnimations={true}
-            enableHopping={false}
-          />
+      {/* Main sprite area */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="w-full aspect-square flex items-center justify-center">
+          {/* Small screens */}
+          <div className="block md:hidden">
+            <DigimonSprite
+              digimonName={digimon.digimon?.name || ""}
+              fallbackSpriteUrl={digimon.digimon?.sprite_url || "/assets/digimon/agumon_professor.png"}
+              happiness={digimon.happiness}
+              size="sm"
+              showHappinessAnimations={true}
+              enableHopping={false}
+            />
+          </div>
+          {/* Medium and up */}
+          <div className="hidden md:block">
+            <DigimonSprite
+              digimonName={digimon.digimon?.name || ""}
+              fallbackSpriteUrl={digimon.digimon?.sprite_url || "/assets/digimon/agumon_professor.png"}
+              happiness={digimon.happiness}
+              size="sm"
+              showHappinessAnimations={true}
+              enableHopping={false}
+            />
+          </div>
         </div>
       </div>
 
-      {/* Compact footer with name and minimal progress */}
-      <div className={`absolute bottom-0 left-0 right-0 z-20 ${
-        isTeam ? 'p-1 sm:p-1.5' : 'p-1.5'
-      }`}>
-        <div className="bg-white/85 dark:bg-gray-800/85 backdrop-blur-sm rounded-md px-2 py-1">
-          {/* Name */}
-          <p className={`font-medium text-center text-gray-800 dark:text-gray-200 truncate ${
-            isTeam 
-              ? 'text-[9px] sm:text-[11px] mb-0.5' 
-              : 'text-[11px] mb-0.5'
-          }`}>
-            {digimon.name || digimon.digimon?.name || 'Digimon'}
-          </p>
-          
-          {/* Minimal progress bar */}
-          <div className={`w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden ${
-            isTeam ? 'h-0.5 sm:h-1' : 'h-0.5'
-          }`}>
-            <div 
-              className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-300" 
-              style={{ width: `${expPercentage}%` }}
-            />
-          </div>
+      {/* Bottom level + exp bar, party-grid style */}
+      <div className="absolute bottom-1 left-1 right-1 flex items-center gap-1 z-20">
+        <span className="text-xs font-bold text-gray-700 dark:text-gray-300 bg-white/80 dark:bg-gray-800/80 px-1 rounded">
+          {digimon.current_level}
+        </span>
+        <div className="flex-1 bg-gray-300 dark:bg-gray-600 rounded-full h-1.5 overflow-hidden">
+          <div 
+            className="bg-purple-500 h-full transition-all duration-300" 
+            style={{ width: `${expPercentage}%` }}
+          />
         </div>
       </div>
     </div>
@@ -200,10 +171,12 @@ const SortableDigimonCard = ({
 // Container for team or reserve
 const DigimonContainer = ({ 
   items, 
-  isTeam 
+  isTeam,
+  gridClass
 }: { 
   items: DigimonItem[]; 
   isTeam: boolean;
+  gridClass: string;
 }) => {
   return (
     <div className={`
@@ -215,51 +188,16 @@ const DigimonContainer = ({
     `}>
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <div className={`
-            w-10 h-10 rounded-xl flex items-center justify-center
-            ${isTeam 
-              ? 'bg-blue-500 text-white' 
-              : 'bg-gray-500 text-white'
-            }
-          `}>
-            {isTeam ? (
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-              </svg>
-            ) : (
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path  fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-              </svg>
-            )}
-          </div>
-          <div>
-            <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-100">
-              {isTeam ? 'Team' : 'Reserve'}
-            </h3>
-          </div>
-        </div>
-        
-        {/* Team member count */}
-        <div className={`
-          px-3 py-1 rounded-full text-sm font-medium
-          ${isTeam 
-            ? 'bg-blue-100 text-blue-800 dark:bg-blue-800/30 dark:text-blue-300'
-            : 'bg-gray-100 text-gray-800 dark:bg-gray-700/50 dark:text-gray-300'
-          }
-        `}>
-          {items.filter(item => item.digimon).length}/{isTeam ? 3 : 12}
-        </div>
+        <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-100">
+          {isTeam ? 'Team' : 'Reserve'}
+        </h3>
       </div>
 
       {/* Grid */}
       <SortableContext items={items.map(item => item.id)} strategy={rectSortingStrategy}>
-        <div className={`
-          grid gap-3 sm:gap-6
-          ${isTeam ? 'grid-cols-2 sm:grid-cols-3' : 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6'}
-        `}>
+        <div className={`grid gap-3 sm:gap-4 ${gridClass}`}>
           {items.map(item => (
-            <div key={item.id} className="w-full max-w-[200px] mx-auto">
+            <div key={item.id} className="w-[80px] sm:w-[120px] mx-auto">
               <SortableDigimonCard
                 id={item.id}
                 digimon={item.digimon}
@@ -313,15 +251,15 @@ const DigimonTeamManager = () => {
       });
     }
     
-    // Create reserve items
-    const reserve = reserveDigimon.map(digimon => ({
+    // Create reserve items (limit grid to 6 visible; still draggable among those)
+    const reserve = reserveDigimon.slice(0, 6).map(digimon => ({
       id: `reserve-${digimon.id}`,
       isTeam: false,
       digimon
     }));
     
-    // Add empty slots to reserve if needed (fewer empty slots)
-    while (reserve.length < 12) {
+    // Add empty slots to reserve up to 6 (3x2)
+    while (reserve.length < 6) {
       reserve.push({
         id: `reserve-empty-${reserve.length}`,
         isTeam: false,
@@ -455,7 +393,7 @@ const DigimonTeamManager = () => {
   };
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto p-4">
+    <div className="max-w-7xl max-w-[600px] mx-auto p-4">
 
       {/* DnD Context */}
       <DndContext
@@ -464,9 +402,15 @@ const DigimonTeamManager = () => {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <div className="space-y-8">
-          <DigimonContainer items={teamItems} isTeam={true} />
-          <DigimonContainer items={reserveItems} isTeam={false} />
+        <div className="grid grid-cols-3 gap-4 md:gap-6">
+          {/* Left: Team stacked 3x1 (1/3 width) */}
+          <div className="col-span-1">
+            <DigimonContainer items={teamItems} isTeam={true} gridClass="grid-cols-1 place-items-center" />
+          </div>
+          {/* Right: Reserve 2 cols x 3 rows (2/3 width) */}
+          <div className="col-span-2">
+            <DigimonContainer items={reserveItems} isTeam={false} gridClass="grid-cols-2" />
+          </div>
         </div>
         
         <DragOverlay>

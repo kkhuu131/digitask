@@ -123,15 +123,8 @@ const Layout = ({ children }: LayoutProps) => {
                   
                   <NavDropdown 
                     label="Digimon" 
-                    isActive={isAnyActive(["/party", "/digifarm", "/digimon-dex"])}
+                    isActive={isAnyActive(["/digifarm", "/digimon-dex"])}
                   >
-                    <Link
-                      to="/party"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-100 dark:hover:text-white"
-                      onClick={() => setActiveMenu(null)}
-                    >
-                      Party
-                    </Link>
                     <Link
                       to="/digifarm"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-100 dark:hover:text-white"
@@ -333,7 +326,7 @@ const Layout = ({ children }: LayoutProps) => {
               <button
                 onClick={() => handleMenuClick('digimon')}
                 className={`flex flex-col items-center justify-center py-2 ${
-                  activeMenu === 'digimon' || isActive("/party") || isActive("/digifarm") || isActive("/digimon-dex")
+                  activeMenu === 'digimon' || isActive("/digifarm") || isActive("/digimon-dex")
                     ? "text-primary-600 dark:text-accent-500" 
                     : "text-gray-500 dark:text-gray-400"
                 }`}
@@ -354,16 +347,6 @@ const Layout = ({ children }: LayoutProps) => {
                     className="absolute bottom-full mb-2 left-0 bg-white dark:bg-dark-300 rounded-lg shadow-lg border border-gray-200 dark:border-dark-200 w-48 overflow-hidden"
                   >
                     <div className="py-1">
-                      <Link
-                        to="/party"
-                        className={`flex items-center px-4 py-2 text-sm ${
-                          isActive("/party") ? "bg-primary-50 text-primary-700 dark:bg-dark-200 dark:text-accent-400" : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-200"
-                        }`}
-                        onClick={() => setActiveMenu(null)}
-                      >
-                        <span className="mr-2">🐾</span>
-                        Party
-                      </Link>
                       <Link
                         to="/digifarm"
                         className={`flex items-center px-4 py-2 text-sm ${
