@@ -24,9 +24,7 @@ const Battle = () => {
     getBattleOptions,
     teamBattleHistory,
     loading, 
-    error, 
-    dailyBattlesRemaining,
-    checkDailyBattleLimit,
+    error
   } = useBattleStore();
   const { 
     isBattleActive: isInteractiveBattleActive,
@@ -49,8 +47,7 @@ const Battle = () => {
       getBattleOptions();
     }
     
-    // Also refresh the daily battle limit
-    checkDailyBattleLimit();
+    // Daily battle limit removed; energy system in effect
   }, [user?.id]); // Add user ID as a dependency
   
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
@@ -64,11 +61,28 @@ const Battle = () => {
   useEffect(() => {
     const loadBattleData = async () => {
       await useBattleStore.getState().fetchTeamBattleHistory();
-      checkDailyBattleLimit();
     };
-    
     loadBattleData();
-  }, [checkDailyBattleLimit]);
+  }, []);
+
+  // Energy read for gating UI
+  const [energy, setEnergy] = useState<{ current: number; max: number }>({ current: 0, max: 100 });
+  useEffect(() => {
+    const fetchEnergy = async () => {
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) return;
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('battle_energy, max_battle_energy')
+        .eq('id', userData.user.id)
+        .single();
+      if (profile) setEnergy({ current: profile.battle_energy ?? 0, max: profile.max_battle_energy ?? 100 });
+    };
+    fetchEnergy();
+    const onEnergyUpdated = () => fetchEnergy();
+    window.addEventListener('energy-updated', onEnergyUpdated);
+    return () => window.removeEventListener('energy-updated', onEnergyUpdated);
+  }, []);
 
   const handleStartBattle = async (optionId: string) => {
     // Prevent multiple clicks while loading (either global or local loading state)
@@ -78,6 +92,21 @@ const Battle = () => {
       setLocalLoading(true); // Set local loading state immediately
       setSelectedOption(optionId);
       
+      // Spend energy upfront for interactive battle (20⚡)
+      try {
+        const { data: spentOk } = await supabase.rpc('spend_energy_self', { p_amount: 20 });
+        if (!spentOk) {
+          alert('Not enough Battle Energy (20⚡)');
+          setLocalLoading(false);
+          return;
+        }
+        try { window.dispatchEvent(new Event('energy-updated')); } catch {}
+      } catch (e) {
+        console.error('spend_energy_self(20) failed (interactive):', e);
+        setLocalLoading(false);
+        return;
+      }
+
       // Start interactive battle
       const option = battleOptions.find(opt => opt.id === optionId);
       if (option) {
@@ -198,18 +227,6 @@ const Battle = () => {
         console.log(`Bits reward applied: ${bitsReward}`);
       }
 
-      // Decrement daily battle limit (same as auto battle)
-      console.log('Decrementing daily battle limit...');
-      const { data: limitCheck, error: limitError } = await supabase.rpc(
-        "check_and_increment_battle_limit"
-      );
-      
-      if (limitError) {
-        console.error("Error decrementing battle limit:", limitError);
-      } else if (!limitCheck) {
-        console.warn("Battle limit check failed, but continuing with completion");
-      }
-
       // End the interactive battle
       console.log('Ending interactive battle...');
       endInteractiveBattle();
@@ -217,7 +234,6 @@ const Battle = () => {
       // Refresh data (same as auto battle)
       console.log('Refreshing data...');
       fetchAllUserDigimon();
-      checkDailyBattleLimit();
       useBattleStore.getState().fetchTeamBattleHistory();
       
       // Force refresh battle options immediately
@@ -341,11 +357,16 @@ const Battle = () => {
                     className="text-sm px-3 py-1 bg-gray-200 dark:bg-dark-200 hover:bg-gray-300 dark:hover:bg-dark-100 text-gray-800 dark:text-gray-200 rounded-md transition-colors"
                     disabled={loading}
                   >
-                    {loading ? "Refreshing..." : "Refresh Options"}
+                    {loading ? "Refreshing..." : "♻️"}
                   </button>
                 )}
-                <div className="text-xs sm:text-base dark:text-gray-200">
-                <span className="font-medium dark:text-gray-200">Daily Battles:</span> {dailyBattlesRemaining} left
+                <div className="flex items-center gap-2">
+                  <span className="px-2 py-0.5 rounded-full bg-gray-100 dark:bg-dark-200 border border-gray-200 dark:border-dark-100 text-xs sm:text-sm text-gray-800 dark:text-gray-100">
+                    ⚡ {energy.current}/{energy.max}
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-accent-900/20 border border-indigo-200 dark:border-accent-700 text-xs sm:text-sm text-indigo-700 dark:text-accent-300">
+                    20⚡
+                  </span>
                 </div>
               </div>
             </div>
@@ -366,7 +387,7 @@ const Battle = () => {
                   {battleOptions.map((option) => (
                     <div 
                       key={option.id}
-                      className={`border rounded-lg p-2 sm:p-4 transition-colors ${
+                      className={`rounded-lg p-2 sm:p-4 transition-colors ${
                         selectedOption === option.id 
                           ? 'border-primary-500 dark:border-amber-500 bg-primary-50 dark:bg-amber-900/20' 
                           : 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-dark-200'
@@ -386,61 +407,46 @@ const Battle = () => {
                         </span>
                       </div>
                       
-                      <div className="flex justify-center items-center space-x-1 sm:space-x-2 mb-2 sm:mb-3 min-h-[60px] sm:min-h-[80px]">
+                      <div className="flex justify-center items-center gap-2 sm:gap-3 mb-2 sm:mb-3 min-h-[64px]">
                         {option.team.digimon.map((digimon) => (
-                          <div key={`${digimon.id}-${digimon.name}`} className="text-center flex-1 flex flex-col items-center">
-                            <div className="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center relative group">
-                              <div className="hidden sm:block">
-                                <DigimonSprite 
-                                  digimonName={digimon.name} 
-                                  fallbackSpriteUrl={digimon.sprite_url}
-                                  showHappinessAnimations={false}
-                                  size="sm" 
-                                />
-                              </div>
-                              <div className="block sm:hidden">
-                                <DigimonSprite 
-                                  digimonName={digimon.name} 
-                                  fallbackSpriteUrl={digimon.sprite_url} 
-                                  size="xs" 
-                                  showHappinessAnimations={false}
-                                />
-                              </div>
-                              {/* Tooltip */}
-                              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none z-10">
-                                {digimon.name}
-                              </div>
-                            </div>
-            
-                            {digimon.type && digimon.attribute && (
-                              <div className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">
-                                <div className="flex justify-center mb-1">
+                          <div key={`${digimon.id}-${digimon.name}`} className="flex flex-col items-center">
+                            <div className="relative w-14 h-14 sm:w-20 sm:h-20 flex items-center justify-center">
+                              <DigimonSprite 
+                                digimonName={digimon.name} 
+                                fallbackSpriteUrl={digimon.sprite_url}
+                                showHappinessAnimations={true}
+                                size="sm" 
+                              />
+                              {/* Type/Attribute top-right */}
+                              {digimon.type && digimon.attribute && (
+                                <div className="absolute top-0 right-0">
                                   <TypeAttributeIcon
                                     type={digimon.type as DigimonType}
                                     attribute={digimon.attribute as DigimonAttribute}
                                     size="sm"
                                     showLabel={false}
-                                    showTooltip={true}
                                   />
                                 </div>
-                              </div>
-                            )}
-                            <div className="text-[10px] sm:text-xs mt-1 dark:text-gray-300">Lv.{digimon.current_level}</div>
+                              )}
+                              {/* Level bottom-left */}
+                              <span className="absolute bottom-0.5 left-0.5 text-[10px] font-bold text-gray-700 dark:text-gray-200 bg-white/80 dark:bg-gray-800/80 px-1 rounded">
+                                {digimon.current_level}
+                              </span>
+                            </div>
                           </div>
                         ))}
                       </div>
                       
                       <button
                         onClick={() => handleStartBattle(option.id)}
-                        disabled={loading || localLoading || dailyBattlesRemaining <= 0 || teamDigimon.length < 1}
-                        className={`btn-primary w-full text-xs sm:text-sm py-1 sm:py-2 ${
-                          (loading || localLoading || dailyBattlesRemaining <= 0 || teamDigimon.length < 1) 
-                            ? 'opacity-50 cursor-not-allowed' 
-                            : ''
+                        disabled={loading || localLoading || teamDigimon.length < 1 || energy.current < 20}
+                        className={`w-full text-xs sm:text-sm py-1 sm:py-2 rounded-md font-semibold ${
+                          (loading || localLoading || teamDigimon.length < 1 || energy.current < 20)
+                            ? 'bg-gray-300 dark:bg-gray-600 text-gray-600 dark:text-gray-300 cursor-not-allowed'
+                            : 'btn-primary'
                         }`}
                       >
-                        {loading || localLoading ? "Starting..." : 
-                         dailyBattlesRemaining <= 0 ? "No battles" : teamDigimon.length < 1 ? "Need team" : "Battle!"}
+                        {loading || localLoading ? "Starting..." : teamDigimon.length < 1 ? "Need team" : "20⚡"}
                       </button>
                     </div>
                   ))}

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useDigimonStore } from '../store/petStore';
 import { UserDigimon } from '../store/petStore';
 import { DigimonType, DigimonAttribute } from '@/store/battleStore';
+import { calculateFinalStats } from '../utils/digimonStatCalculation';
 import TypeAttributeIcon from './TypeAttributeIcon';
 import DigimonSprite from './DigimonSprite';
 import {
@@ -168,15 +169,30 @@ const SortableDigimonCard = ({
   );
 };
 
+function StatRow({ label, value, bonus, factor = 1 }: { label: string; value: number; bonus: number; factor?: number }) {
+  const bonusDisplay = bonus ? `+${bonus * factor}` : '';
+  return (
+    <div className="flex items-center justify-between bg-white/60 dark:bg-dark-200 rounded px-2 py-1">
+      <span className="text-gray-600 dark:text-gray-300">{label}</span>
+      <span className="font-semibold text-gray-800 dark:text-gray-100">
+        {value}
+        {bonus ? <span className="text-green-500 ml-1">({bonusDisplay})</span> : null}
+      </span>
+    </div>
+  );
+}
+
 // Container for team or reserve
 const DigimonContainer = ({ 
   items, 
   isTeam,
-  gridClass
+  gridClass,
+  onHover,
 }: { 
   items: DigimonItem[]; 
   isTeam: boolean;
   gridClass: string;
+  onHover?: (d: UserDigimon | null) => void;
 }) => {
   return (
     <div className={`
@@ -188,16 +204,22 @@ const DigimonContainer = ({
     `}>
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-100">
-          {isTeam ? 'Team' : 'Reserve'}
-        </h3>
+        <div className="flex items-center gap-2">
+          <h3 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-100">
+            {isTeam ? 'Team' : 'Reserve'}
+          </h3>
+        </div>
       </div>
 
       {/* Grid */}
       <SortableContext items={items.map(item => item.id)} strategy={rectSortingStrategy}>
         <div className={`grid gap-3 sm:gap-4 ${gridClass}`}>
           {items.map(item => (
-            <div key={item.id} className="w-[80px] sm:w-[120px] mx-auto">
+            <div
+              key={item.id}
+              className=" w-[80px] sm:w-[120px] mx-auto"
+              onMouseEnter={() => onHover?.(item.digimon)}
+            >
               <SortableDigimonCard
                 id={item.id}
                 digimon={item.digimon}
@@ -216,6 +238,7 @@ const DigimonTeamManager = () => {
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const [teamItems, setTeamItems] = useState<DigimonItem[]>([]);
   const [reserveItems, setReserveItems] = useState<DigimonItem[]>([]);
+  const [hoveredDigimon, setHoveredDigimon] = useState<UserDigimon | null>(null);
 
   // Setup sensors for drag and drop
   const sensors = useSensors(
@@ -393,7 +416,7 @@ const DigimonTeamManager = () => {
   };
 
   return (
-    <div className="max-w-7xl max-w-[600px] mx-auto p-4">
+    <div className="max-w-7xl mx-auto p-4">
 
       {/* DnD Context */}
       <DndContext
@@ -402,14 +425,79 @@ const DigimonTeamManager = () => {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <div className="grid grid-cols-3 gap-4 md:gap-6">
-          {/* Left: Team stacked 3x1 (1/3 width) */}
+        <div className="grid grid-cols-1 lg:grid-cols-[200px_400px_1fr] gap-4 md:gap-6 items-start">
+          {/* Left: Team (fixed at 200px on lg) */}
           <div className="col-span-1">
-            <DigimonContainer items={teamItems} isTeam={true} gridClass="grid-cols-1 place-items-center" />
+            <DigimonContainer
+              items={teamItems}
+              isTeam={true}
+              gridClass="grid-cols-1 place-items-center"
+              onHover={setHoveredDigimon}
+            />
           </div>
-          {/* Right: Reserve 2 cols x 3 rows (2/3 width) */}
-          <div className="col-span-2">
-            <DigimonContainer items={reserveItems} isTeam={false} gridClass="grid-cols-2" />
+          {/* Middle: Reserve (fixed at 400px on lg) */}
+          <div className="col-span-1">
+            <DigimonContainer
+              items={reserveItems}
+              isTeam={false}
+              gridClass="grid-cols-2"
+              onHover={setHoveredDigimon}
+            />
+          </div>
+          {/* Right: Hover details panel fills remaining space on lg */}
+          <div className="hidden lg:block col-span-1 min-w-0">
+            <div className="h-full flex flex-col rounded-2xl p-5 border-2 bg-white dark:bg-dark-300 border-gray-200 dark:border-gray-700">
+              <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">Details</h3>
+              {hoveredDigimon ? (
+                <>
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0 w-48 h-48 flex items-center justify-center">
+                      <DigimonSprite
+                        digimonName={hoveredDigimon.digimon?.name || ''}
+                        fallbackSpriteUrl={hoveredDigimon.digimon?.sprite_url || '/assets/digimon/agumon_professor.png'}
+                        happiness={hoveredDigimon.happiness}
+                        size="lg"
+                        showHappinessAnimations={true}
+                        enableHopping={false}
+                      />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-lg font-semibold text-gray-900 dark:text-gray-100 truncate">
+                        {hoveredDigimon.name || hoveredDigimon.digimon?.name}
+                      </div>
+                      <div className="text-sm text-gray-600 dark:text-gray-300">
+                        {hoveredDigimon.digimon?.name}
+                      </div>
+                      {hoveredDigimon.digimon?.type && hoveredDigimon.digimon?.attribute && (
+                        <div className="mt-2 inline-flex items-center gap-2 px-2 py-0.5 rounded-full bg-gray-100 dark:bg-dark-200 text-sm text-gray-800 dark:text-gray-100">
+                          <TypeAttributeIcon
+                            type={hoveredDigimon.digimon.type as DigimonType}
+                            attribute={hoveredDigimon.digimon.attribute as DigimonAttribute}
+                            size="md"
+                            showLabel={true}
+                          />
+                        </div>
+                      )}
+                      <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-gray-700 dark:text-gray-200">
+                        <span className="px-2 py-0.5 bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded">Lv {hoveredDigimon.current_level}</span>
+                        <span className="px-2 py-0.5 bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded">ABI {hoveredDigimon.abi ?? 0}</span>
+                        <span className="px-2 py-0.5 bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 rounded">❤ {hoveredDigimon.happiness}%</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-3 grid grid-cols-2 gap-2 text-sm flex-1 overflow-auto">
+                    <StatRow label="HP" value={calculateFinalStats(hoveredDigimon).hp} bonus={hoveredDigimon.hp_bonus || 0} factor={10} />
+                    <StatRow label="SP" value={calculateFinalStats(hoveredDigimon).sp} bonus={hoveredDigimon.sp_bonus || 0} />
+                    <StatRow label="ATK" value={calculateFinalStats(hoveredDigimon).atk} bonus={hoveredDigimon.atk_bonus || 0} />
+                    <StatRow label="DEF" value={calculateFinalStats(hoveredDigimon).def} bonus={hoveredDigimon.def_bonus || 0} />
+                    <StatRow label="INT" value={calculateFinalStats(hoveredDigimon).int} bonus={hoveredDigimon.int_bonus || 0} />
+                    <StatRow label="SPD" value={calculateFinalStats(hoveredDigimon).spd} bonus={hoveredDigimon.spd_bonus || 0} />
+                  </div>
+                </>
+              ) : (
+                <div className="text-sm text-gray-500 dark:text-gray-400">Hover a Digimon to preview stats</div>
+              )}
+            </div>
           </div>
         </div>
         

@@ -40,6 +40,27 @@ const PreparationModal: React.FC<PreparationModalProps> = ({
   const { allUserDigimon } = useDigimonStore();
   const teamDigimon = allUserDigimon.filter(d => d.is_on_team);
 
+  // Energy HUD for Campaign prep
+  const [energy, setEnergy] = useState<{ current: number; max: number }>({ current: 0, max: 100 });
+  useEffect(() => {
+    if (!isOpen) return;
+    const fetchEnergy = async () => {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('battle_energy, max_battle_energy')
+        .eq('id', (await supabase.auth.getUser()).data.user?.id || '')
+        .single();
+      if (profile) setEnergy({ current: profile.battle_energy ?? 0, max: profile.max_battle_energy ?? 100 });
+    };
+    fetchEnergy();
+    const onEnergyUpdated = () => fetchEnergy();
+    window.addEventListener('energy-updated', onEnergyUpdated);
+    return () => window.removeEventListener('energy-updated', onEnergyUpdated);
+  }, [isOpen]);
+
+  const requiredCost = isPast ? 0 : 30;
+  const notEnoughEnergy = requiredCost > 0 && energy.current < requiredCost;
+
   if (!isOpen) return null;
 
   return (
@@ -66,36 +87,50 @@ const PreparationModal: React.FC<PreparationModalProps> = ({
             {/* Header */}
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold dark:text-gray-100">{opponent.profile.display_name}</h2>
-              <button 
+              <div className="flex items-center gap-2">
+                <span className="px-2 py-0.5 rounded-full bg-gray-100 dark:bg-dark-200 border border-gray-200 dark:border-dark-100 text-xs sm:text-sm text-gray-800 dark:text-gray-100">
+                  ⚡ {energy.current}/{energy.max}
+                </span>
+                <span className={`px-2 py-0.5 rounded-full text-xs sm:text-sm border ${requiredCost > 0 ? 'bg-indigo-50 dark:bg-accent-900/20 border-indigo-200 dark:border-accent-700 text-indigo-700 dark:text-accent-300' : 'bg-gray-100 dark:bg-dark-200 border-gray-200 dark:border-dark-100 text-gray-700 dark:text-gray-200'}`}>
+                  {requiredCost}⚡
+                </span>
+                <button 
                 onClick={onClose}
                 className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
               >
                 ✕
-              </button>
+                </button>
+              </div>
             </div>
 
             <h3 className="text-md text-gray-500 dark:text-gray-400 mb-4">Stage {opponent.id}</h3>
 
-        {/* Opponent Team Section */}
+        {/* Opponent Team Section - compact card-style like Arena options */}
         <div className="mb-4">
-          <div className="flex gap-4 justify-center p-4 bg-gray-50 dark:bg-dark-200 rounded-lg">
+          <div className="flex gap-3 sm:gap-4 justify-center p-4 bg-gray-50 dark:bg-dark-200 rounded-lg">
             {opponent.team.map((member) => (
-              <div key={member.id} className="text-center flex flex-col items-center">
-                <DigimonSprite
-                  digimonName={member.digimon.name}
-                  fallbackSpriteUrl={member.digimon.sprite_url}
-                  size="sm"
-                />
-                <div className="mt-2 flex justify-center">
-                  <TypeAttributeIcon
-                    type={member.digimon.type as DigimonType}
-                    attribute={member.digimon.attribute as DigimonAttribute}
+              <div key={member.id} className="flex flex-col items-center">
+                <div className="relative w-14 h-14 sm:w-20 sm:h-20 flex items-center justify-center">
+                  <DigimonSprite
+                    digimonName={member.digimon.name}
+                    fallbackSpriteUrl={member.digimon.sprite_url}
+                    showHappinessAnimations={true}
                     size="sm"
-                    showTooltip={true}
                   />
+                  {/* Type/Attribute top-right (not overlapping outside card) */}
+                  <div className="absolute top-0 right-0">
+                    <TypeAttributeIcon
+                      type={member.digimon.type as DigimonType}
+                      attribute={member.digimon.attribute as DigimonAttribute}
+                      size="sm"
+                      showLabel={false}
+                    />
+                  </div>
+                  {/* Level bottom-left */}
+                  <span className="absolute bottom-0.5 left-0.5 text-[10px] font-bold text-gray-700 dark:text-gray-200 bg-white/80 dark:bg-gray-800/80 px-1 rounded">
+                    {member.current_level}
+                  </span>
                 </div>
-                <p className="text-sm mt-1 dark:text-gray-200">{member.digimon.name}</p>
-                <p className="text-xs text-gray-600 dark:text-gray-400">Lv. {member.current_level}</p>
               </div>
             ))}
           </div>
@@ -111,22 +146,24 @@ const PreparationModal: React.FC<PreparationModalProps> = ({
         <div className="flex justify-center">
           <button
             onClick={onStartBattle}
-            disabled={(!isUnlocked || teamDigimon.length === 0)}
+            disabled={(!isUnlocked || teamDigimon.length === 0 || notEnoughEnergy)}
             className={`
               px-4 py-2 rounded-lg text-white font-semibold
-              ${(isUnlocked && teamDigimon.length > 0)
+              ${(isUnlocked && teamDigimon.length > 0 && !notEnoughEnergy)
                 ? 'bg-blue-500 dark:bg-accent-600 hover:bg-blue-600 dark:hover:bg-accent-700'
                 : 'bg-gray-300 dark:bg-gray-600 cursor-not-allowed'
               }
             `}
           >
             {teamDigimon.length === 0
-              ? "Add Digimon to Team"
+              ? 'Add Digimon to Team'
               : !isUnlocked
-              ? "Stage Locked"
-              : isPast
-              ? "Rematch"
-              : "Start Battle"}
+              ? 'Stage Locked'
+              : notEnoughEnergy
+              ? `${requiredCost}⚡`
+              : requiredCost === 0
+              ? 'Rematch'
+              : 'Start Battle'}
           </button>
         </div>
 
@@ -167,20 +204,6 @@ const CampaignNode: React.FC<{
   isPast: boolean;
   onClick: () => void;
 }> = ({ stage, isUnlocked, isNext, isPast, onClick }) => {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    // Initial check
-    setIsMobile(window.innerWidth < 640);
-
-    // Add resize listener
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 640);
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   return (
     <button
@@ -205,52 +228,40 @@ const CampaignNode: React.FC<{
       </div>
       
       
-      <div className="flex gap-0.5 sm:gap-4 justify-center">
+      <div className="flex gap-1 sm:gap-2 justify-center">
         {stage.team.map((member) => (
-          <div 
-            key={member.id}
-            className="flex flex-col items-center w-6 sm:w-12"
-          >
-            <div className="block sm:hidden">
-              <DigimonSprite
-                digimonName={member.digimon.name}
-                fallbackSpriteUrl={member.digimon.sprite_url}
-                showHappinessAnimations={false}
-                size="xxs"
-                silhouette={!isUnlocked}
-              />
-            </div>
-            <div className="hidden sm:block">
-              <DigimonSprite
-                digimonName={member.digimon.name}
-                fallbackSpriteUrl={member.digimon.sprite_url}
-                showHappinessAnimations={false}
-                size="xs"
-                silhouette={!isUnlocked}
-              />
-            </div>
-            <div className={`h-3 sm:h-6 flex justify-center items-center ${
-              !isUnlocked ? 'mt-1 sm:mt-2' : 'mt-0.5 sm:mt-1'
-            }`}>
-              {isUnlocked ? (
-                <TypeAttributeIcon 
-                  size={isMobile ? "xs" : "sm"}
-                  type={member.digimon.type as DigimonType} 
-                  attribute={member.digimon.attribute as DigimonAttribute} 
+          <div key={member.id} className="flex flex-col items-center">
+            <div className="relative w-4 h-4 sm:w-8 sm:h-8 flex items-center justify-center">
+              <div className="block sm:hidden">
+                <DigimonSprite
+                  digimonName={member.digimon.name}
+                  fallbackSpriteUrl={member.digimon.sprite_url}
+                  showHappinessAnimations={false}
+                  size="xxs"
+                  silhouette={!isUnlocked}
                 />
-              ) : (
-                <div className="w-3 h-3 sm:w-6 sm:h-6" />
-              )}
+              </div>
+              <div className="hidden sm:block">
+                <DigimonSprite
+                  digimonName={member.digimon.name}
+                  fallbackSpriteUrl={member.digimon.sprite_url}
+                  showHappinessAnimations={false}
+                  size="xs"
+                  silhouette={!isUnlocked}
+                />
+              </div>
             </div>
-            <p className="text-[8px] sm:text-xs h-2 sm:h-4 flex items-center dark:text-gray-300">
-              {isUnlocked ? `${member.current_level}` : "???"}
-            </p>
+            <span className="text-[8px] sm:text-[10px] font-semibold text-gray-700 dark:text-gray-200">
+              {isUnlocked ? member.current_level : '??'}
+            </span>
           </div>
         ))}
       </div>
+      {import.meta.env.DEV && (
       <span className="text-[8px] sm:text-[14px] text-gray-500 dark:text-gray-400">
           Power: {Math.round(calculateCampaignTeamPower(stage.team))}
         </span>
+        )}
     </button>
   );
 };
@@ -310,12 +321,28 @@ const Campaign: React.FC = () => {
     if (selectedOpponentIndex === null) return;
     
     try {
+      // Spend energy for first-clear attempts (30 energy when progressing to a new base stage)
+      const opponent = CAMPAIGN_OPPONENTS[selectedOpponentIndex];
+      const baseStage = getBaseStage(opponent.id);
+      if (baseStage > highestStageCleared) {
+        let spentOk: any = null;
+        try {
+          const { data } = await supabase.rpc('spend_energy_self', { p_amount: 30 });
+          spentOk = data;
+        } catch (e) {
+          console.error('spend_energy_self(30) failed:', e);
+        }
+        if (!spentOk) {
+          alert('Not enough Battle Energy (30 needed) to attempt first-clear. Complete tasks to earn energy.');
+          return;
+        }
+        try { window.dispatchEvent(new Event('energy-updated')); } catch {}
+      }
+
       const userTeamData = teamDigimon.map(d => ({
         ...d,
         digimon: DIGIMON_LOOKUP_TABLE[d.digimon_id],
       }));
-
-      const opponent = CAMPAIGN_OPPONENTS[selectedOpponentIndex];
 
       // for each digimon in userTeamData, set its .current_level be to capped at the opponent.team's max level
       userTeamData.forEach(d => {
@@ -346,11 +373,40 @@ const Campaign: React.FC = () => {
       const baseStage = getBaseStage(currentBattleStageId);
       
       if (baseStage > highestStageCleared) {
+        // First clear rewards (Phase 1): big XP and tokens
+        const bigXp = 200;
+        await useDigimonStore.getState().feedAllDigimon(bigXp);
+        try {
+          await supabase.rpc('add_tokens_self', { p_amount: 12 });
+        } catch (e) {
+          console.error('add_tokens_self failed:', e);
+        }
+        
         // Update highest stage cleared in database
         await supabase
           .from('profiles')
           .update({ highest_stage_cleared: baseStage })
           .eq('id', user?.id || '');
+
+        // Energy cap unlock every 10 stages (+20)
+        if (baseStage % 10 === 0 && user?.id) {
+          await supabase
+            .from('profiles')
+            .update({ max_battle_energy: (supabase as any).rpc ? undefined : undefined })
+            .eq('id', user.id);
+          // Use RPC-less increment: fetch then update
+          const { data: prof } = await supabase
+            .from('profiles')
+            .select('max_battle_energy')
+            .eq('id', user.id)
+            .single();
+          if (prof) {
+            await supabase
+              .from('profiles')
+              .update({ max_battle_energy: (prof.max_battle_energy ?? 100) + 20 })
+              .eq('id', user.id);
+          }
+        }
         
         console.log("baseStage", baseStage);
         // Check for new titles
@@ -412,13 +468,12 @@ const Campaign: React.FC = () => {
       
       {/* Campaign Map */}
       <div className="bg-white dark:bg-dark-300 rounded-lg shadow-md dark:shadow-lg p-6 dark:border dark:border-dark-200">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold dark:text-gray-100">Digital World</h2>
+        <div className="flex justify-end items-right mb-6">
           <button
             onClick={scrollToCurrentStage}
             className="px-4 py-2 bg-blue-500 dark:bg-accent-600 hover:bg-blue-600 dark:hover:bg-accent-700 text-white rounded-lg text-sm"
           >
-            Go to Stage {highestStageCleared + 1}
+            ➜ Stage {highestStageCleared + 1}
           </button>
         </div>
         

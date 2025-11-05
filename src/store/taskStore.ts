@@ -230,6 +230,9 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       const task = get().tasks.find((t) => t.id === id);
       if (!task) return;
 
+      // Snapshot quota before completion to detect crossing the threshold
+      const prevCompleted = get().dailyQuota?.completed_today ?? 0;
+
       // Optimistically update the UI immediately
       set((state) => ({
         tasks: state.tasks.map((t) =>
@@ -295,6 +298,26 @@ export const useTaskStore = create<TaskState>((set, get) => ({
 
       // Update local quota data
       await get().fetchDailyQuota();
+
+      // PHASE 1: Grant battle energy from task completion
+      // Base: +10 per completed task
+      try {
+        await supabase.rpc('grant_energy_self', { p_amount: 10 });
+      } catch (e) {
+        console.error('grant_energy_self(+10) failed:', e);
+      }
+      window.dispatchEvent(new Event('energy-updated'));
+
+      // If we just crossed the daily quota threshold, grant bonus energy (+50)
+      const nowCompleted = get().dailyQuota?.completed_today ?? prevCompleted;
+      if (prevCompleted < 3 && nowCompleted >= 3) {
+        try {
+          await supabase.rpc('grant_energy_self', { p_amount: 50 });
+        } catch (e) {
+          console.error('grant_energy_self(+50) failed:', e);
+        }
+        window.dispatchEvent(new Event('energy-updated'));
+      }
     } catch (error) {
       console.error("Error completing task:", error);
 

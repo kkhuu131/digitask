@@ -770,16 +770,7 @@ export const useBattleStore = create<BattleState>((set, get) => {
         return;
       }
 
-      // Check daily battle limit and send notification if limit is reached
-      const dailyBattlesRemaining = await state.checkDailyBattleLimit();
-      if (dailyBattlesRemaining <= 0) {
-        useNotificationStore.getState().addNotification({
-          message:
-            "You've reached your daily battle limit. Try again tomorrow!",
-          type: "error",
-        });
-        return;
-      }
+      // Daily battle limit removed in favor of energy system
 
       // Set both loading and isBattleInProgress flags
       set({ loading: true, isBattleInProgress: true, error: null });
@@ -895,6 +886,29 @@ export const useBattleStore = create<BattleState>((set, get) => {
           };
         }
 
+        // Spend energy upfront for Arena battle (Phase 1: flat 20 energy)
+        let spentOk: any = null;
+        try {
+          const { data } = await supabase.rpc('spend_energy_self', { p_amount: 20 });
+          spentOk = data;
+        } catch (e) {
+          console.error('spend_energy_self(20) failed:', e);
+        }
+        if (!spentOk) {
+          set({
+            error: 'Not enough Battle Energy. Complete tasks to earn energy.',
+            loading: false,
+            isBattleInProgress: false,
+          });
+          useNotificationStore.getState().addNotification({
+            message: 'Not enough Battle Energy. Complete tasks to earn energy.',
+            type: 'error',
+          });
+          return;
+        }
+        // Notify UI to refresh energy HUD
+        try { window.dispatchEvent(new Event('energy-updated')); } catch {}
+
         // Determine winner
         const { winnerId, turns } = simulateTeamBattle(
           userTeamData,
@@ -930,33 +944,22 @@ export const useBattleStore = create<BattleState>((set, get) => {
         const expMultiplier = useTaskStore.getState().getExpMultiplier();
         xpGain = Math.round(xpGain * expMultiplier);
 
-        // Increment battle limit check and update atomically
-        const { data: limitCheck, error: limitError } = await supabase.rpc(
-          "check_and_increment_battle_limit"
-        );
+        // No daily battle limit with energy system
 
-        if (limitError) {
-          console.error("Error checking battle limit:", limitError);
-          set({
-            error: "Error checking battle limit",
-            loading: false,
-            isBattleInProgress: false,
-          });
-          return;
+        // First win of the day bonus (applies on win): 2x rewards
+        let firstWinBonus = false;
+        if (winnerId === userTeamData[0].user_id) {
+          try {
+            const { data: firstWin } = await supabase.rpc('check_and_set_first_win_self');
+            firstWinBonus = !!firstWin;
+          } catch (e) {
+            console.error('check_and_set_first_win_self failed:', e);
+          }
         }
 
-        if (!limitCheck) {
-          set({
-            error:
-              "You've reached your daily battle limit of 5 battles. Try again tomorrow!",
-            loading: false,
-            isBattleInProgress: false,
-          });
-          return;
-        }
-
-        // Apply the XP gain to all Digimon
-        await useDigimonStore.getState().feedAllDigimon(xpGain);
+        // Apply the XP gain to all Digimon (with first-win doubling)
+        const finalXpGain = firstWinBonus ? xpGain * 2 : xpGain;
+        await useDigimonStore.getState().feedAllDigimon(finalXpGain);
 
         const simulatedTeamBattle = {
           id: crypto.randomUUID ? crypto.randomUUID() : "temp-id-" + Date.now(),
@@ -999,7 +1002,7 @@ export const useBattleStore = create<BattleState>((set, get) => {
           })),
           turns,
           winner_id: winnerId,
-          xpGain: xpGain,
+          xpGain: finalXpGain,
           bitsReward: 0,
         };
 
@@ -1048,14 +1051,28 @@ export const useBattleStore = create<BattleState>((set, get) => {
         }
 
         // Award bits based on difficulty and outcome
-        const bitsReward = calculateBitsReward(
+        let bitsReward = calculateBitsReward(
           option.difficulty,
           winnerId === userTeamData[0].user_id
         );
+        if (firstWinBonus && winnerId === userTeamData[0].user_id) {
+          bitsReward *= 2;
+        }
         if (bitsReward > 0) {
           // Add the bits to the player's currency
           const currencyStore = useCurrencyStore.getState();
           currencyStore.addCurrency("bits", bitsReward);
+        }
+
+        // Award Battle Tokens (Phase 1): 1/2/3 by difficulty, doubled on first win
+        if (winnerId === userTeamData[0].user_id) {
+          const baseTokens = option.difficulty === 'easy' ? 1 : option.difficulty === 'medium' ? 2 : 3;
+          const tokensToAdd = firstWinBonus ? baseTokens * 2 : baseTokens;
+          try {
+            await supabase.rpc('add_tokens_self', { p_amount: tokensToAdd });
+          } catch (e) {
+            console.error('add_tokens_self failed:', e);
+          }
         }
 
         // Store the bits reward in the battle result for display
@@ -1393,7 +1410,7 @@ export const useBattleStore = create<BattleState>((set, get) => {
 
         set({ teamBattleHistory: transformedData || [], loading: false });
 
-        get().checkDailyBattleLimit();
+        // No-op: daily battle limit removed
       } catch (error) {
         console.error("Error fetching team battle history:", error);
         set({ error: (error as Error).message, loading: false });

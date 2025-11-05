@@ -3,6 +3,7 @@ import { useAuthStore } from '../store/authStore';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from "framer-motion";
 import ThemeToggle from './ThemeToggle';
+import { supabase } from '../lib/supabase';
 
 interface LayoutProps {
   children: ReactNode;
@@ -67,6 +68,7 @@ const Layout = ({ children }: LayoutProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeMenu, setActiveMenu] = useState<'digimon' | 'battle' | 'more' | null>(null);
+  const [energy, setEnergy] = useState<{ current: number; max: number }>({ current: 0, max: 100 });
   const handleSignOut = async () => {
     await signOut();
     navigate('/login');
@@ -80,6 +82,31 @@ const Layout = ({ children }: LayoutProps) => {
   const isAnyActive = (paths: string[]) => {
     return paths.some(path => location.pathname.startsWith(path));
   };
+
+  // Fetch battle energy HUD
+  useEffect(() => {
+    const fetchEnergy = async () => {
+      if (!user) return;
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('battle_energy, max_battle_energy')
+        .eq('id', user.id)
+        .single();
+      if (profile) {
+        setEnergy({ current: profile.battle_energy ?? 0, max: profile.max_battle_energy ?? 100 });
+      }
+    };
+    fetchEnergy();
+
+    const onTaskCompleted = () => fetchEnergy();
+    const onEnergyUpdated = () => fetchEnergy();
+    window.addEventListener('task-completed', onTaskCompleted);
+    window.addEventListener('energy-updated', onEnergyUpdated);
+    return () => {
+      window.removeEventListener('task-completed', onTaskCompleted);
+      window.removeEventListener('energy-updated', onEnergyUpdated);
+    };
+  }, [user?.id]);
   
   // Additional navigation items for the "More" menu
   const moreNavItems = [
@@ -218,6 +245,13 @@ const Layout = ({ children }: LayoutProps) => {
               </div>
               
               <div className="hidden sm:ml-6 sm:flex sm:items-center space-x-4">
+                {/* Energy HUD */}
+                <div className="flex items-center gap-2 px-2 py-1 rounded-full bg-gray-100 dark:bg-dark-200 border border-gray-200 dark:border-dark-100">
+                  <span className="text-xs text-gray-700 dark:text-gray-200">⚡ {energy.current}/{energy.max}</span>
+                  <div className="w-20 h-1.5 bg-gray-300 dark:bg-dark-100 rounded-full overflow-hidden">
+                    <div className="h-full bg-indigo-500" style={{ width: `${Math.min(100, (energy.current / Math.max(1, energy.max)) * 100)}%` }} />
+                  </div>
+                </div>
                 {/* Theme Toggle */}
                 <ThemeToggle />
                 
