@@ -163,7 +163,7 @@ const PreparationModal: React.FC<PreparationModalProps> = ({
               ? `${requiredCost}⚡`
               : requiredCost === 0
               ? 'Rematch'
-              : 'Start Battle'}
+              : `${requiredCost}⚡`}
           </button>
         </div>
 
