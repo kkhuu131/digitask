@@ -958,8 +958,9 @@ export const useBattleStore = create<BattleState>((set, get) => {
         }
 
         // Apply the XP gain to all Digimon (with first-win doubling)
+        // Team members get 100%, Reserve members get 50%, Storage gets 0%
         const finalXpGain = firstWinBonus ? xpGain * 2 : xpGain;
-        await useDigimonStore.getState().feedAllDigimon(finalXpGain);
+        await useDigimonStore.getState().feedBattleRewards(finalXpGain);
 
         const simulatedTeamBattle = {
           id: crypto.randomUUID ? crypto.randomUUID() : "temp-id-" + Date.now(),
@@ -1064,16 +1065,6 @@ export const useBattleStore = create<BattleState>((set, get) => {
           currencyStore.addCurrency("bits", bitsReward);
         }
 
-        // Award Battle Tokens (Phase 1): 1/2/3 by difficulty, doubled on first win
-        if (winnerId === userTeamData[0].user_id) {
-          const baseTokens = option.difficulty === 'easy' ? 1 : option.difficulty === 'medium' ? 2 : 3;
-          const tokensToAdd = firstWinBonus ? baseTokens * 2 : baseTokens;
-          try {
-            await supabase.rpc('add_tokens_self', { p_amount: tokensToAdd });
-          } catch (e) {
-            console.error('add_tokens_self failed:', e);
-          }
-        }
 
         // Store the bits reward in the battle result for display
         set((state) => {

@@ -172,6 +172,7 @@ export interface PetState {
     reserveDigimonId: string
   ) => Promise<void>;
   feedAllDigimon: (taskPoints: number) => Promise<void>;
+  feedBattleRewards: (baseXp: number) => Promise<void>; // Team: 100%, Reserve: 50%, Storage: 0%
   increaseStat: (
     statCategory: StatCategory,
     amount: number
@@ -1491,6 +1492,86 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       await get().checkLevelUp();
     } catch (error) {
       console.error("Error in feedAllDigimon:", error);
+      set({ error: (error as Error).message, loading: false });
+    }
+  },
+
+  feedBattleRewards: async (baseXp: number) => {
+    try {
+      set({ loading: true, error: null });
+
+      const { allUserDigimon } = get();
+      if (allUserDigimon.length === 0) {
+        set({ loading: false });
+        return;
+      }
+
+      // Get the current user
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) {
+        set({ loading: false });
+        return;
+      }
+
+      // Update Digimon in the database with different XP based on team/reserve status
+      const updates = allUserDigimon.map(async (digimon) => {
+        // Skip storage Digimon (0% XP)
+        if (digimon.is_in_storage) {
+          return digimon;
+        }
+
+        // Calculate XP: Team members get 100%, Reserve members get 50%
+        const xpMultiplier = digimon.is_on_team ? 1.0 : 0.5;
+        const xpGain = Math.floor(baseXp * xpMultiplier);
+        const newXP = digimon.experience_points + xpGain;
+
+        // Update the Digimon in the database
+        const { error } = await supabase
+          .from("user_digimon")
+          .update({
+            experience_points: newXP,
+          })
+          .eq("id", digimon.id)
+          .eq("is_in_storage", false);
+
+        if (error) {
+          console.error(`Error feeding Digimon ${digimon.id}:`, error);
+          throw error;
+        }
+
+        // Return the updated Digimon data
+        return {
+          ...digimon,
+          experience_points: newXP,
+        };
+      });
+
+      // Wait for all updates to complete
+      const updatedDigimon = await Promise.all(updates);
+
+      // Update local state
+      set({
+        allUserDigimon: updatedDigimon,
+        loading: false,
+      });
+
+      // If the active Digimon was updated, update that state too
+      const { userDigimon } = get();
+      if (userDigimon) {
+        const updatedActiveDigimon = updatedDigimon.find(
+          (d) => d.id === userDigimon.id
+        );
+        if (updatedActiveDigimon) {
+          set({
+            userDigimon: updatedActiveDigimon,
+          });
+        }
+      }
+
+      // Check for level ups after feeding
+      await get().checkLevelUp();
+    } catch (error) {
+      console.error("Error in feedBattleRewards:", error);
       set({ error: (error as Error).message, loading: false });
     }
   },

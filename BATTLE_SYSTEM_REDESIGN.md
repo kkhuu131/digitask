@@ -25,22 +25,22 @@
 
 **Campaign = Progression & Unlocks**
 - **Purpose**: Story progression, unlock new content, permanent bonuses
-- **First Clear**: 30 energy, MASSIVE rewards (XP, Bits, Tokens, Rare Items, Unlocks)
+- **First Clear**: 30 energy, MASSIVE rewards (XP, Bits, Rare Items, Unlocks)
 - **Replay**: FREE (0 energy) - already unlocked, but lower rewards
 - **Incentive**: Unlock new stages, story progression, energy cap increases, rare unlocks
 - **Best For**: When you want to progress, unlock new content, see the story
 
 **Arena = Daily Engagement & Farming**
-- **Purpose**: Daily check-in, consistent rewards, battle token farming
+- **Purpose**: Daily check-in, consistent rewards, bits farming
 - **Cost**: 20 energy (10 for first win bonus)
-- **Incentive**: Best XP/Token efficiency, daily bonuses, win streak multipliers
+- **Incentive**: Best XP/Bits efficiency, daily bonuses, win streak multipliers
 - **Best For**: Daily engagement, farming resources, quick wins
 - **Refresh**: Daily new opponents keep it fresh
 
 **The Choice:**
 - **Early game / Low energy**: Arena (lower cost, first win bonus = 10 energy)
 - **Want to progress**: Campaign first clear (unlock new content, story)
-- **Want to farm efficiently**: Arena (better token/XP efficiency per energy, unlimited)
+- **Want to farm efficiently**: Arena (better bits/XP efficiency per energy, unlimited)
 - **No energy left**: Campaign replays (free, but limited to 3/day per stage, diminishing returns)
 - **Daily routine**: Arena first win → Campaign first clear → Arena farming → Campaign replays (if needed)
 
@@ -107,10 +107,10 @@
 2. **Replay Rewards** (FREE - No Energy Cost, but Limited):
    - **FREE to replay** - already unlocked through your productivity progress
    - **Limited to 3 replays per stage per day** - prevents infinite grinding
-   - **Diminishing returns**: 
-     - 1st replay: 40-60 XP, 75-125 Bits, 1-2 Tokens
-     - 2nd replay: 20-30 XP, 40-65 Bits, 1 Token (50% of first)
-     - 3rd replay: 10-15 XP, 20-35 Bits, 0-1 Token (25% of first)
+  - **Diminishing returns**: 
+    - 1st replay: 40-60 XP, 75-125 Bits
+    - 2nd replay: 20-30 XP, 40-65 Bits (50% of first)
+    - 3rd replay: 10-15 XP, 20-35 Bits (25% of first)
    - **Resets daily** - fresh rewards each day
    - Practice for harder stages
    - Can farm for evolution materials when you have no energy
@@ -158,8 +158,7 @@
 
 ### Arena Rewards
 - **Base XP**: Scales with difficulty and opponent level
-- **Bits**: 50-200 based on difficulty
-- **Battle Tokens**: New currency (1-3 per battle)
+- **Bits**: 50-200 based on difficulty (doubled on first win)
   - Spend in Battle Shop for evolution materials, stat boosters
 - **First Win Bonus**: 2x all rewards
 
@@ -168,7 +167,7 @@
 ## 4. Battle Shop System
 
 ### Concept (Like Digimon World Championship's Shop)
-**Battle Tokens = currency earned from battles**
+**Bits = currency earned from battles and used in the shop**
 
 ### Shop Items
 - **Evolution Materials**: Required for certain evolutions
@@ -178,10 +177,10 @@
 - **Digimon Eggs**: Rare Digimon unlocks
 
 ### Pricing Examples
-- Stat Booster (temporary): 10 tokens
-- Evolution Material: 25 tokens
-- Rare Digimon Egg: 100 tokens
-- Energy Refill: 15 tokens
+- Stat Booster (temporary): 500 bits
+- Evolution Material: 1,250 bits
+- Rare Digimon Egg: 5,000 bits
+- Energy Refill: 750 bits
 
 ---
 
@@ -193,13 +192,13 @@
 ### Challenge Types
 1. **Productivity Challenges**:
    - "Complete 5 tasks today" → Bonus Battle Energy
-   - "Win 3 arena battles" → Bonus Battle Tokens
+   - "Win 3 arena battles" → Bonus Bits
    - "Complete daily quota early" → 2x battle rewards for rest of day
 
 2. **Battle Challenges**:
    - "Win against a Fire-type team" → Fire-type XP bonus
    - "Deal 10,000 damage total" → Bits bonus
-   - "Win 5 battles in a row" → Battle Token bonus
+   - "Win 5 battles in a row" → Bits bonus
 
 3. **Weekly Challenges**:
    - "Complete campaign arc" → Exclusive rewards
@@ -207,7 +206,7 @@
 
 ### Challenge Rewards
 - Battle Energy
-- Battle Tokens
+- Bits
 - XP Multipliers
 - Rare Items
 - Exclusive Titles
@@ -234,18 +233,18 @@
 ## 7. Reward Structure
 
 ### Arena Rewards
-- **Easy Win**: 30-50 XP, 50-75 Bits, 1 Token
-- **Medium Win**: 50-75 XP, 100-150 Bits, 2 Tokens
-- **Hard Win**: 75-100 XP, 150-200 Bits, 3 Tokens
+- **Easy Win**: 30-50 XP, 50-75 Bits
+- **Medium Win**: 50-75 XP, 100-150 Bits
+- **Hard Win**: 75-100 XP, 150-200 Bits
 - **First Win Bonus**: 2x all rewards
 - **Streak Bonus**: +30-75% based on task streak
 
 ### Campaign Rewards
-- **First Clear**: 150-250 XP, 300-500 Bits, 10-15 Tokens, Rare Item, Unlocks Next Stage
+- **First Clear**: 150-250 XP, 300-500 Bits, Rare Item, Unlocks Next Stage
 - **Replay (3/day limit per stage, diminishing returns)**:
-  - 1st replay: 40-60 XP, 75-125 Bits, 1-2 Tokens
-  - 2nd replay: 20-30 XP, 40-65 Bits, 1 Token
-  - 3rd replay: 10-15 XP, 20-35 Bits, 0-1 Token
+  - 1st replay: 40-60 XP, 75-125 Bits
+  - 2nd replay: 20-30 XP, 40-65 Bits
+  - 3rd replay: 10-15 XP, 20-35 Bits
 - **Arc Completion**: Exclusive Title, Rare Digimon Egg, Permanent Stat Boost, Energy Cap Increase
 
 ### Reward Comparison (Per Energy Spent)
@@ -253,36 +252,33 @@
 **Arena (First Win - 10 energy):**
 - 60-200 XP (doubled from first win)
 - 100-400 Bits (doubled)
-- 2-6 Tokens (doubled)
-- **Efficiency**: 6-20 XP/energy, 10-40 Bits/energy, 0.2-0.6 Tokens/energy
+- **Efficiency**: 6-20 XP/energy, 10-40 Bits/energy
 
 **Arena (Normal - 20 energy):**
 - 30-100 XP
 - 50-200 Bits  
-- 1-3 Tokens
-- **Efficiency**: 1.5-5 XP/energy, 2.5-10 Bits/energy, 0.05-0.15 Tokens/energy
+- **Efficiency**: 1.5-5 XP/energy, 2.5-10 Bits/energy
 
 **Campaign (First Clear - 30 energy):**
 - 150-250 XP
 - 300-500 Bits
-- 10-15 Tokens
 - Rare Item
 - Unlocks Next Stage
-- **Efficiency**: 5-8 XP/energy, 10-17 Bits/energy, 0.33-0.5 Tokens/energy
+- **Efficiency**: 5-8 XP/energy, 10-17 Bits/energy
 - **PLUS**: Unique unlocks (stages, energy cap, story progression)
 
 **Campaign (Replay - 0 energy, limited to 3/day per stage):**
-- 1st replay: 40-60 XP, 75-125 Bits, 1-2 Tokens
-- 2nd replay: 20-30 XP, 40-65 Bits, 1 Token (50% reduction)
-- 3rd replay: 10-15 XP, 20-35 Bits, 0-1 Token (75% reduction)
+- 1st replay: 40-60 XP, 75-125 Bits
+- 2nd replay: 20-30 XP, 40-65 Bits (50% reduction)
+- 3rd replay: 10-15 XP, 20-35 Bits (75% reduction)
 - **Daily limit**: 3 replays per stage resets each day
 - **Efficiency**: Good for free farming, but limited
 - **Best for**: When you have no energy but want to practice/farm, or when you've used all arena energy
 
 ### Daily Challenge Rewards
-- **Small Challenge**: 20 Energy or 5 Tokens
-- **Medium Challenge**: 50 Energy or 15 Tokens or Rare Item
-- **Large Challenge**: 100 Energy or 50 Tokens or Exclusive Item
+- **Small Challenge**: 20 Energy or 500 Bits
+- **Medium Challenge**: 50 Energy or 1,500 Bits or Rare Item
+- **Large Challenge**: 100 Energy or 5,000 Bits or Exclusive Item
 
 ---
 
@@ -299,7 +295,7 @@
 - **Energy Sources**: "Complete 2 more tasks to unlock next battle"
 - **Campaign Map**: Visual progression map (keep existing)
 - **Arena Section**: Daily opponents with difficulty ratings
-- **Battle Shop**: Tab with available items and token count
+- **Battle Shop**: Tab with available items and bits balance
 
 ### Motivation Features
 - **Achievement Notifications**: "You've won 10 battles!"
@@ -313,7 +309,7 @@
 ### Phase 1: Core Foundation
 1. ✅ Task-based energy system (tasks grant energy)
 2. ✅ Energy costs for battles
-3. ✅ Enhanced arena rewards with Battle Tokens
+3. ✅ Enhanced arena rewards with Bits
 4. ✅ First win bonus system
 
 ### Phase 2: Campaign Enhancement

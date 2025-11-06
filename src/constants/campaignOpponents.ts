@@ -22,6 +22,7 @@ interface CampaignOpponent {
   team: CampaignTeamMember[];
   hint?: string; // optional hint to display if player loses the battle
   description?: string; // optional description to display before battle
+  is_boss: boolean;
 }
 
 // Simplified input interfaces
@@ -44,7 +45,7 @@ interface SimpleOpponent {
   description?: string; // optional description to display before battle
 }
 
-function createOpponent(index: number, data: SimpleOpponent): CampaignOpponent {
+function createOpponent(index: number, data: SimpleOpponent, is_boss: boolean): CampaignOpponent {
   const id = `team_${String(index).padStart(3, "0")}`;
 
   return {
@@ -70,6 +71,7 @@ function createOpponent(index: number, data: SimpleOpponent): CampaignOpponent {
     })),
     hint: data.hint,
     description: data.description,
+    is_boss: is_boss || false,
   };
 }
 
@@ -79,6 +81,7 @@ interface CampaignStage {
   team: SimpleDigimon[];
   hint?: string;
   description?: string;
+  is_boss?: boolean;
 }
 
 // Utility functions for stage relationships
@@ -279,6 +282,7 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
     name: "Kuwagamon",
     team: [{ digimon_id: 93, level: 15 }],
     description: "A wild Kuwagamon suddenly appears and attacks you!",
+    is_boss: true,
   },
   {
     id: "11",
@@ -337,6 +341,7 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
       { digimon_id: 73, level: 20 },
     ],
     description: "These Digimon seem to be testing your strength...",
+    is_boss: true,
   },
   {
     id: "16A",
@@ -412,6 +417,7 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
     ],
     description:
       "The Digital World trembles as a shadowy virus known as Devimon splits the lands, twisting Digimon against each other. This is the first sign that something darker lurks beneath.",
+    is_boss: true,
   },
   {
     id: "21",
@@ -483,6 +489,7 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
     ],
     description:
       "Looks like Etemon is attempting to absorb the Datamon to achieve a new form!",
+    is_boss: true,
   },
   // {
   //   id: "25B",
@@ -544,6 +551,7 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
     team: [{ digimon_id: 147, level: 45, hp_bonus: 50, spd_bonus: 50 }],
     description:
       "Myotismon claims to have been made by the same being that created Devimon and Etemon. He plans to enter the Real World and wreak havoc.",
+    is_boss: true,
   },
   {
     id: "30",
@@ -558,6 +566,7 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
     ],
     description:
       "After his apparent death, Myotismon consumes the data of his remaining minions and is reborn.",
+    is_boss: true,
   },
   {
     id: "31",
@@ -638,6 +647,7 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
     ],
     description:
       "MetalSeadramon emerges as the first of the Dark Masters, four Digimon created by Apocalymon who plan to take over the Digital World.",
+    is_boss: true,
   },
   {
     id: "38",
@@ -675,6 +685,7 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
     ],
     description:
       "Puppetmon, reveals itself as the second Dark Master, using its puppet strings to control the forest from the shadows.",
+    is_boss: true,
   },
   {
     id: "41",
@@ -713,6 +724,7 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
     ],
     description:
       "The Third Dark Master, reveals itself as Machinedramon, a Digimon created by combining the parts of many Cyborg Digmion.",
+    is_boss: true,
   },
   {
     id: "44",
@@ -756,6 +768,7 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
     ],
     description:
       "The strongest of the Dark Masters awaits. Piedmon, a trickster and tyrant, teams up with LadyDevimon, to take you down.",
+    is_boss: true,
   },
   {
     id: "47",
@@ -1388,7 +1401,7 @@ const CAMPAIGN_STAGES: CampaignStage[] = [
 
 // Generate the full opponent data
 export const CAMPAIGN_OPPONENTS = CAMPAIGN_STAGES.map((stage, index) => ({
-  ...createOpponent(index + 1, stage),
+  ...createOpponent(index + 1, stage, stage.is_boss || false),
   id: stage.id,
 }));
 

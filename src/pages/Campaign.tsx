@@ -10,10 +10,11 @@ import TypeAttributeIcon from "@/components/TypeAttributeIcon";
 import { supabase } from "../lib/supabase";
 import { useTitleStore } from "../store/titleStore";
 import { useAuthStore } from "../store/authStore";
+import { useCurrencyStore } from "../store/currencyStore";
 import PageTutorial from "../components/PageTutorial";
 import { DialogueStep } from "../components/DigimonDialogue";
 import DigimonSprite from "@/components/DigimonSprite";
-import { calculateUserDigimonPowerRating } from "@/utils/digimonStatCalculation";
+
 interface PreparationModalProps {
   opponent: typeof CAMPAIGN_OPPONENTS[0];
   isOpen: boolean;
@@ -39,6 +40,12 @@ const PreparationModal: React.FC<PreparationModalProps> = ({
 }) => {
   const { allUserDigimon } = useDigimonStore();
   const teamDigimon = allUserDigimon.filter(d => d.is_on_team);
+  
+  // Calculate rewards for display (based on stage and whether it's first clear or replay)
+  const baseStage = getBaseStage(opponent.id);
+  const rewards = isPast 
+    ? calculateReplayRewards(baseStage)
+    : calculateFirstClearRewards(baseStage);
 
   // Energy HUD for Campaign prep
   const [energy, setEnergy] = useState<{ current: number; max: number }>({ current: 0, max: 100 });
@@ -78,7 +85,11 @@ const PreparationModal: React.FC<PreparationModalProps> = ({
             <InteractiveBattle
               onBattleComplete={onBattleComplete || (() => {})}
               userDigimon={userDigimon}
-              showRewards={false} // Campaign battles don't give rewards
+              showRewards={true}
+              customRewards={{
+                xp: rewards.xp,
+                bits: rewards.bits
+              }}
             />
           </div>
         ) : (
@@ -178,25 +189,6 @@ const PreparationModal: React.FC<PreparationModalProps> = ({
   );
 };
 
-// First, add a helper function to calculate the power level of a campaign team
-const calculateCampaignTeamPower = (team: any[]) => {
-  const avgPower = team.reduce((total, digimon) => {
-    if (!digimon.digimon) return total;
-    return total + calculateUserDigimonPowerRating(
-      digimon
-    );
-  }, 0) / team.length;
-  
-  // If team size is 1, return 1/2 of power, if 2 return 2/3, otherwise full average
-  if (team.length === 1) {
-    return avgPower / 2;
-  } else if (team.length === 2) {
-    return (avgPower * 2) / 3;
-  } else {
-    return avgPower;
-  }
-};
-
 const CampaignNode: React.FC<{
   stage: typeof CAMPAIGN_OPPONENTS[0];
   isUnlocked: boolean;
@@ -257,13 +249,33 @@ const CampaignNode: React.FC<{
           </div>
         ))}
       </div>
-      {import.meta.env.DEV && (
-      <span className="text-[8px] sm:text-[14px] text-gray-500 dark:text-gray-400">
-          Power: {Math.round(calculateCampaignTeamPower(stage.team))}
+      {stage.is_boss && (
+        <span className="text-[8px] sm:text-[14px] text-red-500 font-bold dark:text-red-400">
+          BOSS
         </span>
-        )}
+      )}
     </button>
   );
+};
+
+// Campaign reward calculation functions
+// Scaling formula: rewards increase linearly with stage number
+// Stage 1: 50 XP, 100 Bits
+// Stage 100: 500 XP, 1200 Bits
+const calculateFirstClearRewards = (stage: number): { xp: number; bits: number } => {
+  const xp = Math.floor(50 + (stage * 4.5));
+  const bits = Math.floor(100 + (stage * 11));
+  return { xp, bits };
+};
+
+// Replay rewards: 40% of first clear rewards (same for all replays)
+const REPLAY_MULTIPLIER = 0.4;
+const calculateReplayRewards = (stage: number): { xp: number; bits: number } => {
+  const firstClear = calculateFirstClearRewards(stage);
+  return {
+    xp: Math.floor(firstClear.xp * REPLAY_MULTIPLIER),
+    bits: Math.floor(firstClear.bits * REPLAY_MULTIPLIER),
+  };
 };
 
 const Campaign: React.FC = () => {
@@ -371,16 +383,13 @@ const Campaign: React.FC = () => {
     // If battle was won and we have a current battle stage ID
     if (result.winner === 'user' && currentBattleStageId !== null) {
       const baseStage = getBaseStage(currentBattleStageId);
+      const isFirstClear = baseStage > highestStageCleared;
       
-      if (baseStage > highestStageCleared) {
-        // First clear rewards (Phase 1): big XP and tokens
-        const bigXp = 200;
-        await useDigimonStore.getState().feedAllDigimon(bigXp);
-        try {
-          await supabase.rpc('add_tokens_self', { p_amount: 12 });
-        } catch (e) {
-          console.error('add_tokens_self failed:', e);
-        }
+      if (isFirstClear) {
+        // First clear rewards: scaled XP and Bits
+        const rewards = calculateFirstClearRewards(baseStage);
+        await useDigimonStore.getState().feedBattleRewards(rewards.xp);
+        await useCurrencyStore.getState().addCurrency('bits', rewards.bits);
         
         // Update highest stage cleared in database
         await supabase
@@ -414,6 +423,11 @@ const Campaign: React.FC = () => {
         
         // Update local state
         setHighestStageCleared(baseStage);
+      } else {
+        // Replay rewards: 40% of first clear rewards (same for all replays)
+        const rewards = calculateReplayRewards(baseStage);
+        await useDigimonStore.getState().feedBattleRewards(rewards.xp);
+        await useCurrencyStore.getState().addCurrency('bits', rewards.bits);
       }
     }
     

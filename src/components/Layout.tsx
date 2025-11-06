@@ -1,8 +1,8 @@
 import { ReactNode, useState, useRef, useEffect } from 'react';
 import { useAuthStore } from '../store/authStore';
+import { useCurrencyStore } from '../store/currencyStore';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from "framer-motion";
-import ThemeToggle from './ThemeToggle';
 import { supabase } from '../lib/supabase';
 
 interface LayoutProps {
@@ -67,7 +67,7 @@ const Layout = ({ children }: LayoutProps) => {
   const { user, userProfile, signOut, } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
-  const [activeMenu, setActiveMenu] = useState<'digimon' | 'battle' | 'more' | null>(null);
+  const [activeMenu, setActiveMenu] = useState<'digimon' | 'more' | null>(null);
   const [energy, setEnergy] = useState<{ current: number; max: number }>({ current: 0, max: 100 });
   const handleSignOut = async () => {
     await signOut();
@@ -83,7 +83,9 @@ const Layout = ({ children }: LayoutProps) => {
     return paths.some(path => location.pathname.startsWith(path));
   };
 
-  // Fetch battle energy HUD
+  const { bits, fetchCurrency } = useCurrencyStore();
+
+  // Fetch battle energy HUD and bits
   useEffect(() => {
     const fetchEnergy = async () => {
       if (!user) return;
@@ -97,16 +99,23 @@ const Layout = ({ children }: LayoutProps) => {
       }
     };
     fetchEnergy();
+    fetchCurrency();
 
-    const onTaskCompleted = () => fetchEnergy();
-    const onEnergyUpdated = () => fetchEnergy();
+    const onTaskCompleted = () => {
+      fetchEnergy();
+      fetchCurrency();
+    };
+    const onEnergyUpdated = () => {
+      fetchEnergy();
+      fetchCurrency();
+    };
     window.addEventListener('task-completed', onTaskCompleted);
     window.addEventListener('energy-updated', onEnergyUpdated);
     return () => {
       window.removeEventListener('task-completed', onTaskCompleted);
       window.removeEventListener('energy-updated', onEnergyUpdated);
     };
-  }, [user?.id]);
+  }, [user?.id, fetchCurrency]);
   
   // Additional navigation items for the "More" menu
   const moreNavItems = [
@@ -119,7 +128,7 @@ const Layout = ({ children }: LayoutProps) => {
     // { path: "/playground", label: "Playground", icon: "🎮" },
   ];
   
-  const handleMenuClick = (menu: 'digimon' | 'battle' | 'more') => {
+  const handleMenuClick = (menu: 'digimon' | 'more') => {
     setActiveMenu(activeMenu === menu ? null : menu);
   };
   
@@ -168,32 +177,16 @@ const Layout = ({ children }: LayoutProps) => {
                     </Link>
                   </NavDropdown>
                   
-                  <NavDropdown 
-                    label="Battle" 
-                    isActive={isAnyActive(["/battle", "/campaign", "/store"])}
+                  <Link
+                    to="/battles"
+                    className={`inline-flex items-center px-1 pb-2 border-b-2 text-sm font-medium ${
+                      isAnyActive(["/battles", "/battle", "/campaign", "/store"])
+                        ? "border-primary-500 text-gray-900 dark:border-accent-500 dark:text-gray-100"
+                        : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-100 dark:hover:border-gray-500"
+                    }`}
                   >
-                    <Link
-                      to="/battle"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-100 dark:hover:text-white"
-                      onClick={() => setActiveMenu(null)}
-                    >
-                      Arena
-                    </Link>
-                    <Link
-                      to="/campaign"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-100 dark:hover:text-white"
-                      onClick={() => setActiveMenu(null)}
-                    >
-                      Campaign
-                    </Link>
-                    <Link
-                      to="/store"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-100 dark:hover:text-white"
-                      onClick={() => setActiveMenu(null)}
-                    >
-                      Store
-                    </Link>
-                  </NavDropdown>
+                    Battle
+                  </Link>
                   
                   <NavDropdown 
                     label="Community" 
@@ -246,14 +239,22 @@ const Layout = ({ children }: LayoutProps) => {
               
               <div className="hidden sm:ml-6 sm:flex sm:items-center space-x-4">
                 {/* Energy HUD */}
-                <div className="flex items-center gap-2 px-2 py-1 rounded-full bg-gray-100 dark:bg-dark-200 border border-gray-200 dark:border-dark-100">
+                <Link
+                  to="/battles"
+                  className="flex items-center gap-2 px-2 py-1 rounded-full bg-gray-100 dark:bg-dark-200 border border-gray-200 dark:border-dark-100 hover:bg-gray-200 dark:hover:bg-dark-100 transition-colors cursor-pointer"
+                >
                   <span className="text-xs text-gray-700 dark:text-gray-200">⚡ {energy.current}/{energy.max}</span>
                   <div className="w-20 h-1.5 bg-gray-300 dark:bg-dark-100 rounded-full overflow-hidden">
                     <div className="h-full bg-indigo-500" style={{ width: `${Math.min(100, (energy.current / Math.max(1, energy.max)) * 100)}%` }} />
                   </div>
-                </div>
-                {/* Theme Toggle */}
-                <ThemeToggle />
+                </Link>
+                {/* Bits Display */}
+                <Link
+                  to="/store"
+                  className="flex items-center gap-1 px-2 py-1 rounded-full bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-colors cursor-pointer"
+                >
+                  <span className="text-xs font-medium text-amber-700 dark:text-amber-300">{bits.toLocaleString()} bits</span>
+                </Link>
                 
                 {/* User Avatar - links to profile */}
                 <Link
@@ -314,8 +315,6 @@ const Layout = ({ children }: LayoutProps) => {
               </Link>
             </div>
             <div className="flex items-center space-x-3">
-              <ThemeToggle />
-              
               <Link
                 to={`/profile/name/${userProfile?.username}`}
                 className="flex items-center justify-center"
@@ -408,64 +407,17 @@ const Layout = ({ children }: LayoutProps) => {
             </div>
             
             <div className="relative">
-              <button
-                onClick={() => handleMenuClick('battle')}
+              <Link
+                to="/battles"
                 className={`flex flex-col items-center justify-center py-2 ${
-                  activeMenu === 'battle' || isActive("/battle") || isActive("/campaign") 
-                    ? "text-primary-600 dark:text-accent-500" 
-                    : "text-gray-500 dark:text-gray-400"
+                  isAnyActive(["/battles", "/battle", "/campaign", "/store"]) ? "text-primary-600 dark:text-accent-500" : "text-gray-500 dark:text-gray-400"
                 }`}
               >
                 <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
                 <span className="text-xs mt-1">Battle</span>
-              </button>
-              
-              <AnimatePresence>
-                {activeMenu === 'battle' && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 20 }}
-                    transition={{ duration: 0.2 }}
-                    className="absolute bottom-full mb-2 right-0 bg-white dark:bg-dark-300 rounded-lg shadow-lg border border-gray-200 dark:border-dark-200 w-36 overflow-hidden"
-                  >
-                    <div className="py-1">
-                      <Link
-                        to="/battle"
-                        className={`flex items-center px-4 py-2 text-sm ${
-                          isActive("/battle") ? "bg-primary-50 text-primary-700 dark:bg-dark-200 dark:text-accent-400" : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-200"
-                        }`}
-                        onClick={() => setActiveMenu(null)}
-                      >
-                        <span className="mr-2">⚔️</span>
-                        Arena
-                      </Link>
-                      <Link
-                        to="/campaign"
-                        className={`flex items-center px-4 py-2 text-sm ${
-                          isActive("/campaign") ? "bg-primary-50 text-primary-700 dark:bg-dark-200 dark:text-accent-400" : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-200"
-                        }`}
-                        onClick={() => setActiveMenu(null)}
-                      >
-                        <span className="mr-2">🗺️</span>
-                        Campaign
-                      </Link>
-                      <Link
-                        to="/store"
-                        className={`flex items-center px-4 py-2 text-sm ${
-                          isActive("/store") ? "bg-primary-50 text-primary-700 dark:bg-dark-200 dark:text-accent-400" : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-200"
-                        }`}
-                        onClick={() => setActiveMenu(null)}
-                      >
-                        <span className="mr-2">🛍️</span>
-                        Store
-                      </Link>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              </Link>
             </div>
             
             <div className="relative">
@@ -507,14 +459,6 @@ const Layout = ({ children }: LayoutProps) => {
                         </Link>
                       ))}
 
-                      {/* Add theme toggle button to mobile menu */}
-                      <div className="flex items-center justify-between px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-200">
-                        <span className="flex items-center">
-                          <span className="mr-2">🎨</span>
-                          Theme
-                        </span>
-                        <ThemeToggle />
-                      </div>
                     </div>
                   </motion.div>
                 )}

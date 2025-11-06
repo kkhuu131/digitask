@@ -603,123 +603,111 @@ const DigimonStorePage: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Neemon Shopkeeper Section */}
-      <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50 rounded-lg p-4 mb-8">
-        <div className="flex flex-col md:flex-row items-center">
-          <div className="relative mb-4 md:mb-0 md:mr-6">
-            <img 
-              src="/assets/digimon/neemon.png" 
-              alt="Neemon" 
-              className="w-24 h-24 object-contain"
-              style={{
-                imageRendering: "pixelated",
-              }}
-            />
+    <div className="container mx-auto px-4 py-6 max-w-7xl">
+      {/* Header Section */}
+      <div className="mb-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+          <div>
+            <h1 className="text-3xl font-bold dark:text-gray-100 mb-2">Neemon's Store</h1>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">{neeemonDialogue}</p>
           </div>
-          <div className="flex-1 md:mr-6">
-            <div className="bg-white dark:bg-dark-200 border border-amber-100 dark:border-amber-800/30 rounded-lg p-3 relative shadow-sm">
-              <div className="absolute -left-2 top-4 w-0 h-0 border-t-8 border-r-8 border-b-0 border-l-0 border-white dark:border-dark-200"></div>
-              <h2 className="text-amber-800 dark:text-amber-300 font-bold mb-1">Neemon</h2>
-              <p className="text-gray-700 dark:text-gray-300">{neeemonDialogue}</p>
-            </div>
-          </div>
-          <div className="ml-auto mt-4 md:mt-0 flex space-x-3">
-            <div className="bg-amber-100 dark:bg-amber-900/30 px-4 py-2 rounded-lg flex items-center">
-              <span className="font-semibold dark:text-amber-200">{bits.toLocaleString()} bits</span>
+          <div className="flex items-center gap-3">
+            <div className="bg-gradient-to-r from-amber-500 to-amber-600 dark:from-amber-600 dark:to-amber-700 px-5 py-2.5 rounded-lg shadow-sm">
+              <span className="font-semibold text-white">{bits.toLocaleString()} bits</span>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold dark:text-gray-100">Neemon's Store</h1>
-      </div>
-
       {/* Store Items */}
-      <div className="bg-white dark:bg-dark-300 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div className="bg-white dark:bg-dark-300 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
         <Tab.Group>
-          <div className="border-b border-gray-200 dark:border-gray-700 overflow-x-auto">
-            <div className="min-w-max"> {/* Ensures tabs don't wrap */}
-              <Tab.List className="flex space-x-2 p-4">
-                {categories.map(category => (
-                  <Tab
-                    key={category.id}
-                    className={({ selected }) =>
-                      `px-4 py-2 text-sm font-medium rounded-md transition-colors whitespace-nowrap ${
-                        selected
-                          ? "bg-amber-500 dark:bg-amber-600 text-white"
-                          : "bg-gray-100 dark:bg-dark-200 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-dark-100"
-                      }`
-                    }
-                    onClick={() => setFilterCategory(category.id as ItemCategory | "all")}
-                  >
-                    {category.name}
-                  </Tab>
-                ))}
-              </Tab.List>
-            </div>
+          <div className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-dark-200/50">
+            <Tab.List className="flex space-x-1 p-2 overflow-x-auto scrollbar-hide">
+              {categories.map(category => (
+                <Tab
+                  key={category.id}
+                  className={({ selected }) =>
+                    `px-5 py-2.5 text-sm font-medium rounded-lg transition-all whitespace-nowrap ${
+                      selected
+                        ? "bg-white dark:bg-dark-300 text-amber-600 dark:text-amber-400 shadow-sm"
+                        : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-white/50 dark:hover:bg-dark-300/50"
+                    }`
+                  }
+                  onClick={() => setFilterCategory(category.id as ItemCategory | "all")}
+                >
+                  {category.name}
+                </Tab>
+              ))}
+            </Tab.List>
           </div>
 
-          <div className="p-4 sm:p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+          <div className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {filteredItems.map(item => (
-                <div key={item.id} className="bg-gray-50 dark:bg-dark-200 rounded-lg p-3 sm:p-4 border border-gray-200 dark:border-gray-700 hover:border-amber-300 dark:hover:border-amber-500/50 transition-colors">
-                  <div className="flex items-start">
-                    <div className="bg-white dark:bg-dark-100 p-3 rounded-md border border-gray-200 dark:border-gray-600 mr-4">
-                      <img
-                        src={item.imageUrl}
-                        alt={item.name}
-                        className="w-12 h-12 object-contain"
-                        onError={e => {
-                          (e.target as HTMLImageElement).src = "/assets/items/default.png";
-                        }}
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex flex-col sm:flex-row sm:items-start">
-                        <h3 className="font-bold text-gray-800 dark:text-gray-100 mr-auto">{item.name}</h3>
-                        {/* Show item quantity if it's an inventory item and the user has at least one */}
-                        {item.applyType === ItemApplyType.INVENTORY && itemQuantities[item.id] > 0 && (
-                          <span className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 px-2 py-1 rounded-full mt-1 sm:mt-0 self-start whitespace-nowrap">
-                            Owned: {itemQuantities[item.id]}
-                          </span>
-                        )}
-                      </div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">{item.category}</div>
-                      <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">{item.description}</p>
-                      <div className="flex justify-between items-center">
-                        <div className="flex items-center">
-                          <span className="font-semibold text-sm dark:text-gray-300">{item.price} {item.currency}</span>
-                        </div>
-                        <button
-                          onClick={() => handlePurchase(item)}
-                          disabled={
-                            processingPurchase === item.id ||
-                            (item.currency === "bits" ? bits < item.price : digicoins < item.price) ||
-                            (item.id === "abi_enhancer" && !userDigimon)
-                          }
-                          className={`px-3 py-1.5 rounded text-xs font-medium ${
-                            processingPurchase === item.id
-                              ? "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-wait"
-                              : item.currency === "bits"
-                              ? bits < item.price
-                                ? "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
-                                : "bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 hover:bg-amber-200 dark:hover:bg-amber-800/50"
-                              : digicoins < item.price
-                              ? "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
-                              : "bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-800/50"
-                          }`}
-                        >
-                          {processingPurchase === item.id
-                            ? "Processing..."
-                            : "Buy"}
-                        </button>
-                      </div>
-                      {item.id === "abi_enhancer" && !userDigimon && (
-                        <p className="mt-1 text-xs text-red-500 dark:text-red-400">You need an active Digimon to use this item</p>
+                <div 
+                  key={item.id} 
+                  className="group bg-white dark:bg-dark-200 rounded-xl p-4 border border-gray-200 dark:border-gray-700 hover:border-amber-400 dark:hover:border-amber-500/60 hover:shadow-md transition-all duration-200"
+                >
+                  {/* Item Image */}
+                  <div className="flex items-center justify-center mb-4 bg-gray-50 dark:bg-dark-100 rounded-lg p-3 h-20">
+                    <img
+                      src={item.imageUrl}
+                      alt={item.name}
+                      className="w-16 h-16 object-contain"
+                      onError={e => {
+                        (e.target as HTMLImageElement).src = "/assets/items/default.png";
+                      }}
+                    />
+                  </div>
+                  
+                  {/* Item Info */}
+                  <div className="space-y-2">
+                    <div className="flex items-start justify-between gap-2">
+                      <h3 className="font-bold text-gray-900 dark:text-gray-100 text-base leading-tight">{item.name}</h3>
+                      {item.applyType === ItemApplyType.INVENTORY && itemQuantities[item.id] > 0 && (
+                        <span className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0">
+                          {itemQuantities[item.id]}
+                        </span>
                       )}
                     </div>
+                    
+                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">{item.category}</p>
+                    
+                    <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 min-h-[2.5rem]">{item.description}</p>
+                    
+                    {/* Price and Buy Button */}
+                    <div className="flex items-center justify-between pt-2 border-t border-gray-100 dark:border-gray-700">
+                      <div className="flex items-baseline gap-1">
+                        <span className="font-bold text-lg text-gray-900 dark:text-gray-100">{item.price}</span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400 uppercase">{item.currency}</span>
+                      </div>
+                      <button
+                        onClick={() => handlePurchase(item)}
+                        disabled={
+                          processingPurchase === item.id ||
+                          (item.currency === "bits" ? bits < item.price : digicoins < item.price) ||
+                          (item.id === "abi_enhancer" && !userDigimon)
+                        }
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                          processingPurchase === item.id
+                            ? "bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-wait"
+                            : item.currency === "bits"
+                            ? bits < item.price
+                              ? "bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                              : "bg-amber-500 hover:bg-amber-600 dark:bg-amber-600 dark:hover:bg-amber-700 text-white shadow-sm hover:shadow"
+                            : digicoins < item.price
+                            ? "bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                            : "bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white shadow-sm hover:shadow"
+                        }`}
+                      >
+                        {processingPurchase === item.id ? "Processing..." : "Buy"}
+                      </button>
+                    </div>
+                    
+                    {item.id === "abi_enhancer" && !userDigimon && (
+                      <p className="text-xs text-red-500 dark:text-red-400 mt-1">Requires active Digimon</p>
+                    )}
                   </div>
                 </div>
               ))}
@@ -730,52 +718,55 @@ const DigimonStorePage: React.FC = () => {
       
       {/* Modals */}
       {showDigimonSelectionModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-dark-300 rounded-lg p-6 max-w-md w-full">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold dark:text-gray-100">Select Digimon</h2>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-dark-300 rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
+              <div>
+                <h2 className="text-2xl font-bold dark:text-gray-100">Select Digimon</h2>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  Change personality to {showDigimonSelectionModal.effect?.value}
+                </p>
+              </div>
               <button 
                 onClick={() => setShowDigimonSelectionModal(null)} 
-                className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-2xl leading-none w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-dark-200 transition-colors"
               >
                 ×
               </button>
             </div>
             
-            <p className="mb-4 text-sm text-gray-700 dark:text-gray-300">
-              Select a Digimon to change its personality to {showDigimonSelectionModal.effect?.value}
-            </p>
-            
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-80 overflow-y-auto">
-              {allUserDigimon.map(digimon => (
-                <div
-                  key={digimon.id}
-                  onClick={() => {
-                    applyPersonalityToDigimon(showDigimonSelectionModal, digimon.id);
-                    setShowDigimonSelectionModal(null);
-                  }}
-                  className="cursor-pointer p-3 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-500/50 transition-all dark:bg-dark-200"
-                >
-                  <div className="flex flex-col items-center">
-                    <div className="w-12 h-12 flex items-center justify-center">
-                      <DigimonSprite
-                        digimonName={digimon.digimon?.name || ""}
-                        fallbackSpriteUrl={digimon.digimon?.sprite_url || ""}
-                        size="sm"
-                        showHappinessAnimations={false}
-                      />
-                    </div>
-                    <div className="text-xs font-medium mt-1 text-center truncate w-full dark:text-gray-200">
-                      {digimon.name || digimon.digimon?.name}
-                    </div>
-                    {digimon.personality && (
-                      <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">
-                        {digimon.personality}
+            <div className="p-6 overflow-y-auto flex-1">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                {allUserDigimon.map(digimon => (
+                  <button
+                    key={digimon.id}
+                    onClick={() => {
+                      applyPersonalityToDigimon(showDigimonSelectionModal, digimon.id);
+                      setShowDigimonSelectionModal(null);
+                    }}
+                    className="cursor-pointer p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-amber-400 dark:hover:border-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/10 transition-all bg-white dark:bg-dark-200"
+                  >
+                    <div className="flex flex-col items-center">
+                      <div className="w-16 h-16 flex items-center justify-center mb-2">
+                        <DigimonSprite
+                          digimonName={digimon.digimon?.name || ""}
+                          fallbackSpriteUrl={digimon.digimon?.sprite_url || ""}
+                          size="sm"
+                          showHappinessAnimations={false}
+                        />
                       </div>
-                    )}
-                  </div>
-                </div>
-              ))}
+                      <div className="text-xs font-semibold text-center truncate w-full dark:text-gray-200 mb-1">
+                        {digimon.name || digimon.digimon?.name}
+                      </div>
+                      {digimon.personality && (
+                        <div className="text-xs text-amber-600 dark:text-amber-400 font-medium">
+                          {digimon.personality}
+                        </div>
+                      )}
+                    </div>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -783,48 +774,51 @@ const DigimonStorePage: React.FC = () => {
 
       {/* Stat Reset Digimon Selection Modal */}
       {showStatResetModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-dark-300 rounded-lg p-6 max-w-md w-full">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold dark:text-gray-100">Select Digimon</h2>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-dark-300 rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
+              <div>
+                <h2 className="text-2xl font-bold dark:text-gray-100">Select Digimon</h2>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  Reset one of its bonus stats
+                </p>
+              </div>
               <button 
                 onClick={() => {
                   setShowStatResetModal(null);
                   setSelectedDigimonForStatReset(null);
                 }} 
-                className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-2xl leading-none w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-dark-200 transition-colors"
               >
                 ×
               </button>
             </div>
             
-            <p className="mb-4 text-sm text-gray-700 dark:text-gray-300">
-              Select a Digimon to reset one of its bonus stats
-            </p>
-            
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-80 overflow-y-auto">
-              {allUserDigimon.map(digimon => (
-                <div
-                  key={digimon.id}
-                  onClick={() => setSelectedDigimonForStatReset(digimon)}
-                  className="cursor-pointer p-3 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-500/50 transition-all dark:bg-dark-200"
-                >
-                  <div className="flex flex-col items-center">
-                    <div className="w-12 h-12 flex items-center justify-center">
-                      <img
-                        src={digimon.digimon?.sprite_url || ""}
-                        alt={digimon.name || digimon.digimon?.name}
-                        className="w-12 h-12 object-contain"
-                        style={{ imageRendering: "pixelated" }}
-                      />
+            <div className="p-6 overflow-y-auto flex-1">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                {allUserDigimon.map(digimon => (
+                  <button
+                    key={digimon.id}
+                    onClick={() => setSelectedDigimonForStatReset(digimon)}
+                    className="cursor-pointer p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-amber-400 dark:hover:border-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/10 transition-all bg-white dark:bg-dark-200"
+                  >
+                    <div className="flex flex-col items-center">
+                      <div className="w-16 h-16 flex items-center justify-center mb-2">
+                        <img
+                          src={digimon.digimon?.sprite_url || ""}
+                          alt={digimon.name || digimon.digimon?.name}
+                          className="w-16 h-16 object-contain"
+                          style={{ imageRendering: "pixelated" }}
+                        />
+                      </div>
+                      <div className="text-xs font-semibold text-center truncate w-full dark:text-gray-200 mb-1">
+                        {digimon.name || digimon.digimon?.name}
+                      </div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400 font-medium">Lv. {digimon.current_level}</div>
                     </div>
-                    <div className="text-xs font-medium mt-1 text-center truncate w-full dark:text-gray-200">
-                      {digimon.name || digimon.digimon?.name}
-                    </div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">Lv. {digimon.current_level}</div>
-                  </div>
-                </div>
-              ))}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -832,36 +826,36 @@ const DigimonStorePage: React.FC = () => {
 
       {/* Stat Selection Modal - shows after selecting a Digimon */}
       {selectedDigimonForStatReset && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-dark-300 rounded-lg p-6 max-w-md w-full">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold dark:text-gray-100">Select Stat to Reset</h2>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-dark-300 rounded-xl shadow-xl max-w-md w-full">
+            <div className="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
+              <h2 className="text-2xl font-bold dark:text-gray-100">Select Stat to Reset</h2>
               <button 
                 onClick={() => setSelectedDigimonForStatReset(null)} 
-                className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-2xl leading-none w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-dark-200 transition-colors"
               >
                 ×
               </button>
             </div>
             
-            <div className="mb-4">
-              <div className="flex items-center space-x-3 mb-4">
+            <div className="p-6">
+              <div className="flex items-center gap-4 mb-6 p-4 bg-gray-50 dark:bg-dark-200 rounded-xl">
                 <img
                   src={selectedDigimonForStatReset.digimon?.sprite_url || ""}
                   alt={selectedDigimonForStatReset.name || selectedDigimonForStatReset.digimon?.name}
-                  className="w-16 h-16 object-contain"
+                  className="w-16 h-16 object-contain flex-shrink-0"
                   style={{ imageRendering: "pixelated" }}
                 />
                 <div>
-                  <h3 className="font-bold dark:text-gray-100">
+                  <h3 className="font-bold text-lg dark:text-gray-100">
                     {selectedDigimonForStatReset.name || selectedDigimonForStatReset.digimon?.name}
                   </h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Lv. {selectedDigimonForStatReset.current_level}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Level {selectedDigimonForStatReset.current_level}</p>
                 </div>
               </div>
               
-              <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">
-                Select a stat to reset. The bonus points will be returned to your account.
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                Select a stat to reset. Bonus points will be returned to your account.
               </p>
               
               <div className="space-y-2">
@@ -869,10 +863,10 @@ const DigimonStorePage: React.FC = () => {
                   <button
                     key={statField}
                     onClick={() => resetDigimonStat(selectedDigimonForStatReset.id, statField)}
-                    className="w-full flex justify-between items-center p-3 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-500/50 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all dark:bg-dark-200"
+                    className="w-full flex justify-between items-center p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-amber-400 dark:hover:border-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/10 transition-all bg-white dark:bg-dark-200"
                   >
-                    <span className="font-medium dark:text-gray-200">{statDisplayNames[statField]}</span>
-                    <span className="font-bold text-blue-600 dark:text-blue-400">
+                    <span className="font-semibold dark:text-gray-200">{statDisplayNames[statField]}</span>
+                    <span className="font-bold text-amber-600 dark:text-amber-400 text-lg">
                       {selectedDigimonForStatReset[statField] || 0}
                     </span>
                   </button>
@@ -885,42 +879,51 @@ const DigimonStorePage: React.FC = () => {
 
       {/* X-Antibody Selection Modal */}
       {showXAntibodyModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-dark-300 rounded-lg p-6 max-w-md w-full max-h-[80vh] overflow-y-auto">
-            <h2 className="text-xl font-bold mb-4 dark:text-gray-100">Select a Digimon</h2>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-              Choose a Digimon to grant the X-Antibody. This will allow it to transform 
-              into its X-Antibody form at will (if available).
-            </p>
-            
-            <div className="grid grid-cols-1 gap-2">
-              {digimonForXAntibody.map(digimon => (
-                <button
-                  key={digimon.id}
-                  onClick={() => applyXAntibodyToDigimon(digimon.id)}
-                  className="flex items-center p-2 border border-gray-200 dark:border-gray-600 rounded hover:bg-gray-100 dark:hover:bg-dark-200 dark:bg-dark-200"
-                >
-                  <DigimonSprite
-                    digimonName={digimon.digimon?.name || ''}
-                    fallbackSpriteUrl={digimon.digimon?.sprite_url || ''}
-                    size="sm"
-                    showHappinessAnimations={false}
-                  />
-                  <div className="ml-2 text-left">
-                    <div className="font-medium text-left dark:text-gray-200">{digimon.name || digimon.digimon?.name}</div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">Lv. {digimon.current_level}</div>
-                  </div>
-                </button>
-              ))}
-            </div>
-            
-            <div className="mt-4 flex justify-end">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-dark-300 rounded-xl shadow-xl max-w-md w-full max-h-[80vh] overflow-hidden flex flex-col">
+            <div className="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
+              <div>
+                <h2 className="text-2xl font-bold dark:text-gray-100">Select a Digimon</h2>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  Grant X-Antibody capability
+                </p>
+              </div>
               <button
                 onClick={() => setShowXAntibodyModal(false)}
-                className="px-4 py-2 bg-gray-200 dark:bg-dark-200 rounded hover:bg-gray-300 dark:hover:bg-dark-100 dark:text-gray-300"
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-2xl leading-none w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-dark-200 transition-colors"
               >
-                Cancel
+                ×
               </button>
+            </div>
+            
+            <div className="p-6 overflow-y-auto flex-1">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                Choose a Digimon to grant the X-Antibody. This will allow it to transform 
+                into its X-Antibody form at will (if available).
+              </p>
+              
+              <div className="space-y-2">
+                {digimonForXAntibody.map(digimon => (
+                  <button
+                    key={digimon.id}
+                    onClick={() => applyXAntibodyToDigimon(digimon.id)}
+                    className="w-full flex items-center gap-3 p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-amber-400 dark:hover:border-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/10 transition-all bg-white dark:bg-dark-200"
+                  >
+                    <div className="flex-shrink-0">
+                      <DigimonSprite
+                        digimonName={digimon.digimon?.name || ''}
+                        fallbackSpriteUrl={digimon.digimon?.sprite_url || ''}
+                        size="sm"
+                        showHappinessAnimations={false}
+                      />
+                    </div>
+                    <div className="flex-1 text-left">
+                      <div className="font-semibold dark:text-gray-200">{digimon.name || digimon.digimon?.name}</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">Level {digimon.current_level}</div>
+                    </div>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>

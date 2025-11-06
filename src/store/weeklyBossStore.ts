@@ -781,9 +781,9 @@ export const useWeeklyBossStore = create<WeeklyBossState>((set, get) => ({
         await useCurrencyStore.getState().addCurrency("bits", rewards.bits);
       }
 
-      // Award experience to team
+      // Award experience to team (Team: 100%, Reserve: 50%, Storage: 0%)
       if (rewards.experience > 0) {
-        await useDigimonStore.getState().feedAllDigimon(rewards.experience);
+        await useDigimonStore.getState().feedBattleRewards(rewards.experience);
       }
 
       // Mark rewards as claimed

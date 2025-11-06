@@ -24,6 +24,7 @@ import Debug from './pages/Debug';
 import ResetPassword from "./pages/ResetPassword";
 import AuthCallback from "./pages/AuthCallback";
 import Battle from './pages/Battle';
+import BattleHub from './pages/BattleHub';
 import Settings from './pages/Settings';
 import Tutorial from './pages/Tutorial';
 import PatchNotes from './pages/PatchNotes';
@@ -528,6 +529,14 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <DigimonDexPage />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/battles" element={
+            <ProtectedRoute>
+              <Layout>
+                <BattleHub />
               </Layout>
             </ProtectedRoute>
           } />

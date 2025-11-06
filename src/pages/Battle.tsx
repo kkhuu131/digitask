@@ -188,12 +188,12 @@ const Battle = () => {
 
       console.log('Calculated XP gain:', xpGain);
 
-      // Apply XP to all Digimon - use the same method as auto battles
+      // Apply XP to all Digimon - Team: 100%, Reserve: 50%, Storage: 0%
       console.log('About to apply XP rewards...');
       
-      // Use the same XP application method as auto battles to avoid issues
+      // Use battle rewards method: Team members get 100%, Reserve members get 50%
       try {
-        await useDigimonStore.getState().feedAllDigimon(xpGain);
+        await useDigimonStore.getState().feedBattleRewards(xpGain);
         console.log('XP rewards applied successfully');
       } catch (error) {
         console.error('Error applying XP rewards:', error);
