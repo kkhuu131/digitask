@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { DIGIMON_LOOKUP_TABLE } from '../constants/digimonLookup';
 import DigimonSprite from '../components/DigimonSprite';
+import ThemeToggle from '../components/ThemeToggle';
 
 const RosterPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -23,15 +24,16 @@ const RosterPage: React.FC = () => {
   const paginatedDigimon = filteredDigimon.slice(startIndex, startIndex + itemsPerPage);
   
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-indigo-100 text-gray-900 transition-colors dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 dark:text-gray-100">
       <header className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center">
           <div className="flex items-center">
             <img src="/assets/digimon/agumon_professor.png" alt="Digitask Logo" className="h-8 w-8 mr-2" style={{ imageRendering: "pixelated" }} />
-            <Link to="/" className="text-2xl font-bold text-indigo-800 hidden sm:block">Digitask</Link>
+            <Link to="/" className="text-2xl font-bold text-indigo-800 dark:text-indigo-200 hidden sm:block">Digitask</Link>
           </div>
-          <div>
-            <Link to="/login" className="btn-primary mr-2">Login</Link>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <Link to="/login" className="btn-primary">Login</Link>
             <Link to="/register" className="btn-secondary">Register</Link>
           </div>
         </div>
@@ -39,14 +41,14 @@ const RosterPage: React.FC = () => {
 
       <main className="container mx-auto px-4 py-12">
         <section className="text-center mb-8">
-          <h2 className="text-4xl font-bold text-indigo-900 mb-4">
+          <h2 className="text-4xl font-bold text-indigo-900 dark:text-indigo-200 mb-4">
             Digimon Roster
           </h2>
-          <p className="text-xl text-gray-700 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
             Browse all {allDigimonIds.length} Digimon available
           </p>
-          <p className="text-xl text-gray-700 max-w-3xl mx-auto">
-            Have a request? <Link to="https://docs.google.com/forms/d/e/1FAIpQLSfDVtTfT16n3UGSpCua4zI3QA_iQowreZtaYXijZLTUyDFLgQ/viewform?usp=header" className="text-indigo-600 hover:text-indigo-800" target="_blank" rel="noopener noreferrer">Send requests in the form!</Link>
+          <p className="text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
+            Have a request? <Link to="https://docs.google.com/forms/d/e/1FAIpQLSfDVtTfT16n3UGSpCua4zI3QA_iQowreZtaYXijZLTUyDFLgQ/viewform?usp=header" className="text-indigo-600 hover:text-indigo-800 dark:text-indigo-300 dark:hover:text-indigo-200" target="_blank" rel="noopener noreferrer">Send requests in the form!</Link>
           </p>
         </section>
         
@@ -56,7 +58,7 @@ const RosterPage: React.FC = () => {
             <input
               type="text"
               placeholder="Search Digimon by name..."
-              className="w-full px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100 dark:placeholder-gray-400"
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
@@ -64,7 +66,7 @@ const RosterPage: React.FC = () => {
               }}
             />
             <button 
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500"
               onClick={() => setSearchTerm('')}
             >
               {searchTerm && (
@@ -81,19 +83,18 @@ const RosterPage: React.FC = () => {
           {paginatedDigimon.map(id => {
             const digimon = DIGIMON_LOOKUP_TABLE[id];
             return (
-              <div key={id} className="bg-white p-3 rounded-lg shadow-md flex flex-col items-center hover:shadow-lg transition-shadow">
+              <div key={id} className="bg-white p-3 rounded-lg shadow-md flex flex-col items-center hover:shadow-lg transition-shadow dark:bg-gray-900/80 dark:border dark:border-gray-700">
                 <div className="w-24 h-24 flex items-center justify-center">
                   <DigimonSprite
                     digimonName={digimon.name}
                     size="sm"
-                    showHappinessAnimations={false}
                     fallbackSpriteUrl={digimon.sprite_url}
                   />
                 </div>
-                <p className="mt-2 text-center font-medium text-gray-800 truncate w-full">
+                <p className="mt-2 text-center font-medium text-gray-800 dark:text-gray-200 truncate w-full">
                   {digimon.name}
                 </p>
-                <p className="text-xs text-gray-500">#{id}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">#{id}</p>
               </div>
             );
           })}
@@ -105,19 +106,19 @@ const RosterPage: React.FC = () => {
             <button
               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
-              className="px-3 py-1 rounded bg-gray-200 disabled:opacity-50"
+              className="px-3 py-1 rounded bg-gray-200 disabled:opacity-50 dark:bg-gray-800 dark:text-gray-100"
             >
               &lt;
             </button>
             
-            <span className="text-gray-700">
+            <span className="text-gray-700 dark:text-gray-300">
               Page {currentPage} of {totalPages}
             </span>
             
             <button
               onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
-              className="px-3 py-1 rounded bg-gray-200 disabled:opacity-50"
+              className="px-3 py-1 rounded bg-gray-200 disabled:opacity-50 dark:bg-gray-800 dark:text-gray-100"
             >
               &gt;
             </button>
@@ -127,20 +128,20 @@ const RosterPage: React.FC = () => {
         {/* No results message */}
         {filteredDigimon.length === 0 && (
           <div className="text-center py-8">
-            <p className="text-gray-700">No Digimon found matching "{searchTerm}"</p>
+            <p className="text-gray-700 dark:text-gray-300">No Digimon found matching "{searchTerm}"</p>
           </div>
         )}
       </main>
 
-      <footer className="bg-indigo-900 text-white py-8">
+      <footer className="bg-indigo-900 dark:bg-gray-950 text-white py-8">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-4 md:mb-0">
               <h2 className="text-xl font-bold">Digitask</h2>
-              <p className="text-indigo-200">The Digimon Productivity App</p>
+              <p className="text-indigo-200 dark:text-indigo-300">The Digimon Productivity App</p>
             </div>
             <div>
-              <p className="text-indigo-200">
+              <p className="text-indigo-200 dark:text-indigo-300">
                 Fan project. Digimon™ is owned by Bandai/Toei Animation.
               </p>
             </div>

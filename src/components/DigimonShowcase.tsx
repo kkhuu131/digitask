@@ -21,11 +21,11 @@ const DigimonShowcase: React.FC = () => {
   }, []);
   
   return (
-    <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-10 gap-2 p-4 bg-white rounded-lg shadow-md">
+    <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-10 gap-2 p-4 bg-white rounded-lg shadow-md dark:bg-gray-900/80 dark:border dark:border-gray-700">
       {digimonImages.map((digimon) => (
         <div 
           key={digimon.id} 
-          className="flex items-center justify-center p-2 bg-gray-50 rounded-md hover:bg-gray-100 transition-colors"
+          className="flex items-center justify-center p-2 bg-gray-50 rounded-md hover:bg-gray-100 transition-colors dark:bg-gray-800 dark:hover:bg-gray-700"
           title={digimon.name}
         >
           <DigimonSprite digimonName={digimon.name} fallbackSpriteUrl={digimon.sprite} size="sm" />
