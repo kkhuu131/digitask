@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import DigimonShowcase from '../components/DigimonShowcase';
 import ThemeToggle from '../components/ThemeToggle';
+import { Button } from '@headlessui/react';
 
 const LandingPage: React.FC = () => {
   return (
@@ -35,9 +36,9 @@ const LandingPage: React.FC = () => {
 
         {/* Digimon Showcase */}
         <section className="mb-8">
-          <h3 className="text-2xl font-semibold text-indigo-800 dark:text-indigo-200 mb-4 text-center">Collect and Raise from 350+ Digimon</h3>
+          <h3 className="text-2xl font-semibold text-indigo-800 dark:text-indigo-200 mb-4 text-center">Collect and Raise from 400+ Digimon</h3>
           <div className="flex justify-center my-4 mb-8">
-            <Link to="/roster" className="text-indigo-600 hover:text-indigo-800 dark:text-indigo-300 dark:hover:text-indigo-200">Check out the full roster!</Link>
+            <Button onClick={() => window.location.href = '/roster'} className="btn-secondary">Check out the full roster!</Button>
           </div>
           <DigimonShowcase />
         </section>

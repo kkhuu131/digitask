@@ -128,4 +128,8 @@ export const UPDATE_CHANGES = {
     "Fixed bug where storage Digimon were recieving EXP.",
     "REMINDER: Max Party Size is now 9, if you have 12 send some to the DigiFarm as unexpected results may occur."
   ],
+  "2.2.0": [
+    "Nearly all Digimon now have animated sprites! Only Arcadiamon and Sistermon lines and NX Digimon are still static.",
+    "Time Stranger Digimon may get added in the near future."
+  ],
 };
