@@ -141,8 +141,6 @@ const createBossDigimon = (config: PresetBossConfig) => {
     int_bonus: Math.round(baseDigimon.int_level99 * (multiplier - 1)),
     spd_bonus: Math.round(baseDigimon.spd_level99 * (multiplier - 1)),
     abi: 200,
-    daily_stat_gains: 0,
-    last_stat_reset: new Date().toISOString(),
     personality: "Fighter",
     digimon: baseDigimon,
     is_in_storage: false,

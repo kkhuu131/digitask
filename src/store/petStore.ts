@@ -74,8 +74,6 @@ export interface UserDigimon {
   int_bonus: number;
   spd_bonus: number;
   abi: number;
-  daily_stat_gains: number;
-  last_stat_reset: string;
   personality?: string;
   digimon?: Digimon;
   is_in_storage?: boolean;

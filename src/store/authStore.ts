@@ -284,8 +284,6 @@ const createProfile = async (userId: string, username: string) => {
         username,
         display_name: username,
         saved_stats: { HP: 0, SP: 0, ATK: 0, DEF: 0, INT: 0, SPD: 0 },
-        daily_stat_gains: 0,
-        last_stat_reset: new Date().toISOString(),
         battles_won: 0,
         battles_completed: 0,
       },
