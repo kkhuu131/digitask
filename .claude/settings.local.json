@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/notke/.claude/plugins/cache/ui-ux-pro-max-skill/ui-ux-pro-max/2.0.1/.claude/skills/ui-ux-pro-max/**)",
+      "Bash(python scripts/search.py \"gamified productivity task manager RPG game dark mode\" --design-system -p \"Digitask\" -f markdown)",
+      "Bash(python scripts/search.py \"game RPG dark gaming neon\" --domain style -n 4)",
+      "Bash(python scripts/search.py \"animation micro-interaction game feedback\" --domain ux -n 4)",
+      "Bash(python scripts/search.py \"dashboard layout sidebar responsive\" --stack react -n 4)",
+      "Bash(python scripts/search.py \"typography heading display game\" --domain typography -n 3)",
+      "Bash(python scripts/search.py \"game progress reward achievement\" --domain color -n 2)",
+      "Bash(npm run build)",
+      "Bash(python scripts/search.py \"gamified productivity app digimon anime dark mode playful gaming\" --design-system -p \"Digitask\" -f markdown)",
+      "Bash(python \"C:\\\\Users\\\\notke\\\\.claude\\\\plugins\\\\cache\\\\ui-ux-pro-max-skill\\\\ui-ux-pro-max\\\\2.0.1\\\\.claude\\\\skills\\\\ui-ux-pro-max\\\\scripts\\\\search.py\" \"gamified productivity anime dark playful gaming\" --design-system -p \"Digitask\" -f markdown)",
+      "Bash(python \"C:\\\\Users\\\\notke\\\\.claude\\\\plugins\\\\cache\\\\ui-ux-pro-max-skill\\\\ui-ux-pro-max\\\\2.0.1\\\\cli\\\\assets\\\\scripts\\\\search.py\" \"gamified productivity anime dark playful gaming\" --design-system -p \"Digitask\" -f markdown)",
+      "Bash(npx tsc --noEmit --project tsconfig.app.json)",
+      "Bash(npx tsc --noEmit)",
+      "Bash(npx eslint src/components/DigimonDex.tsx)",
+      "Bash(npm run lint -- --max-warnings=9999)",
+      "Bash(npm run lint)"
+    ]
+  }
+}

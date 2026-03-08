@@ -58,16 +58,32 @@ const AUTH_EVENT_DEBOUNCE_MS = 2000; // 2 seconds
 let currentSessionId: string | null = null; // Track the current session ID
 let currentUserId: string | null = null; // Track the current user ID
 
+// Branded full-screen loading spinner — adapts to dark/light mode
+const AppLoader = ({ message = "Loading..." }: { message?: string }) => (
+  <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-[#0A0A0F] transition-colors duration-200">
+    <div className="text-center space-y-4">
+      <img
+        src="/assets/digimon/agumon_professor.png"
+        alt="Digitask"
+        className="h-14 w-14 mx-auto"
+        style={{ imageRendering: 'pixelated' }}
+      />
+      <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-500 mx-auto" />
+      <p className="font-body text-sm text-gray-500 dark:text-gray-400">{message}</p>
+    </div>
+  </div>
+);
+
 // Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading: authLoading, isAdmin } = useAuthStore();
   const location = useLocation();
-  
+
   // If the route is an admin route, check for admin status
   const isAdminRoute = location.pathname.startsWith('/admin');
-  
+
   if (authLoading) {
-    return <div className="flex items-center justify-center h-screen">Loading...</div>;
+    return <AppLoader />;
   }
   
   if (!user) {
@@ -101,14 +117,7 @@ function RequireAuth({ children, allowNoDigimon = false }: { children: React.Rea
   
   // Show loading while checking auth and onboarding status
   if ((authLoading || isCheckingStatus || hasCompletedOnboarding === null) && !isHotReload) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
-        </div>
-      </div>
-    );
+    return <AppLoader />;
   }
 
   if (!user && !isHotReload) {
@@ -131,14 +140,7 @@ function RequireAuth({ children, allowNoDigimon = false }: { children: React.Rea
 
   // Show loading while fetching Digimon data
   if (!allowNoDigimon && digimonLoading && !isHotReload) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading your Digimon...</p>
-        </div>
-      </div>
-    );
+    return <AppLoader message="Loading your Digimon..." />;
   }
   
   return <>{children}</>;
@@ -489,19 +491,12 @@ function App() {
 
   // Render a consistent loading state
   if (appLoading) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-gray-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading your Digimon adventure...</p>
-        </div>
-      </div>
-    );
+    return <AppLoader message="Loading your Digimon adventure..." />;
   }
 
   return (
     <Router>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 dark:bg-dark-400 transition-colors duration-200">
         <Routes>
           {process.env.NODE_ENV === 'development' && (
             <Route path="/debug" element={<Debug />} />
@@ -944,14 +939,7 @@ function HomeRouteContent() {
   }
   
   if (creatingProfile) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Setting up your profile...</p>
-        </div>
-      </div>
-    );
+    return <AppLoader message="Setting up your profile..." />;
   }
 
   if (profileError) {
@@ -1083,14 +1071,7 @@ function OnboardingWrapper() {
   
   // Show loading state
   if (authLoading || !hasChecked || (isCheckingStatus && hasCompletedOnboarding === null)) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading onboarding...</p>
-        </div>
-      </div>
-    );
+    return <AppLoader message="Loading onboarding..." />;
   }
   
   // If we've checked and the user needs onboarding, show the onboarding page
@@ -1099,13 +1080,7 @@ function OnboardingWrapper() {
   }
   
   // Fallback - should not reach here
-  return (
-    <div className="flex items-center justify-center h-screen">
-      <div className="text-center">
-        <p className="text-gray-600">Redirecting...</p>
-      </div>
-    </div>
-  );
+  return <AppLoader message="Redirecting..." />;
 }
 
 export default App; 

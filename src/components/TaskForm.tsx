@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { Task, useTaskStore } from "../store/taskStore";
 import Select from 'react-select';
-import { 
-  StatCategory, 
-  detectCategory, 
-  categoryDescriptions, 
+import {
+  StatCategory,
+  detectCategory,
+  categoryDescriptions,
   categoryIcons,
 } from "../utils/categoryDetection";
 
@@ -34,19 +34,19 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
   useEffect(() => {
     // Get today's date in local timezone
     const today = new Date();
-    
+
     // Format as YYYY-MM-DD for the date input
     const formattedDate = today.toLocaleDateString('en-CA'); // en-CA uses YYYY-MM-DD format
-    
+
     // If no date is selected yet, default to today
     if (!dueDate) {
       setDueDate(formattedDate);
     }
-    
+
     // Initialize time value
     updateMinTime();
   }, []);
-  
+
   // Update minimum time whenever date changes
   useEffect(() => {
     updateMinTime();
@@ -56,28 +56,28 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
   const updateMinTime = () => {
     // This function now simply ensures time values are properly formatted
     // We've removed the restriction that tasks must be in the future
-    
+
     // If no due time is set, default to current time rounded up to next 5 minutes
     if (!dueTime) {
       const now = new Date();
       const minutes = Math.ceil(now.getMinutes() / 5) * 5;
       const hours = minutes === 60 ? now.getHours() + 1 : now.getHours();
       const adjustedMinutes = minutes === 60 ? 0 : minutes;
-      
+
       const formattedHours = hours.toString().padStart(2, '0');
       const formattedMinutes = adjustedMinutes.toString().padStart(2, '0');
       const currentTime = `${formattedHours}:${formattedMinutes}`;
-      
+
       setDueTime(currentTime);
     }
   };
-  
+
   // Add a new effect to detect category when description changes
   useEffect(() => {
     if (description.trim().length > 2) {
       const detected = detectCategory(description);
       setDetectedCategory(detected);
-      
+
       // If we detect a category, set it as the selected category
       if (detected) {
         setCategory(detected);
@@ -96,7 +96,7 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     try {
       // Prepare the task data
       const taskData: Partial<Task> = {
@@ -108,15 +108,15 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
         difficulty,
         priority,
       };
-      
+
       // Add due date for one-time tasks
       if (taskType === "one-time" && dueDate) {
         const combinedDateTime = new Date(`${dueDate}T${dueTime}`);
         taskData.due_date = combinedDateTime.toISOString();
       }
-      
+
       await createTask(taskData);
-      
+
       // Reset form
       setDescription("");
       setNotes("");
@@ -133,179 +133,238 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
     }
   };
 
+  // Shared input class
+  const inputClass =
+    "w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-300 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors font-body text-sm";
+
+  // Pill button helpers
+  const pillBase = "flex-1 px-3 py-2 text-sm rounded-xl font-body font-semibold transition-all duration-150 border focus:outline-none";
+  const pillActive = "bg-secondary-600 text-white border-secondary-600 shadow-sm";
+  const pillInactive = "bg-gray-100 dark:bg-dark-200 text-gray-600 dark:text-gray-400 border-transparent hover:bg-gray-200 dark:hover:bg-dark-100";
+
+  // Compute EXP preview values
+  const baseExp = taskType === "daily" ? 75 : taskType === "recurring" ? 75 : 100;
+  const difficultyMultiplier = difficulty === 'easy' ? 0.7 : difficulty === 'medium' ? 1.0 : 1.5;
+  const priorityMultiplier = priority === 'low' ? 0.8 : priority === 'medium' ? 1.0 : 1.3;
+  const activeExp = Math.round(baseExp * difficultyMultiplier * priorityMultiplier);
+  const reserveExp = Math.round(activeExp * 0.5);
+
   return (
-    <form onSubmit={handleSubmit}>
-      
-      <div className="mb-4">
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+    <form onSubmit={handleSubmit} className="space-y-5">
+
+      {/* Task Description */}
+      <div>
+        <label htmlFor="description" className="block text-sm font-heading font-semibold text-gray-700 dark:text-gray-200 mb-1">
           Task Description
         </label>
         <input
           type="text"
           id="description"
-          className="input dark:bg-dark-300"
+          className={inputClass}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="What do you need to do?"
           required
         />
-        
-        {/* Show detected category */}
+
+        {/* Detected category chip */}
         {detectedCategory && (
-          <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            <span className="font-medium">Suggested category:</span> {categoryIcons[detectedCategory]} {detectedCategory}
+          <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-100 dark:bg-teal-900/30 border border-teal-300 dark:border-teal-700 text-teal-800 dark:text-teal-300 text-xs font-body font-semibold">
+            <span className="opacity-80">Detected:</span>
+            <span>{categoryIcons[detectedCategory]}</span>
+            <span>{detectedCategory}</span>
           </div>
         )}
 
+        {/* Prompt when category could not be detected */}
         {!detectedCategory && description.trim().length > 2 && (
-          <label htmlFor="category" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mt-2">
-            Couldn't detect a category - what should this task improve?
-          </label>
+          <p className="mt-2 text-xs font-body text-amber-600 dark:text-amber-400">
+            Could not detect a category — select one below to boost a stat.
+          </p>
         )}
-        
-        {/* Show category selector if we couldn't detect one */}
+
+        {/* Category select */}
         <div className="mt-2">
           <Select
             id="category"
             options={categoryOptions}
-            value={categoryOptions.find(opt => opt.value === category)}
+            value={categoryOptions.find(opt => opt.value === category) ?? null}
             onChange={(selected) => setCategory(selected?.value || null)}
-            placeholder="Select a category"
-            className="mt-1"
+            placeholder="Select a stat category..."
+            isClearable
             classNames={{
-              control: (state) => 
-                `!bg-white dark:!bg-dark-300 !border-gray-300 dark:!border-dark-100 !shadow-none ${
-                  state.isFocused ? '!border-primary-500 dark:!border-accent-500' : ''
+              control: (state) =>
+                `!rounded-xl !border !bg-white dark:!bg-dark-300 dark:!border-dark-100 !shadow-none !text-sm ${
+                  state.isFocused
+                    ? '!border-purple-500 dark:!border-purple-500 !ring-2 !ring-purple-500/30'
+                    : '!border-gray-200'
                 }`,
-              menu: () => "!bg-white dark:!bg-dark-200 !border dark:!border-dark-100",
-              option: (state) => 
-                `${state.isSelected 
-                  ? '!bg-primary-100 !text-primary-800 dark:!bg-primary-900/30 dark:!text-primary-300' 
-                  : state.isFocused 
-                    ? '!bg-gray-100 dark:!bg-dark-300' 
+              menu: () => "!rounded-xl !bg-white dark:!bg-dark-200 !border dark:!border-dark-100 !shadow-lg",
+              option: (state) =>
+                `!text-sm ${
+                  state.isSelected
+                    ? '!bg-secondary-600 !text-white'
+                    : state.isFocused
+                    ? '!bg-purple-50 dark:!bg-dark-300 dark:!text-gray-200'
                     : 'dark:!text-gray-300'
                 }`,
-              singleValue: () => "dark:!text-gray-200",
-              placeholder: () => "dark:!text-gray-400",
+              singleValue: () => "dark:!text-gray-100 !text-sm",
+              placeholder: () => "dark:!text-gray-500 !text-sm",
+              input: () => "dark:!text-gray-100",
+              clearIndicator: () => "dark:!text-gray-400 hover:dark:!text-gray-200",
+              dropdownIndicator: () => "dark:!text-gray-400",
+              indicatorSeparator: () => "dark:!bg-dark-100",
             }}
           />
         </div>
       </div>
-      
-      <div className="mb-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+      {/* Priority + Difficulty */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Priority */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label className="block text-sm font-heading font-semibold text-gray-700 dark:text-gray-200 mb-2">
             Priority
           </label>
-            <select
-              value={priority}
-              onChange={(e) => setPriority(e.target.value as 'low' | 'medium' | 'high')}
-              className="input dark:bg-dark-300"
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => setPriority('low')}
+              className={`${pillBase} ${priority === 'low'
+                ? 'bg-gray-500 text-white border-gray-500 shadow-sm'
+                : 'bg-gray-100 dark:bg-dark-200 text-gray-500 dark:text-gray-400 border-transparent hover:bg-gray-200 dark:hover:bg-dark-100'
+              }`}
             >
-              <option value="low">Low</option>
-              <option value="medium">Medium</option>
-              <option value="high">High</option>
-            </select>
+              Low
+            </button>
+            <button
+              type="button"
+              onClick={() => setPriority('medium')}
+              className={`${pillBase} ${priority === 'medium'
+                ? 'bg-indigo-500 text-white border-indigo-500 shadow-sm'
+                : 'bg-gray-100 dark:bg-dark-200 text-gray-500 dark:text-gray-400 border-transparent hover:bg-gray-200 dark:hover:bg-dark-100'
+              }`}
+            >
+              Medium
+            </button>
+            <button
+              type="button"
+              onClick={() => setPriority('high')}
+              className={`${pillBase} ${priority === 'high'
+                ? 'bg-orange-500 text-white border-orange-500 shadow-sm'
+                : 'bg-gray-100 dark:bg-dark-200 text-gray-500 dark:text-gray-400 border-transparent hover:bg-gray-200 dark:hover:bg-dark-100'
+              }`}
+            >
+              High
+            </button>
           </div>
-          <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        </div>
+
+        {/* Difficulty */}
+        <div>
+          <label className="block text-sm font-heading font-semibold text-gray-700 dark:text-gray-200 mb-2">
             Difficulty
           </label>
-            <select
-              value={difficulty}
-              onChange={(e) => setDifficulty(e.target.value as 'easy' | 'medium' | 'hard')}
-              className="input dark:bg-dark-300"
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => setDifficulty('easy')}
+              className={`${pillBase} ${difficulty === 'easy'
+                ? 'bg-green-500 text-white border-green-500 shadow-sm'
+                : 'bg-gray-100 dark:bg-dark-200 text-gray-500 dark:text-gray-400 border-transparent hover:bg-gray-200 dark:hover:bg-dark-100'
+              }`}
             >
-              <option value="easy">Easy ⭐</option>
-              <option value="medium">Medium ⭐⭐</option>
-              <option value="hard">Hard ⭐⭐⭐</option>
-            </select>
+              ★ Easy
+            </button>
+            <button
+              type="button"
+              onClick={() => setDifficulty('medium')}
+              className={`${pillBase} ${difficulty === 'medium'
+                ? 'bg-yellow-500 text-white border-yellow-500 shadow-sm'
+                : 'bg-gray-100 dark:bg-dark-200 text-gray-500 dark:text-gray-400 border-transparent hover:bg-gray-200 dark:hover:bg-dark-100'
+              }`}
+            >
+              ★★ Med
+            </button>
+            <button
+              type="button"
+              onClick={() => setDifficulty('hard')}
+              className={`${pillBase} ${difficulty === 'hard'
+                ? 'bg-red-500 text-white border-red-500 shadow-sm'
+                : 'bg-gray-100 dark:bg-dark-200 text-gray-500 dark:text-gray-400 border-transparent hover:bg-gray-200 dark:hover:bg-dark-100'
+              }`}
+            >
+              ★★★ Hard
+            </button>
           </div>
         </div>
       </div>
 
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+      {/* Task Type */}
+      <div>
+        <label className="block text-sm font-heading font-semibold text-gray-700 dark:text-gray-200 mb-2">
           Task Type
         </label>
-        <div className="flex space-x-2 mb-2">
+        <div className="flex gap-2 mb-3">
           <button
             type="button"
             onClick={() => setTaskType("one-time")}
-            className={`flex-1 px-3 py-2 text-sm rounded-md transition-colors ${
-              taskType === "one-time"
-                ? "bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-dark-200 dark:text-gray-300 dark:hover:bg-dark-100"
-            }`}
+            className={`${pillBase} ${taskType === "one-time" ? pillActive : pillInactive}`}
           >
             One-time
           </button>
           <button
             type="button"
             onClick={() => setTaskType("daily")}
-            className={`flex-1 px-3 py-2 text-sm rounded-md transition-colors ${
-              taskType === "daily"
-                ? "bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-dark-200 dark:text-gray-300 dark:hover:bg-dark-100"
-            }`}
+            className={`${pillBase} ${taskType === "daily" ? pillActive : pillInactive}`}
           >
             Daily
           </button>
           <button
             type="button"
             onClick={() => setTaskType("recurring")}
-            className={`flex-1 px-3 py-2 text-sm rounded-md transition-colors ${
-              taskType === "recurring"
-                ? "bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-dark-200 dark:text-gray-300 dark:hover:bg-dark-100"
-            }`}
+            className={`${pillBase} ${taskType === "recurring" ? pillActive : pillInactive}`}
           >
             Recurring
           </button>
         </div>
-        
-        {/* Conditional fields based on task type */}
+
+        {/* One-time: date + time pickers */}
         {taskType === "one-time" && (
-          <div className="space-y-2">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
-              <div className="flex-1 mb-2 sm:mb-0">
-                <label htmlFor="due-date" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Due Date
-                </label>
-                <div className="relative">
-                  <input
-                    type="date"
-                    id="due-date"
-                    className="input dark:bg-dark-300"
-                    value={dueDate}
-                    onChange={(e) => setDueDate(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-              <div className="flex-1">
-                <label htmlFor="due-time" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Due Time
-                </label>
-                <div className="relative">
-                  <input
-                    type="time"
-                    id="due-time"
-                    className="input dark:bg-dark-300 oor"
-                    value={dueTime}
-                    onChange={(e) => setDueTime(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex-1">
+              <label htmlFor="due-date" className="block text-xs font-heading font-semibold text-gray-600 dark:text-gray-400 mb-1">
+                Due Date
+              </label>
+              <input
+                type="date"
+                id="due-date"
+                className={inputClass}
+                value={dueDate}
+                onChange={(e) => setDueDate(e.target.value)}
+                required
+              />
+            </div>
+            <div className="flex-1">
+              <label htmlFor="due-time" className="block text-xs font-heading font-semibold text-gray-600 dark:text-gray-400 mb-1">
+                Due Time
+              </label>
+              <input
+                type="time"
+                id="due-time"
+                className={inputClass}
+                value={dueTime}
+                onChange={(e) => setDueTime(e.target.value)}
+                required
+              />
             </div>
           </div>
         )}
-        
+
+        {/* Recurring: day-of-week picker */}
         {taskType === "recurring" && (
-          <div className="mt-2">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <div>
+            <label className="block text-xs font-heading font-semibold text-gray-600 dark:text-gray-400 mb-2">
               Recurs On
             </label>
             <div className="grid grid-cols-7 gap-1">
@@ -320,10 +379,10 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
                       setRecurringDays([...recurringDays, day]);
                     }
                   }}
-                  className={`py-1 text-xs rounded-md ${
+                  className={`py-1.5 text-xs rounded-lg font-body font-semibold transition-all duration-150 ${
                     recurringDays.includes(day)
-                      ? "bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-dark-200 dark:text-gray-300 dark:hover:bg-dark-100"
+                      ? "bg-secondary-600 text-white shadow-sm"
+                      : "bg-gray-100 dark:bg-dark-200 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-dark-100"
                   }`}
                 >
                   {day.substring(0, 3)}
@@ -331,127 +390,121 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
               ))}
             </div>
             {recurringDays.length === 0 && (
-              <p className="mt-1 text-xs text-red-500">
-                Please select at least one day
+              <p className="mt-1.5 text-xs text-red-500 font-body">
+                Select at least one day.
               </p>
             )}
           </div>
         )}
       </div>
-      
-      <div className="mb-4">
-        <label htmlFor="notes" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-          Notes (optional)
+
+      {/* Notes */}
+      <div>
+        <label htmlFor="notes" className="block text-sm font-heading font-semibold text-gray-700 dark:text-gray-200 mb-1">
+          Notes <span className="text-gray-400 dark:text-gray-500 font-body font-normal text-xs">(optional)</span>
         </label>
         <textarea
           id="notes"
-          className="input min-h-[60px] dark:bg-dark-300"
+          className={`${inputClass} min-h-[64px] resize-y`}
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
-          placeholder="Any details or notes about this task"
+          placeholder="Any details or notes about this task..."
         />
       </div>
-      
-      <div className="flex justify-between items-center">
-        <button
-          type="submit"
-          className="btn-primary"
-          disabled={isSubmitting || (taskType === "recurring" && recurringDays.length === 0)}
-        >
-          {isSubmitting ? "Adding..." : "Add Task"}
-        </button>
-        
-        {/* Task preview */}
-        <div className="text-sm text-gray-500 dark:text-gray-400">
-          {description && (
-            <div className="bg-gray-50 dark:bg-dark-400 p-2 rounded-md border border-gray-200 dark:border-dark-300 max-w-xs">
-              <p className="font-medium">{description}</p>
-              
-              <div className="flex flex-wrap gap-1 mt-1">
-                {/* Priority badge */}
-                <span className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-xs ${
-                  priority === 'low' 
-                    ? 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300'
-                    : priority === 'medium'
-                    ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
-                    : 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300'
-                }`}>
-                  {priority === 'low' ? 'Low' : 
-                   priority === 'medium' ? 'Medium' : 
-                   'High'}
-                </span>
-                {category || detectedCategory ? (
-                  <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300">
-                    {categoryIcons[category as StatCategory || detectedCategory as StatCategory]} {category || detectedCategory}
-                  </span>
-                ) : null}
-                
-                {taskType === "daily" ? (
-                  <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
-                    Daily
-                  </span>
-                ) : null}
-                
-                {taskType === "recurring" && recurringDays.length > 0 ? (
-                  <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300">
-                    {recurringDays.map(d => d.substring(0, 3)).join(", ")}
-                  </span>
-                ) : null}
-                
-                {taskType === "one-time" && dueDate ? (
-                  <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-gray-100 text-gray-800 dark:bg-dark-300 dark:text-gray-300">
-                    {new Date(`${dueDate}T${dueTime}`).toLocaleDateString('en-US', { 
-                      month: 'short', 
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    })}
-                  </span>
-                ) : null}
 
-                {/* Difficulty badge */}
-                <span className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-xs ${
-                  difficulty === 'easy' 
-                    ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
-                    : difficulty === 'medium'
-                    ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
-                    : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
-                }`}>
-                  {difficulty === 'easy' ? '⭐' : 
-                   difficulty === 'medium' ? '⭐⭐' : 
-                   '⭐⭐⭐'}
-                </span>
-              </div>
-              
-              {/* Expected rewards preview */}
-              <div className="mt-2 text-xs text-gray-600 dark:text-gray-400">
-                <div className="space-y-1">
-                  <div>
-                    EXP {(() => {
-                      const baseExp = taskType === "daily" ? 75 : taskType === "recurring" ? 75 : 100;
-                      const difficultyMultiplier = difficulty === 'easy' ? 0.7 : difficulty === 'medium' ? 1.0 : 1.5;
-                      const priorityMultiplier = priority === 'low' ? 0.8 : priority === 'medium' ? 1.0 : 1.3;
-                      return Math.round(baseExp * difficultyMultiplier * priorityMultiplier);
-                    })()} (Active) / {Math.round((() => {
-                      const baseExp = taskType === "daily" ? 75 : taskType === "recurring" ? 75 : 100;
-                      const difficultyMultiplier = difficulty === 'easy' ? 0.7 : difficulty === 'medium' ? 1.0 : 1.5;
-                      const priorityMultiplier = priority === 'low' ? 0.8 : priority === 'medium' ? 1.0 : 1.3;
-                      return baseExp * difficultyMultiplier * priorityMultiplier * 0.5;
-                    })())} (Reserve)
-                  </div>
-                  {category || detectedCategory ? (
-                    <div>
-                      {difficulty === 'hard' ? '2' : '1'} {category || detectedCategory}
-                    </div>
-                  ) : null}
-                </div>
-              </div>
-            </div>
-          )}
+      {/* Preview card */}
+      {description.trim() && (
+        <div className="rounded-xl border border-purple-200 dark:border-dark-100 bg-purple-50 dark:bg-dark-300 p-3 space-y-2">
+          <p className="text-xs font-heading font-semibold text-purple-500 dark:text-purple-400 uppercase tracking-wide">
+            Preview
+          </p>
+          <p className="font-body font-semibold text-gray-800 dark:text-gray-100 text-sm leading-snug">
+            {description}
+          </p>
+
+          {/* Badges row */}
+          <div className="flex flex-wrap gap-1.5">
+            {/* Priority badge */}
+            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-body font-semibold ${
+              priority === 'low'
+                ? 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
+                : priority === 'medium'
+                ? 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300'
+                : 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300'
+            }`}>
+              {priority === 'low' ? 'Low' : priority === 'medium' ? 'Medium' : 'High'} Priority
+            </span>
+
+            {/* Difficulty badge */}
+            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-body font-semibold ${
+              difficulty === 'easy'
+                ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+                : difficulty === 'medium'
+                ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
+                : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
+            }`}>
+              {difficulty === 'easy' ? '★ Easy' : difficulty === 'medium' ? '★★ Medium' : '★★★ Hard'}
+            </span>
+
+            {/* Category badge */}
+            {(category || detectedCategory) && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-body font-semibold bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300">
+                {categoryIcons[(category ?? detectedCategory) as StatCategory]}
+                {category ?? detectedCategory}
+              </span>
+            )}
+
+            {/* Type badge */}
+            {taskType === "daily" && (
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-body font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
+                Daily
+              </span>
+            )}
+            {taskType === "recurring" && recurringDays.length > 0 && (
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-body font-semibold bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300">
+                {recurringDays.map(d => d.substring(0, 3)).join(", ")}
+              </span>
+            )}
+            {taskType === "one-time" && dueDate && (
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-body font-semibold bg-gray-100 text-gray-700 dark:bg-dark-200 dark:text-gray-300">
+                {new Date(`${dueDate}T${dueTime}`).toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </span>
+            )}
+          </div>
+
+          {/* EXP reward preview */}
+          <div className="pt-1 border-t border-purple-200 dark:border-dark-100 text-xs font-body text-gray-500 dark:text-gray-400 flex flex-wrap gap-3">
+            <span>
+              <span className="font-semibold text-amber-500">{activeExp} EXP</span> active
+            </span>
+            <span>
+              <span className="font-semibold text-gray-400 dark:text-gray-500">{reserveExp} EXP</span> reserve
+            </span>
+            {(category || detectedCategory) && (
+              <span>
+                <span className="font-semibold text-teal-500">+{difficulty === 'hard' ? 2 : 1}</span>{" "}
+                {category ?? detectedCategory} stat
+              </span>
+            )}
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* Submit button */}
+      <button
+        type="submit"
+        disabled={isSubmitting || (taskType === "recurring" && recurringDays.length === 0)}
+        className="w-full py-3 rounded-xl font-heading font-bold text-base text-white bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-amber-400/40 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-amber-400/60"
+      >
+        {isSubmitting ? "Adding Task..." : "Add Task"}
+      </button>
     </form>
   );
 };
 
-export default TaskForm; 
+export default TaskForm;

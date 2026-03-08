@@ -94,7 +94,7 @@ const BattleHub: React.FC = () => {
         <motion.h1 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-4xl md:text-5xl font-bold dark:text-gray-100 mb-4"
+          className="text-4xl md:text-5xl font-heading font-semibold dark:text-gray-100 mb-4"
         >
           Battle Hub
         </motion.h1>
@@ -152,7 +152,7 @@ const BattleHub: React.FC = () => {
                 </div>
 
                 {/* Title */}
-                <h2 className="text-2xl font-bold dark:text-gray-100 mb-2">{mode.title}</h2>
+                <h2 className="text-2xl font-heading font-semibold dark:text-gray-100 mb-2">{mode.title}</h2>
                 
                 {/* Description */}
                 <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 leading-relaxed">

@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
-import { Task, useTaskStore } from "../store/taskStore";
-import { StatCategory, categoryIcons } from "../utils/categoryDetection";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { Task, useTaskStore, getExpPoints } from "../store/taskStore";
 import EditTaskModal from "./EditTaskModal";
 
 type SortOption = "due" | "priority" | "type" | "category" | "created" | "difficulty";
@@ -17,6 +17,21 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({ showCompleted = false, au
   const [showEditModal, setShowEditModal] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<SortOption>("due");
   const [groupBy, setGroupBy] = useState<GroupOption>("none");
+  // Phase 7.1 — XP float animation: track active floaters per task id
+  const [floaters, setFloaters] = useState<Record<string, number>>({});
+  const prefersReducedMotion = useReducedMotion();
+
+  const handleComplete = (taskId: string, xp: number) => {
+    completeTask(taskId, autoAllocateStats);
+    if (!prefersReducedMotion) {
+      setFloaters(prev => ({ ...prev, [taskId]: xp }));
+      setTimeout(() => setFloaters(prev => {
+        const next = { ...prev };
+        delete next[taskId];
+        return next;
+      }), 900);
+    }
+  };
 
   // Smart task grouping
   const groupedTasks = useMemo(() => {
@@ -195,6 +210,17 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({ showCompleted = false, au
     return "text-gray-600 dark:text-gray-400";
   };
 
+  // Phase 4.3 — category stat color dots. Plain object (not template literal) so
+  // Tailwind JIT always includes these bg-* classes in the bundle.
+  const CATEGORY_COLORS: Record<string, string> = {
+    HP:  'bg-red-500',
+    SP:  'bg-blue-400',
+    ATK: 'bg-orange-500',
+    DEF: 'bg-yellow-600',
+    INT: 'bg-indigo-500',
+    SPD: 'bg-green-500',
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
@@ -259,147 +285,170 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({ showCompleted = false, au
       <div className="space-y-2">
         {sortedTasks.length === 0 ? (
           <div className="text-center py-12 text-gray-500 dark:text-gray-400">
-            <div className="text-4xl mb-4">📝</div>
-            <h3 className="text-lg font-medium mb-2">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto mb-4 text-gray-300 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+            <h3 className="text-base font-heading font-semibold mb-1">
               {searchQuery ? "No tasks found" : "No tasks yet"}
             </h3>
-            <p className="text-sm">
-              {searchQuery 
-                ? "Try adjusting your search terms" 
-                : "Add your first task to get started!"
-              }
+            <p className="text-sm font-body">
+              {searchQuery
+                ? "Try adjusting your search terms"
+                : "Add your first task to get started!"}
             </p>
           </div>
         ) : groupBy === "none" ? (
-          // No grouping - show flat list
-          sortedTasks.map(task => (
-            <div
-              key={task.id}
-              className={`group bg-white dark:bg-dark-300 border border-gray-200 dark:border-dark-200 rounded-lg p-4 hover:shadow-md transition-all ${
-                task.is_completed ? 'opacity-60' : ''
-              }`}
-            >
-              <div className="flex items-start gap-3">
-                {/* Checkbox */}
-                <button
-                  onClick={() => !task.is_completed && completeTask(task.id, autoAllocateStats)}
-                  className={`flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors mt-0.5 ${
-                    task.is_completed 
-                      ? "bg-green-500 border-green-500 dark:bg-green-600 dark:border-green-600" 
-                      : "border-gray-300 hover:border-green-500 dark:border-gray-600 dark:hover:border-accent-500"
-                  }`}
-                  disabled={task.is_completed}
-                >
-                  {task.is_completed && (
-                    <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path>
-                    </svg>
+          // Phase 4.4 — AnimatePresence wraps the flat list so completed tasks animate
+          // out (fade + collapse). initial={false} prevents mount animation on page load.
+          <AnimatePresence initial={false}>
+            {sortedTasks.map(task => (
+              <motion.div
+                key={task.id}
+                exit={{ opacity: 0, height: 0, marginBottom: 0, overflow: 'hidden' }}
+                transition={{ duration: 0.2 }}
+                // Priority-coded left border + bg tint.
+                // Colors match the Add/Edit task modal buttons exactly.
+                // Overdue always wins; within non-overdue: high=orange, medium=indigo, low=none.
+                className={`group relative bg-white dark:bg-dark-300 border border-gray-200 dark:border-dark-200 rounded-lg p-4 hover:shadow-md transition-all ${
+                  task.is_completed ? 'opacity-60' : ''
+                } ${
+                  groupedTasks.overdue.includes(task)
+                    ? 'border-l-[3px] border-l-red-500 bg-red-50 dark:bg-red-500/10'
+                    : task.priority === 'high'
+                    ? 'border-l-[3px] border-l-orange-400 bg-orange-50/60 dark:bg-orange-500/[0.06]'
+                    : task.priority === 'medium'
+                    ? 'border-l-[2px] border-l-indigo-400 dark:border-l-indigo-500'
+                    : '' // low priority — no special border
+                }`}
+              >
+                {/* Phase 7.1 — XP float badge animates upward on task completion */}
+                <AnimatePresence>
+                  {floaters[task.id] !== undefined && (
+                    <motion.span
+                      key={`floater-${task.id}`}
+                      className="pointer-events-none absolute right-4 top-2 z-10 text-sm font-heading font-bold text-accent-600 dark:text-accent-400"
+                      initial={{ opacity: 1, y: 0 }}
+                      animate={{ opacity: 0, y: -28 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.8, ease: 'easeOut' }}
+                    >
+                      +{floaters[task.id]} XP
+                    </motion.span>
                   )}
-                </button>
-
-                {/* Content */}
-                <div className="flex-1 min-w-0">
-                  {/* Description */}
-                  <p className={`text-base ${
-                    task.is_completed 
-                      ? 'line-through text-gray-500 dark:text-gray-400' 
-                      : 'text-gray-900 dark:text-gray-100'
-                  }`}>
-                    {task.description}
-                  </p>
-
-                        {/* Meta info */}
-                        <div className="flex items-center gap-3 mt-2 text-sm">
-                          {/* Priority */}
-                          {task.priority && (
-                            <span className={`font-medium ${
-                              task.priority === 'high' 
-                                ? 'text-orange-600 dark:text-orange-400'
-                                : task.priority === 'medium'
-                                ? 'text-blue-600 dark:text-blue-400'
-                                : 'text-gray-600 dark:text-gray-400'
-                            }`}>
-                              {task.priority === 'high' ? 'High' : 
-                               task.priority === 'medium' ? 'Medium' : 
-                               'Low'}
-                            </span>
-                          )}
-
-                          {/* Category */}
-                          {task.category && (
-                            <span className="flex items-center gap-1 text-purple-600 dark:text-purple-400">
-                              {categoryIcons[task.category as StatCategory]}
-                              <span className="font-medium">{task.category}</span>
-                            </span>
-                          )}
-
-                          {/* Due date */}
-                          {formatDueDate(task.due_date) && (
-                            <span className={`font-medium ${getTaskStatusColor(task)}`}>
-                              {formatDueDate(task.due_date)}
-                            </span>
-                          )}
-
-                          {/* Task type */}
-                          {task.is_daily && (
-                            <span className="text-blue-600 dark:text-blue-400 font-medium">
-                              Daily
-                            </span>
-                          )}
-
-                          {task.recurring_days && task.recurring_days.length > 0 && (
-                            <span className="text-indigo-600 dark:text-indigo-400 font-medium">
-                              Recurring
-                            </span>
-                          )}
-
-                          {/* Difficulty */}
-                          {task.difficulty && (
-                            <span className={`font-medium ${
-                              task.difficulty === 'easy' 
-                                ? 'text-green-600 dark:text-green-400'
-                                : task.difficulty === 'medium'
-                                ? 'text-yellow-600 dark:text-yellow-400'
-                                : 'text-red-600 dark:text-red-400'
-                            }`}>
-                              {task.difficulty === 'easy' ? '⭐' : 
-                               task.difficulty === 'medium' ? '⭐⭐' : 
-                               '⭐⭐⭐'}
-                            </span>
-                          )}
-                        </div>
-
-                  {/* Notes */}
-                  {task.notes && (
-                    <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                      {task.notes}
-                    </p>
-                  )}
-                </div>
-
-                {/* Actions */}
-                <div className="flex items-center gap-2">
+                </AnimatePresence>
+                <div className="flex items-start gap-3">
+                  {/* Checkbox */}
                   <button
-                    onClick={() => setShowEditModal(task.id)}
-                    className="p-2 text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
+                    onClick={() => !task.is_completed && handleComplete(task.id, getExpPoints(task))}
+                    className={`flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors mt-0.5 cursor-pointer disabled:cursor-not-allowed ${
+                      task.is_completed
+                        ? "bg-green-500 border-green-500 dark:bg-green-600 dark:border-green-600"
+                        : "border-gray-300 hover:border-green-500 dark:border-gray-600 dark:hover:border-accent-500"
+                    }`}
+                    disabled={task.is_completed}
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
-                    </svg>
+                    {task.is_completed && (
+                      <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path>
+                      </svg>
+                    )}
                   </button>
-                  
-                  <button
-                    onClick={() => deleteTask(task.id)}
-                    className="p-2 text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                  </button>
+
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    {/* Phase 4.3 — category color dot before the task title */}
+                    <div className="flex items-center gap-1.5">
+                      {task.category && CATEGORY_COLORS[task.category] && (
+                        <span className={`w-2 h-2 rounded-full flex-shrink-0 ${CATEGORY_COLORS[task.category]}`} />
+                      )}
+                      <p className={`text-base ${
+                        task.is_completed
+                          ? 'line-through text-gray-500 dark:text-gray-400'
+                          : 'text-gray-900 dark:text-gray-100'
+                      }`}>
+                        {task.description}
+                      </p>
+                    </div>
+
+                    {/* Meta pills */}
+                    <div className="flex items-center flex-wrap gap-1.5 mt-1.5">
+                      {/* Priority — only labeled when not medium (the default) */}
+                      {!task.is_completed && task.priority === 'high' && !groupedTasks.overdue.includes(task) && (
+                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 font-body font-semibold">High</span>
+                      )}
+                      {!task.is_completed && task.priority === 'low' && (
+                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-gray-100 dark:bg-dark-200 text-gray-500 dark:text-gray-400 font-body font-semibold">Low</span>
+                      )}
+
+                      {/* Task type */}
+                      {task.is_daily && (
+                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 font-body font-semibold uppercase tracking-wide">Daily</span>
+                      )}
+                      {task.recurring_days && task.recurring_days.length > 0 && (
+                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 font-body font-semibold uppercase tracking-wide">Recurring</span>
+                      )}
+
+                      {/* Due date */}
+                      {formatDueDate(task.due_date) && (
+                        <span className={`text-xs font-body font-medium ${getTaskStatusColor(task)}`}>
+                          {formatDueDate(task.due_date)}
+                        </span>
+                      )}
+
+                      {/* Category */}
+                      {task.category && (
+                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-gray-100 dark:bg-dark-200 text-gray-500 dark:text-gray-400 font-body font-semibold">
+                          {task.category}
+                        </span>
+                      )}
+
+                      {/* Difficulty */}
+                      {task.difficulty && task.difficulty !== 'medium' && (
+                        <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-body font-semibold ${
+                          task.difficulty === 'easy'
+                            ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
+                            : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
+                        }`}>
+                          {task.difficulty === 'easy' ? 'Easy' : 'Hard'}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Notes */}
+                    {task.notes && (
+                      <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">{task.notes}</p>
+                    )}
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex items-center gap-2">
+                    {/* Phase 4.2 — XP reward badge; hidden on completed tasks */}
+                    {!task.is_completed && (
+                      <span className="text-xs font-medium px-1.5 py-0.5 rounded-full flex-shrink-0 bg-accent-100 dark:bg-accent-900/40 text-accent-700 dark:text-accent-300">
+                        +{getExpPoints(task)} XP
+                      </span>
+                    )}
+                    <button
+                      onClick={() => setShowEditModal(task.id)}
+                      className="p-2 text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors cursor-pointer"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                      </svg>
+                    </button>
+                    <button
+                      onClick={() => deleteTask(task.id)}
+                      className="p-2 text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors cursor-pointer"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+                      </svg>
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </div>
-          ))
+              </motion.div>
+            ))}
+          </AnimatePresence>
         ) : (
           // Grouped view
           (() => {
@@ -430,9 +479,9 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({ showCompleted = false, au
                   break;
                 case "difficulty":
                   if (task.is_completed) groupKey = "Completed";
-                  else if (task.difficulty === 'easy') groupKey = "Easy ⭐";
-                  else if (task.difficulty === 'medium') groupKey = "Medium ⭐⭐";
-                  else if (task.difficulty === 'hard') groupKey = "Hard ⭐⭐⭐";
+                  else if (task.difficulty === 'easy') groupKey = "Easy";
+                  else if (task.difficulty === 'medium') groupKey = "Medium";
+                  else if (task.difficulty === 'hard') groupKey = "Hard";
                   else groupKey = "No Difficulty";
                   break;
                 default:
@@ -448,134 +497,143 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({ showCompleted = false, au
                 <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
                   {groupName} ({groupTasks.length})
                 </h3>
-                {groupTasks.map(task => (
-                  <div
-                    key={task.id}
-                    className={`group bg-white dark:bg-dark-300 border border-gray-200 dark:border-dark-200 rounded-lg p-4 hover:shadow-md transition-all ${
-                      task.is_completed ? 'opacity-60' : ''
-                    }`}
-                  >
-                    <div className="flex items-start gap-3">
-                      {/* Checkbox */}
-                      <button
-                        onClick={() => !task.is_completed && completeTask(task.id, autoAllocateStats)}
-                        className={`flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors mt-0.5 ${
-                          task.is_completed 
-                            ? "bg-green-500 border-green-500 dark:bg-green-600 dark:border-green-600" 
-                            : "border-gray-300 hover:border-green-500 dark:border-gray-600 dark:hover:border-accent-500"
-                        }`}
-                        disabled={task.is_completed}
-                      >
-                        {task.is_completed && (
-                          <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path>
-                          </svg>
+                {/* Phase 4.4 — same AnimatePresence exit animation for the grouped view */}
+                <AnimatePresence initial={false}>
+                  {groupTasks.map(task => (
+                    <motion.div
+                      key={task.id}
+                      exit={{ opacity: 0, height: 0, marginBottom: 0, overflow: 'hidden' }}
+                      transition={{ duration: 0.2 }}
+                      className={`group relative bg-white dark:bg-dark-300 border border-gray-200 dark:border-dark-200 rounded-lg p-4 hover:shadow-sm transition-all ${
+                        task.is_completed ? 'opacity-60' : ''
+                      } ${
+                        groupedTasks.overdue.includes(task)
+                          ? 'border-l-[3px] border-l-red-500 bg-red-500/5 dark:bg-red-500/5'
+                          : task.priority === 'high'
+                          ? 'border-l-[3px] border-l-orange-400'
+                          : ''
+                      }`}
+                    >
+                      {/* Phase 7.1 — XP float badge */}
+                      <AnimatePresence>
+                        {floaters[task.id] !== undefined && (
+                          <motion.span
+                            key={`floater-g-${task.id}`}
+                            className="pointer-events-none absolute right-4 top-2 z-10 text-sm font-heading font-bold text-accent-600 dark:text-accent-400"
+                            initial={{ opacity: 1, y: 0 }}
+                            animate={{ opacity: 0, y: -28 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.8, ease: 'easeOut' }}
+                          >
+                            +{floaters[task.id]} XP
+                          </motion.span>
                         )}
-                      </button>
+                      </AnimatePresence>
+                      <div className="flex items-start gap-3">
+                        {/* Checkbox */}
+                        <button
+                          onClick={() => !task.is_completed && handleComplete(task.id, getExpPoints(task))}
+                          className={`flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors mt-0.5 cursor-pointer disabled:cursor-not-allowed ${
+                            task.is_completed
+                              ? "bg-green-500 border-green-500 dark:bg-green-600 dark:border-green-600"
+                              : "border-gray-300 hover:border-green-500 dark:border-gray-600 dark:hover:border-accent-500"
+                          }`}
+                          disabled={task.is_completed}
+                        >
+                          {task.is_completed && (
+                            <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                          )}
+                        </button>
 
-                      {/* Content */}
-                      <div className="flex-1 min-w-0">
-                        {/* Description */}
-                        <p className={`text-base ${
-                          task.is_completed 
-                            ? 'line-through text-gray-500 dark:text-gray-400' 
-                            : 'text-gray-900 dark:text-gray-100'
-                        }`}>
-                          {task.description}
-                        </p>
-
-                        {/* Meta info */}
-                        <div className="flex items-center gap-3 mt-2 text-sm">
-                          {/* Priority */}
-                          {task.priority && (
-                            <span className={`font-medium ${
-                              task.priority === 'high' 
-                                ? 'text-orange-600 dark:text-orange-400'
-                                : task.priority === 'medium'
-                                ? 'text-blue-600 dark:text-blue-400'
-                                : 'text-gray-600 dark:text-gray-400'
+                        {/* Content */}
+                        <div className="flex-1 min-w-0">
+                          {/* Phase 4.3 — category color dot before the task title */}
+                          <div className="flex items-center gap-1.5">
+                            {task.category && CATEGORY_COLORS[task.category] && (
+                              <span className={`w-2 h-2 rounded-full flex-shrink-0 ${CATEGORY_COLORS[task.category]}`} />
+                            )}
+                            <p className={`text-base ${
+                              task.is_completed
+                                ? 'line-through text-gray-500 dark:text-gray-400'
+                                : 'text-gray-900 dark:text-gray-100'
                             }`}>
-                              {task.priority === 'high' ? 'High' : 
-                               task.priority === 'medium' ? 'Medium' : 
-                               'Low'}
-                            </span>
-                          )}
+                              {task.description}
+                            </p>
+                          </div>
 
-                          {/* Category */}
-                          {task.category && (
-                            <span className="flex items-center gap-1 text-purple-600 dark:text-purple-400">
-                              {categoryIcons[task.category as StatCategory]}
-                              <span className="font-medium">{task.category}</span>
-                            </span>
-                          )}
+                          {/* Meta pills */}
+                          <div className="flex items-center flex-wrap gap-1.5 mt-1.5">
+                            {/* Task type */}
+                            {task.is_daily && (
+                              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 font-body font-semibold uppercase tracking-wide">Daily</span>
+                            )}
+                            {task.recurring_days && task.recurring_days.length > 0 && (
+                              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 font-body font-semibold uppercase tracking-wide">Recurring</span>
+                            )}
 
-                          {/* Due date */}
-                          {formatDueDate(task.due_date) && (
-                            <span className={`font-medium ${getTaskStatusColor(task)}`}>
-                              {formatDueDate(task.due_date)}
-                            </span>
-                          )}
+                            {/* Due date */}
+                            {formatDueDate(task.due_date) && (
+                              <span className={`text-xs font-body font-medium ${getTaskStatusColor(task)}`}>
+                                {formatDueDate(task.due_date)}
+                              </span>
+                            )}
 
-                          {/* Task type */}
-                          {task.is_daily && (
-                            <span className="text-blue-600 dark:text-blue-400 font-medium">
-                              Daily
-                            </span>
-                          )}
+                            {/* Category */}
+                            {task.category && (
+                              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-gray-100 dark:bg-dark-200 text-gray-500 dark:text-gray-400 font-body font-semibold">
+                                {task.category}
+                              </span>
+                            )}
 
-                          {task.recurring_days && task.recurring_days.length > 0 && (
-                            <span className="text-indigo-600 dark:text-indigo-400 font-medium">
-                              Recurring
-                            </span>
-                          )}
+                            {/* Difficulty */}
+                            {task.difficulty && task.difficulty !== 'medium' && (
+                              <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-body font-semibold ${
+                                task.difficulty === 'easy'
+                                  ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
+                                  : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
+                              }`}>
+                                {task.difficulty === 'easy' ? 'Easy' : 'Hard'}
+                              </span>
+                            )}
+                          </div>
 
-                          {/* Difficulty */}
-                          {task.difficulty && (
-                            <span className={`font-medium ${
-                              task.difficulty === 'easy' 
-                                ? 'text-green-600 dark:text-green-400'
-                                : task.difficulty === 'medium'
-                                ? 'text-yellow-600 dark:text-yellow-400'
-                                : 'text-red-600 dark:text-red-400'
-                            }`}>
-                              {task.difficulty === 'easy' ? '⭐' : 
-                               task.difficulty === 'medium' ? '⭐⭐' : 
-                               '⭐⭐⭐'}
-                            </span>
+                          {/* Notes */}
+                          {task.notes && (
+                            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">{task.notes}</p>
                           )}
                         </div>
 
-                        {/* Notes */}
-                        {task.notes && (
-                          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                            {task.notes}
-                          </p>
-                        )}
+                        {/* Actions */}
+                        <div className="flex items-center gap-2">
+                          {/* Phase 4.2 — XP reward badge; hidden on completed tasks */}
+                          {!task.is_completed && (
+                            <span className="text-xs font-medium px-1.5 py-0.5 rounded-full flex-shrink-0 bg-accent-100 dark:bg-accent-900/40 text-accent-700 dark:text-accent-300">
+                              +{getExpPoints(task)} XP
+                            </span>
+                          )}
+                          <button
+                            onClick={() => setShowEditModal(task.id)}
+                            className="p-2 text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors cursor-pointer"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                            </svg>
+                          </button>
+                          <button
+                            onClick={() => deleteTask(task.id)}
+                            className="p-2 text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors cursor-pointer"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                          </button>
+                        </div>
                       </div>
-
-                      {/* Actions */}
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => setShowEditModal(task.id)}
-                          className="p-2 text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
-                          </svg>
-                        </button>
-                        
-                        <button
-                          onClick={() => deleteTask(task.id)}
-                          className="p-2 text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
               </div>
             ));
           })()

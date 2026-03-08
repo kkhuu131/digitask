@@ -1,4 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+/* Game typography — loaded alongside Inter so the fallback is instant.
+   Fredoka: rounded display font for Digimon names, section headers, CTAs.
+   Nunito:  friendly body font for task text and descriptive copy.
+   Both are applied selectively via font-heading / font-body Tailwind classes
+   and are NOT set globally on body until a full audit is complete (Phase 7). */
+@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -15,7 +22,7 @@
   }
 
   body {
-    @apply min-h-screen transition-colors duration-200;
+    @apply min-h-screen transition-colors duration-200 font-body;
   }
 
   /* Dark mode scrollbar customization */
@@ -73,16 +80,20 @@
 
   .dark .input,
   html.dark .input {
-    @apply border-dark-100 bg-dark-300 text-gray-200 focus:ring-accent-500;
+    @apply border-dark-100 bg-dark-200 text-gray-200 focus:ring-accent-500;
   }
 
+  /* TODO (ui-redesign Phase 3+): Evaluate migrating .card dark mode background to
+     game-surface (#13131A) using the game.surface token added in tailwind.config.js.
+     Do NOT change .card globally — it is used in ~15+ components. Migrate
+     component-by-component using a .card-game variant class to contain the risk. */
   .card {
     @apply bg-white rounded-xl shadow-md p-6 transition-all duration-200;
   }
 
   .dark .card,
   html.dark .card {
-    @apply bg-dark-300 shadow-card-dark border border-dark-200 text-gray-200;
+    @apply bg-dark-300 shadow-card-dark border border-dark-100 text-gray-200;
   }
 
   /* Glass card effect for modals and important elements */
@@ -101,6 +112,45 @@
     filter: brightness(0);
   }
 }
+
+/* =============================================================================
+   GAME UI — Phase 1 design token CSS
+   These are plain CSS rules (not Tailwind utilities) so they are always emitted
+   regardless of whether class names appear in component source files.
+   ============================================================================= */
+
+/* Sprite attribute ambient glow
+   Each Digimon attribute gets a CSS custom property --stage-glow that is read
+   by an inline radial-gradient in Digimon.tsx (Phase 5).
+   Applied via the ATTRIBUTE_GLOW_CLASS lookup object — not template literals —
+   to avoid any risk of Tailwind purging (plain CSS classes are always included). */
+.sprite-stage-vaccine { --stage-glow: rgba(59,  130, 246, 0.12); } /* blue  */
+.sprite-stage-virus   { --stage-glow: rgba(139,  92, 246, 0.12); } /* purple */
+.sprite-stage-data    { --stage-glow: rgba(16,  185, 129, 0.12); } /* green  */
+.sprite-stage-free    { --stage-glow: rgba(245, 158,  11, 0.12); } /* amber  */
+
+/* XP bar shimmer
+   Triggered by swapping the class on the XP bar fill element when experience
+   points increase (Phase 7). Uses background-position animation so the shimmer
+   travels left-to-right without layout reflow — GPU-composited, 60fps safe. */
+@keyframes xp-shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+.xp-shimmer {
+  background: linear-gradient(
+    90deg,
+    #8B5CF6 25%,   /* secondary-500 — matches XP bar base colour */
+    #a78bfa 50%,   /* secondary-400 — bright mid-point           */
+    #8B5CF6 75%
+  );
+  background-size: 200% auto;
+  animation: xp-shimmer 0.8s ease-in-out;
+}
+
+/* =============================================================================
+   END game UI — Phase 1
+   ============================================================================= */
 
 /* Container query for Digimon cards */
 .card-container {

@@ -307,7 +307,7 @@ const Battle = () => {
     <>
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
-        <h1 className="text-2xl font-bold dark:text-gray-100">Battle</h1>
+        <h1 className="text-2xl font-heading font-semibold dark:text-gray-100">Battle</h1>
         {/* <BattleSpeedControl /> */}
       </div>
       

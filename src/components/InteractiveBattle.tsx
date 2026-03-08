@@ -583,9 +583,18 @@ const InteractiveBattle: React.FC<InteractiveBattleProps> = ({ onBattleComplete,
           animate={
             isLastTurnAttacker
               ? { x: isUserTeam ? [0, 40, 0] : [0, -40, 0], y: [0, -6, 0] }
-              : { x: 0, y: 0 }
+              // Phase 6.3 — screen-shake when this sprite is hit
+              : isLastTurnTarget
+                ? { x: [0, -6, 6, -4, 4, -2, 2, 0] }
+                : { x: 0, y: 0 }
           }
-          transition={isLastTurnAttacker ? { duration: 0.6, times: [0, 0.5, 1] } : {}}
+          transition={
+            isLastTurnAttacker
+              ? { duration: 0.6, times: [0, 0.5, 1] }
+              : isLastTurnTarget
+                ? { duration: 0.3 }
+                : {}
+          }
           onClick={() => {
             if (battleStatus.isPlayerTurn && !isUserTeam && digimon.isAlive) {
               handleTargetSelect(digimon.id);
@@ -603,17 +612,28 @@ const InteractiveBattle: React.FC<InteractiveBattleProps> = ({ onBattleComplete,
             />
           </div>
 
-              {/* Damage pop */}
+              {/* Phase 6.4 — enhanced damage popup: MISS grey, normal red, CRIT gold.
+                  font-heading (Fredoka) gives it a game-feel pop. */}
               {isTarget && showDamage && (
                 <motion.div
-                  className="absolute -top-3 bg-red-500 text-white px-1.5 py-0.5 rounded text-xs font-bold"
-                  initial={{ opacity: 0, y: 0 }}
-                  animate={{ opacity: 1, y: -12 }}
-                  exit={{ opacity: 0, y: -24 }}
+                  className={`absolute -top-4 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-md text-sm font-heading font-bold whitespace-nowrap z-10 ${
+                    showDamage.damage <= 0
+                      ? 'bg-gray-500 text-gray-100'
+                      : showDamage.isCritical
+                        ? 'bg-yellow-400 text-black drop-shadow-[0_0_6px_rgba(250,204,21,0.8)]'
+                        : 'bg-red-500 text-white'
+                  }`}
+                  initial={{ opacity: 0, y: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, y: -16, scale: 1 }}
+                  exit={{ opacity: 0, y: -28 }}
                 >
-                  {showDamage.isCritical ? 'CRIT ' : ''}{showDamage.damage > 0 ? showDamage.damage : 'MISS'}
-                  {showDamage.multiplier && showDamage.multiplier !== 1.0 && (
-                    <div className="text-[10px] opacity-80">
+                  {showDamage.damage <= 0
+                    ? 'MISS'
+                    : showDamage.isCritical
+                      ? `CRIT! ${showDamage.damage}`
+                      : showDamage.damage}
+                  {showDamage.multiplier && showDamage.multiplier !== 1.0 && showDamage.damage > 0 && (
+                    <div className="text-[10px] opacity-90 text-center">
                       {getMultiplierDisplay(showDamage.multiplier).text}
                     </div>
                   )}
@@ -669,13 +689,19 @@ const InteractiveBattle: React.FC<InteractiveBattleProps> = ({ onBattleComplete,
     <div className="w-full max-w-6xl mx-auto p-4 relative">
       {/* Battle Header */}
       <div className="text-center mb-4">
-        <h2 className="text-2xl font-bold mb-2 dark:text-gray-100 text-gray-900">Battle</h2>
+        <h2 className="text-2xl font-heading font-semibold mb-2 dark:text-gray-100 text-gray-900">Battle</h2>
       </div>
 
       {/* Battlefield + Turn Order layout */}
       <div className="flex items-start gap-4 mb-6">
-        {/* Battlefield with digital grid background */}
-        <div className="relative rounded-xl p-6 pt-12 overflow-hidden flex-1">
+        {/* Phase 6.5 — battlefield fades to grayscale on defeat */}
+        <motion.div
+          className="relative rounded-xl p-6 pt-12 overflow-hidden flex-1"
+          animate={{
+            filter: showBattleResult?.winner === 'opponent' ? 'grayscale(1)' : 'grayscale(0)',
+          }}
+          transition={{ duration: 1.5 }}
+        >
           {/* Digital grid background - updated to match the image */}
           <div className="absolute inset-0 bg-green-900 bg-opacity-90">
           {/* Grid overlay */}
@@ -710,7 +736,7 @@ const InteractiveBattle: React.FC<InteractiveBattleProps> = ({ onBattleComplete,
         </div>
 
         {/* Close battlefield container before side panel */}
-        </div>
+        </motion.div>
 
         {/* Turn Order Panel (outside the green grid) */}
         <div className="w-28 sm:w-32">
@@ -824,26 +850,19 @@ const InteractiveBattle: React.FC<InteractiveBattleProps> = ({ onBattleComplete,
             animate={{ y: 0, opacity: 1 }}
             className="bg-white dark:bg-gray-800 rounded-xl p-8 text-center shadow-2xl max-w-md mx-4"
           >
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-              className={`text-5xl mb-4 ${showBattleResult.winner === 'user' ? 'text-green-500' : 'text-red-500'}`}
-            >
-              {showBattleResult.winner === 'user' ? '🏆' : '💀'}
-            </motion.div>
-            
+              {/* Phase 6.5 — font-heading (Fredoka) gives the result a game-feel impact.
+                Win = gold glow, Defeat = red. Emoji removed; text alone is more dramatic. */}
             <motion.h2
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.4 }}
-              className={`text-4xl font-bold mb-4 ${
-                showBattleResult.winner === 'user' 
-                  ? 'text-green-600 dark:text-green-400' 
-                  : 'text-red-600 dark:text-red-400'
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+              className={`text-5xl font-heading font-bold mb-4 ${
+                showBattleResult.winner === 'user'
+                  ? 'text-yellow-400 drop-shadow-[0_2px_16px_rgba(250,204,21,0.7)]'
+                  : 'text-red-500 drop-shadow-[0_2px_8px_rgba(239,68,68,0.5)]'
               }`}
             >
-              {showBattleResult.winner === 'user' ? 'Victory!' : 'Defeat...'}
+              {showBattleResult.winner === 'user' ? 'VICTORY!' : 'DEFEAT'}
             </motion.h2>
             
             <motion.p

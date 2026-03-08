@@ -63,17 +63,24 @@ const TaskList = () => {
 
   return (
     <div className="py-2">
-      {/* Auto-allocate stats toggle */}
-      <div className="flex justify-end mb-4">
-        <label className="flex items-center space-x-2 text-xs sm:text-sm text-gray-600 dark:text-gray-300">
-          <input
-            type="checkbox"
-            checked={autoAllocateStats}
-            onChange={() => setAutoAllocateStats(!autoAllocateStats)}
-            className="form-checkbox h-4 w-4 text-primary-600 dark:text-accent-500 transition duration-150 ease-in-out"
-          />
-          <span>Auto-allocate stats</span>
-        </label>
+      {/* Phase 4.5 — pill-style toggle switch replacing the raw checkbox.
+          State logic (autoAllocateStats, localStorage) is unchanged. */}
+      <div className="flex justify-end items-center gap-2 mb-4">
+        <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 select-none">
+          Auto-allocate stats
+        </span>
+        <button
+          role="switch"
+          aria-checked={autoAllocateStats}
+          onClick={() => setAutoAllocateStats(!autoAllocateStats)}
+          className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-primary-500 dark:focus:ring-accent-500 ${
+            autoAllocateStats ? 'bg-accent-500' : 'bg-gray-300 dark:bg-dark-100'
+          }`}
+        >
+          <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow-sm transition-transform duration-200 ${
+            autoAllocateStats ? 'translate-x-4' : 'translate-x-1'
+          }`} />
+        </button>
       </div>
       
       {/* Use the clean task list */}

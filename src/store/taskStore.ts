@@ -12,7 +12,8 @@ const BASE_STAT_FOR_RECURRING_TASK = 1;
 const BASE_EXP_FOR_DAILY_TASK = 75;
 const BASE_STAT_FOR_DAILY_TASK = 1;
 
-const DAILY_QUOTA_AMOUNT = 3;
+// Phase 3: exported so Dashboard.tsx can reference the canonical quota number
+export const DAILY_QUOTA_AMOUNT = 3;
 
 export const getExpPoints = (task: Task) => {
   if (task.is_daily) return BASE_EXP_FOR_DAILY_TASK;

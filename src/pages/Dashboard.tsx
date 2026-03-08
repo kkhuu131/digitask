@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { useDigimonStore } from "../store/petStore";
-import { useTaskStore } from "../store/taskStore";
+import { useTaskStore, DAILY_QUOTA_AMOUNT } from "../store/taskStore";
+import { useAuthStore } from "../store/authStore";
+import { supabase } from "../lib/supabase";
 import Digimon from "../components/Digimon";
 import PartyMembersGrid from "../components/PartyMembersGrid";
 import TaskForm from "../components/TaskForm";
 import TaskList from "../components/TaskList";
-import TaskHeatmap from "../components/TaskHeatmap";
 import { useNavigate } from "react-router-dom";
 import { useTitleStore } from '../store/titleStore';
 import PageTutorial from '../components/PageTutorial';
@@ -13,15 +15,57 @@ import { DialogueStep } from '../components/DigimonDialogue';
 import MilestoneProgress from "@/components/MilestoneProgress";
 
 const Dashboard: React.FC = () => {
-  const { userDigimon, digimonData, evolutionOptions, fetchUserDigimon, fetchAllUserDigimon, error: digimonError, } = useDigimonStore();
-  const { fetchTasks, error: taskError } = useTaskStore();
+  const { userDigimon, digimonData, evolutionOptions, fetchUserDigimon, fetchAllUserDigimon } = useDigimonStore();
+  const { fetchTasks, error: taskError, dailyQuota } = useTaskStore();
+  const { user } = useAuthStore();
   const navigate = useNavigate();
   const { checkForNewTitles } = useTitleStore();
-  
+
   // Add state to force re-render when tasks are completed
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [showTaskForm, setShowTaskForm] = useState(false);
-  
+  const [weekActivity, setWeekActivity] = useState<number[]>([]);
+
+  // Phase 3 — banner dismissal persists across sessions via localStorage
+  const [bannerDismissed, setBannerDismissed] = useState(
+    () => localStorage.getItem('beta-banner-dismissed') === 'true'
+  );
+
+  // Phase 3 — quota strip data (safe defaults when dailyQuota is null on first load)
+  const completedToday = dailyQuota?.completed_today ?? 0;
+  const streak = dailyQuota?.current_streak ?? 0;
+
+  // Fetch last 7 days of task completion counts for the activity strip
+  useEffect(() => {
+    if (!user) return;
+    const fetchWeekActivity = async () => {
+      const today = new Date();
+      const startDate = new Date(today);
+      startDate.setDate(startDate.getDate() - 6);
+      const startDateStr = startDate.toLocaleDateString('en-CA');
+
+      const { data } = await supabase
+        .from('task_history')
+        .select('date, tasks_completed')
+        .eq('user_id', user.id)
+        .gte('date', startDateStr)
+        .order('date', { ascending: true });
+
+      const historyMap: Record<string, number> = {};
+      (data || []).forEach(entry => { historyMap[entry.date] = entry.tasks_completed; });
+
+      const days: number[] = [];
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(d.getDate() - i);
+        const dateStr = d.toLocaleDateString('en-CA');
+        days.push(i === 0 ? completedToday : (historyMap[dateStr] ?? 0));
+      }
+      setWeekActivity(days);
+    };
+    fetchWeekActivity();
+  }, [user?.id, completedToday]);
+
   useEffect(() => {
     fetchUserDigimon();
     fetchAllUserDigimon();
@@ -113,87 +157,64 @@ const Dashboard: React.FC = () => {
   
   if (!userDigimon || !digimonData) {
     return (
-      <div className="text-center py-12">
-        <p>Loading your Digimon...</p>
-        {digimonError && <p className="text-red-500 mt-2">{digimonError}</p>}
+      <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-4 animate-pulse">
+        {/* Digimon panel skeleton */}
+        <div className="card flex flex-col items-center gap-4 py-8">
+          <div className="w-36 h-5 bg-gray-200 dark:bg-dark-200 rounded-full" />
+          <div className="w-40 h-40 bg-gray-200 dark:bg-dark-200 rounded-full" />
+          <div className="w-full space-y-2 mt-2">
+            <div className="h-2.5 bg-gray-200 dark:bg-dark-200 rounded-full" />
+            <div className="h-2.5 bg-gray-200 dark:bg-dark-200 rounded-full" />
+          </div>
+        </div>
+        {/* Task panel skeleton */}
+        <div className="card space-y-4">
+          <div className="w-28 h-5 bg-gray-200 dark:bg-dark-200 rounded-full" />
+          {[1, 2, 3].map(i => (
+            <div key={i} className="h-14 bg-gray-200 dark:bg-dark-200 rounded-lg" />
+          ))}
+        </div>
       </div>
     );
   }
   
   return (
     <>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Beta Notice Banner */}
-        <div className="lg:col-span-3 bg-indigo-50 dark:bg-indigo-900/30 border-l-4 border-indigo-500 dark:border-indigo-600 p-4 rounded-r-md shadow-sm">
-          <div className="flex">
-            <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-indigo-500 dark:text-indigo-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-              </svg>
-            </div>
-            <div className="ml-3 flex justify-between items-center w-full">
-              <div>
-                <p className="text-sm text-indigo-800 dark:text-indigo-200">
-                  <span className="font-medium">Check out the latest updates in the Help &gt; Patch Notes page.</span>
-                </p>
-              </div>
-              <div className="flex space-x-2">
-                <a 
-                  href="https://forms.gle/4geGdXkywwAQcZDt6" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-sm bg-indigo-100 dark:bg-indigo-800/50 hover:bg-indigo-200 dark:hover:bg-indigo-700/50 text-indigo-800 dark:text-indigo-200 px-3 py-1 rounded-full transition-colors"
-                >
-                  Feedback
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div className="lg:col-span-1">
-          <Digimon 
-            userDigimon={userDigimon} 
-            digimonData={digimonData} 
+      {/* Phase 3 — two-column grid: fixed 380px Digimon panel | flexible task column.
+          The old lg:grid-cols-3 / col-span-1 / col-span-2 pattern is replaced so the
+          Digimon column has a predictable width at all viewport sizes. */}
+      <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-4">
+
+        {/* ── Left column: Digimon panel + Party + Milestone ── */}
+        <div className="space-y-4">
+          <Digimon
+            userDigimon={userDigimon}
+            digimonData={digimonData}
             evolutionOptions={evolutionOptions}
             key={`digimon-${refreshTrigger}`}
           />
-          
-          {/* Party Members Grid */}
-          <div className="mt-4">
-            <PartyMembersGrid />
-          </div>
 
+          <PartyMembersGrid />
 
-          <div className="my-4">
-            <MilestoneProgress />
-          </div>
-
+          <MilestoneProgress />
         </div>
-        
-        <div className="lg:col-span-2">
-          
+
+        {/* ── Right column: task list ── */}
+        <div>
           {taskError && (
             <div className="bg-red-50 dark:bg-red-900/30 border-l-4 border-red-500 dark:border-red-600 p-4 mb-6">
               <p className="text-sm text-red-700 dark:text-red-200">{taskError}</p>
             </div>
           )}
-          
-          
-          
-           {/* Task Activity Heatmap with integrated Quota */}
-          <div className="mb-4">
-            <TaskHeatmap />
-          </div>
-           
-           
+
           <div className="card px-0 sm:px-4">
             <div className="flex justify-between items-center mb-4 px-4">
-              <h2 className="text-xl font-bold text-center sm:text-left dark:text-gray-100">Your Tasks</h2>
-              
+              <h2 className="text-xl font-heading font-semibold text-center sm:text-left dark:text-gray-100">Your Tasks</h2>
+
+              {/* Desktop "Add Task" button — FAB handles this on mobile */}
               <button
                 onClick={() => setShowTaskForm(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 dark:bg-amber-600 dark:hover:bg-amber-700 text-white rounded-lg transition-colors text-sm font-medium"
+                className="hidden sm:flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 dark:bg-amber-600 dark:hover:bg-amber-700 text-white rounded-lg transition-colors text-sm font-medium cursor-pointer"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path>
@@ -201,39 +222,147 @@ const Dashboard: React.FC = () => {
                 Add Task
               </button>
             </div>
+
+            {/* Activity strip — 7 day dots + quota bar */}
+            <div className="px-4 mb-3 space-y-2">
+              {/* 7-day dots */}
+              {weekActivity.length === 7 && (
+                <div className="flex items-end gap-1.5">
+                  {weekActivity.map((count, i) => {
+                    const d = new Date();
+                    d.setDate(d.getDate() - (6 - i));
+                    const dayLabel = ['S','M','T','W','T','F','S'][d.getDay()];
+                    const isToday = i === 6;
+                    const intensity = count === 0 ? 0 : count <= 2 ? 1 : count <= DAILY_QUOTA_AMOUNT ? 2 : 3;
+                    const bgClass = [
+                      'bg-gray-200 dark:bg-dark-200',
+                      'bg-purple-300 dark:bg-purple-900',
+                      'bg-purple-400 dark:bg-purple-700',
+                      'bg-purple-600 dark:bg-purple-500',
+                    ][intensity];
+                    return (
+                      <div key={i} className="flex flex-col items-center gap-0.5 flex-1">
+                        <div
+                          className={`w-full h-3 rounded-sm ${bgClass} ${isToday ? 'ring-1 ring-purple-400 ring-offset-1 ring-offset-white dark:ring-offset-dark-300' : ''}`}
+                          title={`${d.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}: ${count} tasks`}
+                        />
+                        <span className={`text-[9px] font-body ${isToday ? 'text-purple-500 dark:text-purple-400 font-semibold' : 'text-gray-400 dark:text-gray-500'}`}>
+                          {dayLabel}
+                        </span>
+                      </div>
+                    );
+                  })}
+                  {streak > 0 && (
+                    <div className="flex flex-col items-center gap-0.5 ml-1 pl-1.5 border-l border-gray-200 dark:border-dark-100">
+                      <span className="text-sm leading-none">🔥</span>
+                      <span className="text-[9px] font-body font-semibold text-accent-600 dark:text-accent-400 whitespace-nowrap">{streak}d</span>
+                    </div>
+                  )}
+                </div>
+              )}
+              {/* Quota bar */}
+              <div className="flex items-center gap-2">
+                <div className="flex-1 bg-gray-200 dark:bg-dark-200 rounded-full h-1.5 overflow-hidden">
+                  <div
+                    className="h-full bg-accent-500 transition-all duration-500 rounded-full"
+                    style={{ width: `${Math.min(100, (completedToday / DAILY_QUOTA_AMOUNT) * 100)}%` }}
+                  />
+                </div>
+                <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                  {completedToday}/{DAILY_QUOTA_AMOUNT} today
+                </span>
+              </div>
+            </div>
+
             <TaskList />
           </div>
         </div>
       </div>
-      
-      {/* Task Form Modal */}
-      {showTaskForm && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex items-center justify-center min-h-screen px-4 py-6 text-center">
-            <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-              <div className="absolute inset-0 bg-gray-500 dark:bg-gray-900 opacity-75" onClick={() => setShowTaskForm(false)}></div>
-            </div>
 
-            <div className="inline-block w-full align-middle bg-white dark:bg-dark-300 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg mx-auto">
-              <div className="p-6">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Add New Task</h3>
-                  <button
-                    onClick={() => setShowTaskForm(false)}
-                    className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                  >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                  </button>
-                </div>
-                <TaskForm onTaskCreated={() => setShowTaskForm(false)} />
-              </div>
-            </div>
+      {/* Phase 3 — beta banner demoted below the main grid and made dismissible.
+          Dismissed state persists across sessions via localStorage. */}
+      {!bannerDismissed && (
+        <div className="mt-4 bg-indigo-50 dark:bg-indigo-900/30 border-l-4 border-indigo-500 dark:border-indigo-600 p-3 rounded-r-md flex items-center justify-between">
+          <p className="text-sm text-indigo-800 dark:text-indigo-200">
+            Check out the latest updates in Help &gt; Patch Notes.
+          </p>
+          <div className="flex items-center gap-2 ml-4 flex-shrink-0">
+            <a
+              href="https://forms.gle/4geGdXkywwAQcZDt6"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs bg-indigo-100 dark:bg-indigo-800/50 hover:bg-indigo-200 dark:hover:bg-indigo-700/50 text-indigo-800 dark:text-indigo-200 px-2 py-1 rounded-full transition-colors"
+            >
+              Feedback
+            </a>
+            <button
+              onClick={() => {
+                setBannerDismissed(true);
+                localStorage.setItem('beta-banner-dismissed', 'true');
+              }}
+              className="text-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-200 text-lg leading-none cursor-pointer"
+              aria-label="Dismiss banner"
+            >
+              ×
+            </button>
           </div>
         </div>
       )}
-      
+
+      {/* Phase 4.6 — task form modal (desktop) / slide-up sheet (mobile).
+          AnimatePresence handles the mount/unmount animation. The sheet springs up
+          from the bottom on mobile and appears centered on sm+. max-h-[90vh] +
+          overflow-y-auto ensures the form never extends off-screen on short devices. */}
+      <AnimatePresence>
+        {showTaskForm && (
+          <div className="fixed inset-0 z-modal flex items-end sm:items-center justify-center">
+            {/* Backdrop — fade only */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+              className="absolute inset-0 bg-black/50"
+              onClick={() => setShowTaskForm(false)}
+            />
+
+            {/* Sheet — springs up on mobile, scales in centered on desktop */}
+            <motion.div
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+              className="relative z-modal w-full sm:max-w-lg bg-white dark:bg-dark-300 rounded-t-2xl sm:rounded-xl p-6 max-h-[90vh] overflow-y-auto"
+            >
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Add New Task</h3>
+                <button
+                  onClick={() => setShowTaskForm(false)}
+                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+                  </svg>
+                </button>
+              </div>
+              <TaskForm onTaskCreated={() => setShowTaskForm(false)} />
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Phase 3 — mobile FAB. Dashboard-scoped (not in Layout) so it doesn't bleed
+          onto Battle, DigiDex, or Profile pages. bottom-20 clears the bottom nav. */}
+      <button
+        className="sm:hidden fixed bottom-20 right-4 z-sticky w-12 h-12 rounded-full bg-accent-500 hover:bg-accent-400 text-white shadow-amber-glow flex items-center justify-center transition-colors duration-150 cursor-pointer"
+        aria-label="Add task"
+        onClick={() => setShowTaskForm(true)}
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+        </svg>
+      </button>
+
       <PageTutorial tutorialId="dashboard_intro" steps={dashboardTutorialSteps} />
     </>
   );

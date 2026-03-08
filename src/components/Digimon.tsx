@@ -1,4 +1,5 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { Laugh, Smile, Meh, Frown, Moon } from "lucide-react";
 import { useDigimonStore, UserDigimon, Digimon as DigimonType, EvolutionOption } from "../store/petStore";
 import { useState, useEffect, useRef } from "react";
 import DigimonDetailModal from "./DigimonDetailModal";
@@ -10,6 +11,16 @@ import { ANIMATED_DIGIMON } from '../constants/animatedDigimonList';
 import type { SpriteType } from '../utils/spriteManager';
 import { calculateFinalStats } from "@/utils/digimonStatCalculation";
 
+// Phase 5.2 — attribute glow class lookup. Maps Digimon attribute to the plain CSS
+// class defined in src/index.css (Phase 1) that sets --stage-glow. Plain object
+// (not template literal) avoids any Tailwind JIT purge concern.
+const ATTRIBUTE_GLOW_CLASS: Record<string, string> = {
+  Vaccine: 'sprite-stage-vaccine',
+  Virus:   'sprite-stage-virus',
+  Data:    'sprite-stage-data',
+  Free:    'sprite-stage-free',
+};
+
 interface DigimonProps {
   userDigimon: UserDigimon;
   digimonData: DigimonType;
@@ -18,7 +29,9 @@ interface DigimonProps {
 
 const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOptions }) => {
   const { evolveDigimon, fetchAllUserDigimon } = useDigimonStore();
-  
+  // Phase 7.7 — honour prefers-reduced-motion: skip looping bounce + shimmer animations
+  const prefersReducedMotion = useReducedMotion();
+
   // Add a local state to track XP and level
   const [currentXP, setCurrentXP] = useState(userDigimon.experience_points);
   const [currentLevel, setCurrentLevel] = useState(userDigimon.current_level);
@@ -275,7 +288,20 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
       return true;
     }
   );
-  
+
+  // Phase 5.4 — next non-DNA evolution the Digimon hasn't unlocked yet, used for
+  // the level-progress bar shown when no evolution is immediately available.
+  const nextEvoTarget = evolutionOptions
+    .filter(opt =>
+      opt.level_required > userDigimon.current_level &&
+      !opt.dna_requirement
+    )
+    .sort((a, b) => (a.level_required ?? 99) - (b.level_required ?? 99))[0];
+
+  const evoProgressPct = nextEvoTarget
+    ? Math.min(100, (userDigimon.current_level / (nextEvoTarget.level_required ?? 1)) * 100)
+    : null;
+
   // Add this new function to handle sprite clicks
   const handleSpriteClick = () => {
     // Update interaction time
@@ -349,7 +375,12 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
   if (!userDigimon || !digimonData) {
     return <div>Loading Digimon...</div>;
   }
-  
+
+  // Phase 5.2 — resolve the attribute glow class (empty string = no glow applied).
+  const glowClass = digimonData.attribute
+    ? (ATTRIBUTE_GLOW_CLASS[digimonData.attribute] ?? '')
+    : '';
+
   const displayName = currentDigimon.name || digimonData.name;
   
   // Animation variants
@@ -391,31 +422,45 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
         </div>
       )}
 
-      <h2 className="text-2xl font-bold text-center mb-1 digimon-name">{displayName}</h2>
+      {/* Phase 7.6 — Fredoka via font-heading token; rounded, playful, matches Digimon aesthetic */}
+      <h2 className="text-2xl font-heading font-semibold text-center mb-1 digimon-name">{displayName}</h2>
       <p className="text-sm text-gray-500 mb-2">{digimonData.name}</p>
       
-      <div className="relative mb-2">
+      {/* Phase 5.2 — glow class sets --stage-glow CSS var; the inline radial-gradient
+          renders the actual visible ambient glow behind the sprite. */}
+      <div
+        className={`relative mb-2 ${glowClass}`}
+        style={glowClass ? {
+          background: 'radial-gradient(circle, var(--stage-glow) 0%, transparent 70%)',
+          borderRadius: '50%',
+        } : undefined}
+      >
         <motion.div
           animate={
-            isLevelingUp 
-              ? "hop" 
-              : isStatIncreasing 
-                ? "statIncrease" 
-                : availableEvolutions.length > 0
-                  ? { y: [0, -5, 0, -3, 0, -5, 0] } // Hopping animation for evolution-ready
-                : hasAnimatedSprites 
-                  ? { y: 0 } // No up/down animation for animated sprites
-                  : { y: [0, -10, 0] } // Keep up/down only for non-animated sprites
+            // Phase 7.7 — skip all looping bounces when reduced-motion is preferred
+            prefersReducedMotion
+              ? { y: 0 }
+              : isLevelingUp
+                ? "hop"
+                : isStatIncreasing
+                  ? "statIncrease"
+                  : availableEvolutions.length > 0
+                    ? { y: [0, -5, 0, -3, 0, -5, 0] }
+                    : hasAnimatedSprites
+                      ? { y: 0 }
+                      : { y: [0, -10, 0] }
           }
           variants={levelUpVariants}
           transition={
-            availableEvolutions.length > 0
-              ? { duration: 1, repeat: Infinity, repeatType: "loop", repeatDelay: 1 }
-              : !isLevelingUp && !isStatIncreasing && !hasAnimatedSprites
-                ? { repeat: Infinity, duration: 2 } 
-                : undefined
+            prefersReducedMotion
+              ? {}
+              : availableEvolutions.length > 0
+                ? { duration: 1, repeat: Infinity, repeatType: "loop", repeatDelay: 1 }
+                : !isLevelingUp && !isStatIncreasing && !hasAnimatedSprites
+                  ? { repeat: Infinity, duration: 2 }
+                  : undefined
           }
-          className="w-40 h-40 flex items-center justify-center"
+          className="w-48 h-48 sm:w-56 sm:h-56 flex items-center justify-center"
           onClick={(e) => {
             e.stopPropagation(); // Stop propagation to prevent double handling
             setShowDetailModal(true);
@@ -465,18 +510,19 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
           )}
         </AnimatePresence>
         
-        {/* Mood indicator */}
-        <div className="absolute bottom-0 right-0 bg-white dark:bg-gray-700 rounded-full p-1 shadow-md">
+        {/* Phase 5.6 — Lucide icon mood indicator replaces emojis for a consistent,
+            theme-aware style. Moon = sleeping, then happiness thresholds. */}
+        <div className="absolute bottom-0 right-0 bg-white dark:bg-gray-700 rounded-full p-1.5 shadow-md">
           {isSleeping ? (
-            <span className="text-2xl">💤</span>
+            <Moon className="w-5 h-5 text-blue-400" />
           ) : userDigimon.happiness > 80 ? (
-            <span className="text-2xl">😄</span>
+            <Laugh className="w-5 h-5 text-green-500" />
           ) : userDigimon.happiness > 50 ? (
-            <span className="text-2xl">🙂</span>
+            <Smile className="w-5 h-5 text-yellow-500" />
           ) : userDigimon.happiness > 30 ? (
-            <span className="text-2xl">😐</span>
+            <Meh className="w-5 h-5 text-orange-400" />
           ) : (
-            <span className="text-2xl">😢</span>
+            <Frown className="w-5 h-5 text-red-500" />
           )}
         </div>
       </div>
@@ -489,8 +535,9 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
               <span className="text-red-500 text-sm">❤️</span>
           </div>
             
+            {/* Phase 5.3 — taller bar (h-2.5) for better visual weight */}
             {/* Happiness Progress Bar */}
-            <div className="flex-1 bg-gray-300 dark:bg-gray-600 rounded-full h-1.5 overflow-hidden">
+            <div className="flex-1 bg-gray-300 dark:bg-gray-600 rounded-full h-2.5 overflow-hidden">
             <div 
                 className={`h-full transition-all duration-300 ${
                 happinessPercentage >= 60 ? 'bg-green-500' : 
@@ -522,13 +569,16 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
               </span>
           </div>
             
+            {/* Phase 5.3 — taller XP bar matches happiness bar */}
             {/* Experience Progress Bar */}
-            <div className="flex-1 bg-gray-300 dark:bg-gray-600 rounded-full h-1.5 overflow-hidden relative">
-            <div 
+            <div className="flex-1 bg-gray-300 dark:bg-gray-600 rounded-full h-2.5 overflow-hidden relative">
+            <div
                 className={`h-full transition-all duration-300 ${
-                  isLevelingUp 
-                    ? 'bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 animate-pulse shadow-[0_0_8px_rgba(250,204,21,0.6)]' 
-                    : 'bg-purple-500'
+                  isLevelingUp
+                    ? 'bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 animate-pulse shadow-[0_0_8px_rgba(250,204,21,0.6)]'
+                    : isStatIncreasing
+                      ? 'xp-shimmer'
+                      : 'bg-purple-500'
                 }`}
               style={{ width: `${xpPercentage}%` }}
               />
@@ -550,42 +600,66 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
         </div>
       </div>
 
-      {
-        availableEvolutions.length > 0 && (
-          <div className="text-sm text-purple-500 font-bold mt-2">
-            Can Digivolve
+      {/* Phase 5.4+5.5 — DIGIVOLVE CTA when evolution is ready; evo level-progress
+          bar when locked; minimal hint when no evolution path exists at all. */}
+      {availableEvolutions.length > 0 ? (
+        <motion.button
+          animate={prefersReducedMotion ? {} : {
+            boxShadow: [
+              '0 0 8px rgba(245,158,11,0.3)',
+              '0 0 20px rgba(245,158,11,0.65)',
+              '0 0 8px rgba(245,158,11,0.3)',
+            ],
+          }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          whileHover={{ scale: prefersReducedMotion ? 1 : 1.03 }}
+          whileTap={{ scale: prefersReducedMotion ? 1 : 0.97 }}
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowDetailModal(true);
+          }}
+          className="mt-3 w-full py-2.5 px-4 rounded-xl bg-accent-500 hover:bg-accent-400 text-black font-heading font-semibold text-sm cursor-pointer transition-colors duration-150"
+        >
+          DIGIVOLVE{availableEvolutions.length > 1 ? ` (${availableEvolutions.length})` : ''}
+        </motion.button>
+      ) : nextEvoTarget ? (
+        <div className="mt-3 w-full">
+          <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
+            <span>Next evo at Lv {nextEvoTarget.level_required}</span>
+            <span>{Math.round(evoProgressPct ?? 0)}%</span>
           </div>
-        )
-      }
-      
-      <div className="text-sm text-gray-500 mt-2">
-        Click for details or evolution options
-      </div>
-
-      {/* Detail Modal */}
-      {showDetailModal && (
-        <DigimonDetailModal
-          selectedDigimon={currentDigimon}
-          onClose={() => {
-            setShowDetailModal(false);
-          }}
-          onSetActive={handleSetActive}
-          onNameChange={(updatedDigimon) => {
-            // Update the local state immediately
-            setCurrentDigimon(updatedDigimon);
-            
-            // Update the store directly
-            useDigimonStore.getState().updateDigimonName(updatedDigimon.id, updatedDigimon.name || '');
-            
-            // Dispatch the custom event to notify other components
-            const event = new CustomEvent('digimon-name-changed', {
-              detail: { digimonId: updatedDigimon.id }
-            });
-            window.dispatchEvent(event);
-          }}
-          className="z-40"
-        />
+          <div className="bg-gray-200 dark:bg-dark-200 rounded-full h-1.5 overflow-hidden">
+            <div
+              className="h-full bg-purple-400 transition-all duration-500 rounded-full"
+              style={{ width: `${evoProgressPct}%` }}
+            />
+          </div>
+        </div>
+      ) : (
+        <div className="text-xs text-gray-400 dark:text-gray-500 mt-2 text-center">
+          Click for details
+        </div>
       )}
+
+      {/* Detail Modal — AnimatePresence activates the fade+scale exit animation
+          defined inside DigimonDetailModal's motion.div wrappers (Phase 7.4). */}
+      <AnimatePresence>
+        {showDetailModal && (
+          <DigimonDetailModal
+            selectedDigimon={currentDigimon}
+            onClose={() => setShowDetailModal(false)}
+            onSetActive={handleSetActive}
+            onNameChange={(updatedDigimon) => {
+              setCurrentDigimon(updatedDigimon);
+              useDigimonStore.getState().updateDigimonName(updatedDigimon.id, updatedDigimon.name || '');
+              window.dispatchEvent(new CustomEvent('digimon-name-changed', {
+                detail: { digimonId: updatedDigimon.id }
+              }));
+            }}
+            className="z-40"
+          />
+        )}
+      </AnimatePresence>
 
       {/* Evolution Animation */}
       {showEvolutionAnimation && evolutionSprites && (

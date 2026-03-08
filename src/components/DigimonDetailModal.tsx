@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { EvolutionOption, UserDigimon, getRemainingStatPoints, useDigimonStore } from "../store/petStore";
-import calculateBaseStat, { calculateFinalStats } from "../utils/digimonStatCalculation";
+import { calculateFinalStats } from "../utils/digimonStatCalculation";
 import { DigimonAttribute, DigimonType } from "../store/battleStore";
 import { supabase } from "../lib/supabase";
 import TypeAttributeIcon from "./TypeAttributeIcon";
@@ -178,48 +179,73 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
     }
   };
 
-  // Update the renderStatRow function to be more compact
+  // Stat bar color map
+  const statColors: Record<string, string> = {
+    HP: 'bg-red-500',
+    SP: 'bg-cyan-500',
+    ATK: 'bg-orange-500',
+    DEF: 'bg-blue-500',
+    INT: 'bg-purple-500',
+    SPD: 'bg-green-500',
+    ABI: 'bg-amber-500',
+  };
+
+  // Max reference values for progress bars (lv99 reference)
+  const statMaxRef: Record<string, number> = {
+    HP: localDigimon?.digimon?.hp_level99 ?? 2000,
+    SP: localDigimon?.digimon?.sp_level99 ?? 600,
+    ATK: localDigimon?.digimon?.atk_level99 ?? 600,
+    DEF: localDigimon?.digimon?.def_level99 ?? 600,
+    INT: localDigimon?.digimon?.int_level99 ?? 600,
+    SPD: localDigimon?.digimon?.spd_level99 ?? 600,
+    ABI: 200,
+  };
+
   const renderStatRow = (
-    label: StatType, 
+    label: StatType,
     baseValue: number,
     bonusValue: number
   ) => {
-    // Check for both uppercase and lowercase keys
     const upperLabel = label.toUpperCase();
     const lowerLabel = label.toLowerCase();
-
-    // Get the stat value regardless of case
     const statValue = savedStats[upperLabel] || savedStats[lowerLabel] || 0;
-    
+    const total = baseValue + bonusValue;
+    const maxRef = statMaxRef[upperLabel] ?? 600;
+    const pct = Math.min(100, (total / maxRef) * 100);
+    const barColor = statColors[upperLabel] ?? 'bg-purple-500';
+
     return (
-      <div className="flex items-center justify-between">
-        <div className="font-medium dark:text-gray-200">{label}</div>
-        <div className="flex items-center">
-          <div className="text-right mr-2">
-            <span className="font-semibold dark:text-gray-200">{baseValue}</span>
-            <span className={bonusValue > 0 ? "text-green-600 dark:text-green-400 ml-1" : "text-gray-400 ml-1"}>
-              {bonusValue > 0 ? `(+${bonusValue})` : ""}
-            </span>
+      <div className="space-y-1">
+        <div className="flex items-center justify-between text-sm">
+          <span className="font-heading font-semibold text-gray-700 dark:text-gray-200 w-10">{label}</span>
+          <div className="flex-1 mx-3">
+            <div className="h-2 bg-gray-200 dark:bg-dark-100 rounded-full overflow-hidden">
+              <div
+                className={`h-full rounded-full transition-all duration-500 ${barColor}`}
+                style={{ width: `${pct}%` }}
+              />
+            </div>
           </div>
-          
-          {/* Allocation Button */}
-          {belongsToCurrentUser && statValue > 0 && isUnderStatCap(localDigimon) && (
-            <button 
-              className="w-6 h-6 bg-indigo-100 hover:bg-indigo-200 text-indigo-800 dark:bg-amber-800/30 dark:hover:bg-amber-700/50 dark:text-amber-300 rounded-full flex items-center justify-center relative"
-              onClick={() => allocateStat(lowerLabel as StatType)}
-              disabled={allocating}
-            >
-              <span className="text-xs">+</span>
-              <span className="absolute -top-2 -right-2 bg-indigo-500 dark:bg-amber-600 text-white dark:text-amber-50 text-xs rounded-full w-4 h-4 flex items-center justify-center text-[10px]">
-                {statValue}
-              </span>
-            </button>
-          )}
-          
-          {/* Placeholder for when there are no stats to allocate */}
-          {(statValue <= 0 || !belongsToCurrentUser || !isUnderStatCap(localDigimon)) && (
-            <div className="w-6"></div>
-          )}
+          <div className="flex items-center gap-1.5 w-20 justify-end">
+            <span className="font-semibold text-gray-800 dark:text-gray-100 tabular-nums">{baseValue}</span>
+            {bonusValue > 0 && (
+              <span className="text-green-500 dark:text-green-400 text-xs tabular-nums">+{bonusValue}</span>
+            )}
+            {/* Allocation Button */}
+            {belongsToCurrentUser && statValue > 0 && isUnderStatCap(localDigimon) && (
+              <button
+                className="w-5 h-5 bg-amber-100 hover:bg-amber-200 dark:bg-amber-800/30 dark:hover:bg-amber-700/50 text-amber-700 dark:text-amber-300 rounded-full flex items-center justify-center relative flex-shrink-0"
+                onClick={() => allocateStat(lowerLabel as StatType)}
+                disabled={allocating}
+                title={`Allocate ${label} stat point (${statValue} available)`}
+              >
+                <span className="text-[10px] font-bold leading-none">+</span>
+                <span className="absolute -top-1.5 -right-1.5 bg-amber-500 text-white text-[9px] rounded-full w-3.5 h-3.5 flex items-center justify-center leading-none">
+                  {statValue}
+                </span>
+              </button>
+            )}
+          </div>
         </div>
       </div>
     );
@@ -398,8 +424,12 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
 
   return (
     <>
-    <div 
+    <motion.div
       className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40 ${className}`}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.18 }}
       onClick={(e) => {
         // Only close if clicking the backdrop (not the modal content)
         if (e.target === e.currentTarget) {
@@ -407,8 +437,12 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
         }
       }}
     >
-      <div 
+      <motion.div
         className="bg-white dark:bg-dark-300 rounded-lg px-6 pb-4 pt-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto relative"
+        initial={{ opacity: 0, scale: 0.95, y: 12 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 12 }}
+        transition={{ duration: 0.2, ease: 'easeOut' }}
         onClick={(e) => e.stopPropagation()}
       >
           {/* X Button */}
@@ -532,29 +566,26 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
               />
               <span>{`${localDigimon.digimon?.attribute} ${localDigimon.digimon?.type}, ${localDigimon.digimon?.stage} Digimon.`}</span>
             </div>
-            {/* Status bars - keep as is */}
+            {/* Status bars */}
             <div className="w-full space-y-4 mb-6 mt-4">
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  {/* Heart icon directly left of the bar - fixed width */}
                   <div className="flex items-center justify-center w-8 h-4 flex-shrink-0">
-                    <span className="text-red-500 text-sm">❤️</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+                    </svg>
                   </div>
-                  
-                  {/* Happiness Progress Bar */}
-                  <div className="flex-1 bg-gray-300 dark:bg-gray-600 rounded-full h-1.5 overflow-hidden">
-                    <div 
+                  <div className="flex-1 bg-gray-200 dark:bg-dark-100 rounded-full h-1.5 overflow-hidden">
+                    <div
                       className={`h-full transition-all duration-300 ${
-                        localDigimon.happiness >= 60 ? 'bg-green-500' : 
-                        localDigimon.happiness >= 30 ? 'bg-yellow-500' : 
+                        localDigimon.happiness >= 60 ? 'bg-green-500' :
+                        localDigimon.happiness >= 30 ? 'bg-yellow-500' :
                         'bg-red-500'
                       }`}
                       style={{ width: `${localDigimon.happiness}%` }}
                     />
                   </div>
                 </div>
-                
-                {/* Happiness details below */}
                 <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
                   <span>Happiness</span>
                   <span>{localDigimon.happiness}%</span>
@@ -593,20 +624,20 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
           {/* Right column */}
           <div className="flex flex-col h-full md:w-3/5">
             <div className="flex-grow">
-              <h4 className="text-lg font-semibold mb-2 dark:text-gray-100">Stats</h4>
+              <h4 className="font-heading font-semibold text-sm mb-3 text-gray-700 dark:text-gray-200">Stats</h4>
 
-              {/* Add a section showing total available stat points if any */}
+              {/* Stat cap info */}
               {belongsToCurrentUser && (
-                <div className="mb-3 p-2 bg-indigo-50 dark:bg-amber-900/20 border border-indigo-200 dark:border-amber-700/50 rounded-lg">
-                  <p className="text-sm text-indigo-800 dark:text-amber-200">
-                    {isUnderStatCap(localDigimon) ? (
-                      <>
-                        Remaining bonus stats Digimon can have is {getRemainingStatPoints(localDigimon)}. Increase by raising the Digimon's ABI.
-                      </>
-                    ) : (
-                      "This Digimon has reached its stat cap. Increase its ABI through evolution and devolution to unlock more stat points."
-                    )}
-                  </p>
+                <div className={`mb-3 p-2 rounded-lg text-xs font-body ${
+                  isUnderStatCap(localDigimon)
+                    ? 'bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-700/50 text-purple-800 dark:text-purple-300'
+                    : 'bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 text-amber-800 dark:text-amber-300'
+                }`}>
+                  {isUnderStatCap(localDigimon) ? (
+                    <>Bonus stat slots remaining: <strong>{getRemainingStatPoints(localDigimon)}</strong>. Tap <strong>+</strong> on any stat to allocate.</>
+                  ) : (
+                    <>Stat cap reached. Increase ABI via evolution/devolution to unlock more.</>
+                  )}
                 </div>
               )}
 
@@ -619,157 +650,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                 {renderStatRow("SPD", stats.spd, localDigimon.spd_bonus)}
                 {renderStatRow("ABI", localDigimon.abi, 0)}
               </div>
-              
-              {/* Evolution Options - Only show for the current user's Digimon */}
-              <div className="mt-4">
-                <h4 className="font-semibold text-sm mb-2 dark:text-gray-200">Evolution Options</h4>
-                {belongsToCurrentUser ? (
-                  evolutionOptions.length > 0 ? (
-                    <div className="grid grid-cols-3 gap-2">
-                      {evolutionOptions.map((option) => {
-                        // Calculate base stats for current level
-                        const baseHP = calculateBaseStat(
-                          localDigimon.current_level,
-                          localDigimon.digimon?.hp_level1 ?? 0,
-                          localDigimon.digimon?.hp ?? 0,
-                          localDigimon.digimon?.hp_level99 ?? 0
-                        );
-                        
-                        const baseSP = calculateBaseStat(
-                          localDigimon.current_level,
-                          localDigimon.digimon?.sp_level1 ?? 0,
-                          localDigimon.digimon?.sp ?? 0,
-                          localDigimon.digimon?.sp_level99 ?? 0
-                        );
-                        
-                        const baseATK = calculateBaseStat(
-                          localDigimon.current_level,
-                          localDigimon.digimon?.atk_level1 ?? 0,
-                          localDigimon.digimon?.atk ?? 0,
-                          localDigimon.digimon?.atk_level99 ?? 0
-                        );
-                        
-                        const baseDEF = calculateBaseStat(
-                          localDigimon.current_level,
-                          localDigimon.digimon?.def_level1 ?? 0,
-                          localDigimon.digimon?.def ?? 0,
-                          localDigimon.digimon?.def_level99 ?? 0
-                        );
-                        
-                        const baseINT = calculateBaseStat(
-                          localDigimon.current_level,
-                          localDigimon.digimon?.int_level1 ?? 0,
-                          localDigimon.digimon?.int ?? 0,
-                          localDigimon.digimon?.int_level99 ?? 0
-                        );
-                        
-                        const baseSPD = calculateBaseStat(
-                          localDigimon.current_level,
-                          localDigimon.digimon?.spd_level1 ?? 0,
-                          localDigimon.digimon?.spd ?? 0,
-                          localDigimon.digimon?.spd_level99 ?? 0
-                        );
-                        
-                        // Check level requirement
-                        const meetsLevelRequirement = localDigimon.current_level >= option.level_required;
-                        
-                        // Check stat requirements
-                        let meetsStatRequirements = true;
-                        
-                        if (option.stat_requirements) {
-                          const statReqs = option.stat_requirements;
-                          
-                          if (statReqs.hp && statReqs.hp > 0) {
-                            const currentHP = baseHP + 10 * (localDigimon.hp_bonus || 0);
-                            if (currentHP < statReqs.hp) meetsStatRequirements = false;
-                          }
-                          
-                          if (statReqs.sp && statReqs.sp > 0) {
-                            const currentSP = baseSP + (localDigimon.sp_bonus || 0);
-                            if (currentSP < statReqs.sp) meetsStatRequirements = false;
-                          }
-                          
-                          if (statReqs.atk && statReqs.atk > 0) {
-                            const currentATK = baseATK + (localDigimon.atk_bonus || 0);
-                            if (currentATK < statReqs.atk) meetsStatRequirements = false;
-                          }
-                          
-                          if (statReqs.def && statReqs.def > 0) {
-                            const currentDEF = baseDEF + (localDigimon.def_bonus || 0);
-                            if (currentDEF < statReqs.def) meetsStatRequirements = false;
-                          }
-                          
-                          if (statReqs.int && statReqs.int > 0) {
-                            const currentINT = baseINT + (localDigimon.int_bonus || 0);
-                            if (currentINT < statReqs.int) meetsStatRequirements = false;
-                          }
-                          
-                          if (statReqs.spd && statReqs.spd > 0) {
-                            const currentSPD = baseSPD + (localDigimon.spd_bonus || 0);
-                            if (currentSPD < statReqs.spd) meetsStatRequirements = false;
-                          }
 
-                          if (statReqs.abi && statReqs.abi > 0) {
-                            const currentABI = localDigimon.abi || 0;
-                            if (currentABI < statReqs.abi) meetsStatRequirements = false;
-                          }
-                        }
-                        
-                        const canEvolve = meetsLevelRequirement && meetsStatRequirements;
-                        const discovered = isDiscovered(option.digimon_id);
-                        
-                        return (
-                          <div 
-                            key={option.id}
-                            className={`border rounded-lg p-2 ${
-                              canEvolve 
-                                ? "border-primary-300 dark:border-amber-700/50 bg-primary-50 dark:bg-amber-900/20" 
-                                : "border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-dark-200 opacity-70"
-                            }`}
-                          >
-                            <div className="flex items-center">
-                              <div className="w-10 h-10 mr-2 flex items-center justify-center">
-                                {discovered ? (
-                                  <DigimonSprite
-                                    digimonName={option.name}
-                                    fallbackSpriteUrl={option.sprite_url}
-                                    size="xs"
-                                    showHappinessAnimations={false}
-                                  />
-                                ) : (
-                                  <div className="w-10 h-10 flex items-center justify-center">
-                                    <DigimonSprite
-                                      digimonName={option.name}
-                                      fallbackSpriteUrl={option.sprite_url}
-                                      size="xs"
-                                      showHappinessAnimations={false}
-                                      silhouette={true}
-                                    />
-                                  </div>
-                                )}
-                              </div>
-                              <div className="flex-1 hidden sm:block">
-                                <p className="font-medium text-sm dark:text-gray-200">
-                                  {discovered ? option.name : "???"}
-                                </p>
-                                <div className="flex justify-between">
-                                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                                    {discovered ? option.stage : "Unknown"}
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  ) : (
-                    <p className="text-gray-500 dark:text-gray-400 text-sm">No evolution options available.</p>
-                  )
-                ) : (
-                  <p className="text-gray-500 dark:text-gray-400 text-sm">Evolution options are only visible to the Digimon's owner.</p>
-                )}
-              </div>
             </div>
           </div>
         </div>
@@ -816,8 +697,8 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
             </button>
           )}
         </div>
-      </div>
-      
+      </motion.div>
+
       {/* Evolution Modal */}
       <DigimonEvolutionModal
         isOpen={showEvolutionModal}
@@ -848,7 +729,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
         isDiscovered={isDiscovered}
         allUserDigimon={allUserDigimon}
       />
-    </div>
+    </motion.div>
     <PageTutorial tutorialId="digimon_detail_modal_intro" steps={digimonDetailModalTutorialSteps} />
     </>
   );
