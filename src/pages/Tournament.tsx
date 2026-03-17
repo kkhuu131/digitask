@@ -4,15 +4,18 @@ import { Trophy, Crown, ChevronRight, AlertCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../store/authStore';
 import { useDigimonStore, UserDigimon } from '../store/petStore';
-import { useInteractiveBattleStore } from '../store/interactiveBattleStore';
+import { convertToBattleDigimon } from '../store/interactiveBattleStore';
 import { useCurrencyStore } from '../store/currencyStore';
 import { useTitleStore } from '../store/titleStore';
 import { useTournamentStore, PLACEMENT_BITS } from '../store/tournamentStore';
 import { DIGIMON_LOOKUP_TABLE } from '../constants/digimonLookup';
-import InteractiveBattle from '../components/InteractiveBattle';
+import ArenaBattle from '../components/ArenaBattle';
+import StrategyPicker from '../components/StrategyPicker';
 import DigimonSprite from '@/components/DigimonSprite';
 import TournamentBracket from '../components/TournamentBracket';
 import BattleTeamSelector, { OpponentDigimonPreview } from '../components/BattleTeamSelector';
+import { BattleDigimon } from '../types/battle';
+import { Strategy } from '../engine/arenaTypes';
 
 const PLACEMENT_LABELS: Record<string, string> = {
   qf_loss: 'Top 8',
@@ -29,11 +32,6 @@ const BITS_LOSS: Record<string, number> = { easy: 50, medium: 50,  hard: 40  };
 const Tournament: React.FC = () => {
   const { user, userProfile } = useAuthStore();
   const { allUserDigimon, fetchAllUserDigimon } = useDigimonStore();
-  const {
-    isBattleActive,
-    startInteractiveBattle,
-    endBattle: endInteractiveBattle,
-  } = useInteractiveBattleStore();
   const {
     currentTournament,
     weeklyTaskCount,
@@ -52,21 +50,15 @@ const Tournament: React.FC = () => {
   const [enterError, setEnterError] = useState<string | null>(null);
   const [devResetting, setDevResetting] = useState(false);
 
-  const handleDevReset = async () => {
-    if (!currentTournament) return;
-    setDevResetting(true);
-    try {
-      await supabase.from('user_tournaments').delete().eq('id', currentTournament.id);
-      await fetchTournament();
-      await enterTournament();
-    } catch (err) {
-      console.error('Dev reset failed:', err);
-    } finally {
-      setDevResetting(false);
-    }
-  };
+  // Arena battle state
   const [isSelectingTeam, setIsSelectingTeam] = useState(false);
+  const [showStrategyPicker, setShowStrategyPicker] = useState(false);
+  const [arenaBattleActive, setArenaBattleActive] = useState(false);
+  const [preparedUserTeam, setPreparedUserTeam] = useState<BattleDigimon[] | null>(null);
+  const [preparedOpponentTeam, setPreparedOpponentTeam] = useState<BattleDigimon[] | null>(null);
+  const [userStrategies, setUserStrategies] = useState<Strategy[]>([]);
   const [battleTeam, setBattleTeam] = useState<UserDigimon[]>([]);
+
   const [roundResultState, setRoundResultState] = useState<{
     round: number;
     winner: 'user' | 'opponent';
@@ -81,6 +73,20 @@ const Tournament: React.FC = () => {
     fetchTournament();
     fetchAllUserDigimon();
   }, [user?.id]);
+
+  const handleDevReset = async () => {
+    if (!currentTournament) return;
+    setDevResetting(true);
+    try {
+      await supabase.from('user_tournaments').delete().eq('id', currentTournament.id);
+      await fetchTournament();
+      await enterTournament();
+    } catch (err) {
+      console.error('Dev reset failed:', err);
+    } finally {
+      setDevResetting(false);
+    }
+  };
 
   const handleEnter = async () => {
     setEnterError(null);
@@ -100,8 +106,8 @@ const Tournament: React.FC = () => {
     setIsSelectingTeam(true);
   };
 
-  // Step 2: team confirmed — start battle (no ticket cost)
-  const handleConfirmTeam = async (selectedTeam: UserDigimon[]) => {
+  // Step 2: team confirmed → convert to BattleDigimon and open strategy picker
+  const handleConfirmTeam = (selectedTeam: UserDigimon[]) => {
     if (!currentTournament) return;
     setIsSelectingTeam(false);
     setBattleTeam(selectedTeam);
@@ -114,17 +120,31 @@ const Tournament: React.FC = () => {
       digimon: DIGIMON_LOOKUP_TABLE[d.digimon_id as keyof typeof DIGIMON_LOOKUP_TABLE],
     }));
 
-    const opponentTeamData = roundData.opponent.team.map(d => ({
+    const opponentTeamData = roundData.opponent.team.map((d: any) => ({
       ...d,
       digimon_id: d.digimon_id,
       digimon: DIGIMON_LOOKUP_TABLE[d.digimon_id as keyof typeof DIGIMON_LOOKUP_TABLE],
     }));
 
-    await startInteractiveBattle(userTeamData, opponentTeamData);
+    const userBattle = userTeamData.map(d => convertToBattleDigimon(d, true));
+    const opponentBattle = opponentTeamData.map(d => convertToBattleDigimon(d, false));
+    setPreparedUserTeam(userBattle);
+    setPreparedOpponentTeam(opponentBattle);
+    setShowStrategyPicker(true);
   };
 
-  const handleBattleComplete = async (result: { winner: 'user' | 'opponent'; turns: any[]; userDigimon?: any[] }) => {
+  // Step 3: strategies chosen → start arena battle
+  const handleStartArenaBattle = (strategies: Strategy[]) => {
+    setUserStrategies(strategies);
+    setShowStrategyPicker(false);
+    setArenaBattleActive(true);
+  };
+
+  // Step 4: arena battle finished
+  const handleArenaBattleComplete = async (result: { winner: 'user' | 'opponent'; turns: any[] }) => {
     if (!currentTournament) return;
+
+    setArenaBattleActive(false);
 
     const round = currentTournament.current_round;
     const roundKey = String(round) as '1' | '2' | '3';
@@ -161,9 +181,6 @@ const Tournament: React.FC = () => {
       }
     } catch {}
 
-    // End battle state first — must happen before recordRoundResult
-    endInteractiveBattle();
-
     // Placement bits for the result screen
     let placementBits = 0;
     if (!isWin) {
@@ -177,6 +194,8 @@ const Tournament: React.FC = () => {
 
     setRoundResultState({ round, winner: result.winner, bits: bitsReward, placementBits });
     setBattleTeam([]);
+    setPreparedUserTeam(null);
+    setPreparedOpponentTeam(null);
   };
 
   const handleContinue = () => setRoundResultState(null);
@@ -185,7 +204,7 @@ const Tournament: React.FC = () => {
 
   const isLockedState   = !isUnlocked() && !currentTournament;
   const isNotEntered    = isUnlocked() && !currentTournament && !isCompleted();
-  const isActiveState   = isActive() && !isBattleActive && !roundResultState && !isSelectingTeam;
+  const isActiveState   = isActive() && !arenaBattleActive && !roundResultState && !isSelectingTeam && !showStrategyPicker;
   const isFinishedState = isCompleted();
 
   const currentOpponent = getCurrentRoundOpponent();
@@ -202,6 +221,33 @@ const Tournament: React.FC = () => {
     monday.setDate(today.getDate() + daysUntilMonday);
     return monday.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
   })();
+
+  // Full-page takeovers: Strategy Picker, Arena Battle
+  if (showStrategyPicker && preparedUserTeam) {
+    return (
+      <div className="container mx-auto px-4 py-8 max-w-5xl">
+        <StrategyPicker
+          team={preparedUserTeam}
+          onConfirm={handleStartArenaBattle}
+          onBack={() => {
+            setShowStrategyPicker(false);
+            setIsSelectingTeam(true);
+          }}
+        />
+      </div>
+    );
+  }
+
+  if (arenaBattleActive && preparedUserTeam && preparedOpponentTeam) {
+    return (
+      <ArenaBattle
+        userTeam={preparedUserTeam}
+        opponentTeam={preparedOpponentTeam}
+        userStrategies={userStrategies}
+        onBattleComplete={handleArenaBattleComplete}
+      />
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
@@ -228,20 +274,6 @@ const Tournament: React.FC = () => {
           Complete 10 tasks this week to enter · 3 rounds · Prizes up to 1,500 bits
         </p>
       </div>
-
-      {/* Interactive Battle (full-page takeover) */}
-      {isBattleActive && (
-        <InteractiveBattle
-          userDigimon={battleTeam.map(d => ({
-            ...d,
-            digimon: DIGIMON_LOOKUP_TABLE[d.digimon_id as keyof typeof DIGIMON_LOOKUP_TABLE],
-          }))}
-          battleOption={{ difficulty: currentRoundData?.difficulty ?? 'medium' }}
-          showRewards={false}
-          skipResultScreen={true}
-          onBattleComplete={handleBattleComplete}
-        />
-      )}
 
       {/* Team Selector (full-section takeover) */}
       <AnimatePresence mode="wait">
@@ -319,8 +351,8 @@ const Tournament: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* Main content — hidden while battle/selector/result active */}
-      {!isBattleActive && !isSelectingTeam && !roundResultState && (
+      {/* Main content — hidden while selector/result active */}
+      {!isSelectingTeam && !roundResultState && (
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
 
           {/* Bracket */}
@@ -337,30 +369,33 @@ const Tournament: React.FC = () => {
             />
           </div>
 
-          {/* State 1: Locked */}
+          {/* State 1: Locked — show "how it works" info */}
           {isLockedState && (
             <div className="bg-gray-50 dark:bg-dark-300 rounded-2xl border border-gray-200 dark:border-dark-100 p-6">
-              <h3 className="font-heading font-semibold text-gray-800 dark:text-gray-100 mb-3">How it works</h3>
-              <div className="space-y-3 text-sm font-body text-gray-600 dark:text-gray-400">
+              <h3 className="font-heading font-semibold text-gray-800 dark:text-gray-100 mb-1">How the Weekly Tournament Works</h3>
+              <p className="text-sm font-body text-gray-500 dark:text-gray-400 mb-4">
+                Every week a new tournament opens. Complete tasks to earn your entry, then battle your way through 3 rounds of increasingly tough opponents in the Arena.
+              </p>
+              <div className="space-y-3 text-sm font-body text-gray-600 dark:text-gray-400 mb-5">
                 <div className="flex items-start gap-3">
                   <span className="mt-0.5 w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xs font-bold shrink-0">1</span>
-                  <p>Complete <span className="font-semibold text-gray-800 dark:text-gray-200">10 tasks</span> during the week to unlock your entry slot.</p>
+                  <p>Complete <span className="font-semibold text-gray-800 dark:text-gray-200">10 tasks</span> during the week to unlock your entry slot. Your progress resets every Monday.</p>
                 </div>
                 <div className="flex items-start gap-3">
                   <span className="mt-0.5 w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xs font-bold shrink-0">2</span>
-                  <p>Fight through <span className="font-semibold text-gray-800 dark:text-gray-200">3 rounds</span> — Quarterfinal, Semifinal, and Grand Final — each against a tougher opponent.</p>
+                  <p>Pick your team and assign battle strategies, then fight through <span className="font-semibold text-gray-800 dark:text-gray-200">Quarterfinal → Semifinal → Grand Final</span> using the real-time Arena battle system.</p>
                 </div>
                 <div className="flex items-start gap-3">
                   <span className="mt-0.5 w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xs font-bold shrink-0">3</span>
-                  <p>Earn <span className="font-semibold text-amber-600 dark:text-amber-400">bits</span> for every round you win — up to <span className="font-semibold text-amber-600 dark:text-amber-400">1,500 bits</span> if you become Champion.</p>
+                  <p>Earn <span className="font-semibold text-amber-600 dark:text-amber-400">bits</span> for every round you play, plus a <span className="font-semibold text-amber-600 dark:text-amber-400">placement bonus</span> based on how far you go. Tournament rounds are free — no energy cost.</p>
                 </div>
               </div>
 
-              <div className="mt-4 grid grid-cols-2 gap-2 text-xs font-body">
+              <div className="grid grid-cols-2 gap-2 text-xs font-body">
                 {[
-                  { label: 'QF loss', bits: 100 },
-                  { label: 'SF loss', bits: 300 },
-                  { label: 'GF loss', bits: 600 },
+                  { label: 'QF loss (Top 8)', bits: 100 },
+                  { label: 'SF loss (Top 4)', bits: 300 },
+                  { label: 'GF loss (Runner-Up)', bits: 600 },
                   { label: '🏆 Champion', bits: 1500 },
                 ].map(({ label, bits }) => (
                   <div key={label} className="flex justify-between bg-white dark:bg-dark-200 rounded-lg px-3 py-2 border border-gray-200 dark:border-dark-100">
@@ -375,9 +410,9 @@ const Tournament: React.FC = () => {
           {/* State 2: Unlocked, not entered */}
           {isNotEntered && (
             <div className="bg-indigo-50 dark:bg-accent-900/20 rounded-2xl border border-indigo-200 dark:border-accent-700 p-6">
-              <h3 className="font-bold text-indigo-800 dark:text-accent-300 text-lg mb-2">Tournament Open!</h3>
+              <h3 className="font-bold text-indigo-800 dark:text-accent-300 text-lg mb-1">Tournament Open!</h3>
               <p className="text-sm text-indigo-600 dark:text-accent-400 mb-4">
-                3 rounds · Free to play · Prizes scale by placement
+                You've completed enough tasks to enter. Pick your team, choose your strategies, and battle through 3 rounds in the Arena — completely free, no energy cost.
               </p>
 
               <div className="grid grid-cols-2 gap-2 mb-5 text-sm">
