@@ -10,7 +10,6 @@ import UpdateNotification from './components/UpdateNotification';
 import { useOnboardingStore } from './store/onboardingStore';
 import React from 'react';
 // import { BokomonAssistant } from './components/bokomon-assistant/BokomonAssistant';
-// // WeeklyBossTestingPanel is conditionally imported in WeeklyBossRaid component
 
 // Pages
 import Login from './pages/Login';
@@ -24,7 +23,6 @@ import Debug from './pages/Debug';
 import ResetPassword from "./pages/ResetPassword";
 import AuthCallback from "./pages/AuthCallback";
 import Battle from './pages/Battle';
-import BattleHub from './pages/BattleHub';
 import Settings from './pages/Settings';
 import Tutorial from './pages/Tutorial';
 import PatchNotes from './pages/PatchNotes';
@@ -33,14 +31,16 @@ import UserSearchPage from './pages/UserSearchPage';
 import LeaderboardPage from './pages/LeaderboardPage';
 import AdminReportsPage from './pages/AdminReportsPage';
 import DigimonPlayground from "./pages/DigimonPlayground";
-import Campaign from "./pages/Campaign";
-import AdminDigimonEditor from './pages/AdminDigimonEditor';
+import Tournament from "./pages/Tournament";
+import AdminUserDigimonPage from './pages/AdminUserDigimonPage';
 import AdminTitlesPage from './pages/AdminTitlesPage';
+import AdminTournamentTeamsPage from './pages/AdminTournamentTeamsPage';
 import OnboardingPage from './pages/OnboardingPage';
 import LandingPage from './pages/LandingPage';
 import RosterPage from './pages/RosterPage';
 import DigimonStorePage from './pages/DigimonStorePage';
 import AdminDigimonManager from './pages/AdminDigimonManager';
+import AchievementsPage from './pages/AchievementsPage';
 
 // Define a clear app initialization state
 interface AppInitState {
@@ -528,13 +528,7 @@ function App() {
             </ProtectedRoute>
           } />
           
-          <Route path="/battles" element={
-            <ProtectedRoute>
-              <Layout>
-                <BattleHub />
-              </Layout>
-            </ProtectedRoute>
-          } />
+          <Route path="/battles" element={<Navigate to="/battle" replace />} />
           
           <Route path="/battle" element={
             <ProtectedRoute>
@@ -616,10 +610,10 @@ function App() {
             </ProtectedRoute>
           } />
           
-          <Route path="/admin/digimon-editor" element={
+          <Route path="/admin/user-digimon" element={
             <ProtectedRoute>
               <Layout>
-                <AdminDigimonEditor />
+                <AdminUserDigimonPage />
               </Layout>
             </ProtectedRoute>
           } />
@@ -646,14 +640,22 @@ function App() {
             </RequireAuth>
           } />
           
-          <Route path="/campaign" element={
+          <Route path="/tournament" element={
             <ProtectedRoute>
               <Layout>
-                <Campaign />
+                <Tournament />
               </Layout>
             </ProtectedRoute>
           } />
           
+          <Route path="/admin/tournament-teams" element={
+            <ProtectedRoute>
+              <Layout>
+                <AdminTournamentTeamsPage />
+              </Layout>
+            </ProtectedRoute>
+          } />
+
           <Route path="/admin/titles" element={
             <ProtectedRoute>
               <Layout>
@@ -673,12 +675,19 @@ function App() {
             </ProtectedRoute>
           } />
           
+          <Route path="/achievements" element={
+            <ProtectedRoute>
+              <Layout>
+                <AchievementsPage />
+              </Layout>
+            </ProtectedRoute>
+          } />
+
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         <NotificationCenter />
         <UpdateNotification />
         {/* <BokomonAssistant /> */}
-        {/* <WeeklyBossTestingPanel /> */}
       </div>
     </Router>
   );

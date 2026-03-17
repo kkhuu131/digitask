@@ -3,6 +3,7 @@ import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../store/authStore';
 import { useNotificationStore } from '../store/notificationStore';
 import { useNavigate } from 'react-router-dom';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 interface Report {
   id: string;
@@ -17,265 +18,148 @@ interface Report {
   admin_notes: string | null;
 }
 
+type FilterType = 'all' | 'pending' | 'resolved' | 'rejected';
+
+const FILTER_TABS: { key: FilterType; label: string; active: string; inactive: string }[] = [
+  { key: 'pending',  label: 'Pending',  active: 'bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-700',  inactive: '' },
+  { key: 'resolved', label: 'Resolved', active: 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border-green-300 dark:border-green-700',   inactive: '' },
+  { key: 'rejected', label: 'Rejected', active: 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 border-red-300 dark:border-red-700',               inactive: '' },
+  { key: 'all',      label: 'All',      active: 'bg-indigo-100 dark:bg-accent-900/30 text-indigo-800 dark:text-accent-300 border-indigo-300 dark:border-accent-700', inactive: '' },
+];
+
+const INACTIVE_TAB = 'bg-white dark:bg-dark-400 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-dark-100 hover:bg-gray-50 dark:hover:bg-dark-200';
+
 const AdminReportsPage = () => {
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<'all' | 'pending' | 'resolved' | 'rejected'>('pending');
+  const [filter, setFilter] = useState<FilterType>('pending');
   const { user, isAdmin } = useAuthStore();
   const { addNotification } = useNotificationStore();
   const navigate = useNavigate();
-  
-  // Check if user is admin, if not redirect
+
   useEffect(() => {
     if (!isAdmin) {
       navigate('/');
-      addNotification({
-        message: 'You do not have permission to access this page',
-        type: 'error'
-      });
+      addNotification({ message: 'You do not have permission to access this page', type: 'error' });
     }
   }, [isAdmin, navigate, addNotification]);
-  
-  // Fetch reports
+
   useEffect(() => {
     const fetchReports = async () => {
       try {
         setLoading(true);
-        
         const { data: isAdminData, error: isAdminError } = await supabase.rpc('is_admin');
-        
         if (isAdminError || !isAdminData) {
           navigate('/');
-          addNotification({
-            message: 'You do not have permission to access this page',
-            type: 'error'
-          });
+          addNotification({ message: 'You do not have permission to access this page', type: 'error' });
           return;
         }
-        
-        // Query the reports table directly without using foreign key relationships
         const { data: reportsData, error: reportsError } = await supabase
-          .from('reports')
-          .select('*')
-          .order('created_at', { ascending: false });
-        
+          .from('reports').select('*').order('created_at', { ascending: false });
         if (reportsError) throw reportsError;
-        
-        // Filter reports if needed
-        const filteredReports = filter !== 'all' 
-          ? reportsData.filter(report => report.status === filter)
-          : reportsData;
-        
-        // Then fetch the usernames separately
-        const reporterIds = filteredReports.map(report => report.reporter_id);
-        const reportedIds = filteredReports.map(report => report.reported_user_id);
-        const allUserIds = [...new Set([...reporterIds, ...reportedIds])];
-        
+        const filteredReports = filter !== 'all' ? reportsData.filter(r => r.status === filter) : reportsData;
+        const allUserIds = [...new Set([
+          ...filteredReports.map(r => r.reporter_id),
+          ...filteredReports.map(r => r.reported_user_id),
+        ])];
         const { data: profilesData, error: profilesError } = await supabase
-          .from('profiles')
-          .select('id, username')
-          .in('id', allUserIds);
-        
+          .from('profiles').select('id, username').in('id', allUserIds);
         if (profilesError) throw profilesError;
-        
-        // Create a map of user IDs to usernames with proper typing
         const usernameMap: Record<string, string> = {};
-        profilesData.forEach(profile => {
-          usernameMap[profile.id] = profile.username;
-        });
-        
-        // Combine the data
-        const formattedReports = filteredReports.map(report => ({
-          id: report.id,
-          reporter_id: report.reporter_id,
-          reported_user_id: report.reported_user_id,
-          reason: report.reason,
-          category: report.category,
-          status: report.status,
-          admin_notes: report.admin_notes,
-          created_at: report.created_at,
-          updated_at: report.updated_at,
-          resolved_at: report.resolved_at,
-          reporter_username: usernameMap[report.reporter_id] || 'Unknown User',
-          reported_username: usernameMap[report.reported_user_id] || 'Unknown User'
-        }));
-        
-        setReports(formattedReports);
-      } catch (error) {
-        console.error('Error fetching reports:', error);
-        addNotification({
-          message: 'Failed to load reports',
-          type: 'error'
-        });
+        profilesData.forEach(p => { usernameMap[p.id] = p.username; });
+        setReports(filteredReports.map(r => ({
+          ...r,
+          reporter_username: usernameMap[r.reporter_id] || 'Unknown',
+          reported_username: usernameMap[r.reported_user_id] || 'Unknown',
+        })));
+      } catch (err) {
+        console.error('Error fetching reports:', err);
+        addNotification({ message: 'Failed to load reports', type: 'error' });
       } finally {
         setLoading(false);
       }
     };
-    
-    if (isAdmin) {
-      fetchReports();
-    }
+    if (isAdmin) fetchReports();
   }, [filter, isAdmin, addNotification, navigate, user]);
-  
+
   const handleUpdateStatus = async (reportId: string, status: 'resolved' | 'rejected', notes?: string) => {
     try {
-      const { error } = await supabase
-        .from('reports')
-        .update({
-          status,
-          admin_notes: notes || null,
-          resolved_at: status === 'resolved' ? new Date().toISOString() : null,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', reportId);
-      
+      const { error } = await supabase.from('reports').update({
+        status,
+        admin_notes: notes || null,
+        resolved_at: status === 'resolved' ? new Date().toISOString() : null,
+        updated_at: new Date().toISOString(),
+      }).eq('id', reportId);
       if (error) throw error;
-      
-      // Update local state
-      setReports(reports.map(report => 
-        report.id === reportId 
-          ? { 
-              ...report, 
-              status, 
-              admin_notes: notes || null,
-              resolved_at: status === 'resolved' ? new Date().toISOString() : null
-            } 
-          : report
+      setReports(prev => prev.map(r =>
+        r.id === reportId ? { ...r, status, admin_notes: notes || null, resolved_at: status === 'resolved' ? new Date().toISOString() : null } : r
       ));
-      
-      addNotification({
-        message: `Report ${status === 'resolved' ? 'resolved' : 'rejected'} successfully`,
-        type: 'success'
-      });
-    } catch (error) {
-      console.error('Error updating report:', error);
-      addNotification({
-        message: 'Failed to update report',
-        type: 'error'
-      });
+      addNotification({ message: `Report ${status === 'resolved' ? 'resolved' : 'rejected'} successfully`, type: 'success' });
+    } catch (err) {
+      console.error('Error updating report:', err);
+      addNotification({ message: 'Failed to update report', type: 'error' });
     }
   };
-  
+
   const handleRenameUser = async (userId: string) => {
     try {
-      const { data, error } = await supabase.rpc('admin_rename_user', {
-        user_id: userId
-      });
-      
+      const { data, error } = await supabase.rpc('admin_rename_user', { user_id: userId });
       if (error) throw error;
-      
-      // Update local state to show the new username
-      setReports(reports.map(report => 
-        report.reported_user_id === userId 
-          ? { ...report, reported_username: data } 
-          : report
-      ));
-      
-      addNotification({
-        message: `User renamed successfully to ${data}`,
-        type: 'success'
-      });
-    } catch (error) {
-      console.error('Error renaming user:', error);
-      addNotification({
-        message: 'Failed to rename user',
-        type: 'error'
-      });
+      setReports(prev => prev.map(r => r.reported_user_id === userId ? { ...r, reported_username: data } : r));
+      addNotification({ message: `User renamed to ${data}`, type: 'success' });
+    } catch (err) {
+      console.error('Error renaming user:', err);
+      addNotification({ message: 'Failed to rename user', type: 'error' });
     }
   };
-  
-  if (!isAdmin) {
-    return null;
-  }
-  
+
+  if (!isAdmin) return null;
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">User Reports Administration</h1>
-      
+    <div className="max-w-6xl mx-auto px-4 py-8">
       <div className="mb-6">
-        <div className="flex space-x-2">
-          <button
-            onClick={() => setFilter('pending')}
-            className={`px-4 py-2 rounded-md ${
-              filter === 'pending' 
-                ? 'bg-yellow-100 text-yellow-800 border border-yellow-300' 
-                : 'bg-gray-100 text-gray-800 border border-gray-200'
-            }`}
-          >
-            Pending
-          </button>
-          <button
-            onClick={() => setFilter('resolved')}
-            className={`px-4 py-2 rounded-md ${
-              filter === 'resolved' 
-                ? 'bg-green-100 text-green-800 border border-green-300' 
-                : 'bg-gray-100 text-gray-800 border border-gray-200'
-            }`}
-          >
-            Resolved
-          </button>
-          <button
-            onClick={() => setFilter('rejected')}
-            className={`px-4 py-2 rounded-md ${
-              filter === 'rejected' 
-                ? 'bg-red-100 text-red-800 border border-red-300' 
-                : 'bg-gray-100 text-gray-800 border border-gray-200'
-            }`}
-          >
-            Rejected
-          </button>
-          <button
-            onClick={() => setFilter('all')}
-            className={`px-4 py-2 rounded-md ${
-              filter === 'all' 
-                ? 'bg-blue-100 text-blue-800 border border-blue-300' 
-                : 'bg-gray-100 text-gray-800 border border-gray-200'
-            }`}
-          >
-            All Reports
-          </button>
-        </div>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">User Reports</h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Review and act on reported users.</p>
       </div>
-      
+
+      {/* Filter tabs */}
+      <div className="flex items-center gap-2 mb-5">
+        {FILTER_TABS.map(tab => (
+          <button
+            key={tab.key}
+            onClick={() => setFilter(tab.key)}
+            className={`px-4 py-2 rounded-lg border text-sm font-medium transition-colors cursor-pointer ${filter === tab.key ? tab.active : INACTIVE_TAB}`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
       {loading ? (
-        <div className="text-center py-8">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading reports...</p>
+        <div className="flex items-center justify-center py-20">
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500 dark:border-accent-500" />
         </div>
       ) : reports.length === 0 ? (
-        <div className="bg-gray-50 rounded-lg p-8 text-center">
-          <p className="text-gray-600">No {filter !== 'all' ? filter : ''} reports found.</p>
+        <div className="bg-white dark:bg-dark-300 rounded-xl border border-gray-200 dark:border-dark-100 p-12 text-center">
+          <p className="text-gray-500 dark:text-gray-400 text-sm">No {filter !== 'all' ? filter : ''} reports found.</p>
         </div>
       ) : (
-        <div className="bg-white shadow-md rounded-lg overflow-hidden">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+        <div className="bg-white dark:bg-dark-300 rounded-xl border border-gray-200 dark:border-dark-100 shadow-sm overflow-hidden">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-dark-100">
+            <thead className="bg-gray-50 dark:bg-dark-400">
               <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Reported User
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Reporter
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Category
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Date
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
+                {['Reported User', 'Reporter', 'Category', 'Date', 'Status', 'Actions'].map(h => (
+                  <th key={h} className="px-5 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    {h}
+                  </th>
+                ))}
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {reports.map((report) => (
-                <ReportRow 
-                  key={report.id} 
-                  report={report} 
+            <tbody className="divide-y divide-gray-100 dark:divide-dark-100">
+              {reports.map(report => (
+                <ReportRow
+                  key={report.id}
+                  report={report}
                   onUpdateStatus={handleUpdateStatus}
                   onRenameUser={handleRenameUser}
                 />
@@ -288,167 +172,129 @@ const AdminReportsPage = () => {
   );
 };
 
+// ── ReportRow ────────────────────────────────────────────────────────────────────
+
 interface ReportRowProps {
   report: Report;
   onUpdateStatus: (reportId: string, status: 'resolved' | 'rejected', notes?: string) => Promise<void>;
   onRenameUser: (userId: string) => Promise<void>;
 }
 
+const CATEGORY_LABELS: Record<string, string> = {
+  offensive_username: 'Offensive Username',
+  harassment: 'Harassment',
+  inappropriate_content: 'Inappropriate Content',
+  other: 'Other',
+};
+
+const STATUS_BADGE: Record<string, string> = {
+  pending:  'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300',
+  resolved: 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300',
+  rejected: 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300',
+};
+
 const ReportRow: React.FC<ReportRowProps> = ({ report, onUpdateStatus, onRenameUser }) => {
   const [expanded, setExpanded] = useState(false);
   const [notes, setNotes] = useState(report.admin_notes || '');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+  const [submitting, setSubmitting] = useState(false);
+
+  const fmt = (s: string) => new Date(s).toLocaleDateString() + ' ' + new Date(s).toLocaleTimeString();
+
+  const act = async (status: 'resolved' | 'rejected') => {
+    setSubmitting(true);
+    await onUpdateStatus(report.id, status, notes);
+    setSubmitting(false);
   };
-  
-  const getCategoryLabel = (category: string) => {
-    switch (category) {
-      case 'offensive_username':
-        return 'Offensive Username';
-      case 'harassment':
-        return 'Harassment';
-      case 'inappropriate_content':
-        return 'Inappropriate Content';
-      case 'other':
-        return 'Other';
-      default:
-        return category;
-    }
-  };
-  
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>;
-      case 'resolved':
-        return <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Resolved</span>;
-      case 'rejected':
-        return <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Rejected</span>;
-      default:
-        return <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">{status}</span>;
-    }
-  };
-  
-  const handleResolve = async () => {
-    setIsSubmitting(true);
-    await onUpdateStatus(report.id, 'resolved', notes);
-    setIsSubmitting(false);
-  };
-  
-  const handleReject = async () => {
-    setIsSubmitting(true);
-    await onUpdateStatus(report.id, 'rejected', notes);
-    setIsSubmitting(false);
-  };
-  
-  const handleRename = async () => {
-    await onRenameUser(report.reported_user_id);
-  };
-  
+
   return (
     <>
-      <tr className="hover:bg-gray-50 cursor-pointer" onClick={() => setExpanded(!expanded)}>
-        <td className="px-6 py-4 whitespace-nowrap">
-          <div className="text-sm font-medium text-gray-900">{report.reported_username}</div>
+      <tr
+        className="hover:bg-gray-50 dark:hover:bg-dark-400 cursor-pointer transition-colors"
+        onClick={() => setExpanded(v => !v)}
+      >
+        <td className="px-5 py-3.5 text-sm font-semibold text-gray-900 dark:text-gray-100">{report.reported_username}</td>
+        <td className="px-5 py-3.5 text-sm text-gray-500 dark:text-gray-400">{report.reporter_username}</td>
+        <td className="px-5 py-3.5 text-sm text-gray-600 dark:text-gray-300">{CATEGORY_LABELS[report.category] ?? report.category}</td>
+        <td className="px-5 py-3.5 text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">{fmt(report.created_at)}</td>
+        <td className="px-5 py-3.5">
+          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${STATUS_BADGE[report.status] ?? 'bg-gray-100 text-gray-700'}`}>
+            {report.status}
+          </span>
         </td>
-        <td className="px-6 py-4 whitespace-nowrap">
-          <div className="text-sm text-gray-500">{report.reporter_username}</div>
-        </td>
-        <td className="px-6 py-4 whitespace-nowrap">
-          <div className="text-sm text-gray-500">{getCategoryLabel(report.category)}</div>
-        </td>
-        <td className="px-6 py-4 whitespace-nowrap">
-          <div className="text-sm text-gray-500">{formatDate(report.created_at)}</div>
-        </td>
-        <td className="px-6 py-4 whitespace-nowrap">
-          {getStatusBadge(report.status)}
-        </td>
-        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-          <button 
-            onClick={(e) => {
-              e.stopPropagation();
-              setExpanded(!expanded);
-            }}
-            className="text-primary-600 hover:text-primary-900"
+        <td className="px-5 py-3.5">
+          <button
+            onClick={e => { e.stopPropagation(); setExpanded(v => !v); }}
+            className="flex items-center gap-1 text-xs text-indigo-600 dark:text-accent-400 hover:text-indigo-800 dark:hover:text-accent-300 font-medium cursor-pointer"
           >
-            {expanded ? 'Hide Details' : 'View Details'}
+            {expanded ? <><ChevronUp className="w-3.5 h-3.5" />Hide</> : <><ChevronDown className="w-3.5 h-3.5" />Details</>}
           </button>
         </td>
       </tr>
-      
+
       {expanded && (
         <tr>
-          <td colSpan={6} className="px-6 py-4 bg-gray-50">
-            <div className="space-y-4">
+          <td colSpan={6} className="px-5 py-4 bg-gray-50 dark:bg-dark-400 border-b border-gray-100 dark:border-dark-100">
+            <div className="space-y-4 max-w-2xl">
               <div>
-                <h3 className="text-sm font-medium text-gray-900">Report Reason:</h3>
-                <p className="mt-1 text-sm text-gray-600">{report.reason}</p>
+                <p className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1">Report Reason</p>
+                <p className="text-sm text-gray-800 dark:text-gray-200">{report.reason}</p>
               </div>
-              
+
               {report.status === 'pending' && (
                 <>
                   <div>
-                    <label htmlFor="admin-notes" className="block text-sm font-medium text-gray-700">
-                      Admin Notes
-                    </label>
+                    <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1">Admin Notes</label>
                     <textarea
-                      id="admin-notes"
                       rows={3}
-                      className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                      className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-300 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors resize-none"
                       placeholder="Add notes about this report..."
                       value={notes}
-                      onChange={(e) => setNotes(e.target.value)}
+                      onChange={e => setNotes(e.target.value)}
+                      onClick={e => e.stopPropagation()}
                     />
                   </div>
-                  
-                  <div className="flex space-x-3">
+                  <div className="flex items-center gap-2">
                     {report.category === 'offensive_username' && (
                       <button
-                        onClick={handleRename}
-                        className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        onClick={e => { e.stopPropagation(); onRenameUser(report.reported_user_id); }}
+                        className="px-3 py-1.5 bg-indigo-600 dark:bg-accent-600 text-white rounded-lg hover:bg-indigo-700 dark:hover:bg-accent-700 text-sm font-medium transition-colors cursor-pointer"
                       >
                         Rename User
                       </button>
                     )}
-                    
                     <button
-                      onClick={handleResolve}
-                      disabled={isSubmitting}
-                      className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:bg-green-300"
+                      onClick={e => { e.stopPropagation(); act('resolved'); }}
+                      disabled={submitting}
+                      className="px-3 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium transition-colors disabled:opacity-50 cursor-pointer"
                     >
-                      {isSubmitting ? 'Processing...' : 'Resolve Report'}
+                      {submitting ? 'Processing…' : 'Resolve'}
                     </button>
-                    
                     <button
-                      onClick={handleReject}
-                      disabled={isSubmitting}
-                      className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:bg-gray-100"
+                      onClick={e => { e.stopPropagation(); act('rejected'); }}
+                      disabled={submitting}
+                      className="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-dark-100 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-200 text-sm font-medium transition-colors disabled:opacity-50 cursor-pointer"
                     >
-                      {isSubmitting ? 'Processing...' : 'Reject Report'}
+                      {submitting ? 'Processing…' : 'Reject'}
                     </button>
                   </div>
                 </>
               )}
-              
+
               {report.status !== 'pending' && (
-                <>
+                <div className="space-y-2">
                   {report.admin_notes && (
                     <div>
-                      <h3 className="text-sm font-medium text-gray-900">Admin Notes:</h3>
-                      <p className="mt-1 text-sm text-gray-600">{report.admin_notes}</p>
+                      <p className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1">Admin Notes</p>
+                      <p className="text-sm text-gray-800 dark:text-gray-200">{report.admin_notes}</p>
                     </div>
                   )}
-                  
                   {report.resolved_at && (
                     <div>
-                      <h3 className="text-sm font-medium text-gray-900">Resolved At:</h3>
-                      <p className="mt-1 text-sm text-gray-600">{formatDate(report.resolved_at)}</p>
+                      <p className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1">Resolved At</p>
+                      <p className="text-sm text-gray-800 dark:text-gray-200">{fmt(report.resolved_at)}</p>
                     </div>
                   )}
-                </>
+                </div>
               )}
             </div>
           </td>
@@ -458,4 +304,4 @@ const ReportRow: React.FC<ReportRowProps> = ({ report, onUpdateStatus, onRenameU
   );
 };
 
-export default AdminReportsPage; 
+export default AdminReportsPage;

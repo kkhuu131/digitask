@@ -254,7 +254,7 @@ const UserDigimonPage = () => {
     },
     {
       speaker: 'neemon',
-      text: "Ooh, look at all these Digimon! You can have up to 9 different ones in your party!"
+      text: "Ooh, look at all these Digimon! You can have up to 3 different ones in your party!"
     },
     {
       speaker: 'bokomon',

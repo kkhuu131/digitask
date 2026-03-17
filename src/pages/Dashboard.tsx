@@ -8,11 +8,47 @@ import Digimon from "../components/Digimon";
 import PartyMembersGrid from "../components/PartyMembersGrid";
 import TaskForm from "../components/TaskForm";
 import TaskList from "../components/TaskList";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useTitleStore } from '../store/titleStore';
 import PageTutorial from '../components/PageTutorial';
 import { DialogueStep } from '../components/DigimonDialogue';
-import MilestoneProgress from "@/components/MilestoneProgress";
+import { Award, Plus, ChevronRight } from 'lucide-react';
+
+const AchievementsCallout: React.FC = () => {
+  const { unclaimedCount } = useTitleStore();
+  const pending = unclaimedCount();
+  return (
+    <Link
+      to="/achievements"
+      className={`card border-l-4 flex items-center gap-3 py-3 px-4 transition-all duration-150 hover:shadow-md ${
+        pending > 0
+          ? "border-l-purple-500 bg-purple-50/60 dark:bg-purple-900/20"
+          : "border-l-gray-300 dark:border-l-gray-600"
+      }`}
+    >
+      <div className={`p-2 rounded-lg shrink-0 ${pending > 0 ? 'bg-purple-100 dark:bg-purple-900/40' : 'bg-gray-100 dark:bg-dark-200'}`}>
+        <Award className={`w-4 h-4 ${pending > 0 ? 'text-purple-600 dark:text-purple-400' : 'text-gray-500 dark:text-gray-400'}`} />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-heading font-semibold text-gray-900 dark:text-gray-100">
+          Achievements
+        </p>
+        <p className="text-xs font-body text-gray-500 dark:text-gray-400 truncate">
+          {pending > 0
+            ? `${pending} reward${pending > 1 ? "s" : ""} ready to claim`
+            : "Track your progress and earn rewards"}
+        </p>
+      </div>
+      {pending > 0 ? (
+        <span className="flex-shrink-0 min-w-[22px] h-5 flex items-center justify-center rounded-full bg-red-500 text-white text-xs font-bold px-1.5">
+          {pending}
+        </span>
+      ) : (
+        <ChevronRight className="w-4 h-4 text-gray-400 shrink-0" />
+      )}
+    </Link>
+  );
+};
 
 const Dashboard: React.FC = () => {
   const { userDigimon, digimonData, evolutionOptions, fetchUserDigimon, fetchAllUserDigimon } = useDigimonStore();
@@ -180,9 +216,8 @@ const Dashboard: React.FC = () => {
   
   return (
     <>
-      {/* Phase 3 — two-column grid: fixed 380px Digimon panel | flexible task column.
-          The old lg:grid-cols-3 / col-span-1 / col-span-2 pattern is replaced so the
-          Digimon column has a predictable width at all viewport sizes. */}
+      <h1 className="text-2xl font-heading font-semibold dark:text-gray-100 mb-6">Dashboard</h1>
+
       <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-4">
 
         {/* ── Left column: Digimon panel + Party + Milestone ── */}
@@ -196,7 +231,7 @@ const Dashboard: React.FC = () => {
 
           <PartyMembersGrid />
 
-          <MilestoneProgress />
+          <AchievementsCallout />
         </div>
 
         {/* ── Right column: task list ── */}
@@ -216,9 +251,7 @@ const Dashboard: React.FC = () => {
                 onClick={() => setShowTaskForm(true)}
                 className="hidden sm:flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 dark:bg-amber-600 dark:hover:bg-amber-700 text-white rounded-lg transition-colors text-sm font-medium cursor-pointer"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path>
-                </svg>
+                <Plus className="w-4 h-4" />
                 Add Task
               </button>
             </div>
@@ -284,7 +317,7 @@ const Dashboard: React.FC = () => {
       {!bannerDismissed && (
         <div className="mt-4 bg-indigo-50 dark:bg-indigo-900/30 border-l-4 border-indigo-500 dark:border-indigo-600 p-3 rounded-r-md flex items-center justify-between">
           <p className="text-sm text-indigo-800 dark:text-indigo-200">
-            Check out the latest updates in Help &gt; Patch Notes.
+            Check out the latest updates in the patch notes page.
           </p>
           <div className="flex items-center gap-2 ml-4 flex-shrink-0">
             <a
@@ -358,9 +391,7 @@ const Dashboard: React.FC = () => {
         aria-label="Add task"
         onClick={() => setShowTaskForm(true)}
       >
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-        </svg>
+        <Plus className="w-6 h-6" />
       </button>
 
       <PageTutorial tutorialId="dashboard_intro" steps={dashboardTutorialSteps} />

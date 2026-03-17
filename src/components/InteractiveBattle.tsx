@@ -1,143 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useInteractiveBattleStore } from '../store/interactiveBattleStore';
-import { useTaskStore } from '../store/taskStore';
-import { useDigimonStore } from '../store/petStore';
 import { BattleDigimon } from '../types/battle';
 import BattleDigimonSprite from './BattleDigimonSprite';
 import TypeAttributeIcon from './TypeAttributeIcon';
 import { Sword } from 'lucide-react';
-import { DigimonAttribute, DigimonType } from '@/store/battleStore';
-
-// Type and Attribute advantage maps (copied from battleStore.ts)
-const TypeAdvantageMap: Record<DigimonType, Record<DigimonType, number>> = {
-  Vaccine: {
-    Virus: 2.0,
-    Data: 0.5,
-    Vaccine: 1.0,
-    Free: 1.0,
-  },
-  Virus: {
-    Data: 2.0,
-    Vaccine: 0.5,
-    Virus: 1.0,
-    Free: 1.0,
-  },
-  Data: {
-    Vaccine: 2.0,
-    Virus: 0.5,
-    Data: 1.0,
-    Free: 1.0,
-  },
-  Free: {
-    Vaccine: 1.0,
-    Virus: 1.0,
-    Data: 1.0,
-    Free: 1.0,
-  },
-};
-
-const AttributeAdvantageMap: Record<DigimonAttribute, Record<DigimonAttribute, number>> = {
-  Plant: {
-    Plant: 1.0,
-    Water: 1.5,
-    Fire: 1.0,
-    Electric: 1.0,
-    Wind: 1.0,
-    Earth: 1.0,
-    Dark: 1.0,
-    Light: 1.0,
-    Neutral: 1.0,
-  },
-  Water: {
-    Plant: 1.0,
-    Water: 1.0,
-    Fire: 1.5,
-    Electric: 1.0,
-    Wind: 1.0,
-    Earth: 1.0,
-    Dark: 1.0,
-    Light: 1.0,
-    Neutral: 1.0,
-  },
-  Fire: {
-    Plant: 1.5,
-    Water: 1.0,
-    Fire: 1.0,
-    Electric: 1.0,
-    Wind: 1.0,
-    Earth: 1.0,
-    Dark: 1.0,
-    Light: 1.0,
-    Neutral: 1.0,
-  },
-  Electric: {
-    Plant: 1.0,
-    Water: 1.0,
-    Fire: 1.0,
-    Electric: 1.0,
-    Wind: 1.5,
-    Earth: 1.0,
-    Dark: 1.0,
-    Light: 1.0,
-    Neutral: 1.0,
-  },
-  Wind: {
-    Plant: 1.0,
-    Water: 1.0,
-    Fire: 1.0,
-    Electric: 1.0,
-    Wind: 1.0,
-    Earth: 1.5,
-    Dark: 1.0,
-    Light: 1.0,
-    Neutral: 1.0,
-  },
-  Earth: {
-    Plant: 1.0,
-    Water: 1.0,
-    Fire: 1.0,
-    Electric: 1.5,
-    Wind: 1.0,
-    Earth: 1.0,
-    Dark: 1.0,
-    Light: 1.0,
-    Neutral: 1.0,
-  },
-  Dark: {
-    Plant: 1.0,
-    Water: 1.0,
-    Fire: 1.0,
-    Electric: 1.0,
-    Wind: 1.0,
-    Earth: 1.0,
-    Dark: 1.0,
-    Light: 1.5,
-    Neutral: 1.0,
-  },
-  Light: {
-    Plant: 1.0,
-    Water: 1.0,
-    Fire: 1.0,
-    Electric: 1.0,
-    Wind: 1.0,
-    Earth: 1.0,
-    Dark: 1.5,
-    Light: 1.0,
-    Neutral: 1.0,
-  },
-  Neutral: {
-    Plant: 1.0,
-    Water: 1.0,
-    Fire: 1.0,
-    Electric: 1.0,
-    Wind: 1.0,
-    Earth: 1.0,
-    Dark: 1.0,
-    Light: 1.0,
-    Neutral: 1.0,
-  },
-};
+import { DigimonAttribute, DigimonType, TypeAdvantageMap, AttributeAdvantageMap } from '@/store/battleStore';
 
 // Calculate damage multiplier based on type and attribute advantages
 const calculateDamageMultiplier = (attacker: BattleDigimon, target: BattleDigimon) => {
@@ -168,14 +36,15 @@ interface InteractiveBattleProps {
   battleOption?: {
     difficulty: 'easy' | 'medium' | 'hard';
   };
-  showRewards?: boolean; // Whether to show XP and bits rewards (true for arena, false for campaign)
+  showRewards?: boolean; // Whether to show bits reward in the result overlay
+  skipResultScreen?: boolean; // Skip the result overlay entirely and fire onBattleComplete immediately
   customRewards?: {
     xp?: number;
     bits?: number;
   }; // Optional pre-calculated rewards (for Campaign battles)
 }
 
-const InteractiveBattle: React.FC<InteractiveBattleProps> = ({ onBattleComplete, userDigimon = [], battleOption, showRewards = true, customRewards }) => {
+const InteractiveBattle: React.FC<InteractiveBattleProps> = ({ onBattleComplete, userDigimon = [], battleOption, showRewards = true, skipResultScreen = false, customRewards }) => {
   const {
     currentBattle,
     isBattleActive,
@@ -191,15 +60,10 @@ const InteractiveBattle: React.FC<InteractiveBattleProps> = ({ onBattleComplete,
   const [selectedTarget, setSelectedTarget] = useState<string | null>(null);
   const [showDamage, setShowDamage] = useState<{ targetId: string; damage: number; isCritical: boolean; multiplier?: number } | null>(null);
   const [lastTurn, setLastTurn] = useState<any>(null);
-  const [showBattleResult, setShowBattleResult] = useState<{ winner: 'user' | 'opponent'; show: boolean; xpGain?: number; reserveXpGain?: number; bitsReward?: number } | null>(null);
+  const [showBattleResult, setShowBattleResult] = useState<{ winner: 'user' | 'opponent'; show: boolean; bitsReward?: number } | null>(null);
   const [isAutoMode, setIsAutoMode] = useState(false);
   const [animationStates, setAnimationStates] = useState<{ [digimonId: string]: 'idle' | 'attacking' | 'hit' | 'cheering' | 'sad' | 'victory' | 'defeat' | 'dead' }>({});
   const [spriteToggle, setSpriteToggle] = useState(false);
-  const { allUserDigimon } = useDigimonStore();
-  
-  // Track level-up animations for team members
-  const [levelUpDigimon, setLevelUpDigimon] = useState<Set<string>>(new Set());
-  const [animatedXP, setAnimatedXP] = useState<Record<string, { current: number; target: number; level: number; didLevelUp: boolean; newLevel?: number; totalNewXP?: number }>>({});
   const hasCalledCompletionRef = useRef(false);
 
   const currentAttacker = getCurrentAttacker();
@@ -253,125 +117,25 @@ const InteractiveBattle: React.FC<InteractiveBattleProps> = ({ onBattleComplete,
   // Handle battle completion with delay
   useEffect(() => {
     if (battleStatus.isBattleComplete && currentBattle && !showBattleResult) {
-      // Calculate rewards for display (only if showRewards is true)
-      let xpGain = 0;
+      // EXP is intentionally not awarded from battles — tasks are the EXP source.
+      // Only calculate bits for display in the result overlay.
       let bitsReward = 0;
-      
-      if (showRewards) {
-        // Use custom rewards if provided (for Campaign), otherwise calculate (for Arena)
+      if (showRewards && !skipResultScreen) {
         if (customRewards) {
-          xpGain = customRewards.xp || 0;
-          bitsReward = customRewards.bits || 0;
-          // Only show rewards if user won
-          if (currentBattle.winner !== 'user') {
-            xpGain = 0;
-            bitsReward = 0;
-          }
+          bitsReward = currentBattle.winner === 'user' ? (customRewards.bits || 0) : 0;
         } else if (battleOption) {
-          // Calculate XP gain (same logic as parent component)
-          const BASE_XP_GAIN = {
-            easy: 30,
-            medium: 50,
-            hard: 70,
-          };
-
-          const expModifier = 0.025;
-          const opponentLevel = 25; // Default level, could be improved
-          const userLevel = userDigimon.reduce((sum, d) => sum + (d.current_level || 0), 0) / Math.max(userDigimon.length, 1);
-          
-          xpGain = BASE_XP_GAIN[battleOption.difficulty] * (1 + expModifier * (opponentLevel - userLevel));
-          
-          // Reduce XP for losses
-          if (currentBattle.winner !== 'user') xpGain *= 0.12;
-          
-          xpGain = Math.max(xpGain, 20);
-          xpGain = Math.floor(xpGain);
-
-          // Apply task store multiplier
-          const expMultiplier = useTaskStore.getState().getExpMultiplier();
-          xpGain = Math.round(xpGain * expMultiplier);
-
-          // Calculate bits reward
           bitsReward = calculateBitsReward(battleOption.difficulty, currentBattle.winner === 'user');
         }
       }
 
-      // Calculate reserve XP (50% of base XP for battles)
-      const reserveXpGain = showRewards && xpGain > 0 ? Math.floor(xpGain * 0.5) : undefined;
-
-      // Calculate XP for team members and detect level ups
-      if (showRewards && xpGain > 0 && currentBattle.winner === 'user') {
-        const teamMembers = allUserDigimon.filter(d => d.is_on_team && !d.is_in_storage);
-        const xpData: Record<string, { current: number; target: number; level: number; didLevelUp: boolean; newLevel?: number; totalNewXP?: number }> = {};
-        const levelUps = new Set<string>();
-        
-        teamMembers.forEach(digimon => {
-          const currentXP = digimon.experience_points;
-          const currentLevel = digimon.current_level;
-          
-          // Calculate total XP (cumulative XP needed for current level + XP in current level)
-          // XP needed for level N = 20 * (1 + 2 + ... + (N-1)) = 20 * (N-1) * N / 2 = 10 * (N-1) * N
-          const cumulativeXPForCurrentLevel = currentLevel > 1 ? 10 * (currentLevel - 1) * currentLevel : 0;
-          const totalCurrentXP = cumulativeXPForCurrentLevel + currentXP;
-          const totalNewXP = totalCurrentXP + xpGain;
-          
-          // Calculate new level from total XP
-          // Solve: 10 * (N-1) * N <= totalXP < 10 * N * (N+1)
-          // This gives us the level where totalXP falls
-          let newLevel = 1;
-          while (10 * newLevel * (newLevel + 1) <= totalNewXP) {
-            newLevel++;
-          }
-          
-          const didLevelUp = newLevel > currentLevel;
-          
-          if (didLevelUp) {
-            levelUps.add(digimon.id);
-          }
-          
-          // Calculate XP in new level (for display)
-          const cumulativeXPForNewLevel = newLevel > 1 ? 10 * (newLevel - 1) * newLevel : 0;
-          const xpInNewLevel = totalNewXP - cumulativeXPForNewLevel;
-          
-          xpData[digimon.id] = {
-            current: currentXP,
-            target: xpInNewLevel, // XP within the new level
-            level: currentLevel,
-            didLevelUp,
-            newLevel, // Store new level for display
-            totalNewXP // Store total XP for calculations
-          };
-        });
-        
-        setAnimatedXP(xpData);
-        setLevelUpDigimon(levelUps);
-        
-        // Trigger level-up animation (alternating happy/cheer sprites)
-        if (levelUps.size > 0) {
-          let spriteToggle = true;
-          const interval = setInterval(() => {
-            // Animation handled by levelUpDigimon state
-            spriteToggle = !spriteToggle;
-          }, 500);
-          
-          setTimeout(() => {
-            clearInterval(interval);
-            setLevelUpDigimon(new Set());
-          }, 3000);
-        }
+      if (skipResultScreen) {
+        // Skip the overlay — fire onBattleComplete directly via show:false
+        setShowBattleResult({ winner: currentBattle.winner!, show: false, bitsReward: 0 });
+      } else {
+        setShowBattleResult({ winner: currentBattle.winner!, show: true, bitsReward });
       }
-
-      setShowBattleResult({
-        winner: currentBattle.winner!,
-        show: true,
-        xpGain: xpGain,
-        reserveXpGain: reserveXpGain,
-        bitsReward: bitsReward
-      });
-      
-      // No automatic timeout - user must click Continue
     }
-  }, [battleStatus.isBattleComplete, currentBattle, showBattleResult, battleOption, userDigimon, customRewards, showRewards, allUserDigimon]);
+  }, [battleStatus.isBattleComplete, currentBattle, showBattleResult, battleOption, customRewards, showRewards, skipResultScreen]);
 
   // Handle actual battle completion after delay
   useEffect(() => {
@@ -877,180 +641,19 @@ const InteractiveBattle: React.FC<InteractiveBattleProps> = ({ onBattleComplete,
               }
             </motion.p>
 
-            {/* Team Member XP Display */}
-            {showRewards && showBattleResult?.xpGain && showBattleResult.winner === 'user' && Object.keys(animatedXP).length > 0 && (
-              <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.8 }}
-                className="mb-4 space-y-3"
-              >
-                {allUserDigimon
-                  .filter(d => d.is_on_team && !d.is_in_storage && animatedXP[d.id])
-                  .map((digimon) => {
-                    const xpInfo = animatedXP[digimon.id];
-                    const currentLevel = xpInfo.level;
-                    const xpForCurrentLevel = currentLevel * 20;
-                    const xpInCurrentLevel = xpInfo.current;
-                    const newLevel = xpInfo.newLevel || currentLevel;
-                    const didLevelUp = xpInfo.didLevelUp;
-                    
-                    // Calculate progress percentages
-                    const initialProgress = Math.min(100, (xpInCurrentLevel / xpForCurrentLevel) * 100);
-                    const xpForNewLevel = newLevel * 20;
-                    const xpInNewLevel = xpInfo.target;
-                    const finalProgress = Math.min(100, (xpInNewLevel / xpForNewLevel) * 100);
-                    
-                    const isLevelingUp = levelUpDigimon.has(digimon.id);
-                    
-                    return (
-                      <motion.div
-                        key={digimon.id}
-                        initial={{ x: -20, opacity: 0 }}
-                        animate={{ x: 0, opacity: 1 }}
-                        className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700"
-                      >
-                        <div className="flex items-center gap-3">
-                          {/* Sprite */}
-                          <div className="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0">
-                            <BattleDigimonSprite
-                              digimonName={digimon.digimon?.name || digimon.name}
-                              fallbackSpriteUrl={digimon.digimon?.sprite_url || '/assets/digimon/agumon_professor.png'}
-                              size="sm"
-                              animationState={isLevelingUp ? 'cheering' : (showBattleResult?.winner === 'user' ? 'victory' : 'defeat')}
-                              isAnimating={true}
-                              spriteToggle={spriteToggle}
-                            />
-                          </div>
-                          
-                          {/* Level and XP Bar */}
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-1">
-                              {/* Level */}
-                              <span className={`text-xs font-bold px-1.5 py-0.5 rounded transition-all duration-300 flex-shrink-0 ${
-                                isLevelingUp
-                                  ? 'text-yellow-600 dark:text-yellow-400 bg-yellow-200/90 dark:bg-yellow-900/60 animate-pulse shadow-[0_0_8px_rgba(250,204,21,0.8)]'
-                                  : 'text-gray-700 dark:text-gray-300 bg-white/80 dark:bg-gray-800/80'
-                              }`}>
-                                Lv{currentLevel}
-                              </span>
-                              
-                              {/* XP Progress Bar */}
-                              <div className="flex-1 bg-gray-300 dark:bg-gray-600 rounded-full h-2 overflow-hidden relative">
-                                {/* Base bar (initial progress) */}
-                                <div 
-                                  className="absolute h-full bg-purple-500 transition-all duration-500"
-                                  style={{ width: `${initialProgress}%` }}
-                                />
-                                
-                                {/* Animated XP gain */}
-                                {didLevelUp ? (
-                                  <>
-                                    {/* Fill to 100% */}
-                                    <motion.div 
-                                      className="absolute h-full bg-yellow-400"
-                                      initial={{ width: `${initialProgress}%` }}
-                                      animate={{ width: "100%" }}
-                                      transition={{ duration: 0.8, delay: 0.5 }}
-                                    />
-                                    {/* Level up flash */}
-                                    <motion.div
-                                      className="absolute inset-0 bg-white"
-                                      initial={{ opacity: 0 }}
-                                      animate={{ opacity: [0, 0.7, 0] }}
-                                      transition={{ duration: 0.5, delay: 1.3 }}
-                                    />
-                                    {/* Reset and fill to new level progress */}
-                                    <motion.div 
-                                      className="absolute h-full bg-yellow-400"
-                                      initial={{ width: "0%" }}
-                                      animate={{ width: `${finalProgress}%` }}
-                                      transition={{ duration: 0.6, delay: 1.4 }}
-                                    />
-                                  </>
-                                ) : (
-                                  <motion.div 
-                                    className={`absolute h-full transition-all duration-500 ${
-                                      isLevelingUp
-                                        ? 'bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 animate-pulse shadow-[0_0_8px_rgba(250,204,21,0.6)]'
-                                        : 'bg-purple-500'
-                                    }`}
-                                    initial={{ width: `${initialProgress}%` }}
-                                    animate={{ width: `${finalProgress}%` }}
-                                    transition={{ duration: 1, delay: 0.5 }}
-                                  />
-                                )}
-                                
-                                {/* Glow effect overlay for level up */}
-                                {isLevelingUp && (
-                                  <div 
-                                    className="absolute inset-0 bg-yellow-400/40 rounded-full blur-sm animate-pulse"
-                                    style={{ width: `${finalProgress}%` }}
-                                  />
-                                )}
-                              </div>
-                            </div>
-                            
-                            {/* XP Text */}
-                            <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
-                              <span>
-                                {xpInfo.current} → {xpInfo.target} XP
-                              </span>
-                              {didLevelUp && (
-                                <span className="text-yellow-600 dark:text-yellow-400 font-semibold">
-                                  Level Up! Lv{newLevel}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </motion.div>
-                    );
-                  })}
-              </motion.div>
-            )}
-
-            {/* Rewards Information */}
-            {showRewards && (showBattleResult.xpGain || showBattleResult.bitsReward) && (
+            {/* Bits Reward */}
+            {showRewards && showBattleResult.bitsReward && showBattleResult.bitsReward > 0 && (
               <motion.div
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.7 }}
-                className="bg-blue-100 dark:bg-blue-900/30 rounded-lg p-3 mb-4"
+                className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg px-4 py-3 mb-4"
               >
-                <div className="flex flex-col space-y-2">
-                  {showBattleResult.xpGain && (
-                    <>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-semibold text-blue-800 dark:text-blue-200">
-                          +{showBattleResult.xpGain} XP
-                        </span>
-                        <span className="text-xs text-blue-600 dark:text-blue-300">
-                          Team Members
-                        </span>
-                      </div>
-                      {showBattleResult.reserveXpGain !== undefined && showBattleResult.reserveXpGain > 0 && (
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-semibold text-blue-700 dark:text-blue-300">
-                            +{showBattleResult.reserveXpGain} XP
-                          </span>
-                          <span className="text-xs text-blue-600 dark:text-blue-300">
-                            Reserve Members
-                          </span>
-                        </div>
-                      )}
-                    </>
-                  )}
-                  {showBattleResult.bitsReward && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-semibold text-blue-800 dark:text-blue-200">
-                        +{showBattleResult.bitsReward} Bits
-                      </span>
-                      <span className="text-xs text-blue-600 dark:text-blue-300">
-                        Currency
-                      </span>
-                    </div>
-                  )}
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-amber-700 dark:text-amber-300">Reward</span>
+                  <span className="text-sm font-semibold text-amber-700 dark:text-amber-300">
+                    +{showBattleResult.bitsReward} bits
+                  </span>
                 </div>
               </motion.div>
             )}

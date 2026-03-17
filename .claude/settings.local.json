@@ -16,7 +16,42 @@
       "Bash(npx tsc --noEmit)",
       "Bash(npx eslint src/components/DigimonDex.tsx)",
       "Bash(npm run lint -- --max-warnings=9999)",
-      "Bash(npm run lint)"
+      "Bash(npm run lint)",
+      "mcp__supabase__list_tables",
+      "mcp__supabase__execute_sql",
+      "Bash(python3 \"C:\\\\Users\\\\notke\\\\.claude\\\\plugins\\\\cache\\\\ui-ux-pro-max-skill\\\\ui-ux-pro-max\\\\2.0.1\\\\.claude\\\\skills\\\\ui-ux-pro-max\\\\scripts\\\\search.py\" \"gaming digimon party management PC box storage dark mode\" --design-system -p \"Digitask DigiFarm\")",
+      "Bash(python \"C:\\\\Users\\\\notke\\\\.claude\\\\plugins\\\\cache\\\\ui-ux-pro-max-skill\\\\ui-ux-pro-max\\\\2.0.1\\\\.claude\\\\skills\\\\ui-ux-pro-max\\\\scripts\\\\search.py\" \"gaming digimon party management PC box storage dark mode\" --design-system -p \"Digitask DigiFarm\")",
+      "Bash(rm \"c:/Users/notke/Desktop/Personal/Projects/digitask/digitask/src/store/weeklyBossStore.ts\")",
+      "Bash(rm \"c:/Users/notke/Desktop/Personal/Projects/digitask/digitask/src/components/WeeklyBossRaid.tsx\")",
+      "Bash(rm \"c:/Users/notke/Desktop/Personal/Projects/digitask/digitask/src/components/WeeklyBossTestingPanel.tsx\")",
+      "Bash(node -e \":*)",
+      "Bash(awk 'NR>=18 && NR<=40')",
+      "Bash(awk 'NR>=40 && NR<=55')",
+      "Bash(awk 'NR>=18 && NR<=55')",
+      "mcp__supabase__apply_migration",
+      "Bash(python3 \"C:/Users/notke/.claude/plugins/cache/ui-ux-pro-max-skill/ui-ux-pro-max/2.0.1/.claude/skills/ui-ux-pro-max/scripts/search.py\" \"gamified productivity app digimon virtual pet dark fantasy minimal\" --design-system -p \"Digitask\")",
+      "Bash(where python3:*)",
+      "Bash(where py:*)",
+      "Bash(py \"C:/Users/notke/.claude/plugins/cache/ui-ux-pro-max-skill/ui-ux-pro-max/2.0.1/.claude/skills/ui-ux-pro-max/scripts/search.py\" \"gamified productivity app dark minimal clean\" --design-system -p \"Digitask\")",
+      "Bash(py \"C:/Users/notke/.claude/plugins/cache/ui-ux-pro-max-skill/ui-ux-pro-max/2.0.1/cli/assets/scripts/search.py\" \"gamified productivity app dark minimal clean\" --design-system -p \"Digitask\")",
+      "Bash(python3 \"C:/Users/notke/.claude/plugins/cache/ui-ux-pro-max-skill/ui-ux-pro-max/2.0.1/.claude/skills/ui-ux-pro-max/scripts/search.py\" \"gaming tournament bracket competitive esports dark\" --design-system)",
+      "Bash(py \"C:/Users/notke/.claude/plugins/cache/ui-ux-pro-max-skill/ui-ux-pro-max/2.0.1/.claude/skills/ui-ux-pro-max/scripts/search.py\" \"gaming tournament bracket competitive progressive reveal animation\" --design-system)",
+      "Bash(py \"C:/Users/notke/.claude/plugins/cache/ui-ux-pro-max-skill/ui-ux-pro-max/2.0.1/src/ui-ux-pro-max/scripts/search.py\" \"gaming tournament bracket competitive progressive reveal animation\" --design-system)",
+      "Bash(py \"C:/Users/notke/.claude/plugins/cache/ui-ux-pro-max-skill/ui-ux-pro-max/2.0.1/src/ui-ux-pro-max/scripts/search.py\" \"progressive reveal bracket animation\" --domain ux)",
+      "Bash(npx tsx:*)",
+      "Bash(grep -o \"digimon_id: [0-9]*, name: ''''[^'''']*'''', stage: ''''[^'''']*''''\" src/constants/digimonLookup.ts)",
+      "Bash(python3 scripts/search.py \"admin dashboard dark mode panel management\" --design-system -p \"Digitask Admin\")",
+      "Bash(python \"C:\\\\Users\\\\notke\\\\.claude\\\\plugins\\\\cache\\\\ui-ux-pro-max-skill\\\\ui-ux-pro-max\\\\2.0.1\\\\.claude\\\\skills\\\\ui-ux-pro-max\\\\scripts\\\\search.py\" \"admin dashboard dark mode management panel\" --design-system -p \"Digitask Admin\")",
+      "Bash(python src/ui-ux-pro-max/scripts/search.py \"admin dashboard dark mode management saas\" --design-system -p \"Digitask Admin\")",
+      "Read(//c/Users/notke/.claude/plugins/cache/ui-ux-pro-max-skill/ui-ux-pro-max/2.0.1/**)",
+      "Bash(python3 skills/ui-ux-pro-max/scripts/search.py \"gaming productivity dashboard dark mode clean modern\" --design-system -p \"Digitask Arena\")",
+      "Bash(py -3 \"C:\\\\Users\\\\notke\\\\.claude\\\\plugins\\\\cache\\\\ui-ux-pro-max-skill\\\\ui-ux-pro-max\\\\2.0.1\\\\skills\\\\ui-ux-pro-max\\\\scripts\\\\search.py\" \"gaming productivity dashboard dark mode clean modern\" --design-system -p \"Digitask Arena\")",
+      "Bash(py -3 \"C:\\\\Users\\\\notke\\\\.claude\\\\plugins\\\\cache\\\\ui-ux-pro-max-skill\\\\ui-ux-pro-max\\\\2.0.1\\\\scripts\\\\search.py\" \"gaming productivity dashboard dark mode clean modern\" --design-system -p \"Digitask Arena\")",
+      "Bash(py -3 \"C:\\\\Users\\\\notke\\\\.claude\\\\plugins\\\\cache\\\\ui-ux-pro-max-skill\\\\ui-ux-pro-max\\\\2.0.1\\\\src\\\\ui-ux-pro-max\\\\scripts\\\\search.py\" \"gaming productivity dashboard dark mode clean modern\" --design-system -p \"Digitask Arena\")",
+      "Bash(python \"C:\\\\Users\\\\notke\\\\.claude\\\\plugins\\\\cache\\\\ui-ux-pro-max-skill\\\\ui-ux-pro-max\\\\2.0.1\\\\src\\\\ui-ux-pro-max\\\\scripts\\\\search.py\" \"gaming battle arena difficulty selection\" --design-system -p \"Digitask Battle Arena\")"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "supabase"
+  ]
 }

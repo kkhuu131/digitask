@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useDigimonStore } from '../store/petStore';
 import { UserDigimon } from '../store/petStore';
 import { DigimonType, DigimonAttribute } from '@/store/battleStore';
-import { calculateFinalStats } from '../utils/digimonStatCalculation';
+import { calculateFinalStats, xpForNextLevel } from '../utils/digimonStatCalculation';
 import TypeAttributeIcon from './TypeAttributeIcon';
 import DigimonSprite from './DigimonSprite';
 import {
@@ -92,7 +92,7 @@ const SortableDigimonCard = ({
   }
 
   // Calculate EXP needed for next level
-  const expForNextLevel = digimon.current_level * 20;
+  const expForNextLevel = xpForNextLevel(digimon.current_level);
   const expPercentage = Math.min(100, (digimon.experience_points / expForNextLevel) * 100);
 
   return (

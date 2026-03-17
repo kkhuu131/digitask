@@ -9,7 +9,7 @@ import EvolutionAnimation from "./EvolutionAnimation";
 import { getSpriteUrl } from '../utils/spriteManager';
 import { ANIMATED_DIGIMON } from '../constants/animatedDigimonList';
 import type { SpriteType } from '../utils/spriteManager';
-import { calculateFinalStats } from "@/utils/digimonStatCalculation";
+import { calculateFinalStats, xpForNextLevel as calcXpForNextLevel, totalCumulativeXp } from "@/utils/digimonStatCalculation";
 
 // Phase 5.2 — attribute glow class lookup. Maps Digimon attribute to the plain CSS
 // class defined in src/index.css (Phase 1) that sets --stage-glow. Plain object
@@ -35,7 +35,7 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
   // Add a local state to track XP and level
   const [currentXP, setCurrentXP] = useState(userDigimon.experience_points);
   const [currentLevel, setCurrentLevel] = useState(userDigimon.current_level);
-  const [xpForNextLevel, setXpForNextLevel] = useState(userDigimon.current_level * 20);
+  const [xpForNextLevel, setXpForNextLevel] = useState(calcXpForNextLevel(userDigimon.current_level));
   
   // Animation states
   const [isLevelingUp, setIsLevelingUp] = useState(false);
@@ -164,7 +164,7 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
     // Update all state values
     setCurrentXP(userDigimon.experience_points);
     setCurrentLevel(userDigimon.current_level);
-    setXpForNextLevel(userDigimon.current_level * 20);
+    setXpForNextLevel(calcXpForNextLevel(userDigimon.current_level));
     
     // Update refs for next comparison
     prevLevelRef.current = userDigimon.current_level;
@@ -595,7 +595,7 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
           {/* XP details below */}
           <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
             <span>{currentXP.toFixed(0)}/{xpForNextLevel.toFixed(0)} XP</span>
-            <span>{20 * currentLevel * (currentLevel - 1) / 2 + currentXP} Total EXP</span>
+            <span>{totalCumulativeXp(currentLevel, currentXP)} Total EXP</span>
           </div>
         </div>
       </div>

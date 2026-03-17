@@ -89,7 +89,7 @@ export const useMilestoneStore = create<MilestoneState>((set, get) => ({
         .eq("is_in_storage", false)
         .eq("user_id", userData.user.id);
       const partyCount = userDigimonCount?.[0]?.count ?? 0;
-      const goesToStorage = partyCount >= 9;
+      const goesToStorage = partyCount >= 3;
 
       // Create the new Digimon
       const { error: createError } = await supabase

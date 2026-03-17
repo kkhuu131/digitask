@@ -10,6 +10,24 @@ import { Digimon, UserDigimon } from "@/store/petStore";
  * @param level99Stat The stat value at level 99
  * @returns The interpolated stat value at the target level
  */
+/**
+ * XP required to advance from `level` to `level + 1`.
+ * Formula: 100 + level * 50
+ * Level 1→2: 150 XP, Level 10→11: 600 XP, Level 50→51: 2600 XP
+ */
+export function xpForNextLevel(level: number): number {
+  return 100 + level * 50;
+}
+
+/**
+ * Total cumulative XP earned since level 1 to reach the current state.
+ * = sum of xpForNextLevel(1..level-1) + currentLevelXp
+ * = (level - 1) * (100 + 25 * level) + currentLevelXp
+ */
+export function totalCumulativeXp(level: number, currentLevelXp: number): number {
+  return (level - 1) * (100 + 25 * level) + currentLevelXp;
+}
+
 export default function calculateBaseStat(
   level: number,
   level1Stat: number,

@@ -19,10 +19,18 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({ showCompleted = false, au
   const [groupBy, setGroupBy] = useState<GroupOption>("none");
   // Phase 7.1 — XP float animation: track active floaters per task id
   const [floaters, setFloaters] = useState<Record<string, number>>({});
+  // Phase 7.2 — completing state: tasks held here briefly to show completion animation
+  const [completingTasks, setCompletingTasks] = useState<Set<string>>(new Set());
   const prefersReducedMotion = useReducedMotion();
 
   const handleComplete = (taskId: string, xp: number) => {
-    completeTask(taskId, autoAllocateStats);
+    if (completingTasks.has(taskId)) return; // prevent double-tap during animation
+
+    const delay = prefersReducedMotion ? 0 : 380;
+
+    // Mark as completing immediately so checkbox + card animate
+    setCompletingTasks(prev => new Set([...prev, taskId]));
+
     if (!prefersReducedMotion) {
       setFloaters(prev => ({ ...prev, [taskId]: xp }));
       setTimeout(() => setFloaters(prev => {
@@ -31,6 +39,16 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({ showCompleted = false, au
         return next;
       }), 900);
     }
+
+    // Commit to store after animation window
+    setTimeout(() => {
+      completeTask(taskId, autoAllocateStats);
+      setCompletingTasks(prev => {
+        const next = new Set(prev);
+        next.delete(taskId);
+        return next;
+      });
+    }, delay);
   };
 
   // Smart task grouping
@@ -303,22 +321,31 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({ showCompleted = false, au
           <AnimatePresence initial={false}>
             {sortedTasks.map(task => (
               <motion.div
+                layout
                 key={task.id}
-                exit={{ opacity: 0, height: 0, marginBottom: 0, overflow: 'hidden' }}
-                transition={{ duration: 0.2 }}
+                initial={{ opacity: 0, y: -8, scale: 0.97 }}
+                animate={{ opacity: task.is_completed ? 0.55 : 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, scaleY: 0.9, height: 0, marginBottom: 0, paddingTop: 0, paddingBottom: 0, overflow: 'hidden' }}
+                transition={{
+                  layout: { type: 'spring', stiffness: 380, damping: 32, mass: 0.8 },
+                  opacity: { duration: 0.22 },
+                  scale: { duration: 0.22 },
+                  height: { duration: 0.3, ease: [0.4, 0, 0.2, 1] },
+                  y: { type: 'spring', stiffness: 400, damping: 30 },
+                }}
                 // Priority-coded left border + bg tint.
                 // Colors match the Add/Edit task modal buttons exactly.
-                // Overdue always wins; within non-overdue: high=orange, medium=indigo, low=none.
-                className={`group relative bg-white dark:bg-dark-300 border border-gray-200 dark:border-dark-200 rounded-lg p-4 hover:shadow-md transition-all ${
-                  task.is_completed ? 'opacity-60' : ''
-                } ${
-                  groupedTasks.overdue.includes(task)
-                    ? 'border-l-[3px] border-l-red-500 bg-red-50 dark:bg-red-500/10'
+                // Completing state briefly flashes green before the task exits.
+                className={`group relative rounded-lg p-4 border hover:shadow-md transition-colors duration-200 ${
+                  completingTasks.has(task.id)
+                    ? 'border-green-400 dark:border-green-600 bg-green-50 dark:bg-green-900/20'
+                    : groupedTasks.overdue.includes(task)
+                    ? 'border border-l-[3px] border-l-red-500 bg-red-50 dark:bg-dark-300 dark:bg-red-500/10'
                     : task.priority === 'high'
-                    ? 'border-l-[3px] border-l-orange-400 bg-orange-50/60 dark:bg-orange-500/[0.06]'
+                    ? 'border border-l-[3px] border-l-orange-400 bg-orange-50/60 dark:bg-dark-300 dark:bg-orange-500/[0.06]'
                     : task.priority === 'medium'
-                    ? 'border-l-[2px] border-l-indigo-400 dark:border-l-indigo-500'
-                    : '' // low priority — no special border
+                    ? 'border-gray-200 dark:border-dark-200 border-l-[2px] border-l-indigo-400 dark:border-l-indigo-500 bg-white dark:bg-dark-300'
+                    : 'border-gray-200 dark:border-dark-200 bg-white dark:bg-dark-300'
                 }`}
               >
                 {/* Phase 7.1 — XP float badge animates upward on task completion */}
@@ -337,21 +364,34 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({ showCompleted = false, au
                   )}
                 </AnimatePresence>
                 <div className="flex items-start gap-3">
-                  {/* Checkbox */}
+                  {/* Checkbox — spring-pop checkmark, green fill on completing */}
                   <button
-                    onClick={() => !task.is_completed && handleComplete(task.id, getExpPoints(task))}
-                    className={`flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors mt-0.5 cursor-pointer disabled:cursor-not-allowed ${
-                      task.is_completed
+                    onClick={() => !task.is_completed && !completingTasks.has(task.id) && handleComplete(task.id, getExpPoints(task))}
+                    className={`flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors duration-150 mt-0.5 cursor-pointer disabled:cursor-not-allowed ${
+                      task.is_completed || completingTasks.has(task.id)
                         ? "bg-green-500 border-green-500 dark:bg-green-600 dark:border-green-600"
                         : "border-gray-300 hover:border-green-500 dark:border-gray-600 dark:hover:border-accent-500"
                     }`}
-                    disabled={task.is_completed}
+                    disabled={task.is_completed || completingTasks.has(task.id)}
+                    aria-label={task.is_completed ? 'Completed' : 'Mark complete'}
                   >
-                    {task.is_completed && (
-                      <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path>
-                      </svg>
-                    )}
+                    <AnimatePresence>
+                      {(task.is_completed || completingTasks.has(task.id)) && (
+                        <motion.svg
+                          key="check"
+                          className="w-3 h-3 text-white"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          initial={{ scale: 0, rotate: -20 }}
+                          animate={{ scale: 1, rotate: 0 }}
+                          exit={{ scale: 0 }}
+                          transition={{ type: 'spring', stiffness: 600, damping: 22 }}
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+                        </motion.svg>
+                      )}
+                    </AnimatePresence>
                   </button>
 
                   {/* Content */}
@@ -501,17 +541,28 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({ showCompleted = false, au
                 <AnimatePresence initial={false}>
                   {groupTasks.map(task => (
                     <motion.div
+                      layout
                       key={task.id}
-                      exit={{ opacity: 0, height: 0, marginBottom: 0, overflow: 'hidden' }}
-                      transition={{ duration: 0.2 }}
-                      className={`group relative bg-white dark:bg-dark-300 border border-gray-200 dark:border-dark-200 rounded-lg p-4 hover:shadow-sm transition-all ${
-                        task.is_completed ? 'opacity-60' : ''
-                      } ${
-                        groupedTasks.overdue.includes(task)
-                          ? 'border-l-[3px] border-l-red-500 bg-red-500/5 dark:bg-red-500/5'
+                      initial={{ opacity: 0, y: -8, scale: 0.97 }}
+                      animate={{ opacity: task.is_completed ? 0.55 : 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, scaleY: 0.9, height: 0, marginBottom: 0, paddingTop: 0, paddingBottom: 0, overflow: 'hidden' }}
+                      transition={{
+                        layout: { type: 'spring', stiffness: 380, damping: 32, mass: 0.8 },
+                        opacity: { duration: 0.22 },
+                        scale: { duration: 0.22 },
+                        height: { duration: 0.3, ease: [0.4, 0, 0.2, 1] },
+                        y: { type: 'spring', stiffness: 400, damping: 30 },
+                      }}
+                      className={`group relative rounded-lg p-4 border hover:shadow-sm transition-colors duration-200 ${
+                        completingTasks.has(task.id)
+                          ? 'border-green-400 dark:border-green-600 bg-green-50 dark:bg-green-900/20'
+                          : groupedTasks.overdue.includes(task)
+                          ? 'border border-l-[3px] border-l-red-500 bg-red-50 dark:bg-dark-300 dark:bg-red-500/10'
                           : task.priority === 'high'
-                          ? 'border-l-[3px] border-l-orange-400'
-                          : ''
+                          ? 'border border-l-[3px] border-l-orange-400 bg-orange-50/60 dark:bg-dark-300 dark:bg-orange-500/[0.06]'
+                          : task.priority === 'medium'
+                          ? 'border-gray-200 dark:border-dark-200 border-l-[2px] border-l-indigo-400 dark:border-l-indigo-500 bg-white dark:bg-dark-300'
+                          : 'border-gray-200 dark:border-dark-200 bg-white dark:bg-dark-300'
                       }`}
                     >
                       {/* Phase 7.1 — XP float badge */}
@@ -530,21 +581,34 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({ showCompleted = false, au
                         )}
                       </AnimatePresence>
                       <div className="flex items-start gap-3">
-                        {/* Checkbox */}
+                        {/* Checkbox — spring-pop checkmark, green fill on completing */}
                         <button
-                          onClick={() => !task.is_completed && handleComplete(task.id, getExpPoints(task))}
-                          className={`flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors mt-0.5 cursor-pointer disabled:cursor-not-allowed ${
-                            task.is_completed
+                          onClick={() => !task.is_completed && !completingTasks.has(task.id) && handleComplete(task.id, getExpPoints(task))}
+                          className={`flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors duration-150 mt-0.5 cursor-pointer disabled:cursor-not-allowed ${
+                            task.is_completed || completingTasks.has(task.id)
                               ? "bg-green-500 border-green-500 dark:bg-green-600 dark:border-green-600"
                               : "border-gray-300 hover:border-green-500 dark:border-gray-600 dark:hover:border-accent-500"
                           }`}
-                          disabled={task.is_completed}
+                          disabled={task.is_completed || completingTasks.has(task.id)}
+                          aria-label={task.is_completed ? 'Completed' : 'Mark complete'}
                         >
-                          {task.is_completed && (
-                            <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                          )}
+                          <AnimatePresence>
+                            {(task.is_completed || completingTasks.has(task.id)) && (
+                              <motion.svg
+                                key="check"
+                                className="w-3 h-3 text-white"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                initial={{ scale: 0, rotate: -20 }}
+                                animate={{ scale: 1, rotate: 0 }}
+                                exit={{ scale: 0 }}
+                                transition={{ type: 'spring', stiffness: 600, damping: 22 }}
+                              >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+                              </motion.svg>
+                            )}
+                          </AnimatePresence>
                         </button>
 
                         {/* Content */}
@@ -565,6 +629,14 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({ showCompleted = false, au
 
                           {/* Meta pills */}
                           <div className="flex items-center flex-wrap gap-1.5 mt-1.5">
+                            {/* Priority — only labeled when not medium (the default) */}
+                            {!task.is_completed && task.priority === 'high' && !groupedTasks.overdue.includes(task) && (
+                              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 font-body font-semibold">High</span>
+                            )}
+                            {!task.is_completed && task.priority === 'low' && (
+                              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-gray-100 dark:bg-dark-200 text-gray-500 dark:text-gray-400 font-body font-semibold">Low</span>
+                            )}
+
                             {/* Task type */}
                             {task.is_daily && (
                               <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 font-body font-semibold uppercase tracking-wide">Daily</span>

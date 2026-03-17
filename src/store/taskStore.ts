@@ -4,27 +4,54 @@ import { useDigimonStore } from "./petStore";
 import { useNotificationStore } from "./notificationStore";
 import { useAuthStore } from "../store/authStore";
 import { useTitleStore } from "./titleStore";
+import { useTournamentStore } from "./tournamentStore";
 
-const BASE_EXP_FOR_ONE_TIME_TASK = 100;
-const BASE_STAT_FOR_ONE_TIME_TASK = 1;
-const BASE_EXP_FOR_RECURRING_TASK = 75;
-const BASE_STAT_FOR_RECURRING_TASK = 1;
-const BASE_EXP_FOR_DAILY_TASK = 75;
-const BASE_STAT_FOR_DAILY_TASK = 1;
+// Helper: fetch lifetime task count from user_milestones and check task achievements
+async function checkTaskAchievementsAfterCompletion(userId: string): Promise<void> {
+  try {
+    const { data } = await supabase
+      .from("user_milestones")
+      .select("tasks_completed_count")
+      .eq("user_id", userId)
+      .single();
+    if (data?.tasks_completed_count != null) {
+      await useTitleStore.getState().checkTaskAchievements(data.tasks_completed_count);
+    }
+  } catch (e) {
+    // Non-fatal
+    console.warn("checkTaskAchievementsAfterCompletion failed:", e);
+  }
+}
+
+// EXP and stat points are driven by difficulty, not task type.
+// These match the DB function complete_task_all_triggers exactly.
+const EXP_BY_DIFFICULTY: Record<string, number> = {
+  easy: 75,
+  medium: 150,
+  hard: 300,
+};
+const STAT_POINTS_BY_DIFFICULTY: Record<string, number> = {
+  easy: 0,    // casual tasks don't train Digimon stats
+  medium: 1,
+  hard: 2,
+};
+const PRIORITY_EXP_MULTIPLIER: Record<string, number> = {
+  low: 0.75,
+  medium: 1.0,
+  high: 1.5,
+};
 
 // Phase 3: exported so Dashboard.tsx can reference the canonical quota number
 export const DAILY_QUOTA_AMOUNT = 3;
 
 export const getExpPoints = (task: Task) => {
-  if (task.is_daily) return BASE_EXP_FOR_DAILY_TASK;
-  if (task.recurring_days) return BASE_EXP_FOR_RECURRING_TASK;
-  return BASE_EXP_FOR_ONE_TIME_TASK;
+  const base = EXP_BY_DIFFICULTY[task.difficulty ?? "medium"] ?? 150;
+  const mult = PRIORITY_EXP_MULTIPLIER[task.priority ?? "medium"] ?? 1.0;
+  return Math.round(base * mult);
 };
 
 export const getStatPoints = (task: Task) => {
-  if (task.is_daily) return BASE_STAT_FOR_DAILY_TASK;
-  if (task.recurring_days) return BASE_STAT_FOR_RECURRING_TASK;
-  return BASE_STAT_FOR_ONE_TIME_TASK;
+  return STAT_POINTS_BY_DIFFICULTY[task.difficulty ?? "medium"] ?? 1;
 };
 
 export interface Task {
@@ -231,9 +258,6 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       const task = get().tasks.find((t) => t.id === id);
       if (!task) return;
 
-      // Snapshot quota before completion to detect crossing the threshold
-      const prevCompleted = get().dailyQuota?.completed_today ?? 0;
-
       // Optimistically update the UI immediately
       set((state) => ({
         tasks: state.tasks.map((t) =>
@@ -300,25 +324,29 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       // Update local quota data
       await get().fetchDailyQuota();
 
-      // PHASE 1: Grant battle energy from task completion
-      // Base: +10 per completed task
+      // Grant 1 battle ticket per completed task (capped at max 10)
       try {
-        await supabase.rpc('grant_energy_self', { p_amount: 10 });
+        await supabase.rpc('grant_energy_self', { p_amount: 1 });
       } catch (e) {
-        console.error('grant_energy_self(+10) failed:', e);
+        console.error('grant_energy_self(+1) failed:', e);
       }
       window.dispatchEvent(new Event('energy-updated'));
 
-      // If we just crossed the daily quota threshold, grant bonus energy (+50)
-      const nowCompleted = get().dailyQuota?.completed_today ?? prevCompleted;
-      if (prevCompleted < 3 && nowCompleted >= 3) {
-        try {
-          await supabase.rpc('grant_energy_self', { p_amount: 50 });
-        } catch (e) {
-          console.error('grant_energy_self(+50) failed:', e);
-        }
-        window.dispatchEvent(new Event('energy-updated'));
+      // Optimistically update tournament weekly task count and fire unlock notification
+      const tournamentStore = useTournamentStore.getState();
+      const prevWeeklyCount = tournamentStore.weeklyTaskCount;
+      const newWeeklyCount = prevWeeklyCount + 1;
+      tournamentStore.setWeeklyTaskCount(newWeeklyCount);
+      if (prevWeeklyCount < 10 && newWeeklyCount >= 10) {
+        useNotificationStore.getState().addNotification({
+          type: 'success',
+          message: '🏆 Weekly Tournament unlocked! Head to Battle Hub to enter this week\'s tournament.',
+          duration: 8000,
+        });
       }
+
+      // Check task completion achievements (non-blocking)
+      checkTaskAchievementsAfterCompletion(userData.user.id);
     } catch (error) {
       console.error("Error completing task:", error);
 
@@ -577,7 +605,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         const expMultiplier = get().getExpMultiplier();
 
         // Apply multiplier to the base reward
-        const BASE_XP_REWARD = 100;
+        const BASE_XP_REWARD = 300;
         const actualXpReward = Math.round(BASE_XP_REWARD * expMultiplier);
 
         // Reward the whole team with the calculated XP

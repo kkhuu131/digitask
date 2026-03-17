@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { BattleState, BattleDigimon, BattleTurn, TargetSelection } from "../types/battle";
 import { calculateFinalStats } from "../utils/digimonStatCalculation";
 import { DIGIMON_LOOKUP_TABLE } from "../constants/digimonLookup";
+import { calculateDamage } from "../utils/battleCalculations";
 
 interface InteractiveBattleState {
   // Battle state
@@ -29,7 +30,7 @@ interface InteractiveBattleState {
 }
 
 // Helper function to convert UserDigimon to BattleDigimon
-const convertToBattleDigimon = (userDigimon: any, isUserTeam: boolean): BattleDigimon => {
+export const convertToBattleDigimon = (userDigimon: any, isUserTeam: boolean): BattleDigimon => {
   // Debug logging first to understand the data structure
   console.log('Converting digimon - Full data:', userDigimon);
   
@@ -108,32 +109,6 @@ const getTurnOrder = (userTeam: BattleDigimon[], opponentTeam: BattleDigimon[]):
   return allDigimon.sort((a, b) => b.stats.spd - a.stats.spd);
 };
 
-// Helper function to calculate damage
-const calculateDamage = (attacker: BattleDigimon, target: BattleDigimon): { damage: number; isCritical: boolean; isMiss: boolean } => {
-  const missChance = 0.05;
-  const criticalChance = 0.125;
-  
-  const isMiss = Math.random() < missChance;
-  if (isMiss) return { damage: 0, isCritical: false, isMiss: true };
-  
-  const isCritical = Math.random() < criticalChance;
-  const critMultiplier = isCritical ? 1.5 : 1;
-  
-  let attackPower = attacker.stats.atk;
-  let defense = target.stats.def;
-
-  if (attacker.stats.int > attacker.stats.atk) {
-    attackPower = attacker.stats.int;
-    defense = target.stats.int;
-  }
-  
-  const baseDamage = Math.max(1, (attackPower/defense)*100);
-  const damageMultiplier = 0.8 + Math.random() * 0.4; // 0.8 to 1.2x variance
-  
-  const damage = Math.floor(baseDamage * damageMultiplier * critMultiplier);
-  
-  return { damage, isCritical, isMiss };
-};
 
 export const useInteractiveBattleStore = create<InteractiveBattleState>((set, get) => ({
   currentBattle: null,

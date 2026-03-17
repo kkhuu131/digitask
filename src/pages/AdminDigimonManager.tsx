@@ -904,15 +904,19 @@ const AdminDigimonManager = () => {
   });
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Digimon Species Manager</h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Manage Digimon species, evolution paths, and form transformations.</p>
+      </div>
       <Tab.Group>
-        <Tab.List className="flex border-b mb-6">
+        <Tab.List className="flex border-b border-gray-200 dark:border-dark-100 mb-6">
           <Tab 
             className={({ selected }) => 
-              `px-4 py-2 font-medium ${
-                selected 
-                  ? 'text-blue-600 border-b-2 border-blue-600' 
-                  : 'text-gray-500 hover:text-gray-700'
+              `px-4 py-2 font-medium transition-colors cursor-pointer ${
+                selected
+                  ? 'text-indigo-600 dark:text-accent-400 border-b-2 border-indigo-600 dark:border-accent-500'
+                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
               }`
             }
           >
@@ -920,10 +924,10 @@ const AdminDigimonManager = () => {
           </Tab>
           <Tab 
             className={({ selected }) => 
-              `px-4 py-2 font-medium ${
-                selected 
-                  ? 'text-blue-600 border-b-2 border-blue-600' 
-                  : 'text-gray-500 hover:text-gray-700'
+              `px-4 py-2 font-medium transition-colors cursor-pointer ${
+                selected
+                  ? 'text-indigo-600 dark:text-accent-400 border-b-2 border-indigo-600 dark:border-accent-500'
+                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
               }`
             }
           >
@@ -931,10 +935,10 @@ const AdminDigimonManager = () => {
           </Tab>
           <Tab 
             className={({ selected }) => 
-              `px-4 py-2 font-medium ${
-                selected 
-                  ? 'text-blue-600 border-b-2 border-blue-600' 
-                  : 'text-gray-500 hover:text-gray-700'
+              `px-4 py-2 font-medium transition-colors cursor-pointer ${
+                selected
+                  ? 'text-indigo-600 dark:text-accent-400 border-b-2 border-indigo-600 dark:border-accent-500'
+                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
               }`
             }
           >
@@ -947,15 +951,15 @@ const AdminDigimonManager = () => {
           <Tab.Panel>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Digimon Form */}
-              <div className="bg-white shadow-md rounded-lg p-6">
+              <div className="bg-white dark:bg-dark-300 rounded-xl border border-gray-200 dark:border-dark-100 shadow-sm p-6">
                 <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-xl font-semibold">
+                  <h2 className="text-base font-semibold text-gray-800 dark:text-gray-100">
                     {isEditingDigimon ? 'Edit Digimon' : 'Add New Digimon'}
                   </h2>
                   
                   <button
                     onClick={resetDigimonForm}
-                    className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm"
+                    className="px-3 py-1 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-dark-200 text-sm transition-colors cursor-pointer"
                   >
                     Reset Form
                   </button>
@@ -964,45 +968,45 @@ const AdminDigimonManager = () => {
                 <form onSubmit={handleDigimonSubmit}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Digimon ID</label>
+                      <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Digimon ID</label>
                       <input
                         type="number"
                         name="digimon_id"
                         value={digimonForm.digimon_id}
                         onChange={handleDigimonInputChange}
-                        className="w-full p-2 border rounded"
+                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                       />
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Request ID</label>
+                      <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Request ID</label>
                       <input
                         type="number"
                         name="request_id"
                         value={digimonForm.request_id}
                         onChange={handleDigimonInputChange}
-                        className="w-full p-2 border rounded"
+                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                       />
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                      <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Name</label>
                       <input
                         type="text"
                         name="name"
                         value={digimonForm.name}
                         onChange={handleDigimonInputChange}
-                        className="w-full p-2 border rounded"
+                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                       />
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Stage</label>
+                      <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Stage</label>
                       <select
                         name="stage"
                         value={digimonForm.stage}
                         onChange={handleDigimonInputChange}
-                        className="w-full p-2 border rounded"
+                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                       >
                         {digimonStages.map(stage => (
                           <option key={stage} value={stage}>{stage}</option>
@@ -1011,12 +1015,12 @@ const AdminDigimonManager = () => {
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                      <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Type</label>
                       <select
                         name="type"
                         value={digimonForm.type}
                         onChange={handleDigimonInputChange}
-                        className="w-full p-2 border rounded"
+                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                       >
                         {digimonTypes.map(type => (
                           <option key={type} value={type}>{type}</option>
@@ -1025,12 +1029,12 @@ const AdminDigimonManager = () => {
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Attribute</label>
+                      <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Attribute</label>
                       <select
                         name="attribute"
                         value={digimonForm.attribute}
                         onChange={handleDigimonInputChange}
-                        className="w-full p-2 border rounded"
+                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                       >
                         {digimonAttributes.map(attribute => (
                           <option key={attribute} value={attribute}>{attribute}</option>
@@ -1039,167 +1043,168 @@ const AdminDigimonManager = () => {
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Sprite URL</label>
+                      <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Sprite URL</label>
                       <input
                         type="text"
                         name="sprite_url"
                         value={digimonForm.sprite_url}
                         onChange={handleDigimonInputChange}
-                        className="w-full p-2 border rounded"
+                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                       />
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Detail URL</label>
+                      <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Detail URL</label>
                       <input
                         type="text"
                         name="detail_url"
                         value={digimonForm.detail_url}
                         onChange={handleDigimonInputChange}
-                        className="w-full p-2 border rounded"
+                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                       />
-                    </div>
-                  </div>
-                  
-                  {/* Level 50 Stats */}
-                  <div className="mb-4">
-                    <h3 className="font-medium mb-2">Level 50 Base Stats</h3>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">HP</label>
-                        <input
-                          type="number"
-                          name="hp"
-                          value={digimonForm.hp || ''}
-                          onChange={handleDigimonInputChange}
-                          className="w-full p-2 border rounded"
-                        />
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">SP</label>
-                        <input
-                          type="number"
-                          name="sp"
-                          value={digimonForm.sp || ''}
-                          onChange={handleDigimonInputChange}
-                          className="w-full p-2 border rounded"
-                        />
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">ATK</label>
-                        <input
-                          type="number"
-                          name="atk"
-                          value={digimonForm.atk || ''}
-                          onChange={handleDigimonInputChange}
-                          className="w-full p-2 border rounded"
-                        />
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">DEF</label>
-                        <input
-                          type="number"
-                          name="def"
-                          value={digimonForm.def || ''}
-                          onChange={handleDigimonInputChange}
-                          className="w-full p-2 border rounded"
-                        />
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">INT</label>
-                        <input
-                          type="number"
-                          name="int"
-                          value={digimonForm.int || ''}
-                          onChange={handleDigimonInputChange}
-                          className="w-full p-2 border rounded"
-                        />
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">SPD</label>
-                        <input
-                          type="number"
-                          name="spd"
-                          value={digimonForm.spd || ''}
-                          onChange={handleDigimonInputChange}
-                          className="w-full p-2 border rounded"
-                        />
-                      </div>
                     </div>
                   </div>
                   
                   {/* Level 1 Stats */}
                   <div className="mb-4">
-                    <h3 className="font-medium mb-2">Level 1 Stats</h3>
+                    <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-2">Level 1 Stats</h3>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">HP (Lv.1)</label>
+                        <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">HP (Lv.1)</label>
                         <input
                           type="number"
                           name="hp_level1"
                           value={digimonForm.hp_level1 || ''}
                           onChange={handleDigimonInputChange}
-                          className="w-full p-2 border rounded"
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                         />
                       </div>
                       
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">SP (Lv.1)</label>
+                        <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">SP (Lv.1)</label>
                         <input
                           type="number"
                           name="sp_level1"
                           value={digimonForm.sp_level1 || ''}
                           onChange={handleDigimonInputChange}
-                          className="w-full p-2 border rounded"
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                         />
                       </div>
                       
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">ATK (Lv.1)</label>
+                        <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">ATK (Lv.1)</label>
                         <input
                           type="number"
                           name="atk_level1"
                           value={digimonForm.atk_level1 || ''}
                           onChange={handleDigimonInputChange}
-                          className="w-full p-2 border rounded"
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                         />
                       </div>
                       
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">DEF (Lv.1)</label>
+                        <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">DEF (Lv.1)</label>
                         <input
                           type="number"
                           name="def_level1"
                           value={digimonForm.def_level1 || ''}
                           onChange={handleDigimonInputChange}
-                          className="w-full p-2 border rounded"
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                         />
                       </div>
                       
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">INT (Lv.1)</label>
+                        <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">INT (Lv.1)</label>
                         <input
                           type="number"
                           name="int_level1"
                           value={digimonForm.int_level1 || ''}
                           onChange={handleDigimonInputChange}
-                          className="w-full p-2 border rounded"
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                         />
                       </div>
                       
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">SPD (Lv.1)</label>
+                        <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">SPD (Lv.1)</label>
                         <input
                           type="number"
                           name="spd_level1"
                           value={digimonForm.spd_level1 || ''}
                           onChange={handleDigimonInputChange}
-                          className="w-full p-2 border rounded"
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                                    
+                  {/* Level 50 Stats */}
+                  <div className="mb-4">
+                    <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-2">Level 50 Base Stats</h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">HP</label>
+                        <input
+                          type="number"
+                          name="hp"
+                          value={digimonForm.hp || ''}
+                          onChange={handleDigimonInputChange}
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">SP</label>
+                        <input
+                          type="number"
+                          name="sp"
+                          value={digimonForm.sp || ''}
+                          onChange={handleDigimonInputChange}
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">ATK</label>
+                        <input
+                          type="number"
+                          name="atk"
+                          value={digimonForm.atk || ''}
+                          onChange={handleDigimonInputChange}
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">DEF</label>
+                        <input
+                          type="number"
+                          name="def"
+                          value={digimonForm.def || ''}
+                          onChange={handleDigimonInputChange}
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">INT</label>
+                        <input
+                          type="number"
+                          name="int"
+                          value={digimonForm.int || ''}
+                          onChange={handleDigimonInputChange}
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">SPD</label>
+                        <input
+                          type="number"
+                          name="spd"
+                          value={digimonForm.spd || ''}
+                          onChange={handleDigimonInputChange}
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                         />
                       </div>
                     </div>
@@ -1207,71 +1212,71 @@ const AdminDigimonManager = () => {
                   
                   {/* Level 99 Stats */}
                   <div className="mb-6">
-                    <h3 className="font-medium mb-2">Level 99 Stats</h3>
+                    <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-2">Level 99 Stats</h3>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">HP (Lv.99)</label>
+                        <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">HP (Lv.99)</label>
                         <input
                           type="number"
                           name="hp_level99"
                           value={digimonForm.hp_level99 || ''}
                           onChange={handleDigimonInputChange}
-                          className="w-full p-2 border rounded"
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                         />
                       </div>
                       
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">SP (Lv.99)</label>
+                        <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">SP (Lv.99)</label>
                         <input
                           type="number"
                           name="sp_level99"
                           value={digimonForm.sp_level99 || ''}
                           onChange={handleDigimonInputChange}
-                          className="w-full p-2 border rounded"
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                         />
                       </div>
                       
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">ATK (Lv.99)</label>
+                        <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">ATK (Lv.99)</label>
                         <input
                           type="number"
                           name="atk_level99"
                           value={digimonForm.atk_level99 || ''}
                           onChange={handleDigimonInputChange}
-                          className="w-full p-2 border rounded"
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                         />
                       </div>
                       
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">DEF (Lv.99)</label>
+                        <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">DEF (Lv.99)</label>
                         <input
                           type="number"
                           name="def_level99"
                           value={digimonForm.def_level99 || ''}
                           onChange={handleDigimonInputChange}
-                          className="w-full p-2 border rounded"
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                         />
                       </div>
                       
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">INT (Lv.99)</label>
+                        <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">INT (Lv.99)</label>
                         <input
                           type="number"
                           name="int_level99"
                           value={digimonForm.int_level99 || ''}
                           onChange={handleDigimonInputChange}
-                          className="w-full p-2 border rounded"
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                         />
                       </div>
                       
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">SPD (Lv.99)</label>
+                        <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">SPD (Lv.99)</label>
                         <input
                           type="number"
                           name="spd_level99"
                           value={digimonForm.spd_level99 || ''}
                           onChange={handleDigimonInputChange}
-                          className="w-full p-2 border rounded"
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                         />
                       </div>
                     </div>
@@ -1280,10 +1285,10 @@ const AdminDigimonManager = () => {
                   <div className="flex justify-end">
                     <button
                       type="submit"
-                      className={`px-4 py-2 text-white rounded ${
-                        isEditingDigimon 
-                          ? 'bg-yellow-600 hover:bg-yellow-700' 
-                          : 'bg-blue-600 hover:bg-blue-700'
+                      className={`px-4 py-2 text-white rounded-lg text-sm font-medium transition-colors cursor-pointer ${
+                        isEditingDigimon
+                          ? 'bg-amber-600 hover:bg-amber-700'
+                          : 'bg-indigo-600 dark:bg-accent-600 hover:bg-indigo-700 dark:hover:bg-accent-700'
                       }`}
                     >
                       {isEditingDigimon ? 'Update Digimon' : 'Add Digimon'}
@@ -1291,10 +1296,10 @@ const AdminDigimonManager = () => {
                   </div>
                 </form>
                 {/* Lookup Table Code Section */}
-                <div className="mt-8 bg-white shadow-md rounded-lg p-6">
-                  <h2 className="text-xl font-semibold mb-4">Update Digimon Lookup Table</h2>
-                  <p className="text-sm text-gray-600 mb-4">
-                    After making changes, copy this code to replace the contents of <code>src/constants/digimonLookup.ts</code>
+                <div className="mt-8 bg-white dark:bg-dark-300 rounded-xl border border-gray-200 dark:border-dark-100 shadow-sm p-6">
+                  <h2 className="text-base font-semibold text-gray-800 dark:text-gray-100 mb-4">Update Digimon Lookup Table</h2>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                    After making changes, copy this code to replace the contents of <code className="text-xs bg-gray-100 dark:bg-dark-400 px-1 rounded">src/constants/digimonLookup.ts</code>
                   </p>
                   <div className="relative">
                     <button
@@ -1305,25 +1310,25 @@ const AdminDigimonManager = () => {
                           type: 'success'
                         });
                       }}
-                      className="absolute top-4 right-8 px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
+                      className="absolute top-4 right-8 px-3 py-1 bg-indigo-600 dark:bg-accent-600 text-white rounded-lg text-sm hover:bg-indigo-700 dark:hover:bg-accent-700 transition-colors cursor-pointer"
                     >
                       Copy to Clipboard
                     </button>
-                    <pre className="bg-gray-100 p-4 rounded max-h-96 overflow-auto text-xs whitespace-pre-wrap">{lookupTableCode}</pre>
+                    <pre className="bg-gray-100 dark:bg-dark-400 text-gray-900 dark:text-gray-100 p-4 rounded-lg max-h-96 overflow-auto text-xs whitespace-pre-wrap border border-gray-200 dark:border-dark-100">{lookupTableCode}</pre>
                   </div>
                 </div>
               </div>
               
               {/* Digimon List */}
               <div>
-                <div className="bg-white shadow-md rounded-lg p-6 mb-6">
-                  <h2 className="text-xl font-semibold mb-4">Digimon Database</h2>
+                <div className="bg-white dark:bg-dark-300 rounded-xl border border-gray-200 dark:border-dark-100 shadow-sm p-6 mb-6">
+                  <h2 className="text-base font-semibold text-gray-800 dark:text-gray-100 mb-4">Digimon Database</h2>
                   
                   <div className="mb-4">
                     <input
                       type="text"
                       placeholder="Search by name or ID..."
-                      className="w-full p-2 border rounded"
+                      className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                       value={digimonSearchTerm}
                       onChange={(e) => setDigimonSearchTerm(e.target.value)}
                     />
@@ -1331,9 +1336,9 @@ const AdminDigimonManager = () => {
                   
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Stage</label>
+                      <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Stage</label>
                       <select
-                        className="w-full p-2 border rounded"
+                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                         value={stageFilter}
                         onChange={(e) => setStageFilter(e.target.value)}
                       >
@@ -1345,9 +1350,9 @@ const AdminDigimonManager = () => {
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                      <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Type</label>
                       <select
-                        className="w-full p-2 border rounded"
+                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                         value={typeFilter}
                         onChange={(e) => setTypeFilter(e.target.value)}
                       >
@@ -1359,9 +1364,9 @@ const AdminDigimonManager = () => {
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Attribute</label>
+                      <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Attribute</label>
                       <select
-                        className="w-full p-2 border rounded"
+                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                         value={attributeFilter}
                         onChange={(e) => setAttributeFilter(e.target.value)}
                       >
@@ -1378,11 +1383,11 @@ const AdminDigimonManager = () => {
                       {filteredDigimon.map(digimon => (
                         <div 
                           key={digimon.id}
-                          className="cursor-pointer border rounded-lg p-3 hover:border-blue-500 hover:bg-blue-50 transition-colors"
+                          className="cursor-pointer border border-gray-200 dark:border-dark-100 rounded-lg p-3 hover:border-indigo-400 dark:hover:border-accent-500 hover:bg-indigo-50 dark:hover:bg-accent-900/20 transition-colors bg-white dark:bg-dark-400"
                           onClick={() => handleEditDigimon(digimon.id)}
                         >
                           <div className="flex flex-col items-center">
-                            <p className="text-xs text-gray-500 mb-1">ID: {digimon.digimon_id}</p>
+                            <p className="text-xs text-gray-400 dark:text-gray-500 mb-1">ID: {digimon.digimon_id}</p>
                             <div className="w-16 h-16 flex items-center justify-center">
                               <DigimonSprite
                                 digimonName={digimon.name}
@@ -1391,9 +1396,9 @@ const AdminDigimonManager = () => {
                                 showHappinessAnimations={true}
                               />
                             </div>
-                            <p className="text-xs font-medium text-center mt-1">{digimon.name}</p>
-                            <p className="text-xs text-gray-500">{digimon.stage}</p>
-                            <p className="text-xs text-gray-500">{digimon.type} | {digimon.attribute}</p>
+                            <p className="text-xs font-medium text-center mt-1 text-gray-700 dark:text-gray-300">{digimon.name}</p>
+                            <p className="text-xs text-gray-400 dark:text-gray-500">{digimon.stage}</p>
+                            <p className="text-xs text-gray-400 dark:text-gray-500">{digimon.type} | {digimon.attribute}</p>
                           </div>
                         </div>
                       ))}
@@ -1408,15 +1413,15 @@ const AdminDigimonManager = () => {
           <Tab.Panel>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Evolution Path Form */}
-              <div className="bg-white shadow-md rounded-lg p-6">
+              <div className="bg-white dark:bg-dark-300 rounded-xl border border-gray-200 dark:border-dark-100 shadow-sm p-6">
                 <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-xl font-semibold">
+                  <h2 className="text-base font-semibold text-gray-800 dark:text-gray-100">
                     {isEditingEvolution ? 'Edit Evolution Path' : 'Add New Evolution Path'}
                   </h2>
                   
                   <button
                     onClick={resetEvolutionForm}
-                    className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm"
+                    className="px-3 py-1 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-dark-200 text-sm transition-colors cursor-pointer"
                   >
                     Reset Form
                   </button>
@@ -1426,7 +1431,7 @@ const AdminDigimonManager = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     {/* For the Evolution Paths tab - replace the From Digimon dropdown */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">From Digimon</label>
+                      <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">From Digimon</label>
                       <div className="relative">
                         <input
                           type="text"
@@ -1436,18 +1441,18 @@ const AdminDigimonManager = () => {
                             setFromDigimonSearch(e.target.value);
                             setShowFromDigimonResults(true);
                           }}
-                          className="w-full p-2 border rounded"
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                           onBlur={() => setTimeout(() => setShowFromDigimonResults(false), 200)}
                           onFocus={() => setShowFromDigimonResults(true)}
                         />
                         {showFromDigimonResults && (
-                          <div className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base overflow-auto focus:outline-none sm:text-sm">
+                          <div className="absolute z-10 mt-1 w-full bg-white dark:bg-dark-300 border border-gray-200 dark:border-dark-100 shadow-lg max-h-60 rounded-lg py-1 text-sm overflow-auto focus:outline-none">
                             {filteredFromDigimon.length > 0 ? (
                               filteredFromDigimon.map(digimon => (
                                 <div
                                   key={digimon.id}
                                   onClick={() => selectFromDigimon(digimon)}
-                                  className="cursor-pointer hover:bg-gray-100 px-4 py-2 flex items-center"
+                                  className="cursor-pointer hover:bg-gray-100 dark:hover:bg-dark-200 px-4 py-2 flex items-center text-gray-900 dark:text-gray-100"
                                 >
                                   <DigimonSprite
                                     digimonName={digimon.name}
@@ -1459,7 +1464,7 @@ const AdminDigimonManager = () => {
                                 </div>
                               ))
                             ) : (
-                              <div className="px-4 py-2 text-gray-500">No digimon found</div>
+                              <div className="px-4 py-2 text-gray-500 dark:text-gray-400">No digimon found</div>
                             )}
                           </div>
                         )}
@@ -1468,7 +1473,7 @@ const AdminDigimonManager = () => {
                     
                     {/* Replace the To Digimon dropdown */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">To Digimon</label>
+                      <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">To Digimon</label>
                       <div className="relative">
                         <input
                           type="text"
@@ -1478,18 +1483,18 @@ const AdminDigimonManager = () => {
                             setToDigimonSearch(e.target.value);
                             setShowToDigimonResults(true);
                           }}
-                          className="w-full p-2 border rounded"
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                           onBlur={() => setTimeout(() => setShowToDigimonResults(false), 200)}
                           onFocus={() => setShowToDigimonResults(true)}
                         />
                         {showToDigimonResults && (
-                          <div className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base overflow-auto focus:outline-none sm:text-sm">
+                          <div className="absolute z-10 mt-1 w-full bg-white dark:bg-dark-300 border border-gray-200 dark:border-dark-100 shadow-lg max-h-60 rounded-lg py-1 text-sm overflow-auto focus:outline-none">
                             {filteredToDigimon.length > 0 ? (
                               filteredToDigimon.map(digimon => (
                                 <div
                                   key={digimon.id}
                                   onClick={() => selectToDigimon(digimon)}
-                                  className="cursor-pointer hover:bg-gray-100 px-4 py-2 flex items-center"
+                                  className="cursor-pointer hover:bg-gray-100 dark:hover:bg-dark-200 px-4 py-2 flex items-center text-gray-900 dark:text-gray-100"
                                 >
                                   <DigimonSprite
                                     digimonName={digimon.name}
@@ -1501,7 +1506,7 @@ const AdminDigimonManager = () => {
                                 </div>
                               ))
                             ) : (
-                              <div className="px-4 py-2 text-gray-500">No digimon found</div>
+                              <div className="px-4 py-2 text-gray-500 dark:text-gray-400">No digimon found</div>
                             )}
                           </div>
                         )}
@@ -1509,25 +1514,25 @@ const AdminDigimonManager = () => {
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Level Required</label>
+                      <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Level Required</label>
                       <input
                         type="number"
                         name="level_required"
                         value={evolutionForm.level_required || ''}
                         onChange={handleEvolutionInputChange}
-                        className="w-full p-2 border rounded"
+                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                         min="0"
                         max="99"
                       />
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">DNA Requirement</label>
+                      <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">DNA Requirement</label>
                       <select
                         name="dna_requirement"
                         value={evolutionForm.dna_requirement || ''}
                         onChange={handleEvolutionInputChange}
-                        className="w-full p-2 border rounded"
+                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                       >
                         <option value="">None (Normal Evolution)</option>
                         {digimonList.map(digimon => (
@@ -1536,94 +1541,94 @@ const AdminDigimonManager = () => {
                           </option>
                         ))}
                       </select>
-                      <p className="text-xs text-gray-500 mt-1">Required second Digimon for DNA evolution</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Required second Digimon for DNA evolution</p>
                     </div>
                   </div>
                   
                   {/* Stat Requirements */}
                   <div className="mb-6">
-                    <h3 className="font-medium mb-2">Stat Requirements</h3>
+                    <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-2">Stat Requirements</h3>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">HP Required</label>
+                        <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">HP Required</label>
                         <input
                           type="number"
                           name="hp"
                           value={evolutionForm.stat_requirements.hp || ''}
                           onChange={handleStatRequirementChange}
-                          className="w-full p-2 border rounded"
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                           min="0"
                         />
                       </div>
                       
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">SP Required</label>
+                        <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">SP Required</label>
                         <input
                           type="number"
                           name="sp"
                           value={evolutionForm.stat_requirements.sp || ''}
                           onChange={handleStatRequirementChange}
-                          className="w-full p-2 border rounded"
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                           min="0"
                         />
                       </div>
                       
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">ATK Required</label>
+                        <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">ATK Required</label>
                         <input
                           type="number"
                           name="atk"
                           value={evolutionForm.stat_requirements.atk || ''}
                           onChange={handleStatRequirementChange}
-                          className="w-full p-2 border rounded"
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                           min="0"
                         />
                       </div>
                       
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">DEF Required</label>
+                        <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">DEF Required</label>
                         <input
                           type="number"
                           name="def"
                           value={evolutionForm.stat_requirements.def || ''}
                           onChange={handleStatRequirementChange}
-                          className="w-full p-2 border rounded"
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                           min="0"
                         />
                       </div>
                       
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">INT Required</label>
+                        <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">INT Required</label>
                         <input
                           type="number"
                           name="int"
                           value={evolutionForm.stat_requirements.int || ''}
                           onChange={handleStatRequirementChange}
-                          className="w-full p-2 border rounded"
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                           min="0"
                         />
                       </div>
                       
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">SPD Required</label>
+                        <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">SPD Required</label>
                         <input
                           type="number"
                           name="spd"
                           value={evolutionForm.stat_requirements.spd || ''}
                           onChange={handleStatRequirementChange}
-                          className="w-full p-2 border rounded"
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                           min="0"
                         />
                       </div>
                       
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">ABI Required</label>
+                        <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">ABI Required</label>
                         <input
                           type="number"
                           name="abi"
                           value={evolutionForm.stat_requirements.abi || ''}
                           onChange={handleStatRequirementChange}
-                          className="w-full p-2 border rounded"
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                           min="0"
                         />
                       </div>
@@ -1633,10 +1638,10 @@ const AdminDigimonManager = () => {
                   <div className="flex justify-end">
                     <button
                       type="submit"
-                      className={`px-4 py-2 text-white rounded ${
-                        isEditingEvolution 
-                          ? 'bg-yellow-600 hover:bg-yellow-700' 
-                          : 'bg-blue-600 hover:bg-blue-700'
+                      className={`px-4 py-2 text-white rounded-lg text-sm font-medium transition-colors cursor-pointer ${
+                        isEditingEvolution
+                          ? 'bg-amber-600 hover:bg-amber-700'
+                          : 'bg-indigo-600 dark:bg-accent-600 hover:bg-indigo-700 dark:hover:bg-accent-700'
                       }`}
                     >
                       {isEditingEvolution ? 'Update Evolution Path' : 'Add Evolution Path'}
@@ -1646,34 +1651,34 @@ const AdminDigimonManager = () => {
               </div>
               
               {/* Evolution Paths List */}
-              <div className="bg-white shadow-md rounded-lg p-6">
-                <h2 className="text-xl font-semibold mb-4">Evolution Paths</h2>
+              <div className="bg-white dark:bg-dark-300 rounded-xl border border-gray-200 dark:border-dark-100 shadow-sm p-6">
+                <h2 className="text-base font-semibold text-gray-800 dark:text-gray-100 mb-4">Evolution Paths</h2>
                 
                 <div className="mb-4">
                   <input
                     type="text"
                     placeholder="Search evolution paths..."
-                    className="w-full p-2 border rounded"
+                    className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                     value={evolutionSearchTerm}
                     onChange={(e) => setEvolutionSearchTerm(e.target.value)}
                   />
                 </div>
                 
                 <div className="max-h-[600px] overflow-y-auto mt-4">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                  <table className="min-w-full divide-y divide-gray-200 dark:divide-dark-100">
+                    <thead className="bg-gray-50 dark:bg-dark-400">
                       <tr>
-                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">From</th>
-                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">To</th>
-                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Level Req.</th>
-                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">DNA</th>
-                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">From</th>
+                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">To</th>
+                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Level Req.</th>
+                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">DNA</th>
+                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody className="bg-white dark:bg-dark-300 divide-y divide-gray-100 dark:divide-dark-100">
                       {filteredEvolutionPaths.map(path => (
-                        <tr key={path.id} className="hover:bg-gray-50">
-                          <td className="px-4 py-3 whitespace-nowrap text-sm">
+                        <tr key={path.id} className="hover:bg-gray-50 dark:hover:bg-dark-400 transition-colors">
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                             <div className="flex items-center">
                               {path.from_digimon ? (
                                 <>
@@ -1686,11 +1691,11 @@ const AdminDigimonManager = () => {
                                   <span className="ml-2">{path.from_digimon.name}</span>
                                 </>
                               ) : (
-                                <span className="text-gray-400">None</span>
+                                <span className="text-gray-400 dark:text-gray-500">None</span>
                               )}
                             </div>
                           </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm">
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                             <div className="flex items-center">
                               {path.to_digimon && (
                                 <>
@@ -1705,10 +1710,10 @@ const AdminDigimonManager = () => {
                               )}
                             </div>
                           </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm">
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                             {path.level_required > 0 ? `Lv. ${path.level_required}` : 'None'}
                           </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm">
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                             {path.dna_digimon ? (
                               <div className="flex items-center">
                                 <img 
@@ -1720,14 +1725,14 @@ const AdminDigimonManager = () => {
                                 <span>{path.dna_digimon.name}</span>
                               </div>
                             ) : (
-                              <span className="text-gray-400">N/A</span>
+                              <span className="text-gray-400 dark:text-gray-500">N/A</span>
                             )}
                           </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm">
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                             <div className="flex space-x-2">
                               <button
                                 onClick={() => handleEditEvolution(path.id)}
-                                className="text-yellow-600 hover:text-yellow-800"
+                                className="text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 font-medium text-xs cursor-pointer"
                               >
                                 Edit
                               </button>
@@ -1746,15 +1751,15 @@ const AdminDigimonManager = () => {
           <Tab.Panel>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Digimon Forms Form */}
-              <div className="bg-white shadow-md rounded-lg p-6">
+              <div className="bg-white dark:bg-dark-300 rounded-xl border border-gray-200 dark:border-dark-100 shadow-sm p-6">
                 <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-xl font-semibold">
+                  <h2 className="text-base font-semibold text-gray-800 dark:text-gray-100">
                     {isEditingForm ? 'Edit Digimon Form' : 'Add New Digimon Form'}
                   </h2>
                   
                   <button
                     onClick={resetFormForm}
-                    className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm"
+                    className="px-3 py-1 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-dark-200 text-sm transition-colors cursor-pointer"
                   >
                     Reset Form
                   </button>
@@ -1764,7 +1769,7 @@ const AdminDigimonManager = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     {/* For the Digimon Forms tab - replace the Base Digimon dropdown */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Base Digimon</label>
+                      <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Base Digimon</label>
                       <div className="relative">
                         <input
                           type="text"
@@ -1774,18 +1779,18 @@ const AdminDigimonManager = () => {
                             setBaseDigimonSearch(e.target.value);
                             setShowBaseDigimonResults(true);
                           }}
-                          className="w-full p-2 border rounded"
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                           onBlur={() => setTimeout(() => setShowBaseDigimonResults(false), 200)}
                           onFocus={() => setShowBaseDigimonResults(true)}
                         />
                         {showBaseDigimonResults && (
-                          <div className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base overflow-auto focus:outline-none sm:text-sm">
+                          <div className="absolute z-10 mt-1 w-full bg-white dark:bg-dark-300 border border-gray-200 dark:border-dark-100 shadow-lg max-h-60 rounded-lg py-1 text-sm overflow-auto focus:outline-none">
                             {filteredBaseDigimon.length > 0 ? (
                               filteredBaseDigimon.map(digimon => (
                                 <div
                                   key={digimon.id}
                                   onClick={() => selectBaseDigimon(digimon)}
-                                  className="cursor-pointer hover:bg-gray-100 px-4 py-2 flex items-center"
+                                  className="cursor-pointer hover:bg-gray-100 dark:hover:bg-dark-200 px-4 py-2 flex items-center text-gray-900 dark:text-gray-100"
                                 >
                                   <DigimonSprite
                                     digimonName={digimon.name}
@@ -1797,7 +1802,7 @@ const AdminDigimonManager = () => {
                                 </div>
                               ))
                             ) : (
-                              <div className="px-4 py-2 text-gray-500">No digimon found</div>
+                              <div className="px-4 py-2 text-gray-500 dark:text-gray-400">No digimon found</div>
                             )}
                           </div>
                         )}
@@ -1806,7 +1811,7 @@ const AdminDigimonManager = () => {
                     
                     {/* Replace the Form Digimon dropdown */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Form Digimon</label>
+                      <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Form Digimon</label>
                       <div className="relative">
                         <input
                           type="text"
@@ -1816,18 +1821,18 @@ const AdminDigimonManager = () => {
                             setFormDigimonSearch(e.target.value);
                             setShowFormDigimonResults(true);
                           }}
-                          className="w-full p-2 border rounded"
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                           onBlur={() => setTimeout(() => setShowFormDigimonResults(false), 200)}
                           onFocus={() => setShowFormDigimonResults(true)}
                         />
                         {showFormDigimonResults && (
-                          <div className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base overflow-auto focus:outline-none sm:text-sm">
+                          <div className="absolute z-10 mt-1 w-full bg-white dark:bg-dark-300 border border-gray-200 dark:border-dark-100 shadow-lg max-h-60 rounded-lg py-1 text-sm overflow-auto focus:outline-none">
                             {filteredFormDigimon.length > 0 ? (
                               filteredFormDigimon.map(digimon => (
                                 <div
                                   key={digimon.id}
                                   onClick={() => selectFormDigimon(digimon)}
-                                  className="cursor-pointer hover:bg-gray-100 px-4 py-2 flex items-center"
+                                  className="cursor-pointer hover:bg-gray-100 dark:hover:bg-dark-200 px-4 py-2 flex items-center text-gray-900 dark:text-gray-100"
                                 >
                                   <DigimonSprite
                                     digimonName={digimon.name}
@@ -1839,7 +1844,7 @@ const AdminDigimonManager = () => {
                                 </div>
                               ))
                             ) : (
-                              <div className="px-4 py-2 text-gray-500">No digimon found</div>
+                              <div className="px-4 py-2 text-gray-500 dark:text-gray-400">No digimon found</div>
                             )}
                           </div>
                         )}
@@ -1847,12 +1852,12 @@ const AdminDigimonManager = () => {
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Form Type</label>
+                      <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Form Type</label>
                       <select
                         name="form_type"
                         value={formForm.form_type}
                         onChange={handleFormInputChange}
-                        className="w-full p-2 border rounded"
+                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                       >
                         {formTypes.map(type => (
                           <option key={type} value={type}>{type}</option>
@@ -1861,13 +1866,13 @@ const AdminDigimonManager = () => {
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Unlock Condition</label>
+                      <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Unlock Condition</label>
                       <input
                         type="text"
                         name="unlock_condition"
                         value={formForm.unlock_condition || ''}
                         onChange={handleFormInputChange}
-                        className="w-full p-2 border rounded"
+                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                       />
                     </div>
                   </div>
@@ -1875,10 +1880,10 @@ const AdminDigimonManager = () => {
                   <div className="flex justify-end">
                     <button
                       type="submit"
-                      className={`px-4 py-2 text-white rounded ${
-                        isEditingForm 
-                          ? 'bg-yellow-600 hover:bg-yellow-700' 
-                          : 'bg-blue-600 hover:bg-blue-700'
+                      className={`px-4 py-2 text-white rounded-lg text-sm font-medium transition-colors cursor-pointer ${
+                        isEditingForm
+                          ? 'bg-amber-600 hover:bg-amber-700'
+                          : 'bg-indigo-600 dark:bg-accent-600 hover:bg-indigo-700 dark:hover:bg-accent-700'
                       }`}
                     >
                       {isEditingForm ? 'Update Digimon Form' : 'Add Digimon Form'}
@@ -1888,34 +1893,34 @@ const AdminDigimonManager = () => {
               </div>
               
               {/* Digimon Forms List */}
-              <div className="bg-white shadow-md rounded-lg p-6">
-                <h2 className="text-xl font-semibold mb-4">Digimon Forms</h2>
+              <div className="bg-white dark:bg-dark-300 rounded-xl border border-gray-200 dark:border-dark-100 shadow-sm p-6">
+                <h2 className="text-base font-semibold text-gray-800 dark:text-gray-100 mb-4">Digimon Forms</h2>
                 
                 <div className="mb-4">
                   <input
                     type="text"
                     placeholder="Search forms..."
-                    className="w-full p-2 border rounded"
+                    className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
                     value={formSearchTerm}
                     onChange={(e) => setFormSearchTerm(e.target.value)}
                   />
                 </div>
                 
                 <div className="max-h-[600px] overflow-y-auto mt-4">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                  <table className="min-w-full divide-y divide-gray-200 dark:divide-dark-100">
+                    <thead className="bg-gray-50 dark:bg-dark-400">
                       <tr>
-                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Base Digimon</th>
-                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Form Digimon</th>
-                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Form Type</th>
-                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unlock Condition</th>
-                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Base Digimon</th>
+                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Form Digimon</th>
+                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Form Type</th>
+                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Unlock Condition</th>
+                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody className="bg-white dark:bg-dark-300 divide-y divide-gray-100 dark:divide-dark-100">
                       {filteredForms.map(form => (
-                        <tr key={form.id} className="hover:bg-gray-50">
-                          <td className="px-4 py-3 whitespace-nowrap text-sm">
+                        <tr key={form.id} className="hover:bg-gray-50 dark:hover:bg-dark-400 transition-colors">
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                             {form.base_digimon as Digimon ? (
                               <div className="flex items-center">
                                 <DigimonSprite
@@ -1927,10 +1932,10 @@ const AdminDigimonManager = () => {
                                 <span className="ml-2">{(form.base_digimon as Digimon).name}</span>
                               </div>
                             ) : (
-                              <span className="text-gray-400">None</span>
+                              <span className="text-gray-400 dark:text-gray-500">None</span>
                             )}
                           </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm">
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                             {form.form_digimon as Digimon ? (
                               <div className="flex items-center">
                                 <DigimonSprite
@@ -1942,20 +1947,20 @@ const AdminDigimonManager = () => {
                                 <span className="ml-2">{(form.form_digimon as Digimon).name}</span>
                               </div>
                             ) : (
-                              <span className="text-gray-400">None</span>
+                              <span className="text-gray-400 dark:text-gray-500">None</span>
                             )}
                           </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm">
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                             {form.form_type}
                           </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm">
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                             {form.unlock_condition || 'None'}
                           </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm">
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                             <div className="flex space-x-2">
                               <button
                                 onClick={() => handleEditForm(form.id || 0)}
-                                className="text-yellow-600 hover:text-yellow-800"
+                                className="text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 font-medium text-xs cursor-pointer"
                               >
                                 Edit
                               </button>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { EvolutionOption, UserDigimon, getRemainingStatPoints, useDigimonStore } from "../store/petStore";
-import { calculateFinalStats } from "../utils/digimonStatCalculation";
+import { calculateFinalStats, xpForNextLevel, totalCumulativeXp } from "../utils/digimonStatCalculation";
 import { DigimonAttribute, DigimonType } from "../store/battleStore";
 import { supabase } from "../lib/supabase";
 import TypeAttributeIcon from "./TypeAttributeIcon";
@@ -606,7 +606,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                     <div 
                       className="bg-purple-500 h-full transition-all duration-300"
                       style={{ 
-                        width: `${Math.min(100, (localDigimon.experience_points / (localDigimon.current_level * 20)) * 100)}%` 
+                        width: `${Math.min(100, (localDigimon.experience_points / xpForNextLevel(localDigimon.current_level)) * 100)}%`
                       }}
                     />
                   </div>
@@ -614,8 +614,8 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                 
                 {/* Experience details below */}
                 <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  <span>{localDigimon.experience_points}/{localDigimon.current_level * 20} XP</span>
-                  <span>{20 * localDigimon.current_level * (localDigimon.current_level - 1) / 2 + localDigimon.experience_points} Total EXP</span>
+                  <span>{localDigimon.experience_points}/{xpForNextLevel(localDigimon.current_level)} XP</span>
+                  <span>{totalCumulativeXp(localDigimon.current_level, localDigimon.experience_points)} Total EXP</span>
                 </div>
               </div>
             </div>

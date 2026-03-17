@@ -66,35 +66,50 @@ const Onboarding: React.FC = () => {
     setStage(OnboardingStage.SELECT_DIGIMON);
   };
 
-  const handleDigimonSelected = async (digimonId: number, name: string) => {
+  const handleDigimonSelected = async (selections: Array<{ digimonId: number; name: string }>) => {
     try {
-      // First, get the latest data directly from the database
       const { data: userData } = await supabase.auth.getUser();
       if (!userData.user) return;
-      
+
       // Check if user already has any Digimon
       const { data: existingDigimon, error: checkError } = await supabase
         .from("user_digimon")
         .select("id")
         .eq("user_id", userData.user.id)
         .limit(1);
-      
+
       if (checkError) {
         console.error("Error checking existing Digimon:", checkError);
         throw checkError;
       }
-      
-      // Only create a new Digimon if the user doesn't have any
+
       if (!existingDigimon || existingDigimon.length === 0) {
-        await createUserDigimon(name, digimonId);
+        // Create the first Digimon as the active partner
+        await createUserDigimon(selections[0].name, selections[0].digimonId);
+
+        // Create the remaining two as inactive party members
+        const rows = selections.slice(1).map(sel => ({
+          user_id: userData.user!.id,
+          digimon_id: sel.digimonId,
+          name: sel.name,
+          is_active: false,
+          is_on_team: true,
+          happiness: 100,
+          experience_points: 0,
+          current_level: 1,
+        }));
+
+        const { error: insertError } = await supabase.from("user_digimon").insert(rows);
+        if (insertError) {
+          console.error("Error creating additional starter Digimon:", insertError);
+          throw insertError;
+        }
       } else {
-        console.log("User already has a Digimon, skipping creation");
+        console.log("User already has Digimon, skipping creation");
       }
-      
-      // Refresh the Digimon data
+
       await fetchAllUserDigimon();
-      
-      // Move to the next stage regardless
+
       setShowDigimonSelection(false);
       setStage(OnboardingStage.COMPLETE);
     } catch (error) {
@@ -147,17 +162,17 @@ const Onboarding: React.FC = () => {
   const selectDigimonSteps: DialogueStep[] = [
     {
       speaker: 'bokomon',
-      text: "Great job! Now, every hero needs a partner! Choose one of these Digimon to accompany you!"
+      text: "Great job! Now, every hero needs a team! Choose 3 Digimon to start your journey — no duplicates allowed!"
     },
     {
       speaker: 'neemon',
-      text: "Pick the cutest one! Or the coolest! Or the... snackiest?"
+      text: "Ooh, three whole partners! Pick wisely... or just pick the cutest ones. Like me!"
     },
     {
       speaker: 'both',
-      text: "Choose wisely! This will be your first partner on your journey!",
+      text: "Your first partner will be your active Digimon, and the other two will join your team. Choose all three!",
       action: {
-        label: "Select My Partner",
+        label: "Select My Partners",
         onClick: () => {
           setShowDigimonSelection(true);
         }
@@ -224,9 +239,9 @@ const Onboarding: React.FC = () => {
           {showDigimonSelection && (
             <div className="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50">
               <div className="bg-white rounded-lg p-6 shadow-lg max-w-2xl w-full">
-                <h2 className="text-xl font-bold mb-4">Choose Your Partner</h2>
-                <DigimonSelection onSelect={handleDigimonSelected} />
-              </div> 
+                <h2 className="text-xl font-bold mb-1">Choose Your 3 Partners</h2>
+                <DigimonSelection onSelect={() => {}} multiSelect onMultiSelect={handleDigimonSelected} />
+              </div>
             </div>
           )}
         </>

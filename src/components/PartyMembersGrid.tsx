@@ -4,7 +4,7 @@ import DigimonDetailModal from './DigimonDetailModal';
 import TypeAttributeIcon from './TypeAttributeIcon';
 import DigimonSprite from './DigimonSprite';
 import { getEvolutions } from '../utils/evolutionsHelper';
-import { calculateFinalStats } from '../utils/digimonStatCalculation';
+import { calculateFinalStats, xpForNextLevel } from '../utils/digimonStatCalculation';
 import type { SpriteType } from '../utils/spriteManager';
 
 const PartyMembersGrid: React.FC = () => {
@@ -141,9 +141,10 @@ const PartyMembersGrid: React.FC = () => {
       <div className="grid grid-cols-4 gap-2">
         {nonActiveDigimon.slice(0, 8).map((digimon) => {
           // Calculate experience progress
-          const expForCurrentLevel = digimon.current_level * 20;
+          const expForCurrentLevel = xpForNextLevel(digimon.current_level);
           const expProgress = Math.min(100, (digimon.experience_points / expForCurrentLevel) * 100);
-          
+          const isLevelUp = !!levelUpSprites[digimon.id];
+
           return (
             <div
               key={digimon.id}
@@ -156,14 +157,14 @@ const PartyMembersGrid: React.FC = () => {
               {/* Type Attribute Icon - Top Right */}
               {digimon.digimon?.type && digimon.digimon?.attribute && (
                 <div className="absolute top-1 right-1 z-10">
-                  <TypeAttributeIcon 
-                    type={digimon.digimon.type as any} 
-                    attribute={digimon.digimon.attribute as any} 
-                    size="sm" 
+                  <TypeAttributeIcon
+                    type={digimon.digimon.type as any}
+                    attribute={digimon.digimon.attribute as any}
+                    size="sm"
                   />
                 </div>
               )}
-              
+
               {/* Digimon Sprite - Center */}
               <div className="w-full aspect-square flex items-center justify-center relative">
                 <DigimonSprite
@@ -175,31 +176,31 @@ const PartyMembersGrid: React.FC = () => {
                   enableHopping={evolutionEligible[digimon.id] || false}
                 />
               </div>
-              
+
               {/* Level and Experience Bar - Bottom */}
               <div className="absolute bottom-1 left-1 right-1 flex items-center gap-1">
                 {/* Level */}
                 <span className={`text-xs font-bold px-1 rounded transition-all duration-300 ${
-                  levelUpSprites[digimon.id] 
-                    ? 'text-yellow-600 dark:text-yellow-400 bg-yellow-200/90 dark:bg-yellow-900/60 animate-pulse shadow-[0_0_8px_rgba(250,204,21,0.8)]' 
+                  isLevelUp
+                    ? 'text-yellow-600 dark:text-yellow-400 bg-yellow-200/90 dark:bg-yellow-900/60 animate-pulse shadow-[0_0_8px_rgba(250,204,21,0.8)]'
                     : 'text-gray-700 dark:text-gray-300 bg-white/80 dark:bg-gray-800/80'
                 }`}>
                   {digimon.current_level}
                 </span>
-                
+
                 {/* Experience Progress Bar */}
                 <div className="flex-1 bg-gray-300 dark:bg-gray-600 rounded-full h-1.5 overflow-hidden mr-1 relative">
-                  <div 
+                  <div
                     className={`h-full transition-all duration-300 ${
-                      levelUpSprites[digimon.id] 
-                        ? 'bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 animate-pulse shadow-[0_0_8px_rgba(250,204,21,0.6)]' 
+                      isLevelUp
+                        ? 'bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 animate-pulse shadow-[0_0_8px_rgba(250,204,21,0.6)]'
                         : 'bg-purple-500'
                     }`}
                     style={{ width: `${expProgress}%` }}
                   />
                   {/* Glow effect overlay */}
-                  {levelUpSprites[digimon.id] && (
-                    <div 
+                  {isLevelUp && (
+                    <div
                       className="absolute inset-0 bg-yellow-400/40 rounded-full blur-sm animate-pulse"
                       style={{ width: `${expProgress}%` }}
                     />

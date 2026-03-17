@@ -24,7 +24,7 @@ export function expToBoostPoints(level: number, evolution: boolean = true) {
 }
 
 export function calculateBonusStatCap(abi: number) {
-  return 50 + Math.floor(abi / 2);
+  return 20 + abi;
 }
 
 export function getTotalBonusStats(userDigimon: UserDigimon) {
@@ -1175,8 +1175,9 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       const { userDigimon } = get();
       if (!userDigimon) return;
 
-      // Calculate XP needed for next level (20 base + 10 per level)
-      const xpNeeded = 20 + (userDigimon.current_level - 1) * 20;
+      // Calculate XP needed for next level: 100 + (level * 50)
+      // Level 1->2: 150, Level 10->11: 600, Level 50->51: 2600
+      const xpNeeded = 100 + userDigimon.current_level * 50;
 
       // Check if Digimon has enough XP to level up
       if (userDigimon.experience_points >= xpNeeded) {

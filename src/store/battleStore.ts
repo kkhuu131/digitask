@@ -1,399 +1,286 @@
 import { create } from "zustand";
 import { supabase } from "../lib/supabase";
-import { Digimon, useDigimonStore, UserDigimon } from "./petStore";
-import { useTaskStore } from "./taskStore";
-import {
-  calculateBaseDigimonPowerRating,
-  calculateFinalStats,
-} from "../utils/digimonStatCalculation";
+import { Digimon, UserDigimon } from "./petStore";
+import { calculateBaseDigimonPowerRating, calculateUserDigimonPowerRating } from "../utils/digimonStatCalculation";
 import { DIGIMON_LOOKUP_TABLE } from "../constants/digimonLookup";
-import { useTitleStore } from "./titleStore";
-import { useNotificationStore } from "./notificationStore";
-import { useCurrencyStore } from "./currencyStore";
 
-const calculateUserPowerRating = (allDigimon: UserDigimon[]) => {
-  // Calculate power rating for each digimon
-  const powerRatings = allDigimon.map((digimon) => {
-    if (!digimon.digimon) return 0;
-    return calculateBaseDigimonPowerRating(
-      digimon.digimon,
-      digimon.current_level
-    );
-  });
+export const calculateUserPowerRating = (allDigimon: UserDigimon[]) => {
+  // Use actual combat power (includes bonus stats from task completion)
+  const powerRatings = allDigimon
+    .map((digimon) => {
+      if (!digimon.digimon) return 0;
+      return calculateUserDigimonPowerRating(digimon);
+    })
+    .sort((a, b) => b - a);
 
-  // Sort power ratings in descending order
-  powerRatings.sort((a, b) => b - a);
-
-  // Average the 3 greatest power ratings, or all if less than 3
+  // Average the top 9 (or all if fewer), matching the 9-slot party max
   return (
-    powerRatings.slice(0, 9).reduce((acc, power) => acc + power, 0) /
+    powerRatings.slice(0, 9).reduce((acc, p) => acc + p, 0) /
     Math.min(9, powerRatings.length)
   );
 };
 
-const generateBattleOption = (powerRating: number, difficulty: string) => {
+// Stage thresholds: derived from actual Digimon stat data (avg power at median evolution level).
+// A member whose target power falls below the threshold belongs to that stage.
+export const STAGE_THRESHOLDS: [number, string][] = [
+  [190,      "Baby"],
+  [260,      "In-Training"],
+  [350,      "Rookie"],
+  [520,      "Champion"],
+  [730,      "Ultimate"],
+  [970,      "Mega"],
+  [Infinity, "Ultra"],
+];
+
+// Minimum level per stage — earliest a Digimon of this stage would naturally appear
+export const STAGE_MIN_LEVEL: Record<string, number> = {
+  "Baby": 1, "In-Training": 1, "Rookie": 5,
+  "Champion": 14, "Ultimate": 25, "Mega": 40, "Ultra": 50,
+};
+
+// Max level before this stage should have evolved (based on actual evolution path data).
+// If the binary search exceeds this, promote to the next stage.
+export const STAGE_MAX_LEVEL: Record<string, number> = {
+  "Baby": 8, "In-Training": 13, "Rookie": 16,
+  "Champion": 30, "Ultimate": 45, "Mega": 65, "Ultra": 99,
+};
+
+/** Returns the expected stage for a given per-member power rating. */
+export const getStageForPower = (perMemberPower: number): string =>
+  STAGE_THRESHOLDS.find(([threshold]) => perMemberPower < threshold)![1];
+
+/** Binary-searches for the level at which `digimon` matches `targetPower`, clamped to [minLevel, maxLevel]. */
+export const findLevelForPower = (
+  digimon: { hp: number; sp: number; atk: number; def: number; int: number; spd: number;
+             hp_level1: number; sp_level1: number; atk_level1: number; def_level1: number;
+             int_level1: number; spd_level1: number; hp_level99: number; sp_level99: number;
+             atk_level99: number; def_level99: number; int_level99: number; spd_level99: number },
+  targetPower: number,
+  minLevel: number,
+  maxLevel: number,
+): number => {
+  let lo = minLevel, hi = maxLevel, best = minLevel, bestDiff = Infinity;
+  while (lo <= hi) {
+    const mid = Math.floor((lo + hi) / 2);
+    const power = calculateBaseDigimonPowerRating(digimon as any, mid);
+    const diff = Math.abs(power - targetPower);
+    if (diff < bestDiff) { bestDiff = diff; best = mid; }
+    if (power < targetPower) lo = mid + 1; else hi = mid - 1;
+  }
+  return best;
+};
+
+const ATTRIBUTE_WORDS: Record<string, string[]> = {
+  Fire:     ["Flame", "Volcano", "Inferno", "Blaze", "Solar", "Cinder"],
+  Water:    ["Aqua", "Tidal", "Marine", "Torrent", "Frost", "Current"],
+  Plant:    ["Jungle", "Thorn", "Verdant", "Forest", "Briar", "Canopy"],
+  Electric: ["Thunder", "Storm", "Volt", "Surge", "Spark", "Zap"],
+  Wind:     ["Gale", "Sky", "Cyclone", "Tempest", "Breeze", "Aerial"],
+  Earth:    ["Terra", "Boulder", "Quake", "Stone", "Iron", "Granite"],
+  Light:    ["Radiant", "Aurora", "Celestial", "Holy", "Solar", "Lumen"],
+  Dark:     ["Shadow", "Phantom", "Eclipse", "Abyss", "Void", "Dusk"],
+  Neutral:  ["Steel", "Chrome", "Onyx", "Silver", "Crystal", "Cobalt"],
+};
+
+const TYPE_WORDS: Record<string, string[]> = {
+  Vaccine: ["Guardian", "Sacred", "Aegis", "Sentinel", "Blessed"],
+  Virus:   ["Venom", "Scourge", "Plague", "Blight", "Corrupt"],
+  Data:    ["Cyber", "Binary", "Matrix", "Logic", "Digital"],
+  Free:    ["Rogue", "Nomad", "Vagrant", "Drifter", "Outlaw"],
+};
+
+const RANK_WORDS: Record<string, string[]> = {
+  easy:   ["Patrol", "Scout", "Grunt", "Recruit", "Pack"],
+  medium: ["Knight", "Striker", "Warden", "Blade", "Guard", "Fang", "Rush"],
+  hard:   ["Lord", "Emperor", "Sovereign", "Titan", "Centurion", "Royale", "Legion", "Overlord"],
+};
+
+function pickRandom<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+export const generateTeamName = (
+  team: { attribute?: string; type?: string }[],
+  difficulty: string
+): string => {
+  // Find dominant attribute and type by frequency
+  const attrCount: Record<string, number> = {};
+  const typeCount: Record<string, number> = {};
+  for (const d of team) {
+    if (d.attribute) attrCount[d.attribute] = (attrCount[d.attribute] ?? 0) + 1;
+    if (d.type) typeCount[d.type] = (typeCount[d.type] ?? 0) + 1;
+  }
+
+  const topAttr = Object.entries(attrCount).sort((a, b) => b[1] - a[1])[0]?.[0];
+  const topType = Object.entries(typeCount).sort((a, b) => b[1] - a[1])[0]?.[0];
+
+  const rankWords = RANK_WORDS[difficulty] ?? RANK_WORDS.medium;
+  const rank = pickRandom(rankWords);
+
+  // 50/50: use attribute theme or type theme
+  if (Math.random() < 0.5 && topAttr && ATTRIBUTE_WORDS[topAttr]) {
+    return `${pickRandom(ATTRIBUTE_WORDS[topAttr])} ${rank}`;
+  }
+  if (topType && TYPE_WORDS[topType]) {
+    return `${pickRandom(TYPE_WORDS[topType])} ${rank}`;
+  }
+  if (topAttr && ATTRIBUTE_WORDS[topAttr]) {
+    return `${pickRandom(ATTRIBUTE_WORDS[topAttr])} ${rank}`;
+  }
+  return `Shadow ${rank}`;
+};
+
+export const generateBattleOption = (powerRating: number, difficulty: string) => {
+  const difficultyMultipliers: Record<string, number> = { easy: 0.65, medium: 0.8, hard: 1.0 };
+  const multiplier = difficultyMultipliers[difficulty] ?? 1.0;
+  const targetPower = powerRating * multiplier;
+  const teamSize = 3;
+
+  // Always pick a theme (attribute or type, 50/50)
+  let teamTheme: { type?: string; attribute?: string } = {};
+  if (Math.random() < 0.5) {
+    const types = ["Vaccine", "Data", "Virus", "Free"];
+    teamTheme.type = pickRandom(types);
+  } else {
+    const attributes = ["Fire", "Water", "Plant", "Electric", "Wind", "Earth", "Light", "Dark", "Neutral"];
+    teamTheme.attribute = pickRandom(attributes);
+  }
+
+  // Group digimon by stage, filtered by theme
+  const digimonByStage: Record<string, Digimon[]> = {
+    Baby: [], "In-Training": [], Rookie: [], Champion: [], Ultimate: [], Mega: [], Ultra: [],
+  };
+
+  const buildStageGroups = (filter: boolean) => {
+    Object.keys(digimonByStage).forEach(k => { digimonByStage[k] = []; });
+    Object.values(DIGIMON_LOOKUP_TABLE).forEach((digimon) => {
+      if (filter && teamTheme.type && digimon.type !== teamTheme.type) return;
+      if (filter && teamTheme.attribute && digimon.attribute !== teamTheme.attribute) return;
+      if (digimonByStage[digimon.stage]) digimonByStage[digimon.stage].push(digimon);
+    });
+  };
+
+  buildStageGroups(true);
+  // Fall back to unfiltered if theme has too few Digimon
+  const totalInTheme = Object.values(digimonByStage).reduce((s, g) => s + g.length, 0);
+  if (totalInTheme < teamSize) {
+    buildStageGroups(false);
+    teamTheme = {};
+  }
+
+  const team: {
+    id: number; digimon_id: number; name: string; current_level: number;
+    sprite_url: string; type: string; attribute: string;
+  }[] = [];
+
+  let remainingPower = targetPower * teamSize;
+
+  for (let i = 0; i < teamSize; i++) {
+    const isLast = i === teamSize - 1;
+    const memberTargetPower = isLast
+      ? remainingPower
+      : (remainingPower / (teamSize - i)) * (0.9 + Math.random() * 0.2);
+
+    const stageOrder = ["Baby", "In-Training", "Rookie", "Champion", "Ultimate", "Mega", "Ultra"];
+
+    // Determine stage from threshold table, then promote if the target power
+    // requires a level above the stage's natural evolution cap
+    let stageIdx = stageOrder.indexOf(
+      STAGE_THRESHOLDS.find(([threshold]) => memberTargetPower < threshold)![1]
+    );
+
+    const pickCandidates = (idx: number) => {
+      let c = digimonByStage[stageOrder[idx]] ?? [];
+      if (c.length > 0) return c;
+      // Widen to adjacent stages if empty
+      for (let delta = 1; delta < stageOrder.length && c.length === 0; delta++) {
+        if (idx - delta >= 0) c = digimonByStage[stageOrder[idx - delta]];
+        if (c.length === 0 && idx + delta < stageOrder.length)
+          c = digimonByStage[stageOrder[idx + delta]];
+      }
+      return c.length > 0 ? c : Object.values(DIGIMON_LOOKUP_TABLE);
+    };
+
+    const binarySearchLevel = (digimon: Digimon, minLvl: number) => {
+      let lo = minLvl, hi = 99, best = minLvl, bestDiff = Infinity;
+      while (lo <= hi) {
+        const mid = Math.floor((lo + hi) / 2);
+        const power = calculateBaseDigimonPowerRating(digimon, mid);
+        const diff = Math.abs(power - memberTargetPower);
+        if (diff < bestDiff) { bestDiff = diff; best = mid; }
+        if (power < memberTargetPower) lo = mid + 1; else hi = mid - 1;
+      }
+      return best;
+    };
+
+    // Filter candidates to those whose natural level range can actually hit memberTargetPower.
+    // This avoids picking outlier species (e.g. Omegamon in a weak Champion slot) that would
+    // need an unnaturally low or high level to match the target.
+    const filterByPowerRange = (pool: Digimon[], minLvl: number, maxLvl: number) => {
+      const compatible = pool.filter(d => {
+        const pMin = calculateBaseDigimonPowerRating(d, minLvl);
+        const pMax = calculateBaseDigimonPowerRating(d, maxLvl);
+        return pMin <= memberTargetPower * 1.15 && memberTargetPower <= pMax * 1.15;
+      });
+      return compatible.length >= 2 ? compatible : pool; // fall back to full pool if too few
+    };
+
+    // Try the initial stage; if the level lands too high (Digimon would have evolved),
+    // promote to the next stage and retry — repeat until we're in a sensible range or at Ultra
+    let minLevel = STAGE_MIN_LEVEL[stageOrder[stageIdx]] ?? 1;
+    let candidates = filterByPowerRange(
+      pickCandidates(stageIdx),
+      minLevel,
+      STAGE_MAX_LEVEL[stageOrder[stageIdx]] ?? 99
+    );
+    let randomDigimon = pickRandom(candidates);
+    let bestLevel = binarySearchLevel(randomDigimon, minLevel);
+
+    while (bestLevel > (STAGE_MAX_LEVEL[stageOrder[stageIdx]] ?? 99) && stageIdx < stageOrder.length - 1) {
+      stageIdx++;
+      minLevel = STAGE_MIN_LEVEL[stageOrder[stageIdx]] ?? 1;
+      candidates = filterByPowerRange(
+        pickCandidates(stageIdx),
+        minLevel,
+        STAGE_MAX_LEVEL[stageOrder[stageIdx]] ?? 99
+      );
+      randomDigimon = pickRandom(candidates);
+      bestLevel = binarySearchLevel(randomDigimon, minLevel);
+    }
+
+    team.push({
+      id: randomDigimon.digimon_id * 10 + i,  // unique per slot even if same species
+      digimon_id: randomDigimon.digimon_id,
+      name: randomDigimon.name,
+      current_level: bestLevel,
+      sprite_url: randomDigimon.sprite_url,
+      type: randomDigimon.type,
+      attribute: randomDigimon.attribute,
+    });
+
+    remainingPower -= calculateBaseDigimonPowerRating(randomDigimon, bestLevel);
+  }
+
+  const teamName = generateTeamName(team, difficulty);
+
   const battleOption = {
-    id: `${difficulty}-wild-${Date.now()}-${Math.random()
-      .toString(36)
-      .substring(2, 9)}`,
-    difficulty: difficulty,
+    id: `${difficulty}-wild-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+    difficulty,
     team: {
       user_id: "00000000-0000-0000-0000-000000000000",
-      username: "Wild Digimon",
-      digimon: [],
+      username: teamName,
+      digimon: team as any,
     },
     isWild: true,
   };
 
-  const difficultyMultipliers = { easy: 0.65, medium: 0.8, hard: 1.0 };
-
-  // Determine if we should create a themed team (30% chance)
-  const createThemedTeam = Math.random() < 0.3;
-  let teamTheme: { type?: string; attribute?: string } = {};
-
-  if (createThemedTeam) {
-    // Decide whether to theme by type or attribute (50/50)
-    if (Math.random() < 0.5) {
-      // Create a type-themed team
-      const types = ["Vaccine", "Data", "Virus", "Free"];
-      teamTheme.type = types[Math.floor(Math.random() * types.length)];
-
-      // Update the battle option to show themed team name
-      battleOption.team.username = `Wild ${teamTheme.type} Digimon`;
-    } else {
-      // Create an attribute-themed team
-      const attributes = [
-        "Fire",
-        "Water",
-        "Plant",
-        "Electric",
-        "Wind",
-        "Earth",
-        "Light",
-        "Dark",
-        "Neutral",
-      ];
-      teamTheme.attribute =
-        attributes[Math.floor(Math.random() * attributes.length)];
-
-      // Update the battle option to show themed team name
-      battleOption.team.username = `Wild ${teamTheme.attribute} Digimon`;
-    }
-  }
-
-  // Group digimon by stage for better selection
-  const digimonByStage: Record<string, Digimon[]> = {
-    Baby: [],
-    "In-Training": [],
-    Rookie: [],
-    Champion: [],
-    Ultimate: [],
-    Mega: [],
-    Ultra: [],
-  };
-
-  // Populate the groups, filtering by theme if applicable
-  Object.values(DIGIMON_LOOKUP_TABLE).forEach((digimon) => {
-    // Skip if this doesn't match our theme (if we have one)
-    if (teamTheme.type && digimon.type !== teamTheme.type) return;
-    if (teamTheme.attribute && digimon.attribute !== teamTheme.attribute)
-      return;
-
-    if (digimonByStage[digimon.stage]) {
-      digimonByStage[digimon.stage].push(digimon);
-    }
-  });
-
-  // If we're creating a themed team but don't have enough digimon for certain stages,
-  // we might need to fall back to a non-themed approach
-  const hasEnoughDigimon = Object.values(digimonByStage).some(
-    (group) => group.length > 0
-  );
-
-  if (!hasEnoughDigimon && createThemedTeam) {
-    // Repopulate without theme filtering
-    Object.keys(digimonByStage).forEach((stage) => {
-      digimonByStage[stage] = [];
-    });
-
-    Object.values(DIGIMON_LOOKUP_TABLE).forEach((digimon) => {
-      if (digimonByStage[digimon.stage]) {
-        digimonByStage[digimon.stage].push(digimon);
-      }
-    });
-
-    // Reset the team name since we're no longer themed
-    battleOption.team.username = "Wild Digimon";
-  }
-
-  const targetPower =
-    powerRating *
-    difficultyMultipliers[difficulty as keyof typeof difficultyMultipliers];
-  const teamSize = Math.min(
-    3,
-    useDigimonStore.getState().allUserDigimon.length
-  );
-  const team = [];
-
-  // Total power to distribute among team members
-  let remainingPower = targetPower * teamSize;
-
-  for (let i = 0; i < teamSize; i++) {
-    const isLastMember = i === teamSize - 1;
-
-    // For the last member, use all remaining power
-    // For others, use a portion of remaining power plus some variance
-    const memberTargetPower = isLastMember
-      ? remainingPower
-      : (remainingPower / (teamSize - i)) * (0.95 + Math.random() * 0.1);
-
-    // Select appropriate stage based on power level
-    let selectedStage: string;
-    if (memberTargetPower < 150) selectedStage = "Baby";
-    else if (memberTargetPower < 240) selectedStage = "In-Training";
-    else if (memberTargetPower < 350) selectedStage = "Rookie";
-    else if (memberTargetPower < 500) selectedStage = "Champion";
-    else if (memberTargetPower < 750) selectedStage = "Ultimate";
-    else if (memberTargetPower < 950) selectedStage = "Mega";
-    else selectedStage = "Ultra";
-
-    // Get candidates from that stage
-    const candidates = digimonByStage[selectedStage];
-
-    if (candidates.length === 0) {
-      // Fallback if no digimon in that stage
-      const allDigimon = Object.values(DIGIMON_LOOKUP_TABLE);
-      const randomDigimon =
-        allDigimon[Math.floor(Math.random() * allDigimon.length)];
-      team.push({
-        id: randomDigimon.digimon_id,
-        name: randomDigimon.name,
-        current_level: 1,
-        sprite_url: randomDigimon.sprite_url,
-        type: randomDigimon.type,
-        attribute: randomDigimon.attribute,
-      }); // Default to level 1
-      continue;
-    }
-
-    // Pick a random digimon from the appropriate stage
-    const randomDigimon =
-      candidates[Math.floor(Math.random() * candidates.length)];
-
-    // Binary search to find level that produces the closest power to target
-    let minLevel = 1;
-    let maxLevel = 99;
-    let bestLevel = 1;
-    let bestPowerDiff = Number.MAX_SAFE_INTEGER;
-
-    while (minLevel <= maxLevel) {
-      const midLevel = Math.floor((minLevel + maxLevel) / 2);
-      const power = calculateBaseDigimonPowerRating(randomDigimon, midLevel);
-      const powerDiff = Math.abs(power - memberTargetPower);
-
-      if (powerDiff < bestPowerDiff) {
-        bestLevel = midLevel;
-        bestPowerDiff = powerDiff;
-      }
-
-      if (power < memberTargetPower) {
-        minLevel = midLevel + 1;
-      } else {
-        maxLevel = midLevel - 1;
-      }
-    }
-
-    const enemyDigimon = {
-      id: randomDigimon.digimon_id+"-"+i,
-      name: randomDigimon.name,
-      current_level: bestLevel, // Use the level we found
-      sprite_url: randomDigimon.sprite_url,
-      type: randomDigimon.type,
-      attribute: randomDigimon.attribute,
-    };
-
-    // Create enemy digimon and add to team
-    team.push(enemyDigimon);
-
-    // Subtract this digimon's actual power from remaining power
-    const actualPower = calculateBaseDigimonPowerRating(
-      randomDigimon,
-      bestLevel
-    );
-    remainingPower -= actualPower;
-  }
-
-  battleOption.team.digimon = team as any;
-
   return battleOption as BattleOption;
 };
 
-function simulateTeamBattle(userTeamData: any, opponentTeamData: any) {
-  function getAttributeDamageMultiplier(
-    attacker: DigimonAttribute,
-    defender: DigimonAttribute
-  ): number {
-    return AttributeAdvantageMap[attacker][defender] ?? 1.0;
-  }
-
-  function getTypeDamageMultiplier(
-    attacker: DigimonType,
-    defender: DigimonType
-  ): number {
-    return TypeAdvantageMap[attacker][defender] ?? 1.0;
-  }
-
-  const usedIds = new Set();
-  for (const digimon of [...userTeamData, ...opponentTeamData]) {
-    if (usedIds.has(digimon.id)) {
-      console.error("Duplicate Digimon ID detected:", digimon.id);
-      throw new Error("Duplicate Digimon ID detected");
-    }
-    usedIds.add(digimon.id);
-  }
-
-  for (const digimon of [...userTeamData, ...opponentTeamData]) {
-    const stats = calculateFinalStats(digimon);
-    Object.assign(digimon.digimon, {
-      final_hp: stats.hp,
-      final_atk: stats.atk,
-      final_int: stats.int,
-      final_spd: stats.spd,
-      final_def: stats.def,
-      final_sp: stats.sp,
-      current_hp: stats.hp,
-    });
-  }
-
-  const turns = [];
-
-  const getAliveDigimon = (team: any) => {
-    return team.filter((digimon: any) => digimon.digimon.current_hp > 0);
-  };
-
-  const allCombatants = [
-    ...getAliveDigimon(userTeamData).map((d: any) => ({
-      digimon: d.digimon,
-      team: "user",
-      id: d.id,
-    })),
-    ...getAliveDigimon(opponentTeamData).map((d: any) => ({
-      digimon: d.digimon,
-      team: "opponent",
-      id: d.id,
-    })),
-  ];
-
-  allCombatants.sort((a, b) => b.digimon.final_spd - a.digimon.final_spd);
-
-  const digimonHPMap: Record<string, number> = {};
-  for (const digimon of [...userTeamData, ...opponentTeamData]) {
-    digimonHPMap[digimon.id] = digimon.digimon.final_hp;
-  }
-
-  const isTeamAlive = (team: any[], hpMap: Record<string, number>) => {
-    return team.some((digimon) => hpMap[digimon.id] > 0);
-  };
-
-  battleLoop: while (true) {
-    // Use labeled loop for clean break
-    // Check if either team is defeated before starting the round
-    if (
-      !isTeamAlive(userTeamData, digimonHPMap) ||
-      !isTeamAlive(opponentTeamData, digimonHPMap)
-    ) {
-      break;
-    }
-
-    for (const combatant of allCombatants) {
-      // Check if either team is defeated before each attack
-      if (
-        !isTeamAlive(userTeamData, digimonHPMap) ||
-        !isTeamAlive(opponentTeamData, digimonHPMap)
-      ) {
-        break battleLoop;
-      }
-
-      // Use current HP map to check if attacker is alive
-      if (digimonHPMap[combatant.id] <= 0) continue;
-
-      const targetTeam =
-        combatant.team === "user" ? opponentTeamData : userTeamData;
-      // Use current HP map to get alive targets
-      const targets = targetTeam.filter((d: any) => digimonHPMap[d.id] > 0);
-
-      if (targets.length === 0) break battleLoop;
-
-      const target = targets[Math.floor(Math.random() * targets.length)];
-
-      let attackPower = 1;
-
-      if (combatant.digimon.final_atk >= combatant.digimon.final_int) {
-        attackPower = combatant.digimon.final_atk / target.digimon.final_def;
-      } else {
-        attackPower = combatant.digimon.final_int / target.digimon.final_int;
-      }
-
-      const sp = target.digimon.final_sp;
-
-      const damageMultiplier = 0.8 + Math.random() * 0.4;
-      const isCriticalHit = Math.random() < criticalHitChance;
-
-      const typeMultiplier = getTypeDamageMultiplier(
-        combatant.digimon.type,
-        target.digimon.type
-      );
-      const attributeMultiplier = getAttributeDamageMultiplier(
-        combatant.digimon.attribute,
-        target.digimon.attribute
-      );
-
-      const didMiss = Math.random() < missChance;
-
-      const damage = didMiss
-        ? 0
-        : Math.max(
-            1,
-            Math.round(
-              attackPower *
-                baseDamage *
-                damageMultiplier *
-                (isCriticalHit ? calculateCritMultiplier(sp) : 1) *
-                typeMultiplier *
-                attributeMultiplier
-            )
-          );
-
-      target.digimon.current_hp = Math.max(
-        0,
-        target.digimon.current_hp - damage
-      );
-
-      digimonHPMap[target.id] = Math.max(0, digimonHPMap[target.id] - damage);
-
-      turns.push({
-        attacker: combatant,
-        target,
-        damage,
-        isCriticalHit,
-        didMiss,
-        remainingHP: { ...digimonHPMap },
-      });
-    }
-  }
-
-  // Use final HP map to determine winner
-  const userAlive = isTeamAlive(userTeamData, digimonHPMap);
-
-  return {
-    winnerId: userAlive ? userTeamData[0].user_id : opponentTeamData[0].user_id,
-    turns,
-  };
-}
 
 export type DigimonType = "Vaccine" | "Virus" | "Data" | "Free";
 
-const TypeAdvantageMap: Record<DigimonType, Record<DigimonType, number>> = {
+export const TypeAdvantageMap: Record<DigimonType, Record<DigimonType, number>> = {
   Vaccine: {
     Virus: 2.0,
     Data: 0.5,
@@ -431,7 +318,7 @@ export type DigimonAttribute =
   | "Light"
   | "Neutral";
 
-const AttributeAdvantageMap: Record<
+export const AttributeAdvantageMap: Record<
   DigimonAttribute,
   Record<DigimonAttribute, number>
 > = {
@@ -536,72 +423,18 @@ const AttributeAdvantageMap: Record<
   },
 };
 
-function calculateCritMultiplier(SP: number) {
+export function calculateCritMultiplier(SP: number) {
   const SPModifier = 0.01 * SP;
   const critMultiplier = baseCritMultiplier + SPModifier;
 
   return critMultiplier;
 }
 
-const baseDamage = 150;
-const missChance = 0.07;
-const criticalHitChance = 0.125;
-const baseCritMultiplier = 1.25;
+export const baseDamage = 50;
+export const missChance = 0.07;
+export const criticalHitChance = 0.125;
+export const baseCritMultiplier = 1.25;
 
-export interface TeamBattle {
-  id: string;
-  user_team: {
-    current_level: number;
-    experience_points: number;
-    user_id: string;
-    id: string;
-    name: string;
-    level: number;
-    digimon_id: number;
-    sprite_url: string;
-    digimon_name: string;
-    profile: {
-      username: string;
-      display_name: string;
-    };
-    stats?: {
-      hp: number;
-    };
-  }[];
-  opponent_team: {
-    current_level: number;
-    experience_points: number;
-    user_id: string;
-    id: string;
-    name: string;
-    level: number;
-    digimon_id: number;
-    sprite_url: string;
-    digimon_name: string;
-    profile: {
-      username: string;
-      display_name: string;
-    };
-    stats?: {
-      hp: number;
-    };
-  }[];
-  turns?: {
-    attacker: any;
-    target: any;
-    damage: number;
-    isCriticalHit: boolean;
-    didMiss: boolean;
-    remainingHP: {
-      [key: string]: number;
-    };
-  }[];
-  winner_id: string;
-  xpGain: number;
-  created_at: string;
-  hint?: string;
-  bitsReward: number;
-}
 
 export interface TeamBattleHistory {
   user_id: string;
@@ -651,6 +484,60 @@ export interface TeamBattleHistory {
   };
 }
 
+export interface TeamBattle {
+  id: string;
+  created_at: string;
+  user_team: {
+    id: string;
+    user_id: string;
+    current_level: number;
+    experience_points: number;
+    digimon_id: number | string;
+    name: string;
+    sprite_url?: string;
+    digimon_name?: string;
+    profile?: {
+      username: string;
+      display_name?: string;
+    };
+    stats?: {
+      hp: number;
+    };
+  }[];
+  opponent_team: {
+    id: string;
+    user_id: string;
+    current_level: number;
+    experience_points: number;
+    digimon_id: number | string;
+    name: string;
+    sprite_url?: string;
+    digimon_name?: string;
+    profile?: {
+      username: string;
+      display_name?: string;
+    };
+    stats?: {
+      hp: number;
+    };
+  }[];
+  turns?: {
+    attacker: any;
+    target: any;
+    damage: number;
+    isCriticalHit: boolean;
+    didMiss: boolean;
+    remainingHP: {
+      [key: string]: number;
+    };
+  }[];
+  winner_id: string;
+  xpGain: number;
+  bitsReward: number;
+  hint?: string;
+  description?: string;
+}
+
 interface BattleOption {
   id: string;
   difficulty: "easy" | "medium" | "hard";
@@ -670,38 +557,18 @@ interface BattleOption {
   isWild: boolean;
 }
 
-interface OpponentWithTeam {
-  id: string;
-  username: string;
-  display_name?: string;
-  team: any[]; // You can define a more specific type if needed
-  powerLevel: number;
-}
-
 interface BattleState {
   teamBattleHistory: TeamBattleHistory[];
-  currentTeamBattle: TeamBattle | null;
   loading: boolean;
   error: string | null;
-  dailyBattlesRemaining: number;
   fetchTeamBattleHistory: () => Promise<void>;
-  clearCurrentTeamBattle: () => void;
-  checkDailyBattleLimit: () => Promise<number>;
   battleOptions: BattleOption[];
   selectedBattleOption: BattleOption | null;
   getBattleOptions: (forceRefresh?: boolean) => Promise<void>;
   refreshBattleOptions: () => Promise<void>;
-  selectAndStartBattle: (optionId: string) => Promise<void>;
   lastOptionsRefresh: number | null;
   shouldRefreshOptions: boolean;
   setShouldRefreshOptions: (shouldRefresh: boolean) => void;
-  isBattleInProgress: boolean;
-  simulateCampaignBattle: (
-    userTeamData: any,
-    opponentTeamData: any,
-    hint?: string,
-    description?: string
-  ) => Promise<TeamBattle>;
 }
 
 // Add these helper functions at the top of the file
@@ -752,354 +619,12 @@ export const useBattleStore = create<BattleState>((set, get) => {
 
   return {
     teamBattleHistory: [],
-    currentTeamBattle: null,
     loading: false,
     error: null,
-    dailyBattlesRemaining: 5,
     battleOptions: options,
     selectedBattleOption: null,
     lastOptionsRefresh: timestamp,
     shouldRefreshOptions: shouldRefresh,
-    isBattleInProgress: false,
-
-    selectAndStartBattle: async (optionId: string) => {
-      const state = get();
-
-      // If a battle is already in progress, don't start another one
-      if (state.loading || state.isBattleInProgress) {
-        return;
-      }
-
-      // Daily battle limit removed in favor of energy system
-
-      // Set both loading and isBattleInProgress flags
-      set({ loading: true, isBattleInProgress: true, error: null });
-
-      try {
-        const option = state.battleOptions.find((o) => o.id === optionId);
-
-        if (!option) {
-          set({
-            error: "Invalid battle option",
-            loading: false,
-            isBattleInProgress: false,
-          });
-          return;
-        }
-
-        // Get user data
-        const { data: userData } = await supabase.auth.getUser();
-        if (!userData.user) {
-          set({
-            error: "User not authenticated",
-            loading: false,
-            isBattleInProgress: false,
-          });
-          return;
-        }
-
-        // Get the all user Digimon's data
-        const { data: userTeamRawData, error: userDigimonError } =
-          await supabase
-            .from("user_digimon")
-            .select("*")
-            .eq("user_id", userData.user.id)
-            .eq("is_on_team", true)
-            .limit(3);
-
-        if (userDigimonError) throw userDigimonError;
-        if (!userTeamRawData) throw new Error("Could not find your Digimon");
-
-        const userTeamData = userTeamRawData.map((digimon) => ({
-          ...digimon,
-          digimon: DIGIMON_LOOKUP_TABLE[digimon.digimon_id],
-        }));
-
-        // Get the user's profile
-        const { data: userProfile } = await supabase
-          .from("profiles")
-          .select("username, display_name")
-          .eq("id", userData.user.id)
-          .single();
-
-        if (!userProfile) throw new Error("Could not find your profile");
-
-        // Prepare opponent team data
-        let opponentTeamData;
-        let opponentProfile;
-
-        if (!option.isWild) {
-          opponentTeamData = await Promise.all(
-            option.team.digimon.map(async (d) => {
-              // Get the full Digimon data
-              const { data: digimonRawData } = await supabase
-                .from("user_digimon")
-                .select("*")
-                .eq("id", d.id)
-                .single();
-
-              if (!digimonRawData) throw new Error("Could not find Digimon");
-
-              const digimonId = Number(digimonRawData.digimon_id);
-              const digimonData = DIGIMON_LOOKUP_TABLE[digimonId];
-
-              return {
-                ...digimonRawData,
-                digimon: digimonData,
-              };
-            })
-          );
-
-          const { data: profile } = await supabase
-            .from("profiles")
-            .select("*")
-            .eq("id", option.team.user_id)
-            .single();
-
-          opponentProfile = profile;
-        } else {
-          // Create wild Digimon team
-          opponentTeamData = await Promise.all(
-            option.team.digimon.map(async (d) => {
-              const digimonId = Number(d.id);
-              const digimonData = DIGIMON_LOOKUP_TABLE[digimonId];
-
-              return {
-                id: crypto.randomUUID
-                  ? crypto.randomUUID()
-                  : "00000000-0000-0000-0000-000000000001",
-                user_id: "00000000-0000-0000-0000-000000000000",
-                digimon_id: d.id,
-                name: d.name,
-                current_level: d.current_level,
-                experience_points: 0,
-                happiness: 100,
-                digimon: digimonData,
-              };
-            })
-          );
-
-          opponentProfile = {
-            id: "wild",
-            username: "Wild Digimon",
-            display_name: "Wild Digimon",
-          };
-        }
-
-        // Spend energy upfront for Arena battle (Phase 1: flat 20 energy)
-        let spentOk: any = null;
-        try {
-          const { data } = await supabase.rpc('spend_energy_self', { p_amount: 20 });
-          spentOk = data;
-        } catch (e) {
-          console.error('spend_energy_self(20) failed:', e);
-        }
-        if (!spentOk) {
-          set({
-            error: 'Not enough Battle Energy. Complete tasks to earn energy.',
-            loading: false,
-            isBattleInProgress: false,
-          });
-          useNotificationStore.getState().addNotification({
-            message: 'Not enough Battle Energy. Complete tasks to earn energy.',
-            type: 'error',
-          });
-          return;
-        }
-        // Notify UI to refresh energy HUD
-        try { window.dispatchEvent(new Event('energy-updated')); } catch {}
-
-        // Determine winner
-        const { winnerId, turns } = simulateTeamBattle(
-          userTeamData,
-          opponentTeamData
-        );
-
-        const BASE_XP_GAIN = {
-          easy: 30,
-          medium: 50,
-          hard: 70,
-        };
-
-        const expModifier = 0.025;
-
-        const opponentTeamAverageLevel =
-          opponentTeamData.reduce((sum, d) => sum + d.current_level, 0) /
-          opponentTeamData.length;
-
-        const userTeamAverageLevel =
-          userTeamData.reduce((sum, d) => sum + d.current_level, 0) /
-          userTeamData.length;
-
-        let xpGain =
-          BASE_XP_GAIN[option.difficulty] *
-          (1 + expModifier * (opponentTeamAverageLevel - userTeamAverageLevel));
-
-        if (winnerId !== userTeamData[0].user_id) xpGain *= 0.12;
-
-        xpGain = Math.max(xpGain, 20);
-        xpGain = Math.floor(xpGain);
-
-        // Get the XP multiplier from taskStore
-        const expMultiplier = useTaskStore.getState().getExpMultiplier();
-        xpGain = Math.round(xpGain * expMultiplier);
-
-        // No daily battle limit with energy system
-
-        // First win of the day bonus (applies on win): 2x rewards
-        let firstWinBonus = false;
-        if (winnerId === userTeamData[0].user_id) {
-          try {
-            const { data: firstWin } = await supabase.rpc('check_and_set_first_win_self');
-            firstWinBonus = !!firstWin;
-          } catch (e) {
-            console.error('check_and_set_first_win_self failed:', e);
-          }
-        }
-
-        // Apply the XP gain to all Digimon (with first-win doubling)
-        // Team members get 100%, Reserve members get 50%, Storage gets 0%
-        const finalXpGain = firstWinBonus ? xpGain * 2 : xpGain;
-        await useDigimonStore.getState().feedBattleRewards(finalXpGain);
-
-        const simulatedTeamBattle = {
-          id: crypto.randomUUID ? crypto.randomUUID() : "temp-id-" + Date.now(),
-          created_at: new Date().toISOString(),
-          user_team: userTeamData.map((d) => ({
-            user_id: d.user_id,
-            current_level: d.current_level,
-            experience_points: d.experience_points,
-            id: d.id,
-            name: d.name,
-            level: d.current_level,
-            digimon_id: d.digimon_id,
-            sprite_url: d.digimon.sprite_url,
-            digimon_name: d.digimon.name,
-            profile: {
-              username: userProfile?.username ?? "You",
-              display_name: userProfile?.display_name ?? "You",
-            },
-            stats: {
-              hp: d.digimon.final_hp,
-            },
-          })),
-          opponent_team: opponentTeamData.map((d) => ({
-            user_id: d.user_id,
-            current_level: d.current_level,
-            experience_points: d.experience_points,
-            id: d.id,
-            name: d.name,
-            level: d.current_level,
-            digimon_id: d.digimon_id,
-            sprite_url: d.digimon.sprite_url,
-            digimon_name: d.digimon.name,
-            profile: {
-              username: opponentProfile?.username ?? "Unknown",
-              display_name: opponentProfile?.display_name ?? "Unknown",
-            },
-            stats: {
-              hp: d.digimon.final_hp,
-            },
-          })),
-          turns,
-          winner_id: winnerId,
-          xpGain: finalXpGain,
-          bitsReward: 0,
-        };
-
-        const { error: TeamBattleError } = await supabase
-          .from("team_battles")
-          .insert({
-            user_id: userData.user.id,
-            ...(option.isWild ? {} : { opponent_id: option.team.user_id }),
-            winner_id: winnerId,
-            user_team: userTeamData,
-            opponent_team: opponentTeamData,
-            created_at: new Date().toISOString(),
-            turns: turns,
-          });
-
-        if (TeamBattleError) throw TeamBattleError;
-
-        set({
-          currentTeamBattle: simulatedTeamBattle as TeamBattle,
-          loading: false,
-          isBattleInProgress: false,
-        });
-
-        // After battle is complete, mark options for refresh
-        saveBattleOptionsToStorage(
-          get().battleOptions,
-          get().lastOptionsRefresh || Date.now(),
-          true
-        );
-        set({ shouldRefreshOptions: true });
-
-        // If you need to check for titles but not update counters:
-        const { data: profile, error: profileError } = await supabase
-          .from("profiles")
-          .select("battles_won, battles_completed")
-          .eq("id", userData.user.id)
-          .single();
-
-        if (!profileError && profile) {
-          if (winnerId === userTeamData[0].user_id) {
-            const newBattlesWon = profile?.battles_won || 0;
-
-            // Only check for titles
-            await useTitleStore.getState().checkBattleTitles(newBattlesWon);
-          }
-        }
-
-        // Award bits based on difficulty and outcome
-        let bitsReward = calculateBitsReward(
-          option.difficulty,
-          winnerId === userTeamData[0].user_id
-        );
-        if (firstWinBonus && winnerId === userTeamData[0].user_id) {
-          bitsReward *= 2;
-        }
-        if (bitsReward > 0) {
-          // Add the bits to the player's currency
-          const currencyStore = useCurrencyStore.getState();
-          currencyStore.addCurrency("bits", bitsReward);
-        }
-
-
-        // Store the bits reward in the battle result for display
-        set((state) => {
-          // Make a deep copy with required fields guaranteed
-          const updatedBattle = {
-            ...state.currentTeamBattle,
-            bitsReward: bitsReward,
-            id:
-              state.currentTeamBattle?.id ||
-              crypto.randomUUID?.() ||
-              `temp-id-${Date.now()}`,
-            user_team: state.currentTeamBattle?.user_team || [],
-            opponent_team: state.currentTeamBattle?.opponent_team || [],
-            winner_id: state.currentTeamBattle?.winner_id || "",
-            xpGain: state.currentTeamBattle?.xpGain || 0,
-            created_at:
-              state.currentTeamBattle?.created_at || new Date().toISOString(),
-          };
-
-          return {
-            ...state,
-            currentTeamBattle: updatedBattle,
-          };
-        });
-
-        return;
-      } catch (error) {
-        console.error("Error in battle:", error);
-        set({
-          error: "An error occurred during battle",
-          loading: false,
-          isBattleInProgress: false,
-        });
-      }
-    },
 
     refreshBattleOptions: async () => {
       await get().getBattleOptions();
@@ -1162,126 +687,10 @@ export const useBattleStore = create<BattleState>((set, get) => {
           digimon: DIGIMON_LOOKUP_TABLE[d.digimon_id],
         }));
 
-        // Calculate level range for difficulty tiers
-        const powerLevel = calculateUserPowerRating(userTeam);
-
-        // Create a new array for battle options
-        const battleOptions: BattleOption[] = [];
-
-        // PERFORMANCE IMPROVEMENT: Get all potential opponents and their teams in one go
-        const { data: potentialOpponents } = await supabase.rpc(
-          "get_random_users",
-          { exclude_user_id: userData.user.id }
-        );
-
-        // Prepare all opponent teams in parallel instead of sequentially
-        let opponentsWithTeams: OpponentWithTeam[] = [];
-        if (potentialOpponents && potentialOpponents.length > 0) {
-          const opponentPromises = potentialOpponents.map(
-            async (opponent: any) => {
-              const { data: opponentTeamRawData } = await supabase
-                .from("user_digimon")
-                .select("*")
-                .eq("user_id", opponent.id)
-                .eq("is_on_team", true)
-                .order("current_level", { ascending: false })
-                .limit(3);
-
-              if (opponentTeamRawData && opponentTeamRawData.length > 0) {
-                const opponentTeam = opponentTeamRawData.map((d) => ({
-                  ...d,
-                  digimon: DIGIMON_LOOKUP_TABLE[d.digimon_id],
-                }));
-
-                const powerLevel = calculateUserPowerRating(opponentTeam);
-
-                return {
-                  ...opponent,
-                  team: opponentTeam,
-                  powerLevel,
-                };
-              }
-              return null;
-            }
-          );
-
-          // Wait for all opponent data to be fetched
-          const results = await Promise.all(opponentPromises);
-          opponentsWithTeams = results.filter(Boolean) as OpponentWithTeam[];
-        }
-
-        // Generate one option for each difficulty level
+        // Generate one wild AI option for each difficulty level
         const difficulties = ["easy", "medium", "hard"] as const;
-
-        const difficultyMultipliers = {
-          easy: { min: 0.6, max: 0.8 },
-          medium: { min: 0.8, max: 1.0 },
-          hard: { min: 1.0, max: 1.1 },
-        };
-
-        const usedOpponentIds = new Set();
-
-        // Process all difficulties in parallel
-        await Promise.all(
-          difficulties.map(async (difficulty) => {
-            let foundRealOpponent = false;
-
-            // Find matching opponent for this difficulty
-            let matchingOpponent = null;
-
-            const { min, max } = difficultyMultipliers[difficulty];
-            const lower = Math.floor(powerLevel * min);
-            const upper = Math.floor(powerLevel * max);
-
-            const possibleOpponents = opponentsWithTeams.filter((o) => {
-              return o.powerLevel > lower && o.powerLevel <= upper;
-            });
-
-            if (possibleOpponents.length > 0) {
-              matchingOpponent =
-                possibleOpponents[
-                  Math.floor(Math.random() * possibleOpponents.length)
-                ];
-            }
-
-            const forceWildEncounter = Math.random() < 0.99;
-
-            if (opponentsWithTeams.length > 0 && !forceWildEncounter) {
-              if (matchingOpponent) {
-                usedOpponentIds.add(matchingOpponent.id);
-                battleOptions.push({
-                  id: `${difficulty}-${matchingOpponent.id}`,
-                  difficulty: difficulty,
-                  team: {
-                    user_id: matchingOpponent.id,
-                    username: matchingOpponent.username,
-                    display_name: matchingOpponent.display_name,
-                    digimon: matchingOpponent.team.map((d: any) => ({
-                      id: d.id,
-                      name: d.name === "" ? d.digimon.name : d.name,
-                      current_level: d.current_level,
-                      sprite_url: d.digimon.sprite_url,
-                      type: d.digimon.type,
-                      attribute: d.digimon.attribute,
-                    })),
-                  },
-                  isWild: false,
-                });
-
-                foundRealOpponent = true;
-              }
-            }
-
-            // If no real opponent found or we're forcing a wild encounter, create a wild encounter
-            if (!foundRealOpponent || forceWildEncounter) {
-              battleOptions.push(
-                generateBattleOption(
-                  calculateUserPowerRating(userTeam),
-                  difficulty
-                )
-              );
-            }
-          })
+        const battleOptions: BattleOption[] = difficulties.map((difficulty) =>
+          generateBattleOption(calculateUserPowerRating(userTeam), difficulty)
         );
 
         // Sort battle options by difficulty (easy, medium, hard)
@@ -1303,55 +712,6 @@ export const useBattleStore = create<BattleState>((set, get) => {
       } catch (error) {
         console.error("Error getting battle options:", error);
         set({ error: (error as Error).message, loading: false });
-      }
-    },
-
-    checkDailyBattleLimit: async () => {
-      try {
-        // Get the current user
-        const { data: userData } = await supabase.auth.getUser();
-        if (!userData.user) {
-          console.log("No user found, can't check battle limit");
-          set({ dailyBattlesRemaining: 0 });
-          return 0;
-        }
-
-        const userId = userData.user.id;
-
-        // Check if we have a battle_limits record for today
-        const { data: limitData, error: limitError } = await supabase
-          .from("battle_limits")
-          .select("*")
-          .eq("user_id", userId)
-          .single();
-
-        if (limitError && limitError.code !== "PGRST116") {
-          // PGRST116 is "no rows returned"
-          console.error("Error checking battle limit:", limitError);
-          // Default to 0 remaining in case of error
-          set({ dailyBattlesRemaining: 0 });
-          return 0;
-        }
-
-        const DAILY_BATTLE_LIMIT = 5;
-
-        if (!limitData) {
-          // No record for today, user hasn't battled yet
-          set({ dailyBattlesRemaining: DAILY_BATTLE_LIMIT });
-          return DAILY_BATTLE_LIMIT;
-        }
-
-        // Calculate remaining battles
-        const remaining = Math.max(
-          0,
-          DAILY_BATTLE_LIMIT - limitData.battles_used
-        );
-        set({ dailyBattlesRemaining: remaining });
-        return remaining;
-      } catch (error) {
-        console.error("Error checking daily battle limit:", error);
-        set({ dailyBattlesRemaining: 0 });
-        return 0;
       }
     },
 
@@ -1408,13 +768,6 @@ export const useBattleStore = create<BattleState>((set, get) => {
       }
     },
 
-    clearCurrentTeamBattle: () => {
-      set({
-        currentTeamBattle: null,
-        isBattleInProgress: false, // Reset the flag when battle is cleared
-      });
-    },
-
     setShouldRefreshOptions: (shouldRefresh: boolean) => {
       // Save to localStorage
       localStorage.setItem(
@@ -1424,128 +777,6 @@ export const useBattleStore = create<BattleState>((set, get) => {
       set({ shouldRefreshOptions: shouldRefresh });
     },
 
-    simulateCampaignBattle: async (
-      userTeamData: any,
-      opponentTeamData: any,
-      hint?: string,
-      description?: string
-    ) => {
-      try {
-        // Determine winner using the existing battle simulation
-        const { winnerId, turns } = simulateTeamBattle(
-          userTeamData,
-          opponentTeamData
-        );
-
-        // If campaign battle was won, update stats and check for titles
-        // if (winnerId === userTeamData[0].user_id) {
-        //   const { data: profile, error: profileError } = await supabase
-        //     .from("profiles")
-        //     .select("highest_stage_cleared")
-        //     .eq("id", userTeamData[0].user_id)
-        //     .single();
-
-        //   if (!profileError && profile) {
-        //     const newHighestStageCleared = Math.max(
-        //       profile.highest_stage_cleared,
-        //       stageNumber || 0
-        //     );
-
-        //     if ((stageNumber || 0) > profile.highest_stage_cleared) {
-        //       await supabase
-        //         .from("profiles")
-        //         .update({ highest_stage_cleared: newHighestStageCleared })
-        //         .eq("id", userTeamData[0].user_id);
-        //     }
-
-        //     await useTitleStore
-        //       .getState()
-        //       .checkCampaignTitles(newHighestStageCleared);
-        //   }
-        // }
-
-        return {
-          id: crypto.randomUUID ? crypto.randomUUID() : "temp-id-" + Date.now(),
-          created_at: new Date().toISOString(),
-          user_team: userTeamData.map((d: any) => ({
-            user_id: d.user_id,
-            current_level: d.current_level,
-            experience_points: d.experience_points,
-            id: d.id,
-            name: d.name,
-            level: d.current_level,
-            digimon_id: d.digimon_id,
-            sprite_url: d.digimon.sprite_url,
-            digimon_name: d.digimon.name,
-            profile: {
-              username: "You",
-              display_name: "You",
-            },
-            stats: {
-              hp: d.digimon.final_hp,
-            },
-          })),
-          opponent_team: opponentTeamData.map((d: any) => ({
-            user_id: d.user_id,
-            current_level: d.current_level,
-            experience_points: d.experience_points,
-            id: d.id,
-            name: d.name,
-            level: d.current_level,
-            digimon_id: d.digimon_id,
-            sprite_url: d.digimon.sprite_url,
-            digimon_name: d.digimon.name,
-            profile: {
-              username: "Opponent",
-              display_name: "Opponent",
-            },
-            stats: {
-              hp: d.digimon.final_hp,
-            },
-          })),
-          turns,
-          winner_id: winnerId,
-          xpGain: 0,
-          bitsReward: 0,
-          hint: hint || "You're not ready for this battle. Try again later.",
-          description: description || "",
-        } as TeamBattle;
-      } catch (error) {
-        console.error("Error in campaign battle:", error);
-        throw error;
-      }
-    },
   };
 });
 
-// Add this helper function to calculate bits rewards
-const calculateBitsReward = (
-  difficulty: string,
-  playerWon: boolean
-): number => {
-  if (playerWon) {
-    // Rewards for winning
-    switch (difficulty) {
-      case "hard":
-        return 200;
-      case "medium":
-        return 100;
-      case "easy":
-        return 75;
-      default:
-        return 75;
-    }
-  } else {
-    // Rewards for losing
-    switch (difficulty) {
-      case "hard":
-        return 40;
-      case "medium":
-        return 50;
-      case "easy":
-        return 50;
-      default:
-        return 50;
-    }
-  }
-};

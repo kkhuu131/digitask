@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
+import AchievementsPage from "./AchievementsPage";
 import { useAuthStore } from "../store/authStore";
 import { useDigimonStore, UserDigimon } from "../store/petStore";
 import { supabase } from "../lib/supabase";
@@ -9,7 +10,7 @@ import AvatarSelectionModal from "../components/AvatarSelectionModal";
 import ReportButton from '../components/ReportButton';
 import { DIGIMON_LOOKUP_TABLE } from "../constants/digimonLookup";
 import { useTitleStore, UserTitle } from '../store/titleStore';
-import UserTitles from '../components/UserTitles';
+import { TIER_STYLES } from './AchievementsPage';
 import DigimonSprite from '../components/DigimonSprite';
 import PageTutorial from '../components/PageTutorial';
 import { DialogueStep } from '../components/DigimonDialogue';
@@ -41,6 +42,13 @@ const ProfilePage = () => {
   const { user, userProfile } = useAuthStore();
   const { discoveredDigimon, allUserDigimon } = useDigimonStore();
   const navigate = useNavigate();
+
+  const location = useLocation();
+  const [activeTab, setActiveTab] = useState<'overview' | 'achievements'>(
+    location.hash === '#achievements' ? 'achievements' : 'overview'
+  );
+  const { unclaimedCount } = useTitleStore();
+  const pendingAchievements = unclaimedCount();
 
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [userDigimon, setUserDigimon] = useState<UserDigimon[]>([]);
@@ -335,8 +343,25 @@ const ProfilePage = () => {
                 <ReportButton userId={profileData.id} username={profileData.username} variant="icon-only" />
               )}
             </div>
-            <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
-              <UserTitles titles={userTitles} isOwnProfile={isOwnProfile} />
+            {/* Displayed titles — read-only chips; edit via Achievements tab */}
+            <div className="flex flex-wrap gap-1.5 justify-center sm:justify-start">
+              {userTitles.filter(ut => ut.is_displayed && ut.claimed_at !== null).slice(0, 3).map(ut => {
+                const s = TIER_STYLES[ut.title?.tier || 'bronze'];
+                return (
+                  <span
+                    key={ut.id}
+                    className={`text-xs font-heading font-semibold px-2.5 py-0.5 rounded-full ${s.badge}`}
+                    title={ut.title?.description}
+                  >
+                    {ut.title?.name}
+                  </span>
+                );
+              })}
+              {userTitles.filter(ut => ut.is_displayed && ut.claimed_at !== null).length === 0 && (
+                <span className="text-xs font-body text-gray-400 dark:text-gray-500 italic">
+                  {isOwnProfile ? "No titles pinned yet" : "No titles displayed"}
+                </span>
+              )}
             </div>
           </div>
         </div>
@@ -351,6 +376,46 @@ const ProfilePage = () => {
           ))}
         </div>
       </div>
+
+      {/* Tabs — only shown on own profile */}
+      {isOwnProfile && (
+        <div className="flex gap-1 bg-gray-100 dark:bg-dark-200 p-1 rounded-xl">
+          <button
+            onClick={() => setActiveTab('overview')}
+            className={`flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg text-sm font-heading font-semibold transition-all duration-150 ${
+              activeTab === 'overview'
+                ? 'bg-white dark:bg-dark-300 text-gray-900 dark:text-gray-100 shadow-sm'
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+            }`}
+          >
+            Overview
+          </button>
+          <button
+            onClick={() => setActiveTab('achievements')}
+            className={`relative flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg text-sm font-heading font-semibold transition-all duration-150 ${
+              activeTab === 'achievements'
+                ? 'bg-white dark:bg-dark-300 text-gray-900 dark:text-gray-100 shadow-sm'
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+            }`}
+          >
+            Achievements
+            {pendingAchievements > 0 && (
+              <span className="min-w-[18px] h-4 flex items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold px-1 leading-none">
+                {pendingAchievements}
+              </span>
+            )}
+          </button>
+        </div>
+      )}
+
+      {/* Achievements tab content */}
+      {isOwnProfile && activeTab === 'achievements' && (
+        <AchievementsPage />
+      )}
+
+      {/* Overview content — hidden when Achievements tab is active */}
+      {(!isOwnProfile || activeTab === 'overview') && (
+        <>
 
       {/* Active Digimon */}
       {favoriteDigimon && (
@@ -445,6 +510,9 @@ const ProfilePage = () => {
           <h2 className="font-heading text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">Activity</h2>
           <TaskHeatmap />
         </div>
+      )}
+
+        </>
       )}
 
       {/* Modals */}
