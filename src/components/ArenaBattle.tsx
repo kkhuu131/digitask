@@ -247,9 +247,11 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
   const lastTsRef       = useRef<number>(0);
   const battleEndedRef  = useRef(false);
   const cameraRef       = useRef({ x: INITIAL_CAMERA_X, y: INITIAL_CAMERA_Y });
+  // Current auto-zoom factor applied to worldDiv (< 1 = zoomed out to show all Digimon).
+  const autoZoomRef     = useRef(1);
   const worldDivRef     = useRef<HTMLDivElement>(null);
   const scaleWrapperRef = useRef<HTMLDivElement>(null);
-  // Viewport div for cinematic zoom (CSS transform applied directly, no React state).
+  // Viewport div for cinematic zoom-in (CSS transform applied directly, no React state).
   const viewportDivRef  = useRef<HTMLDivElement>(null);
   // Active cinematic — null = no cinematic, mutated directly in RAF + event handler.
   const cinematicRef    = useRef<CinematicState | null>(null);
@@ -325,8 +327,9 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
   // ── Set initial DOM positions + facing before first paint ────────────────────
   useLayoutEffect(() => {
     if (worldDivRef.current) {
+      worldDivRef.current.style.transformOrigin = '0 0';
       worldDivRef.current.style.transform =
-        `translate(-${INITIAL_CAMERA_X}px, -${INITIAL_CAMERA_Y}px)`;
+        `scale(1) translate(-${INITIAL_CAMERA_X}px, -${INITIAL_CAMERA_Y}px)`;
     }
     for (const d of digimonRef.current) {
       const el = spriteContainerRefs.current.get(d.id);
@@ -348,28 +351,57 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
   const updateCamera = () => {
     if (!worldDivRef.current) return;
 
+    const PAD = 90; // padding around bounding box before zooming out
+    const MIN_ZOOM = 0.48;
+
     let tx: number, ty: number, lerp: number;
 
     if (cinematicRef.current) {
-      // During a cinematic: snap quickly to the focal point
-      tx = Math.max(0, Math.min(WORLD_W - VIEWPORT_W, cinematicRef.current.focusX - VIEWPORT_W / 2));
-      ty = Math.max(0, Math.min(WORLD_H - VIEWPORT_H, cinematicRef.current.focusY - VIEWPORT_H / 2));
+      // During a cinematic: snap quickly to the focal point, hold current auto-zoom
+      const S = autoZoomRef.current;
+      const effW = VIEWPORT_W / S;
+      const effH = VIEWPORT_H / S;
+      tx = Math.max(0, Math.min(Math.max(0, WORLD_W - effW), cinematicRef.current.focusX - effW / 2));
+      ty = Math.max(0, Math.min(Math.max(0, WORLD_H - effH), cinematicRef.current.focusY - effH / 2));
       lerp = 0.1;
     } else {
       const alive = digimonRef.current.filter(d => d.state !== 'dead');
       if (alive.length === 0) return;
-      const cx = alive.reduce((s, d) => s + d.x, 0) / alive.length;
-      const cy = alive.reduce((s, d) => s + d.y, 0) / alive.length;
-      tx = Math.max(0, Math.min(WORLD_W - VIEWPORT_W, cx - VIEWPORT_W / 2));
-      ty = Math.max(0, Math.min(WORLD_H - VIEWPORT_H, cy - VIEWPORT_H / 2));
+
+      // Compute bounding box of all alive Digimon
+      let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+      for (const d of alive) {
+        minX = Math.min(minX, d.x); maxX = Math.max(maxX, d.x);
+        minY = Math.min(minY, d.y); maxY = Math.max(maxY, d.y);
+      }
+      const bbW = maxX - minX + PAD * 2;
+      const bbH = maxY - minY + PAD * 2;
+      const cx = (minX + maxX) / 2;
+      const cy = (minY + maxY) / 2;
+
+      // Desired zoom: smallest scale that fits the bounding box in the viewport
+      const desiredZoom = Math.min(1.0, VIEWPORT_W / bbW, VIEWPORT_H / bbH);
+      const targetZoom = Math.max(MIN_ZOOM, desiredZoom);
+      // Smoothly lerp toward desired zoom
+      autoZoomRef.current += (targetZoom - autoZoomRef.current) * 0.04;
+
+      // Camera target: center the bounding box, accounting for effective viewport size
+      const S = autoZoomRef.current;
+      const effW = VIEWPORT_W / S;
+      const effH = VIEWPORT_H / S;
+      tx = Math.max(0, Math.min(Math.max(0, WORLD_W - effW), cx - effW / 2));
+      ty = Math.max(0, Math.min(Math.max(0, WORLD_H - effH), cy - effH / 2));
       lerp = 0.04;
     }
 
     cameraRef.current.x += (tx - cameraRef.current.x) * lerp;
     cameraRef.current.y += (ty - cameraRef.current.y) * lerp;
 
+    // Apply both scale and pan to the world div — scale(S) changes how many world units
+    // are visible; translate pans within that scaled space (origin 0 0 set on mount).
+    const S = autoZoomRef.current;
     worldDivRef.current.style.transform =
-      `translate(-${cameraRef.current.x}px, -${cameraRef.current.y}px)`;
+      `scale(${S.toFixed(4)}) translate(-${cameraRef.current.x.toFixed(2)}px, -${cameraRef.current.y.toFixed(2)}px)`;
   };
 
   // ── Cinematic helpers ─────────────────────────────────────────────────────────
@@ -377,15 +409,17 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
     if (cinematicRef.current) return; // don't interrupt an existing cinematic
     cinematicRef.current = { realRemainingMs: durationMs, timeScale, focusX, focusY };
     if (viewportDivRef.current) {
-      // Compute where focusX/Y will actually appear in the viewport after camera clamping.
-      // The camera can only pan within [0, WORLD_W - VIEWPORT_W] × [0, WORLD_H - VIEWPORT_H].
-      // If the Digimon is near an edge the camera clamps, so the focus point lands off-center.
-      // Setting transform-origin to that exact viewport position makes the zoom expand
-      // toward the Digimon regardless of where it sits on the map.
-      const clampedCamX = Math.max(0, Math.min(WORLD_W - VIEWPORT_W, focusX - VIEWPORT_W / 2));
-      const clampedCamY = Math.max(0, Math.min(WORLD_H - VIEWPORT_H, focusY - VIEWPORT_H / 2));
-      const vpX = Math.max(0, Math.min(VIEWPORT_W, focusX - clampedCamX));
-      const vpY = Math.max(0, Math.min(VIEWPORT_H, focusY - clampedCamY));
+      // Compute where focusX/Y appears in the viewport in SCREEN pixels after camera clamping.
+      // The world has auto-zoom scale S applied, so the viewport pixel position of a world
+      // point (x, y) is: S*(x - camX), S*(y - camY).
+      const S = autoZoomRef.current;
+      const effW = VIEWPORT_W / S;
+      const effH = VIEWPORT_H / S;
+      const clampedCamX = Math.max(0, Math.min(Math.max(0, WORLD_W - effW), focusX - effW / 2));
+      const clampedCamY = Math.max(0, Math.min(Math.max(0, WORLD_H - effH), focusY - effH / 2));
+      // Viewport pixel = autoZoom * (world - cam)
+      const vpX = Math.max(0, Math.min(VIEWPORT_W, S * (focusX - clampedCamX)));
+      const vpY = Math.max(0, Math.min(VIEWPORT_H, S * (focusY - clampedCamY)));
       const originX = ((vpX / VIEWPORT_W) * 100).toFixed(1);
       const originY = ((vpY / VIEWPORT_H) * 100).toFixed(1);
 
@@ -533,20 +567,27 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
         const el = spriteContainerRefs.current.get(d.id);
         if (el) {
           el.style.transform = `translate(${d.x - SPRITE_W / 2}px, ${d.y - SPRITE_H / 2}px)`;
+          // Y-depth sorting: higher Y = closer to viewer = rendered on top
+          el.style.zIndex = String(Math.round(d.y));
         }
 
-        // Dynamic facing: use combined steering + knockback velocity.
-        // Sprites default to facing LEFT; scaleX(-1) flips to face RIGHT.
-        // Only update DOM when direction actually changes to avoid layout thrash.
+        // Dynamic facing: steering velocity normally; target-locked during skill windup.
         const facingEl = facingRefs.current.get(d.id);
         if (facingEl && d.state !== 'dead') {
-          const combinedVx = d.vx + d.knockbackVx;
-          if (Math.abs(combinedVx) > 0.01) {
-            const facingRight = combinedVx > 0;
-            if (lastFacingRef.current.get(d.id) !== facingRight) {
-              lastFacingRef.current.set(d.id, facingRight);
-              facingEl.style.transform = facingRight ? 'scaleX(-1)' : '';
-            }
+          let facingRight: boolean | null = null;
+
+          if (d.state === 'skill_windup') {
+            // Face toward the target so the ult looks intentional
+            const target = digimonRef.current.find(o => o.id === d.currentTargetId);
+            if (target) facingRight = target.x > d.x;
+          } else if (Math.abs(d.vx) > 0.01) {
+            // Normal case: face the direction of steering velocity (not knockback)
+            facingRight = d.vx > 0;
+          }
+
+          if (facingRight !== null && lastFacingRef.current.get(d.id) !== facingRight) {
+            lastFacingRef.current.set(d.id, facingRight);
+            facingEl.style.transform = facingRight ? 'scaleX(-1)' : '';
           }
         }
 
@@ -657,7 +698,7 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
             transform: `scale(${scale})`,
           }}
         >
-          {/* Viewport — clips world, holds overlay. ref used for cinematic zoom. */}
+          {/* Viewport — rectangular clip window. ref used for cinematic zoom. */}
           <div
             ref={viewportDivRef}
             style={{
@@ -666,62 +707,90 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
               height: VIEWPORT_H,
               overflow: 'hidden',
               transformOrigin: 'center center',
-              background: 'radial-gradient(ellipse at 50% 35%, #1a1635 0%, #0b0a18 100%)',
+              background: '#07060f',
             }}
           >
             {/* World div — panned by camera via direct DOM mutation */}
             <div
               ref={worldDivRef}
-              style={{ position: 'absolute', width: WORLD_W, height: WORLD_H, top: 0, left: 0 }}
+              style={{ position: 'absolute', width: WORLD_W, height: WORLD_H, top: 0, left: 0, background: '#07060f' }}
             >
-              {/* Floor */}
-              <div
-                style={{
-                  position: 'absolute',
-                  left: 55, top: 45,
-                  width: WORLD_W - 110, height: WORLD_H - 90,
-                  borderRadius: 52,
-                  background: 'radial-gradient(ellipse at 50% 35%, #d4ad72 0%, #b8894e 25%, #8a6238 55%, #4a3220 80%, #2a1c0e 100%)',
-                  boxShadow: 'inset 0 0 160px rgba(0,0,0,0.55), inset 0 -20px 60px rgba(0,0,0,0.35)',
-                }}
-              />
-              {/* Grid lines */}
-              <div
-                style={{
-                  position: 'absolute',
-                  left: 55, top: 45,
-                  width: WORLD_W - 110, height: WORLD_H - 90,
-                  borderRadius: 52, overflow: 'hidden',
+              {/* ── Hexagonal arena floor ── */}
+              {/* The hex clip-path is applied to a world-sized div; only the hex region is visible */}
+              <div style={{
+                position: 'absolute', inset: 0,
+                clipPath: 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)',
+              }}>
+                {/* Floor surface */}
+                <div style={{
+                  position: 'absolute', inset: 0,
+                  background: 'radial-gradient(ellipse at 50% 50%, #c9a668 0%, #aa7f48 20%, #7d5930 48%, #3e2510 76%, #1a0c06 100%)',
+                  boxShadow: 'inset 0 0 180px rgba(0,0,0,0.55)',
+                }} />
+                {/* Grid lines */}
+                <div style={{
+                  position: 'absolute', inset: 0,
                   backgroundImage: [
-                    'linear-gradient(rgba(255,255,255,0.055) 1px, transparent 1px)',
-                    'linear-gradient(90deg, rgba(255,255,255,0.055) 1px, transparent 1px)',
+                    'linear-gradient(rgba(255,255,255,0.048) 1px, transparent 1px)',
+                    'linear-gradient(90deg, rgba(255,255,255,0.048) 1px, transparent 1px)',
                   ].join(','),
-                  backgroundSize: '70px 70px',
-                }}
-              />
-              {/* Center divider */}
-              <div
-                style={{
+                  backgroundSize: '65px 65px',
+                }} />
+                {/* Center dividing line */}
+                <div style={{
                   position: 'absolute',
-                  left: WORLD_W / 2 - 1, top: 45, width: 2, height: WORLD_H - 90,
-                  background: 'linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.08) 30%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.08) 70%, transparent 100%)',
+                  left: WORLD_W / 2 - 1, top: 0, width: 2, height: WORLD_H,
+                  background: 'linear-gradient(to bottom, transparent, rgba(255,255,255,0.1) 30%, rgba(255,255,255,0.14) 50%, rgba(255,255,255,0.1) 70%, transparent)',
                   pointerEvents: 'none',
-                }}
-              />
-              {/* User-side left glow */}
-              <div
-                style={{
-                  position: 'absolute', left: 0, top: 0, width: 14, height: WORLD_H,
-                  background: 'linear-gradient(to right, rgba(99,102,241,0.6) 0%, rgba(99,102,241,0.25) 60%, transparent 100%)',
-                }}
-              />
-              {/* Opponent-side right glow */}
-              <div
-                style={{
-                  position: 'absolute', right: 0, top: 0, width: 14, height: WORLD_H,
-                  background: 'linear-gradient(to left, rgba(239,68,68,0.6) 0%, rgba(239,68,68,0.25) 60%, transparent 100%)',
-                }}
-              />
+                }} />
+                {/* User-side glow (left) */}
+                <div style={{
+                  position: 'absolute', left: 0, top: 0, width: '30%', height: '100%',
+                  background: 'linear-gradient(to right, rgba(99,102,241,0.28) 0%, transparent 100%)',
+                }} />
+                {/* Opponent-side glow (right) */}
+                <div style={{
+                  position: 'absolute', right: 0, top: 0, width: '30%', height: '100%',
+                  background: 'linear-gradient(to left, rgba(239,68,68,0.28) 0%, transparent 100%)',
+                }} />
+              </div>
+
+              {/* ── Hex border SVG — sits over the floor in world space ── */}
+              <svg
+                style={{ position: 'absolute', inset: 0, width: WORLD_W, height: WORLD_H, pointerEvents: 'none', overflow: 'visible' }}
+                viewBox={`0 0 ${WORLD_W} ${WORLD_H}`}
+              >
+                <defs>
+                  <filter id="hexBorderGlow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="4" result="blur" />
+                    <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+                  </filter>
+                </defs>
+                {/* Outer glow */}
+                <polygon
+                  points={`${WORLD_W*0.25},0 ${WORLD_W*0.75},0 ${WORLD_W},${WORLD_H/2} ${WORLD_W*0.75},${WORLD_H} ${WORLD_W*0.25},${WORLD_H} 0,${WORLD_H/2}`}
+                  fill="none"
+                  stroke="rgba(160,180,255,0.4)"
+                  strokeWidth="10"
+                  filter="url(#hexBorderGlow)"
+                />
+                {/* Crisp border */}
+                <polygon
+                  points={`${WORLD_W*0.25},1 ${WORLD_W*0.75},1 ${WORLD_W-1},${WORLD_H/2} ${WORLD_W*0.75},${WORLD_H-1} ${WORLD_W*0.25},${WORLD_H-1} 1,${WORLD_H/2}`}
+                  fill="none"
+                  stroke="rgba(200,215,255,0.6)"
+                  strokeWidth="2.5"
+                />
+                {/* Corner accent dots */}
+                {([
+                  [WORLD_W*0.25, 0], [WORLD_W*0.75, 0],
+                  [WORLD_W, WORLD_H/2],
+                  [WORLD_W*0.75, WORLD_H], [WORLD_W*0.25, WORLD_H],
+                  [0, WORLD_H/2],
+                ] as [number,number][]).map(([cx, cy], i) => (
+                  <circle key={i} cx={cx} cy={cy} r={5} fill="rgba(210,225,255,0.8)" />
+                ))}
+              </svg>
 
               {/* Digimon sprite containers — positioned via direct DOM in RAF loop */}
               {digimonRef.current.map(d => (
@@ -848,12 +917,11 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
               )}
             </div>
 
-            {/* Vignette */}
+            {/* Vignette — subtle darkening around the rectangular viewport edges */}
             <div
               style={{
                 position: 'absolute', inset: 0, pointerEvents: 'none',
-                boxShadow: 'inset 0 0 80px rgba(0,0,0,0.7), inset 0 0 30px rgba(0,0,0,0.5)',
-                borderRadius: 6,
+                boxShadow: 'inset 0 0 60px rgba(0,0,0,0.5)',
               }}
             />
           </div>

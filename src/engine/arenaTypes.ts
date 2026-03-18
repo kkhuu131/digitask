@@ -1,20 +1,24 @@
 // ─── World / Viewport dimensions ──────────────────────────────────────────────
 
 /** Full scrollable world size (world units). Engine logic runs in these coords. */
-export const WORLD_W = 1400;
-export const WORLD_H = 520;
+export const WORLD_W = 1300;
+export const WORLD_H = 700;
 
 /** Clipped viewport rendered to the user. Camera pans the world within this. */
 export const VIEWPORT_W = 900;
-export const VIEWPORT_H = 380;
+export const VIEWPORT_H = 480;
 
 /** Minimum distance Digimon must stay from world edges. */
-export const ARENA_MARGIN = 30;
+export const ARENA_MARGIN = 40;
 
 // ─── Combat constants ──────────────────────────────────────────────────────────
 
 /** Distance (world units) at which a Digimon can land a normal attack. */
 export const ATTACK_RADIUS = 55;
+
+/** Maximum distance (world units) at which a Digimon may begin a skill windup.
+ *  Beyond this range the skill cooldown simply waits — the Digimon must close in first. */
+export const SKILL_RANGE = 200;
 
 /** Duration (ms) of the skill charge-up before damage fires. */
 export const SKILL_WINDUP_MS = 700;
@@ -66,14 +70,16 @@ export type Strategy = 'aggressive' | 'balanced' | 'defensive';
 export interface StrategyConfig {
   /** Overall movement speed multiplier. */
   speedMultiplier: number;
-  /** Base ms between normal attacks (divided by spd scaling). */
+  /** Base ms between normal attacks. */
   attackCooldownBase: number;
   /** Base ms between skill uses (reduced by sp stat). */
   skillCooldownBase: number;
   /** World-unit radius at which the Digimon begins orbiting instead of charging. */
   orbitRadius: number;
-  /** Duration (ms) of the retreat after landing an attack. */
+  /** Duration (ms) of the retreat after being hit. */
   fleeDuration: number;
+  /** Base duration (ms) of the wandering/recovery phase after retreat. +0–2000ms random. */
+  wanderDurationBase: number;
   /** Force weight for seek behaviour. */
   seekWeight: number;
   /** Force weight for orbit behaviour. */
@@ -85,32 +91,35 @@ export interface StrategyConfig {
 export const STRATEGY_CONFIGS: Record<Strategy, StrategyConfig> = {
   aggressive: {
     speedMultiplier: 1.35,
-    attackCooldownBase: 1000,   // attacks frequently
-    skillCooldownBase: 12000,   // skills less frequent than balanced (pure aggression)
+    attackCooldownBase: 2800,   // noticeably spaced attacks
+    skillCooldownBase: 12000,
     orbitRadius: 65,            // closes in quickly before circling
-    fleeDuration: 300,          // short retreat — back in the fight fast
-    seekWeight: 1.05,           // charges hard at the enemy
-    orbitWeight: 0.25,          // minimal orbiting
+    fleeDuration: 900,          // retreats firmly after a hit
+    wanderDurationBase: 1200,   // brief recovery before charging again
+    seekWeight: 1.05,
+    orbitWeight: 0.25,
     wanderWeight: 0.18,
   },
   balanced: {
     speedMultiplier: 1.0,
-    attackCooldownBase: 1500,   // moderate attack pace
+    attackCooldownBase: 4000,   // clear rhythm between attacks
     skillCooldownBase: 13000,
-    orbitRadius: 110,           // visible circling at mid-range
-    fleeDuration: 650,
+    orbitRadius: 110,
+    fleeDuration: 1400,
+    wanderDurationBase: 2000,   // decent recovery gap
     seekWeight: 0.75,
-    orbitWeight: 0.75,          // noticeable orbit
+    orbitWeight: 0.75,
     wanderWeight: 0.28,
   },
   defensive: {
     speedMultiplier: 0.82,
-    attackCooldownBase: 2000,   // deliberate, not glacial
+    attackCooldownBase: 5500,   // deliberate, patient
     skillCooldownBase: 15000,
-    orbitRadius: 145,           // wide circle but still engages
-    fleeDuration: 900,
+    orbitRadius: 145,
+    fleeDuration: 2000,
+    wanderDurationBase: 3000,   // long recovery — very patient re-engagement
     seekWeight: 0.55,
-    orbitWeight: 0.9,           // very circular movement
+    orbitWeight: 0.9,
     wanderWeight: 0.38,
   },
 };
@@ -122,6 +131,7 @@ export type ArenaDigimonState =
   | 'circling'      // within orbit radius — looping around before closing in
   | 'attacking'     // brief lock while the attack animation plays
   | 'retreating'    // fleeing after landing a hit or taking damage
+  | 'wandering'     // idle recovery phase between retreat and next approach
   | 'skill_windup'  // charging up the skill — no movement
   | 'dead';         // out of HP — playing death bounce then frozen
 
@@ -174,6 +184,10 @@ export interface ArenaDigimon {
   skillCooldownMs: number;
   /** ms remaining in retreat state. */
   retreatTimerMs: number;
+  /** ms remaining in wandering (recovery) state before re-engaging. */
+  wanderTimerMs: number;
+  /** ms remaining in hit-stun — no steering forces applied, Digimon slides on knockback only. */
+  stunTimerMs: number;
   /** ms remaining in skill_windup state. Fires skill when this hits 0. */
   skillWindupTimerMs: number;
 

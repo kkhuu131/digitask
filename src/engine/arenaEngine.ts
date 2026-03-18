@@ -10,6 +10,7 @@ import {
   WORLD_H,
   ARENA_MARGIN,
   ATTACK_RADIUS,
+  SKILL_RANGE,
   SKILL_WINDUP_MS,
   SKILL_DAMAGE_MULTIPLIER,
   ATTACK_SPRITE_MS,
@@ -105,6 +106,59 @@ const spawnPositions = (
   }));
 };
 
+// ─── Hex boundary ──────────────────────────────────────────────────────────────
+
+/**
+ * Vertices of the flat-top hexagonal arena, clockwise, matching the visual
+ * clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%).
+ */
+const HEX_VERTS: [number, number][] = [
+  [WORLD_W * 0.25, 0],
+  [WORLD_W * 0.75, 0],
+  [WORLD_W,        WORLD_H * 0.5],
+  [WORLD_W * 0.75, WORLD_H],
+  [WORLD_W * 0.25, WORLD_H],
+  [0,              WORLD_H * 0.5],
+];
+
+/**
+ * Pushes (d.x, d.y) back inside the hexagonal boundary and cancels any
+ * velocity (steering + knockback) directed into the wall.
+ *
+ * Algorithm: for each edge of the convex hex, compute the signed distance
+ * from the edge line (positive = inside for clockwise winding). If the
+ * Digimon is within `margin` units of the edge, project it inward along the
+ * edge's inward normal and cancel the velocity component into the wall.
+ *
+ * Inward unit normal for edge A→B (CW winding): n = (-ey/len, ex/len)
+ * Signed dist from line:  sd = (ex*(p.y-A.y) - ey*(p.x-A.x)) / len
+ */
+const clampToHex = (d: ArenaDigimon, margin = ARENA_MARGIN) => {
+  const n = HEX_VERTS.length;
+  for (let i = 0; i < n; i++) {
+    const [ax, ay] = HEX_VERTS[i];
+    const [bx, by] = HEX_VERTS[(i + 1) % n];
+    const ex = bx - ax;
+    const ey = by - ay;
+    const len = Math.sqrt(ex * ex + ey * ey);
+    const sd = (ex * (d.y - ay) - ey * (d.x - ax)) / len;
+    if (sd < margin) {
+      // Inward unit normal
+      const nx = -ey / len;
+      const ny =  ex / len;
+      const push = margin - sd;
+      d.x += nx * push;
+      d.y += ny * push;
+      // Cancel steering velocity into wall
+      const vn = d.vx * nx + d.vy * ny;
+      if (vn < 0) { d.vx -= vn * nx; d.vy -= vn * ny; }
+      // Cancel knockback velocity into wall
+      const kn = d.knockbackVx * nx + d.knockbackVy * ny;
+      if (kn < 0) { d.knockbackVx -= kn * nx; d.knockbackVy -= kn * ny; }
+    }
+  }
+};
+
 // ─── Public API ────────────────────────────────────────────────────────────────
 
 /**
@@ -122,8 +176,8 @@ export const initArenaDigimon = (
   userStrategies: Strategy[],
   opponentStrategies: Strategy[] = opponentTeam.map(() => 'balanced'),
 ): ArenaDigimon[] => {
-  const userSpawns = spawnPositions(userTeam.length, 100, 250);
-  const opponentSpawns = spawnPositions(opponentTeam.length, 1150, 1300);
+  const userSpawns = spawnPositions(userTeam.length, 200, 320);
+  const opponentSpawns = spawnPositions(opponentTeam.length, 980, 1100);
 
   const make = (
     bd: BattleDigimon,
@@ -133,10 +187,10 @@ export const initArenaDigimon = (
   ): ArenaDigimon => {
     const config = STRATEGY_CONFIGS[strategy];
     // Stagger skill cooldown so all Digimon don't charge at the same moment
-    const initialSkillCooldown = config.skillCooldownBase + Math.random() * 5000;
-    const attackCooldown = config.attackCooldownBase / Math.max(bd.stats.spd / 100, 0.5);
-    // SP no longer reduces initial cooldown — it now directly increases drain rate each frame
-    const skillCooldown = Math.max(6000, initialSkillCooldown);
+    const skillCooldown = Math.max(6000, config.skillCooldownBase + Math.random() * 5000);
+    // Initial attack cooldown is near-zero so Digimon engage immediately on first contact.
+    // The full cooldown (attackCooldownBase) only kicks in between subsequent attacks.
+    const attackCooldown = Math.random() * 400;
 
     return {
       // Identity
@@ -170,6 +224,8 @@ export const initArenaDigimon = (
       attackCooldownMs: attackCooldown,
       skillCooldownMs: skillCooldown,
       retreatTimerMs: 0,
+      wanderTimerMs: 0,
+      stunTimerMs: 0,
       skillWindupTimerMs: 0,
 
       // Death
@@ -220,6 +276,8 @@ export const runFrame = (digimon: ArenaDigimon[], deltaMs: number): ArenaEvent[]
     // SP drives skill charge rate: higher SP = faster charge. SP=0 → 1× rate, SP=300 → 2× rate
     d.skillCooldownMs -= deltaMs * (1 + d.sp / 300);
     d.retreatTimerMs -= deltaMs;
+    d.wanderTimerMs -= deltaMs;
+    d.stunTimerMs -= deltaMs;
     d.skillWindupTimerMs -= deltaMs;
     if (d.spriteTimerMs > 0) {
       d.spriteTimerMs -= deltaMs;
@@ -232,18 +290,39 @@ export const runFrame = (digimon: ArenaDigimon[], deltaMs: number): ArenaEvent[]
       }
     }
 
-    // ── Dead: handle bounce only ──────────────────────────────────────────────
+    // ── Dead: death bounce + lateral knockback slide ──────────────────────────
     if (d.state === 'dead') {
       if (!d.deathLanded) {
         d.deathBounceVy += DEATH_GRAVITY * deltaMs;
         d.y += d.deathBounceVy * deltaMs;
+        // Apply lateral knockback so the killing blow sends the sprite sliding sideways
+        const dampFactor = Math.pow(DAMPING, deltaMs / 16);
+        d.knockbackVx *= dampFactor;
+        d.x += d.knockbackVx * deltaMs;
+        // Keep within hex even during death slide
+        clampToHex(d, 0);
         if (d.y >= d.deathOriginY) {
           d.y = d.deathOriginY;
           d.deathLanded = true;
+          d.knockbackVx = 0;
           d.spriteState = 'dead';
           d.spriteTimerMs = 0;
         }
       }
+      continue;
+    }
+
+    // ── Hit-stun: slide on knockback only, no steering ───────────────────────
+    if (d.stunTimerMs > 0) {
+      // Still apply damping + knockback so the slide feels physical
+      d.vx *= DAMPING;
+      d.vy *= DAMPING;
+      const dampFactor = Math.pow(DAMPING, deltaMs / 16);
+      d.knockbackVx *= dampFactor;
+      d.knockbackVy *= dampFactor;
+      d.x += (d.vx + d.knockbackVx) * deltaMs;
+      d.y += (d.vy + d.knockbackVy) * deltaMs;
+      clampToHex(d);
       continue;
     }
 
@@ -286,6 +365,9 @@ export const runFrame = (digimon: ArenaDigimon[], deltaMs: number): ArenaEvent[]
           target.spriteTimerMs = HIT_SPRITE_MS;
           target.lastAttackerTeam = d.isUserTeam ? 'user' : 'opponent';
 
+          // Hit-stun: target slides on knockback, no steering for a moment (skill = longer)
+          target.stunTimerMs = 750 + Math.random() * 350;
+
           // Apply heavy knockback away from attacker
           const kbDx = target.x - d.x;
           const kbDy = target.y - d.y;
@@ -296,7 +378,7 @@ export const runFrame = (digimon: ArenaDigimon[], deltaMs: number): ArenaEvent[]
             target.knockbackVy = (kbDy / kbDist) * kbMag;
           }
 
-          // Force target into retreat
+          // Force target into retreat (starts after stun expires)
           const targetConfig = STRATEGY_CONFIGS[target.strategy];
           if (target.state !== 'dead') {
             target.state = 'retreating';
@@ -316,10 +398,12 @@ export const runFrame = (digimon: ArenaDigimon[], deltaMs: number): ArenaEvent[]
           events.push({ type: 'death', digimonId: target.id });
         }
 
-        // Attacker returns to approaching after skill
-        d.state = 'approaching';
+        // Attacker retreats after using skill
+        d.state = 'retreating';
+        d.retreatTimerMs = config.fleeDuration;
         d.spriteState = 'attacking';
         d.spriteTimerMs = ATTACK_SPRITE_MS;
+        d.attackCooldownMs = config.attackCooldownBase + Math.random() * 2000;
 
         // Reset skill cooldown — SP now affects drain rate, not base value
         d.skillCooldownMs = config.skillCooldownBase + Math.random() * 3000;
@@ -328,22 +412,33 @@ export const runFrame = (digimon: ArenaDigimon[], deltaMs: number): ArenaEvent[]
       continue;
     }
 
-    // Priority b: enter skill_windup when skillCooldown expires
+    // Priority b: enter skill_windup when cooldown expires AND target is close enough.
+    // If out of range, keep the cooldown at 0 and approach — fires the moment they close in.
     if (d.skillCooldownMs <= 0) {
-      d.state = 'skill_windup';
-      d.skillWindupTimerMs = SKILL_WINDUP_MS;
-      // No movement this frame — will be handled as 'skill_windup' next frame
-      continue;
+      if (distToTarget <= SKILL_RANGE) {
+        d.state = 'skill_windup';
+        d.skillWindupTimerMs = SKILL_WINDUP_MS;
+        continue;
+      }
+      // Clamp so it doesn't accumulate into a large negative; re-checks every frame.
+      d.skillCooldownMs = 0;
     }
 
-    // Priority c: finish retreating
+    // Priority c: finish retreating → enter wandering (recovery) phase
     if (d.state === 'retreating' && d.retreatTimerMs <= 0) {
+      d.state = 'wandering';
+      d.wanderTimerMs = config.wanderDurationBase + Math.random() * 2000;
+    }
+
+    // Priority d: finish wandering → re-engage
+    if (d.state === 'wandering' && d.wanderTimerMs <= 0) {
       d.state = 'approaching';
     }
 
-    // Priority d: normal attack
+    // Priority e: normal attack (only when actively approaching/circling, not recovering)
     if (
       d.state !== 'retreating' &&
+      d.state !== 'wandering' &&
       distToTarget < ATTACK_RADIUS &&
       d.attackCooldownMs <= 0
     ) {
@@ -393,6 +488,9 @@ export const runFrame = (digimon: ArenaDigimon[], deltaMs: number): ArenaEvent[]
           target.spriteTimerMs = HIT_SPRITE_MS;
           target.lastAttackerTeam = d.isUserTeam ? 'user' : 'opponent';
 
+          // Hit-stun: target slides on knockback only, no steering
+          target.stunTimerMs = 450 + Math.random() * 250;
+
           // Apply knockback — push target away from attacker
           const kbDx = target.x - d.x;
           const kbDy = target.y - d.y;
@@ -402,7 +500,7 @@ export const runFrame = (digimon: ArenaDigimon[], deltaMs: number): ArenaEvent[]
             target.knockbackVy = (kbDy / kbDist) * KNOCKBACK_IMPULSE;
           }
 
-          // Force target to retreat on a solid hit
+          // Force target to retreat (starts after stun expires)
           if (target.state !== 'dead') {
             const targetConfig = STRATEGY_CONFIGS[target.strategy];
             target.state = 'retreating';
@@ -422,19 +520,23 @@ export const runFrame = (digimon: ArenaDigimon[], deltaMs: number): ArenaEvent[]
           events.push({ type: 'death', digimonId: target.id });
         }
 
-        // Attacker backs off briefly
+        // Attacker backs off after landing a hit — full retreat then wander
         d.state = 'retreating';
-        d.retreatTimerMs = config.fleeDuration * 0.4;
-        d.attackCooldownMs = Math.max(
-          500,
-          config.attackCooldownBase / Math.max(d.spd / 100, 0.5),
-        );
+        d.retreatTimerMs = config.fleeDuration * 0.7;
+        d.attackCooldownMs = config.attackCooldownBase + Math.random() * 1500;
       }
     }
 
-    // Priority e: set movement state based on distance (only if not retreating)
-    if (d.state !== 'retreating') {
-      d.state = distToTarget < config.orbitRadius ? 'circling' : 'approaching';
+    // Priority f: set movement state based on distance and attack readiness.
+    // When the attack cooldown is ready, skip orbiting and charge straight in —
+    // this prevents the Digimon from endlessly circling just outside attack range.
+    // Orbiting only happens while waiting for the cooldown to reset.
+    if (d.state !== 'retreating' && d.state !== 'wandering') {
+      if (d.attackCooldownMs <= 0) {
+        d.state = 'approaching'; // cooldown ready → charge directly, no orbit delay
+      } else {
+        d.state = distToTarget < config.orbitRadius ? 'circling' : 'approaching';
+      }
     }
 
     // ── Compute steering forces ───────────────────────────────────────────────
@@ -486,6 +588,22 @@ export const runFrame = (digimon: ArenaDigimon[], deltaMs: number): ArenaEvent[]
       d.wanderAngle = newWanderAngle;
       totalFx += wanderForce.fx;
       totalFy += wanderForce.fy;
+
+    } else if (d.state === 'wandering') {
+      // Recovery/idle phase — free movement, no seeking. Gentle flee if enemy is very close.
+      const { force: wanderForce, newWanderAngle } = wander(
+        d.x, d.y, d.vx, d.vy, d.wanderAngle, BASE_FORCE * config.wanderWeight * 1.4,
+      );
+      d.wanderAngle = newWanderAngle;
+      totalFx += wanderForce.fx;
+      totalFy += wanderForce.fy;
+
+      // Mild flee if enemy wanders too close during recovery
+      if (distToTarget < config.orbitRadius * 0.6) {
+        const fleeForce = flee(d.x, d.y, target.x, target.y, BASE_FORCE * 0.4);
+        totalFx += fleeForce.fx;
+        totalFy += fleeForce.fy;
+      }
 
     } else if (d.state === 'retreating') {
       // Flee from the team that last hit us; fall back to fleeing from the target
@@ -540,9 +658,8 @@ export const runFrame = (digimon: ArenaDigimon[], deltaMs: number): ArenaEvent[]
     d.x += d.knockbackVx * deltaMs;
     d.y += d.knockbackVy * deltaMs;
 
-    // ── Clamp to world bounds ─────────────────────────────────────────────────
-    d.x = Math.max(ARENA_MARGIN, Math.min(WORLD_W - ARENA_MARGIN, d.x));
-    d.y = Math.max(ARENA_MARGIN, Math.min(WORLD_H - ARENA_MARGIN, d.y));
+    // ── Clamp to hexagonal arena boundary ────────────────────────────────────
+    clampToHex(d);
   }
 
   // ── Battle-end check ────────────────────────────────────────────────────────
