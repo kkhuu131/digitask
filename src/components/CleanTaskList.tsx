@@ -12,7 +12,7 @@ interface CleanTaskListProps {
 }
 
 const CleanTaskList: React.FC<CleanTaskListProps> = ({ showCompleted = false, autoAllocateStats = false }) => {
-  const { tasks, loading, completeTask, deleteTask } = useTaskStore();
+  const { tasks, completeTask, deleteTask } = useTaskStore();
   const [searchQuery, setSearchQuery] = useState("");
   const [showEditModal, setShowEditModal] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<SortOption>("due");
@@ -239,14 +239,6 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({ showCompleted = false, au
     SPD: 'bg-green-500',
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary-500"></div>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-4">
       {/* Search */}
@@ -318,7 +310,7 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({ showCompleted = false, au
         ) : groupBy === "none" ? (
           // Phase 4.4 — AnimatePresence wraps the flat list so completed tasks animate
           // out (fade + collapse). initial={false} prevents mount animation on page load.
-          <AnimatePresence initial={false}>
+          <AnimatePresence>
             {sortedTasks.map(task => (
               <motion.div
                 layout

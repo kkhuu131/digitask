@@ -52,11 +52,41 @@ const TaskList = () => {
     return () => clearInterval(intervalId);
   }, []);
   
-  // If loading, show a spinner
+  // Loading: skeleton rows that match the real task card layout so nothing jumps
   if (loading) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary-500"></div>
+      <div className="py-2">
+        {/* Auto-allocate row skeleton */}
+        <div className="flex justify-end items-center gap-2 mb-4">
+          <div className="h-4 w-32 bg-gray-200 dark:bg-dark-200 rounded-full animate-pulse" />
+          <div className="h-5 w-9 bg-gray-200 dark:bg-dark-200 rounded-full animate-pulse" />
+        </div>
+        {/* Search + controls skeleton */}
+        <div className="space-y-3 mb-4">
+          <div className="h-11 bg-gray-200 dark:bg-dark-200 rounded-lg animate-pulse" />
+          <div className="flex gap-4">
+            <div className="h-7 w-36 bg-gray-200 dark:bg-dark-200 rounded animate-pulse" />
+            <div className="h-7 w-36 bg-gray-200 dark:bg-dark-200 rounded animate-pulse" />
+          </div>
+        </div>
+        {/* Task card skeletons */}
+        <div className="space-y-2">
+          {([0.82, 0.60, 0.74, 0.50, 0.68] as number[]).map((titleWidth, i) => (
+            <div
+              key={i}
+              className="rounded-lg p-4 border border-gray-200 dark:border-dark-200 bg-white dark:bg-dark-300 animate-pulse"
+              style={{ animationDelay: `${i * 60}ms` }}
+            >
+              <div className="flex items-start gap-3">
+                <div className="flex-shrink-0 w-5 h-5 rounded-full bg-gray-200 dark:bg-dark-200 mt-0.5" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 bg-gray-200 dark:bg-dark-200 rounded-full" style={{ width: `${Math.round(titleWidth * 100)}%` }} />
+                  <div className="h-3 bg-gray-200 dark:bg-dark-200 rounded-full w-1/4" />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }

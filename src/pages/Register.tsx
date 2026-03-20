@@ -66,12 +66,12 @@ const Register = () => {
   };
 
   const inputClass =
-    "block w-full px-4 py-3 rounded-xl bg-[#1C1C26] border border-[#2A2A38] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-150";
+    "block w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-[#1C1C26] border border-gray-200 dark:border-[#2A2A38] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-150";
 
   const anyError = error || usernameError || passwordError;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0A0A0F] py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#0A0A0F] py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
       <div className="max-w-md w-full">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
@@ -83,8 +83,8 @@ const Register = () => {
               style={{ imageRendering: "pixelated" }}
             />
             <span
-              className="font-heading text-4xl font-bold text-white"
-              style={{ textShadow: "0 0 12px rgba(168, 85, 247, 0.8), 0 0 24px rgba(168, 85, 247, 0.4)" }}
+              className="font-heading text-4xl font-bold text-gray-900 dark:text-white"
+              style={{ textShadow: "0 0 12px rgba(245, 158, 11, 0.5), 0 0 24px rgba(245, 158, 11, 0.2)" }}
             >
               DIGITASK
             </span>
@@ -95,18 +95,18 @@ const Register = () => {
         </div>
 
         {/* Card */}
-        <div className="bg-[#13131A] border border-[#2A2A38] rounded-2xl p-8 space-y-6">
+        <div className="bg-white dark:bg-[#13131A] border border-gray-200 dark:border-[#2A2A38] rounded-2xl p-8 space-y-6 shadow-md dark:shadow-none">
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Errors */}
             {anyError && (
-              <div className="bg-red-950/60 border border-red-700 rounded-xl px-4 py-3">
-                <p className="text-sm text-red-400">{anyError}</p>
+              <div className="bg-red-50 dark:bg-red-950/60 border border-red-200 dark:border-red-700 rounded-xl px-4 py-3">
+                <p className="text-sm text-red-600 dark:text-red-400">{anyError}</p>
               </div>
             )}
 
             {/* Username */}
             <div className="space-y-1.5">
-              <label htmlFor="username" className="block text-sm font-medium text-gray-300">
+              <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Username
               </label>
               <input
@@ -123,7 +123,7 @@ const Register = () => {
 
             {/* Email */}
             <div className="space-y-1.5">
-              <label htmlFor="email-address" className="block text-sm font-medium text-gray-300">
+              <label htmlFor="email-address" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Email address
               </label>
               <input
@@ -141,7 +141,7 @@ const Register = () => {
 
             {/* Password */}
             <div className="space-y-1.5">
-              <label htmlFor="password" className="block text-sm font-medium text-gray-300">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Password
               </label>
               <input
@@ -159,7 +159,7 @@ const Register = () => {
 
             {/* Confirm Password */}
             <div className="space-y-1.5">
-              <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-300">
+              <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Confirm Password
               </label>
               <input
@@ -179,7 +179,7 @@ const Register = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-heading text-lg font-semibold hover:from-purple-500 hover:to-indigo-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+              className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-white font-heading text-lg font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed mt-2 cursor-pointer"
             >
               {loading ? "Creating account..." : "Create Account"}
             </button>
@@ -190,7 +190,7 @@ const Register = () => {
                 Already have an account?{" "}
                 <Link
                   to="/login"
-                  className="text-purple-400 hover:text-purple-300 font-medium transition-colors duration-150"
+                  className="text-amber-600 dark:text-amber-400 hover:text-amber-500 dark:hover:text-amber-300 font-medium transition-colors duration-150"
                 >
                   Sign in
                 </Link>
