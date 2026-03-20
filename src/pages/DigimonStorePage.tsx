@@ -11,7 +11,6 @@ import { DIGIMON_LOOKUP_TABLE } from "../constants/digimonLookup";
 import DigimonSprite from "@/components/DigimonSprite";
 import { UserDigimon } from "../store/petStore";
 import { useInventoryStore } from "../store/inventoryStore";
-// import DigimonSprite from "../components/DigimonSprite";
 
 // Neemon's dialogue lines
 const NEEMON_DIALOGUE = [

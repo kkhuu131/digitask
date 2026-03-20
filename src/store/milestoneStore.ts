@@ -1,3 +1,9 @@
+/**
+ * @deprecated This store implements the old ABI-gated Digimon claiming system.
+ * It has been superseded by the Achievements system (titleStore + AchievementsPage),
+ * which handles DigiEgg rewards via `claimAchievement`. This file is kept because
+ * MilestoneProgress.tsx (rendered on UserDigimonPage) still depends on it.
+ */
 import { create } from "zustand";
 import { supabase } from "../lib/supabase";
 import { useDigimonStore } from "./petStore";

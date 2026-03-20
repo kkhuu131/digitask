@@ -1,3 +1,7 @@
+/**
+ * Returns the maximum number of bonus stat points a Digimon can gain in a single day,
+ * scaled by evolutionary stage. Higher stages can train harder and accumulate more each day.
+ */
 export function getDailyStatCap(stage: string): number {
   switch (stage.toLowerCase()) {
     case "baby":

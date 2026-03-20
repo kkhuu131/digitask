@@ -1,3 +1,8 @@
+/**
+ * Convenience wrappers around the pre-generated EVOLUTION_LOOKUP_TABLE constant.
+ * All evolution queries go through these helpers rather than accessing the table directly,
+ * so callers aren't coupled to the table's internal {byFrom, byTo, byPair, all} shape.
+ */
 import {
   EVOLUTION_LOOKUP_TABLE,
   EvolutionPath,

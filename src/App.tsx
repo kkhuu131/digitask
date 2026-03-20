@@ -9,7 +9,6 @@ import 'reactflow/dist/style.css';
 import UpdateNotification from './components/UpdateNotification';
 import { useOnboardingStore } from './store/onboardingStore';
 import React from 'react';
-// import { BokomonAssistant } from './components/bokomon-assistant/BokomonAssistant';
 
 // Pages
 import Login from './pages/Login';
