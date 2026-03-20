@@ -1,5 +1,8 @@
 User-agent: *
 Allow: /
-Allow: /sitemap.xml
+Disallow: /admin/
+Disallow: /auth/
+Disallow: /debug
+Disallow: /reset-password
 
-Sitemap: https://digitask-pi.vercel.app/sitemap.xml 
+Sitemap: https://digitask-pi.vercel.app/sitemap.xml
