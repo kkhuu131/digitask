@@ -29,38 +29,29 @@ interface InteractiveBattleState {
   };
 }
 
-// Helper function to convert UserDigimon to BattleDigimon
+/**
+ * Converts any Digimon-shaped object into a fully resolved BattleDigimon with final combat stats.
+ *
+ * Three-tier species data resolution — required because Digimon arrive in different shapes
+ * depending on the caller (real user teams, CPU wild teams, tournament opponents):
+ *   1. `userDigimon.digimon` — already-joined nested object (most user Digimon from petStore)
+ *   2. `DIGIMON_LOOKUP_TABLE[digimon_id]` — species lookup by numeric ID (CPU/tournament teams)
+ *   3. Name scan across the entire lookup table — last resort if only a name string is available
+ */
 export const convertToBattleDigimon = (userDigimon: any, isUserTeam: boolean): BattleDigimon => {
-  // Debug logging first to understand the data structure
-  console.log('Converting digimon - Full data:', userDigimon);
-  
-  // Try to get digimon data from various possible sources
   let digimonData = userDigimon.digimon;
-  
-  // If no nested digimon property, try lookup table
+
   if (!digimonData && userDigimon.digimon_id) {
     digimonData = DIGIMON_LOOKUP_TABLE[String(userDigimon.digimon_id) as unknown as keyof typeof DIGIMON_LOOKUP_TABLE];
   }
-  
-  // If still no data, try to find it by name (fallback)
+
   if (!digimonData && userDigimon.name) {
     const foundDigimon = Object.values(DIGIMON_LOOKUP_TABLE).find(d => d.name === userDigimon.name);
     if (foundDigimon) {
       digimonData = foundDigimon;
     }
   }
-  
-  // Debug logging
-  console.log('Converting digimon:', {
-    id: userDigimon.id,
-    name: userDigimon.name,
-    digimon_id: userDigimon.digimon_id,
-    hasDigimonProperty: !!userDigimon.digimon,
-    digimonData: digimonData ? 'exists' : 'missing',
-    lookupKey: String(userDigimon.digimon_id),
-    foundByName: !!Object.values(DIGIMON_LOOKUP_TABLE).find(d => d.name === userDigimon.name)
-  });
-  
+
   // Create a properly structured object for calculateFinalStats
   const structuredDigimon = {
     ...userDigimon,
@@ -78,9 +69,6 @@ export const convertToBattleDigimon = (userDigimon: any, isUserTeam: boolean): B
   
   const stats = calculateFinalStats(structuredDigimon);
 
-  console.log('type', digimonData.type, 'attribute', digimonData.attribute);
-  console.log('digimonData.name:', digimonData.name, 'userDigimon.name:', userDigimon.name);
-  
   return {
     id: userDigimon.id,
     name: userDigimon.name || digimonData.name,
@@ -103,7 +91,9 @@ export const convertToBattleDigimon = (userDigimon: any, isUserTeam: boolean): B
   };
 };
 
-// Helper function to get turn order based on speed
+// Determines initiative order for the opening turn: higher SPD acts first.
+// All 6 Digimon (both teams) are ranked together — the fastest on either side goes first.
+// This sorted array is also used as the cycling template in selectTarget.
 const getTurnOrder = (userTeam: BattleDigimon[], opponentTeam: BattleDigimon[]): BattleDigimon[] => {
   const allDigimon = [...userTeam, ...opponentTeam];
   return allDigimon.sort((a, b) => b.stats.spd - a.stats.spd);
@@ -146,7 +136,9 @@ export const useInteractiveBattleStore = create<InteractiveBattleState>((set, ge
         loading: false,
       });
 
-      // If opponent goes first, automatically process AI turn after a short delay
+      // If the opponent has higher SPD and acts first, trigger the AI turn automatically.
+      // The 600ms delay gives the UI time to render the initial battle state before
+      // the AI attack animation fires — without it the first hit appears to come from nowhere.
       if (!firstAttacker.isOnUserTeam) {
         setTimeout(() => get().processOpponentTurn(), 600);
       }
@@ -169,10 +161,12 @@ export const useInteractiveBattleStore = create<InteractiveBattleState>((set, ge
         .find(d => d.id === selection.attackerId);
       const target = [...currentBattle.userTeam, ...currentBattle.opponentTeam]
         .find(d => d.id === selection.targetId);
-      // Enforce turn ownership and current attacker
+      // Guard against stale UI interactions: if the player clicks a target after
+      // the turn has already advanced (e.g. double-click, slow connection), both
+      // conditions must be true — it's the player's turn AND this specific Digimon
+      // is the current attacker. Failing either check silently discards the action.
       const isAttackerUsers = !!currentBattle.userTeam.find(d => d.id === selection.attackerId);
       if ((currentBattle.isPlayerTurn !== isAttackerUsers) || currentBattle.currentAttacker !== selection.attackerId) {
-        // Not the correct turn/attacker; ignore
         set({ loading: false });
         return;
       }
@@ -229,7 +223,9 @@ export const useInteractiveBattleStore = create<InteractiveBattleState>((set, ge
         updatedBattle.winner = userTeamAlive > 0 ? 'user' : 'opponent';
         updatedBattle.isPlayerTurn = false;
       } else {
-        // Move to next attacker based on consistent initiative order cycling
+        // Advance to the next attacker by re-sorting the still-alive Digimon by SPD
+        // and wrapping around with modulo. Dead Digimon are excluded from the pool,
+        // so the order contracts naturally as the battle progresses.
         const alive = [...currentBattle.userTeam, ...currentBattle.opponentTeam].filter(d => d.isAlive);
         const order = alive.sort((a, b) => b.stats.spd - a.stats.spd);
         const currentIndex = order.findIndex(d => d.id === selection.attackerId);
@@ -244,11 +240,11 @@ export const useInteractiveBattleStore = create<InteractiveBattleState>((set, ge
         loading: false,
       });
       
-      // If it's now opponent's turn, process it automatically
+      // After a player action, give 1 second before the AI responds.
+      // Longer than the opening 600ms so the player can read the damage they just dealt
+      // before the opponent fires back.
       if (!updatedBattle.isPlayerTurn && !updatedBattle.isBattleComplete) {
-        setTimeout(() => {
-          get().processOpponentTurn();
-        }, 1000); // 1 second delay for better UX
+        setTimeout(() => get().processOpponentTurn(), 1000);
       }
       
     } catch (error) {
@@ -271,7 +267,10 @@ export const useInteractiveBattleStore = create<InteractiveBattleState>((set, ge
       
       if (!attacker || !attacker.isAlive) return;
 
-      // AI target selection strategy (pluggable)
+      // AI strategy: always focus the weakest user Digimon (lowest current HP).
+      // `lowestHp` uses reduce(), which throws on an empty array — the try/catch
+      // falls back to random selection rather than crashing the battle.
+      // Structured as a strategy map to make it easy to add new AI behaviors later.
       const strategies = {
         lowestHp: (c: BattleState) => c.userTeam.filter(d => d.isAlive)
           .reduce((lowest, cur) => (cur.stats.hp < lowest.stats.hp ? cur : lowest)),
@@ -281,7 +280,6 @@ export const useInteractiveBattleStore = create<InteractiveBattleState>((set, ge
         },
       } as const;
 
-      // Choose primary strategy; fallback to random if needed
       let target: BattleDigimon | undefined;
       const aliveUserDigimon = currentBattle.userTeam.filter(d => d.isAlive);
       if (aliveUserDigimon.length === 0) return;
@@ -291,8 +289,9 @@ export const useInteractiveBattleStore = create<InteractiveBattleState>((set, ge
         target = strategies.random(currentBattle);
       }
       if (!target) target = strategies.random(currentBattle);
-      
-      // Process the turn
+
+      // The AI reuses selectTarget rather than having its own damage pipeline.
+      // This ensures both sides go through identical damage calculation and turn-advance logic.
       await get().selectTarget({
         attackerId: attacker.id,
         targetId: target.id,
@@ -307,6 +306,8 @@ export const useInteractiveBattleStore = create<InteractiveBattleState>((set, ge
     }
   },
 
+  // endBattle: called after a battle concludes naturally (win/loss).
+  // The InteractiveBattle component calls this after recording results upstream.
   endBattle: () => {
     set({
       currentBattle: null,
@@ -316,6 +317,9 @@ export const useInteractiveBattleStore = create<InteractiveBattleState>((set, ge
     });
   },
 
+  // resetBattle: hard reset used when the player navigates away mid-battle or
+  // an unrecoverable error occurs. Intentionally identical to endBattle so both
+  // paths leave the store in a clean idle state.
   resetBattle: () => {
     set({
       currentBattle: null,

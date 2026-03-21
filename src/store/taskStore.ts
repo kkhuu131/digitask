@@ -24,17 +24,19 @@ async function checkTaskAchievementsAfterCompletion(userId: string): Promise<voi
 }
 
 // EXP and stat points are driven by difficulty, not task type.
-// These match the DB function complete_task_all_triggers exactly.
+// These values MUST stay in sync with the DB function `complete_task_all_triggers`,
+// which uses the same tables server-side. If you change values here, update the DB function too.
 const EXP_BY_DIFFICULTY: Record<string, number> = {
   easy: 75,
   medium: 150,
   hard: 300,
 };
 const STAT_POINTS_BY_DIFFICULTY: Record<string, number> = {
-  easy: 0,    // casual tasks don't train Digimon stats
+  easy: 0,    // Easy tasks give XP but no stat point — intentional, low-effort tasks shouldn't train stats
   medium: 1,
   hard: 2,
 };
+// Priority multiplies EXP on top of the difficulty base (applied in getExpPoints below).
 const PRIORITY_EXP_MULTIPLIER: Record<string, number> = {
   low: 0.75,
   medium: 1.0,
@@ -254,21 +256,27 @@ export const useTaskStore = create<TaskState>((set, get) => ({
 
   completeTask: async (id: string, autoAllocate: boolean = false) => {
     try {
-      // Get the current task
       const task = get().tasks.find((t) => t.id === id);
       if (!task) return;
 
-      // Optimistically update the UI immediately
+      // Optimistically mark the task done before waiting for the DB round-trip.
+      // Reverted below if the RPC call fails.
       set((state) => ({
         tasks: state.tasks.map((t) =>
           t.id === id ? { ...t, is_completed: true } : t
         ),
       }));
 
-      // Call the RPC function to complete the task in a single database call
       const { data: userData } = await supabase.auth.getUser();
       if (!userData.user) return;
 
+      // complete_task_all_triggers is a single RPC that atomically:
+      //   1. Marks the task done
+      //   2. Increments daily_quotas.completed_today
+      //   3. Awards EXP to all party Digimon (active: full, reserve: 50%, storage: 0%)
+      //   4. Awards a stat point to the active Digimon or saves it to profiles.saved_stats
+      // Returns: { exp_points, reserve_exp, stat_points, stat_category, auto_allocated,
+      //            saved_stats, daily_quota: { quota_completed } }
       const { data, error } = await supabase.rpc("complete_task_all_triggers", {
         p_task_id: id,
         p_user_id: userData.user.id,
@@ -277,54 +285,52 @@ export const useTaskStore = create<TaskState>((set, get) => ({
 
       if (error) throw error;
 
-      // Update the local saved stats from the result
+      // Mirror the server's saved_stats back to localStorage so the SavedStats UI
+      // can read it synchronously without another round-trip.
       if (data.saved_stats) {
         localStorage.setItem("savedStats", JSON.stringify(data.saved_stats));
       }
 
-      // Update the pet store's userDailyStatGains
       useDigimonStore.getState().fetchUserDailyStatGains();
-
-      // Dispatch event to notify components that a task was completed
       window.dispatchEvent(new Event("task-completed"));
 
-      // Prepare notification message based on the response
+      // Build the notification message. Three cases based on what the RPC did with stat points:
+      // 1. Task had no stat category (no stat point earned)
+      // 2. Stat was auto-allocated directly to the active Digimon
+      // 3. Stat was saved to profiles.saved_stats (auto-allocate was off, or Digimon hit its cap)
       let notificationMessage = "";
       const digimonName =
         useDigimonStore.getState().userDigimon?.name || "Active Digimon";
 
       if (!data.stat_category) {
-        // No category, just show XP gains
         notificationMessage = `${digimonName} gained ${data.exp_points} exp!\nReserve Digimon gained ${data.reserve_exp} exp!`;
       } else if (data.auto_allocated) {
-        // Auto-allocated to active Digimon
         notificationMessage = `${digimonName} gained ${data.exp_points} exp and ${data.stat_points} ${data.stat_category}!\nReserve Digimon gained ${data.reserve_exp} exp!`;
       } else if (autoAllocate) {
-        // Tried to auto-allocate but Digimon reached stat cap
+        // autoAllocate was requested but the Digimon was at its ABI-based stat cap
         notificationMessage = `Digimon has reached its stat cap, ${data.stat_points} ${data.stat_category} points were saved!\n${digimonName} gained ${data.exp_points} exp!\nReserve Digimon gained ${data.reserve_exp} exp!`;
       } else {
-        // Stat points were saved for later
         notificationMessage = `${data.stat_points} ${data.stat_category} saved for later!\n${digimonName} gained ${data.exp_points} exp!\nReserve Digimon gained ${data.reserve_exp} exp!`;
       }
 
-      // Show notification
       useNotificationStore.getState().addNotification({
         message: notificationMessage,
         type: "success",
       });
 
-      // Check for level up
       await useDigimonStore.getState().checkLevelUp();
 
-      // Check for daily quota completion
+      // completeDailyQuota rewards the whole team with a streak-multiplied XP bonus.
+      // The RPC signals readiness via daily_quota.quota_completed, not by re-checking
+      // completed_today, so this fires exactly once per day.
       if (data.daily_quota.quota_completed) {
         await get().completeDailyQuota();
       }
 
-      // Update local quota data
       await get().fetchDailyQuota();
 
-      // Grant 1 battle ticket per completed task (capped at max 10)
+      // Each completed task restores 1 battle energy (max is enforced server-side).
+      // Energy is the currency for entering arena and campaign battles.
       try {
         await supabase.rpc('grant_energy_self', { p_amount: 1 });
       } catch (e) {
@@ -332,7 +338,9 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       }
       window.dispatchEvent(new Event('energy-updated'));
 
-      // Optimistically update tournament weekly task count and fire unlock notification
+      // Optimistically bump the tournament weekly task counter so the UI
+      // shows the progress bar advancing without waiting for a fetch.
+      // At exactly 10 tasks the weekly tournament bracket becomes available.
       const tournamentStore = useTournamentStore.getState();
       const prevWeeklyCount = tournamentStore.weeklyTaskCount;
       const newWeeklyCount = prevWeeklyCount + 1;
@@ -345,7 +353,8 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         });
       }
 
-      // Check task completion achievements (non-blocking)
+      // Fire-and-forget: read lifetime task count from user_milestones and check title unlocks.
+      // Non-blocking — a failure here shouldn't fail the task completion.
       checkTaskAchievementsAfterCompletion(userData.user.id);
     } catch (error) {
       console.error("Error completing task:", error);
@@ -384,7 +393,10 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       const now = new Date();
       let penaltyApplied = false;
 
-      // Find tasks that have become overdue
+      // Only penalize tasks that are newly overdue (not already in penalizedTasks).
+      // penalizedTasks is persisted in daily_quotas.penalized_tasks so that refreshing
+      // the page or re-calling checkOverdueTasks never double-penalizes the same task.
+      // Daily tasks are excluded — they reset every day via the server-side cron.
       const newlyOverdueTasks = tasks.filter((task) => {
         if (task.is_daily || task.is_completed || !task.due_date) return false;
 
@@ -393,7 +405,6 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       });
 
       if (newlyOverdueTasks.length > 0) {
-        // Get the current daily quota
         const { data: quotaData } = await supabase
           .from("daily_quotas")
           .select("*")
@@ -401,26 +412,26 @@ export const useTaskStore = create<TaskState>((set, get) => ({
           .single();
 
         if (quotaData) {
-          // Create a set of all penalized tasks to avoid duplicates
+          // Use a Set to merge DB-persisted IDs with newly found ones,
+          // ensuring we never write duplicates into penalized_tasks.
           const allPenalizedSet = new Set([
             ...(quotaData.penalized_tasks || []),
             ...newlyOverdueTasks.map((t) => t.id),
           ]);
           const allPenalized = Array.from(allPenalizedSet);
 
-          // Update the database with all penalized tasks first
+          // Write to DB first so that if the page reloads mid-penalty loop,
+          // the IDs are already recorded and won't be penalized again.
           await supabase
             .from("daily_quotas")
             .update({ penalized_tasks: allPenalized })
             .eq("user_id", userData.user.id);
 
-          // Update local state
           set({ penalizedTasks: allPenalized });
         }
 
-        // Apply penalties for each overdue task
+        // -5 happiness per overdue task
         for (const _ of newlyOverdueTasks) {
-          // Apply health and happiness penalties to the Digimon
           await useDigimonStore.getState().applyPenalty(5);
           penaltyApplied = true;
         }
@@ -562,6 +573,9 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       return () => {};
     }
 
+    // Inject the Realtime payload directly into state rather than re-fetching.
+    // daily_quotas rows are small and completely replaced on each server update,
+    // so the full payload.new is always fresh and safe to use as the new state.
     const subscription = await supabase
       .channel("daily_quota_changes")
       .on(
@@ -600,8 +614,9 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         return;
       }
 
+      // Strict equality (=== not >=) so this fires exactly once — at the moment
+      // completed_today hits 3. Extra tasks beyond the quota don't re-trigger the reward.
       if (get().dailyQuota?.completed_today === DAILY_QUOTA_AMOUNT) {
-        // Get the XP multiplier based on streak
         const expMultiplier = get().getExpMultiplier();
 
         // Apply multiplier to the base reward
@@ -643,6 +658,8 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     const streak = dailyQuota.current_streak;
     if (streak <= 1) return 1.0;
 
+    // +10% per streak day beyond the first, capped at 2.0× (hit at 11-day streak).
+    // Applied to the daily quota XP bonus and to per-task feedDigimon calls.
     return Math.min(1.0 + (streak - 1) * 0.1, 2.0);
   },
 

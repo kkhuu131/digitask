@@ -114,13 +114,6 @@ export const handleBokomonMessage = async (message: string) => {
   };
 
   try {
-    // Log context size for debugging
-    const contextString = JSON.stringify(context);
-    console.log(`Context size: ${contextString.length} characters`);
-    console.log(
-      `Found ${simplifiedDigimonData.length} Digimon, ${simplifiedEvolutionData.length} evolution paths`
-    );
-
     const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [

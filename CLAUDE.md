@@ -55,6 +55,7 @@ src/
   store/              # Zustand stores (one per domain)
   pages/              # Route-level components
   components/         # Shared/feature components
+  engine/             # Arena battle engine (physics loop, steering, state machine)
   utils/              # Pure logic (stat calc, evolution helpers, sprite manager)
   constants/          # Pre-generated lookup tables (see "Local Constants Pattern" below)
   hooks/              # Custom React hooks
@@ -79,7 +80,8 @@ The constants directory contains:
 | `evolutionLookup.ts` | `evolution_paths` table | `generate-evolution-lookup.js` |
 | `digimonFormsLookup.ts` | `digimon_forms` table | `generate-digimon-forms-lookup.js` |
 | `animatedDigimonList.ts` | `public/assets/animated_digimon/` folders | `generate-animated-digimon-list.js` |
-| `campaignOpponents.ts` | Hardcoded — campaign CPU teams | (manual) |
+| `campaignOpponents.ts` | Hardcoded — legacy campaign CPU teams (campaign mode removed; file unused) | (manual) |
+| `tournamentBossTeams.ts` | Hardcoded — tournament opponent team pool | (manual) |
 | `storeItems.ts` | Hardcoded — in-game shop items | (manual) |
 | `titles.ts` | Hardcoded — user title definitions (mirrors `titles` DB table) | (manual) |
 | `updateInfo.ts` | Hardcoded — patch notes content | (manual) |
@@ -93,10 +95,11 @@ The constants directory contains:
 | `petStore` | Active Digimon state, evolution/devolution, stats, feeding, party & storage management |
 | `authStore` | Supabase auth session (`user` is Supabase `User` type; `userProfile` is the app profile), admin status |
 | `taskStore` | Tasks CRUD, daily quota, overdue checks, streak EXP multiplier. Calls `complete_task_all_triggers` RPC |
-| `battleStore` | Battle simulation (vs. CPU wild teams or real players), battle history, daily limits, energy management |
-| `interactiveBattleStore` | Interactive (turn-by-turn) battle mode |
-| `milestoneStore` | ABI-based Digimon claiming (`canClaimDigimon`, `claimSelectedDigimon`) |
-| `titleStore` | Fetches/awards user titles from `user_titles` table |
+| `battleStore` | Wild AI team generation, battle options caching, battle history, energy management |
+| `interactiveBattleStore` | Interactive (turn-by-turn) battle mode — SPD-ordered turns, AI targeting, damage pipeline |
+| `tournamentStore` | Weekly tournament: unlock gating (10 tasks), bracket generation, round results, placement bits |
+| `milestoneStore` | **Deprecated** — legacy ABI-based Digimon claiming. Still used by `MilestoneProgress.tsx`; superseded by `titleStore` + `AchievementsPage` |
+| `titleStore` | Fetches/awards user titles from `user_titles` table; checks unlock conditions after game events |
 | `inventoryStore` | Inventory management (`user_inventory` table) |
 | `currencyStore` | In-game currency (`user_currency` table — bits and digicoins) |
 | `notificationStore` | In-app notification queue |
@@ -138,13 +141,14 @@ All tables are in the `public` schema with RLS enabled.
 
 **ABI (Ability/Aptitude) stat**:
 - Every `UserDigimon` has an `abi` field
-- Controls the **total bonus stat cap** per Digimon: `calculateBonusStatCap(abi) = 50 + Math.floor(abi / 2)`
-- Controls **Digimon claiming**: a new Digimon can be claimed when `getABITotal() >= getABIThreshold()`, where `ABI_MILESTONES = [2, 5, 10, 15, 20, 30, 50, 75, 100, 150, 200]` and the threshold index is based on total owned Digimon count
+- Controls the **total bonus stat cap** per Digimon: `calculateBonusStatCap(abi) = 20 + abi`
+- ABI is earned through evolution/devolution cycles: evolution grants `Math.floor(level / 10) + 1` ABI, devolution grants `Math.floor(level / 5) + 1` (more generous — the devolve→re-evolve loop is the primary ABI grind)
+- Digimon claiming is now handled by the **Achievements system** (`AchievementsPage`, `titleStore`)
 
 **Task → stat pipeline**:
 1. User completes task → `taskStore.completeTask()` → calls `complete_task_all_triggers` RPC
 2. RPC marks task done, updates `daily_quotas`, awards EXP to all party Digimon, and handles stat points
-3. Stat points from a task depend on `difficulty` (hard = 2 pts, medium/easy = 1 pt) and are limited by the ABI-based total bonus cap on the active Digimon
+3. Stat points from a task depend on `difficulty` (hard = 2 pts, medium = 1 pt, easy = 0 pts) and are limited by the ABI-based total bonus cap on the active Digimon
 4. If `autoAllocate=true` and Digimon is under its stat cap, stat goes directly to `user_digimon.*_bonus`; otherwise it's saved to `profiles.saved_stats` for manual allocation later via `allocate_stat()` RPC
 5. EXP multipliers: streak (up to 2× at 11+ day streak), difficulty (easy=0.5×, hard=1.5×), priority (low=0.5×, high=1.5×)
 6. Active Digimon gets full EXP + happiness boost; non-storage party members get 50% EXP; storage Digimon get 0%
@@ -155,11 +159,10 @@ All tables are in the `public` schema with RLS enabled.
 - Displayed to the user for manual distribution when auto-allocate is off or Digimon is at cap
 
 **Battle energy** (`profiles.battle_energy` / `profiles.max_battle_energy`):
-- Displayed in Layout, BattleHub, Battle, and Campaign pages
+- Displayed in Layout, BattleHub, and Battle pages
 - Arena battles (standard + interactive) cost **20 energy** each via `spend_energy_self(20)` RPC
-- Campaign battles cost **30 energy** each via `spend_energy_self(30)` RPC
-- Energy is restored externally (cron / admin grant); `grant_energy_self` RPC exists for self-grant
-- Max energy can increase as campaign milestone reward
+- Each completed task restores **+1 energy** via `grant_energy_self(1)` RPC (called in `taskStore.completeTask`)
+- Energy can also be granted by admin; max is enforced server-side
 
 **Digimon party & storage**:
 - Active party max size is **9**; beyond that, newly claimed Digimon go to storage (`is_in_storage: true`)
@@ -175,21 +178,24 @@ All tables are in the `public` schema with RLS enabled.
 - **Form transformation** (X-Antibody and others): `transformDigimonForm(userDigimonId, toFormId, formType)`, backed by `digimonFormsLookup.ts`. `UserDigimon` tracks `has_x_antibody: boolean`
 
 **Battle simulation** (`battleStore`):
-- Arena opponent lookup uses `get_random_users(exclude_user_id)` RPC, then fetches each opponent's team from `user_digimon` directly
-- CPU "Wild Digimon" teams are generated client-side, scaled to user's power rating, with easy/medium/hard difficulty
-- Damage formula: `ATK/DEF` or `INT/INT` (whichever attacker stat is higher), multiplied by type matchup, attribute matchup, random variance, and crit chance based on SP
-- Miss chance applies to all attacks; `simulateTeamBattle()` runs a full simulation returning the turn log
-- Daily battle limit: 5 battles/day. The client reads `battle_limits` directly (not via the `check_and_increment_battle_limit` RPC). Incrementing uses `check_and_increment_battle_limit()` RPC (no-arg version using `auth.uid()`)
+- All arena opponents are wild AI teams generated client-side via `generateBattleOption()`, scaled to the user's power rating at easy/medium/hard difficulty. Real-player matchmaking was removed.
+- `calculateUserPowerRating()` averages the top-9 Digimon by combat power, matching the 9-slot party max
+- Damage formula: `ATK/DEF` or `INT/INT` (whichever favors the attacker), multiplied by type matchup (Vaccine→Virus→Data→Vaccine triangle, 2.0×/0.5×), attribute matchup (elemental chains, 1.5×), random variance, and SP-based crit chance
+- Miss chance (7%) applies to all attacks; `simulateTeamBattle()` runs a full simulation returning the turn log
+- Battle options are cached in localStorage and refreshed after each battle or at day rollover
 - First-win arena bonus tracked via `check_and_set_first_win_self()` RPC and `profiles.last_arena_first_win` date
 
 **Daily/recurring task reset** (server-side cron):
 - `reset_daily_tasks()` — resets `is_completed` on daily/recurring tasks, applies -5 happiness penalty to active Digimon for each uncompleted task
 - `process_daily_quotas()` — saves yesterday's `completed_today` to `task_history`, resets `daily_quotas.completed_today` to 0, resets streak if quota (<3 tasks) was not met
 
-**Campaign mode** (`/campaign`):
-- Fixed-progression battle mode using hardcoded opponents in `src/constants/campaignOpponents.ts`
-- Costs 30 energy per battle; `profiles.highest_stage_cleared` tracks progress
-- Distinct from the normal battle hub (`/battles`)
+**Tournament mode** (`/tournament`, `tournamentStore`):
+- Weekly bracket unlocked by completing 10 tasks in the current week
+- 3 real rounds (Quarterfinal/Semifinal/Grand Final at easy/medium/hard difficulty) plus 4 visual filler slots to form an 8-team bracket
+- Opponents are generated by `pickTournamentOpponent()` using `TOURNAMENT_TEAM_POOL` templates scaled to user's power rating
+- Results recorded via `recordRoundResult()`; placement awards bits (100 QF loss → 1500 champion)
+- One tournament entry per calendar week (`week_start` key); stale active entries are expired client-side on fetch
+- `profiles.highest_stage_cleared` is a legacy column from campaign mode — not actively used
 
 **Titles system** (`titleStore`, `user_titles` table):
 - Title definitions in `src/constants/titles.ts` (mirrors the `titles` DB table)
@@ -219,8 +225,9 @@ All tables are in the `public` schema with RLS enabled.
 | `dna_evolve_digimon(digimon_id, to_digimon_id, dna_partner_digimon_id, boost_points, abi_gain)` | `petStore` | DNA evolution — consumes partner Digimon |
 | `check_and_increment_battle_limit()` | `battleStore` | Increments daily battle count; returns success + remaining (max 5/day) |
 | `check_and_set_first_win_self()` | `battleStore` | Grants first-win bonus if not already claimed today |
-| `spend_energy_self(amount)` | `battleStore`, `Battle.tsx`, `Campaign.tsx` | Deducts `battle_energy` from calling user's profile |
-| `get_random_users(exclude_user_id)` | `battleStore` | Returns random opponent users for PvP matchmaking |
+| `spend_energy_self(amount)` | `battleStore`, `Battle.tsx` | Deducts `battle_energy` from calling user's profile |
+| `grant_energy_self(amount)` | `taskStore` | Restores `battle_energy` (+1 per completed task) |
+| `swap_team_members(user_id, digimon_id_1, digimon_id_2)` | `petStore` | Atomically swaps `is_on_team` between two Digimon to prevent two-tab race conditions |
 | `is_admin()` | `authStore` | Checks if current user is in `admin_users` |
 
 **Server-side only (cron jobs / triggers):**
@@ -248,3 +255,6 @@ Sprites live in `public/assets/animated_digimon/<DigimonName>/` with standard fi
 
 **DB functions that are stubs (exist but do nothing):**
 - `contribute_boss_progress(user_id, task_points, is_daily_quota)` — weekly boss feature was removed. Kept as a no-op so `complete_task_all_triggers` doesn't need to be rewritten. Do not call directly.
+
+**DB functions that exist but are no longer called by client code:**
+- `get_random_users(exclude_user_id)` — was used for real-player PvP matchmaking, which was replaced by wild AI opponents. Still present in the DB but not imported or called anywhere in the codebase.

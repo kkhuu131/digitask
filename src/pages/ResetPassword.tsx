@@ -13,20 +13,11 @@ const ResetPassword = () => {
 
   // Check if we have a hash fragment in the URL (from the reset link)
   useEffect(() => {
-    // Log the URL for debugging
-    console.log("Current URL:", window.location.href);
-    
-    // Check for token in hash
     const hashFragment = window.location.hash;
-    
-    // If there's a hash fragment that contains "access_token", consider it valid
-    // This is a more reliable check than parsing and looking for specific params
+
     if (hashFragment && hashFragment.includes('access_token=')) {
-      console.log("Found access token in URL");
-      // Clear any previous errors
       setError(null);
     } else {
-      console.log("No access token found in URL");
       setError("Invalid or expired password reset link. Please request a new one.");
     }
   }, [location]);

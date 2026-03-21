@@ -49,7 +49,15 @@
       "Bash(py -3 \"C:\\\\Users\\\\notke\\\\.claude\\\\plugins\\\\cache\\\\ui-ux-pro-max-skill\\\\ui-ux-pro-max\\\\2.0.1\\\\scripts\\\\search.py\" \"gaming productivity dashboard dark mode clean modern\" --design-system -p \"Digitask Arena\")",
       "Bash(py -3 \"C:\\\\Users\\\\notke\\\\.claude\\\\plugins\\\\cache\\\\ui-ux-pro-max-skill\\\\ui-ux-pro-max\\\\2.0.1\\\\src\\\\ui-ux-pro-max\\\\scripts\\\\search.py\" \"gaming productivity dashboard dark mode clean modern\" --design-system -p \"Digitask Arena\")",
       "Bash(python \"C:\\\\Users\\\\notke\\\\.claude\\\\plugins\\\\cache\\\\ui-ux-pro-max-skill\\\\ui-ux-pro-max\\\\2.0.1\\\\src\\\\ui-ux-pro-max\\\\scripts\\\\search.py\" \"gaming battle arena difficulty selection\" --design-system -p \"Digitask Battle Arena\")",
-      "Bash(python \"C:\\\\Users\\\\notke\\\\.claude\\\\plugins\\\\cache\\\\ui-ux-pro-max-skill\\\\ui-ux-pro-max\\\\2.0.1\\\\cli\\\\assets\\\\scripts\\\\search.py\" \"gaming productivity dark digimon dashboard\" --design-system -p \"Digitask\")"
+      "Bash(python \"C:\\\\Users\\\\notke\\\\.claude\\\\plugins\\\\cache\\\\ui-ux-pro-max-skill\\\\ui-ux-pro-max\\\\2.0.1\\\\cli\\\\assets\\\\scripts\\\\search.py\" \"gaming productivity dark digimon dashboard\" --design-system -p \"Digitask\")",
+      "Bash(grep -rn \"^[[:space:]]*//.*import\\\\|^[[:space:]]*\\\\/\\\\/ import\" src/ --include=\"*.ts\" --include=\"*.tsx\")",
+      "Bash(grep -rn \"^[[:space:]]*//[^/]\" src/ --include=\"*.ts\" --include=\"*.tsx\")",
+      "Bash(grep -E \"^\\\\S.*\\\\.\\(ts|tsx\\):[0-9]+:[[:space:]]*//\")",
+      "Bash(npx eslint:*)",
+      "Bash(for f:*)",
+      "Bash(do echo:*)",
+      "Read(//c/Users/notke/Desktop/Personal/Projects/digitask/digitask/**)",
+      "Bash(done)"
     ]
   },
   "enabledMcpjsonServers": [

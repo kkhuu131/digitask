@@ -363,19 +363,8 @@ const DigimonTeamManager = () => {
       
       // Only proceed if we're dragging a Digimon (not an empty slot)
       if (activeItem?.digimon) {
-        console.log('Drag operation:', {
-          activeId,
-          overId,
-          isActiveTeam,
-          isOverTeam,
-          activeDigimon: activeItem.digimon.name,
-          overDigimon: overItem?.digimon?.name || 'empty slot',
-          activeOnTeam: activeItem.digimon.is_on_team
-        });
-
         // If dropping onto another Digimon, swap them
         if (overItem?.digimon) {
-          console.log('Swapping Digimon');
           // Determine which is team and which is reserve
           const teamDigimon = isActiveTeam ? activeItem.digimon : overItem.digimon;
           const reserveDigimon = isActiveTeam ? overItem.digimon : activeItem.digimon;

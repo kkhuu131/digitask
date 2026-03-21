@@ -15,6 +15,11 @@ import { useAuthStore } from "../store/authStore";
 
 export const NON_ACTIVE_DIGIMON_EXP_MULTIPLIER = 0.5;
 
+/**
+ * Converts a Digimon's current level into ABI boost points gained during evolution/devolution.
+ * Evolution rewards fewer points (÷10) than devolution (÷5) — intentional design: repeatedly
+ * devolving and re-evolving is the primary way to accumulate ABI quickly.
+ */
 export function expToBoostPoints(level: number, evolution: boolean = true) {
   if (evolution) {
     return Math.floor(level / 10) + 1;
@@ -23,6 +28,11 @@ export function expToBoostPoints(level: number, evolution: boolean = true) {
   }
 }
 
+/**
+ * Returns the maximum total bonus stats a Digimon can accumulate from tasks.
+ * ABI is earned through evolution/devolution cycles, so higher-ABI Digimon
+ * have been trained through more life cycles and can absorb more task rewards.
+ */
 export function calculateBonusStatCap(abi: number) {
   return 20 + abi;
 }
@@ -314,9 +324,10 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       };
 
       if (error) {
-        // If no active Digimon found, try to get any Digimon
+        // PGRST116 = "no rows returned" from Supabase PostgREST.
+        // This happens when the user has Digimon but none has is_active=true
+        // (e.g. after a release). Auto-activate the most recently created one.
         if (error.code === "PGRST116") {
-          console.log("No active Digimon found, looking for any Digimon");
 
           const { data: anyAvailableDigimonRawData, error: availableError } =
             await supabase
@@ -341,10 +352,6 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
           // Found a Digimon, make it active
           if (anyAvailableDigimon) {
-            console.log(
-              "Found Digimon, making it active:",
-              anyAvailableDigimon.id
-            );
 
             await supabase
               .from("user_digimon")
@@ -731,7 +738,9 @@ export const useDigimonStore = create<PetState>((set, get) => ({
             userDigimon.digimon?.spd_level99 || 0
           );
 
-          // Check each stat requirement
+          // Check each stat requirement.
+          // HP is special: each hp_bonus point is worth 10 HP in actual display value,
+          // matching the rendering logic in digimonStatCalculation. All other bonus fields are 1:1.
           if (
             statReqs.hp &&
             baseHP + 10 * (userDigimon.hp_bonus || 0) < statReqs.hp
@@ -977,6 +986,9 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         }
       }
 
+      // Convert the pre-evolution level into ABI before resetting.
+      // Level resets to 1 on evolution; the ABI gain permanently raises the
+      // bonus stat cap, rewarding the training investment in this life cycle.
       const boostPoints = expToBoostPoints(digimonToEvolve.current_level, true);
 
       const { error } = await supabase
@@ -1002,8 +1014,6 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       if (userDigimon && digimonToEvolve.id === userDigimon.id) {
         await get().fetchUserDigimon();
       }
-
-      console.log("userDigimon", userDigimon);
 
       // After successful evolution, check for titles
       const newDigimon = DIGIMON_LOOKUP_TABLE[toDigimonId];
@@ -1068,6 +1078,8 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         );
       }
 
+      // Devolution grants more ABI per level than evolution (÷5 vs ÷10).
+      // This makes the devolve→re-evolve loop the primary ABI grind mechanic.
       const boostPoints = expToBoostPoints(
         digimonToDevolve.current_level,
         false
@@ -1120,6 +1132,15 @@ export const useDigimonStore = create<PetState>((set, get) => ({
     }
   },
 
+  /**
+   * Opens a Supabase Realtime subscription for the current user's Digimon rows.
+   * Returns an unsubscribe function — callers must invoke it on unmount to prevent leaks.
+   *
+   * DELETE events (Digimon death) are handled specially: state is cleared immediately and
+   * a persistent notification + "digimon-died" CustomEvent are fired so other parts of the
+   * UI (e.g. the pet display) can react without polling.
+   * All other events (INSERT/UPDATE) simply re-fetch the active Digimon.
+   */
   subscribeToDigimonUpdates: async () => {
     const { data: userData } = await supabase.auth.getUser();
     if (!userData.user) {
@@ -1131,20 +1152,18 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       .on(
         "postgres_changes",
         {
-          event: "*", // Listen for all events (INSERT, UPDATE, DELETE)
+          event: "*",
           schema: "public",
           table: "user_digimon",
           filter: `user_id=eq.${userData.user.id}`,
         },
         async (payload) => {
-          // If it's a DELETE event and our current Digimon was deleted
           if (
             payload.eventType === "DELETE" &&
             get().userDigimon?.id === payload.old.id
           ) {
             set({ userDigimon: null, digimonData: null, evolutionOptions: [] });
 
-            // Show notification about Digimon death
             useNotificationStore.getState().addNotification({
               message:
                 "Your Digimon has died due to neglect. You'll need to create a new one.",
@@ -1152,7 +1171,6 @@ export const useDigimonStore = create<PetState>((set, get) => ({
               persistent: true,
             });
 
-            // Dispatch a custom event
             window.dispatchEvent(new CustomEvent("digimon-died"));
 
             return;
@@ -1175,8 +1193,10 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       const { userDigimon } = get();
       if (!userDigimon) return;
 
-      // Calculate XP needed for next level: 100 + (level * 50)
-      // Level 1->2: 150, Level 10->11: 600, Level 50->51: 2600
+      // XP curve: each level costs 100 + (level × 50).
+      // Level 1→2: 150 XP, Level 10→11: 600 XP, Level 50→51: 2,600 XP.
+      // Note: the DB trigger `level_up_digimon` also handles level-ups server-side;
+      // this client-side check provides an immediate UI update without waiting for realtime.
       const xpNeeded = 100 + userDigimon.current_level * 50;
 
       // Check if Digimon has enough XP to level up
@@ -1208,7 +1228,8 @@ export const useDigimonStore = create<PetState>((set, get) => ({
           },
         });
 
-        // Check if there's enough XP for another level up (with recursion depth tracking)
+        // Recurse to handle multi-level gains in a single task reward.
+        // Each call re-reads fresh state from `get()`, so level and XP are always current.
         if (remainingXP > 0) {
           await get().checkLevelUp();
         }
@@ -1274,7 +1295,6 @@ export const useDigimonStore = create<PetState>((set, get) => ({
   },
 
   testPenalty: async () => {
-    console.log("Testing penalty application");
     await get().applyPenalty(10);
     await get().fetchUserDigimon();
   },
@@ -1404,7 +1424,9 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         return;
       }
 
-      // Start a transaction to swap the two Digimon
+      // swap_team_members is a DB RPC that toggles is_on_team for both Digimon atomically.
+      // Doing this client-side with two sequential UPDATEs would risk a state where both
+      // are on the team simultaneously if the second write fails.
       const { error } = await supabase.rpc("swap_team_members", {
         team_digimon_id: teamDigimonId,
         reserve_digimon_id: reserveDigimonId,
@@ -1580,11 +1602,12 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       // Get the active Digimon
       const activeDigimon = get().userDigimon;
       if (!activeDigimon) {
-        console.log("No active Digimon to increase stats for");
         return false;
       }
 
-      // Map the stat category to the corresponding bonus field
+      // Dynamically resolve the DB column name from the stat category string.
+      // e.g. "ATK" → "atk_bonus". This lets one function handle all six stat types
+      // without a switch statement, at the cost of relying on the naming convention.
       const bonusField = `${statCategory.toLowerCase()}_bonus`;
 
       // Get the current bonus value
@@ -1595,7 +1618,8 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       // Calculate the new bonus value
       const newBonus = currentBonus + amount;
 
-      // Dispatch the stat-increased event for optimistic UI updates
+      // Fire before the DB write so the UI reacts immediately (optimistic update).
+      // Components listening for "stat-increased" can re-render without waiting for the round-trip.
       window.dispatchEvent(new Event("stat-increased"));
 
       // Update the Digimon in the database
@@ -1633,22 +1657,19 @@ export const useDigimonStore = create<PetState>((set, get) => ({
     }
   },
 
+  // Daily stat cap was removed — these three methods are stubs kept for API compatibility
+  // (callers in taskStore and UI components still call them). They always report "no cap".
   checkStatCap: async () => {
-    // Daily stat cap system removed - users can now gain unlimited stats per day
     return { canGain: true, remaining: 999999, cap: 999999 };
   },
 
-  // Daily stat cap calculation removed
   calculateDailyStatCap: () => {
-    // No cap - return a very high number
     return 999999;
   },
 
-  // Daily stat gains tracking removed
   fetchUserDailyStatGains: async () => {
-    // No longer needed - daily stat cap removed
     set({ userDailyStatGains: 0 });
-        return 0;
+    return 0;
   },
 
   updateDigimonName: async (digimonId: string, newName: string) => {
@@ -1823,11 +1844,14 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       );
       if (!dnaPartnerDigimon) throw new Error("DNA partner Digimon not found");
 
-      // Calculate bonus stats based on level before evolution
+      // Capture level-based rewards before the RPC resets the Digimon.
+      // boostPoints → passed to RPC as p_boost_points (added to the evolved Digimon's stats)
+      // abiGain     → added to ABI (same formula as devolution: ÷5+1, so DNA evo is generous)
       const boostPoints = expToBoostPoints(digimonToEvolve.current_level);
       const abiGain = Math.floor(digimonToEvolve.current_level / 5) + 1;
 
-      // Call the RPC function to handle the DNA evolution
+      // The RPC handles the evolution atomically: transforms the Digimon, applies boostPoints
+      // and abiGain, and permanently deletes the DNA partner (p_dna_partner_digimon_id).
       const { error } = await supabase.rpc("dna_evolve_digimon", {
         p_digimon_id: digimonId,
         p_to_digimon_id: toDigimonId,

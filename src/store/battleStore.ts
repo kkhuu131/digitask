@@ -173,10 +173,18 @@ export const generateBattleOption = (powerRating: number, difficulty: string) =>
     sprite_url: string; type: string; attribute: string;
   }[] = [];
 
+  // Start with the full team power budget. Each member's share is drawn from
+  // the remaining budget rather than splitting evenly up front, so earlier
+  // picks can run slightly over or under their "fair share" and later picks
+  // compensate — producing teams that feel organically varied rather than
+  // three identical-power clones.
   let remainingPower = targetPower * teamSize;
 
   for (let i = 0; i < teamSize; i++) {
     const isLast = i === teamSize - 1;
+    // For all but the last member: divide remaining budget by slots left,
+    // then apply ±10% random variance to break symmetry.
+    // The last member simply absorbs whatever budget is left.
     const memberTargetPower = isLast
       ? remainingPower
       : (remainingPower / (teamSize - i)) * (0.9 + Math.random() * 0.2);
@@ -249,7 +257,7 @@ export const generateBattleOption = (powerRating: number, difficulty: string) =>
     }
 
     team.push({
-      id: randomDigimon.digimon_id * 10 + i,  // unique per slot even if same species
+      id: randomDigimon.digimon_id * 10 + i,  // unique per slot even if the same species appears twice
       digimon_id: randomDigimon.digimon_id,
       name: randomDigimon.name,
       current_level: bestLevel,
@@ -258,6 +266,8 @@ export const generateBattleOption = (powerRating: number, difficulty: string) =>
       attribute: randomDigimon.attribute,
     });
 
+    // Deduct the actual power of the chosen member (not the target) so the
+    // next iteration's budget reflects the real remaining power deficit.
     remainingPower -= calculateBaseDigimonPowerRating(randomDigimon, bestLevel);
   }
 
@@ -280,6 +290,8 @@ export const generateBattleOption = (powerRating: number, difficulty: string) =>
 
 export type DigimonType = "Vaccine" | "Virus" | "Data" | "Free";
 
+// Rock-paper-scissors triangle: Vaccine > Virus > Data > Vaccine (each 2.0x vs its counter, 0.5x vs its weakness).
+// "Free" is neutral against everything — no advantage or disadvantage.
 export const TypeAdvantageMap: Record<DigimonType, Record<DigimonType, number>> = {
   Vaccine: {
     Virus: 2.0,
@@ -318,6 +330,12 @@ export type DigimonAttribute =
   | "Light"
   | "Neutral";
 
+// Elemental chains — each attribute deals 1.5x to exactly one other:
+//   Plant→Water, Water→Fire, Fire→Plant  (nature cycle)
+//   Electric→Wind, Wind→Earth, Earth→Electric  (force cycle)
+//   Dark→Light, Light→Dark  (binary opposition)
+//   Neutral has no advantage or weakness.
+// All other pairings are 1.0x (neutral).
 export const AttributeAdvantageMap: Record<
   DigimonAttribute,
   Record<DigimonAttribute, number>
@@ -423,6 +441,11 @@ export const AttributeAdvantageMap: Record<
   },
 };
 
+/**
+ * Returns the damage multiplier applied on a critical hit.
+ * Base is 1.25×; each SP point adds +0.01, so a Digimon with 50 SP crits for 1.75×.
+ * Called only when a crit is confirmed (see `criticalHitChance`).
+ */
 export function calculateCritMultiplier(SP: number) {
   const SPModifier = 0.01 * SP;
   const critMultiplier = baseCritMultiplier + SPModifier;
@@ -431,8 +454,8 @@ export function calculateCritMultiplier(SP: number) {
 }
 
 export const baseDamage = 50;
-export const missChance = 0.07;
-export const criticalHitChance = 0.125;
+export const missChance = 0.07;        // 7% flat miss rate on every attack
+export const criticalHitChance = 0.125; // 12.5% crit proc; multiplier scales with SP
 export const baseCritMultiplier = 1.25;
 
 
@@ -635,15 +658,17 @@ export const useBattleStore = create<BattleState>((set, get) => {
         const state = get();
         const currentTime = Date.now();
 
-        // Check if we need to refresh options
+        // Skip regeneration if we have cached options that are still valid.
+        // Two independent reasons force a refresh:
+        //   1. shouldRefreshOptions — set to true by setShouldRefreshOptions() after
+        //      a battle completes, so the next visit gets new opponents.
+        //   2. isNewDay — daily rollover: even if the user hasn't battled, opponents
+        //      should rotate at midnight so the list never feels stale.
         if (
           !forceRefresh &&
           state.battleOptions.length > 0 &&
           state.lastOptionsRefresh
         ) {
-          // Only refresh if:
-          // 1. It's been explicitly marked for refresh (after battle)
-          // 2. It's a new day since last refresh
           const lastRefreshDate = new Date(state.lastOptionsRefresh);
           const currentDate = new Date();
           const isNewDay =
@@ -652,7 +677,6 @@ export const useBattleStore = create<BattleState>((set, get) => {
             lastRefreshDate.getFullYear() !== currentDate.getFullYear();
 
           if (!state.shouldRefreshOptions && !isNewDay) {
-            // Use cached options
             return;
           }
         }
@@ -722,12 +746,15 @@ export const useBattleStore = create<BattleState>((set, get) => {
         // Get the current user
         const { data: userData } = await supabase.auth.getUser();
         if (!userData.user) {
-          console.log("No user found, can't fetch team battle history");
           set({ teamBattleHistory: [], loading: false });
           return;
         }
 
-        // Fetch only battles where the user was the initiator
+        // Fetch only battles where the user was the initiator.
+        // team_battles has two FKs to profiles (user_id and opponent_id), so Supabase
+        // can't infer which FK to use for a plain `profiles(username)` join.
+        // The `!fkey_name` syntax explicitly names the constraint, giving each join
+        // a unique alias ("user" / "opponent") that matches TeamBattleHistory.
         const { data, error } = await supabase
           .from("team_battles")
           .select(

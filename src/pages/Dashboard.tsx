@@ -128,7 +128,6 @@ const Dashboard: React.FC = () => {
       try {
         // If no Digimon, redirect to create-pet
         if (!userDigimon) {
-          console.log("No Digimon found");
           // navigate("/create-pet");
         }
       } catch (error) {

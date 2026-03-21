@@ -11,7 +11,6 @@ const AuthCallback = () => {
   useEffect(() => {
     // Skip if we've already processed this callback (prevents double processing during HMR)
     if (processedRef.current) {
-      console.log("Auth callback already processed, skipping");
       return;
     }
     
@@ -72,7 +71,6 @@ const AuthCallback = () => {
         
         // If this is a hot reload in development, skip the navigation
         if (isHotReload) {
-          console.log("Hot module reload detected, skipping auth callback");
           return;
         }
         
@@ -98,7 +96,6 @@ const AuthCallback = () => {
         }
         
         if (!data.session) {
-          console.log("No session found");
           navigate("/login");
           return;
         }
@@ -134,7 +131,6 @@ const AuthCallback = () => {
             
             // Add a check to prevent navigation during development hot reloading
             if (import.meta.hot) {
-              console.log("Skipping navigation during hot reload");
               return;
             }
           } catch (error) {

@@ -146,7 +146,6 @@ const InteractiveBattle: React.FC<InteractiveBattleProps> = ({ onBattleComplete,
         turns: currentBattle.turnHistory,
         userDigimon: userDigimon
       };
-      console.log('Calling onBattleComplete with result:', result);
       onBattleComplete(result);
     }
   }, [showBattleResult, currentBattle]);

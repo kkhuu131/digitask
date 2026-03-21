@@ -49,13 +49,14 @@ interface AppInitState {
   tasksChecked: boolean;
 }
 
-// Add this at the top of the file, outside the component
-let isInitializationInProgress = false;
-let isAppMounted = false;
+// These flags live at module scope (not in React state or a ref) so that they
+// survive re-renders and are shared across the onAuthStateChange closure and the
+// init useEffect without needing to be passed through props or context.
+let isInitializationInProgress = false; // prevents concurrent init runs
+let isAppMounted = false;               // guards against setState-after-unmount
 let lastAuthEventTime = 0;
-const AUTH_EVENT_DEBOUNCE_MS = 2000; // 2 seconds
-let currentSessionId: string | null = null; // Track the current session ID
-let currentUserId: string | null = null; // Track the current user ID
+const AUTH_EVENT_DEBOUNCE_MS = 2000;   // rate-limits rapid successive auth events
+let currentUserId: string | null = null; // used to detect genuine new sign-ins vs. token refreshes
 
 // Branded full-screen loading spinner — adapts to dark/light mode
 const AppLoader = ({ message = "Loading..." }: { message?: string }) => (
@@ -73,12 +74,12 @@ const AppLoader = ({ message = "Loading..." }: { message?: string }) => (
   </div>
 );
 
-// Protected route component
+// ProtectedRoute: lightweight auth + admin guard used for most routes.
+// It does NOT check onboarding status or Digimon existence — use RequireAuth for that.
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading: authLoading, isAdmin } = useAuthStore();
   const location = useLocation();
 
-  // If the route is an admin route, check for admin status
   const isAdminRoute = location.pathname.startsWith('/admin');
 
   if (authLoading) {
@@ -96,14 +97,21 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+// RequireAuth: stricter guard for routes that need a fully set-up account.
+// On top of auth, it verifies onboarding completion and Digimon existence,
+// redirecting to /onboarding if either is missing.
+// allowNoDigimon=true is used for /create-pet, which must be accessible before
+// a Digimon exists (it's the page where you first create one).
 function RequireAuth({ children, allowNoDigimon = false }: { children: React.ReactNode, allowNoDigimon?: boolean }) {
   const { user, loading: authLoading } = useAuthStore();
   const { userDigimon, loading: digimonLoading } = useDigimonStore();
   const { hasCompletedOnboarding, isCheckingStatus, checkOnboardingStatus } = useOnboardingStore();
   const location = useLocation();
   const hasCheckedRef = useRef(false);
-  
-  // Skip navigation during hot module reloading
+
+  // Vite HMR re-mounts components and replays effects, which would trigger
+  // navigation side-effects (like a redirect to /onboarding) during development.
+  // Skipping all guards during a hot reload avoids this.
   const isHotReload = import.meta.hot;
   
   useEffect(() => {
@@ -126,14 +134,12 @@ function RequireAuth({ children, allowNoDigimon = false }: { children: React.Rea
   
   // If needs onboarding, redirect to onboarding
   if (hasCompletedOnboarding === false && !isHotReload) {
-    console.log("User needs onboarding, redirecting to /onboarding");
     return <Navigate to="/onboarding" replace />;
   }
 
   // If user has completed onboarding but has no Digimon, redirect to onboarding
   // This ensures they go through the full flow
   if (hasCompletedOnboarding && !allowNoDigimon && !userDigimon && !digimonLoading && !isHotReload) {
-    console.log("No Digimon found, redirecting to onboarding");
     return <Navigate to="/onboarding" replace />;
   }
 
@@ -166,10 +172,12 @@ function App() {
     };
   }, []);
   
-  // Derived loading state - only false when ALL checks are complete
-  const appLoading = !appInit.authChecked || 
-                    (!!user && (!appInit.onboardingChecked || 
-                               !appInit.digimonChecked || 
+  // appLoading is true until the init sequence finishes.
+  // For unauthenticated users, auth check is sufficient — the downstream steps
+  // (onboarding, tasks, Digimon) are skipped entirely, so we don't wait for them.
+  const appLoading = !appInit.authChecked ||
+                    (!!user && (!appInit.onboardingChecked ||
+                               !appInit.digimonChecked ||
                                !appInit.tasksChecked));
 
   // Initial app loading - sequential approach
@@ -180,7 +188,6 @@ function App() {
     const initApp = async () => {
       // Prevent multiple initializations
       if (isInitializationInProgress) {
-        console.log("Initialization already in progress, skipping");
         return;
       }
       
@@ -194,7 +201,6 @@ function App() {
         
         // Skip further initialization if component unmounted during auth check
         if (!isAppMounted) {
-          console.log("Component unmounted during initialization, aborting");
           isInitializationInProgress = false;
           return;
         }
@@ -203,7 +209,6 @@ function App() {
         setAppInit(prev => ({ ...prev, authChecked: true }));
         
         if (!isAuthenticated) {
-          console.log("User not authenticated, skipping further initialization");
           // Mark all steps as complete when user is not authenticated
           setAppInit({
             authChecked: true,
@@ -269,9 +274,10 @@ function App() {
     }
   }, [checkSession, fetchUserDigimon, initializeStore]);
   
-  // Set up Digimon subscription - only after initialization
+  // Realtime subscriptions are opened only after the full init sequence completes.
+  // Opening them during init risks receiving change events before the initial data
+  // has been loaded, which could overwrite state with partial/stale payloads.
   useEffect(() => {
-    // Only set up subscriptions if user is authenticated and app is initialized
     if (!user || appLoading) return;
     
     let unsubscribeDigimon: (() => void) | undefined;
@@ -305,7 +311,6 @@ function App() {
     const initCurrentSession = async () => {
       const { data } = await supabase.auth.getSession();
       if (data.session) {
-        currentSessionId = data.session.user.id;
         currentUserId = data.session.user.id;
       }
     };
@@ -314,81 +319,61 @@ function App() {
     
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event: any, session: any) => {
-        console.log("Auth state change:", event, { 
-          hasSession: !!session,
-          appInitState: appInit,
-          isInitializationInProgress,
-          sessionId: session?.user?.id,
-          currentSessionId,
-          userId: session?.user?.id,
-          currentUserId
-        });
-        
         // Skip if we're already handling an auth change or initialization is in progress
         if (isHandlingAuthChange || isInitializationInProgress) {
-          // console.log("Already handling auth change or initialization in progress, skipping");
           return;
         }
-        
-        // For INITIAL_SESSION, we should let the normal initialization flow handle it
+
+        // INITIAL_SESSION fires once on page load for any existing session.
+        // The normal init sequence (initApp) already handles this case; re-running
+        // it here would double-initialize and overwrite in-progress state.
         if (event === 'INITIAL_SESSION') {
-          // console.log("Received INITIAL_SESSION event - letting normal init flow handle it");
           if (session) {
-            currentSessionId = session.user.id;
             currentUserId = session.user.id;
           }
           return;
         }
-        
-        // TOKEN_REFRESHED should never trigger reinitialization
+
+        // TOKEN_REFRESHED fires when Supabase silently rotates the JWT.
+        // It must never trigger a full re-init — the user hasn't changed, only the token.
         if (event === 'TOKEN_REFRESHED') {
-          // console.log("Token refreshed, no need to reinitialize app");
           if (session) {
-            currentSessionId = session.user.id;
             currentUserId = session.user.id;
           }
           return;
         }
-        
-        // Only proceed with SIGNED_IN if it's a genuine new sign-in
+
         if (event === 'SIGNED_IN') {
           const now = Date.now();
-          
-          // If this SIGNED_IN happens too soon after another auth event, ignore it
+
+          // Debounce: Supabase sometimes emits multiple SIGNED_IN events in quick
+          // succession (e.g. during OAuth redirects). Drop any that arrive within
+          // AUTH_EVENT_DEBOUNCE_MS of the previous one.
           if (now - lastAuthEventTime < AUTH_EVENT_DEBOUNCE_MS) {
-            // console.log("Ignoring SIGNED_IN event - too soon after previous auth event");
             return;
           }
-          
-          // Check for hot reload
+
+          // Skip during Vite HMR — hot reloads re-mount the component and replay
+          // auth events, but the app is already initialized so we should do nothing.
           const isHotReload = import.meta.hot && import.meta.hot.data.isHotReload;
           if (isHotReload && appInit.authChecked) {
-            // console.log("Ignoring SIGNED_IN during hot reload");
             return;
           }
-          
-          // Update the last auth event time
+
           lastAuthEventTime = now;
-          
-          // CRITICAL CHECK: If we have a current user ID and it matches the session user ID,
-          // this is likely a token refresh or session continuation, not a new sign-in
+
+          // Key distinction: Supabase can fire SIGNED_IN for token refreshes before
+          // TOKEN_REFRESHED arrives. Compare the session's user ID to the currently
+          // known ID — if they match, this is a same-user continuation, not a new login.
           if (currentUserId && session?.user?.id === currentUserId) {
-            // console.log("Same user ID detected, not treating as new sign-in");
-            // Update session ID if needed
-            if (session) {
-              currentSessionId = session.user.id;
-            }
             return;
           }
           
           // If we get here, this is a genuine new sign-in or a different user
           isHandlingAuthChange = true;
-          // console.log("Genuine new sign-in detected, reinitializing app");
           
           try {
-            // Update the current session and user ID
             if (session) {
-              currentSessionId = session.user.id || null;
               currentUserId = session.user.id;
             }
             
@@ -413,22 +398,20 @@ function App() {
             
             await fetchUserDigimon();
             setAppInit(prev => ({ ...prev, digimonChecked: true }));
-            
-            // console.log("App re-initialization complete after sign-in");
           } finally {
             isHandlingAuthChange = false;
           }
         } else if (event === 'SIGNED_OUT') {
-          // Reset the session and user ID
-          currentSessionId = null;
           currentUserId = null;
-          
-          // User signed out - clear all stores
+
+          // Manually clear all Zustand stores. Supabase's auth state change
+          // only updates authStore — the other stores hold stale user data
+          // that must be wiped explicitly so the next user doesn't see it.
           useAuthStore.setState({ user: null, loading: false });
-          useDigimonStore.setState({ 
-            userDigimon: null, 
-            digimonData: null, 
-            evolutionOptions: [] 
+          useDigimonStore.setState({
+            userDigimon: null,
+            digimonData: null,
+            evolutionOptions: []
           });
           useTaskStore.setState({ tasks: [] });
           
@@ -451,36 +434,29 @@ function App() {
   // Remove redundant useEffects that were causing race conditions
   // Keep only the essential ones
   
-  // Overdue task check - only run when fully initialized
+  // Poll for newly overdue tasks every 30 seconds.
+  // isCheckingTasks prevents concurrent checks if a previous run is still in flight.
+  // isInitializationInProgress prevents this from running while the boot sequence
+  // is active, since tasks haven't been fetched yet at that point.
   useEffect(() => {
     if (!user || appLoading || !isAppMounted) return;
-    
-    // console.log("Setting up overdue task check interval");
-    
-    // Use a ref to track if a check is in progress
+
     let isCheckingTasks = false;
-    
-    // Check every 30 seconds
+
     const intervalId = setInterval(() => {
-      // Skip if component unmounted, initialization in progress, or another check is running
-      if (!isAppMounted || isInitializationInProgress || isCheckingTasks) {
-        return;
-      }
-      
+      if (!isAppMounted || isInitializationInProgress || isCheckingTasks) return;
+
       isCheckingTasks = true;
       useTaskStore.getState().checkOverdueTasks()
-        .finally(() => {
-          isCheckingTasks = false;
-        });
+        .finally(() => { isCheckingTasks = false; });
     }, 30 * 1000);
-    
-    // Run once immediately, but only if not initializing
+
+    // Also run immediately on mount so the user sees penalties right away
+    // rather than waiting up to 30 seconds for the first interval tick.
     if (!isInitializationInProgress) {
       isCheckingTasks = true;
       useTaskStore.getState().checkOverdueTasks()
-        .finally(() => {
-          isCheckingTasks = false;
-        });
+        .finally(() => { isCheckingTasks = false; });
     }
     
     return () => {
@@ -738,10 +714,8 @@ function HomeRouteContent() {
         
         // Only create profile if it doesn't exist
         if (!profile) {
-          console.log("No profile found, creating one...");
           await createUserProfile(user);
         } else {
-          console.log("Profile already exists, continuing...");
           // Make sure we have the latest onboarding status
           await checkOnboardingStatus();
         }
@@ -800,7 +774,10 @@ function HomeRouteContent() {
     setProfileError(null);
     
     try {
-      // First check again if profile exists to avoid race conditions
+      // Re-check before inserting: two tabs opened simultaneously could both
+      // reach this point and attempt to create the same profile. The second
+      // check makes this safe; the 23505 unique-violation catch below is the
+      // final safety net if the race is lost between this check and the insert.
       const { data: existingProfile } = await supabase
         .from("profiles")
         .select("id")
@@ -832,8 +809,7 @@ function HomeRouteContent() {
 
       if (error) {
         // If it's a duplicate key error, the profile was created in a race condition
-        if (error.code === '23505') { // PostgreSQL unique violation error
-          console.log("Profile was created by another process, continuing");
+        if (error.code === '23505') { // PostgreSQL unique violation error — race condition, safe to ignore
         } else {
           throw error;
         }
@@ -1048,25 +1024,13 @@ function OnboardingWrapper() {
   useEffect(() => {
     const forceCheck = async () => {
       if (user && !hasChecked) {
-        console.log("OnboardingWrapper: Forcing onboarding status check");
         await checkOnboardingStatus();
         setHasChecked(true);
       }
     };
-    
+
     forceCheck();
   }, [user, hasChecked, checkOnboardingStatus]);
-  
-  // Debug logging
-  useEffect(() => {
-    console.log("OnboardingWrapper debug:", {
-      user: !!user,
-      authLoading,
-      hasCompletedOnboarding,
-      isCheckingStatus,
-      hasChecked
-    });
-  }, [user, authLoading, hasCompletedOnboarding, isCheckingStatus, hasChecked]);
   
   // Handle redirects
   useEffect(() => {

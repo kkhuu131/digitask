@@ -19,16 +19,19 @@ import {
   RoundDifficulty,
 } from '../types/tournament';
 
-// Returns "YYYY-MM-DD" for the Monday of the current week (local time)
+// Returns "YYYY-MM-DD" for the Monday of the current week (local time).
+// Used as the primary key that groups a user's tournament entry with the correct week.
 export function getCurrentWeekStart(): string {
   const now = new Date();
   const dayOfWeek = now.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+  // Sunday (0) is 6 days after Monday; Mon–Sat map to dayOfWeek-1 days after Monday.
   const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
   const monday = new Date(now);
   monday.setDate(now.getDate() - daysFromMonday);
   return monday.toISOString().split('T')[0];
 }
 
+// Exported so the Tournament UI can show expected rewards before the user commits to a round.
 export const PLACEMENT_BITS: Record<string, number> = {
   qf_loss: 100,
   sf_loss: 300,
@@ -57,7 +60,10 @@ function pickTournamentOpponent(
   const targetStage = getStageForPower(perMemberTarget);
   const targetIdx = STAGE_ORDER.indexOf(targetStage);
 
-  // Accept templates where the majority of Digimon are within 1 stage of the target
+  // Keep templates where at least 2 of 3 members are within ±1 stage of the target.
+  // "Majority" (not all) gives flexibility for thematic teams that mix adjacent stages.
+  // If no templates pass (e.g. power is very high/low), fall back to the entire pool
+  // so the function always returns something rather than crashing.
   const compatible = TOURNAMENT_TEAM_POOL.filter(t => {
     const withinRange = t.digimon.filter(d => {
       const s = DIGIMON_LOOKUP_TABLE[d.digimon_id];
@@ -123,7 +129,11 @@ export const useTournamentStore = create<TournamentStore>((set, get) => ({
     const weekStart = getCurrentWeekStart();
     const today = new Date().toISOString().split('T')[0];
 
-    // Sum completed tasks from task_history for Mon–yesterday
+    // Weekly count requires two sources because they cover different time windows:
+    //   task_history — rows written by the server-side `process_daily_quotas` cron at midnight.
+    //                  Contains completed_count for Mon through *yesterday* (already processed).
+    //   daily_quotas.completed_today — today's in-progress count, not yet archived by the cron.
+    // Combining both gives the true weekly total without waiting for the cron to run.
     const { data: history } = await supabase
       .from('task_history')
       .select('completed_count')
@@ -136,7 +146,6 @@ export const useTournamentStore = create<TournamentStore>((set, get) => ({
       0
     );
 
-    // Add today's count from daily_quotas
     const { data: quota } = await supabase
       .from('daily_quotas')
       .select('completed_today')
@@ -157,7 +166,9 @@ export const useTournamentStore = create<TournamentStore>((set, get) => ({
 
       const weekStart = getCurrentWeekStart();
 
-      // Expire any stale active tournaments from prior weeks
+      // Expire tournaments from prior weeks that were never completed.
+      // There's no server-side cron for this, so the client handles it on fetch.
+      // Only 'active' rows are targeted — already-completed ones are left unchanged.
       await supabase
         .from('user_tournaments')
         .update({ status: 'expired' })
@@ -206,12 +217,13 @@ export const useTournamentStore = create<TournamentStore>((set, get) => ({
     try {
       const userPower = calculateUserPowerRating(teamDigimon);
 
-      // Generate all 7 opponent teams using the curated template pool (level-scaled to user power)
+      // Only 3 opponents are actually fought (rounds 1–3).
+      // The remaining 4 (fillerA–D) exist purely to fill out the 8-slot visual bracket
+      // so it looks like a real double-elimination draw. They are never battled.
       const round1 = pickTournamentOpponent(userPower, 'easy');
       const round2 = pickTournamentOpponent(userPower, 'medium');
       const round3 = pickTournamentOpponent(userPower, 'hard');
 
-      // 4 display-only filler teams for visual bracket slots 3, 5, 6, 7
       const fillerA = pickTournamentOpponent(userPower, 'easy');
       const fillerB = pickTournamentOpponent(userPower, 'medium');
       const fillerC = pickTournamentOpponent(userPower, 'easy');
@@ -304,7 +316,10 @@ export const useTournamentStore = create<TournamentStore>((set, get) => ({
     const newRoundResult = { round, result, placement_bits: placementBits };
     const newRoundResults = [...currentTournament.round_results, newRoundResult];
 
-    // Guard: only update if current_round and status match what we expect
+    // Optimistic concurrency lock: the WHERE conditions `.eq('current_round', round)`
+    // and `.eq('status', 'active')` ensure the UPDATE is a no-op if another tab or
+    // request has already advanced the round. If it returns no rows, we re-fetch
+    // to reconcile rather than blindly overwriting the server state.
     const updatePayload: Record<string, any> = {
       round_results: newRoundResults,
     };
@@ -355,12 +370,16 @@ export const useTournamentStore = create<TournamentStore>((set, get) => ({
 
   isCompleted() {
     const t = get().currentTournament;
+    // Both statuses mean the user can't fight any more rounds this week.
+    // 'expired' means the week ended before they finished; 'completed' means they did finish.
     return t?.status === 'completed' || t?.status === 'expired';
   },
 
   getCurrentRoundOpponent() {
     const { currentTournament } = get();
     if (!currentTournament) return null;
+    // current_round is stored as a number in the DB but bracket.rounds uses string keys
+    // ('1' | '2' | '3'). The cast is required to satisfy TypeScript's string literal union.
     const roundKey = String(currentTournament.current_round) as '1' | '2' | '3';
     return currentTournament.bracket.rounds[roundKey]?.opponent ?? null;
   },
