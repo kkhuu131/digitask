@@ -662,7 +662,6 @@ function App() {
         </Routes>
         <NotificationCenter />
         <UpdateNotification />
-        {/* <BokomonAssistant /> */}
       </div>
     </Router>
   );

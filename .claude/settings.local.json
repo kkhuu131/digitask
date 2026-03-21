@@ -57,7 +57,10 @@
       "Bash(for f:*)",
       "Bash(do echo:*)",
       "Read(//c/Users/notke/Desktop/Personal/Projects/digitask/digitask/**)",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(rm src/api/bokomonHandler.ts src/server/middleware.ts api/bokomon.ts)",
+      "Bash(rmdir src/components/bokomon-assistant)",
+      "Bash(rm -f src/components/bokomon-assistant/BokomonAssistant.tsx)"
     ]
   },
   "enabledMcpjsonServers": [

@@ -32,7 +32,6 @@ Requires a `.env` file with:
 ```
 VITE_SUPABASE_URL=
 VITE_SUPABASE_ANON_KEY=
-VITE_OPENAI_API_KEY=          # For Bokomon AI assistant
 SUPABASE_SERVICE_ROLE_KEY=    # Only needed when running data-generation scripts
 ```
 
@@ -45,7 +44,6 @@ SUPABASE_SERVICE_ROLE_KEY=    # Only needed when running data-generation scripts
 - **State**: Zustand stores (one per domain)
 - **Backend/DB**: Supabase (Postgres + Auth + Realtime subscriptions)
 - **Routing**: React Router v6
-- **AI**: OpenAI via a Vite dev-server middleware (`/api/bokomon`) that is excluded from production builds
 
 ### Directory Structure
 
@@ -60,8 +58,6 @@ src/
   constants/          # Pre-generated lookup tables (see "Local Constants Pattern" below)
   hooks/              # Custom React hooks
   lib/supabase.ts     # Supabase client singleton
-  api/bokomonHandler.ts  # OpenAI-backed Bokomon assistant handler
-  server/middleware.ts   # Vite dev server middleware for Bokomon API
   types/              # Shared TypeScript types
 public/assets/
   animated_digimon/   # Sprite sheets organized by Digimon name (idle1/2, attack, happy, etc.)
