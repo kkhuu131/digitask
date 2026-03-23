@@ -192,10 +192,7 @@ const Layout = ({ children }: LayoutProps) => {
                   </NavDropdown>
 
                   {/* Battle dropdown */}
-                  <NavDropdown
-                    label="Battle"
-                    isActive={isAnyActive(['/battle', '/store'])}
-                  >
+                  <NavDropdown label="Battle" isActive={isAnyActive(['/battle', '/store'])}>
                     <Link
                       to="/battle"
                       className={dropdownLinkClass}
@@ -451,16 +448,14 @@ const Layout = ({ children }: LayoutProps) => {
               <button
                 onClick={() => handleMenuClick('battle')}
                 className={`w-full flex flex-col items-center justify-center py-2 gap-0.5 transition-colors ${
-                  activeMenu === 'battle' ||
-                  isAnyActive(['/battle', '/store'])
+                  activeMenu === 'battle' || isAnyActive(['/battle', '/store'])
                     ? 'text-primary-600 dark:text-accent-500'
                     : 'text-gray-500 dark:text-gray-400'
                 }`}
               >
                 <Sword className="h-5 w-5" />
                 <span className="text-xs font-body">Battle</span>
-                {(activeMenu === 'battle' ||
-                  isAnyActive(['/battle', '/store'])) && (
+                {(activeMenu === 'battle' || isAnyActive(['/battle', '/store'])) && (
                   <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full bg-primary-500 dark:bg-accent-500" />
                 )}
               </button>

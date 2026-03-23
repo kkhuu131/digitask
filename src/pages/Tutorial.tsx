@@ -506,17 +506,6 @@ const Tutorial = () => {
                     <li>Climb the leaderboard rankings</li>
                   </ul>
                 </div>
-
-                <div className="p-3 bg-green-50 rounded-lg">
-                  <h5 className="font-medium text-green-700 mb-1">Campaign</h5>
-                  <p className="text-sm mb-2">Progress through story-based encounters.</p>
-                  <ul className="list-disc pl-5 text-sm space-y-1">
-                    <li>Battle against AI-controlled Digimon</li>
-                    <li>Infinite attempts, but no experience ponts</li>
-                    <li>Increasing difficulty levels</li>
-                    <li>Unlock special rewards and Digimon</li>
-                  </ul>
-                </div>
               </div>
 
               <h4 className="font-semibold text-lg mb-2">Battle Flow</h4>
@@ -773,7 +762,6 @@ const Tutorial = () => {
               <ul className="list-disc pl-5 mb-4 space-y-2">
                 <li>Discovering certain amounts of Digimon</li>
                 <li>Winning certain amounts of arena battles</li>
-                <li>Completing certain stages in the campaign</li>
                 <li>Evolving Digimon to certain stages</li>
                 <li>And more!</li>
               </ul>
@@ -850,7 +838,7 @@ const Tutorial = () => {
                   <h4 className="font-semibold text-lg mb-1">How do I get more Digimon?</h4>
                   <p>
                     You can earn new Digimon by completing milestones (daily quota streak and task
-                    completion), progressing through campaign battles, and from special events.
+                    completion) and from special events.
                   </p>
                 </div>
 

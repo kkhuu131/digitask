@@ -87,17 +87,5 @@ export const tutorialContent = {
       depending on the difficulty. However, losses will grant much less experience and bits. Players get 5 battles per day.
       `,
     },
-    {
-      title: 'Campaign',
-      content: `The Campaign is a series of battles, following a linear story line, with each stage being a preset team and gets progressively harder. Completing the campaign will grant titles that can be displayed on the profile.
-      `,
-    },
-    {
-      title: 'Weekly Boss Raids',
-      content: `Every week, a powerful boss appears that requires the entire community to work together to defeat! The event has two phases:
-      - Phase 1 (Monday-Friday PST): Complete tasks to weaken the boss and contribute to the global progress goal
-      - Phase 2 (Saturday-Sunday PST): Battle the weakened boss with your team to deal damage
-      Players can battle the boss up to 5 times per day during Phase 2 (10 total for the weekend). Participation rewards include bits, experience, titles, and special items based on your contribution level. The boss rotates weekly with 6 different challenging opponents!`,
-    },
   ],
 };
