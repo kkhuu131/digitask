@@ -1,14 +1,14 @@
-import React from "react";
-import { useBattleSpeedStore } from "../store/battleSpeedStore";
+import React from 'react';
+import { useBattleSpeedStore } from '../store/battleSpeedStore';
 
 const BattleSpeedControl: React.FC = () => {
   const { speedMultiplier, setSpeedMultiplier } = useBattleSpeedStore();
-  
+
   const handleSpeedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
     setSpeedMultiplier(value as 1 | 2 | 3 | 4);
   };
-  
+
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 bg-white dark:bg-dark-300 p-3 rounded-lg shadow-sm">
       <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Speed</span>
@@ -25,11 +25,13 @@ const BattleSpeedControl: React.FC = () => {
             className="w-full h-2 bg-gray-200 dark:bg-dark-100 rounded-lg appearance-none cursor-pointer touch-action-manipulation"
             style={{
               WebkitAppearance: 'none',
-              appearance: 'none'
+              appearance: 'none',
             }}
           />
           {/* Custom styling for better mobile experience */}
-          <style dangerouslySetInnerHTML={{ __html: `
+          <style
+            dangerouslySetInnerHTML={{
+              __html: `
             input[type=range] {
               -webkit-appearance: none;
               width: 100%;
@@ -92,7 +94,9 @@ const BattleSpeedControl: React.FC = () => {
             input[type=range]:focus {
               outline: none;
             }
-          `}} />
+          `,
+            }}
+          />
         </div>
         <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">4x</span>
       </div>
@@ -100,4 +104,4 @@ const BattleSpeedControl: React.FC = () => {
   );
 };
 
-export default BattleSpeedControl; 
+export default BattleSpeedControl;

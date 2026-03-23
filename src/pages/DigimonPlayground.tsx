@@ -19,7 +19,7 @@ const DigimonPlayground: React.FC = () => {
     moveToActiveParty,
     setActiveDigimon,
     activePartyCount,
-    maxActivePartySize
+    maxActivePartySize,
   } = useDigimonStore();
 
   const [selectedDetailDigimon, setSelectedDetailDigimon] = useState<UserDigimon | null>(null);
@@ -54,7 +54,7 @@ const DigimonPlayground: React.FC = () => {
   };
 
   const partyDigimon = allUserDigimon
-    .filter(d => !d.is_in_storage)
+    .filter((d) => !d.is_in_storage)
     .sort((a, b) => {
       if (a.is_active && !b.is_active) return -1;
       if (!a.is_active && b.is_active) return 1;
@@ -64,11 +64,23 @@ const DigimonPlayground: React.FC = () => {
   const emptyPartySlots = maxActivePartySize - partyDigimon.length;
 
   const tutorialSteps: DialogueStep[] = [
-    { speaker: 'neemon', text: "Oh hey, tamer! Welcome to the DigiFarm!" },
-    { speaker: 'bokomon', text: "This is the DigiFarm — manage your party and storage all in one place!" },
-    { speaker: 'neemon', text: "Your party can hold up to 9 Digimon. The rest hang out in the DigiFarm." },
-    { speaker: 'bokomon', text: "Click any Digimon to view their full details, stats, and evolution options!" },
-    { speaker: 'neemon', text: "Use the buttons to swap Digimon between your party and storage. Easy!" },
+    { speaker: 'neemon', text: 'Oh hey, tamer! Welcome to the DigiFarm!' },
+    {
+      speaker: 'bokomon',
+      text: 'This is the DigiFarm — manage your party and storage all in one place!',
+    },
+    {
+      speaker: 'neemon',
+      text: 'Your party can hold up to 9 Digimon. The rest hang out in the DigiFarm.',
+    },
+    {
+      speaker: 'bokomon',
+      text: 'Click any Digimon to view their full details, stats, and evolution options!',
+    },
+    {
+      speaker: 'neemon',
+      text: 'Use the buttons to swap Digimon between your party and storage. Easy!',
+    },
   ];
 
   return (
@@ -82,17 +94,17 @@ const DigimonPlayground: React.FC = () => {
       </div>
 
       <div className="flex flex-col lg:flex-row gap-4">
-
         {/* ── Left: Party Panel ── */}
         <div className="w-full lg:w-[368px] flex-shrink-0">
           <div className="card dark:bg-dark-300 dark:border-dark-200">
-
             {/* Panel header */}
             <div className="flex items-center justify-between mb-4">
               <div>
                 <div className="flex items-center gap-2">
                   <Users className="w-4 h-4 text-primary-500 dark:text-primary-400" />
-                  <h2 className="font-heading font-semibold text-gray-800 dark:text-gray-100">Active Party</h2>
+                  <h2 className="font-heading font-semibold text-gray-800 dark:text-gray-100">
+                    Active Party
+                  </h2>
                 </div>
                 <p className="text-xs font-body text-gray-400 dark:text-gray-500 mt-0.5">
                   {partyDigimon.length} / {maxActivePartySize} Digimon
@@ -102,7 +114,7 @@ const DigimonPlayground: React.FC = () => {
 
             {/* Party grid — always 3 columns */}
             <div className="grid grid-cols-3 gap-2">
-              {partyDigimon.map(digimon => (
+              {partyDigimon.map((digimon) => (
                 <motion.div
                   key={digimon.id}
                   whileHover={{ scale: 1.02 }}
@@ -143,7 +155,6 @@ const DigimonPlayground: React.FC = () => {
 
                   {/* Bottom info + button */}
                   <div className="px-1.5 pb-1.5">
-
                     {/* Level + EXP bar */}
                     <div className="flex items-center gap-1 mt-0.5">
                       <span className="text-[8px] font-bold text-gray-400 dark:text-gray-500 flex-shrink-0">
@@ -165,10 +176,12 @@ const DigimonPlayground: React.FC = () => {
                         digimon.is_active
                           ? 'bg-gray-100 dark:bg-dark-100 text-gray-300 dark:text-gray-600 cursor-not-allowed'
                           : transferringDigimon === digimon.id
-                          ? 'bg-gray-100 dark:bg-dark-100 text-gray-400'
-                          : 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-800/30'
+                            ? 'bg-gray-100 dark:bg-dark-100 text-gray-400'
+                            : 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-800/30'
                       }`}
-                      title={digimon.is_active ? "Can't send active Digimon to Farm" : 'Send to DigiFarm'}
+                      title={
+                        digimon.is_active ? "Can't send active Digimon to Farm" : 'Send to DigiFarm'
+                      }
                     >
                       {transferringDigimon === digimon.id ? (
                         <Loader2 className="w-2.5 h-2.5 animate-spin" />
@@ -192,7 +205,9 @@ const DigimonPlayground: React.FC = () => {
                   className="rounded-xl border-2 border-dashed border-gray-200 dark:border-dark-100 aspect-square flex flex-col items-center justify-center gap-1"
                 >
                   <Plus className="w-5 h-5 text-gray-300 dark:text-gray-600" />
-                  <span className="text-[8px] font-body text-gray-300 dark:text-gray-600">Empty</span>
+                  <span className="text-[8px] font-body text-gray-300 dark:text-gray-600">
+                    Empty
+                  </span>
                 </div>
               ))}
             </div>
@@ -202,13 +217,14 @@ const DigimonPlayground: React.FC = () => {
         {/* ── Right: DigiFarm Storage Panel ── */}
         <div className="flex-1">
           <div className="card dark:bg-dark-300 dark:border-dark-200">
-
             {/* Panel header */}
             <div className="flex items-center justify-between mb-4">
               <div>
                 <div className="flex items-center gap-2">
                   <Warehouse className="w-4 h-4 text-green-500 dark:text-green-400" />
-                  <h2 className="font-heading font-semibold text-gray-800 dark:text-gray-100">DigiFarm Storage</h2>
+                  <h2 className="font-heading font-semibold text-gray-800 dark:text-gray-100">
+                    DigiFarm Storage
+                  </h2>
                 </div>
                 <p className="text-xs font-body text-gray-400 dark:text-gray-500 mt-0.5">
                   {storageDigimon.length} Digimon in storage
@@ -225,14 +241,16 @@ const DigimonPlayground: React.FC = () => {
                 <div className="w-16 h-16 rounded-full bg-gray-100 dark:bg-dark-200 flex items-center justify-center mb-3">
                   <Warehouse className="w-8 h-8 text-gray-300 dark:text-gray-600" />
                 </div>
-                <p className="text-sm font-body font-medium text-gray-400 dark:text-gray-500">DigiFarm is empty</p>
+                <p className="text-sm font-body font-medium text-gray-400 dark:text-gray-500">
+                  DigiFarm is empty
+                </p>
                 <p className="text-xs font-body text-gray-300 dark:text-gray-600 mt-1">
                   Digimon sent from your party will appear here
                 </p>
               </div>
             ) : (
               <div className="grid grid-cols-[repeat(auto-fill,minmax(6.5rem,6.5rem))] gap-2">
-                {storageDigimon.map(digimon => (
+                {storageDigimon.map((digimon) => (
                   <motion.div
                     key={digimon.id}
                     whileHover={{ scale: 1.02 }}
@@ -262,7 +280,6 @@ const DigimonPlayground: React.FC = () => {
 
                     {/* Bottom info + button */}
                     <div className="px-1.5 pb-1.5">
-
                       {/* Level + EXP bar */}
                       <div className="flex items-center gap-1 mt-0.5">
                         <span className="text-[8px] font-bold text-gray-400 dark:text-gray-500 flex-shrink-0">
@@ -279,15 +296,20 @@ const DigimonPlayground: React.FC = () => {
                       {/* Add to Party button */}
                       <button
                         onClick={(e) => handleTransferToActiveParty(e, digimon.id)}
-                        disabled={transferringDigimon === digimon.id || activePartyCount >= maxActivePartySize}
+                        disabled={
+                          transferringDigimon === digimon.id ||
+                          activePartyCount >= maxActivePartySize
+                        }
                         className={`mt-1 w-full flex items-center justify-center gap-0.5 py-0.5 rounded text-[8px] font-medium transition-colors ${
                           activePartyCount >= maxActivePartySize
                             ? 'bg-gray-100 dark:bg-dark-100 text-gray-300 dark:text-gray-600 cursor-not-allowed'
                             : transferringDigimon === digimon.id
-                            ? 'bg-gray-100 dark:bg-dark-100 text-gray-400'
-                            : 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-800/30'
+                              ? 'bg-gray-100 dark:bg-dark-100 text-gray-400'
+                              : 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-800/30'
                         }`}
-                        title={activePartyCount >= maxActivePartySize ? 'Party is full' : 'Add to Party'}
+                        title={
+                          activePartyCount >= maxActivePartySize ? 'Party is full' : 'Add to Party'
+                        }
                       >
                         {transferringDigimon === digimon.id ? (
                           <Loader2 className="w-2.5 h-2.5 animate-spin" />

@@ -1,5 +1,5 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 type SpeedMultiplier = 1 | 2 | 3 | 4;
 
@@ -15,7 +15,7 @@ export const useBattleSpeedStore = create<BattleSpeedState>()(
       setSpeedMultiplier: (speed) => set({ speedMultiplier: speed }),
     }),
     {
-      name: "battle-speed-settings",
+      name: 'battle-speed-settings',
     }
   )
 );

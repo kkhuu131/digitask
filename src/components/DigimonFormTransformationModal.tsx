@@ -25,27 +25,26 @@ const DigimonFormTransformationModal: React.FC<DigimonFormTransformationModalPro
 }) => {
   const { transformDigimonForm, discoveredDigimon } = useDigimonStore();
   const [showAnimation, setShowAnimation] = useState(false);
-  
+
   if (!isOpen) return null;
-  
+
   const currentDigimon = DIGIMON_LOOKUP_TABLE[currentDigimonId];
   const formDigimon = DIGIMON_LOOKUP_TABLE[formInfo.formDigimonId];
   const isFormDiscovered = discoveredDigimon.includes(formInfo.formDigimonId);
-  
+
   const handleTransform = async () => {
     setShowAnimation(true);
   };
-  
+
   // This function will be called after animation completes
   const completeTransformation = async () => {
     try {
-    
       const success = await transformDigimonForm(
-        userDigimonId, 
+        userDigimonId,
         formInfo.formDigimonId,
         formInfo.formType
       );
-      
+
       if (success) {
         onClose();
         if (onParentClose) {
@@ -55,31 +54,40 @@ const DigimonFormTransformationModal: React.FC<DigimonFormTransformationModalPro
         setShowAnimation(false);
       }
     } catch (error) {
-      console.error("Error transforming Digimon:", error);
+      console.error('Error transforming Digimon:', error);
       useNotificationStore.getState().addNotification({
-        type: "error",
-        message: "Failed to transform Digimon."
+        type: 'error',
+        message: 'Failed to transform Digimon.',
       });
     }
   };
-  
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white dark:bg-dark-300 rounded-lg p-6 max-w-md w-full">
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center">
-          {formInfo.formType === 'X-Antibody' && <img src="/assets/x-antibody.png" alt="X-Antibody" className="w-6 h-6 mr-2" />}
-          <h2 className="text-xl font-bold dark:text-gray-100">{formInfo.formType} Transformation</h2>
+            {formInfo.formType === 'X-Antibody' && (
+              <img src="/assets/x-antibody.png" alt="X-Antibody" className="w-6 h-6 mr-2" />
+            )}
+            <h2 className="text-xl font-bold dark:text-gray-100">
+              {formInfo.formType} Transformation
+            </h2>
           </div>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">×</button>
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+          >
+            ×
+          </button>
         </div>
-        
+
         <div className="mb-4">
           <p className="text-sm text-gray-700 dark:text-gray-300">
             Transform your Digimon into its {formInfo.formType} form?
           </p>
         </div>
-        
+
         <div className="flex justify-center items-center space-x-8 my-6">
           <div className="text-center">
             <DigimonSprite
@@ -90,8 +98,7 @@ const DigimonFormTransformationModal: React.FC<DigimonFormTransformationModalPro
             />
             <p className="font-medium dark:text-gray-200">{currentDigimon.name}</p>
           </div>
-        
-          
+
           <div className="text-center">
             {isFormDiscovered ? (
               <>
@@ -119,7 +126,7 @@ const DigimonFormTransformationModal: React.FC<DigimonFormTransformationModalPro
             )}
           </div>
         </div>
-        
+
         <div className="mt-6 flex justify-center">
           <button
             onClick={onClose}
@@ -135,7 +142,7 @@ const DigimonFormTransformationModal: React.FC<DigimonFormTransformationModalPro
           </button>
         </div>
       </div>
-      
+
       {showAnimation && (
         <EvolutionAnimation
           oldSpriteUrl={currentDigimon.sprite_url}
@@ -149,4 +156,4 @@ const DigimonFormTransformationModal: React.FC<DigimonFormTransformationModalPro
   );
 };
 
-export default DigimonFormTransformationModal; 
+export default DigimonFormTransformationModal;

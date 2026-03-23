@@ -98,6 +98,8 @@ Navigate to `http://localhost:5173`. Unauthenticated users see the landing page.
 npm run build         # tsc type-check + Vite production build → dist/
 npm run preview       # Serve the production build locally
 npm run lint          # ESLint — zero warnings enforced
+npm run format        # Prettier — format all src/ files in-place
+npm run format:check  # Prettier — check formatting (used by CI)
 npm test              # Vitest — run all tests once (CI mode)
 npm run test:watch    # Vitest — watch mode for development
 npm run test:coverage # Vitest — run tests with coverage report
@@ -287,7 +289,7 @@ A module-level `isInitializationInProgress` flag prevents concurrent runs. Auth 
 | `themeStore` | Light/dark preference |
 | `battleSpeedStore` | Battle animation speed preference |
 | `onboardingStore` | First-time user flow state |
-| `milestoneStore` | *(Deprecated)* ABI-gated Digimon claiming — superseded by `titleStore` |
+| ~~`milestoneStore`~~ | *(Deleted)* Legacy ABI-gated Digimon claiming — superseded by `titleStore` + `AchievementsPage` |
 
 ### Local Constants Pattern
 

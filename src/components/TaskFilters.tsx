@@ -1,9 +1,14 @@
-import React, { useState } from "react";
-import { StatCategory, categoryIcons } from "../utils/categoryDetection";
+import React, { useState } from 'react';
+import { StatCategory, categoryIcons } from '../utils/categoryDetection';
 // Simple SVG icons to avoid dependency issues
 const MagnifyingGlassIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+    />
   </svg>
 );
 
@@ -19,8 +24,8 @@ interface FilterState {
   difficulties: string[];
   priorities: string[];
   types: string[];
-  sortBy: "due" | "priority" | "difficulty" | "recent";
-  sortOrder: "asc" | "desc";
+  sortBy: 'due' | 'priority' | 'difficulty' | 'recent';
+  sortOrder: 'asc' | 'desc';
 }
 
 interface TaskFiltersProps {
@@ -36,49 +41,49 @@ const TaskFilters: React.FC<TaskFiltersProps> = ({
   onFiltersChange,
   selectedCount,
   onSelectAll,
-  onClearSelection
+  onClearSelection,
 }) => {
   const [showFilters, setShowFilters] = useState(false);
 
   const categories = Object.keys(categoryIcons) as StatCategory[];
-  const difficulties = ["easy", "medium", "hard"];
-  const priorities = ["low", "medium", "high"];
-  const types = ["daily", "recurring", "one-time"];
+  const difficulties = ['easy', 'medium', 'hard'];
+  const priorities = ['low', 'medium', 'high'];
+  const types = ['daily', 'recurring', 'one-time'];
 
-  const updateFilter = <K extends keyof FilterState>(
-    key: K,
-    value: FilterState[K]
-  ) => {
+  const updateFilter = <K extends keyof FilterState>(key: K, value: FilterState[K]) => {
     onFiltersChange({ ...filters, [key]: value });
   };
 
-  const toggleArrayFilter = <K extends keyof Pick<FilterState, "categories" | "difficulties" | "priorities" | "types">>(
+  const toggleArrayFilter = <
+    K extends keyof Pick<FilterState, 'categories' | 'difficulties' | 'priorities' | 'types'>,
+  >(
     key: K,
     value: string
   ) => {
     const currentArray = filters[key] as string[];
     const newArray = currentArray.includes(value)
-      ? currentArray.filter(item => item !== value)
+      ? currentArray.filter((item) => item !== value)
       : [...currentArray, value];
     updateFilter(key, newArray as FilterState[K]);
   };
 
   const clearAllFilters = () => {
     onFiltersChange({
-      search: "",
+      search: '',
       categories: [],
       difficulties: [],
       priorities: [],
       types: [],
-      sortBy: "due",
-      sortOrder: "asc"
+      sortBy: 'due',
+      sortOrder: 'asc',
     });
   };
 
-  const hasActiveFilters = filters.search || 
-    filters.categories.length > 0 || 
-    filters.difficulties.length > 0 || 
-    filters.priorities.length > 0 || 
+  const hasActiveFilters =
+    filters.search ||
+    filters.categories.length > 0 ||
+    filters.difficulties.length > 0 ||
+    filters.priorities.length > 0 ||
     filters.types.length > 0;
 
   return (
@@ -92,7 +97,7 @@ const TaskFilters: React.FC<TaskFiltersProps> = ({
             type="text"
             placeholder="Search tasks..."
             value={filters.search}
-            onChange={(e) => updateFilter("search", e.target.value)}
+            onChange={(e) => updateFilter('search', e.target.value)}
             className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-dark-200 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
           />
         </div>
@@ -121,14 +126,21 @@ const TaskFilters: React.FC<TaskFiltersProps> = ({
             onClick={() => setShowFilters(!showFilters)}
             className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
               showFilters || hasActiveFilters
-                ? "bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400"
-                : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400'
+                : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
             }`}
           >
             Filters
             {hasActiveFilters && (
               <span className="ml-1 px-1.5 py-0.5 text-xs bg-primary-200 dark:bg-primary-800 text-primary-700 dark:text-primary-300 rounded-full">
-                {[filters.categories, filters.difficulties, filters.priorities, filters.types].flat().length}
+                {
+                  [
+                    filters.categories,
+                    filters.difficulties,
+                    filters.priorities,
+                    filters.types,
+                  ].flat().length
+                }
               </span>
             )}
           </button>
@@ -144,14 +156,14 @@ const TaskFilters: React.FC<TaskFiltersProps> = ({
               Categories
             </label>
             <div className="flex flex-wrap gap-2">
-              {categories.map(category => (
+              {categories.map((category) => (
                 <button
                   key={category}
-                  onClick={() => toggleArrayFilter("categories", category)}
+                  onClick={() => toggleArrayFilter('categories', category)}
                   className={`px-3 py-1 text-sm rounded-full transition-colors ${
                     filters.categories.includes(category)
-                      ? "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800"
-                      : "bg-white dark:bg-dark-300 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-dark-200"
+                      ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800'
+                      : 'bg-white dark:bg-dark-300 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-dark-200'
                   }`}
                 >
                   {categoryIcons[category]} {category}
@@ -166,23 +178,21 @@ const TaskFilters: React.FC<TaskFiltersProps> = ({
               Difficulty
             </label>
             <div className="flex flex-wrap gap-2">
-              {difficulties.map(difficulty => (
+              {difficulties.map((difficulty) => (
                 <button
                   key={difficulty}
-                  onClick={() => toggleArrayFilter("difficulties", difficulty)}
+                  onClick={() => toggleArrayFilter('difficulties', difficulty)}
                   className={`px-3 py-1 text-sm rounded-full transition-colors ${
                     filters.difficulties.includes(difficulty)
                       ? difficulty === 'easy'
-                        ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800"
+                        ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800'
                         : difficulty === 'medium'
-                        ? "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 border border-yellow-200 dark:border-yellow-800"
-                        : "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800"
-                      : "bg-white dark:bg-dark-300 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-dark-200"
+                          ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 border border-yellow-200 dark:border-yellow-800'
+                          : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800'
+                      : 'bg-white dark:bg-dark-300 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-dark-200'
                   }`}
                 >
-                  {difficulty === 'easy' ? '⭐' : 
-                   difficulty === 'medium' ? '⭐⭐' : 
-                   '⭐⭐⭐'}
+                  {difficulty === 'easy' ? '⭐' : difficulty === 'medium' ? '⭐⭐' : '⭐⭐⭐'}
                 </button>
               ))}
             </div>
@@ -194,23 +204,21 @@ const TaskFilters: React.FC<TaskFiltersProps> = ({
               Priority
             </label>
             <div className="flex flex-wrap gap-2">
-              {priorities.map(priority => (
+              {priorities.map((priority) => (
                 <button
                   key={priority}
-                  onClick={() => toggleArrayFilter("priorities", priority)}
+                  onClick={() => toggleArrayFilter('priorities', priority)}
                   className={`px-3 py-1 text-sm rounded-full transition-colors ${
                     filters.priorities.includes(priority)
                       ? priority === 'low'
-                        ? "bg-gray-100 dark:bg-gray-900/30 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-800"
+                        ? 'bg-gray-100 dark:bg-gray-900/30 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-800'
                         : priority === 'medium'
-                        ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800"
-                        : "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 border border-orange-200 dark:border-orange-800"
-                      : "bg-white dark:bg-dark-300 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-dark-200"
+                          ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800'
+                          : 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 border border-orange-200 dark:border-orange-800'
+                      : 'bg-white dark:bg-dark-300 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-dark-200'
                   }`}
                 >
-                  {priority === 'low' ? 'Low' : 
-                   priority === 'medium' ? 'Medium' : 
-                   'High'}
+                  {priority === 'low' ? 'Low' : priority === 'medium' ? 'Medium' : 'High'}
                 </button>
               ))}
             </div>
@@ -222,19 +230,21 @@ const TaskFilters: React.FC<TaskFiltersProps> = ({
               Task Types
             </label>
             <div className="flex flex-wrap gap-2">
-              {types.map(type => (
+              {types.map((type) => (
                 <button
                   key={type}
-                  onClick={() => toggleArrayFilter("types", type)}
+                  onClick={() => toggleArrayFilter('types', type)}
                   className={`px-3 py-1 text-sm rounded-full transition-colors ${
                     filters.types.includes(type)
-                      ? "bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800"
-                      : "bg-white dark:bg-dark-300 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-dark-200"
+                      ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800'
+                      : 'bg-white dark:bg-dark-300 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-dark-200'
                   }`}
                 >
-                  {type === 'daily' ? '📅 Daily' : 
-                   type === 'recurring' ? '🔄 Recurring' : 
-                   '📝 One-time'}
+                  {type === 'daily'
+                    ? '📅 Daily'
+                    : type === 'recurring'
+                      ? '🔄 Recurring'
+                      : '📝 One-time'}
                 </button>
               ))}
             </div>
@@ -248,7 +258,7 @@ const TaskFilters: React.FC<TaskFiltersProps> = ({
               </label>
               <select
                 value={filters.sortBy}
-                onChange={(e) => updateFilter("sortBy", e.target.value as FilterState["sortBy"])}
+                onChange={(e) => updateFilter('sortBy', e.target.value as FilterState['sortBy'])}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-dark-200 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
               >
                 <option value="due">Due Date</option>
@@ -263,7 +273,9 @@ const TaskFilters: React.FC<TaskFiltersProps> = ({
               </label>
               <select
                 value={filters.sortOrder}
-                onChange={(e) => updateFilter("sortOrder", e.target.value as FilterState["sortOrder"])}
+                onChange={(e) =>
+                  updateFilter('sortOrder', e.target.value as FilterState['sortOrder'])
+                }
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-dark-200 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
               >
                 <option value="asc">Ascending</option>

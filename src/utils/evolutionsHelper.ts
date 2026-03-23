@@ -3,22 +3,15 @@
  * All evolution queries go through these helpers rather than accessing the table directly,
  * so callers aren't coupled to the table's internal {byFrom, byTo, byPair, all} shape.
  */
-import {
-  EVOLUTION_LOOKUP_TABLE,
-  EvolutionPath,
-} from "../constants/evolutionLookup";
+import { EVOLUTION_LOOKUP_TABLE, EvolutionPath } from '../constants/evolutionLookup';
 
-export function getEvolutionsByDigimonIds(
-  digimonIds: number[]
-): EvolutionPath[] {
+export function getEvolutionsByDigimonIds(digimonIds: number[]): EvolutionPath[] {
   const { byFrom } = EVOLUTION_LOOKUP_TABLE;
   const evolutions: EvolutionPath[] = [];
 
   for (const id of digimonIds) {
     const paths =
-      (byFrom as unknown as Record<string, readonly EvolutionPath[]>)[
-        id.toString()
-      ] ?? [];
+      (byFrom as unknown as Record<string, readonly EvolutionPath[]>)[id.toString()] ?? [];
     evolutions.push(...Array.from(paths));
   }
 
@@ -31,42 +24,28 @@ export function getAllEvolutions(): EvolutionPath[] {
 
 export function getEvolutions(fromId: number) {
   if (!EVOLUTION_LOOKUP_TABLE.byFrom) {
-    throw new Error("Evolution lookup table not found " + fromId);
+    throw new Error('Evolution lookup table not found ' + fromId);
   }
 
   return (
-    (
-      EVOLUTION_LOOKUP_TABLE.byFrom as unknown as Record<
-        number,
-        EvolutionPath[]
-      >
-    )[fromId] ?? []
+    (EVOLUTION_LOOKUP_TABLE.byFrom as unknown as Record<number, EvolutionPath[]>)[fromId] ?? []
   );
 }
 
 export function getDevolutions(toId: number) {
   if (!EVOLUTION_LOOKUP_TABLE.byTo) {
-    throw new Error("Evolution lookup table not found " + toId);
+    throw new Error('Evolution lookup table not found ' + toId);
   }
 
-  return (
-    (EVOLUTION_LOOKUP_TABLE.byTo as unknown as Record<number, EvolutionPath[]>)[
-      toId
-    ] ?? []
-  );
+  return (EVOLUTION_LOOKUP_TABLE.byTo as unknown as Record<number, EvolutionPath[]>)[toId] ?? [];
 }
 
-export function getEvolutionPath(
-  fromId: number,
-  toId: number
-): EvolutionPath | null {
+export function getEvolutionPath(fromId: number, toId: number): EvolutionPath | null {
   if (!fromId || !toId) {
     return null;
   }
 
   return (
-    (EVOLUTION_LOOKUP_TABLE.byPair as Record<string, EvolutionPath>)[
-      `${fromId}-${toId}`
-    ] ?? null
+    (EVOLUTION_LOOKUP_TABLE.byPair as Record<string, EvolutionPath>)[`${fromId}-${toId}`] ?? null
   );
 }

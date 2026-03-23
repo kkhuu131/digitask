@@ -1,7 +1,13 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Crown, Trophy, Lock } from 'lucide-react';
-import { UserTournament, TournamentPlacement, RoundResult, TournamentOpponentDigimon, BracketSlot } from '../types/tournament';
+import {
+  UserTournament,
+  TournamentPlacement,
+  RoundResult,
+  TournamentOpponentDigimon,
+  BracketSlot,
+} from '../types/tournament';
 import DigimonSprite from './DigimonSprite';
 
 interface TournamentBracketProps {
@@ -42,18 +48,24 @@ interface SlotCardProps {
 }
 
 const SlotCard: React.FC<SlotCardProps> = ({
-  slot, result, isCurrent, userUsername, userAvatarUrl,
+  slot,
+  result,
+  isCurrent,
+  userUsername,
+  userAvatarUrl,
 }) => {
   const isUser = !!slot.is_user;
   const displayName = isUser ? (userUsername ?? 'You') : slot.name;
 
-  const base = 'flex flex-col px-2.5 py-2 rounded-lg border text-xs font-medium transition-all duration-200 min-w-[120px]';
+  const base =
+    'flex flex-col px-2.5 py-2 rounded-lg border text-xs font-medium transition-all duration-200 min-w-[120px]';
 
   let colorClass: string;
   if (isUser) {
     colorClass = `bg-blue-50 dark:bg-blue-900/30 border-blue-300 dark:border-blue-700 ${result === 'win' ? 'shadow-md shadow-green-400/30' : result === 'loss' ? 'opacity-50' : isCurrent ? 'ring-2 ring-blue-400 dark:ring-blue-500' : ''}`;
   } else if (isCurrent) {
-    colorClass = 'bg-indigo-50 dark:bg-accent-900/20 border-indigo-300 dark:border-accent-700 ring-2 ring-indigo-300 dark:ring-accent-600';
+    colorClass =
+      'bg-indigo-50 dark:bg-accent-900/20 border-indigo-300 dark:border-accent-700 ring-2 ring-indigo-300 dark:ring-accent-600';
   } else if (result === 'loss') {
     colorClass = 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-900 opacity-60';
   } else if (result === 'win') {
@@ -66,11 +78,17 @@ const SlotCard: React.FC<SlotCardProps> = ({
     <div className={`${base} ${colorClass}`}>
       <div className="flex items-center gap-1.5">
         {isUser && userAvatarUrl ? (
-          <img src={userAvatarUrl} alt={displayName} className="w-5 h-5 rounded-full object-cover flex-shrink-0" />
+          <img
+            src={userAvatarUrl}
+            alt={displayName}
+            className="w-5 h-5 rounded-full object-cover flex-shrink-0"
+          />
         ) : isUser ? (
           <div className="w-5 h-5 rounded-full bg-blue-300 dark:bg-blue-600 flex-shrink-0" />
         ) : null}
-        <span className={`truncate max-w-[100px] ${isUser ? 'text-blue-800 dark:text-blue-200' : 'text-gray-700 dark:text-gray-200'}`}>
+        <span
+          className={`truncate max-w-[100px] ${isUser ? 'text-blue-800 dark:text-blue-200' : 'text-gray-700 dark:text-gray-200'}`}
+        >
           {displayName}
         </span>
         {result === 'win' && !isUser && <span className="ml-auto text-green-500">✓</span>}
@@ -93,8 +111,12 @@ const SlotCard: React.FC<SlotCardProps> = ({
 // Bracket connector — L-shaped line connecting two QF slots to a SF node
 const Connector: React.FC<{ active?: boolean }> = ({ active }) => (
   <div className="flex flex-col items-end w-3 self-stretch">
-    <div className={`flex-1 border-r-2 border-t-2 rounded-tr-md ${active ? 'border-indigo-400 dark:border-accent-500' : 'border-gray-200 dark:border-dark-100'}`} />
-    <div className={`flex-1 border-r-2 border-b-2 rounded-br-md ${active ? 'border-indigo-400 dark:border-accent-500' : 'border-gray-200 dark:border-dark-100'}`} />
+    <div
+      className={`flex-1 border-r-2 border-t-2 rounded-tr-md ${active ? 'border-indigo-400 dark:border-accent-500' : 'border-gray-200 dark:border-dark-100'}`}
+    />
+    <div
+      className={`flex-1 border-r-2 border-b-2 rounded-br-md ${active ? 'border-indigo-400 dark:border-accent-500' : 'border-gray-200 dark:border-dark-100'}`}
+    />
   </div>
 );
 
@@ -109,25 +131,46 @@ interface RoundNodeProps {
   isFinal?: boolean;
 }
 
-const RoundNode: React.FC<RoundNodeProps> = ({ label, sublabel, active, won, lost, locked, isFinal }) => (
-  <div className={`self-center px-2.5 py-1.5 rounded-lg text-xs font-semibold border whitespace-nowrap text-center ${
-    won     ? 'bg-green-100 dark:bg-green-900/30 border-green-300 dark:border-green-700 text-green-700 dark:text-green-300' :
-    lost    ? 'bg-red-100 dark:bg-red-900/20 border-red-300 dark:border-red-700 text-red-600 dark:text-red-400' :
-    active  ? 'bg-indigo-100 dark:bg-accent-900/30 border-indigo-300 dark:border-accent-700 text-indigo-700 dark:text-accent-300' :
-    locked  ? 'bg-gray-50 dark:bg-dark-400 border-dashed border-gray-300 dark:border-dark-100 text-gray-400 dark:text-gray-500' :
-    isFinal ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-400 dark:border-amber-600 text-amber-700 dark:text-amber-300' :
-              'bg-gray-100 dark:bg-dark-200 border-gray-200 dark:border-dark-100 text-gray-500 dark:text-gray-400'
-  }`}>
+const RoundNode: React.FC<RoundNodeProps> = ({
+  label,
+  sublabel,
+  active,
+  won,
+  lost,
+  locked,
+  isFinal,
+}) => (
+  <div
+    className={`self-center px-2.5 py-1.5 rounded-lg text-xs font-semibold border whitespace-nowrap text-center ${
+      won
+        ? 'bg-green-100 dark:bg-green-900/30 border-green-300 dark:border-green-700 text-green-700 dark:text-green-300'
+        : lost
+          ? 'bg-red-100 dark:bg-red-900/20 border-red-300 dark:border-red-700 text-red-600 dark:text-red-400'
+          : active
+            ? 'bg-indigo-100 dark:bg-accent-900/30 border-indigo-300 dark:border-accent-700 text-indigo-700 dark:text-accent-300'
+            : locked
+              ? 'bg-gray-50 dark:bg-dark-400 border-dashed border-gray-300 dark:border-dark-100 text-gray-400 dark:text-gray-500'
+              : isFinal
+                ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-400 dark:border-amber-600 text-amber-700 dark:text-amber-300'
+                : 'bg-gray-100 dark:bg-dark-200 border-gray-200 dark:border-dark-100 text-gray-500 dark:text-gray-400'
+    }`}
+  >
     <div>{label}</div>
     {sublabel && <div className="text-[10px] opacity-75 mt-0.5">{sublabel}</div>}
   </div>
 );
 
 const PLACEMENT_LABELS: Record<string, string> = {
-  qf_loss: 'Top 8', sf_loss: 'Top 4', gf_loss: 'Runner-Up', champion: 'Champion',
+  qf_loss: 'Top 8',
+  sf_loss: 'Top 4',
+  gf_loss: 'Runner-Up',
+  champion: 'Champion',
 };
 const PLACEMENT_COLORS: Record<string, string> = {
-  qf_loss: 'text-orange-500', sf_loss: 'text-gray-500', gf_loss: 'text-yellow-500', champion: 'text-amber-500',
+  qf_loss: 'text-orange-500',
+  sf_loss: 'text-gray-500',
+  gf_loss: 'text-yellow-500',
+  champion: 'text-amber-500',
 };
 
 // ── Main component ───────────────────────────────────────────────────────────
@@ -145,7 +188,7 @@ const TournamentBracket: React.FC<TournamentBracketProps> = ({
   const isLocked = weeklyTaskCount < 10 && !tournament;
   const slots = tournament?.bracket.visual_bracket.slots ?? [];
   const getSlot = (n: number): BracketSlot =>
-    slots.find(s => s.slot === n) ?? { slot: n, name: '???', team: [] };
+    slots.find((s) => s.slot === n) ?? { slot: n, name: '???', team: [] };
 
   // Authoritative opponent data from rounds — always correct regardless of bracket format/age
   const bracketRounds = tournament?.bracket.rounds;
@@ -154,7 +197,7 @@ const TournamentBracket: React.FC<TournamentBracketProps> = ({
   const gfOpponent = bracketRounds?.['3']?.opponent;
 
   const getResult = (round: number): 'win' | 'loss' | 'upcoming' | 'locked' => {
-    const r = roundResults.find(r => r.round === round);
+    const r = roundResults.find((r) => r.round === round);
     if (r) return r.result;
     if (!isCompleted && round === currentRound) return 'upcoming';
     return 'locked';
@@ -166,22 +209,33 @@ const TournamentBracket: React.FC<TournamentBracketProps> = ({
 
   // Progressive reveal: SF shows after QF, GF shows after SF
   const sfRevealed = r1 === 'win' || r1 === 'loss' || currentRound >= 2 || isCompleted;
-  const gfRevealed = (sfRevealed && (r2 === 'win' || r2 === 'loss')) || currentRound >= 3 || isCompleted;
+  const gfRevealed =
+    (sfRevealed && (r2 === 'win' || r2 === 'loss')) || currentRound >= 3 || isCompleted;
 
   // SF1 node label (User's semi)
-  const sf1Label = !sfRevealed ? 'SF' :
-    r2 === 'win' ? 'Advanced' :
-    r2 === 'loss' ? 'Eliminated' :
-    r2 === 'upcoming' ? 'Up next' : 'SF';
+  const sf1Label = !sfRevealed
+    ? 'SF'
+    : r2 === 'win'
+      ? 'Advanced'
+      : r2 === 'loss'
+        ? 'Eliminated'
+        : r2 === 'upcoming'
+          ? 'Up next'
+          : 'SF';
 
   // GF node label
-  const gfLabel = !gfRevealed ? 'Final' :
-    r3 === 'win' ? '🏆 Champion' :
-    r3 === 'loss' ? 'Runner-Up' :
-    r3 === 'upcoming' ? 'Grand Final' : 'Final';
+  const gfLabel = !gfRevealed
+    ? 'Final'
+    : r3 === 'win'
+      ? '🏆 Champion'
+      : r3 === 'loss'
+        ? 'Runner-Up'
+        : r3 === 'upcoming'
+          ? 'Grand Final'
+          : 'Final';
 
   const cleanName = (raw: BracketSlot): string =>
-    (!raw.name || raw.name === 'Wild Digimon' || raw.name === 'Filler Team') ? '???' : raw.name;
+    !raw.name || raw.name === 'Wild Digimon' || raw.name === 'Filler Team' ? '???' : raw.name;
 
   // Slot references — real opponent slots override with authoritative rounds data
   // Slot 1 is always the user, even before the tournament is entered
@@ -189,13 +243,15 @@ const TournamentBracket: React.FC<TournamentBracketProps> = ({
   const s2: BracketSlot = {
     slot: 2,
     name: qfOpponent?.display_name ?? cleanName(getSlot(2)),
-    team: (qfOpponent?.team && qfOpponent.team.length > 0) ? qfOpponent.team : (getSlot(2).team ?? []),
+    team:
+      qfOpponent?.team && qfOpponent.team.length > 0 ? qfOpponent.team : (getSlot(2).team ?? []),
   };
   const s3: BracketSlot = { ...getSlot(3), name: cleanName(getSlot(3)) };
   const s4: BracketSlot = {
     slot: 4,
     name: sfOpponent?.display_name ?? cleanName(getSlot(4)),
-    team: (sfOpponent?.team && sfOpponent.team.length > 0) ? sfOpponent.team : (getSlot(4).team ?? []),
+    team:
+      sfOpponent?.team && sfOpponent.team.length > 0 ? sfOpponent.team : (getSlot(4).team ?? []),
   };
   const s5: BracketSlot = { ...getSlot(5), name: cleanName(getSlot(5)) };
   const s6: BracketSlot = { ...getSlot(6), name: cleanName(getSlot(6)) };
@@ -204,20 +260,34 @@ const TournamentBracket: React.FC<TournamentBracketProps> = ({
     slot: 8,
     name: gfOpponent?.display_name ?? getSlot(8).name,
     is_boss: true,
-    team: (gfOpponent?.team && gfOpponent.team.length > 0) ? gfOpponent.team : (getSlot(8).team ?? []),
+    team:
+      gfOpponent?.team && gfOpponent.team.length > 0 ? gfOpponent.team : (getSlot(8).team ?? []),
   };
 
-  const revealAnim = { initial: { opacity: 0, x: 12 }, animate: { opacity: 1, x: 0 }, transition: { duration: 0.35, ease: 'easeOut' } };
+  const revealAnim = {
+    initial: { opacity: 0, x: 12 },
+    animate: { opacity: 1, x: 0 },
+    transition: { duration: 0.35, ease: 'easeOut' },
+  };
 
   // ── Desktop ────────────────────────────────────────────────────────────────
   const DesktopBracket = () => (
     <div className="hidden md:flex items-stretch gap-0 justify-center overflow-x-auto pb-2 select-none">
-
       {/* === LEFT QF COLUMN (pairs 1-2) === */}
       <div className="flex flex-col py-2 gap-2">
         {/* QF1 pair: User vs QF opp */}
-        <SlotCard slot={s1} result={r1 === 'win' ? 'win' : r1 === 'loss' ? 'loss' : undefined} isCurrent={currentRound === 1 && !isCompleted} userUsername={userUsername} userAvatarUrl={userAvatarUrl} />
-        <SlotCard slot={s2} result={r1 === 'win' ? 'loss' : r1 === 'loss' ? 'win' : undefined} isCurrent={currentRound === 1 && !isCompleted} />
+        <SlotCard
+          slot={s1}
+          result={r1 === 'win' ? 'win' : r1 === 'loss' ? 'loss' : undefined}
+          isCurrent={currentRound === 1 && !isCompleted}
+          userUsername={userUsername}
+          userAvatarUrl={userAvatarUrl}
+        />
+        <SlotCard
+          slot={s2}
+          result={r1 === 'win' ? 'loss' : r1 === 'loss' ? 'win' : undefined}
+          isCurrent={currentRound === 1 && !isCompleted}
+        />
         <div className="h-3" />
         {/* QF2 pair: Filler A vs SF opp */}
         <SlotCard slot={s3} />
@@ -327,18 +397,18 @@ const TournamentBracket: React.FC<TournamentBracketProps> = ({
         <SlotCard slot={s7} />
         <SlotCard slot={s8} />
       </div>
-
     </div>
   );
 
   // ── Mobile (vertical round cards) ─────────────────────────────────────────
   const MobileBracket = () => (
     <div className="md:hidden flex flex-col gap-3">
-      {[1, 2, 3].map(round => {
+      {[1, 2, 3].map((round) => {
         const result = getResult(round);
         const roundKey = String(round) as '1' | '2' | '3';
         const roundData = tournament?.bracket.rounds[roundKey];
-        const roundName = roundData?.round_name ?? ['Quarterfinal', 'Semifinal', 'Grand Final'][round - 1];
+        const roundName =
+          roundData?.round_name ?? ['Quarterfinal', 'Semifinal', 'Grand Final'][round - 1];
         const isCurrentRound = result === 'upcoming';
         const isLocked = result === 'locked';
 
@@ -346,7 +416,11 @@ const TournamentBracket: React.FC<TournamentBracketProps> = ({
         const gfHidden = round >= 3 && !gfRevealed;
         const hidden = sfHidden || gfHidden;
 
-        const opponentName = hidden ? '???' : (round === 3 && !gfRevealed ? '???' : (roundData?.opponent.display_name ?? '???'));
+        const opponentName = hidden
+          ? '???'
+          : round === 3 && !gfRevealed
+            ? '???'
+            : (roundData?.opponent.display_name ?? '???');
         const team = hidden ? [] : (roundData?.opponent.team ?? []);
 
         return (
@@ -354,11 +428,15 @@ const TournamentBracket: React.FC<TournamentBracketProps> = ({
             key={round}
             layout
             className={`rounded-lg border p-3 transition-all duration-300 ${
-              result === 'win'   ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800' :
-              result === 'loss'  ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 opacity-70' :
-              isCurrentRound     ? 'bg-indigo-50 dark:bg-accent-900/20 border-indigo-200 dark:border-accent-700' :
-              hidden             ? 'bg-gray-50 dark:bg-dark-400 border-dashed border-gray-200 dark:border-dark-200 opacity-50' :
-                                   'bg-gray-50 dark:bg-dark-300 border-gray-200 dark:border-dark-100 opacity-60'
+              result === 'win'
+                ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
+                : result === 'loss'
+                  ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 opacity-70'
+                  : isCurrentRound
+                    ? 'bg-indigo-50 dark:bg-accent-900/20 border-indigo-200 dark:border-accent-700'
+                    : hidden
+                      ? 'bg-gray-50 dark:bg-dark-400 border-dashed border-gray-200 dark:border-dark-200 opacity-50'
+                      : 'bg-gray-50 dark:bg-dark-300 border-gray-200 dark:border-dark-100 opacity-60'
             }`}
           >
             <div className="flex items-start gap-3">
@@ -369,18 +447,26 @@ const TournamentBracket: React.FC<TournamentBracketProps> = ({
                   {round === 3 && gfRevealed && <Crown className="w-3.5 h-3.5 text-amber-500" />}
                 </div>
                 {hidden ? (
-                  <div className="text-xs text-gray-400 dark:text-gray-500 italic">Unlocks as you advance</div>
+                  <div className="text-xs text-gray-400 dark:text-gray-500 italic">
+                    Unlocks as you advance
+                  </div>
                 ) : (
                   <>
-                    <div className="text-xs text-gray-500 dark:text-gray-400 truncate">vs {opponentName}</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                      vs {opponentName}
+                    </div>
                     {team.length > 0 && <TeamSprites team={team} />}
                   </>
                 )}
               </div>
               <div className="flex-shrink-0 pt-1">
-                {result === 'win'  && <span className="text-green-500 font-bold text-lg">✓</span>}
+                {result === 'win' && <span className="text-green-500 font-bold text-lg">✓</span>}
                 {result === 'loss' && <span className="text-red-500 font-bold text-lg">✗</span>}
-                {isCurrentRound    && <span className="text-indigo-500 dark:text-accent-400 text-xs font-semibold">Up next</span>}
+                {isCurrentRound && (
+                  <span className="text-indigo-500 dark:text-accent-400 text-xs font-semibold">
+                    Up next
+                  </span>
+                )}
                 {isLocked && !hidden && <Lock className="w-4 h-4 text-gray-400" />}
               </div>
             </div>
@@ -405,7 +491,9 @@ const TournamentBracket: React.FC<TournamentBracketProps> = ({
               style={{ width: `${Math.min(100, (weeklyTaskCount / 10) * 100)}%` }}
             />
           </div>
-          <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">Complete daily tasks to unlock</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">
+            Complete daily tasks to unlock
+          </p>
         </div>
       )}
 

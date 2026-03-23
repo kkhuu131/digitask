@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { Task } from "../store/taskStore";
-import { categoryIcons, StatCategory } from "../utils/categoryDetection";
-import EditTaskModal from "./EditTaskModal";
+import React, { useState, useEffect } from 'react';
+import { Task } from '../store/taskStore';
+import { categoryIcons, StatCategory } from '../utils/categoryDetection';
+import EditTaskModal from './EditTaskModal';
 
 interface TaskItemProps {
   task: Task;
@@ -13,48 +13,48 @@ interface TaskItemProps {
 }
 
 const DAY_ABBREVIATIONS: Record<string, string> = {
-  "Sunday": "Su",
-  "Monday": "M",
-  "Tuesday": "Tu",
-  "Wednesday": "W",
-  "Thursday": "Th",
-  "Friday": "F",
-  "Saturday": "Sa"
+  Sunday: 'Su',
+  Monday: 'M',
+  Tuesday: 'Tu',
+  Wednesday: 'W',
+  Thursday: 'Th',
+  Friday: 'F',
+  Saturday: 'Sa',
 };
 
-const WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-const WEEKEND_DAYS = ["Saturday", "Sunday"];
+const WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+const WEEKEND_DAYS = ['Saturday', 'Sunday'];
 
 const formatRecurringDays = (days: string[]): string => {
   // Sort days to ensure consistent order
-  const sortedDays = [...days].sort((a, b) => 
-    WEEKDAYS.concat(WEEKEND_DAYS).indexOf(a) - 
-    WEEKDAYS.concat(WEEKEND_DAYS).indexOf(b)
+  const sortedDays = [...days].sort(
+    (a, b) => WEEKDAYS.concat(WEEKEND_DAYS).indexOf(a) - WEEKDAYS.concat(WEEKEND_DAYS).indexOf(b)
   );
 
   // Check for weekdays
-  if (WEEKDAYS.every(day => sortedDays.includes(day)) && 
-      sortedDays.length === WEEKDAYS.length) {
-    return "Weekdays";
+  if (WEEKDAYS.every((day) => sortedDays.includes(day)) && sortedDays.length === WEEKDAYS.length) {
+    return 'Weekdays';
   }
 
   // Check for weekends
-  if (WEEKEND_DAYS.every(day => sortedDays.includes(day)) && 
-      sortedDays.length === WEEKEND_DAYS.length) {
-    return "Weekends";
+  if (
+    WEEKEND_DAYS.every((day) => sortedDays.includes(day)) &&
+    sortedDays.length === WEEKEND_DAYS.length
+  ) {
+    return 'Weekends';
   }
 
   // Otherwise use abbreviations
-  return sortedDays.map(day => DAY_ABBREVIATIONS[day]).join(', ');
+  return sortedDays.map((day) => DAY_ABBREVIATIONS[day]).join(', ');
 };
 
-const TaskItem: React.FC<TaskItemProps> = ({ 
-  task, 
-  onComplete, 
-  onDelete, 
-  isSelected = false, 
+const TaskItem: React.FC<TaskItemProps> = ({
+  task,
+  onComplete,
+  onDelete,
+  isSelected = false,
   onSelect,
-  compact = false 
+  compact = false,
 }) => {
   const [isTaskOverdue, setIsTaskOverdue] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -66,62 +66,69 @@ const TaskItem: React.FC<TaskItemProps> = ({
         setIsTaskOverdue(false);
         return;
       }
-      
+
       const dueDate = new Date(task.due_date);
       const now = new Date();
       setIsTaskOverdue(dueDate < now);
     };
-    
+
     checkOverdue();
-    
+
     const intervalId = setInterval(checkOverdue, 10000);
-    
+
     return () => clearInterval(intervalId);
   }, [task]);
 
   const formatDueDate = (dateString: string | null) => {
-    if (!dateString) return "No due date";
-    
+    if (!dateString) return 'No due date';
+
     const date = new Date(dateString);
-    
+
     const now = new Date();
     const today = new Date(now);
     today.setHours(0, 0, 0, 0);
-    
+
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
-    
+
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
-    
+
     // Format the time - ensure it's visible
-    const timeString = date.toLocaleTimeString([], { 
-      hour: '2-digit', 
-      minute: '2-digit'
+    const timeString = date.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
     });
-    
+
     // Check if it's today, tomorrow, or yesterday
     if (date.getTime() >= today.getTime() && date.getTime() < tomorrow.getTime()) {
       return `Today at ${timeString}`;
-    } else if (date.getTime() >= tomorrow.getTime() && date.getTime() < tomorrow.getTime() + 86400000) {
+    } else if (
+      date.getTime() >= tomorrow.getTime() &&
+      date.getTime() < tomorrow.getTime() + 86400000
+    ) {
       return `Tomorrow at ${timeString}`;
     } else if (date.getTime() >= yesterday.getTime() && date.getTime() < today.getTime()) {
       return `Yesterday at ${timeString}`;
     } else {
       // Format the date with the time
-      const dateOptions: Intl.DateTimeFormatOptions = { 
-        month: 'short', 
+      const dateOptions: Intl.DateTimeFormatOptions = {
+        month: 'short',
         day: 'numeric',
-        year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
+        year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined,
       };
       return `${date.toLocaleDateString([], dateOptions)} at ${timeString}`;
     }
   };
 
   return (
-    <div className={`border-b border-gray-200 dark:border-dark-100 p-0 py-2 sm:p-4 ${task.is_completed ? 'bg-gray-50 dark:bg-dark-500/50' : 'dark:bg-dark-300'} relative ${
-      isSelected ? 'bg-primary-50 dark:bg-primary-900/20 border-primary-200 dark:border-primary-800' : ''
-    }`}>
+    <div
+      className={`border-b border-gray-200 dark:border-dark-100 p-0 py-2 sm:p-4 ${task.is_completed ? 'bg-gray-50 dark:bg-dark-500/50' : 'dark:bg-dark-300'} relative ${
+        isSelected
+          ? 'bg-primary-50 dark:bg-primary-900/20 border-primary-200 dark:border-primary-800'
+          : ''
+      }`}
+    >
       <div className="flex items-center gap-2 sm:gap-3">
         {/* Selection checkbox */}
         {onSelect && (
@@ -140,8 +147,18 @@ const TaskItem: React.FC<TaskItemProps> = ({
               onClick={() => setShowEditModal(true)}
               className="px-1 pt-1 sm:p-1 text-gray-400 hover:text-blue-500 dark:text-gray-500 dark:hover:text-accent-400"
             >
-              <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+              <svg
+                className="w-3 h-3 sm:w-4 sm:h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                ></path>
               </svg>
             </button>
           )}
@@ -150,8 +167,18 @@ const TaskItem: React.FC<TaskItemProps> = ({
             onClick={() => onDelete(task.id)}
             className="pt-1 sm:p-1 sm:py-2 sm:pr-2 text-gray-400 hover:text-red-500 dark:text-gray-500 dark:hover:text-red-400"
           >
-            <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+            <svg
+              className="w-3 h-3 sm:w-4 sm:h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
             </svg>
           </button>
         </div>
@@ -160,15 +187,25 @@ const TaskItem: React.FC<TaskItemProps> = ({
         <button
           onClick={() => !task.is_completed && onComplete(task.id)}
           className={`flex-shrink-0 w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 flex items-center justify-center transition-colors ml-2 sm:ml-0 ${
-            task.is_completed 
-              ? "bg-green-500 border-green-500 dark:bg-green-600 dark:border-green-600" 
-              : "border-gray-300 hover:border-green-500 dark:border-gray-600 dark:hover:border-accent-500"
+            task.is_completed
+              ? 'bg-green-500 border-green-500 dark:bg-green-600 dark:border-green-600'
+              : 'border-gray-300 hover:border-green-500 dark:border-gray-600 dark:hover:border-accent-500'
           }`}
           disabled={task.is_completed}
         >
           {task.is_completed && (
-            <svg className="w-2 h-2 sm:w-3 sm:h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path>
+            <svg
+              className="w-2 h-2 sm:w-3 sm:h-3 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="3"
+                d="M5 13l4 4L19 7"
+              ></path>
             </svg>
           )}
         </button>
@@ -180,7 +217,9 @@ const TaskItem: React.FC<TaskItemProps> = ({
             <button
               onClick={() => setIsExpanded(!isExpanded)}
               className={`text-xs sm:text-base pr-8 sm:pr-14 text-left ${
-                task.is_completed ? 'line-through text-gray-500 dark:text-gray-400' : 'text-gray-800 dark:text-gray-200'
+                task.is_completed
+                  ? 'line-through text-gray-500 dark:text-gray-400'
+                  : 'text-gray-800 dark:text-gray-200'
               } ${compact ? 'hover:text-primary-600 dark:hover:text-primary-400' : ''}`}
             >
               {task.description}
@@ -194,55 +233,59 @@ const TaskItem: React.FC<TaskItemProps> = ({
                 {categoryIcons[task.category as StatCategory]} {task.category}
               </span>
             )}
-            
+
             {/* Difficulty Badge */}
             {task.difficulty && (
-              <span className={`px-1.5 py-0.5 rounded-full text-xs font-medium ${
-                task.difficulty === 'easy' 
-                  ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+              <span
+                className={`px-1.5 py-0.5 rounded-full text-xs font-medium ${
+                  task.difficulty === 'easy'
+                    ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+                    : task.difficulty === 'medium'
+                      ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
+                      : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
+                }`}
+              >
+                {task.difficulty === 'easy'
+                  ? '⭐'
                   : task.difficulty === 'medium'
-                  ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
-                  : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
-              }`}>
-                {task.difficulty === 'easy' ? '⭐' : 
-                 task.difficulty === 'medium' ? '⭐⭐' : 
-                 '⭐⭐⭐'}
+                    ? '⭐⭐'
+                    : '⭐⭐⭐'}
               </span>
             )}
-            
+
             {/* Priority Badge */}
             {task.priority && (
-              <span className={`px-1.5 py-0.5 rounded-full text-xs font-medium ${
-                task.priority === 'low' 
-                  ? 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300'
-                  : task.priority === 'medium'
-                  ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
-                  : 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300'
-              }`}>
-                {task.priority === 'low' ? 'Low' : 
-                 task.priority === 'medium' ? 'Medium' : 
-                 'High'}
+              <span
+                className={`px-1.5 py-0.5 rounded-full text-xs font-medium ${
+                  task.priority === 'low'
+                    ? 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300'
+                    : task.priority === 'medium'
+                      ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
+                      : 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300'
+                }`}
+              >
+                {task.priority === 'low' ? 'Low' : task.priority === 'medium' ? 'Medium' : 'High'}
               </span>
             )}
-            
+
             {task.is_daily && (
               <span className="px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
                 Daily
               </span>
             )}
-            
+
             {isTaskOverdue && !task.is_completed && !task.is_daily && (
               <span className="px-1.5 py-0.5 rounded-full bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300">
                 Overdue
               </span>
             )}
-            
+
             {task.recurring_days && task.recurring_days.length > 0 && (
               <span className="px-1.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300">
                 {formatRecurringDays(task.recurring_days)}
               </span>
             )}
-            
+
             {!task.is_daily && !task.recurring_days && (
               <span className="text-gray-500 dark:text-gray-400">
                 {formatDueDate(task.due_date)}
@@ -253,8 +296,8 @@ const TaskItem: React.FC<TaskItemProps> = ({
           {/* Expanded content */}
           {isExpanded && (
             <div className="mt-2 space-y-2">
-          {/* Notes section */}
-          {task.notes && (
+              {/* Notes section */}
+              {task.notes && (
                 <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 max-w-md">
                   <strong>Notes:</strong> {task.notes}
                 </div>
@@ -271,17 +314,13 @@ const TaskItem: React.FC<TaskItemProps> = ({
           )}
         </div>
       </div>
-      
+
       {/* Edit Task Modal */}
       {showEditModal && (
-        <EditTaskModal
-          task={task}
-          isOpen={showEditModal}
-          onClose={() => setShowEditModal(false)}
-        />
+        <EditTaskModal task={task} isOpen={showEditModal} onClose={() => setShowEditModal(false)} />
       )}
     </div>
   );
 };
 
-export default TaskItem; 
+export default TaskItem;

@@ -71,7 +71,9 @@
       "Bash(find . -path ./node_modules -prune -o -type f -name *.yml -o -name *.yaml)",
       "Bash(find . -path ./node_modules -prune -o -name Makefile -o -name .env* -type f)",
       "Bash(wc -l src/engine/*.ts src/hooks/*.ts)",
-      "Bash(npm test:*)"
+      "Bash(npm test:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)"
     ]
   },
   "enabledMcpjsonServers": [

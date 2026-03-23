@@ -1,4 +1,4 @@
-import { Digimon, UserDigimon } from "@/store/petStore";
+import { Digimon, UserDigimon } from '@/store/petStore';
 
 /**
  * XP required to advance from `level` to `level + 1`.
@@ -51,7 +51,7 @@ export default function calculateBaseStat(
 export function calculateFinalStats(digimon: any) {
   // Make sure digimon and digimon.digimon exist
   if (!digimon || !digimon.digimon) {
-    console.error("Invalid digimon data:", digimon);
+    console.error('Invalid digimon data:', digimon);
     // Return default stats to prevent crashes
     return {
       hp: 100,
@@ -117,17 +117,17 @@ export function calculateFinalStats(digimon: any) {
   let spd = Math.round(baseSPD + (digimon.spd_bonus || 0));
 
   if (digimon.personality) {
-    if (digimon.personality === "Durable") {
+    if (digimon.personality === 'Durable') {
       hp = Math.round(hp * 1.05);
-    } else if (digimon.personality === "Lively") {
+    } else if (digimon.personality === 'Lively') {
       sp = Math.round(sp * 1.05);
-    } else if (digimon.personality === "Fighter") {
+    } else if (digimon.personality === 'Fighter') {
       atk = Math.round(atk * 1.05);
-    } else if (digimon.personality === "Defender") {
+    } else if (digimon.personality === 'Defender') {
       def = Math.round(def * 1.05);
-    } else if (digimon.personality === "Brainy") {
+    } else if (digimon.personality === 'Brainy') {
       int = Math.round(int * 1.05);
-    } else if (digimon.personality === "Nimble") {
+    } else if (digimon.personality === 'Nimble') {
       spd = Math.round(spd * 1.05);
     }
   }
@@ -142,16 +142,12 @@ export function calculateUserDigimonPowerRating(digimon: UserDigimon): number {
   const stats = calculateFinalStats(digimon);
 
   // Base power from stats (including bonus stats)
-  const statPower =
-    stats.hp / 10 + stats.atk + stats.def + stats.int + stats.spd + stats.sp;
+  const statPower = stats.hp / 10 + stats.atk + stats.def + stats.int + stats.spd + stats.sp;
 
   return Math.round(statPower);
 }
 
-export function calculateBaseDigimonPowerRating(
-  digimon: Digimon,
-  level: number
-): number {
+export function calculateBaseDigimonPowerRating(digimon: Digimon, level: number): number {
   if (!digimon) return 0;
 
   // Calculate base stats for current level with null checks
@@ -197,8 +193,7 @@ export function calculateBaseDigimonPowerRating(
     digimon.spd_level99 || 100
   );
 
-  const statPower =
-    baseHP / 10 + baseATK + baseDEF + baseINT + baseSPD + baseSP;
+  const statPower = baseHP / 10 + baseATK + baseDEF + baseINT + baseSPD + baseSP;
 
   return Math.round(statPower);
 }

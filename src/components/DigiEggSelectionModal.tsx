@@ -1,13 +1,13 @@
-import { useState, useEffect, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { DIGIMON_LOOKUP_TABLE } from "../constants/digimonLookup";
-import DigimonSprite from "./DigimonSprite";
+import { useState, useEffect, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { DIGIMON_LOOKUP_TABLE } from '../constants/digimonLookup';
+import DigimonSprite from './DigimonSprite';
 
 // Deterministic seeded PRNG (LCG). Same seed → same sequence every time.
 function seededRandom(seed: number): () => number {
   let s = seed >>> 0;
   return () => {
-    s = Math.imul(1664525, s) + 1013904223 >>> 0;
+    s = (Math.imul(1664525, s) + 1013904223) >>> 0;
     return s / 0x100000000;
   };
 }
@@ -24,7 +24,7 @@ function hashSeed(str: string): number {
 
 interface DigiEggSelectionModalProps {
   pool: number[]; // full pool of eligible digimon IDs
-  seed: string;   // deterministic seed (e.g. userId + userTitleId)
+  seed: string; // deterministic seed (e.g. userId + userTitleId)
   onSelect: (digimonId: number) => void;
   onClose: () => void;
 }
@@ -58,10 +58,10 @@ const DigiEggSelectionModal: React.FC<DigiEggSelectionModalProps> = ({
   // Close on Escape
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === 'Escape') onClose();
     };
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
   }, [onClose]);
 
   const handleConfirm = async () => {
@@ -71,17 +71,19 @@ const DigiEggSelectionModal: React.FC<DigiEggSelectionModalProps> = ({
   };
 
   const tierColor: Record<string, string> = {
-    Vaccine: "text-blue-400",
-    Virus: "text-red-400",
-    Data: "text-yellow-400",
-    Free: "text-gray-400",
+    Vaccine: 'text-blue-400',
+    Virus: 'text-red-400',
+    Data: 'text-yellow-400',
+    Free: 'text-gray-400',
   };
 
   return (
     <AnimatePresence>
       <div
         className="fixed inset-0 z-modal flex items-center justify-center p-4"
-        onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) onClose();
+        }}
       >
         {/* Backdrop */}
         <motion.div
@@ -97,12 +99,14 @@ const DigiEggSelectionModal: React.FC<DigiEggSelectionModalProps> = ({
           initial={{ opacity: 0, scale: 0.92, y: 16 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.92, y: 16 }}
-          transition={{ type: "spring", stiffness: 300, damping: 24 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 24 }}
         >
           {/* Header */}
           <div className="bg-gradient-to-r from-purple-600 to-indigo-600 px-6 py-4">
             <h2 className="text-lg font-heading font-bold text-white">Choose Your DigiEgg</h2>
-            <p className="text-sm text-purple-200 mt-0.5">Select one Digimon to hatch from your reward.</p>
+            <p className="text-sm text-purple-200 mt-0.5">
+              Select one Digimon to hatch from your reward.
+            </p>
           </div>
 
           {/* Cards */}
@@ -118,14 +122,20 @@ const DigiEggSelectionModal: React.FC<DigiEggSelectionModalProps> = ({
                     whileTap={{ scale: 0.97 }}
                     className={`relative flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all duration-150 cursor-pointer text-left ${
                       isSelected
-                        ? "border-purple-500 bg-purple-50 dark:bg-purple-900/30 shadow-md shadow-purple-200 dark:shadow-purple-900/50"
-                        : "border-gray-200 dark:border-dark-100 bg-gray-50 dark:bg-dark-200 hover:border-gray-300 dark:hover:border-dark-50"
+                        ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/30 shadow-md shadow-purple-200 dark:shadow-purple-900/50'
+                        : 'border-gray-200 dark:border-dark-100 bg-gray-50 dark:bg-dark-200 hover:border-gray-300 dark:hover:border-dark-50'
                     }`}
                   >
                     {/* Selection indicator */}
                     {isSelected && (
                       <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-purple-500 flex items-center justify-center">
-                        <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <svg
+                          className="w-2.5 h-2.5 text-white"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={3}
+                        >
                           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                         </svg>
                       </div>
@@ -149,7 +159,9 @@ const DigiEggSelectionModal: React.FC<DigiEggSelectionModalProps> = ({
                       <p className="text-[10px] font-body text-gray-500 dark:text-gray-400">
                         {digimon.stage}
                       </p>
-                      <p className={`text-[10px] font-body font-semibold ${tierColor[digimon.type] ?? "text-gray-400"}`}>
+                      <p
+                        className={`text-[10px] font-body font-semibold ${tierColor[digimon.type] ?? 'text-gray-400'}`}
+                      >
                         {digimon.type}
                       </p>
                     </div>
@@ -171,11 +183,11 @@ const DigiEggSelectionModal: React.FC<DigiEggSelectionModalProps> = ({
                 disabled={!selectedId || isSubmitting}
                 className={`flex-1 py-2.5 px-4 rounded-xl text-sm font-heading font-semibold transition-all duration-150 ${
                   selectedId && !isSubmitting
-                    ? "text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 shadow-sm"
-                    : "text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-dark-200 cursor-not-allowed"
+                    ? 'text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 shadow-sm'
+                    : 'text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-dark-200 cursor-not-allowed'
                 }`}
               >
-                {isSubmitting ? "Hatching..." : "Hatch Egg"}
+                {isSubmitting ? 'Hatching...' : 'Hatch Egg'}
               </button>
             </div>
           </div>

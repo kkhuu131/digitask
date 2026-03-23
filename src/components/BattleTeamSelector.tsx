@@ -38,7 +38,9 @@ export interface BattleTeamSelectorProps {
 
 const StatPill = ({ label, value }: { label: string; value: number | string }) => (
   <div className="flex flex-col items-center px-2 py-1.5 bg-gray-50 dark:bg-dark-400 rounded-lg text-center min-w-0">
-    <span className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-wider font-semibold">{label}</span>
+    <span className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-wider font-semibold">
+      {label}
+    </span>
     <span className="text-sm font-bold text-gray-800 dark:text-gray-100">{value}</span>
   </div>
 );
@@ -95,10 +97,12 @@ const DigimonPickerModal: React.FC<PickerModalProps> = ({
           {/* Left: Party grid */}
           <div className="sm:w-80 flex-shrink-0 border-b sm:border-b-0 sm:border-r border-gray-100 dark:border-dark-100 overflow-y-auto p-3">
             {partyDigimon.length === 0 ? (
-              <p className="text-sm text-gray-400 dark:text-gray-500 text-center py-6">No Digimon in party</p>
+              <p className="text-sm text-gray-400 dark:text-gray-500 text-center py-6">
+                No Digimon in party
+              </p>
             ) : (
               <div className="grid grid-cols-4 sm:grid-cols-3 gap-2">
-                {partyDigimon.map(d => {
+                {partyDigimon.map((d) => {
                   const used = isUsedElsewhere(d);
                   const isPreviewing = preview?.id === d.id;
                   return (
@@ -109,13 +113,15 @@ const DigimonPickerModal: React.FC<PickerModalProps> = ({
                         isPreviewing
                           ? 'border-indigo-500 dark:border-accent-500 bg-indigo-50 dark:bg-accent-900/20'
                           : used
-                          ? 'border-gray-200 dark:border-dark-100 opacity-40 cursor-not-allowed bg-gray-50 dark:bg-dark-400'
-                          : 'border-gray-200 dark:border-dark-100 hover:border-indigo-300 dark:hover:border-accent-600 bg-white dark:bg-dark-400 cursor-pointer'
+                            ? 'border-gray-200 dark:border-dark-100 opacity-40 cursor-not-allowed bg-gray-50 dark:bg-dark-400'
+                            : 'border-gray-200 dark:border-dark-100 hover:border-indigo-300 dark:hover:border-accent-600 bg-white dark:bg-dark-400 cursor-pointer'
                       }`}
                     >
                       {used && (
                         <div className="absolute inset-0 flex items-end justify-center pb-1 z-10 rounded-xl">
-                          <span className="text-[9px] font-bold text-gray-500 dark:text-gray-400 bg-white/90 dark:bg-dark-300/90 px-1 py-0.5 rounded">In team</span>
+                          <span className="text-[9px] font-bold text-gray-500 dark:text-gray-400 bg-white/90 dark:bg-dark-300/90 px-1 py-0.5 rounded">
+                            In team
+                          </span>
                         </div>
                       )}
                       <div className="w-11 h-11 flex items-center justify-center">
@@ -129,7 +135,9 @@ const DigimonPickerModal: React.FC<PickerModalProps> = ({
                       <span className="text-[10px] font-medium text-gray-700 dark:text-gray-300 truncate w-full text-center leading-tight">
                         {d.name || d.digimon?.name}
                       </span>
-                      <span className="text-[9px] text-gray-400 dark:text-gray-500">Lv.{d.current_level}</span>
+                      <span className="text-[9px] text-gray-400 dark:text-gray-500">
+                        Lv.{d.current_level}
+                      </span>
                     </button>
                   );
                 })}
@@ -156,9 +164,13 @@ const DigimonPickerModal: React.FC<PickerModalProps> = ({
                     <div className="text-lg font-bold dark:text-gray-100 truncate">
                       {preview.name || preview.digimon?.name}
                     </div>
-                    {preview.name && preview.digimon?.name && preview.name !== preview.digimon.name && (
-                      <div className="text-sm text-gray-500 dark:text-gray-400 truncate">{preview.digimon.name}</div>
-                    )}
+                    {preview.name &&
+                      preview.digimon?.name &&
+                      preview.name !== preview.digimon.name && (
+                        <div className="text-sm text-gray-500 dark:text-gray-400 truncate">
+                          {preview.digimon.name}
+                        </div>
+                      )}
                     <div className="flex flex-wrap gap-1.5 mt-1.5">
                       <span className="text-xs px-2 py-0.5 bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full font-medium">
                         Lv. {preview.current_level}
@@ -275,7 +287,7 @@ const BattleTeamSelector: React.FC<BattleTeamSelectorProps> = ({
   // Exclude Digimon in other slots from the picker's "already selected" list
   const alreadySelectedForPicker =
     pickerSlot !== null
-      ? (slots.filter((_, i) => i !== pickerSlot).filter(Boolean) as UserDigimon[]).map(d => d.id)
+      ? (slots.filter((_, i) => i !== pickerSlot).filter(Boolean) as UserDigimon[]).map((d) => d.id)
       : [];
 
   return (
@@ -298,7 +310,9 @@ const BattleTeamSelector: React.FC<BattleTeamSelectorProps> = ({
         {contextLabel && (
           <>
             <span className="text-gray-300 dark:text-dark-100 select-none">|</span>
-            <span className="text-sm font-medium text-gray-600 dark:text-gray-300">{contextLabel}</span>
+            <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
+              {contextLabel}
+            </span>
           </>
         )}
         <div className="ml-auto flex items-center gap-2">
@@ -335,7 +349,7 @@ const BattleTeamSelector: React.FC<BattleTeamSelectorProps> = ({
                 {d ? (
                   <>
                     <button
-                      onClick={e => handleRemoveSlot(i, e)}
+                      onClick={(e) => handleRemoveSlot(i, e)}
                       className="absolute top-1 right-1 z-10 w-5 h-5 rounded-full bg-gray-200 dark:bg-dark-100 hover:bg-red-100 dark:hover:bg-red-900/40 flex items-center justify-center transition-colors group"
                     >
                       <X className="w-3 h-3 text-gray-500 dark:text-gray-400 group-hover:text-red-500 transition-colors" />
@@ -351,7 +365,9 @@ const BattleTeamSelector: React.FC<BattleTeamSelectorProps> = ({
                     <span className="text-[10px] font-medium text-gray-700 dark:text-gray-300 text-center truncate w-full px-1 leading-tight">
                       {d.name || d.digimon?.name}
                     </span>
-                    <span className="text-[9px] text-gray-400 dark:text-gray-500">Lv.{d.current_level}</span>
+                    <span className="text-[9px] text-gray-400 dark:text-gray-500">
+                      Lv.{d.current_level}
+                    </span>
                   </>
                 ) : (
                   <>
@@ -374,7 +390,9 @@ const BattleTeamSelector: React.FC<BattleTeamSelectorProps> = ({
           <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-dark-200 flex items-center justify-center">
             <Swords className="w-5 h-5 text-gray-400 dark:text-gray-500" />
           </div>
-          <span className="mt-2 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">VS</span>
+          <span className="mt-2 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+            VS
+          </span>
         </div>
 
         {/* VS divider — mobile */}
@@ -382,7 +400,9 @@ const BattleTeamSelector: React.FC<BattleTeamSelectorProps> = ({
           <div className="flex-1 h-px bg-gray-200 dark:bg-dark-100" />
           <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-100 dark:bg-dark-200">
             <Swords className="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
-            <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">VS</span>
+            <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+              VS
+            </span>
           </div>
           <div className="flex-1 h-px bg-gray-200 dark:bg-dark-100" />
         </div>
@@ -392,7 +412,9 @@ const BattleTeamSelector: React.FC<BattleTeamSelectorProps> = ({
           <h3 className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1">
             Opponent
           </h3>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mb-4 truncate font-medium">{opponentName}</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-4 truncate font-medium">
+            {opponentName}
+          </p>
           <div className="flex gap-3 justify-center">
             {opponentTeam.map((d, i) => (
               <div key={i} className="flex flex-col items-center gap-1 w-16 sm:w-20">
@@ -417,7 +439,9 @@ const BattleTeamSelector: React.FC<BattleTeamSelectorProps> = ({
                 <span className="text-[10px] font-medium text-gray-600 dark:text-gray-400 text-center truncate w-full leading-tight">
                   {d.name}
                 </span>
-                <span className="text-[9px] text-gray-400 dark:text-gray-500">Lv.{d.current_level}</span>
+                <span className="text-[9px] text-gray-400 dark:text-gray-500">
+                  Lv.{d.current_level}
+                </span>
               </div>
             ))}
           </div>

@@ -3,7 +3,7 @@ export interface TutorialState {
   [key: string]: boolean;
 }
 
-const TUTORIAL_STORAGE_KEY = "digitask_tutorials";
+const TUTORIAL_STORAGE_KEY = 'digitask_tutorials';
 
 export const TutorialManager = {
   // Get all tutorial states
@@ -12,7 +12,7 @@ export const TutorialManager = {
       const stored = localStorage.getItem(TUTORIAL_STORAGE_KEY);
       return stored ? JSON.parse(stored) : {};
     } catch (error) {
-      console.error("Error reading tutorial states:", error);
+      console.error('Error reading tutorial states:', error);
       return {};
     }
   },
@@ -30,7 +30,7 @@ export const TutorialManager = {
       tutorials[tutorialId] = true;
       localStorage.setItem(TUTORIAL_STORAGE_KEY, JSON.stringify(tutorials));
     } catch (error) {
-      console.error("Error saving tutorial state:", error);
+      console.error('Error saving tutorial state:', error);
     }
   },
 
@@ -46,7 +46,7 @@ export const TutorialManager = {
       delete tutorials[tutorialId];
       localStorage.setItem(TUTORIAL_STORAGE_KEY, JSON.stringify(tutorials));
     } catch (error) {
-      console.error("Error resetting tutorial state:", error);
+      console.error('Error resetting tutorial state:', error);
     }
   },
 };

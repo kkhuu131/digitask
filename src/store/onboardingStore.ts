@@ -1,6 +1,6 @@
-import { create } from "zustand";
-import { supabase } from "../lib/supabase";
-import { useAuthStore } from "./authStore";
+import { create } from 'zustand';
+import { supabase } from '../lib/supabase';
+import { useAuthStore } from './authStore';
 
 interface OnboardingState {
   hasCompletedOnboarding: boolean | null;
@@ -30,13 +30,13 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
       }
 
       const { data: profileData, error } = await supabase
-        .from("profiles")
-        .select("has_completed_onboarding")
-        .eq("id", userId)
+        .from('profiles')
+        .select('has_completed_onboarding')
+        .eq('id', userId)
         .single();
 
       if (error) {
-        console.error("Error checking onboarding status:", error);
+        console.error('Error checking onboarding status:', error);
         set({ isCheckingStatus: false });
         return false;
       }
@@ -50,7 +50,7 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
 
       return completed;
     } catch (error) {
-      console.error("Error in checkOnboardingStatus:", error);
+      console.error('Error in checkOnboardingStatus:', error);
       set({ isCheckingStatus: false });
       return false;
     }
@@ -62,18 +62,18 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
       if (!userId) return;
 
       const { error } = await supabase
-        .from("profiles")
+        .from('profiles')
         .update({ has_completed_onboarding: true })
-        .eq("id", userId);
+        .eq('id', userId);
 
       if (error) {
-        console.error("Error updating onboarding status:", error);
+        console.error('Error updating onboarding status:', error);
         return;
       }
 
       set({ hasCompletedOnboarding: true });
     } catch (error) {
-      console.error("Error marking onboarding complete:", error);
+      console.error('Error marking onboarding complete:', error);
     }
   },
 }));

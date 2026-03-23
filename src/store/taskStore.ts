@@ -1,25 +1,25 @@
-import { create } from "zustand";
-import { supabase } from "../lib/supabase";
-import { useDigimonStore } from "./petStore";
-import { useNotificationStore } from "./notificationStore";
-import { useAuthStore } from "../store/authStore";
-import { useTitleStore } from "./titleStore";
-import { useTournamentStore } from "./tournamentStore";
+import { create } from 'zustand';
+import { supabase } from '../lib/supabase';
+import { useDigimonStore } from './petStore';
+import { useNotificationStore } from './notificationStore';
+import { useAuthStore } from '../store/authStore';
+import { useTitleStore } from './titleStore';
+import { useTournamentStore } from './tournamentStore';
 
 // Helper: fetch lifetime task count from user_milestones and check task achievements
 async function checkTaskAchievementsAfterCompletion(userId: string): Promise<void> {
   try {
     const { data } = await supabase
-      .from("user_milestones")
-      .select("tasks_completed_count")
-      .eq("user_id", userId)
+      .from('user_milestones')
+      .select('tasks_completed_count')
+      .eq('user_id', userId)
       .single();
     if (data?.tasks_completed_count != null) {
       await useTitleStore.getState().checkTaskAchievements(data.tasks_completed_count);
     }
   } catch (e) {
     // Non-fatal
-    console.warn("checkTaskAchievementsAfterCompletion failed:", e);
+    console.warn('checkTaskAchievementsAfterCompletion failed:', e);
   }
 }
 
@@ -32,7 +32,7 @@ const EXP_BY_DIFFICULTY: Record<string, number> = {
   hard: 300,
 };
 const STAT_POINTS_BY_DIFFICULTY: Record<string, number> = {
-  easy: 0,    // Easy tasks give XP but no stat point — intentional, low-effort tasks shouldn't train stats
+  easy: 0, // Easy tasks give XP but no stat point — intentional, low-effort tasks shouldn't train stats
   medium: 1,
   hard: 2,
 };
@@ -47,13 +47,13 @@ const PRIORITY_EXP_MULTIPLIER: Record<string, number> = {
 export const DAILY_QUOTA_AMOUNT = 3;
 
 export const getExpPoints = (task: Task) => {
-  const base = EXP_BY_DIFFICULTY[task.difficulty ?? "medium"] ?? 150;
-  const mult = PRIORITY_EXP_MULTIPLIER[task.priority ?? "medium"] ?? 1.0;
+  const base = EXP_BY_DIFFICULTY[task.difficulty ?? 'medium'] ?? 150;
+  const mult = PRIORITY_EXP_MULTIPLIER[task.priority ?? 'medium'] ?? 1.0;
   return Math.round(base * mult);
 };
 
 export const getStatPoints = (task: Task) => {
-  return STAT_POINTS_BY_DIFFICULTY[task.difficulty ?? "medium"] ?? 1;
+  return STAT_POINTS_BY_DIFFICULTY[task.difficulty ?? 'medium'] ?? 1;
 };
 
 export interface Task {
@@ -69,8 +69,8 @@ export interface Task {
   category: string | null;
   notes: string | null;
   // New fields for task differentiation
-  difficulty?: "easy" | "medium" | "hard";
-  priority?: "low" | "medium" | "high";
+  difficulty?: 'easy' | 'medium' | 'hard';
+  priority?: 'low' | 'medium' | 'high';
 }
 
 interface DailyQuota {
@@ -97,7 +97,6 @@ interface TaskState {
   checkOverdueTasks: () => Promise<void>;
   resetDailyTasks: () => Promise<void>;
   penalizedTasks: string[];
-  debugOverdueTasks: () => void;
   initializeStore: () => Promise<void>;
   forceCheckOverdueTasks: () => Promise<void>;
   dailyQuota: DailyQuota | null;
@@ -139,10 +138,10 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       }
 
       const { data: tasks, error } = await supabase
-        .from("tasks")
-        .select("*")
-        .eq("user_id", userData.user.id)
-        .order("due_date", { ascending: true });
+        .from('tasks')
+        .select('*')
+        .eq('user_id', userData.user.id)
+        .order('due_date', { ascending: true });
 
       if (error) throw error;
       set({ tasks: tasks || [], loading: false });
@@ -163,8 +162,8 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         // Ensure notes is properly formatted (empty string becomes null)
         notes: task.notes && task.notes.trim() ? task.notes.trim() : null,
         // Provide sensible defaults for new fields
-        difficulty: task.difficulty || "medium",
-        priority: task.priority || "medium",
+        difficulty: task.difficulty || 'medium',
+        priority: task.priority || 'medium',
       };
 
       const { data: userData } = await supabase.auth.getUser();
@@ -174,9 +173,9 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       }
 
       const { data, error } = await supabase
-        .from("tasks")
+        .from('tasks')
         .insert([{ ...taskToCreate, user_id: userData.user.id }])
-        .select("*")
+        .select('*')
         .single();
 
       if (error) throw error;
@@ -186,7 +185,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         loading: false,
       }));
     } catch (error) {
-      console.error("Error creating task:", error);
+      console.error('Error creating task:', error);
       set({ error: (error as Error).message, loading: false });
     }
   },
@@ -196,9 +195,9 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       set({ loading: true, error: null });
 
       const { data, error } = await supabase
-        .from("tasks")
+        .from('tasks')
         .update(updates)
-        .eq("id", id)
+        .eq('id', id)
         .select()
         .single();
 
@@ -209,7 +208,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         loading: false,
       }));
     } catch (error) {
-      console.error("Error editing task:", error);
+      console.error('Error editing task:', error);
       set({
         error: (error as Error).message,
         loading: false,
@@ -229,13 +228,13 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       }));
 
       // Then perform the actual deletion in the background
-      const { error } = await supabase.from("tasks").delete().eq("id", id);
+      const { error } = await supabase.from('tasks').delete().eq('id', id);
 
       if (error) throw error;
 
       // No need to update tasks again since we already did it optimistically
     } catch (error) {
-      console.error("Error deleting task:", error);
+      console.error('Error deleting task:', error);
 
       // If there's an error, revert the optimistic update by adding the task back
       const taskToRestore = get().tasks.find((t) => t.id === id);
@@ -247,8 +246,8 @@ export const useTaskStore = create<TaskState>((set, get) => ({
 
         // Show error notification
         useNotificationStore.getState().addNotification({
-          message: "Failed to delete task. Please try again.",
-          type: "error",
+          message: 'Failed to delete task. Please try again.',
+          type: 'error',
         });
       }
     }
@@ -262,9 +261,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       // Optimistically mark the task done before waiting for the DB round-trip.
       // Reverted below if the RPC call fails.
       set((state) => ({
-        tasks: state.tasks.map((t) =>
-          t.id === id ? { ...t, is_completed: true } : t
-        ),
+        tasks: state.tasks.map((t) => (t.id === id ? { ...t, is_completed: true } : t)),
       }));
 
       const { data: userData } = await supabase.auth.getUser();
@@ -277,7 +274,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       //   4. Awards a stat point to the active Digimon or saves it to profiles.saved_stats
       // Returns: { exp_points, reserve_exp, stat_points, stat_category, auto_allocated,
       //            saved_stats, daily_quota: { quota_completed } }
-      const { data, error } = await supabase.rpc("complete_task_all_triggers", {
+      const { data, error } = await supabase.rpc('complete_task_all_triggers', {
         p_task_id: id,
         p_user_id: userData.user.id,
         p_auto_allocate: autoAllocate,
@@ -288,19 +285,18 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       // Mirror the server's saved_stats back to localStorage so the SavedStats UI
       // can read it synchronously without another round-trip.
       if (data.saved_stats) {
-        localStorage.setItem("savedStats", JSON.stringify(data.saved_stats));
+        localStorage.setItem('savedStats', JSON.stringify(data.saved_stats));
       }
 
       useDigimonStore.getState().fetchUserDailyStatGains();
-      window.dispatchEvent(new Event("task-completed"));
+      window.dispatchEvent(new Event('task-completed'));
 
       // Build the notification message. Three cases based on what the RPC did with stat points:
       // 1. Task had no stat category (no stat point earned)
       // 2. Stat was auto-allocated directly to the active Digimon
       // 3. Stat was saved to profiles.saved_stats (auto-allocate was off, or Digimon hit its cap)
-      let notificationMessage = "";
-      const digimonName =
-        useDigimonStore.getState().userDigimon?.name || "Active Digimon";
+      let notificationMessage = '';
+      const digimonName = useDigimonStore.getState().userDigimon?.name || 'Active Digimon';
 
       if (!data.stat_category) {
         notificationMessage = `${digimonName} gained ${data.exp_points} exp!\nReserve Digimon gained ${data.reserve_exp} exp!`;
@@ -315,7 +311,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
 
       useNotificationStore.getState().addNotification({
         message: notificationMessage,
-        type: "success",
+        type: 'success',
       });
 
       await useDigimonStore.getState().checkLevelUp();
@@ -348,7 +344,8 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       if (prevWeeklyCount < 10 && newWeeklyCount >= 10) {
         useNotificationStore.getState().addNotification({
           type: 'success',
-          message: '🏆 Weekly Tournament unlocked! Head to Battle Hub to enter this week\'s tournament.',
+          message:
+            "🏆 Weekly Tournament unlocked! Head to Battle Hub to enter this week's tournament.",
           duration: 8000,
         });
       }
@@ -357,20 +354,18 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       // Non-blocking — a failure here shouldn't fail the task completion.
       checkTaskAchievementsAfterCompletion(userData.user.id);
     } catch (error) {
-      console.error("Error completing task:", error);
+      console.error('Error completing task:', error);
 
       // If there's an error, revert the optimistic update
       set((state) => ({
-        tasks: state.tasks.map((t) =>
-          t.id === id ? { ...t, is_completed: false } : t
-        ),
+        tasks: state.tasks.map((t) => (t.id === id ? { ...t, is_completed: false } : t)),
         error: (error as Error).message,
       }));
 
       // Show error notification
       useNotificationStore.getState().addNotification({
-        message: "Failed to complete task. Please try again.",
-        type: "error",
+        message: 'Failed to complete task. Please try again.',
+        type: 'error',
       });
     }
   },
@@ -406,9 +401,9 @@ export const useTaskStore = create<TaskState>((set, get) => ({
 
       if (newlyOverdueTasks.length > 0) {
         const { data: quotaData } = await supabase
-          .from("daily_quotas")
-          .select("*")
-          .eq("user_id", userData.user.id)
+          .from('daily_quotas')
+          .select('*')
+          .eq('user_id', userData.user.id)
           .single();
 
         if (quotaData) {
@@ -423,9 +418,9 @@ export const useTaskStore = create<TaskState>((set, get) => ({
           // Write to DB first so that if the page reloads mid-penalty loop,
           // the IDs are already recorded and won't be penalized again.
           await supabase
-            .from("daily_quotas")
+            .from('daily_quotas')
             .update({ penalized_tasks: allPenalized })
-            .eq("user_id", userData.user.id);
+            .eq('user_id', userData.user.id);
 
           set({ penalizedTasks: allPenalized });
         }
@@ -446,7 +441,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       // Update the last check timestamp
       set({ lastOverdueCheck: Date.now() });
     } catch (error) {
-      console.error("Error checking overdue tasks:", error);
+      console.error('Error checking overdue tasks:', error);
     }
   },
 
@@ -459,10 +454,10 @@ export const useTaskStore = create<TaskState>((set, get) => ({
 
       // Reset all daily tasks to uncompleted
       const { error } = await supabase
-        .from("tasks")
+        .from('tasks')
         .update({ is_completed: false })
-        .eq("user_id", userData.user.id)
-        .eq("is_daily", true);
+        .eq('user_id', userData.user.id)
+        .eq('is_daily', true);
 
       if (error) throw error;
 
@@ -482,15 +477,15 @@ export const useTaskStore = create<TaskState>((set, get) => ({
 
       // Get the user's daily quota
       const { data: quota, error } = await supabase
-        .from("daily_quotas")
-        .select("*")
-        .eq("user_id", userData.user.id)
-        .order("created_at", { ascending: false })
+        .from('daily_quotas')
+        .select('*')
+        .eq('user_id', userData.user.id)
+        .order('created_at', { ascending: false })
         .limit(1)
         .single();
 
-      if (error && error.code !== "PGRST116") {
-        console.error("Error fetching daily quota:", error);
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error fetching daily quota:', error);
         return;
       }
 
@@ -502,7 +497,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       } else {
         // Create a new quota record if none exists
         const { data: newQuota, error: createError } = await supabase
-          .from("daily_quotas")
+          .from('daily_quotas')
           .insert({
             user_id: userData.user.id,
             completed_today: 0,
@@ -513,7 +508,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
           .single();
 
         if (createError) {
-          console.error("Error creating daily quota:", createError);
+          console.error('Error creating daily quota:', createError);
           return;
         }
 
@@ -523,7 +518,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         });
       }
     } catch (error) {
-      console.error("Error in fetchDailyQuota:", error);
+      console.error('Error in fetchDailyQuota:', error);
     }
   },
 
@@ -538,29 +533,8 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         await get().completeDailyQuota();
       }
     } catch (error) {
-      console.error("Error in checkDailyQuota:", error);
+      console.error('Error in checkDailyQuota:', error);
     }
-  },
-
-  debugOverdueTasks: () => {
-    const { tasks } = get();
-    const now = new Date();
-
-    console.log("=== DEBUG: CHECKING OVERDUE TASKS ===");
-    console.log(`Current time: ${now.toLocaleString()}`);
-
-    tasks.forEach((task) => {
-      if (!task.is_daily && !task.is_completed && task.due_date) {
-        const dueDate = new Date(task.due_date);
-        console.log(`Task: "${task.description}"`);
-        console.log(`Due date: ${dueDate.toLocaleString()}`);
-        console.log(`Is overdue: ${dueDate < now}`);
-        console.log(
-          `Time difference (ms): ${now.getTime() - dueDate.getTime()}`
-        );
-        console.log("---");
-      }
-    });
   },
 
   forceCheckOverdueTasks: async () => {
@@ -577,13 +551,13 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     // daily_quotas rows are small and completely replaced on each server update,
     // so the full payload.new is always fresh and safe to use as the new state.
     const subscription = await supabase
-      .channel("daily_quota_changes")
+      .channel('daily_quota_changes')
       .on(
-        "postgres_changes",
+        'postgres_changes',
         {
-          event: "*",
-          schema: "public",
-          table: "daily_quotas",
+          event: '*',
+          schema: 'public',
+          table: 'daily_quotas',
           filter: `user_id=eq.${userData.user.id}`,
         },
         async (payload) => {
@@ -630,11 +604,11 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         const multiplierText =
           expMultiplier > 1
             ? ` (${BASE_XP_REWARD} × ${expMultiplier.toFixed(1)} streak bonus)`
-            : "";
+            : '';
 
         useNotificationStore.getState().addNotification({
           message: `🎉 Daily Quota Complete! All team members received ${actualXpReward} EXP${multiplierText}!`,
-          type: "success",
+          type: 'success',
         });
 
         // Check for streak titles
@@ -646,7 +620,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
 
       set({ loading: false });
     } catch (error) {
-      console.error("Error in completeDailyQuota:", error);
+      console.error('Error in completeDailyQuota:', error);
       set({ loading: false });
     }
   },
@@ -668,10 +642,10 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       set({ loading: true, error: null });
 
       const { data, error } = await supabase
-        .from("tasks")
+        .from('tasks')
         .update(updates)
-        .eq("id", id)
-        .select("*")
+        .eq('id', id)
+        .select('*')
         .single();
 
       if (error) throw error;
@@ -681,7 +655,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         loading: false,
       }));
     } catch (error) {
-      console.error("Error editing task:", error);
+      console.error('Error editing task:', error);
       set({
         error: (error as Error).message,
         loading: false,

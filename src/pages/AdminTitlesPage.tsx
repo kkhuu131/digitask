@@ -46,7 +46,12 @@ const AdminTitlesPage = () => {
     try {
       const { error } = await supabase.from('titles').upsert(
         TITLES.map(({ id, name, description, category, requirement_type, requirement_value }) => ({
-          id, name, description, category, requirement_type, requirement_value,
+          id,
+          name,
+          description,
+          category,
+          requirement_type,
+          requirement_value,
         })),
         { onConflict: 'id' }
       );
@@ -68,7 +73,9 @@ const AdminTitlesPage = () => {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Titles Manager</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Sync title definitions from constants to the database.</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+            Sync title definitions from constants to the database.
+          </p>
         </div>
         <button
           onClick={syncTitles}
@@ -90,26 +97,42 @@ const AdminTitlesPage = () => {
             <table className="min-w-full divide-y divide-gray-200 dark:divide-dark-100">
               <thead className="bg-gray-50 dark:bg-dark-400">
                 <tr>
-                  {['ID', 'Name', 'Description', 'Category', 'Requirement', 'Value'].map(h => (
-                    <th key={h} className="px-5 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  {['ID', 'Name', 'Description', 'Category', 'Requirement', 'Value'].map((h) => (
+                    <th
+                      key={h}
+                      className="px-5 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                    >
                       {h}
                     </th>
                   ))}
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-dark-100">
-                {titles.map(title => (
-                  <tr key={title.id} className="hover:bg-gray-50 dark:hover:bg-dark-400 transition-colors">
-                    <td className="px-5 py-3 text-sm text-gray-500 dark:text-gray-400 font-mono">{title.id}</td>
-                    <td className="px-5 py-3 text-sm font-semibold text-gray-900 dark:text-gray-100">{title.name}</td>
-                    <td className="px-5 py-3 text-sm text-gray-600 dark:text-gray-300 max-w-xs">{title.description}</td>
+                {titles.map((title) => (
+                  <tr
+                    key={title.id}
+                    className="hover:bg-gray-50 dark:hover:bg-dark-400 transition-colors"
+                  >
+                    <td className="px-5 py-3 text-sm text-gray-500 dark:text-gray-400 font-mono">
+                      {title.id}
+                    </td>
+                    <td className="px-5 py-3 text-sm font-semibold text-gray-900 dark:text-gray-100">
+                      {title.name}
+                    </td>
+                    <td className="px-5 py-3 text-sm text-gray-600 dark:text-gray-300 max-w-xs">
+                      {title.description}
+                    </td>
                     <td className="px-5 py-3">
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-700 dark:bg-accent-900/40 dark:text-accent-300">
                         {title.category}
                       </span>
                     </td>
-                    <td className="px-5 py-3 text-sm text-gray-600 dark:text-gray-300 font-mono">{title.requirement_type}</td>
-                    <td className="px-5 py-3 text-sm text-gray-600 dark:text-gray-300">{title.requirement_value}</td>
+                    <td className="px-5 py-3 text-sm text-gray-600 dark:text-gray-300 font-mono">
+                      {title.requirement_type}
+                    </td>
+                    <td className="px-5 py-3 text-sm text-gray-600 dark:text-gray-300">
+                      {title.requirement_value}
+                    </td>
                   </tr>
                 ))}
               </tbody>

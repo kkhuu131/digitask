@@ -58,11 +58,9 @@ const toCalcDigimon = (d: ArenaDigimon): BattleDigimon => ({
 /** Returns { x, y } centroid of all alive Digimon on the given team. */
 const getTeamCentroid = (
   digimon: ArenaDigimon[],
-  team: 'user' | 'opponent',
+  team: 'user' | 'opponent'
 ): { x: number; y: number } => {
-  const alive = digimon.filter(
-    d => d.isUserTeam === (team === 'user') && d.state !== 'dead',
-  );
+  const alive = digimon.filter((d) => d.isUserTeam === (team === 'user') && d.state !== 'dead');
   if (alive.length === 0) return { x: WORLD_W / 2, y: WORLD_H / 2 };
   return {
     x: alive.reduce((s, d) => s + d.x, 0) / alive.length,
@@ -71,13 +69,8 @@ const getTeamCentroid = (
 };
 
 /** Returns the nearest living enemy to a given Digimon, or null if none remain. */
-const findNearestEnemy = (
-  attacker: ArenaDigimon,
-  all: ArenaDigimon[],
-): ArenaDigimon | null => {
-  const enemies = all.filter(
-    d => d.isUserTeam !== attacker.isUserTeam && d.state !== 'dead',
-  );
+const findNearestEnemy = (attacker: ArenaDigimon, all: ArenaDigimon[]): ArenaDigimon | null => {
+  const enemies = all.filter((d) => d.isUserTeam !== attacker.isUserTeam && d.state !== 'dead');
   if (enemies.length === 0) return null;
 
   let nearest = enemies[0];
@@ -96,7 +89,7 @@ const findNearestEnemy = (
 const spawnPositions = (
   count: number,
   xMin: number,
-  xMax: number,
+  xMax: number
 ): Array<{ x: number; y: number }> => {
   const ySpacing = (WORLD_H * 0.5) / Math.max(count, 1);
   const yStart = WORLD_H * 0.25;
@@ -115,10 +108,10 @@ const spawnPositions = (
 const HEX_VERTS: [number, number][] = [
   [WORLD_W * 0.25, 0],
   [WORLD_W * 0.75, 0],
-  [WORLD_W,        WORLD_H * 0.5],
+  [WORLD_W, WORLD_H * 0.5],
   [WORLD_W * 0.75, WORLD_H],
   [WORLD_W * 0.25, WORLD_H],
-  [0,              WORLD_H * 0.5],
+  [0, WORLD_H * 0.5],
 ];
 
 /**
@@ -145,16 +138,22 @@ const clampToHex = (d: ArenaDigimon, margin = ARENA_MARGIN) => {
     if (sd < margin) {
       // Inward unit normal
       const nx = -ey / len;
-      const ny =  ex / len;
+      const ny = ex / len;
       const push = margin - sd;
       d.x += nx * push;
       d.y += ny * push;
       // Cancel steering velocity into wall
       const vn = d.vx * nx + d.vy * ny;
-      if (vn < 0) { d.vx -= vn * nx; d.vy -= vn * ny; }
+      if (vn < 0) {
+        d.vx -= vn * nx;
+        d.vy -= vn * ny;
+      }
       // Cancel knockback velocity into wall
       const kn = d.knockbackVx * nx + d.knockbackVy * ny;
-      if (kn < 0) { d.knockbackVx -= kn * nx; d.knockbackVy -= kn * ny; }
+      if (kn < 0) {
+        d.knockbackVx -= kn * nx;
+        d.knockbackVy -= kn * ny;
+      }
     }
   }
 };
@@ -174,7 +173,7 @@ export const initArenaDigimon = (
   userTeam: BattleDigimon[],
   opponentTeam: BattleDigimon[],
   userStrategies: Strategy[],
-  opponentStrategies: Strategy[] = opponentTeam.map(() => 'balanced'),
+  opponentStrategies: Strategy[] = opponentTeam.map(() => 'balanced')
 ): ArenaDigimon[] => {
   const userSpawns = spawnPositions(userTeam.length, 200, 320);
   const opponentSpawns = spawnPositions(opponentTeam.length, 980, 1100);
@@ -183,7 +182,7 @@ export const initArenaDigimon = (
     bd: BattleDigimon,
     spawn: { x: number; y: number },
     strategy: Strategy,
-    isUserTeam: boolean,
+    isUserTeam: boolean
   ): ArenaDigimon => {
     const config = STRATEGY_CONFIGS[strategy];
     // Stagger skill cooldown so all Digimon don't charge at the same moment
@@ -248,11 +247,9 @@ export const initArenaDigimon = (
   };
 
   return [
-    ...userTeam.map((bd, i) =>
-      make(bd, userSpawns[i], userStrategies[i] ?? 'balanced', true),
-    ),
+    ...userTeam.map((bd, i) => make(bd, userSpawns[i], userStrategies[i] ?? 'balanced', true)),
     ...opponentTeam.map((bd, i) =>
-      make(bd, opponentSpawns[i], opponentStrategies[i] ?? 'balanced', false),
+      make(bd, opponentSpawns[i], opponentStrategies[i] ?? 'balanced', false)
     ),
   ];
 };
@@ -270,7 +267,6 @@ export const runFrame = (digimon: ArenaDigimon[], deltaMs: number): ArenaEvent[]
 
   // ── Per-Digimon update ───────────────────────────────────────────────────────
   for (const d of digimon) {
-
     // ── Decrement all timers ──────────────────────────────────────────────────
     d.attackCooldownMs -= deltaMs;
     // SP drives skill charge rate: higher SP = faster charge. SP=0 → 1× rate, SP=300 → 2× rate
@@ -544,17 +540,12 @@ export const runFrame = (digimon: ArenaDigimon[], deltaMs: number): ArenaEvent[]
     let totalFy = 0;
 
     const allies = digimon.filter(
-      other => other.isUserTeam === d.isUserTeam && other.id !== d.id,
+      (other) => other.isUserTeam === d.isUserTeam && other.id !== d.id
     );
-    const allyPositions = allies.map(a => ({ x: a.x, y: a.y }));
+    const allyPositions = allies.map((a) => ({ x: a.x, y: a.y }));
 
     // Separation — always active
-    const sepForce = separation(
-      d.x, d.y,
-      allyPositions,
-      SEPARATION_RADIUS,
-      BASE_FORCE * 0.8,
-    );
+    const sepForce = separation(d.x, d.y, allyPositions, SEPARATION_RADIUS, BASE_FORCE * 0.8);
     totalFx += sepForce.fx;
     totalFy += sepForce.fy;
 
@@ -564,12 +555,16 @@ export const runFrame = (digimon: ArenaDigimon[], deltaMs: number): ArenaEvent[]
       totalFy += seekForce.fy;
 
       const { force: wanderForce, newWanderAngle } = wander(
-        d.x, d.y, d.vx, d.vy, d.wanderAngle, BASE_FORCE * config.wanderWeight,
+        d.x,
+        d.y,
+        d.vx,
+        d.vy,
+        d.wanderAngle,
+        BASE_FORCE * config.wanderWeight
       );
       d.wanderAngle = newWanderAngle;
       totalFx += wanderForce.fx;
       totalFy += wanderForce.fy;
-
     } else if (d.state === 'circling') {
       // Moderate seek + strong orbit + wander — closes to attack range while circling
       const seekForce = seek(d.x, d.y, target.x, target.y, BASE_FORCE * 0.35);
@@ -577,22 +572,36 @@ export const runFrame = (digimon: ArenaDigimon[], deltaMs: number): ArenaEvent[]
       totalFy += seekForce.fy;
 
       const orbitForce = orbit(
-        d.x, d.y, target.x, target.y, config.orbitRadius, BASE_FORCE * config.orbitWeight,
+        d.x,
+        d.y,
+        target.x,
+        target.y,
+        config.orbitRadius,
+        BASE_FORCE * config.orbitWeight
       );
       totalFx += orbitForce.fx;
       totalFy += orbitForce.fy;
 
       const { force: wanderForce, newWanderAngle } = wander(
-        d.x, d.y, d.vx, d.vy, d.wanderAngle, BASE_FORCE * config.wanderWeight,
+        d.x,
+        d.y,
+        d.vx,
+        d.vy,
+        d.wanderAngle,
+        BASE_FORCE * config.wanderWeight
       );
       d.wanderAngle = newWanderAngle;
       totalFx += wanderForce.fx;
       totalFy += wanderForce.fy;
-
     } else if (d.state === 'wandering') {
       // Recovery/idle phase — free movement, no seeking. Gentle flee if enemy is very close.
       const { force: wanderForce, newWanderAngle } = wander(
-        d.x, d.y, d.vx, d.vy, d.wanderAngle, BASE_FORCE * config.wanderWeight * 1.4,
+        d.x,
+        d.y,
+        d.vx,
+        d.vy,
+        d.wanderAngle,
+        BASE_FORCE * config.wanderWeight * 1.4
       );
       d.wanderAngle = newWanderAngle;
       totalFx += wanderForce.fx;
@@ -604,7 +613,6 @@ export const runFrame = (digimon: ArenaDigimon[], deltaMs: number): ArenaEvent[]
         totalFx += fleeForce.fx;
         totalFy += fleeForce.fy;
       }
-
     } else if (d.state === 'retreating') {
       // Flee from the team that last hit us; fall back to fleeing from the target
       const fleeFrom =
@@ -613,16 +621,20 @@ export const runFrame = (digimon: ArenaDigimon[], deltaMs: number): ArenaEvent[]
           : { x: target.x, y: target.y };
 
       // Flee strength linearly decays as the retreat timer runs down
-      const fleeDecay = d.retreatTimerMs > 0
-        ? Math.min(1, d.retreatTimerMs / config.fleeDuration)
-        : 0;
+      const fleeDecay =
+        d.retreatTimerMs > 0 ? Math.min(1, d.retreatTimerMs / config.fleeDuration) : 0;
 
       const fleeForce = flee(d.x, d.y, fleeFrom.x, fleeFrom.y, BASE_FORCE * fleeDecay);
       totalFx += fleeForce.fx;
       totalFy += fleeForce.fy;
 
       const { force: wanderForce, newWanderAngle } = wander(
-        d.x, d.y, d.vx, d.vy, d.wanderAngle, BASE_FORCE * config.wanderWeight * 0.6,
+        d.x,
+        d.y,
+        d.vx,
+        d.vy,
+        d.wanderAngle,
+        BASE_FORCE * config.wanderWeight * 0.6
       );
       d.wanderAngle = newWanderAngle;
       totalFx += wanderForce.fx;
@@ -663,8 +675,8 @@ export const runFrame = (digimon: ArenaDigimon[], deltaMs: number): ArenaEvent[]
   }
 
   // ── Battle-end check ────────────────────────────────────────────────────────
-  const userAlive = digimon.filter(d => d.isUserTeam && d.state !== 'dead').length;
-  const opponentAlive = digimon.filter(d => !d.isUserTeam && d.state !== 'dead').length;
+  const userAlive = digimon.filter((d) => d.isUserTeam && d.state !== 'dead').length;
+  const opponentAlive = digimon.filter((d) => !d.isUserTeam && d.state !== 'dead').length;
 
   if (userAlive === 0) {
     events.push({ type: 'battle_end', winner: 'opponent' });

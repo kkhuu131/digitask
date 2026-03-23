@@ -15,14 +15,14 @@ import {
   DragOverlay,
   DragStartEvent,
   DragEndEvent,
-  UniqueIdentifier
+  UniqueIdentifier,
 } from '@dnd-kit/core';
 import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   useSortable,
-  rectSortingStrategy
+  rectSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
@@ -34,30 +34,25 @@ interface DigimonItem {
 }
 
 // Sortable Digimon Card component
-const SortableDigimonCard = ({ 
-  id, 
-  digimon, 
-  isTeam 
-}: { 
-  id: string; 
-  digimon: UserDigimon | null; 
+const SortableDigimonCard = ({
+  id,
+  digimon,
+  isTeam,
+}: {
+  id: string;
+  digimon: UserDigimon | null;
   isTeam: boolean;
 }) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging
-  } = useSortable({ id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id,
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.4 : 1,
     zIndex: isDragging ? 1 : 0,
-    touchAction: 'none'
+    touchAction: 'none',
   };
 
   // If this is an empty slot
@@ -68,9 +63,10 @@ const SortableDigimonCard = ({
         style={style}
         className={`
           w-full aspect-square rounded-lg border-2 border-dashed flex items-center justify-center cursor-pointer
-          ${isTeam 
-            ? 'border-purple-300 dark:border-purple-700 bg-purple-50/40 dark:bg-purple-900/20 hover:bg-purple-100/50' 
-            : 'border-gray-300 dark:border-dark-500 bg-gray-50 dark:bg-dark-300 hover:bg-gray-100/70'
+          ${
+            isTeam
+              ? 'border-purple-300 dark:border-purple-700 bg-purple-50/40 dark:bg-purple-900/20 hover:bg-purple-100/50'
+              : 'border-gray-300 dark:border-dark-500 bg-gray-50 dark:bg-dark-300 hover:bg-gray-100/70'
           }
           transition-colors
         `}
@@ -79,12 +75,18 @@ const SortableDigimonCard = ({
       >
         <div className="flex items-center justify-center h-full">
           {/* Centered, subtle + symbol */}
-          <svg className={`w-6 h-6 ${
-            isTeam 
-              ? 'text-purple-400 dark:text-purple-500' 
-              : 'text-gray-300 dark:text-gray-500'
-          }`} fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
+          <svg
+            className={`w-6 h-6 ${
+              isTeam ? 'text-purple-400 dark:text-purple-500' : 'text-gray-300 dark:text-gray-500'
+            }`}
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fillRule="evenodd"
+              d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+              clipRule="evenodd"
+            />
           </svg>
         </div>
       </div>
@@ -103,9 +105,10 @@ const SortableDigimonCard = ({
       {...listeners}
       className={`
         relative w-full aspect-square rounded-lg overflow-hidden cursor-move select-none
-        ${isTeam 
-          ? 'bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-700' 
-          : 'bg-gray-100 dark:bg-dark-200 border border-gray-200 dark:border-dark-400'
+        ${
+          isTeam
+            ? 'bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-700'
+            : 'bg-gray-100 dark:bg-dark-200 border border-gray-200 dark:border-dark-400'
         }
         hover:bg-gray-200 dark:hover:bg-dark-300 transition-colors
         group
@@ -124,15 +127,17 @@ const SortableDigimonCard = ({
           </div>
         </div>
       )}
-      
+
       {/* Main sprite area */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="w-full aspect-square flex items-center justify-center">
           {/* Small screens */}
           <div className="block md:hidden">
             <DigimonSprite
-              digimonName={digimon.digimon?.name || ""}
-              fallbackSpriteUrl={digimon.digimon?.sprite_url || "/assets/digimon/agumon_professor.png"}
+              digimonName={digimon.digimon?.name || ''}
+              fallbackSpriteUrl={
+                digimon.digimon?.sprite_url || '/assets/digimon/agumon_professor.png'
+              }
               happiness={digimon.happiness}
               size="sm"
               showHappinessAnimations={true}
@@ -142,8 +147,10 @@ const SortableDigimonCard = ({
           {/* Medium and up */}
           <div className="hidden md:block">
             <DigimonSprite
-              digimonName={digimon.digimon?.name || ""}
-              fallbackSpriteUrl={digimon.digimon?.sprite_url || "/assets/digimon/agumon_professor.png"}
+              digimonName={digimon.digimon?.name || ''}
+              fallbackSpriteUrl={
+                digimon.digimon?.sprite_url || '/assets/digimon/agumon_professor.png'
+              }
               happiness={digimon.happiness}
               size="sm"
               showHappinessAnimations={true}
@@ -159,8 +166,8 @@ const SortableDigimonCard = ({
           {digimon.current_level}
         </span>
         <div className="flex-1 bg-gray-300 dark:bg-gray-600 rounded-full h-1.5 overflow-hidden">
-          <div 
-            className="bg-purple-500 h-full transition-all duration-300" 
+          <div
+            className="bg-purple-500 h-full transition-all duration-300"
             style={{ width: `${expPercentage}%` }}
           />
         </div>
@@ -169,7 +176,17 @@ const SortableDigimonCard = ({
   );
 };
 
-function StatRow({ label, value, bonus, factor = 1 }: { label: string; value: number | string; bonus: number; factor?: number }) {
+function StatRow({
+  label,
+  value,
+  bonus,
+  factor = 1,
+}: {
+  label: string;
+  value: number | string;
+  bonus: number;
+  factor?: number;
+}) {
   const bonusDisplay = bonus ? `+${bonus * factor}` : '';
   return (
     <div className="flex items-center justify-between bg-white/60 dark:bg-dark-200 rounded px-2 py-1">
@@ -183,25 +200,28 @@ function StatRow({ label, value, bonus, factor = 1 }: { label: string; value: nu
 }
 
 // Container for team or reserve
-const DigimonContainer = ({ 
-  items, 
+const DigimonContainer = ({
+  items,
   isTeam,
   gridClass,
   onHover,
-}: { 
-  items: DigimonItem[]; 
+}: {
+  items: DigimonItem[];
   isTeam: boolean;
   gridClass: string;
   onHover?: (d: UserDigimon | null) => void;
 }) => {
   return (
-    <div className={`
+    <div
+      className={`
       h-full w-full flex flex-col rounded-2xl p-4 sm:p-6 border-2
-      ${isTeam 
-        ? 'bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border-blue-200 dark:border-blue-800'
-        : 'bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800/50 dark:to-gray-900/50 border-gray-200 dark:border-gray-700'
+      ${
+        isTeam
+          ? 'bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border-blue-200 dark:border-blue-800'
+          : 'bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800/50 dark:to-gray-900/50 border-gray-200 dark:border-gray-700'
       }
-    `}>
+    `}
+    >
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
@@ -212,19 +232,15 @@ const DigimonContainer = ({
       </div>
 
       {/* Grid */}
-      <SortableContext items={items.map(item => item.id)} strategy={rectSortingStrategy}>
+      <SortableContext items={items.map((item) => item.id)} strategy={rectSortingStrategy}>
         <div className={`grid gap-3 sm:gap-4 ${gridClass}`}>
-          {items.map(item => (
+          {items.map((item) => (
             <div
               key={item.id}
               className=" w-[80px] sm:w-[120px] mx-auto"
               onMouseEnter={() => onHover?.(item.digimon)}
             >
-              <SortableDigimonCard
-                id={item.id}
-                digimon={item.digimon}
-                isTeam={isTeam}
-              />
+              <SortableDigimonCard id={item.id} digimon={item.digimon} isTeam={isTeam} />
             </div>
           ))}
         </div>
@@ -255,41 +271,41 @@ const DigimonTeamManager = () => {
 
   // Update items when allUserDigimon changes
   useEffect(() => {
-    const teamDigimon = allUserDigimon.filter(d => d.is_on_team);
-    const reserveDigimon = allUserDigimon.filter(d => !d.is_on_team);
-    
+    const teamDigimon = allUserDigimon.filter((d) => d.is_on_team);
+    const reserveDigimon = allUserDigimon.filter((d) => !d.is_on_team);
+
     // Create team items
-    const team = teamDigimon.map(digimon => ({
+    const team = teamDigimon.map((digimon) => ({
       id: `team-${digimon.id}`,
       isTeam: true,
-      digimon
+      digimon,
     }));
-    
+
     // Add empty slots to team if needed
     while (team.length < 3) {
       team.push({
         id: `team-empty-${team.length}`,
         isTeam: true,
-        digimon: null as any
+        digimon: null as any,
       });
     }
-    
+
     // Create reserve items (limit grid to 6 visible; still draggable among those)
-    const reserve = reserveDigimon.slice(0, 6).map(digimon => ({
+    const reserve = reserveDigimon.slice(0, 6).map((digimon) => ({
       id: `reserve-${digimon.id}`,
       isTeam: false,
-      digimon
+      digimon,
     }));
-    
+
     // Add empty slots to reserve up to 6 (3x2)
     while (reserve.length < 6) {
       reserve.push({
         id: `reserve-empty-${reserve.length}`,
         isTeam: false,
-        digimon: null as any
+        digimon: null as any,
       });
     }
-    
+
     setTeamItems(team);
     setReserveItems(reserve);
   }, [allUserDigimon]);
@@ -297,13 +313,13 @@ const DigimonTeamManager = () => {
   // Find the active item
   const getActiveItem = () => {
     if (!activeId) return null;
-    
-    const activeTeamItem = teamItems.find(item => item.id === activeId);
+
+    const activeTeamItem = teamItems.find((item) => item.id === activeId);
     if (activeTeamItem) return activeTeamItem;
-    
-    const activeReserveItem = reserveItems.find(item => item.id === activeId);
+
+    const activeReserveItem = reserveItems.find((item) => item.id === activeId);
     if (activeReserveItem) return activeReserveItem;
-    
+
     return null;
   };
 
@@ -315,52 +331,52 @@ const DigimonTeamManager = () => {
   // Handle drag end
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
-    
+
     if (!over) {
       setActiveId(null);
       return;
     }
-    
+
     // Extract container and item info
     const activeId = active.id as string;
     const overId = over.id as string;
-    
+
     const isActiveTeam = activeId.startsWith('team-');
     const isOverTeam = overId.startsWith('team-');
-    
+
     // If dropping on the same item, do nothing
     if (activeId === overId) {
       setActiveId(null);
       return;
     }
-    
+
     // Handle reordering within the same container
     if (isActiveTeam === isOverTeam) {
       const items = isActiveTeam ? teamItems : reserveItems;
-      const activeIndex = items.findIndex(item => item.id === activeId);
-      const overIndex = items.findIndex(item => item.id === overId);
-      
+      const activeIndex = items.findIndex((item) => item.id === activeId);
+      const overIndex = items.findIndex((item) => item.id === overId);
+
       if (activeIndex !== -1 && overIndex !== -1) {
         const newItems = arrayMove(items, activeIndex, overIndex);
-        
+
         if (isActiveTeam) {
           setTeamItems(newItems);
         } else {
           setReserveItems(newItems);
         }
       }
-    } 
+    }
     // Handle moving between containers
     else {
       // Get the active and over items
-      const activeItem = isActiveTeam 
-        ? teamItems.find(item => item.id === activeId)
-        : reserveItems.find(item => item.id === activeId);
-      
+      const activeItem = isActiveTeam
+        ? teamItems.find((item) => item.id === activeId)
+        : reserveItems.find((item) => item.id === activeId);
+
       const overItem = isOverTeam
-        ? teamItems.find(item => item.id === overId)
-        : reserveItems.find(item => item.id === overId);
-      
+        ? teamItems.find((item) => item.id === overId)
+        : reserveItems.find((item) => item.id === overId);
+
       // Only proceed if we're dragging a Digimon (not an empty slot)
       if (activeItem?.digimon) {
         // If dropping onto another Digimon, swap them
@@ -368,7 +384,7 @@ const DigimonTeamManager = () => {
           // Determine which is team and which is reserve
           const teamDigimon = isActiveTeam ? activeItem.digimon : overItem.digimon;
           const reserveDigimon = isActiveTeam ? overItem.digimon : activeItem.digimon;
-          
+
           // Use swapTeamMember if one is on team and one is in reserve
           if (teamDigimon.is_on_team && !reserveDigimon.is_on_team) {
             await swapTeamMember(teamDigimon.id, reserveDigimon.id);
@@ -378,7 +394,7 @@ const DigimonTeamManager = () => {
             // If both are on team or both are in reserve, toggle individually
             await setTeamMember(activeItem.digimon.id, !activeItem.digimon.is_on_team);
           }
-        } 
+        }
         // If dropping onto an empty slot, handle based on direction
         else {
           // If dragging from team to reserve, remove from team
@@ -396,13 +412,12 @@ const DigimonTeamManager = () => {
         }
       }
     }
-    
+
     setActiveId(null);
   };
 
   return (
     <div className="max-w-7xl mx-auto p-4">
-
       {/* DnD Context */}
       <DndContext
         sensors={sensors}
@@ -432,7 +447,9 @@ const DigimonTeamManager = () => {
           {/* Right: Hover details panel fills remaining space on lg */}
           <div className="hidden lg:block col-span-1 min-w-0 flex">
             <div className="h-full w-full flex flex-col rounded-2xl p-5 border-2 bg-white dark:bg-dark-300 border-gray-200 dark:border-gray-700">
-              <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 flex-shrink-0">Details</h3>
+              <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 flex-shrink-0">
+                Details
+              </h3>
               {hoveredDigimon ? (
                 <div className="flex flex-col flex-1 min-h-0">
                   {/* Sprite on its own row at the top */}
@@ -440,7 +457,10 @@ const DigimonTeamManager = () => {
                     <div className="w-24 h-24 flex items-center justify-center">
                       <DigimonSprite
                         digimonName={hoveredDigimon.digimon?.name || ''}
-                        fallbackSpriteUrl={hoveredDigimon.digimon?.sprite_url || '/assets/digimon/agumon_professor.png'}
+                        fallbackSpriteUrl={
+                          hoveredDigimon.digimon?.sprite_url ||
+                          '/assets/digimon/agumon_professor.png'
+                        }
                         happiness={hoveredDigimon.happiness}
                         size="md"
                         showHappinessAnimations={true}
@@ -469,36 +489,77 @@ const DigimonTeamManager = () => {
                       </div>
                     )}
                     <div className="mt-2 flex flex-wrap items-center justify-center gap-3 text-sm text-gray-700 dark:text-gray-200">
-                      <span className="px-2 py-0.5 bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded">Lv {hoveredDigimon.current_level}</span>
-                      <span className="px-2 py-0.5 bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded">ABI {hoveredDigimon.abi ?? 0}</span>
-                      <span className="px-2 py-0.5 bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 rounded">❤ {hoveredDigimon.happiness}%</span>
+                      <span className="px-2 py-0.5 bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded">
+                        Lv {hoveredDigimon.current_level}
+                      </span>
+                      <span className="px-2 py-0.5 bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded">
+                        ABI {hoveredDigimon.abi ?? 0}
+                      </span>
+                      <span className="px-2 py-0.5 bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 rounded">
+                        ❤ {hoveredDigimon.happiness}%
+                      </span>
                     </div>
                   </div>
                   <div className="mt-3 grid grid-cols-2 gap-2 text-sm flex-1 min-h-0">
-                    <StatRow label="HP" value={calculateFinalStats(hoveredDigimon).hp} bonus={hoveredDigimon.hp_bonus || 0} factor={10} />
-                    <StatRow label="SP" value={calculateFinalStats(hoveredDigimon).sp} bonus={hoveredDigimon.sp_bonus || 0} />
-                    <StatRow label="ATK" value={calculateFinalStats(hoveredDigimon).atk} bonus={hoveredDigimon.atk_bonus || 0} />
-                    <StatRow label="DEF" value={calculateFinalStats(hoveredDigimon).def} bonus={hoveredDigimon.def_bonus || 0} />
-                    <StatRow label="INT" value={calculateFinalStats(hoveredDigimon).int} bonus={hoveredDigimon.int_bonus || 0} />
-                    <StatRow label="SPD" value={calculateFinalStats(hoveredDigimon).spd} bonus={hoveredDigimon.spd_bonus || 0} />
-                    <StatRow label="Stage" value={hoveredDigimon.digimon?.stage || 'None'} bonus={0}/>
-                    <StatRow label="Personality" value={hoveredDigimon.personality || 'None'} bonus={0} />
+                    <StatRow
+                      label="HP"
+                      value={calculateFinalStats(hoveredDigimon).hp}
+                      bonus={hoveredDigimon.hp_bonus || 0}
+                      factor={10}
+                    />
+                    <StatRow
+                      label="SP"
+                      value={calculateFinalStats(hoveredDigimon).sp}
+                      bonus={hoveredDigimon.sp_bonus || 0}
+                    />
+                    <StatRow
+                      label="ATK"
+                      value={calculateFinalStats(hoveredDigimon).atk}
+                      bonus={hoveredDigimon.atk_bonus || 0}
+                    />
+                    <StatRow
+                      label="DEF"
+                      value={calculateFinalStats(hoveredDigimon).def}
+                      bonus={hoveredDigimon.def_bonus || 0}
+                    />
+                    <StatRow
+                      label="INT"
+                      value={calculateFinalStats(hoveredDigimon).int}
+                      bonus={hoveredDigimon.int_bonus || 0}
+                    />
+                    <StatRow
+                      label="SPD"
+                      value={calculateFinalStats(hoveredDigimon).spd}
+                      bonus={hoveredDigimon.spd_bonus || 0}
+                    />
+                    <StatRow
+                      label="Stage"
+                      value={hoveredDigimon.digimon?.stage || 'None'}
+                      bonus={0}
+                    />
+                    <StatRow
+                      label="Personality"
+                      value={hoveredDigimon.personality || 'None'}
+                      bonus={0}
+                    />
                   </div>
                 </div>
               ) : (
-                <div className="text-sm text-gray-500 dark:text-gray-400">Hover a Digimon to preview stats</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400">
+                  Hover a Digimon to preview stats
+                </div>
               )}
             </div>
           </div>
         </div>
-        
+
         <DragOverlay>
           {activeId ? (
             <div className="opacity-90 w-32 h-32 transform rotate-6 scale-105">
               <SortableDigimonCard
                 id={activeId.toString()}
                 digimon={getActiveItem()?.digimon || null}
-                isTeam={(getActiveItem()?.isTeam || false)}
+                isTeam={getActiveItem()?.isTeam || false}
               />
             </div>
           ) : null}
@@ -508,4 +569,4 @@ const DigimonTeamManager = () => {
   );
 };
 
-export default DigimonTeamManager; 
+export default DigimonTeamManager;

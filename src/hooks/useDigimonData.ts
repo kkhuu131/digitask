@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
-import { Digimon } from "../store/petStore";
-import { DIGIMON_LOOKUP_TABLE } from "../constants/digimonLookup";
-import { getAllEvolutions } from "@/utils/evolutionsHelper";
+import { useState, useEffect } from 'react';
+import { Digimon } from '../store/petStore';
+import { DIGIMON_LOOKUP_TABLE } from '../constants/digimonLookup';
+import { getAllEvolutions } from '@/utils/evolutionsHelper';
 
 export interface EvolutionPath {
   id: number;
@@ -16,9 +16,7 @@ let cachedEvolutionPaths: EvolutionPath[] | null = null;
 
 export const useDigimonData = () => {
   const [digimon, setDigimon] = useState<Digimon[]>(cachedDigimon || []);
-  const [evolutionPaths, setEvolutionPaths] = useState<EvolutionPath[]>(
-    cachedEvolutionPaths || []
-  );
+  const [evolutionPaths, setEvolutionPaths] = useState<EvolutionPath[]>(cachedEvolutionPaths || []);
   const [loading, setLoading] = useState(!cachedDigimon);
 
   useEffect(() => {

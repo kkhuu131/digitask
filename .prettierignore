@@ -1,0 +1,8 @@
+dist
+node_modules
+
+# Auto-generated lookup tables — do not reformat
+src/constants/digimonLookup.ts
+src/constants/evolutionLookup.ts
+src/constants/digimonFormsLookup.ts
+src/constants/animatedDigimonList.ts

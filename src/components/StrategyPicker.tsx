@@ -46,12 +46,10 @@ interface StrategyPickerProps {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 const StrategyPicker: React.FC<StrategyPickerProps> = ({ team, onConfirm, onBack }) => {
-  const [strategies, setStrategies] = useState<Strategy[]>(
-    team.map(() => 'balanced'),
-  );
+  const [strategies, setStrategies] = useState<Strategy[]>(team.map(() => 'balanced'));
 
   const setStrategy = (index: number, strategy: Strategy) => {
-    setStrategies(prev => prev.map((s, i) => (i === index ? strategy : s)));
+    setStrategies((prev) => prev.map((s, i) => (i === index ? strategy : s)));
   };
 
   return (
@@ -65,7 +63,9 @@ const StrategyPicker: React.FC<StrategyPickerProps> = ({ team, onConfirm, onBack
           ← Back
         </button>
         <div>
-          <h2 className="text-xl font-heading font-semibold dark:text-gray-100">Choose Strategies</h2>
+          <h2 className="text-xl font-heading font-semibold dark:text-gray-100">
+            Choose Strategies
+          </h2>
           <p className="text-sm font-body text-gray-500 dark:text-gray-400">
             Set a battle style for each of your Digimon.
           </p>
@@ -76,7 +76,7 @@ const StrategyPicker: React.FC<StrategyPickerProps> = ({ team, onConfirm, onBack
       <div className="flex flex-col gap-5 mb-6">
         {team.map((d, i) => {
           const selected = strategies[i];
-          const selectedMeta = STRATEGIES.find(s => s.value === selected)!;
+          const selectedMeta = STRATEGIES.find((s) => s.value === selected)!;
 
           return (
             <div
@@ -114,7 +114,7 @@ const StrategyPicker: React.FC<StrategyPickerProps> = ({ team, onConfirm, onBack
 
               {/* Strategy buttons */}
               <div className="flex gap-2">
-                {STRATEGIES.map(s => {
+                {STRATEGIES.map((s) => {
                   const isActive = selected === s.value;
                   return (
                     <button

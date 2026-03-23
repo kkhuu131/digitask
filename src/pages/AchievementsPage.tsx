@@ -1,70 +1,70 @@
-import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useTitleStore, UserTitle } from "../store/titleStore";
-import { Title, TITLES } from "../constants/titles";
-import { useAuthStore } from "../store/authStore";
-import DigiEggSelectionModal from "../components/DigiEggSelectionModal";
-import { Lock, Medal, CheckCircle2, Clock, Bookmark, X } from "lucide-react";
+import { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useTitleStore, UserTitle } from '../store/titleStore';
+import { Title, TITLES } from '../constants/titles';
+import { useAuthStore } from '../store/authStore';
+import DigiEggSelectionModal from '../components/DigiEggSelectionModal';
+import { Lock, Medal, CheckCircle2, Clock, Bookmark, X } from 'lucide-react';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-type FilterCategory = "all" | Title["category"];
+type FilterCategory = 'all' | Title['category'];
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 const TIER_STYLES: Record<string, { border: string; glow: string; badge: string; text: string }> = {
   bronze: {
-    border: "border-amber-600/60",
-    glow: "shadow-amber-500/20",
-    badge: "bg-amber-700/20 text-amber-600 dark:text-amber-400 border border-amber-600/30",
-    text: "text-amber-600 dark:text-amber-400",
+    border: 'border-amber-600/60',
+    glow: 'shadow-amber-500/20',
+    badge: 'bg-amber-700/20 text-amber-600 dark:text-amber-400 border border-amber-600/30',
+    text: 'text-amber-600 dark:text-amber-400',
   },
   silver: {
-    border: "border-slate-400/60",
-    glow: "shadow-slate-400/20",
-    badge: "bg-slate-400/10 text-slate-500 dark:text-slate-300 border border-slate-400/30",
-    text: "text-slate-500 dark:text-slate-300",
+    border: 'border-slate-400/60',
+    glow: 'shadow-slate-400/20',
+    badge: 'bg-slate-400/10 text-slate-500 dark:text-slate-300 border border-slate-400/30',
+    text: 'text-slate-500 dark:text-slate-300',
   },
   gold: {
-    border: "border-yellow-400/60",
-    glow: "shadow-yellow-400/30",
-    badge: "bg-yellow-400/10 text-yellow-600 dark:text-yellow-300 border border-yellow-400/30",
-    text: "text-yellow-600 dark:text-yellow-300",
+    border: 'border-yellow-400/60',
+    glow: 'shadow-yellow-400/30',
+    badge: 'bg-yellow-400/10 text-yellow-600 dark:text-yellow-300 border border-yellow-400/30',
+    text: 'text-yellow-600 dark:text-yellow-300',
   },
   platinum: {
-    border: "border-purple-400/60",
-    glow: "shadow-purple-400/30",
-    badge: "bg-purple-400/10 text-purple-600 dark:text-purple-300 border border-purple-400/30",
-    text: "text-purple-600 dark:text-purple-300",
+    border: 'border-purple-400/60',
+    glow: 'shadow-purple-400/30',
+    badge: 'bg-purple-400/10 text-purple-600 dark:text-purple-300 border border-purple-400/30',
+    text: 'text-purple-600 dark:text-purple-300',
   },
 };
 
 export { TIER_STYLES };
 
 const CATEGORY_LABELS: Record<FilterCategory, string> = {
-  all: "All",
-  tasks: "Tasks",
-  streak: "Streaks",
-  battle: "Battles",
-  campaign: "Campaign",
-  collection: "Collection",
-  evolution: "Evolution",
+  all: 'All',
+  tasks: 'Tasks',
+  streak: 'Streaks',
+  battle: 'Battles',
+  campaign: 'Campaign',
+  collection: 'Collection',
+  evolution: 'Evolution',
 };
 
 function formatRequirement(title: Title): string {
   const v = title.requirement_value;
   switch (title.requirement_type) {
-    case "tasks_completed":
-      return `Complete ${v} task${Number(v) > 1 ? "s" : ""}`;
-    case "longest_streak":
+    case 'tasks_completed':
+      return `Complete ${v} task${Number(v) > 1 ? 's' : ''}`;
+    case 'longest_streak':
       return `Reach a ${v}-day streak`;
-    case "battle_wins":
-      return `Win ${v} arena battle${Number(v) > 1 ? "s" : ""}`;
-    case "campaign_stage":
+    case 'battle_wins':
+      return `Win ${v} arena battle${Number(v) > 1 ? 's' : ''}`;
+    case 'campaign_stage':
       return `Clear Campaign Stage ${v}`;
-    case "digimon_count":
+    case 'digimon_count':
       return `Discover ${v} Digimon`;
-    case "digimon_stage":
+    case 'digimon_stage':
       return `Evolve a Digimon to ${v} stage`;
     default:
       return String(v);
@@ -73,9 +73,9 @@ function formatRequirement(title: Title): string {
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
   });
 }
 
@@ -88,7 +88,12 @@ interface AchievementCardProps {
   onToggleDisplay?: (userTitleId: number, isCurrentlyDisplayed: boolean) => void;
 }
 
-const AchievementCard: React.FC<AchievementCardProps> = ({ title, userTitle, onClaim, onToggleDisplay }) => {
+const AchievementCard: React.FC<AchievementCardProps> = ({
+  title,
+  userTitle,
+  onClaim,
+  onToggleDisplay,
+}) => {
   const earned = !!userTitle;
   const claimed = earned && userTitle!.claimed_at !== null;
   const unclaimed = earned && userTitle!.claimed_at === null;
@@ -104,19 +109,23 @@ const AchievementCard: React.FC<AchievementCardProps> = ({ title, userTitle, onC
         unclaimed
           ? `${styles.border} shadow-lg ${styles.glow} bg-white dark:bg-dark-300`
           : claimed
-          ? "border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-300"
-          : "border-gray-200 dark:border-dark-100 bg-gray-50 dark:bg-dark-400 opacity-70"
+            ? 'border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-300'
+            : 'border-gray-200 dark:border-dark-100 bg-gray-50 dark:bg-dark-400 opacity-70'
       }`}
     >
       {/* Unclaimed glow pulse */}
       {unclaimed && (
-        <div className={`absolute inset-0 rounded-xl ${styles.border} border-2 animate-pulse pointer-events-none`} />
+        <div
+          className={`absolute inset-0 rounded-xl ${styles.border} border-2 animate-pulse pointer-events-none`}
+        />
       )}
 
       <div className="p-4 flex flex-col gap-2 flex-1">
         {/* Top row: tier badge + actions */}
         <div className="flex items-center justify-between">
-          <span className={`text-[10px] font-heading font-bold uppercase tracking-widest px-2 py-0.5 rounded-full ${styles.badge}`}>
+          <span
+            className={`text-[10px] font-heading font-bold uppercase tracking-widest px-2 py-0.5 rounded-full ${styles.badge}`}
+          >
             {title.tier}
           </span>
           <div className="flex items-center gap-1.5">
@@ -124,14 +133,14 @@ const AchievementCard: React.FC<AchievementCardProps> = ({ title, userTitle, onC
             {claimed && onToggleDisplay && (
               <button
                 onClick={() => onToggleDisplay(userTitle!.id, isPinned)}
-                title={isPinned ? "Unpin from profile" : "Pin to profile"}
+                title={isPinned ? 'Unpin from profile' : 'Pin to profile'}
                 className={`transition-colors ${
                   isPinned
-                    ? "text-purple-500 hover:text-purple-400"
-                    : "text-gray-300 dark:text-gray-600 hover:text-purple-400"
+                    ? 'text-purple-500 hover:text-purple-400'
+                    : 'text-gray-300 dark:text-gray-600 hover:text-purple-400'
                 }`}
               >
-                <Bookmark className={`h-4 w-4 ${isPinned ? "fill-current" : ""}`} />
+                <Bookmark className={`h-4 w-4 ${isPinned ? 'fill-current' : ''}`} />
               </button>
             )}
             {claimed && <CheckCircle2 className="h-4 w-4 text-green-500 flex-shrink-0" />}
@@ -208,10 +217,14 @@ const AchievementsPage: React.FC = () => {
     unclaimedCount,
   } = useTitleStore();
 
-  const [activeFilter, setActiveFilter] = useState<FilterCategory>("all");
+  const [activeFilter, setActiveFilter] = useState<FilterCategory>('all');
   const [claimingId, setClaimingId] = useState<number | null>(null);
   const [togglingId, setTogglingId] = useState<number | null>(null);
-  const [eggModal, setEggModal] = useState<{ userTitleId: number; pool: number[]; seed: string } | null>(null);
+  const [eggModal, setEggModal] = useState<{
+    userTitleId: number;
+    pool: number[];
+    seed: string;
+  } | null>(null);
   const [initialCheckDone, setInitialCheckDone] = useState(false);
 
   useEffect(() => {
@@ -235,7 +248,7 @@ const AchievementsPage: React.FC = () => {
     .slice(0, 3);
 
   // Filter + sort achievements
-  const filtered = TITLES.filter((t) => activeFilter === "all" || t.category === activeFilter);
+  const filtered = TITLES.filter((t) => activeFilter === 'all' || t.category === activeFilter);
   const sorted = [...filtered].sort((a, b) => {
     const utA = earnedMap.get(a.id);
     const utB = earnedMap.get(b.id);
@@ -251,7 +264,7 @@ const AchievementsPage: React.FC = () => {
     if (!title) return;
 
     if (title.rewards?.digiEggPool && title.rewards.digiEggPool.length > 0) {
-      const seed = `${user?.id ?? ""}:${userTitleId}`;
+      const seed = `${user?.id ?? ''}:${userTitleId}`;
       setEggModal({ userTitleId, pool: title.rewards.digiEggPool, seed });
     } else {
       setClaimingId(userTitleId);
@@ -296,7 +309,9 @@ const AchievementsPage: React.FC = () => {
         <p className="text-sm font-body text-gray-500 dark:text-gray-400">
           Complete challenges to unlock titles, bits, and new Digimon.
           {!initialCheckDone && (
-            <span className="ml-2 text-purple-500 animate-pulse">Checking for new achievements…</span>
+            <span className="ml-2 text-purple-500 animate-pulse">
+              Checking for new achievements…
+            </span>
           )}
         </p>
       </div>
@@ -305,8 +320,12 @@ const AchievementsPage: React.FC = () => {
       <div className="mb-6 bg-white dark:bg-dark-300 rounded-xl border border-gray-100 dark:border-dark-100 p-4">
         <div className="flex items-center gap-2 mb-3">
           <Bookmark className="h-4 w-4 text-purple-500 fill-current" />
-          <span className="text-sm font-heading font-semibold text-gray-900 dark:text-gray-100">Pinned to Profile</span>
-          <span className="text-xs font-body text-gray-400 dark:text-gray-500">· up to 3, shown publicly</span>
+          <span className="text-sm font-heading font-semibold text-gray-900 dark:text-gray-100">
+            Pinned to Profile
+          </span>
+          <span className="text-xs font-body text-gray-400 dark:text-gray-500">
+            · up to 3, shown publicly
+          </span>
         </div>
         <div className="grid grid-cols-3 gap-2">
           {[0, 1, 2].map((i) => {
@@ -321,8 +340,14 @@ const AchievementsPage: React.FC = () => {
                   className={`flex items-center justify-between gap-2 px-3 py-2 rounded-lg border-2 ${s.border} bg-white dark:bg-dark-400`}
                 >
                   <div className="min-w-0 flex-1">
-                    <div className={`text-xs font-heading font-bold truncate ${s.text}`}>{title.name}</div>
-                    <div className={`text-[10px] font-body uppercase tracking-wide opacity-70 ${s.text}`}>{title.tier}</div>
+                    <div className={`text-xs font-heading font-bold truncate ${s.text}`}>
+                      {title.name}
+                    </div>
+                    <div
+                      className={`text-[10px] font-body uppercase tracking-wide opacity-70 ${s.text}`}
+                    >
+                      {title.tier}
+                    </div>
                   </div>
                   <button
                     onClick={() => handleToggleDisplay(ut.id, true)}
@@ -341,14 +366,17 @@ const AchievementsPage: React.FC = () => {
                 key={i}
                 className="flex items-center justify-center px-3 py-2 rounded-lg border-2 border-dashed border-gray-200 dark:border-dark-100"
               >
-                <span className="text-xs font-body text-gray-300 dark:text-gray-600">Empty slot</span>
+                <span className="text-xs font-body text-gray-300 dark:text-gray-600">
+                  Empty slot
+                </span>
               </div>
             );
           })}
         </div>
         <p className="text-[11px] font-body text-gray-400 dark:text-gray-500 mt-2.5">
-          Click the <Bookmark className="inline h-3 w-3 fill-current text-purple-400" /> icon on any claimed title below to pin it here.
-          {pinnedTitles.length >= 3 && " Adding a 4th will replace the oldest."}
+          Click the <Bookmark className="inline h-3 w-3 fill-current text-purple-400" /> icon on any
+          claimed title below to pin it here.
+          {pinnedTitles.length >= 3 && ' Adding a 4th will replace the oldest.'}
         </p>
       </div>
 
@@ -362,8 +390,8 @@ const AchievementsPage: React.FC = () => {
               onClick={() => setActiveFilter(key)}
               className={`px-3 py-1.5 rounded-lg text-xs font-heading font-semibold transition-all duration-150 ${
                 isActive
-                  ? "bg-purple-600 text-white shadow-sm"
-                  : "bg-gray-100 dark:bg-dark-200 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-dark-100"
+                  ? 'bg-purple-600 text-white shadow-sm'
+                  : 'bg-gray-100 dark:bg-dark-200 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-dark-100'
               }`}
             >
               {label}
@@ -374,16 +402,21 @@ const AchievementsPage: React.FC = () => {
 
       {/* Stats bar */}
       <div className="flex gap-3 mb-6 flex-wrap">
-        {(["bronze", "silver", "gold", "platinum"] as const).map((tier) => {
+        {(['bronze', 'silver', 'gold', 'platinum'] as const).map((tier) => {
           const total = TITLES.filter((t) => t.tier === tier).length;
           const earned = userTitles.filter(
             (ut) => TITLES.find((t) => t.id === ut.title_id)?.tier === tier
           ).length;
           const s = TIER_STYLES[tier];
           return (
-            <div key={tier} className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border ${s.border} bg-white dark:bg-dark-300`}>
+            <div
+              key={tier}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border ${s.border} bg-white dark:bg-dark-300`}
+            >
               <span className={`text-xs font-heading font-bold uppercase ${s.text}`}>{tier}</span>
-              <span className="text-xs font-body text-gray-600 dark:text-gray-400">{earned}/{total}</span>
+              <span className="text-xs font-body text-gray-600 dark:text-gray-400">
+                {earned}/{total}
+              </span>
             </div>
           );
         })}

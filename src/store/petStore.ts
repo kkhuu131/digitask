@@ -1,17 +1,13 @@
-import { create } from "zustand";
-import { supabase } from "../lib/supabase";
-import { useNotificationStore } from "./notificationStore";
-import { useTaskStore } from "./taskStore";
-import { StatCategory } from "../utils/categoryDetection";
-import calculateBaseStat from "../utils/digimonStatCalculation";
-import { DIGIMON_LOOKUP_TABLE } from "../constants/digimonLookup";
-import {
-  getDevolutions,
-  getEvolutionPath,
-  getEvolutions,
-} from "@/utils/evolutionsHelper";
-import { useTitleStore } from "../store/titleStore";
-import { useAuthStore } from "../store/authStore";
+import { create } from 'zustand';
+import { supabase } from '../lib/supabase';
+import { useNotificationStore } from './notificationStore';
+import { useTaskStore } from './taskStore';
+import { StatCategory } from '../utils/categoryDetection';
+import calculateBaseStat from '../utils/digimonStatCalculation';
+import { DIGIMON_LOOKUP_TABLE } from '../constants/digimonLookup';
+import { getDevolutions, getEvolutionPath, getEvolutions } from '@/utils/evolutionsHelper';
+import { useTitleStore } from '../store/titleStore';
+import { useAuthStore } from '../store/authStore';
 
 export const NON_ACTIVE_DIGIMON_EXP_MULTIPLIER = 0.5;
 
@@ -62,7 +58,7 @@ export function isUnderStatCap(userDigimon: UserDigimon | null) {
   return totalStat < cap;
 }
 
-export type StatType = "HP" | "SP" | "ATK" | "DEF" | "INT" | "SPD" | "ABI";
+export type StatType = 'HP' | 'SP' | 'ATK' | 'DEF' | 'INT' | 'SPD' | 'ABI';
 
 export interface UserDigimon {
   id: string;
@@ -155,14 +151,8 @@ export interface PetState {
   feedDigimon: (taskPoints: number) => Promise<void>;
   checkEvolution: () => Promise<boolean>;
   checkDevolution: () => Promise<boolean>;
-  evolveDigimon: (
-    toDigimonId: number,
-    specificDigimonId?: string
-  ) => Promise<void>;
-  devolveDigimon: (
-    fromDigimonId: number,
-    specificDigimonId?: string
-  ) => Promise<void>;
+  evolveDigimon: (toDigimonId: number, specificDigimonId?: string) => Promise<void>;
+  devolveDigimon: (fromDigimonId: number, specificDigimonId?: string) => Promise<void>;
   getStarterDigimon: () => Promise<Digimon[]>;
   fetchDiscoveredDigimon: () => Promise<void>;
   addDiscoveredDigimon: (digimonId: number) => Promise<void>;
@@ -172,19 +162,12 @@ export interface PetState {
   setActiveDigimon: (digimonId: string) => Promise<void>;
   applyPenalty: (happinessPenalty: number) => Promise<void>;
   testPenalty: () => Promise<void>;
-  debugHealth: () => void;
   releaseDigimon: (digimonId: string) => Promise<boolean>;
   setTeamMember: (digimonId: string, isOnTeam: boolean) => Promise<void>;
-  swapTeamMember: (
-    teamDigimonId: string,
-    reserveDigimonId: string
-  ) => Promise<void>;
+  swapTeamMember: (teamDigimonId: string, reserveDigimonId: string) => Promise<void>;
   feedAllDigimon: (taskPoints: number) => Promise<void>;
   feedBattleRewards: (baseXp: number) => Promise<void>; // Team: 100%, Reserve: 50%, Storage: 0%
-  increaseStat: (
-    statCategory: StatCategory,
-    amount: number
-  ) => Promise<boolean>;
+  increaseStat: (statCategory: StatCategory, amount: number) => Promise<boolean>;
   checkStatCap: () => Promise<{
     canGain: boolean;
     remaining: number;
@@ -242,9 +225,9 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       if (!userData.user) return;
 
       const { data, error } = await supabase
-        .from("user_discovered_digimon")
-        .select("digimon_id")
-        .eq("user_id", userData.user.id);
+        .from('user_discovered_digimon')
+        .select('digimon_id')
+        .eq('user_id', userData.user.id);
 
       if (error) throw error;
 
@@ -252,7 +235,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       const discoveredIds = data.map((item) => item.digimon_id);
       set({ discoveredDigimon: discoveredIds });
     } catch (error) {
-      console.error("Error fetching discovered Digimon:", error);
+      console.error('Error fetching discovered Digimon:', error);
     }
   },
 
@@ -266,7 +249,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       if (discoveredDigimon.includes(digimonId)) return;
 
       // Add to discovered list
-      const { error } = await supabase.from("user_discovered_digimon").insert({
+      const { error } = await supabase.from('user_discovered_digimon').insert({
         user_id: userData.user.id,
         digimon_id: digimonId,
       });
@@ -275,11 +258,9 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
       // Update local state
       set({ discoveredDigimon: [...discoveredDigimon, digimonId] });
-      await useTitleStore
-        .getState()
-        .checkCollectionTitles(discoveredDigimon.length);
+      await useTitleStore.getState().checkCollectionTitles(discoveredDigimon.length);
     } catch (error) {
-      console.error("Error adding discovered Digimon:", error);
+      console.error('Error adding discovered Digimon:', error);
     }
   },
 
@@ -295,12 +276,12 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
       // First check if the user has any Digimon at all
       const { data: anyDigimon, error: checkError } = await supabase
-        .from("user_digimon")
-        .select("count")
-        .eq("user_id", userData.user.id);
+        .from('user_digimon')
+        .select('count')
+        .eq('user_id', userData.user.id);
 
       if (checkError) {
-        console.error("Error checking for any Digimon:", checkError);
+        console.error('Error checking for any Digimon:', checkError);
         throw checkError;
       }
 
@@ -312,10 +293,10 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
       // Now try to get the active Digimon
       const { data: userDigimonRawData, error } = await supabase
-        .from("user_digimon")
-        .select("*")
-        .eq("user_id", userData.user.id)
-        .eq("is_active", true)
+        .from('user_digimon')
+        .select('*')
+        .eq('user_id', userData.user.id)
+        .eq('is_active', true)
         .single();
 
       const userDigimon = {
@@ -327,36 +308,32 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         // PGRST116 = "no rows returned" from Supabase PostgREST.
         // This happens when the user has Digimon but none has is_active=true
         // (e.g. after a release). Auto-activate the most recently created one.
-        if (error.code === "PGRST116") {
-
-          const { data: anyAvailableDigimonRawData, error: availableError } =
-            await supabase
-              .from("user_digimon")
-              .select("*")
-              .eq("user_id", userData.user.id)
-              .order("created_at", { ascending: false })
-              .limit(1)
-              .single();
+        if (error.code === 'PGRST116') {
+          const { data: anyAvailableDigimonRawData, error: availableError } = await supabase
+            .from('user_digimon')
+            .select('*')
+            .eq('user_id', userData.user.id)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .single();
 
           if (availableError) {
-            console.error("Error fetching any Digimon:", availableError);
+            console.error('Error fetching any Digimon:', availableError);
             set({ userDigimon: null, digimonData: null, loading: false });
             return;
           }
 
           const anyAvailableDigimon = {
             ...anyAvailableDigimonRawData,
-            digimon:
-              DIGIMON_LOOKUP_TABLE[anyAvailableDigimonRawData.digimon_id],
+            digimon: DIGIMON_LOOKUP_TABLE[anyAvailableDigimonRawData.digimon_id],
           };
 
           // Found a Digimon, make it active
           if (anyAvailableDigimon) {
-
             await supabase
-              .from("user_digimon")
+              .from('user_digimon')
               .update({ is_active: true })
-              .eq("id", anyAvailableDigimon.id);
+              .eq('id', anyAvailableDigimon.id);
 
             set({
               userDigimon: {
@@ -371,7 +348,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
           }
         }
 
-        console.error("Error fetching user Digimon:", error);
+        console.error('Error fetching user Digimon:', error);
         set({ error: error.message, loading: false });
         return;
       }
@@ -412,7 +389,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         loading: false,
       });
     } catch (error) {
-      console.error("Error in fetchUserDigimon:", error);
+      console.error('Error in fetchUserDigimon:', error);
       set({ error: (error as Error).message, loading: false });
     }
   },
@@ -427,14 +404,14 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
       // Fetch active party Digimon (not in storage)
       const { data, error } = await supabase
-        .from("user_digimon")
-        .select("*, digimon(*)")
-        .eq("user_id", user.id)
-        .eq("is_in_storage", false)
-        .order("current_level", { ascending: false });
+        .from('user_digimon')
+        .select('*, digimon(*)')
+        .eq('user_id', user.id)
+        .eq('is_in_storage', false)
+        .order('current_level', { ascending: false });
 
       if (error) {
-        console.error("Error fetching user Digimon:", error);
+        console.error('Error fetching user Digimon:', error);
         set({ error: error.message });
         return;
       }
@@ -445,8 +422,8 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         loading: false,
       });
     } catch (error) {
-      console.error("Error in fetchAllUserDigimon:", error);
-      set({ loading: false, error: "Failed to fetch Digimon" });
+      console.error('Error in fetchAllUserDigimon:', error);
+      set({ loading: false, error: 'Failed to fetch Digimon' });
     }
   },
 
@@ -463,10 +440,10 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
       // Update the selected Digimon to be active
       const { error: updateError } = await supabase
-        .from("user_digimon")
+        .from('user_digimon')
         .update({ is_active: true })
-        .eq("id", digimonId)
-        .eq("user_id", userData.user.id);
+        .eq('id', digimonId)
+        .eq('user_id', userData.user.id);
 
       if (updateError) {
         throw updateError;
@@ -478,7 +455,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
       set({ loading: false });
     } catch (error) {
-      console.error("Error setting active Digimon:", error);
+      console.error('Error setting active Digimon:', error);
       set({ error: (error as Error).message, loading: false });
     }
   },
@@ -490,12 +467,12 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       // Get the current user
       const { data: userData } = await supabase.auth.getUser();
       if (!userData.user) {
-        throw new Error("User not authenticated");
+        throw new Error('User not authenticated');
       }
 
       // Create the user's Digimon
       const { data, error } = await supabase
-        .from("user_digimon")
+        .from('user_digimon')
         .insert([
           {
             user_id: userData.user.id,
@@ -510,7 +487,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       if (error) throw error;
 
       // Also fetch the user profile to update the auth store
-      const { useAuthStore } = await import("../store/authStore");
+      const { useAuthStore } = await import('../store/authStore');
       await useAuthStore.getState().fetchUserProfile();
 
       set({
@@ -533,13 +510,13 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       // First verify we have a valid session before making the request
       const { data: sessionData } = await supabase.auth.getSession();
       if (!sessionData.session) {
-        throw new Error("No active session found");
+        throw new Error('No active session found');
       }
 
       const { data, error } = await supabase
-        .from("user_digimon")
+        .from('user_digimon')
         .update(updates)
-        .eq("id", updates.id)
+        .eq('id', updates.id)
         .select();
 
       if (error) throw error;
@@ -566,10 +543,10 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
       return data;
     } catch (error) {
-      console.error("Error updating Digimon stats:", error);
+      console.error('Error updating Digimon stats:', error);
       useNotificationStore.getState().addNotification({
         message: `Failed to update Digimon: ${(error as Error).message}`,
-        type: "error",
+        type: 'error',
       });
       throw error;
     }
@@ -604,16 +581,16 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
       // Update the Digimon in the database
       const { error } = await supabase
-        .from("user_digimon")
+        .from('user_digimon')
         .update({
           happiness: newHappiness,
           experience_points: newXP,
           last_fed_tasks_at: new Date().toISOString(),
         })
-        .eq("id", userDigimon.id); // Make sure we're using the ID to identify the record
+        .eq('id', userDigimon.id); // Make sure we're using the ID to identify the record
 
       if (error) {
-        console.error("Error feeding Digimon:", error);
+        console.error('Error feeding Digimon:', error);
         throw error;
       }
 
@@ -628,7 +605,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         loading: false,
       });
     } catch (error) {
-      console.error("Error in feedDigimon:", error);
+      console.error('Error in feedDigimon:', error);
       set({ error: (error as Error).message, loading: false });
     }
   },
@@ -659,7 +636,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
       return availableEvolutions.length > 0;
     } catch (error) {
-      console.error("Error checking de-evolution:", error);
+      console.error('Error checking de-evolution:', error);
       return false;
     }
   },
@@ -687,8 +664,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       // Check if any evolution paths are available and meet requirements
       const availableEvolutions = enrichedEvolutionPaths.filter((path) => {
         // Check level requirement
-        const meetsLevelRequirement =
-          userDigimon.current_level >= path.level_required;
+        const meetsLevelRequirement = userDigimon.current_level >= path.level_required;
 
         // Check stat requirements if they exist
         let meetsStatRequirements = true;
@@ -741,40 +717,22 @@ export const useDigimonStore = create<PetState>((set, get) => ({
           // Check each stat requirement.
           // HP is special: each hp_bonus point is worth 10 HP in actual display value,
           // matching the rendering logic in digimonStatCalculation. All other bonus fields are 1:1.
-          if (
-            statReqs.hp &&
-            baseHP + 10 * (userDigimon.hp_bonus || 0) < statReqs.hp
-          ) {
+          if (statReqs.hp && baseHP + 10 * (userDigimon.hp_bonus || 0) < statReqs.hp) {
             meetsStatRequirements = false;
           }
-          if (
-            statReqs.sp &&
-            baseSP + (userDigimon.sp_bonus || 0) < statReqs.sp
-          ) {
+          if (statReqs.sp && baseSP + (userDigimon.sp_bonus || 0) < statReqs.sp) {
             meetsStatRequirements = false;
           }
-          if (
-            statReqs.atk &&
-            baseATK + (userDigimon.atk_bonus || 0) < statReqs.atk
-          ) {
+          if (statReqs.atk && baseATK + (userDigimon.atk_bonus || 0) < statReqs.atk) {
             meetsStatRequirements = false;
           }
-          if (
-            statReqs.def &&
-            baseDEF + (userDigimon.def_bonus || 0) < statReqs.def
-          ) {
+          if (statReqs.def && baseDEF + (userDigimon.def_bonus || 0) < statReqs.def) {
             meetsStatRequirements = false;
           }
-          if (
-            statReqs.int &&
-            baseINT + (userDigimon.int_bonus || 0) < statReqs.int
-          ) {
+          if (statReqs.int && baseINT + (userDigimon.int_bonus || 0) < statReqs.int) {
             meetsStatRequirements = false;
           }
-          if (
-            statReqs.spd &&
-            baseSPD + (userDigimon.spd_bonus || 0) < statReqs.spd
-          ) {
+          if (statReqs.spd && baseSPD + (userDigimon.spd_bonus || 0) < statReqs.spd) {
             meetsStatRequirements = false;
           }
 
@@ -790,7 +748,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
       return availableEvolutions.length > 0;
     } catch (error) {
-      console.error("Error checking evolution:", error);
+      console.error('Error checking evolution:', error);
       return false;
     }
   },
@@ -809,9 +767,9 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       let digimonToEvolve;
       if (specificDigimonId) {
         const { data, error } = await supabase
-          .from("user_digimon")
-          .select("*")
-          .eq("id", specificDigimonId)
+          .from('user_digimon')
+          .select('*')
+          .eq('id', specificDigimonId)
           .single();
 
         if (error) throw error;
@@ -824,17 +782,14 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       }
 
       if (!digimonToEvolve) {
-        throw new Error("No Digimon found to evolve");
+        throw new Error('No Digimon found to evolve');
       }
 
       // Get the evolution path
-      const evolutionPath = getEvolutionPath(
-        digimonToEvolve.digimon_id,
-        toDigimonId
-      );
+      const evolutionPath = getEvolutionPath(digimonToEvolve.digimon_id, toDigimonId);
 
       if (!evolutionPath) {
-        throw new Error("No evolution path found for Digimon");
+        throw new Error('No evolution path found for Digimon');
       }
 
       // Enrich with digimon data from lookup table
@@ -844,9 +799,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       };
 
       // Check level requirement
-      if (
-        digimonToEvolve.current_level < enrichedEvolutionPath.level_required
-      ) {
+      if (digimonToEvolve.current_level < enrichedEvolutionPath.level_required) {
         throw new Error(
           `Your Digimon needs to be at least level ${enrichedEvolutionPath.level_required} to evolve.`
         );
@@ -854,7 +807,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
       // Check for item requirement
       if (enrichedEvolutionPath.item_requirement) {
-        const { useInventoryStore } = await import("./inventoryStore");
+        const { useInventoryStore } = await import('./inventoryStore');
 
         // Check if user has the required item using our safer method
         const hasItem = await useInventoryStore
@@ -868,9 +821,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         }
 
         // Use the item by removing it from inventory
-        await useInventoryStore
-          .getState()
-          .useItem(enrichedEvolutionPath.item_requirement);
+        await useInventoryStore.getState().useItem(enrichedEvolutionPath.item_requirement);
       }
 
       // Check stat requirements if they exist
@@ -922,55 +873,23 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         );
 
         // Check each stat requirement
-        if (
-          statReqs.hp &&
-          baseHP + 10 * (digimonToEvolve.hp_bonus || 0) < statReqs.hp
-        ) {
-          statErrors.push(
-            `HP: ${baseHP + 10 * (digimonToEvolve.hp_bonus || 0)}/${
-              statReqs.hp
-            }`
-          );
+        if (statReqs.hp && baseHP + 10 * (digimonToEvolve.hp_bonus || 0) < statReqs.hp) {
+          statErrors.push(`HP: ${baseHP + 10 * (digimonToEvolve.hp_bonus || 0)}/${statReqs.hp}`);
         }
-        if (
-          statReqs.sp &&
-          baseSP + (digimonToEvolve.sp_bonus || 0) < statReqs.sp
-        ) {
-          statErrors.push(
-            `SP: ${baseSP + (digimonToEvolve.sp_bonus || 0)}/${statReqs.sp}`
-          );
+        if (statReqs.sp && baseSP + (digimonToEvolve.sp_bonus || 0) < statReqs.sp) {
+          statErrors.push(`SP: ${baseSP + (digimonToEvolve.sp_bonus || 0)}/${statReqs.sp}`);
         }
-        if (
-          statReqs.atk &&
-          baseATK + (digimonToEvolve.atk_bonus || 0) < statReqs.atk
-        ) {
-          statErrors.push(
-            `ATK: ${baseATK + (digimonToEvolve.atk_bonus || 0)}/${statReqs.atk}`
-          );
+        if (statReqs.atk && baseATK + (digimonToEvolve.atk_bonus || 0) < statReqs.atk) {
+          statErrors.push(`ATK: ${baseATK + (digimonToEvolve.atk_bonus || 0)}/${statReqs.atk}`);
         }
-        if (
-          statReqs.def &&
-          baseDEF + (digimonToEvolve.def_bonus || 0) < statReqs.def
-        ) {
-          statErrors.push(
-            `DEF: ${baseDEF + (digimonToEvolve.def_bonus || 0)}/${statReqs.def}`
-          );
+        if (statReqs.def && baseDEF + (digimonToEvolve.def_bonus || 0) < statReqs.def) {
+          statErrors.push(`DEF: ${baseDEF + (digimonToEvolve.def_bonus || 0)}/${statReqs.def}`);
         }
-        if (
-          statReqs.int &&
-          baseINT + (digimonToEvolve.int_bonus || 0) < statReqs.int
-        ) {
-          statErrors.push(
-            `INT: ${baseINT + (digimonToEvolve.int_bonus || 0)}/${statReqs.int}`
-          );
+        if (statReqs.int && baseINT + (digimonToEvolve.int_bonus || 0) < statReqs.int) {
+          statErrors.push(`INT: ${baseINT + (digimonToEvolve.int_bonus || 0)}/${statReqs.int}`);
         }
-        if (
-          statReqs.spd &&
-          baseSPD + (digimonToEvolve.spd_bonus || 0) < statReqs.spd
-        ) {
-          statErrors.push(
-            `SPD: ${baseSPD + (digimonToEvolve.spd_bonus || 0)}/${statReqs.spd}`
-          );
+        if (statReqs.spd && baseSPD + (digimonToEvolve.spd_bonus || 0) < statReqs.spd) {
+          statErrors.push(`SPD: ${baseSPD + (digimonToEvolve.spd_bonus || 0)}/${statReqs.spd}`);
         }
 
         if (statReqs.abi && (digimonToEvolve.abi || 0) < statReqs.abi) {
@@ -979,9 +898,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
         if (statErrors.length > 0) {
           throw new Error(
-            `Your Digimon doesn't meet the stat requirements: ${statErrors.join(
-              ", "
-            )}`
+            `Your Digimon doesn't meet the stat requirements: ${statErrors.join(', ')}`
           );
         }
       }
@@ -992,14 +909,14 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       const boostPoints = expToBoostPoints(digimonToEvolve.current_level, true);
 
       const { error } = await supabase
-        .from("user_digimon")
+        .from('user_digimon')
         .update({
           digimon_id: toDigimonId,
           current_level: 1,
           experience_points: 0,
           abi: digimonToEvolve.abi + boostPoints,
         })
-        .eq("id", digimonToEvolve.id);
+        .eq('id', digimonToEvolve.id);
 
       if (error) throw error;
 
@@ -1023,7 +940,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
       set({ loading: false });
     } catch (error) {
-      console.error("Error evolving Digimon:", error);
+      console.error('Error evolving Digimon:', error);
       set({ error: (error as Error).message, loading: false });
       throw error;
     }
@@ -1043,9 +960,9 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       let digimonToDevolve;
       if (specificDigimonId) {
         const { data, error } = await supabase
-          .from("user_digimon")
-          .select("*")
-          .eq("id", specificDigimonId)
+          .from('user_digimon')
+          .select('*')
+          .eq('id', specificDigimonId)
           .single();
 
         if (error) throw error;
@@ -1058,17 +975,14 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       }
 
       if (!digimonToDevolve) {
-        throw new Error("No Digimon found to devolve");
+        throw new Error('No Digimon found to devolve');
       }
 
       // Get the evolution path
-      const devolutionPath = getEvolutionPath(
-        fromDigimonId,
-        digimonToDevolve.digimon_id
-      );
+      const devolutionPath = getEvolutionPath(fromDigimonId, digimonToDevolve.digimon_id);
 
       if (!devolutionPath) {
-        throw new Error("No devolution path found for Digimon");
+        throw new Error('No devolution path found for Digimon');
       }
 
       // Check if we've discovered the Digimon we're devolving to
@@ -1080,20 +994,17 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
       // Devolution grants more ABI per level than evolution (÷5 vs ÷10).
       // This makes the devolve→re-evolve loop the primary ABI grind mechanic.
-      const boostPoints = expToBoostPoints(
-        digimonToDevolve.current_level,
-        false
-      );
+      const boostPoints = expToBoostPoints(digimonToDevolve.current_level, false);
 
       const { error } = await supabase
-        .from("user_digimon")
+        .from('user_digimon')
         .update({
           digimon_id: fromDigimonId,
           current_level: 1,
           experience_points: 0,
           abi: digimonToDevolve.abi + boostPoints,
         })
-        .eq("id", digimonToDevolve.id);
+        .eq('id', digimonToDevolve.id);
 
       if (error) throw error;
 
@@ -1108,7 +1019,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
       set({ loading: false });
     } catch (error) {
-      console.error("Error evolving Digimon:", error);
+      console.error('Error evolving Digimon:', error);
       set({ error: (error as Error).message, loading: false });
       throw error;
     }
@@ -1120,7 +1031,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
       // Get Baby stage Digimon as starters
       const starterDigimon = Object.values(DIGIMON_LOOKUP_TABLE).filter(
-        (digimon) => digimon.stage === "Baby"
+        (digimon) => digimon.stage === 'Baby'
       );
 
       set({ loading: false });
@@ -1148,30 +1059,26 @@ export const useDigimonStore = create<PetState>((set, get) => ({
     }
 
     const subscription = supabase
-      .channel("digimon_changes")
+      .channel('digimon_changes')
       .on(
-        "postgres_changes",
+        'postgres_changes',
         {
-          event: "*",
-          schema: "public",
-          table: "user_digimon",
+          event: '*',
+          schema: 'public',
+          table: 'user_digimon',
           filter: `user_id=eq.${userData.user.id}`,
         },
         async (payload) => {
-          if (
-            payload.eventType === "DELETE" &&
-            get().userDigimon?.id === payload.old.id
-          ) {
+          if (payload.eventType === 'DELETE' && get().userDigimon?.id === payload.old.id) {
             set({ userDigimon: null, digimonData: null, evolutionOptions: [] });
 
             useNotificationStore.getState().addNotification({
-              message:
-                "Your Digimon has died due to neglect. You'll need to create a new one.",
-              type: "error",
+              message: "Your Digimon has died due to neglect. You'll need to create a new one.",
+              type: 'error',
               persistent: true,
             });
 
-            window.dispatchEvent(new CustomEvent("digimon-died"));
+            window.dispatchEvent(new CustomEvent('digimon-died'));
 
             return;
           }
@@ -1189,7 +1096,6 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
   checkLevelUp: async () => {
     try {
-
       const { userDigimon } = get();
       if (!userDigimon) return;
 
@@ -1207,15 +1113,15 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
         // Update Digimon stats
         const { error } = await supabase
-          .from("user_digimon")
+          .from('user_digimon')
           .update({
             current_level: newLevel,
             experience_points: remainingXP,
           })
-          .eq("id", userDigimon.id);
+          .eq('id', userDigimon.id);
 
         if (error) {
-          console.error("Error updating level:", error);
+          console.error('Error updating level:', error);
           throw error;
         }
 
@@ -1239,16 +1145,16 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         return false;
       }
     } catch (error) {
-      console.error("Error checking level up:", error);
+      console.error('Error checking level up:', error);
       return false;
     }
   },
 
   getDigimonDisplayName: () => {
     const { userDigimon, digimonData } = get();
-    if (!userDigimon || !digimonData) return "Unknownmon";
+    if (!userDigimon || !digimonData) return 'Unknownmon';
 
-    if (userDigimon.name != "") return userDigimon.name;
+    if (userDigimon.name != '') return userDigimon.name;
 
     // Otherwise, use the species name
     return digimonData.name;
@@ -1260,23 +1166,20 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       if (!userDigimon) return;
 
       // Calculate new happiness value
-      const newHappiness = Math.max(
-        0,
-        userDigimon.happiness - happinessPenalty
-      );
+      const newHappiness = Math.max(0, userDigimon.happiness - happinessPenalty);
 
       // Update the database
       const { error } = await supabase
-        .from("user_digimon")
+        .from('user_digimon')
         .update({
           happiness: newHappiness,
           last_updated_at: new Date().toISOString(),
         })
-        .eq("id", userDigimon.id)
-        .eq("is_active", true); // Only update if this is the active Digimon
+        .eq('id', userDigimon.id)
+        .eq('is_active', true); // Only update if this is the active Digimon
 
       if (error) {
-        console.error("Error updating Digimon stats:", error);
+        console.error('Error updating Digimon stats:', error);
         return;
       }
 
@@ -1290,35 +1193,13 @@ export const useDigimonStore = create<PetState>((set, get) => ({
           : null,
       }));
     } catch (error) {
-      console.error("Error applying penalty:", error);
+      console.error('Error applying penalty:', error);
     }
   },
 
   testPenalty: async () => {
     await get().applyPenalty(10);
     await get().fetchUserDigimon();
-  },
-
-  debugHealth: () => {
-    const { userDigimon } = get();
-    if (!userDigimon) {
-      console.log("No Digimon found to debug");
-      return;
-    }
-
-    console.log("=== DIGIMON HEALTH DEBUG ===");
-    console.log(`Digimon ID: ${userDigimon.id}`);
-    console.log(`Happiness: ${userDigimon.happiness}`);
-    console.log(`Is happiness exactly 0? ${userDigimon.happiness === 0}`);
-    console.log(`Happiness type: ${typeof userDigimon.happiness}`);
-
-    // Check for potential floating point issues
-    if (userDigimon.happiness < 1 && userDigimon.happiness > 0) {
-      console.log(
-        "WARNING: Happiness is between 0 and 1, possible floating point issue"
-      );
-      console.log(`Happiness exact value: ${userDigimon.happiness}`);
-    }
   },
 
   releaseDigimon: async (digimonId: string) => {
@@ -1330,18 +1211,14 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       // Don't allow releasing the active Digimon
       if (userDigimon && digimonId === userDigimon.id) {
         set({
-          error:
-            "You cannot release your active Digimon. Please switch to another Digimon first.",
+          error: 'You cannot release your active Digimon. Please switch to another Digimon first.',
           loading: false,
         });
         return false;
       }
 
       // Delete the Digimon from the database
-      const { error } = await supabase
-        .from("user_digimon")
-        .delete()
-        .eq("id", digimonId);
+      const { error } = await supabase.from('user_digimon').delete().eq('id', digimonId);
 
       if (error) throw error;
 
@@ -1350,14 +1227,14 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
       // Show success notification
       useNotificationStore.getState().addNotification({
-        message: "Digimon released successfully.",
-        type: "success",
+        message: 'Digimon released successfully.',
+        type: 'success',
       });
 
       set({ loading: false });
       return true;
     } catch (error) {
-      console.error("Error releasing Digimon:", error);
+      console.error('Error releasing Digimon:', error);
       set({
         error: (error as Error).message,
         loading: false,
@@ -1379,17 +1256,17 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
       // Count current team members
       const { data: teamCount, error: countError } = await supabase
-        .from("user_digimon")
-        .select("id")
-        .eq("user_id", userData.user.id)
-        .eq("is_on_team", true);
+        .from('user_digimon')
+        .select('id')
+        .eq('user_id', userData.user.id)
+        .eq('is_on_team', true);
 
       if (countError) throw countError;
 
       // If trying to add to team but already at max, show error
       if (isOnTeam && teamCount && teamCount.length >= 3) {
         set({
-          error: "You can only have 3 Digimon on your team. Remove one first.",
+          error: 'You can only have 3 Digimon on your team. Remove one first.',
           loading: false,
         });
         return;
@@ -1397,10 +1274,10 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
       // Update the Digimon's team status
       const { error: updateError } = await supabase
-        .from("user_digimon")
+        .from('user_digimon')
         .update({ is_on_team: isOnTeam })
-        .eq("id", digimonId)
-        .eq("user_id", userData.user.id);
+        .eq('id', digimonId)
+        .eq('user_id', userData.user.id);
 
       if (updateError) throw updateError;
 
@@ -1408,7 +1285,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       await get().fetchAllUserDigimon();
       set({ loading: false });
     } catch (error) {
-      console.error("Error setting team member:", error);
+      console.error('Error setting team member:', error);
       set({ error: (error as Error).message, loading: false });
     }
   },
@@ -1427,7 +1304,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       // swap_team_members is a DB RPC that toggles is_on_team for both Digimon atomically.
       // Doing this client-side with two sequential UPDATEs would risk a state where both
       // are on the team simultaneously if the second write fails.
-      const { error } = await supabase.rpc("swap_team_members", {
+      const { error } = await supabase.rpc('swap_team_members', {
         team_digimon_id: teamDigimonId,
         reserve_digimon_id: reserveDigimonId,
         user_id_param: userData.user.id,
@@ -1439,7 +1316,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       await get().fetchAllUserDigimon();
       set({ loading: false });
     } catch (error) {
-      console.error("Error swapping team members:", error);
+      console.error('Error swapping team members:', error);
       set({ error: (error as Error).message, loading: false });
     }
   },
@@ -1468,12 +1345,12 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
         // Update the Digimon in the database
         const { error } = await supabase
-          .from("user_digimon")
+          .from('user_digimon')
           .update({
             experience_points: newXP,
           })
-          .eq("id", digimon.id)
-          .eq("is_in_storage", false);
+          .eq('id', digimon.id)
+          .eq('is_in_storage', false);
 
         if (error) {
           console.error(`Error feeding Digimon ${digimon.id}:`, error);
@@ -1499,9 +1376,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       // If the active Digimon was updated, update that state too
       const { userDigimon } = get();
       if (userDigimon) {
-        const updatedActiveDigimon = updatedDigimon.find(
-          (d) => d.id === userDigimon.id
-        );
+        const updatedActiveDigimon = updatedDigimon.find((d) => d.id === userDigimon.id);
         if (updatedActiveDigimon) {
           set({
             userDigimon: updatedActiveDigimon,
@@ -1512,7 +1387,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       // Check for level ups after feeding
       await get().checkLevelUp();
     } catch (error) {
-      console.error("Error in feedAllDigimon:", error);
+      console.error('Error in feedAllDigimon:', error);
       set({ error: (error as Error).message, loading: false });
     }
   },
@@ -1548,12 +1423,12 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
         // Update the Digimon in the database
         const { error } = await supabase
-          .from("user_digimon")
+          .from('user_digimon')
           .update({
             experience_points: newXP,
           })
-          .eq("id", digimon.id)
-          .eq("is_in_storage", false);
+          .eq('id', digimon.id)
+          .eq('is_in_storage', false);
 
         if (error) {
           console.error(`Error feeding Digimon ${digimon.id}:`, error);
@@ -1579,9 +1454,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       // If the active Digimon was updated, update that state too
       const { userDigimon } = get();
       if (userDigimon) {
-        const updatedActiveDigimon = updatedDigimon.find(
-          (d) => d.id === userDigimon.id
-        );
+        const updatedActiveDigimon = updatedDigimon.find((d) => d.id === userDigimon.id);
         if (updatedActiveDigimon) {
           set({
             userDigimon: updatedActiveDigimon,
@@ -1592,7 +1465,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       // Check for level ups after feeding
       await get().checkLevelUp();
     } catch (error) {
-      console.error("Error in feedBattleRewards:", error);
+      console.error('Error in feedBattleRewards:', error);
       set({ error: (error as Error).message, loading: false });
     }
   },
@@ -1611,24 +1484,22 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       const bonusField = `${statCategory.toLowerCase()}_bonus`;
 
       // Get the current bonus value
-      const currentBonus =
-        (activeDigimon[bonusField as keyof typeof activeDigimon] as number) ||
-        0;
+      const currentBonus = (activeDigimon[bonusField as keyof typeof activeDigimon] as number) || 0;
 
       // Calculate the new bonus value
       const newBonus = currentBonus + amount;
 
       // Fire before the DB write so the UI reacts immediately (optimistic update).
       // Components listening for "stat-increased" can re-render without waiting for the round-trip.
-      window.dispatchEvent(new Event("stat-increased"));
+      window.dispatchEvent(new Event('stat-increased'));
 
       // Update the Digimon in the database
       const { error } = await supabase
-        .from("user_digimon")
+        .from('user_digimon')
         .update({
           [bonusField]: newBonus,
         })
-        .eq("id", activeDigimon.id);
+        .eq('id', activeDigimon.id);
 
       if (error) throw error;
 
@@ -1676,9 +1547,9 @@ export const useDigimonStore = create<PetState>((set, get) => ({
     try {
       // First update the database
       const { error } = await supabase
-        .from("user_digimon")
+        .from('user_digimon')
         .update({ name: newName })
-        .eq("id", digimonId);
+        .eq('id', digimonId);
 
       if (error) throw error;
 
@@ -1704,7 +1575,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
       return { success: true };
     } catch (error) {
-      console.error("Error updating digimon name:", error);
+      console.error('Error updating digimon name:', error);
       set({ error: (error as Error).message });
       return { success: false, error: (error as Error).message };
     }
@@ -1715,10 +1586,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       allUserDigimon: state.allUserDigimon.map((d) =>
         d.id === updatedDigimon.id ? updatedDigimon : d
       ),
-      userDigimon:
-        state.userDigimon?.id === updatedDigimon.id
-          ? updatedDigimon
-          : state.userDigimon,
+      userDigimon: state.userDigimon?.id === updatedDigimon.id ? updatedDigimon : state.userDigimon,
     }));
   },
 
@@ -1754,7 +1622,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
       return options;
     } catch (error) {
-      console.error("Error fetching evolution options:", error);
+      console.error('Error fetching evolution options:', error);
       return [];
     }
   },
@@ -1789,7 +1657,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
       return options;
     } catch (error) {
-      console.error("Error fetching devolution options:", error);
+      console.error('Error fetching devolution options:', error);
       return [];
     }
   },
@@ -1797,10 +1665,10 @@ export const useDigimonStore = create<PetState>((set, get) => ({
   feedMultipleDigimon: async (baseExp: number) => {
     try {
       const { userDigimon } = get();
-      if (!userDigimon) throw new Error("No active Digimon found");
+      if (!userDigimon) throw new Error('No active Digimon found');
 
       // Call the database function to update all Digimon exp
-      const { error } = await supabase.rpc("update_digimon_exp", {
+      const { error } = await supabase.rpc('update_digimon_exp', {
         p_active_digimon_id: userDigimon.id,
         p_base_exp: baseExp,
         p_non_active_multiplier: NON_ACTIVE_DIGIMON_EXP_MULTIPLIER,
@@ -1815,34 +1683,26 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       // Return exp gained by reserve Digimon for notification
       return Math.floor(baseExp * NON_ACTIVE_DIGIMON_EXP_MULTIPLIER);
     } catch (error) {
-      console.error("Error feeding multiple Digimon:", error);
+      console.error('Error feeding multiple Digimon:', error);
       throw error;
     }
   },
 
-  dnaEvolveDigimon: async (
-    digimonId: string,
-    toDigimonId: number,
-    dnaPartnerDigimonId: string
-  ) => {
+  dnaEvolveDigimon: async (digimonId: string, toDigimonId: number, dnaPartnerDigimonId: string) => {
     try {
       const { user } = useAuthStore.getState();
-      if (!user) throw new Error("User not authenticated");
+      if (!user) throw new Error('User not authenticated');
 
       const { userDigimon } = get();
-      if (!userDigimon) throw new Error("No active Digimon found");
+      if (!userDigimon) throw new Error('No active Digimon found');
 
       // Get the digimon to evolve
-      const digimonToEvolve = get().allUserDigimon.find(
-        (d) => d.id === digimonId
-      );
-      if (!digimonToEvolve) throw new Error("Digimon not found");
+      const digimonToEvolve = get().allUserDigimon.find((d) => d.id === digimonId);
+      if (!digimonToEvolve) throw new Error('Digimon not found');
 
       // Get the DNA partner digimon
-      const dnaPartnerDigimon = get().allUserDigimon.find(
-        (d) => d.id === dnaPartnerDigimonId
-      );
-      if (!dnaPartnerDigimon) throw new Error("DNA partner Digimon not found");
+      const dnaPartnerDigimon = get().allUserDigimon.find((d) => d.id === dnaPartnerDigimonId);
+      if (!dnaPartnerDigimon) throw new Error('DNA partner Digimon not found');
 
       // Capture level-based rewards before the RPC resets the Digimon.
       // boostPoints → passed to RPC as p_boost_points (added to the evolved Digimon's stats)
@@ -1852,7 +1712,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
       // The RPC handles the evolution atomically: transforms the Digimon, applies boostPoints
       // and abiGain, and permanently deletes the DNA partner (p_dna_partner_digimon_id).
-      const { error } = await supabase.rpc("dna_evolve_digimon", {
+      const { error } = await supabase.rpc('dna_evolve_digimon', {
         p_digimon_id: digimonId,
         p_to_digimon_id: toDigimonId,
         p_dna_partner_digimon_id: dnaPartnerDigimonId,
@@ -1877,10 +1737,10 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
       return true;
     } catch (error) {
-      console.error("Error in DNA evolution:", error);
+      console.error('Error in DNA evolution:', error);
       useNotificationStore.getState().addNotification({
         message: `Failed to DNA evolve: ${(error as Error).message}`,
-        type: "error",
+        type: 'error',
       });
       return false;
     }
@@ -1893,9 +1753,9 @@ export const useDigimonStore = create<PetState>((set, get) => ({
   ): Promise<boolean> => {
     try {
       const { error } = await supabase
-        .from("user_digimon")
+        .from('user_digimon')
         .update({ digimon_id: toFormId })
-        .eq("id", userDigimonId)
+        .eq('id', userDigimonId)
         .select();
 
       if (error) throw error;
@@ -1909,15 +1769,15 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
       useNotificationStore.getState().addNotification({
         message: `${formType} transformation successful!`,
-        type: "success",
+        type: 'success',
       });
 
       return true;
     } catch (error) {
-      console.error("Error transforming Digimon form:", error);
+      console.error('Error transforming Digimon form:', error);
       useNotificationStore.getState().addNotification({
         message: `Failed to transform Digimon: ${(error as Error).message}`,
-        type: "error",
+        type: 'error',
       });
       return false;
     }
@@ -1931,20 +1791,20 @@ export const useDigimonStore = create<PetState>((set, get) => ({
     try {
       // Fetch storage Digimon
       const { data, error } = await supabase
-        .from("user_digimon")
-        .select("*, digimon(*)")
-        .eq("user_id", user.id)
-        .eq("is_in_storage", true)
-        .order("current_level", { ascending: false });
+        .from('user_digimon')
+        .select('*, digimon(*)')
+        .eq('user_id', user.id)
+        .eq('is_in_storage', true)
+        .order('current_level', { ascending: false });
 
       if (error) {
-        console.error("Error fetching storage Digimon:", error);
+        console.error('Error fetching storage Digimon:', error);
         return;
       }
 
       set({ storageDigimon: data || [] });
     } catch (error) {
-      console.error("Error in fetchStorageDigimon:", error);
+      console.error('Error in fetchStorageDigimon:', error);
     }
   },
 
@@ -1957,8 +1817,8 @@ export const useDigimonStore = create<PetState>((set, get) => ({
     // Ensure we're not moving the last active Digimon to storage
     if (activeCount <= 1) {
       useNotificationStore.getState().addNotification({
-        type: "error",
-        message: "You must keep at least one Digimon in your active party!",
+        type: 'error',
+        message: 'You must keep at least one Digimon in your active party!',
       });
       return;
     }
@@ -1967,23 +1827,23 @@ export const useDigimonStore = create<PetState>((set, get) => ({
     const targetDigimon = get().allUserDigimon.find((d) => d.id === digimonId);
     if (targetDigimon?.is_active) {
       useNotificationStore.getState().addNotification({
-        type: "error",
-        message: "You cannot move your active Digimon to storage!",
+        type: 'error',
+        message: 'You cannot move your active Digimon to storage!',
       });
       return;
     }
 
     // Update the database
     const { error } = await supabase
-      .from("user_digimon")
+      .from('user_digimon')
       .update({ is_in_storage: true, is_on_team: false })
-      .eq("id", digimonId);
+      .eq('id', digimonId);
 
     if (error) {
-      console.error("Error moving Digimon to storage:", error);
+      console.error('Error moving Digimon to storage:', error);
       useNotificationStore.getState().addNotification({
-        type: "error",
-        message: "Failed to move Digimon to storage",
+        type: 'error',
+        message: 'Failed to move Digimon to storage',
       });
       return;
     }
@@ -1992,8 +1852,8 @@ export const useDigimonStore = create<PetState>((set, get) => ({
     await get().fetchAllUserDigimon();
     await get().fetchStorageDigimon();
     useNotificationStore.getState().addNotification({
-      type: "success",
-      message: "Digimon moved to DigiFarm storage!",
+      type: 'success',
+      message: 'Digimon moved to DigiFarm storage!',
     });
   },
 
@@ -2007,7 +1867,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
     // Ensure we're not exceeding the maximum party size
     if (activeCount >= maxPartySize) {
       useNotificationStore.getState().addNotification({
-        type: "error",
+        type: 'error',
         message: `You can only have ${maxPartySize} Digimon in your active party!`,
       });
       return;
@@ -2015,15 +1875,15 @@ export const useDigimonStore = create<PetState>((set, get) => ({
 
     // Update the database
     const { error } = await supabase
-      .from("user_digimon")
+      .from('user_digimon')
       .update({ is_in_storage: false })
-      .eq("id", digimonId);
+      .eq('id', digimonId);
 
     if (error) {
-      console.error("Error moving Digimon to active party:", error);
+      console.error('Error moving Digimon to active party:', error);
       useNotificationStore.getState().addNotification({
-        type: "error",
-        message: "Failed to move Digimon to active party",
+        type: 'error',
+        message: 'Failed to move Digimon to active party',
       });
       return;
     }
@@ -2032,8 +1892,8 @@ export const useDigimonStore = create<PetState>((set, get) => ({
     await get().fetchAllUserDigimon();
     await get().fetchStorageDigimon();
     useNotificationStore.getState().addNotification({
-      type: "success",
-      message: "Digimon moved to active party!",
+      type: 'success',
+      message: 'Digimon moved to active party!',
     });
   },
 }));

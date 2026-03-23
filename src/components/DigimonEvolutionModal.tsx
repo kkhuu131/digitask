@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { EvolutionOption, UserDigimon, expToBoostPoints } from "../store/petStore";
-import { calculateFinalStats } from "../utils/digimonStatCalculation";
-import EvolutionAnimation from "./EvolutionAnimation";
-import { DIGIMON_LOOKUP_TABLE } from "@/constants/digimonLookup";
+import React, { useState, useEffect } from 'react';
+import { EvolutionOption, UserDigimon, expToBoostPoints } from '../store/petStore';
+import { calculateFinalStats } from '../utils/digimonStatCalculation';
+import EvolutionAnimation from './EvolutionAnimation';
+import { DIGIMON_LOOKUP_TABLE } from '@/constants/digimonLookup';
 import DigimonDNASelectionModal from './DigimonDNASelectionModal';
-import { useDigimonStore } from "../store/petStore";
-import PageTutorial from "./PageTutorial";
-import { DialogueStep } from "./DigimonDialogue";
+import { useDigimonStore } from '../store/petStore';
+import PageTutorial from './PageTutorial';
+import { DialogueStep } from './DigimonDialogue';
 import { BASE_TO_FORMS_MAP } from '../constants/digimonFormsLookup';
 import DigimonFormTransformationModal from './DigimonFormTransformationModal';
-import DigimonSprite from "./DigimonSprite";
-import { useInventoryStore } from "../store/inventoryStore";
-import { getItemName } from "@/constants/storeItems";
+import DigimonSprite from './DigimonSprite';
+import { useInventoryStore } from '../store/inventoryStore';
+import { getItemName } from '@/constants/storeItems';
 
 interface DigimonEvolutionModalProps {
   isOpen: boolean;
@@ -53,35 +53,35 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
     const loadUserItems = async () => {
       setItemsLoading(true);
       const itemsStatus: Record<string, boolean> = {};
-      
+
       const itemRequirements = options
-        .filter(option => option.item_requirement)
-        .map(option => option.item_requirement as string);
-      
+        .filter((option) => option.item_requirement)
+        .map((option) => option.item_requirement as string);
+
       for (const itemId of itemRequirements) {
         const hasItem = await useInventoryStore.getState().checkEvolutionItem(itemId);
         itemsStatus[itemId] = hasItem;
       }
-      
+
       setUserHasItems(itemsStatus);
       setItemsLoading(false);
     };
-    
+
     loadUserItems();
   }, [isOpen, options]);
 
   if (!isOpen) return null;
 
   const handleEvolve = (toDigimonId: number) => {
-    const target = options.find(option => option.digimon_id === toDigimonId);
+    const target = options.find((option) => option.digimon_id === toDigimonId);
     if (!target) return;
-    
+
     if (target.dna_requirement) {
       setSelectedDNAOption(target);
       setShowDNAModal(true);
       return;
     }
-    
+
     setEvolutionTarget(target);
     setShowAnimation(true);
   };
@@ -89,11 +89,9 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
   const handleAnimationComplete = () => {
     if (evolutionTarget) {
       if (selectedDNAPartnerId && evolutionTarget.dna_requirement) {
-        useDigimonStore.getState().dnaEvolveDigimon(
-          selectedDigimon.id,
-          evolutionTarget.digimon_id,
-          selectedDNAPartnerId
-        );
+        useDigimonStore
+          .getState()
+          .dnaEvolveDigimon(selectedDigimon.id, evolutionTarget.digimon_id, selectedDNAPartnerId);
         setSelectedDNAPartnerId(null);
       } else {
         onEvolve(evolutionTarget.digimon_id);
@@ -101,23 +99,23 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
     }
     setShowAnimation(false);
     setEvolutionTarget(null);
-    
+
     // Close the evolution modal
     onClose();
   };
 
   const handleDNASelection = async (dnaPartnerDigimonId: string) => {
     setShowDNAModal(false);
-    
+
     if (selectedDNAOption) {
-      const partner = allUserDigimon.find(d => d.id === dnaPartnerDigimonId);
+      const partner = allUserDigimon.find((d) => d.id === dnaPartnerDigimonId);
       if (partner) {
         setDnaPartnerDigimon(partner);
       }
-      
+
       setEvolutionTarget(selectedDNAOption);
       setShowAnimation(true);
-      
+
       setSelectedDNAPartnerId(dnaPartnerDigimonId);
     }
   };
@@ -139,43 +137,40 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
     );
   }
 
-  const modalTitle = isDevolution ? "De-Digivolution Options" : "Evolution Options";
-  const actionText = isDevolution ? "Devolving" : "Evolving";
-  const boostPoints = expToBoostPoints(
-    selectedDigimon.current_level,
-    !isDevolution
-  );
+  const modalTitle = isDevolution ? 'De-Digivolution Options' : 'Evolution Options';
+  const actionText = isDevolution ? 'Devolving' : 'Evolving';
+  const boostPoints = expToBoostPoints(selectedDigimon.current_level, !isDevolution);
 
   const dnaRequirementId = selectedDNAOption?.dna_requirement || 0;
   const candidateDigimon = allUserDigimon.filter(
-    digimon => digimon.digimon_id === dnaRequirementId && digimon.id !== selectedDigimon.id
+    (digimon) => digimon.digimon_id === dnaRequirementId && digimon.id !== selectedDigimon.id
   );
 
   const digimonEvolutionModalTutorialSteps: DialogueStep[] = [
     {
       speaker: 'bokomon',
-      text: "Look at all the different evolutions your Digimon can undergo!"
+      text: 'Look at all the different evolutions your Digimon can undergo!',
     },
     {
       speaker: 'neemon',
-      text: "Why can't we see what some of them look like?"
-    },
-    {
-      speaker: 'bokomon', 
-      text: "You'll only be able to see the Digimon when you've discovered them beforehand!"
+      text: "Why can't we see what some of them look like?",
     },
     {
       speaker: 'bokomon',
-      text: "Evolutions typically will require both a certain level and a certain amount of stat requirements to be met. However, some of them may require ABI as well!"
+      text: "You'll only be able to see the Digimon when you've discovered them beforehand!",
+    },
+    {
+      speaker: 'bokomon',
+      text: 'Evolutions typically will require both a certain level and a certain amount of stat requirements to be met. However, some of them may require ABI as well!',
     },
     {
       speaker: 'neemon',
-      text: "You can also evolve your Digimon by using DNA Fusion!"
+      text: 'You can also evolve your Digimon by using DNA Fusion!',
     },
     {
       speaker: 'bokomon',
-      text: "Spoilers! Also, Digimon's levels reset to 1 after they evolve and gain ABI based on their level before evolving. Keep completing your tasks everyday and evolve your Digimon, good luck!"
-    }
+      text: "Spoilers! Also, Digimon's levels reset to 1 after they evolve and gain ABI based on their level before evolving. Keep completing your tasks everyday and evolve your Digimon, good luck!",
+    },
   ];
 
   return (
@@ -191,7 +186,11 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
           <h3 className="text-xl font-bold mb-2 dark:text-gray-100">{modalTitle}</h3>
           <div className="text-md text-gray-500 dark:text-gray-300 mb-4">
             {actionText} will
-            <b className="text-red-500 dark:text-red-400"> reset your Digimon level back to 1</b> and give {boostPoints} ABI.
+            <b className="text-red-500 dark:text-red-400">
+              {' '}
+              reset your Digimon level back to 1
+            </b>{' '}
+            and give {boostPoints} ABI.
           </div>
 
           {options.length === 0 && (
@@ -210,18 +209,24 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {options.map((option) => {
                 let canEvolve = true;
-                const statRequirementsList: { name: string; current: number; required: number; meets: boolean }[] = [];
+                const statRequirementsList: {
+                  name: string;
+                  current: number;
+                  required: number;
+                  meets: boolean;
+                }[] = [];
 
                 if (!isDevolution) {
                   const finalStats = calculateFinalStats(selectedDigimon);
 
-                  const meetsLevelRequirement = selectedDigimon.current_level >= option.level_required;
+                  const meetsLevelRequirement =
+                    selectedDigimon.current_level >= option.level_required;
 
                   let meetsStatRequirements = true;
-                  
+
                   if (option.stat_requirements) {
                     const statReqs = option.stat_requirements;
-                    
+
                     if (statReqs.hp && statReqs.hp > 0) {
                       const currentHP = finalStats.hp;
                       if (currentHP < statReqs.hp) meetsStatRequirements = false;
@@ -229,10 +234,10 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
                         name: 'HP',
                         current: currentHP,
                         required: statReqs.hp,
-                        meets: currentHP >= statReqs.hp
+                        meets: currentHP >= statReqs.hp,
                       });
                     }
-                    
+
                     if (statReqs.sp && statReqs.sp > 0) {
                       const currentSP = finalStats.sp;
                       if (currentSP < statReqs.sp) meetsStatRequirements = false;
@@ -240,10 +245,10 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
                         name: 'SP',
                         current: currentSP,
                         required: statReqs.sp,
-                        meets: currentSP >= statReqs.sp
+                        meets: currentSP >= statReqs.sp,
                       });
                     }
-                    
+
                     if (statReqs.atk && statReqs.atk > 0) {
                       const currentATK = finalStats.atk;
                       if (currentATK < statReqs.atk) meetsStatRequirements = false;
@@ -251,10 +256,10 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
                         name: 'ATK',
                         current: currentATK,
                         required: statReqs.atk,
-                        meets: currentATK >= statReqs.atk
+                        meets: currentATK >= statReqs.atk,
                       });
                     }
-                    
+
                     if (statReqs.def && statReqs.def > 0) {
                       const currentDEF = finalStats.def;
                       if (currentDEF < statReqs.def) meetsStatRequirements = false;
@@ -262,10 +267,10 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
                         name: 'DEF',
                         current: currentDEF,
                         required: statReqs.def,
-                        meets: currentDEF >= statReqs.def
+                        meets: currentDEF >= statReqs.def,
                       });
                     }
-                    
+
                     if (statReqs.int && statReqs.int > 0) {
                       const currentINT = finalStats.int;
                       if (currentINT < statReqs.int) meetsStatRequirements = false;
@@ -273,10 +278,10 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
                         name: 'INT',
                         current: currentINT,
                         required: statReqs.int,
-                        meets: currentINT >= statReqs.int
+                        meets: currentINT >= statReqs.int,
                       });
                     }
-                    
+
                     if (statReqs.spd && statReqs.spd > 0) {
                       const currentSPD = finalStats.spd;
                       if (currentSPD < statReqs.spd) meetsStatRequirements = false;
@@ -284,7 +289,7 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
                         name: 'SPD',
                         current: currentSPD,
                         required: statReqs.spd,
-                        meets: currentSPD >= statReqs.spd
+                        meets: currentSPD >= statReqs.spd,
                       });
                     }
 
@@ -295,32 +300,33 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
                         name: 'ABI',
                         current: currentABI,
                         required: statReqs.abi,
-                        meets: currentABI >= statReqs.abi
+                        meets: currentABI >= statReqs.abi,
                       });
                     }
                   }
-                  
+
                   // Check for item requirement
                   let hasRequiredItem = true;
                   if (option.item_requirement) {
-                    hasRequiredItem = !itemsLoading && userHasItems[option.item_requirement] === true;
+                    hasRequiredItem =
+                      !itemsLoading && userHasItems[option.item_requirement] === true;
                   }
-                  
+
                   canEvolve = meetsLevelRequirement && meetsStatRequirements && hasRequiredItem;
                 }
 
                 const discovered = isDiscovered(option.digimon_id);
                 const canProceed = isDevolution ? discovered : canEvolve;
-                
+
                 return (
                   <div
                     key={option.id}
                     className={`border dark:border-gray-700 rounded-lg p-4 flex flex-col items-center ${
-                      canProceed 
-                        ? "hover:shadow-md cursor-pointer opacity-100" 
-                        : "opacity-60 bg-gray-100 dark:bg-dark-200"
-                    } ${option.dna_requirement ? "border-2 border-yellow-400 dark:border-yellow-500 shadow-lg shadow-yellow-200/50 dark:shadow-yellow-500/20" : ""}
-                    ${option.item_requirement ? "border-2 border-purple-400 dark:border-purple-500 shadow-lg shadow-purple-200/50 dark:shadow-purple-500/20" : ""}`}
+                      canProceed
+                        ? 'hover:shadow-md cursor-pointer opacity-100'
+                        : 'opacity-60 bg-gray-100 dark:bg-dark-200'
+                    } ${option.dna_requirement ? 'border-2 border-yellow-400 dark:border-yellow-500 shadow-lg shadow-yellow-200/50 dark:shadow-yellow-500/20' : ''}
+                    ${option.item_requirement ? 'border-2 border-purple-400 dark:border-purple-500 shadow-lg shadow-purple-200/50 dark:shadow-purple-500/20' : ''}`}
                     onClick={() => canProceed && handleEvolve(option.digimon_id)}
                   >
                     <DigimonSprite
@@ -330,26 +336,43 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
                       showHappinessAnimations={false}
                       silhouette={!discovered}
                     />
-                    
+
                     <h4 className="font-bold dark:text-gray-200">
-                      {discovered 
-                        ? option.name 
-                        : option.name.includes('(') 
-                          ? `??? ${option.name.substring(option.name.indexOf('('))}` 
-                          : "???"}
+                      {discovered
+                        ? option.name
+                        : option.name.includes('(')
+                          ? `??? ${option.name.substring(option.name.indexOf('('))}`
+                          : '???'}
                     </h4>
                     <p className="text-sm text-gray-500 dark:text-gray-400">{option.stage}</p>
                     {!isDevolution && (
-                      <p className="text-sm my-1 dark:text-gray-300">Lv. <span className={selectedDigimon.current_level >= option.level_required ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}>{selectedDigimon.current_level}/{option.level_required}</span></p>
+                      <p className="text-sm my-1 dark:text-gray-300">
+                        Lv.{' '}
+                        <span
+                          className={
+                            selectedDigimon.current_level >= option.level_required
+                              ? 'text-green-600 dark:text-green-400'
+                              : 'text-red-600 dark:text-red-400'
+                          }
+                        >
+                          {selectedDigimon.current_level}/{option.level_required}
+                        </span>
+                      </p>
                     )}
-                    
+
                     {!isDevolution && statRequirementsList.length > 0 && (
                       <div className="mt-2 w-full">
                         <div className="space-y-1">
-                          
                           {statRequirementsList.map((stat, idx) => (
                             <p key={idx} className="text-xs dark:text-gray-300">
-                              {stat.name} <span className={stat.meets ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}>
+                              {stat.name}{' '}
+                              <span
+                                className={
+                                  stat.meets
+                                    ? 'text-green-600 dark:text-green-400'
+                                    : 'text-red-600 dark:text-red-400'
+                                }
+                              >
                                 {stat.current}/{stat.required}
                               </span>
                             </p>
@@ -357,20 +380,31 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
 
                           {option.dna_requirement && (
                             <p className="text-xs font-medium dark:text-gray-300">
-                              Digimon: <span className="text-yellow-600 dark:text-yellow-400 font-bold">
+                              Digimon:{' '}
+                              <span className="text-yellow-600 dark:text-yellow-400 font-bold">
                                 {DIGIMON_LOOKUP_TABLE[option.dna_requirement].name}
                               </span>
                             </p>
                           )}
-                          
+
                           {option.item_requirement && (
                             <p className="text-xs font-medium dark:text-gray-300">
-                              Item: <span className={userHasItems[option.item_requirement] ? "text-purple-600 dark:text-purple-400 font-bold" : "text-red-600 dark:text-red-400 font-bold"}>
-                                {getItemName(option.item_requirement) || option.item_requirement.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                              Item:{' '}
+                              <span
+                                className={
+                                  userHasItems[option.item_requirement]
+                                    ? 'text-purple-600 dark:text-purple-400 font-bold'
+                                    : 'text-red-600 dark:text-red-400 font-bold'
+                                }
+                              >
+                                {getItemName(option.item_requirement) ||
+                                  option.item_requirement
+                                    .split('_')
+                                    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                                    .join(' ')}
                               </span>
                             </p>
                           )}
-                        
                         </div>
                       </div>
                     )}
@@ -385,7 +419,7 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
               {availableForms.map((formInfo) => {
                 const isXAntibodyForm = formInfo.formType === 'X-Antibody';
                 const canTransformToXAntibody = !isXAntibodyForm || selectedDigimon.has_x_antibody;
-                
+
                 return (
                   <button
                     key={formInfo.formDigimonId}
@@ -397,8 +431,8 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
                     }}
                     disabled={!canTransformToXAntibody}
                     className={`px-4 py-2 rounded flex items-center ${
-                      canTransformToXAntibody 
-                        ? 'bg-blue-600 dark:bg-amber-600 text-white hover:bg-blue-700 dark:hover:bg-amber-700' 
+                      canTransformToXAntibody
+                        ? 'bg-blue-600 dark:bg-amber-600 text-white hover:bg-blue-700 dark:hover:bg-amber-700'
                         : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
                     }`}
                   >
@@ -419,7 +453,7 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
           </div>
         </div>
       </div>
-      
+
       <DigimonDNASelectionModal
         isOpen={showDNAModal}
         onClose={() => setShowDNAModal(false)}
@@ -427,7 +461,10 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
         candidateDigimon={candidateDigimon}
         onSelectDigimon={handleDNASelection}
       />
-      <PageTutorial tutorialId="digimon_evolution_modal_intro" steps={digimonEvolutionModalTutorialSteps} />
+      <PageTutorial
+        tutorialId="digimon_evolution_modal_intro"
+        steps={digimonEvolutionModalTutorialSteps}
+      />
 
       {showFormModal && selectedFormInfo && (
         <DigimonFormTransformationModal

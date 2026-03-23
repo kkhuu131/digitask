@@ -1,7 +1,7 @@
-import { create } from "zustand";
-import { supabase } from "../lib/supabase";
-import { useAuthStore } from "./authStore";
-import { useNotificationStore } from "./notificationStore";
+import { create } from 'zustand';
+import { supabase } from '../lib/supabase';
+import { useAuthStore } from './authStore';
+import { useNotificationStore } from './notificationStore';
 
 interface CurrencyState {
   bits: number;
@@ -9,14 +9,8 @@ interface CurrencyState {
   loading: boolean;
   error: string | null;
   fetchCurrency: () => Promise<void>;
-  addCurrency: (
-    currency: "bits" | "digicoins",
-    amount: number
-  ) => Promise<boolean>;
-  spendCurrency: (
-    currency: "bits" | "digicoins",
-    amount: number
-  ) => Promise<boolean>;
+  addCurrency: (currency: 'bits' | 'digicoins', amount: number) => Promise<boolean>;
+  spendCurrency: (currency: 'bits' | 'digicoins', amount: number) => Promise<boolean>;
 }
 
 export const useCurrencyStore = create<CurrencyState>((set, get) => ({
@@ -34,24 +28,22 @@ export const useCurrencyStore = create<CurrencyState>((set, get) => ({
 
       // Check if user has a currency record
       const { data, error } = await supabase
-        .from("user_currency")
-        .select("*")
-        .eq("user_id", user.id)
+        .from('user_currency')
+        .select('*')
+        .eq('user_id', user.id)
         .single();
 
-      if (error && error.code !== "PGRST116") {
+      if (error && error.code !== 'PGRST116') {
         throw error;
       }
 
       // If no record exists, create one
       if (!data) {
-        const { error: insertError } = await supabase
-          .from("user_currency")
-          .insert({
-            user_id: user.id,
-            bits: 2000, // Starting currency
-            digicoins: 0,
-          });
+        const { error: insertError } = await supabase.from('user_currency').insert({
+          user_id: user.id,
+          bits: 2000, // Starting currency
+          digicoins: 0,
+        });
 
         if (insertError) throw insertError;
 
@@ -64,7 +56,7 @@ export const useCurrencyStore = create<CurrencyState>((set, get) => ({
         });
       }
     } catch (error) {
-      console.error("Error fetching currency:", error);
+      console.error('Error fetching currency:', error);
       set({
         error: (error as Error).message,
         loading: false,
@@ -79,11 +71,11 @@ export const useCurrencyStore = create<CurrencyState>((set, get) => ({
     try {
       await useCurrencyStore.getState().fetchCurrency();
       const { error } = await supabase
-        .from("user_currency")
+        .from('user_currency')
         .update({
           [currency]: get()[currency] + amount,
         })
-        .eq("user_id", user.id);
+        .eq('user_id', user.id);
 
       if (error) throw error;
 
@@ -102,7 +94,7 @@ export const useCurrencyStore = create<CurrencyState>((set, get) => ({
     // Check if user has enough currency
     if (get()[currency] < amount) {
       useNotificationStore.getState().addNotification({
-        type: "error",
+        type: 'error',
         message: `Not enough ${currency} to make this purchase`,
       });
       return false;
@@ -110,11 +102,11 @@ export const useCurrencyStore = create<CurrencyState>((set, get) => ({
 
     try {
       const { error } = await supabase
-        .from("user_currency")
+        .from('user_currency')
         .update({
           [currency]: get()[currency] - amount,
         })
-        .eq("user_id", user.id);
+        .eq('user_id', user.id);
 
       if (error) throw error;
 

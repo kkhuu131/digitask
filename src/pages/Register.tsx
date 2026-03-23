@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuthStore } from "../store/authStore";
-import { supabase } from "../lib/supabase";
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../store/authStore';
+import { supabase } from '../lib/supabase';
 
 const Register = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [usernameError, setUsernameError] = useState<string | null>(null);
   const { signUp, error, loading, user } = useAuthStore();
@@ -15,23 +15,24 @@ const Register = () => {
 
   useEffect(() => {
     if (user) {
-      navigate("/");
+      navigate('/');
     }
   }, [user, navigate]);
 
   const validateUsername = (username: string) => {
-    if (username.length < 3) return "Username must be at least 3 characters";
-    if (username.length > 20) return "Username must be less than 20 characters";
-    if (!/^[a-zA-Z0-9_]+$/.test(username)) return "Username can only contain letters, numbers, and underscores";
+    if (username.length < 3) return 'Username must be at least 3 characters';
+    if (username.length > 20) return 'Username must be less than 20 characters';
+    if (!/^[a-zA-Z0-9_]+$/.test(username))
+      return 'Username can only contain letters, numbers, and underscores';
     return null;
   };
 
   const checkUsernameAvailability = async (username: string) => {
     try {
       const { data, error } = await supabase
-        .from("profiles")
-        .select("username")
-        .eq("username", username);
+        .from('profiles')
+        .select('username')
+        .eq('username', username);
       if (error) return true;
       return !data || data.length === 0;
     } catch {
@@ -45,11 +46,11 @@ const Register = () => {
     setUsernameError(null);
 
     if (password !== confirmPassword) {
-      setPasswordError("Passwords do not match");
+      setPasswordError('Passwords do not match');
       return;
     }
     if (password.length < 6) {
-      setPasswordError("Password must be at least 6 characters");
+      setPasswordError('Password must be at least 6 characters');
       return;
     }
     const usernameValidationError = validateUsername(username);
@@ -59,14 +60,14 @@ const Register = () => {
     }
     const isUsernameAvailable = await checkUsernameAvailability(username);
     if (!isUsernameAvailable) {
-      setUsernameError("Username is already taken");
+      setUsernameError('Username is already taken');
       return;
     }
     await signUp(email, password, username);
   };
 
   const inputClass =
-    "block w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-[#1C1C26] border border-gray-200 dark:border-[#2A2A38] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-150";
+    'block w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-[#1C1C26] border border-gray-200 dark:border-[#2A2A38] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-150';
 
   const anyError = error || usernameError || passwordError;
 
@@ -80,11 +81,13 @@ const Register = () => {
               src="/assets/digimon/agumon_professor.png"
               alt="Digitask Logo"
               className="h-16 w-16"
-              style={{ imageRendering: "pixelated" }}
+              style={{ imageRendering: 'pixelated' }}
             />
             <span
               className="font-heading text-4xl font-bold text-gray-900 dark:text-white"
-              style={{ textShadow: "0 0 12px rgba(245, 158, 11, 0.5), 0 0 24px rgba(245, 158, 11, 0.2)" }}
+              style={{
+                textShadow: '0 0 12px rgba(245, 158, 11, 0.5), 0 0 24px rgba(245, 158, 11, 0.2)',
+              }}
             >
               DIGITASK
             </span>
@@ -106,7 +109,10 @@ const Register = () => {
 
             {/* Username */}
             <div className="space-y-1.5">
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label
+                htmlFor="username"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
                 Username
               </label>
               <input
@@ -123,7 +129,10 @@ const Register = () => {
 
             {/* Email */}
             <div className="space-y-1.5">
-              <label htmlFor="email-address" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label
+                htmlFor="email-address"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
                 Email address
               </label>
               <input
@@ -141,7 +150,10 @@ const Register = () => {
 
             {/* Password */}
             <div className="space-y-1.5">
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
                 Password
               </label>
               <input
@@ -159,7 +171,10 @@ const Register = () => {
 
             {/* Confirm Password */}
             <div className="space-y-1.5">
-              <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label
+                htmlFor="confirm-password"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
                 Confirm Password
               </label>
               <input
@@ -181,13 +196,13 @@ const Register = () => {
               disabled={loading}
               className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-white font-heading text-lg font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed mt-2 cursor-pointer"
             >
-              {loading ? "Creating account..." : "Create Account"}
+              {loading ? 'Creating account...' : 'Create Account'}
             </button>
 
             {/* Login link */}
             <div className="text-center pt-1">
               <p className="text-sm text-gray-500">
-                Already have an account?{" "}
+                Already have an account?{' '}
                 <Link
                   to="/login"
                   className="text-amber-600 dark:text-amber-400 hover:text-amber-500 dark:hover:text-amber-300 font-medium transition-colors duration-150"

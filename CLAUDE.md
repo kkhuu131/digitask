@@ -13,6 +13,10 @@ npm run build         # tsc + vite build
 npm run lint          # ESLint with zero warnings allowed
 npm run preview       # Preview the production build locally
 
+# Formatting (Prettier)
+npm run format        # Format all src/ files in-place
+npm run format:check  # Check formatting without writing (used by CI)
+
 # Tests (vitest)
 npm test              # Run all tests once — used by CI
 npm run test:watch    # Watch mode for local development
@@ -102,7 +106,7 @@ The constants directory contains:
 | `battleStore` | Wild AI team generation, battle options caching, battle history, energy management |
 | `interactiveBattleStore` | Interactive (turn-by-turn) battle mode — SPD-ordered turns, AI targeting, damage pipeline |
 | `tournamentStore` | Weekly tournament: unlock gating (10 tasks), bracket generation, round results, placement bits |
-| `milestoneStore` | **Deprecated** — legacy ABI-based Digimon claiming. Still used by `MilestoneProgress.tsx`; superseded by `titleStore` + `AchievementsPage` |
+| `milestoneStore` | **Deleted** — legacy ABI-based Digimon claiming. Superseded by `titleStore` + `AchievementsPage` |
 | `titleStore` | Fetches/awards user titles from `user_titles` table; checks unlock conditions after game events |
 | `inventoryStore` | Inventory management (`user_inventory` table) |
 | `currencyStore` | In-game currency (`user_currency` table — bits and digicoins) |

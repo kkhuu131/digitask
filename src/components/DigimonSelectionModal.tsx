@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { DIGIMON_LOOKUP_TABLE } from "../constants/digimonLookup";
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { DIGIMON_LOOKUP_TABLE } from '../constants/digimonLookup';
 
 interface DigimonOption {
   id: number;
@@ -22,7 +22,7 @@ const DigimonSelectionModal: React.FC<DigimonSelectionModalProps> = ({
   isOpen,
   onClose,
   onSelect,
-  isNXChance
+  isNXChance,
 }) => {
   const [starterOptions, setStarterOptions] = useState<DigimonOption[]>([]);
   const [nxOptions, setNXOptions] = useState<DigimonOption[]>([]);
@@ -35,11 +35,11 @@ const DigimonSelectionModal: React.FC<DigimonSelectionModalProps> = ({
   // Animation interval for sprites
   useEffect(() => {
     if (!isOpen) return;
-    
+
     const interval = setInterval(() => {
-      setSpriteToggle(prev => !prev);
+      setSpriteToggle((prev) => !prev);
     }, 750); // Toggle every 750ms
-    
+
     return () => clearInterval(interval);
   }, [isOpen]);
 
@@ -52,7 +52,7 @@ const DigimonSelectionModal: React.FC<DigimonSelectionModalProps> = ({
 
         // Fetch starter Digimon (IDs 1-5)
         const starterIds = [1, 2, 3, 4, 5];
-        const starterData = starterIds.map(id => {
+        const starterData = starterIds.map((id) => {
           const digimon = DIGIMON_LOOKUP_TABLE[id];
           return {
             id: digimon.id,
@@ -60,14 +60,14 @@ const DigimonSelectionModal: React.FC<DigimonSelectionModalProps> = ({
             sprite_url: digimon.sprite_url,
             type: digimon.type,
             attribute: digimon.attribute,
-            stage: digimon.stage
+            stage: digimon.stage,
           };
         });
         setStarterOptions(starterData);
 
         // Fetch NX Digimon (IDs 337-341)
         const nxIds = [337, 338, 339, 340, 341];
-        const nxData = nxIds.map(id => {
+        const nxData = nxIds.map((id) => {
           const digimon = DIGIMON_LOOKUP_TABLE[id];
           return {
             id: digimon.id,
@@ -75,15 +75,15 @@ const DigimonSelectionModal: React.FC<DigimonSelectionModalProps> = ({
             sprite_url: digimon.sprite_url,
             type: digimon.type,
             attribute: digimon.attribute,
-            stage: digimon.stage
+            stage: digimon.stage,
           };
         });
         setNXOptions(nxData);
 
         setLoading(false);
       } catch (err) {
-        console.error("Error fetching Digimon options:", err);
-        setError("Failed to load Digimon options. Please try again.");
+        console.error('Error fetching Digimon options:', err);
+        setError('Failed to load Digimon options. Please try again.');
         setLoading(false);
       }
     };
@@ -95,14 +95,14 @@ const DigimonSelectionModal: React.FC<DigimonSelectionModalProps> = ({
 
   const handleSelect = async () => {
     if (!selectedDigimon) return;
-    
+
     try {
       setIsSubmitting(true);
       await onSelect(selectedDigimon);
       onClose();
     } catch (err) {
-      console.error("Error selecting Digimon:", err);
-      setError("Failed to claim Digimon. Please try again.");
+      console.error('Error selecting Digimon:', err);
+      setError('Failed to claim Digimon. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -128,21 +128,23 @@ const DigimonSelectionModal: React.FC<DigimonSelectionModalProps> = ({
       >
         <div className="p-6">
           <h2 className="text-2xl font-bold mb-4 dark:text-gray-100">Choose Your Digimon</h2>
-          
+
           {isNXChance && (
             <div className="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-400 dark:border-yellow-600 p-4 mb-6">
               <p className="text-yellow-700 dark:text-yellow-300">
-                <span className="font-bold">Easter Egg!</span> You can choose from rare NX Digimon in addition to the starters! These are special, weaker versions of the original, that can't evolve or devolve.
+                <span className="font-bold">Easter Egg!</span> You can choose from rare NX Digimon
+                in addition to the starters! These are special, weaker versions of the original,
+                that can't evolve or devolve.
               </p>
             </div>
           )}
-          
+
           {error && (
             <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 dark:border-red-600 p-4 mb-4">
               <p className="text-red-700 dark:text-red-300">{error}</p>
             </div>
           )}
-          
+
           {loading ? (
             <div className="text-center py-8">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500 dark:border-amber-500 mx-auto"></div>
@@ -157,8 +159,8 @@ const DigimonSelectionModal: React.FC<DigimonSelectionModalProps> = ({
                     onClick={() => setSelectedDigimon(digimon.id)}
                     className={`border rounded-lg p-4 cursor-pointer transition-all ${
                       selectedDigimon === digimon.id
-                        ? "border-primary-500 dark:border-amber-500 bg-primary-50 dark:bg-amber-900/20 ring-2 ring-primary-300 dark:ring-amber-600/50"
-                        : "border-gray-200 dark:border-gray-700 dark:bg-dark-200 hover:border-primary-300 dark:hover:border-amber-600"
+                        ? 'border-primary-500 dark:border-amber-500 bg-primary-50 dark:bg-amber-900/20 ring-2 ring-primary-300 dark:ring-amber-600/50'
+                        : 'border-gray-200 dark:border-gray-700 dark:bg-dark-200 hover:border-primary-300 dark:hover:border-amber-600'
                     }`}
                   >
                     <div className="flex flex-col items-center">
@@ -167,7 +169,7 @@ const DigimonSelectionModal: React.FC<DigimonSelectionModalProps> = ({
                           src={getAnimatedSpriteUrl(digimon.name)}
                           alt={digimon.name}
                           className="object-contain max-h-full max-w-full"
-                          style={{ imageRendering: "pixelated" }}
+                          style={{ imageRendering: 'pixelated' }}
                           onError={(e) => {
                             // Fallback to original sprite if animated sprite fails to load
                             (e.target as HTMLImageElement).src = digimon.sprite_url;
@@ -190,7 +192,7 @@ const DigimonSelectionModal: React.FC<DigimonSelectionModalProps> = ({
                   </div>
                 ))}
               </div>
-              
+
               <div className="flex justify-end space-x-4">
                 <button
                   onClick={onClose}
@@ -203,11 +205,11 @@ const DigimonSelectionModal: React.FC<DigimonSelectionModalProps> = ({
                   disabled={!selectedDigimon || isSubmitting}
                   className={`px-4 py-2 rounded-md text-white ${
                     selectedDigimon && !isSubmitting
-                      ? "bg-primary-600 dark:bg-amber-600 hover:bg-primary-700 dark:hover:bg-amber-700"
-                      : "bg-gray-400 dark:bg-gray-600 cursor-not-allowed"
+                      ? 'bg-primary-600 dark:bg-amber-600 hover:bg-primary-700 dark:hover:bg-amber-700'
+                      : 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed'
                   }`}
                 >
-                  {isSubmitting ? "Claiming..." : "Claim"}
+                  {isSubmitting ? 'Claiming...' : 'Claim'}
                 </button>
               </div>
             </>
@@ -218,4 +220,4 @@ const DigimonSelectionModal: React.FC<DigimonSelectionModalProps> = ({
   );
 };
 
-export default DigimonSelectionModal; 
+export default DigimonSelectionModal;

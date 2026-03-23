@@ -34,7 +34,8 @@ const BattleHub: React.FC = () => {
     {
       id: 'daily-ai',
       title: 'Daily AI Battles',
-      description: 'Battle against AI-generated teams to earn XP and Bits. New opponents every day.',
+      description:
+        'Battle against AI-generated teams to earn XP and Bits. New opponents every day.',
       icon: Sword,
       path: '/battle',
       color: 'from-blue-500 to-blue-600',
@@ -45,7 +46,7 @@ const BattleHub: React.FC = () => {
         'Daily rotating AI opponents',
         'First win bonus (2x rewards)',
         'Win streak multipliers',
-        '1 ticket per battle'
+        '1 ticket per battle',
       ],
       sprite: 'Agumon (2006)',
       comingSoon: false,
@@ -53,7 +54,8 @@ const BattleHub: React.FC = () => {
     {
       id: 'tournament',
       title: 'Weekly Tournament',
-      description: 'Compete in a weekly bracket tournament. Beat 3 opponents including a powerful boss to become Champion!',
+      description:
+        'Compete in a weekly bracket tournament. Beat 3 opponents including a powerful boss to become Champion!',
       icon: Trophy,
       path: '/tournament',
       color: 'from-purple-500 to-purple-600',
@@ -64,34 +66,31 @@ const BattleHub: React.FC = () => {
         'Unlock after 10 weekly tasks',
         '3-round single elimination',
         'Boss battle in Grand Final',
-        'Placement prizes in Bits'
+        'Placement prizes in Bits',
       ],
       sprite: 'Myotismon',
       comingSoon: false,
     },
     {
       id: 'store',
-      title: 'Neemon\'s Store',
-      description: 'Purchase stat boosters, utility items, and special upgrades to enhance your Digimon and account.',
+      title: "Neemon's Store",
+      description:
+        'Purchase stat boosters, utility items, and special upgrades to enhance your Digimon and account.',
       icon: ShoppingBag,
       path: '/store',
       color: 'from-amber-500 to-amber-600',
       hoverColor: 'hover:from-amber-600 hover:to-amber-700',
       bgColor: 'bg-amber-50 dark:bg-amber-900/20',
       borderColor: 'border-amber-200 dark:border-amber-800',
-      features: [
-        'Stat boosters',
-        'Evolution materials',
-        'Utility items',
-        'Special upgrades'
-      ],
+      features: ['Stat boosters', 'Evolution materials', 'Utility items', 'Special upgrades'],
       sprite: 'Neemon',
       comingSoon: false,
     },
     {
       id: 'pvp',
       title: 'Async PvP',
-      description: 'Challenge other tamers to asynchronous battles. Leave a team behind and see how you rank.',
+      description:
+        'Challenge other tamers to asynchronous battles. Leave a team behind and see how you rank.',
       icon: Users,
       path: '/pvp',
       color: 'from-rose-500 to-rose-600',
@@ -99,10 +98,10 @@ const BattleHub: React.FC = () => {
       bgColor: 'bg-rose-50 dark:bg-rose-900/20',
       borderColor: 'border-rose-200 dark:border-rose-800',
       features: [
-        'Battle real players\' teams',
+        "Battle real players' teams",
         'Seasonal rankings',
         'Defense team setup',
-        'Rivalry challenges'
+        'Rivalry challenges',
       ],
       sprite: 'Agumon (2006)',
       comingSoon: true,
@@ -113,7 +112,7 @@ const BattleHub: React.FC = () => {
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       {/* Header */}
       <div className="mb-12 text-center">
-        <motion.h1 
+        <motion.h1
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-4xl md:text-5xl font-heading font-semibold dark:text-gray-100 mb-4"
@@ -123,7 +122,7 @@ const BattleHub: React.FC = () => {
       </div>
 
       {/* Energy Display */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.2 }}
@@ -161,7 +160,9 @@ const BattleHub: React.FC = () => {
               )}
 
               {/* Decorative gradient overlay */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${mode.color} opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity duration-300`} />
+              <div
+                className={`absolute inset-0 bg-gradient-to-br ${mode.color} opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity duration-300`}
+              />
 
               {/* Content */}
               <div className="relative z-10 flex flex-col h-full">
@@ -181,7 +182,9 @@ const BattleHub: React.FC = () => {
                 </div>
 
                 {/* Title */}
-                <h2 className="text-2xl font-heading font-semibold dark:text-gray-100 mb-2">{mode.title}</h2>
+                <h2 className="text-2xl font-heading font-semibold dark:text-gray-100 mb-2">
+                  {mode.title}
+                </h2>
 
                 {/* Description */}
                 <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 leading-relaxed">
@@ -192,7 +195,9 @@ const BattleHub: React.FC = () => {
                 <div className="space-y-2 mb-4 flex-1">
                   {mode.features.map((feature, idx) => (
                     <div key={idx} className="flex items-center gap-2 text-sm">
-                      <div className={`w-1.5 h-1.5 rounded-full bg-gradient-to-r ${mode.color} flex-shrink-0`} />
+                      <div
+                        className={`w-1.5 h-1.5 rounded-full bg-gradient-to-r ${mode.color} flex-shrink-0`}
+                      />
                       <span className="text-gray-700 dark:text-gray-300">{feature}</span>
                     </div>
                   ))}
@@ -205,7 +210,9 @@ const BattleHub: React.FC = () => {
                       <span>Coming Soon</span>
                     </div>
                   ) : (
-                    <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r ${mode.color} ${mode.hoverColor} text-white font-semibold shadow-md group-hover:shadow-lg transition-all`}>
+                    <div
+                      className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r ${mode.color} ${mode.hoverColor} text-white font-semibold shadow-md group-hover:shadow-lg transition-all`}
+                    >
                       <span>Enter</span>
                     </div>
                   )}
@@ -215,11 +222,8 @@ const BattleHub: React.FC = () => {
           );
         })}
       </div>
-
-    
     </div>
   );
 };
 
 export default BattleHub;
-

@@ -42,7 +42,9 @@ export const calculateDamage = (attacker: BattleDigimon, target: BattleDigimon):
   const typeMultiplier =
     TypeAdvantageMap[attacker.type as DigimonType]?.[target.type as DigimonType] ?? 1.0;
   const attributeMultiplier =
-    AttributeAdvantageMap[attacker.attribute as DigimonAttribute]?.[target.attribute as DigimonAttribute] ?? 1.0;
+    AttributeAdvantageMap[attacker.attribute as DigimonAttribute]?.[
+      target.attribute as DigimonAttribute
+    ] ?? 1.0;
 
   const damageVariance = 0.8 + Math.random() * 0.4;
 

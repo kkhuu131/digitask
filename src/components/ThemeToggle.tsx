@@ -9,7 +9,7 @@ const ThemeToggle = () => {
       whileTap={{ scale: 0.95 }}
       onClick={toggleTheme}
       className="p-2 rounded-full transition-colors flex items-center justify-center"
-      aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
+      aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
     >
       {isDarkMode ? (
         <svg
@@ -46,4 +46,4 @@ const ThemeToggle = () => {
   );
 };
 
-export default ThemeToggle; 
+export default ThemeToggle;

@@ -1,7 +1,7 @@
-import { useEffect, useState} from "react";
-import { useTaskStore } from "../store/taskStore";
-import CleanTaskList from "./CleanTaskList";
-import { supabase } from "../lib/supabase";
+import { useEffect, useState } from 'react';
+import { useTaskStore } from '../store/taskStore';
+import CleanTaskList from './CleanTaskList';
+import { supabase } from '../lib/supabase';
 
 // Update the state initialization to read from localStorage synchronously
 const getSavedAutoAllocateSetting = () => {
@@ -15,43 +15,43 @@ const TaskList = () => {
   const [, forceUpdate] = useState({});
   // Initialize with the value from localStorage
   const [autoAllocateStats, setAutoAllocateStats] = useState(getSavedAutoAllocateSetting());
-  
+
   // Keep this effect to save the preference when it changes
   useEffect(() => {
     localStorage.setItem('autoAllocateStats', autoAllocateStats.toString());
   }, [autoAllocateStats]);
-  
+
   // Add this effect to load saved stats from the database
   useEffect(() => {
     const loadSavedStats = async () => {
       const { data: userData } = await supabase.auth.getUser();
       if (!userData.user) return;
-      
+
       const { data: profileData } = await supabase
-        .from("profiles")
-        .select("saved_stats")
-        .eq("id", userData.user.id)
+        .from('profiles')
+        .select('saved_stats')
+        .eq('id', userData.user.id)
         .single();
-        
+
       if (profileData && profileData.saved_stats) {
         // Update localStorage with the database values
-        localStorage.setItem("savedStats", JSON.stringify(profileData.saved_stats));
+        localStorage.setItem('savedStats', JSON.stringify(profileData.saved_stats));
       }
     };
-    
+
     loadSavedStats();
   }, []);
-  
+
   // Add a timer to check for newly overdue tasks and update the UI
   useEffect(() => {
     // Force UI update every minute to refresh task status
     const intervalId = setInterval(() => {
       forceUpdate({});
     }, 30 * 1000);
-    
+
     return () => clearInterval(intervalId);
   }, []);
-  
+
   // Loading: skeleton rows that match the real task card layout so nothing jumps
   if (loading) {
     return (
@@ -71,7 +71,7 @@ const TaskList = () => {
         </div>
         {/* Task card skeletons */}
         <div className="space-y-2">
-          {([0.82, 0.60, 0.74, 0.50, 0.68] as number[]).map((titleWidth, i) => (
+          {([0.82, 0.6, 0.74, 0.5, 0.68] as number[]).map((titleWidth, i) => (
             <div
               key={i}
               className="rounded-lg p-4 border border-gray-200 dark:border-dark-200 bg-white dark:bg-dark-300 animate-pulse"
@@ -80,7 +80,10 @@ const TaskList = () => {
               <div className="flex items-start gap-3">
                 <div className="flex-shrink-0 w-5 h-5 rounded-full bg-gray-200 dark:bg-dark-200 mt-0.5" />
                 <div className="flex-1 space-y-2">
-                  <div className="h-4 bg-gray-200 dark:bg-dark-200 rounded-full" style={{ width: `${Math.round(titleWidth * 100)}%` }} />
+                  <div
+                    className="h-4 bg-gray-200 dark:bg-dark-200 rounded-full"
+                    style={{ width: `${Math.round(titleWidth * 100)}%` }}
+                  />
                   <div className="h-3 bg-gray-200 dark:bg-dark-200 rounded-full w-1/4" />
                 </div>
               </div>
@@ -107,16 +110,18 @@ const TaskList = () => {
             autoAllocateStats ? 'bg-accent-500' : 'bg-gray-300 dark:bg-dark-100'
           }`}
         >
-          <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow-sm transition-transform duration-200 ${
-            autoAllocateStats ? 'translate-x-4' : 'translate-x-1'
-          }`} />
+          <span
+            className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow-sm transition-transform duration-200 ${
+              autoAllocateStats ? 'translate-x-4' : 'translate-x-1'
+            }`}
+          />
         </button>
       </div>
-      
+
       {/* Use the clean task list */}
       <CleanTaskList autoAllocateStats={autoAllocateStats} />
     </div>
   );
 };
 
-export default TaskList; 
+export default TaskList;

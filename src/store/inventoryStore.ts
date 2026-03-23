@@ -1,5 +1,5 @@
-import { create } from "zustand";
-import { supabase } from "../lib/supabase";
+import { create } from 'zustand';
+import { supabase } from '../lib/supabase';
 
 export interface InventoryItem {
   id: string;
@@ -15,11 +15,7 @@ interface InventoryState {
   loading: boolean;
   error: string | null;
   fetchInventory: () => Promise<void>;
-  addItem: (
-    itemId: string,
-    quantity: number,
-    itemType: string
-  ) => Promise<boolean>;
+  addItem: (itemId: string, quantity: number, itemType: string) => Promise<boolean>;
   removeItem: (itemId: string, quantity: number) => Promise<boolean>;
   hasItem: (itemId: string) => boolean;
   getItemQuantity: (itemId: string) => number;
@@ -44,15 +40,15 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
       }
 
       const { data, error } = await supabase
-        .from("user_inventory")
-        .select("*")
-        .eq("user_id", userData.user.id);
+        .from('user_inventory')
+        .select('*')
+        .eq('user_id', userData.user.id);
 
       if (error) throw error;
 
       set({ items: data || [], loading: false });
     } catch (error) {
-      console.error("Error fetching inventory:", error);
+      console.error('Error fetching inventory:', error);
       set({ error: (error as Error).message, loading: false });
     }
   },
@@ -73,25 +69,23 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
       if (existingItem) {
         // Update existing item quantity
         const { error } = await supabase
-          .from("user_inventory")
+          .from('user_inventory')
           .update({ quantity: existingItem.quantity + quantity })
-          .eq("id", existingItem.id);
+          .eq('id', existingItem.id);
 
         if (error) throw error;
 
         // Update local state
         set((state) => ({
           items: state.items.map((item) =>
-            item.id === existingItem.id
-              ? { ...item, quantity: item.quantity + quantity }
-              : item
+            item.id === existingItem.id ? { ...item, quantity: item.quantity + quantity } : item
           ),
           loading: false,
         }));
       } else {
         // Add new item to inventory
         const { data, error } = await supabase
-          .from("user_inventory")
+          .from('user_inventory')
           .insert({
             user_id: userData.user.id,
             item_id: itemId,
@@ -112,7 +106,7 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
 
       return true;
     } catch (error) {
-      console.error("Error adding item to inventory:", error);
+      console.error('Error adding item to inventory:', error);
       set({ error: (error as Error).message, loading: false });
       return false;
     }
@@ -131,10 +125,7 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
 
       if (existingItem.quantity <= quantity) {
         // Remove the item completely
-        const { error } = await supabase
-          .from("user_inventory")
-          .delete()
-          .eq("id", existingItem.id);
+        const { error } = await supabase.from('user_inventory').delete().eq('id', existingItem.id);
 
         if (error) throw error;
 
@@ -146,18 +137,16 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
       } else {
         // Reduce the quantity
         const { error } = await supabase
-          .from("user_inventory")
+          .from('user_inventory')
           .update({ quantity: existingItem.quantity - quantity })
-          .eq("id", existingItem.id);
+          .eq('id', existingItem.id);
 
         if (error) throw error;
 
         // Update local state
         set((state) => ({
           items: state.items.map((item) =>
-            item.id === existingItem.id
-              ? { ...item, quantity: item.quantity - quantity }
-              : item
+            item.id === existingItem.id ? { ...item, quantity: item.quantity - quantity } : item
           ),
           loading: false,
         }));
@@ -165,7 +154,7 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
 
       return true;
     } catch (error) {
-      console.error("Error removing item from inventory:", error);
+      console.error('Error removing item from inventory:', error);
       set({ error: (error as Error).message, loading: false });
       return false;
     }
@@ -192,23 +181,23 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
       }
 
       const { data, error } = await supabase
-        .from("user_inventory")
-        .select("quantity")
+        .from('user_inventory')
+        .select('quantity')
         .match({ user_id: userData.user.id, item_id: itemId })
         .single();
 
       if (error) {
-        if (error.code === "PGRST116") {
+        if (error.code === 'PGRST116') {
           // Item not found
           return 0;
         }
-        console.error("Error fetching item quantity:", error);
+        console.error('Error fetching item quantity:', error);
         return 0;
       }
 
       return data?.quantity || 0;
     } catch (error) {
-      console.error("Error in fetchItemQuantity:", error);
+      console.error('Error in fetchItemQuantity:', error);
       return 0;
     }
   },
@@ -223,19 +212,19 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
 
       // Use a different query approach to avoid the 406 error
       const { data, error } = await supabase
-        .from("user_inventory")
-        .select("id")
-        .eq("user_id", userData.user.id)
-        .eq("item_id", itemId);
+        .from('user_inventory')
+        .select('id')
+        .eq('user_id', userData.user.id)
+        .eq('item_id', itemId);
 
       if (error) {
-        console.error("Error checking evolution item:", error);
+        console.error('Error checking evolution item:', error);
         return false;
       }
 
       return data && data.length > 0;
     } catch (error) {
-      console.error("Error in checkEvolutionItem:", error);
+      console.error('Error in checkEvolutionItem:', error);
       return false;
     }
   },

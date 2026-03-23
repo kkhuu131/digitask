@@ -9,11 +9,12 @@ const RosterPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 50;
 
-  const allDigimonIds = Object.keys(DIGIMON_LOOKUP_TABLE).map(id => parseInt(id));
+  const allDigimonIds = Object.keys(DIGIMON_LOOKUP_TABLE).map((id) => parseInt(id));
 
   const filteredDigimon = searchTerm
-    ? allDigimonIds.filter(id =>
-        DIGIMON_LOOKUP_TABLE[id].name.toLowerCase().includes(searchTerm.toLowerCase()))
+    ? allDigimonIds.filter((id) =>
+        DIGIMON_LOOKUP_TABLE[id].name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
     : allDigimonIds;
 
   const totalPages = Math.ceil(filteredDigimon.length / itemsPerPage);
@@ -32,7 +33,10 @@ const RosterPage: React.FC = () => {
               className="h-8 w-8"
               style={{ imageRendering: 'pixelated' }}
             />
-            <Link to="/" className="font-heading text-xl font-bold text-gray-900 dark:text-white hover:text-amber-600 dark:hover:text-amber-400 transition-colors duration-150">
+            <Link
+              to="/"
+              className="font-heading text-xl font-bold text-gray-900 dark:text-white hover:text-amber-600 dark:hover:text-amber-400 transition-colors duration-150"
+            >
               Digitask
             </Link>
           </div>
@@ -94,8 +98,17 @@ const RosterPage: React.FC = () => {
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-150 cursor-pointer"
                 onClick={() => setSearchTerm('')}
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                    clipRule="evenodd"
+                  />
                 </svg>
               </button>
             )}
@@ -104,7 +117,7 @@ const RosterPage: React.FC = () => {
 
         {/* Digimon grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3 mb-8">
-          {paginatedDigimon.map(id => {
+          {paginatedDigimon.map((id) => {
             const digimon = DIGIMON_LOOKUP_TABLE[id];
             return (
               <div
@@ -131,7 +144,7 @@ const RosterPage: React.FC = () => {
         {totalPages > 1 && (
           <div className="flex justify-center items-center gap-3 mb-8">
             <button
-              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
               className="px-4 py-2 rounded-lg bg-white dark:bg-[#13131A] border border-gray-200 dark:border-[#2A2A38] text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:border-amber-500 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 font-body text-sm cursor-pointer shadow-sm dark:shadow-none"
             >
@@ -141,7 +154,7 @@ const RosterPage: React.FC = () => {
               Page {currentPage} of {totalPages}
             </span>
             <button
-              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
               className="px-4 py-2 rounded-lg bg-white dark:bg-[#13131A] border border-gray-200 dark:border-[#2A2A38] text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:border-amber-500 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 font-body text-sm cursor-pointer shadow-sm dark:shadow-none"
             >
@@ -153,7 +166,9 @@ const RosterPage: React.FC = () => {
         {/* No results */}
         {filteredDigimon.length === 0 && (
           <div className="text-center py-16">
-            <p className="text-gray-500 font-body">No Digimon found matching &quot;{searchTerm}&quot;</p>
+            <p className="text-gray-500 font-body">
+              No Digimon found matching &quot;{searchTerm}&quot;
+            </p>
           </div>
         )}
       </main>

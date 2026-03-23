@@ -6,7 +6,15 @@ interface BattleDigimonSpriteProps {
   digimonName: string;
   fallbackSpriteUrl: string;
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-  animationState?: 'idle' | 'attacking' | 'hit' | 'cheering' | 'sad' | 'victory' | 'defeat' | 'dead';
+  animationState?:
+    | 'idle'
+    | 'attacking'
+    | 'hit'
+    | 'cheering'
+    | 'sad'
+    | 'victory'
+    | 'defeat'
+    | 'dead';
   isAnimating?: boolean;
   spriteToggle?: boolean; // Centralized timing from parent
   className?: string;
@@ -20,7 +28,7 @@ const BattleDigimonSprite: React.FC<BattleDigimonSpriteProps> = ({
   animationState = 'idle',
   spriteToggle = false,
   className = '',
-  style = {}
+  style = {},
 }) => {
   const [currentSprite, setCurrentSprite] = useState<string>(fallbackSpriteUrl);
 
@@ -30,10 +38,10 @@ const BattleDigimonSprite: React.FC<BattleDigimonSpriteProps> = ({
   // Size classes mapping
   const sizeClasses = {
     xs: 'w-8 h-8',
-    sm: 'w-12 h-12', 
+    sm: 'w-12 h-12',
     md: 'w-16 h-16',
     lg: 'w-20 h-20',
-    xl: 'w-24 h-24'
+    xl: 'w-24 h-24',
   };
 
   // Determine sprite type based on animation state
@@ -75,10 +83,7 @@ const BattleDigimonSprite: React.FC<BattleDigimonSpriteProps> = ({
   // No internal timing - all timing is controlled by parent component
 
   return (
-    <div
-      className={`${sizeClasses[size]} ${className}`}
-      style={style}
-    >
+    <div className={`${sizeClasses[size]} ${className}`} style={style}>
       <img
         src={currentSprite}
         alt={digimonName}

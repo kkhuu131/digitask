@@ -41,7 +41,7 @@ export const PLACEMENT_BITS: Record<string, number> = {
 
 const WEEKLY_TASK_THRESHOLD = 10;
 
-const STAGE_ORDER = ["Baby", "In-Training", "Rookie", "Champion", "Ultimate", "Mega", "Ultra"];
+const STAGE_ORDER = ['Baby', 'In-Training', 'Rookie', 'Champion', 'Ultimate', 'Mega', 'Ultra'];
 
 const DIFFICULTY_MULTIPLIER: Record<string, number> = { easy: 0.85, medium: 1.0, hard: 1.2 };
 
@@ -52,7 +52,7 @@ const DIFFICULTY_MULTIPLIER: Record<string, number> = { easy: 0.85, medium: 1.0,
  */
 function pickTournamentOpponent(
   userPower: number,
-  difficulty: 'easy' | 'medium' | 'hard',
+  difficulty: 'easy' | 'medium' | 'hard'
 ): { display_name: string; team: TournamentOpponentDigimon[] } {
   const mult = DIFFICULTY_MULTIPLIER[difficulty] ?? 1.0;
   const teamTargetPower = userPower * mult;
@@ -64,8 +64,8 @@ function pickTournamentOpponent(
   // "Majority" (not all) gives flexibility for thematic teams that mix adjacent stages.
   // If no templates pass (e.g. power is very high/low), fall back to the entire pool
   // so the function always returns something rather than crashing.
-  const compatible = TOURNAMENT_TEAM_POOL.filter(t => {
-    const withinRange = t.digimon.filter(d => {
+  const compatible = TOURNAMENT_TEAM_POOL.filter((t) => {
+    const withinRange = t.digimon.filter((d) => {
       const s = DIGIMON_LOOKUP_TABLE[d.digimon_id];
       return s && Math.abs(STAGE_ORDER.indexOf(s.stage) - targetIdx) <= 1;
     });
@@ -74,22 +74,24 @@ function pickTournamentOpponent(
   const pool = compatible.length > 0 ? compatible : TOURNAMENT_TEAM_POOL;
   const template = pool[Math.floor(Math.random() * pool.length)];
 
-  const team: TournamentOpponentDigimon[] = template.digimon.map((d: TemplateDigimon, i: number) => {
-    const species = DIGIMON_LOOKUP_TABLE[d.digimon_id];
-    const stage = species?.stage ?? 'Rookie';
-    const minLvl = STAGE_MIN_LEVEL[stage] ?? 1;
-    const maxLvl = STAGE_MAX_LEVEL[stage] ?? 99;
-    const level = species ? findLevelForPower(species, perMemberTarget, minLvl, maxLvl) : minLvl;
-    return {
-      id: `${d.digimon_id}-${i}`,
-      digimon_id: d.digimon_id,
-      name: species?.name ?? `Digimon #${d.digimon_id}`,
-      current_level: level,
-      sprite_url: species?.sprite_url ?? '',
-      type: species?.type ?? 'Free',
-      attribute: species?.attribute ?? 'Neutral',
-    };
-  });
+  const team: TournamentOpponentDigimon[] = template.digimon.map(
+    (d: TemplateDigimon, i: number) => {
+      const species = DIGIMON_LOOKUP_TABLE[d.digimon_id];
+      const stage = species?.stage ?? 'Rookie';
+      const minLvl = STAGE_MIN_LEVEL[stage] ?? 1;
+      const maxLvl = STAGE_MAX_LEVEL[stage] ?? 99;
+      const level = species ? findLevelForPower(species, perMemberTarget, minLvl, maxLvl) : minLvl;
+      return {
+        id: `${d.digimon_id}-${i}`,
+        digimon_id: d.digimon_id,
+        name: species?.name ?? `Digimon #${d.digimon_id}`,
+        current_level: level,
+        sprite_url: species?.sprite_url ?? '',
+        type: species?.type ?? 'Free',
+        attribute: species?.attribute ?? 'Neutral',
+      };
+    }
+  );
 
   return { display_name: template.name, team };
 }
@@ -204,11 +206,11 @@ export const useTournamentStore = create<TournamentStore>((set, get) => ({
       throw new Error(`Complete ${WEEKLY_TASK_THRESHOLD} tasks this week to enter the tournament.`);
     }
     if (currentTournament !== null) {
-      throw new Error('You have already entered this week\'s tournament.');
+      throw new Error("You have already entered this week's tournament.");
     }
 
     const allDigimon = useDigimonStore.getState().allUserDigimon;
-    const teamDigimon = allDigimon.filter(d => d.is_on_team && !d.is_in_storage);
+    const teamDigimon = allDigimon.filter((d) => d.is_on_team && !d.is_in_storage);
     if (teamDigimon.length === 0) {
       throw new Error('Add at least one Digimon to your battle team first.');
     }
@@ -250,14 +252,14 @@ export const useTournamentStore = create<TournamentStore>((set, get) => ({
         visual_bracket: {
           // Slot layout: Left QF: 1=User, 2=QF opp, 3=FillerA, 4=SF opp  |  Right QF: 5=FillerB, 6=FillerC, 7=FillerD, 8=Boss
           slots: [
-            { slot: 1, name: 'You',                  is_user: true, team: [] },
-            { slot: 2, name: round1.display_name,                   team: round1.team },
-            { slot: 3, name: fillerA.display_name,                  team: fillerA.team },
-            { slot: 4, name: round2.display_name,                   team: round2.team },
-            { slot: 5, name: fillerB.display_name,                  team: fillerB.team },
-            { slot: 6, name: fillerC.display_name,                  team: fillerC.team },
-            { slot: 7, name: fillerD.display_name,                  team: fillerD.team },
-            { slot: 8, name: round3.display_name,    is_boss: true, team: round3.team },
+            { slot: 1, name: 'You', is_user: true, team: [] },
+            { slot: 2, name: round1.display_name, team: round1.team },
+            { slot: 3, name: fillerA.display_name, team: fillerA.team },
+            { slot: 4, name: round2.display_name, team: round2.team },
+            { slot: 5, name: fillerB.display_name, team: fillerB.team },
+            { slot: 6, name: fillerC.display_name, team: fillerC.team },
+            { slot: 7, name: fillerD.display_name, team: fillerD.team },
+            { slot: 8, name: round3.display_name, is_boss: true, team: round3.team },
           ],
         },
       };
@@ -335,7 +337,7 @@ export const useTournamentStore = create<TournamentStore>((set, get) => ({
       .from('user_tournaments')
       .update(updatePayload)
       .eq('id', currentTournament.id)
-      .eq('current_round', round)       // optimistic lock
+      .eq('current_round', round) // optimistic lock
       .eq('status', 'active')
       .select()
       .single();
@@ -351,7 +353,9 @@ export const useTournamentStore = create<TournamentStore>((set, get) => ({
     // Award placement bits
     if (placementBits > 0) {
       useCurrencyStore.getState().addCurrency('bits', placementBits);
-      const label = isChampion ? 'Champion!' : `${newPlacement?.replace('_', ' ').replace('qf', 'QF').replace('sf', 'SF').replace('gf', 'GF')} reward`;
+      const label = isChampion
+        ? 'Champion!'
+        : `${newPlacement?.replace('_', ' ').replace('qf', 'QF').replace('sf', 'SF').replace('gf', 'GF')} reward`;
       useNotificationStore.getState().addNotification({
         type: isChampion ? 'success' : 'info',
         message: `🏆 Tournament ${label}: +${placementBits.toLocaleString()} bits`,

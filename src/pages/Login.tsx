@@ -1,18 +1,18 @@
-import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuthStore } from "../store/authStore";
-import { useDigimonStore } from "../store/petStore";
-import { useTaskStore } from "../store/taskStore";
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../store/authStore';
+import { useDigimonStore } from '../store/petStore';
+import { useTaskStore } from '../store/taskStore';
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const { signIn, error, loading, user } = useAuthStore();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (user) {
-      navigate("/");
+      navigate('/');
     }
   }, [user, navigate]);
 
@@ -28,19 +28,19 @@ const Login = () => {
         // Fetch tasks
         await useTaskStore.getState().fetchTasks();
       } catch (error) {
-        console.error("Error fetching user data after login:", error);
+        console.error('Error fetching user data after login:', error);
       }
     }
 
     if (useAuthStore.getState().user) {
-      navigate("/dashboard");
+      navigate('/dashboard');
     }
   };
 
   const handleDemoLogin = async () => {
     // Use a dedicated demo account
-    const demoEmail = "digitaskdemo@gmail.com";
-    const demoPassword = "Th!$I5@P4ssw0rD4D3mO";
+    const demoEmail = 'digitaskdemo@gmail.com';
+    const demoPassword = 'Th!$I5@P4ssw0rD4D3mO';
 
     await signIn(demoEmail, demoPassword);
 
@@ -50,12 +50,12 @@ const Login = () => {
         await useDigimonStore.getState().fetchUserDigimon();
         await useTaskStore.getState().fetchTasks();
       } catch (error) {
-        console.error("Error fetching user data after demo login:", error);
+        console.error('Error fetching user data after demo login:', error);
       }
     }
 
     if (useAuthStore.getState().user) {
-      navigate("/dashboard");
+      navigate('/dashboard');
     }
   };
 
@@ -69,13 +69,12 @@ const Login = () => {
               src="/assets/digimon/agumon_professor.png"
               alt="Digitask Logo"
               className="h-16 w-16"
-              style={{ imageRendering: "pixelated" }}
+              style={{ imageRendering: 'pixelated' }}
             />
             <span
               className="font-heading text-4xl font-bold text-gray-900 dark:text-white"
               style={{
-                textShadow:
-                  "0 0 12px rgba(245, 158, 11, 0.5), 0 0 24px rgba(245, 158, 11, 0.2)",
+                textShadow: '0 0 12px rgba(245, 158, 11, 0.5), 0 0 24px rgba(245, 158, 11, 0.2)',
               }}
             >
               DIGITASK
@@ -144,7 +143,7 @@ const Login = () => {
               disabled={loading}
               className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-white font-heading text-lg font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
-              {loading ? "Signing in..." : "Sign In"}
+              {loading ? 'Signing in...' : 'Sign In'}
             </button>
 
             {/* Demo Account */}
@@ -160,7 +159,7 @@ const Login = () => {
             {/* Register link */}
             <div className="text-center pt-1">
               <p className="text-sm text-gray-500">
-                Don&apos;t have an account?{" "}
+                Don&apos;t have an account?{' '}
                 <Link
                   to="/register"
                   className="text-amber-600 dark:text-amber-400 hover:text-amber-500 dark:hover:text-amber-300 font-medium transition-colors duration-150"

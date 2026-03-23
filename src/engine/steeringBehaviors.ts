@@ -30,7 +30,7 @@ export const seek = (
   posY: number,
   targetX: number,
   targetY: number,
-  strength: number,
+  strength: number
 ): Force => {
   const dir = normalize(targetX - posX, targetY - posY);
   return { fx: dir.x * strength, fy: dir.y * strength };
@@ -54,20 +54,17 @@ export const wander = (
   velX: number,
   velY: number,
   wanderAngle: number,
-  strength: number,
+  strength: number
 ): { force: Force; newWanderAngle: number } => {
-  const CIRCLE_DIST = 60;    // how far ahead to project the wander circle
-  const CIRCLE_RADIUS = 35;  // radius of the wander circle
-  const JITTER = 0.15;       // max radians the wander angle drifts per frame
+  const CIRCLE_DIST = 60; // how far ahead to project the wander circle
+  const CIRCLE_RADIUS = 35; // radius of the wander circle
+  const JITTER = 0.15; // max radians the wander angle drifts per frame
 
   const newWanderAngle = wanderAngle + (Math.random() - 0.5) * JITTER * 2;
 
   // Forward direction based on current velocity; fall back to rightward if stationary
   const speed = Math.sqrt(velX * velX + velY * velY);
-  const fwd =
-    speed > 0.0001
-      ? { x: velX / speed, y: velY / speed }
-      : { x: 1, y: 0 };
+  const fwd = speed > 0.0001 ? { x: velX / speed, y: velY / speed } : { x: 1, y: 0 };
 
   const circleCenterX = posX + fwd.x * CIRCLE_DIST;
   const circleCenterY = posY + fwd.y * CIRCLE_DIST;
@@ -98,7 +95,7 @@ export const separation = (
   posY: number,
   allies: ReadonlyArray<{ x: number; y: number }>,
   radius: number,
-  strength: number,
+  strength: number
 ): Force => {
   let fx = 0;
   let fy = 0;
@@ -133,7 +130,7 @@ export const orbit = (
   targetX: number,
   targetY: number,
   orbitRadius: number,
-  strength: number,
+  strength: number
 ): Force => {
   const dx = targetX - posX;
   const dy = targetY - posY;
@@ -167,7 +164,7 @@ export const flee = (
   posY: number,
   fromX: number,
   fromY: number,
-  strength: number,
+  strength: number
 ): Force => {
   const dir = normalize(posX - fromX, posY - fromY);
   return { fx: dir.x * strength, fy: dir.y * strength };

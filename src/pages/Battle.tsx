@@ -1,44 +1,33 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useDigimonStore, UserDigimon } from "../store/petStore";
-import { useBattleStore, DigimonAttribute, DigimonType } from "../store/battleStore";
-import { convertToBattleDigimon } from "../store/interactiveBattleStore";
-import { useCurrencyStore } from "../store/currencyStore";
-import { useTournamentStore } from "../store/tournamentStore";
-import { supabase } from "../lib/supabase";
-import ArenaBattle from "../components/ArenaBattle";
-import StrategyPicker from "../components/StrategyPicker";
-import BattleDigimonSprite from "../components/BattleDigimonSprite";
-import { useAuthStore } from "../store/authStore";
-import { useTitleStore } from "../store/titleStore";
-import TypeAttributeIcon from "../components/TypeAttributeIcon";
-import PageTutorial from "../components/PageTutorial";
-import { DialogueStep } from "../components/DigimonDialogue";
-import DigimonSprite from "@/components/DigimonSprite";
-import { DIGIMON_LOOKUP_TABLE } from "../constants/digimonLookup";
-import { AnimatePresence, motion } from "framer-motion";
-import { Trophy, ShoppingBag, ChevronRight, Zap } from "lucide-react";
-import BattleTeamSelector, { OpponentDigimonPreview } from "../components/BattleTeamSelector";
-import { BattleDigimon } from "../types/battle";
-import { Strategy } from "../engine/arenaTypes";
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDigimonStore, UserDigimon } from '../store/petStore';
+import { useBattleStore, DigimonAttribute, DigimonType } from '../store/battleStore';
+import { convertToBattleDigimon } from '../store/interactiveBattleStore';
+import { useCurrencyStore } from '../store/currencyStore';
+import { useTournamentStore } from '../store/tournamentStore';
+import { supabase } from '../lib/supabase';
+import ArenaBattle from '../components/ArenaBattle';
+import StrategyPicker from '../components/StrategyPicker';
+import BattleDigimonSprite from '../components/BattleDigimonSprite';
+import { useAuthStore } from '../store/authStore';
+import { useTitleStore } from '../store/titleStore';
+import TypeAttributeIcon from '../components/TypeAttributeIcon';
+import PageTutorial from '../components/PageTutorial';
+import { DialogueStep } from '../components/DigimonDialogue';
+import DigimonSprite from '@/components/DigimonSprite';
+import { DIGIMON_LOOKUP_TABLE } from '../constants/digimonLookup';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Trophy, ShoppingBag, ChevronRight, Zap } from 'lucide-react';
+import BattleTeamSelector, { OpponentDigimonPreview } from '../components/BattleTeamSelector';
+import { BattleDigimon } from '../types/battle';
+import { Strategy } from '../engine/arenaTypes';
 
 const Battle = () => {
   const navigate = useNavigate();
   const { userDigimon, digimonData, allUserDigimon, fetchAllUserDigimon } = useDigimonStore();
-  const {
-    battleOptions,
-    getBattleOptions,
-    loading,
-    error
-  } = useBattleStore();
-  const {
-    currentTournament,
-    weeklyTaskCount,
-    fetchTournament,
-    isUnlocked,
-    isActive,
-    isCompleted,
-  } = useTournamentStore();
+  const { battleOptions, getBattleOptions, loading, error } = useBattleStore();
+  const { currentTournament, weeklyTaskCount, fetchTournament, isUnlocked, isActive, isCompleted } =
+    useTournamentStore();
   const { user } = useAuthStore();
 
   useEffect(() => {
@@ -66,10 +55,13 @@ const Battle = () => {
   const [preparedOpponentTeam, setPreparedOpponentTeam] = useState<BattleDigimon[] | null>(null);
   const [userStrategies, setUserStrategies] = useState<Strategy[]>([]);
   // After arena battle ends: holds winner + bits reward for the results screen
-  const [arenaResult, setArenaResult] = useState<{ winner: 'user' | 'opponent'; bitsReward: number } | null>(null);
+  const [arenaResult, setArenaResult] = useState<{
+    winner: 'user' | 'opponent';
+    bitsReward: number;
+  } | null>(null);
 
   // Non-storage party Digimon available for selection
-  const partyDigimon = allUserDigimon.filter(d => !d.is_in_storage);
+  const partyDigimon = allUserDigimon.filter((d) => !d.is_in_storage);
 
   useEffect(() => {
     const loadBattleData = async () => {
@@ -88,7 +80,8 @@ const Battle = () => {
         .select('battle_energy, max_battle_energy')
         .eq('id', userData.user.id)
         .single();
-      if (profile) setEnergy({ current: profile.battle_energy ?? 0, max: profile.max_battle_energy ?? 10 });
+      if (profile)
+        setEnergy({ current: profile.battle_energy ?? 0, max: profile.max_battle_energy ?? 10 });
     };
     fetchEnergy();
     const onEnergyUpdated = () => fetchEnergy();
@@ -116,7 +109,7 @@ const Battle = () => {
       }
       window.dispatchEvent(new Event('energy-updated'));
 
-      const userTeamData = selectedTeam.map(d => ({
+      const userTeamData = selectedTeam.map((d) => ({
         ...d,
         digimon: DIGIMON_LOOKUP_TABLE[d.digimon_id as keyof typeof DIGIMON_LOOKUP_TABLE],
       }));
@@ -129,8 +122,8 @@ const Battle = () => {
       setBattleTeam(selectedTeam);
 
       // Arena battle path
-      const userBattle = userTeamData.map(d => convertToBattleDigimon(d, true));
-      const opponentBattle = opponentTeamData.map(d => convertToBattleDigimon(d, false));
+      const userBattle = userTeamData.map((d) => convertToBattleDigimon(d, true));
+      const opponentBattle = opponentTeamData.map((d) => convertToBattleDigimon(d, false));
       setPreparedUserTeam(userBattle);
       setPreparedOpponentTeam(opponentBattle);
       setShowStrategyPicker(true);
@@ -146,9 +139,12 @@ const Battle = () => {
     setArenaBattleActive(true);
   };
 
-  const handleArenaBattleComplete = async (result: { winner: 'user' | 'opponent'; turns: any[] }) => {
+  const handleArenaBattleComplete = async (result: {
+    winner: 'user' | 'opponent';
+    turns: any[];
+  }) => {
     try {
-      const currentOption = battleOptions.find(opt => opt.id === selectedOption);
+      const currentOption = battleOptions.find((opt) => opt.id === selectedOption);
       if (!currentOption) {
         setArenaBattleActive(false);
         return;
@@ -169,27 +165,32 @@ const Battle = () => {
           const isUserWin = result.winner === 'user';
           const winnerId = isUserWin
             ? userId
-            : currentOption.isWild ? null : currentOption.team.user_id ?? null;
+            : currentOption.isWild
+              ? null
+              : (currentOption.team.user_id ?? null);
 
           await supabase.from('team_battles').insert({
             user_id: userId,
             ...(currentOption.isWild ? {} : { opponent_id: currentOption.team.user_id }),
             winner_id: winnerId,
-            user_team: battleTeam.map(d => ({
+            user_team: battleTeam.map((d) => ({
               ...d,
               digimon: DIGIMON_LOOKUP_TABLE[d.digimon_id as keyof typeof DIGIMON_LOOKUP_TABLE],
             })),
             opponent_team: currentOption.team.digimon.map((d: any) => ({
               ...d,
               digimon_id: d.digimon_id || d.id,
-              digimon: DIGIMON_LOOKUP_TABLE[(d.digimon_id || d.id) as keyof typeof DIGIMON_LOOKUP_TABLE],
+              digimon:
+                DIGIMON_LOOKUP_TABLE[(d.digimon_id || d.id) as keyof typeof DIGIMON_LOOKUP_TABLE],
             })),
             created_at: new Date().toISOString(),
             turns: result.turns,
           });
 
           if (isUserWin) {
-            try { await supabase.rpc('check_and_set_first_win_self'); } catch {}
+            try {
+              await supabase.rpc('check_and_set_first_win_self');
+            } catch {}
           }
 
           const { data: profile } = await supabase
@@ -199,10 +200,13 @@ const Battle = () => {
             .single();
 
           if (profile) {
-            const newWon = isUserWin ? (profile.battles_won || 0) + 1 : (profile.battles_won || 0);
+            const newWon = isUserWin ? (profile.battles_won || 0) + 1 : profile.battles_won || 0;
             await supabase
               .from('profiles')
-              .update({ battles_completed: (profile.battles_completed || 0) + 1, battles_won: newWon })
+              .update({
+                battles_completed: (profile.battles_completed || 0) + 1,
+                battles_won: newWon,
+              })
               .eq('id', userId);
             if (isUserWin) await useTitleStore.getState().checkBattleTitles(newWon);
           }
@@ -234,16 +238,29 @@ const Battle = () => {
   };
 
   const digimonPageTutorialSteps: DialogueStep[] = [
-    { speaker: 'bokomon', text: "Welcome to Daily AI Battles! Battle against AI-generated teams to earn experience and level up your team." },
-    { speaker: 'neemon', text: "Ooh, some of these Digimon look pretty tough!" },
-    { speaker: 'bokomon', text: "Choose a difficulty, then pick up to 3 Digimon for your battle team. Each battle costs 1 ticket — complete tasks to earn more!" },
-    { speaker: 'neemon', text: "W-wait, what happens if we lose?" },
-    { speaker: 'bokomon', text: "No need to worry! Your Digimon won't die — they just earn less experience." },
-    { speaker: 'both', text: "Good luck, Tamer!" },
+    {
+      speaker: 'bokomon',
+      text: 'Welcome to Daily AI Battles! Battle against AI-generated teams to earn experience and level up your team.',
+    },
+    { speaker: 'neemon', text: 'Ooh, some of these Digimon look pretty tough!' },
+    {
+      speaker: 'bokomon',
+      text: 'Choose a difficulty, then pick up to 3 Digimon for your battle team. Each battle costs 1 ticket — complete tasks to earn more!',
+    },
+    { speaker: 'neemon', text: 'W-wait, what happens if we lose?' },
+    {
+      speaker: 'bokomon',
+      text: "No need to worry! Your Digimon won't die — they just earn less experience.",
+    },
+    { speaker: 'both', text: 'Good luck, Tamer!' },
   ];
 
   if (!userDigimon || !digimonData) {
-    return <div className="text-center py-12"><p>Loading your Digimon...</p></div>;
+    return (
+      <div className="text-center py-12">
+        <p>Loading your Digimon...</p>
+      </div>
+    );
   }
 
   const difficultyConfig = {
@@ -277,7 +294,9 @@ const Battle = () => {
   const tournamentStatusLabel = (() => {
     if (isCompleted() && currentTournament) {
       const p = currentTournament.final_placement;
-      return p === 'champion' ? 'Champion this week!' : `Placed Top ${p === 'gf_loss' ? '2' : p === 'sf_loss' ? '4' : '8'}`;
+      return p === 'champion'
+        ? 'Champion this week!'
+        : `Placed Top ${p === 'gf_loss' ? '2' : p === 'sf_loss' ? '4' : '8'}`;
     }
     if (isActive() && currentTournament) {
       return `Round ${currentTournament.current_round}/3 in progress`;
@@ -300,7 +319,9 @@ const Battle = () => {
                 <Zap className="w-4 h-4 text-primary-600 dark:text-accent-400" />
               </div>
               <div className="min-w-0">
-                <p className="text-sm font-heading font-semibold text-gray-900 dark:text-gray-100">Arena</p>
+                <p className="text-sm font-heading font-semibold text-gray-900 dark:text-gray-100">
+                  Arena
+                </p>
                 <p className="text-xs font-body text-gray-500 dark:text-gray-400 truncate">
                   {energy.current}/{energy.max} tickets remaining
                 </p>
@@ -316,8 +337,12 @@ const Battle = () => {
                 <Trophy className="w-4 h-4 text-purple-600 dark:text-purple-400" />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-heading font-semibold text-gray-900 dark:text-gray-100">Weekly Tournament</p>
-                <p className="text-xs font-body text-gray-500 dark:text-gray-400 truncate">{tournamentStatusLabel}</p>
+                <p className="text-sm font-heading font-semibold text-gray-900 dark:text-gray-100">
+                  Weekly Tournament
+                </p>
+                <p className="text-xs font-body text-gray-500 dark:text-gray-400 truncate">
+                  {tournamentStatusLabel}
+                </p>
               </div>
               <ChevronRight className="w-4 h-4 text-gray-400 shrink-0" />
             </button>
@@ -331,8 +356,12 @@ const Battle = () => {
                 <ShoppingBag className="w-4 h-4 text-amber-600 dark:text-amber-400" />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-heading font-semibold text-gray-900 dark:text-gray-100">Neemon's Store</p>
-                <p className="text-xs font-body text-gray-500 dark:text-gray-400 truncate">Stat boosters &amp; items</p>
+                <p className="text-sm font-heading font-semibold text-gray-900 dark:text-gray-100">
+                  Neemon's Store
+                </p>
+                <p className="text-xs font-body text-gray-500 dark:text-gray-400 truncate">
+                  Stat boosters &amp; items
+                </p>
               </div>
               <ChevronRight className="w-4 h-4 text-gray-400 shrink-0" />
             </button>
@@ -372,8 +401,10 @@ const Battle = () => {
             ) : pendingOption ? (
               <BattleTeamSelector
                 key="team-selector"
-                opponentName={pendingOption.team.username || pendingOption.team.display_name || 'Opponent'}
-                opponentTeam={(pendingOption.team.digimon as OpponentDigimonPreview[])}
+                opponentName={
+                  pendingOption.team.username || pendingOption.team.display_name || 'Opponent'
+                }
+                opponentTeam={pendingOption.team.digimon as OpponentDigimonPreview[]}
                 partyDigimon={partyDigimon}
                 contextLabel={`${pendingOption.difficulty.charAt(0).toUpperCase() + pendingOption.difficulty.slice(1)} · ${pendingOption.isWild ? 'Wild' : 'AI'}`}
                 isFree={false}
@@ -395,7 +426,9 @@ const Battle = () => {
                 <div className="flex flex-wrap justify-between items-center gap-3 mb-4">
                   <div>
                     <h2 className="text-lg font-heading font-semibold dark:text-gray-100">Arena</h2>
-                    <p className="text-xs font-body text-gray-500 dark:text-gray-400 mt-0.5">Pick a difficulty and send your team in · 1 ticket each</p>
+                    <p className="text-xs font-body text-gray-500 dark:text-gray-400 mt-0.5">
+                      Pick a difficulty and send your team in · 1 ticket each
+                    </p>
                   </div>
                   <div className="flex items-center gap-2 flex-wrap">
                     {import.meta.env.DEV && (
@@ -427,8 +460,14 @@ const Battle = () => {
                 ) : (
                   <div className="space-y-3">
                     {battleOptions.map((option, idx) => {
-                      const cfg = difficultyConfig[option.difficulty as keyof typeof difficultyConfig] ?? difficultyConfig.easy;
-                      const canBattle = !loading && !localLoading && partyDigimon.length >= 1 && energy.current >= 1;
+                      const cfg =
+                        difficultyConfig[option.difficulty as keyof typeof difficultyConfig] ??
+                        difficultyConfig.easy;
+                      const canBattle =
+                        !loading &&
+                        !localLoading &&
+                        partyDigimon.length >= 1 &&
+                        energy.current >= 1;
                       return (
                         <motion.div
                           key={option.id}
@@ -440,17 +479,28 @@ const Battle = () => {
                           <div className="px-5 py-4 flex items-center gap-4 sm:gap-6">
                             {/* Difficulty info */}
                             <div className="w-24 shrink-0">
-                              <span className={`inline-block px-2.5 py-0.5 rounded text-xs font-semibold font-body ${cfg.badge}`}>
+                              <span
+                                className={`inline-block px-2.5 py-0.5 rounded text-xs font-semibold font-body ${cfg.badge}`}
+                              >
                                 {cfg.label}
                               </span>
-                              <p className={`text-sm font-heading font-bold mt-2 ${cfg.rewardColor}`}>+{cfg.reward}</p>
-                              <p className="text-[11px] font-body text-gray-400 dark:text-gray-500">bits on win</p>
+                              <p
+                                className={`text-sm font-heading font-bold mt-2 ${cfg.rewardColor}`}
+                              >
+                                +{cfg.reward}
+                              </p>
+                              <p className="text-[11px] font-body text-gray-400 dark:text-gray-500">
+                                bits on win
+                              </p>
                             </div>
 
                             {/* Digimon sprites */}
                             <div className="flex items-center gap-3 sm:gap-5 flex-1 justify-center min-h-[80px]">
                               {option.team.digimon.map((digimon: any) => (
-                                <div key={`${digimon.id}-${digimon.name}`} className="flex flex-col items-center gap-1">
+                                <div
+                                  key={`${digimon.id}-${digimon.name}`}
+                                  className="flex flex-col items-center gap-1"
+                                >
                                   <div className="relative w-16 h-16 flex items-center justify-center">
                                     <DigimonSprite
                                       digimonName={digimon.name}
@@ -481,7 +531,9 @@ const Battle = () => {
 
                             {/* Opponent + fight */}
                             <div className="shrink-0 text-right w-28 sm:w-32">
-                              <p className="text-[11px] font-body text-gray-400 dark:text-gray-500 uppercase tracking-wide">Opponent</p>
+                              <p className="text-[11px] font-body text-gray-400 dark:text-gray-500 uppercase tracking-wide">
+                                Opponent
+                              </p>
                               <p className="text-sm font-heading font-semibold text-gray-800 dark:text-gray-200 truncate mt-0.5">
                                 {option.team.username || option.team.display_name}
                               </p>
@@ -494,7 +546,11 @@ const Battle = () => {
                                     : `${cfg.button}`
                                 }`}
                               >
-                                {partyDigimon.length < 1 ? 'Need Digimon' : energy.current < 1 ? 'No Tickets' : 'Fight!'}
+                                {partyDigimon.length < 1
+                                  ? 'Need Digimon'
+                                  : energy.current < 1
+                                    ? 'No Tickets'
+                                    : 'Fight!'}
                               </button>
                             </div>
                           </div>
@@ -529,7 +585,7 @@ const ArenaResultsScreen: React.FC<{
   const [spriteToggle, setSpriteToggle] = useState(false);
 
   useEffect(() => {
-    const id = setInterval(() => setSpriteToggle(t => !t), 700);
+    const id = setInterval(() => setSpriteToggle((t) => !t), 700);
     return () => clearInterval(id);
   }, []);
 
@@ -541,11 +597,13 @@ const ArenaResultsScreen: React.FC<{
       transition={{ duration: 0.35 }}
     >
       {/* Coloured header band */}
-      <div className={`px-6 pt-8 pb-6 text-center ${
-        won
-          ? 'bg-gradient-to-b from-indigo-50 to-white dark:from-indigo-950/40 dark:to-dark-300'
-          : 'bg-gradient-to-b from-red-50 to-white dark:from-red-950/40 dark:to-dark-300'
-      }`}>
+      <div
+        className={`px-6 pt-8 pb-6 text-center ${
+          won
+            ? 'bg-gradient-to-b from-indigo-50 to-white dark:from-indigo-950/40 dark:to-dark-300'
+            : 'bg-gradient-to-b from-red-50 to-white dark:from-red-950/40 dark:to-dark-300'
+        }`}
+      >
         <motion.p
           className={`font-heading text-5xl font-semibold mb-1 ${
             won ? 'text-indigo-600 dark:text-indigo-400' : 'text-red-500 dark:text-red-400'
@@ -563,9 +621,11 @@ const ArenaResultsScreen: React.FC<{
 
       <div className="px-6 pb-6">
         {/* Digimon team celebration / mourning */}
-        <div className={`flex justify-center gap-6 py-5 mb-4 rounded-xl ${
-          won ? 'bg-indigo-50/50 dark:bg-indigo-950/20' : 'bg-red-50/50 dark:bg-red-950/20'
-        }`}>
+        <div
+          className={`flex justify-center gap-6 py-5 mb-4 rounded-xl ${
+            won ? 'bg-indigo-50/50 dark:bg-indigo-950/20' : 'bg-red-50/50 dark:bg-red-950/20'
+          }`}
+        >
           {userTeam.map((d, i) => (
             <motion.div
               key={d.id}
@@ -596,7 +656,9 @@ const ArenaResultsScreen: React.FC<{
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-amber-400" />
-              <span className="text-sm font-body text-gray-600 dark:text-gray-400">Bits earned</span>
+              <span className="text-sm font-body text-gray-600 dark:text-gray-400">
+                Bits earned
+              </span>
             </div>
             <span className="text-sm font-heading font-semibold text-amber-600 dark:text-amber-400">
               +{bitsReward}

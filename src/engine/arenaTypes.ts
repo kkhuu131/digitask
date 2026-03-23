@@ -91,33 +91,33 @@ export interface StrategyConfig {
 export const STRATEGY_CONFIGS: Record<Strategy, StrategyConfig> = {
   aggressive: {
     speedMultiplier: 1.35,
-    attackCooldownBase: 2800,   // noticeably spaced attacks
+    attackCooldownBase: 2800, // noticeably spaced attacks
     skillCooldownBase: 12000,
-    orbitRadius: 65,            // closes in quickly before circling
-    fleeDuration: 900,          // retreats firmly after a hit
-    wanderDurationBase: 1200,   // brief recovery before charging again
+    orbitRadius: 65, // closes in quickly before circling
+    fleeDuration: 900, // retreats firmly after a hit
+    wanderDurationBase: 1200, // brief recovery before charging again
     seekWeight: 1.05,
     orbitWeight: 0.25,
     wanderWeight: 0.18,
   },
   balanced: {
     speedMultiplier: 1.0,
-    attackCooldownBase: 4000,   // clear rhythm between attacks
+    attackCooldownBase: 4000, // clear rhythm between attacks
     skillCooldownBase: 13000,
     orbitRadius: 110,
     fleeDuration: 1400,
-    wanderDurationBase: 2000,   // decent recovery gap
+    wanderDurationBase: 2000, // decent recovery gap
     seekWeight: 0.75,
     orbitWeight: 0.75,
     wanderWeight: 0.28,
   },
   defensive: {
     speedMultiplier: 0.82,
-    attackCooldownBase: 5500,   // deliberate, patient
+    attackCooldownBase: 5500, // deliberate, patient
     skillCooldownBase: 15000,
     orbitRadius: 145,
     fleeDuration: 2000,
-    wanderDurationBase: 3000,   // long recovery — very patient re-engagement
+    wanderDurationBase: 3000, // long recovery — very patient re-engagement
     seekWeight: 0.55,
     orbitWeight: 0.9,
     wanderWeight: 0.38,
@@ -127,13 +127,13 @@ export const STRATEGY_CONFIGS: Record<Strategy, StrategyConfig> = {
 // ─── Arena Digimon state machine ───────────────────────────────────────────────
 
 export type ArenaDigimonState =
-  | 'approaching'   // moving toward the nearest enemy
-  | 'circling'      // within orbit radius — looping around before closing in
-  | 'attacking'     // brief lock while the attack animation plays
-  | 'retreating'    // fleeing after landing a hit or taking damage
-  | 'wandering'     // idle recovery phase between retreat and next approach
-  | 'skill_windup'  // charging up the skill — no movement
-  | 'dead';         // out of HP — playing death bounce then frozen
+  | 'approaching' // moving toward the nearest enemy
+  | 'circling' // within orbit radius — looping around before closing in
+  | 'attacking' // brief lock while the attack animation plays
+  | 'retreating' // fleeing after landing a hit or taking damage
+  | 'wandering' // idle recovery phase between retreat and next approach
+  | 'skill_windup' // charging up the skill — no movement
+  | 'dead'; // out of HP — playing death bounce then frozen
 
 export type SpriteState = 'idle' | 'attacking' | 'hit' | 'dead';
 

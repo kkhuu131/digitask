@@ -14,8 +14,8 @@ const ArenaHPBar: React.FC<ArenaHPBarProps> = ({ name, hp, maxHp, isDead }) => {
     pct > 0.5
       ? '#4ade80' // green-400
       : pct > 0.25
-      ? '#facc15' // yellow-400
-      : '#f87171'; // red-400
+        ? '#facc15' // yellow-400
+        : '#f87171'; // red-400
 
   return (
     <div

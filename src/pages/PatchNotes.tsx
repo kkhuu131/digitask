@@ -1,4 +1,3 @@
-
 const PatchNotes = () => {
   return (
     <div className="max-w-4xl mx-auto">
@@ -8,13 +7,16 @@ const PatchNotes = () => {
           Stay informed about recent changes and upcoming features for Digitask.
         </p>
         <div className="my-6 p-4 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg">
-          <h3 className="font-medium text-indigo-800 dark:text-indigo-200 mb-2">Have a suggestion?</h3>
+          <h3 className="font-medium text-indigo-800 dark:text-indigo-200 mb-2">
+            Have a suggestion?
+          </h3>
           <p className="text-indigo-700 dark:text-indigo-300 text-sm mb-3">
-            We're constantly improving Digitask based on user feedback. If you have ideas for new features or improvements, let us know!
+            We're constantly improving Digitask based on user feedback. If you have ideas for new
+            features or improvements, let us know!
           </p>
-          <a 
-            href="https://forms.gle/HrgybGG7BL1xj5wg6" 
-            target="_blank" 
+          <a
+            href="https://forms.gle/HrgybGG7BL1xj5wg6"
+            target="_blank"
             rel="noopener noreferrer"
             className="inline-block text-sm bg-indigo-100 dark:bg-indigo-800/50 hover:bg-indigo-200 dark:hover:bg-indigo-700/50 text-indigo-800 dark:text-indigo-200 px-3 py-1 rounded-full transition-colors"
           >
@@ -22,154 +24,234 @@ const PatchNotes = () => {
           </a>
         </div>
         <div className="border-b dark:border-dark-200 pb-2 mb-6">
-        <h2 className="text-xl font-semibold mb-4 dark:text-gray-100">Patch Notes</h2>
+          <h2 className="text-xl font-semibold mb-4 dark:text-gray-100">Patch Notes</h2>
 
-        <div className="mb-6">
-          <div className="flex items-center mb-2">
-          <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
-            <h3 className="text-lg font-medium ml-2 dark:text-gray-200">UI and QoL Improvements</h3>
-            <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">November 4, 2025</span>
+          <div className="mb-6">
+            <div className="flex items-center mb-2">
+              <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-xs font-medium px-2.5 py-0.5 rounded">
+                Latest
+              </span>
+              <h3 className="text-lg font-medium ml-2 dark:text-gray-200">
+                UI and QoL Improvements
+              </h3>
+              <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">
+                November 4, 2025
+              </span>
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
+              <li>Several UI and QoL improvements, including dashboard and team manager.</li>
+              <li>
+                The Party page has been removed, as all functionality has been moved to the
+                Dashboard
+              </li>
+              <li>Team Manager and DigiFarm now have more compact UI</li>
+              <li>Fixed bug where storage Digimon were recieving EXP.</li>
+              <li>
+                REMINDER: Max Party Size is now 9, if you have 12 send some to the DigiFarm as
+                unexpected results may occur.
+              </li>
+            </ul>
           </div>
-          <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
-            <li>Several UI and QoL improvements, including dashboard and team manager.</li>
-            <li>The Party page has been removed, as all functionality has been moved to the Dashboard</li>
-            <li>Team Manager and DigiFarm now have more compact UI</li>
-            <li>Fixed bug where storage Digimon were recieving EXP.</li>
-            <li>REMINDER: Max Party Size is now 9, if you have 12 send some to the DigiFarm as unexpected results may occur.</li>
-          </ul>
-        </div>
 
-        <div className="mb-6">
-          <div className="flex items-center mb-2">
-            <h3 className="text-lg font-medium ml-2 dark:text-gray-200">Task Rewards Adjustments</h3>
-            <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">November 2, 2025</span>
+          <div className="mb-6">
+            <div className="flex items-center mb-2">
+              <h3 className="text-lg font-medium ml-2 dark:text-gray-200">
+                Task Rewards Adjustments
+              </h3>
+              <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">
+                November 2, 2025
+              </span>
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
+              <li>
+                All task types (one-time, daily, recurring) now give the same amount of base rewards
+                (100 exp, 1 stat point).
+              </li>
+              <li>XP multipliers from streaks are now capped at 2.0x.</li>
+              <li>Priority XP multipliers are now (0.5x, 1.0x, and 1.5x) respectively.</li>
+              <li>Difficulty XP multipliers are now (0.5x, 1.0x, and 1.5x) respectively.</li>
+              <li>
+                These updates should hopefully make non-streak/early progression rewarding, and make
+                numbers more consistent/readable.
+              </li>
+              <li>Fixed bug where daily quota and streaks were not being updated correctly.</li>
+            </ul>
           </div>
-          <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
-            <li>All task types (one-time, daily, recurring) now give the same amount of base rewards (100 exp, 1 stat point).</li>
-            <li>XP multipliers from streaks are now capped at 2.0x.</li>
-            <li>Priority XP multipliers are now (0.5x, 1.0x, and 1.5x) respectively.</li>
-            <li>Difficulty XP multipliers are now (0.5x, 1.0x, and 1.5x) respectively.</li>
-            <li>These updates should hopefully make non-streak/early progression rewarding, and make numbers more consistent/readable.</li>
-            <li>Fixed bug where daily quota and streaks were not being updated correctly.</li>
-          </ul>
-        </div>
-        
-        <div className="mb-6">
+
+          <div className="mb-6">
             <div className="flex items-center mb-2">
               <h3 className="text-lg font-medium ml-2 dark:text-gray-200">Core Mechanics Rework</h3>
-              <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">October 23, 2025</span>
+              <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">
+                October 23, 2025
+              </span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
-            <li>
-              <div>Battle System Rework</div>
-              <ul className="pl-6 list-[circle] marker:text-indigo-500">
+              <li>
+                <div>Battle System Rework</div>
+                <ul className="pl-6 list-[circle] marker:text-indigo-500">
+                  <li>
+                    Rather than the whole battle being predetermined before animations, battles are
+                    now interactive and turn-by-turn
+                    <ul className="pl-6 list-[square] marker:text-indigo-400">
+                      <li>Each turn players select their Digimon's target for the attack</li>
+                      <li>
+                        Can see the type/attribute multiplier for the attack before confirming
+                      </li>
+                      <li>Auto mode still available for those who still prefer it</li>
+                    </ul>
+                  </li>
+                  <li>Visual Turn Order panel shows the order of upcoming turns</li>
+                </ul>
+              </li>
+              <li>
+                <div>Task System Update</div>
+                <ul className="pl-6 list-[circle] marker:text-indigo-500">
+                  <li>
+                    Priority and Difficulty added
+                    <ul className="pl-6 list-[square] marker:text-indigo-400">
+                      <li>
+                        Rather than all tasks feeling the same; giving the same level of rewards
+                        even if one task may be more difficult than another, you can now set the
+                        priority and difficulty of tasks.
+                      </li>
+                      <li>
+                        Not just cosmetic, difficulty affects the base amount of exp and stats
+                        gained from a task, and priority applies a exp multiplier.
+                      </li>
+                      <li>
+                        Priority can take on: Low, Medium, and High and gives a 0.8x, 1.0x, and 1.3x
+                        exp multiplier respectively.
+                      </li>
+                      <li>
+                        Difficulty can take on: Easy⭐, Medium⭐⭐, and Hard⭐⭐⭐ and gives a 0.7x,
+                        1.0x, and 1.5x exp multiplier respectively. Easy/Medium give 1 stat point,
+                        while Hard gives 2.
+                      </li>
+                      <li>
+                        ⚠️Subject to change: These multipliers are subject to change in the future,
+                        so expect some tweaking.
+                      </li>
+                      <li>
+                        Default priority and difficulty is Medium, so tasks will still feel the same
+                        as before.
+                      </li>
+                      <li></li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+              <li>
+                The Max Party size has been decrease from 12 to 9. I felt like managing 12 different
+                Digimon at a time was too much to really focus on.
+              </li>
+              <li>
+                Daily Bonus Stat Cap Removed: Having a cap worked against the feeling of progression
+              </li>
+              <li>Improved UI for battles, dashboard, and tasks screens</li>
+              <li>Your party can now be viewed in a more compact view on the dashboard screen</li>
+              <li>Plans for future:</li>
+              <ul className="pl-6 list-[square] marker:text-indigo-400">
                 <li>
-                  Rather than the whole battle being predetermined before animations, battles are now interactive and turn-by-turn
-                  <ul className="pl-6 list-[square] marker:text-indigo-400">
-                    <li>Each turn players select their Digimon's target for the attack</li>
-                    <li>Can see the type/attribute multiplier for the attack before confirming</li>
-                    <li>Auto mode still available for those who still prefer it</li>
-                  </ul>
+                  Possibly adding in moves and blocking to battles, based on their learnset from
+                  Cyber Sleuth
                 </li>
                 <li>
-                  Visual Turn Order panel shows the order of upcoming turns
+                  Adding in new Digimon from Time Stranger, however I'd need to find a rip of their
+                  dot sprites (32x32)
                 </li>
-              </ul>
-            </li>
-            <li>
-              <div>Task System Update</div>
-              <ul className="pl-6 list-[circle] marker:text-indigo-500">
-                <li>Priority and Difficulty added
-                  <ul className="pl-6 list-[square] marker:text-indigo-400">
-                    <li>Rather than all tasks feeling the same; giving the same level of rewards even if one task may be more difficult than another, you can now set the priority and difficulty of tasks.</li>
-                    <li>Not just cosmetic, difficulty affects the base amount of exp and stats gained from a task, and priority applies a exp multiplier.</li>
-                    <li>Priority can take on: Low, Medium, and High and gives a 0.8x, 1.0x, and 1.3x exp multiplier respectively.</li>
-                    <li>Difficulty can take on: Easy⭐, Medium⭐⭐, and Hard⭐⭐⭐ and gives a 0.7x, 1.0x, and 1.5x exp multiplier respectively. Easy/Medium give 1 stat point, while Hard gives 2.</li>
-                    <li>⚠️Subject to change: These multipliers are subject to change in the future, so expect some tweaking.</li>
-                    <li>Default priority and difficulty is Medium, so tasks will still feel the same as before.</li>
-                    <li></li>
-                  </ul>
-
+                <li>
+                  Possibly using realtime weather/time of day to influence things (some evolutions
+                  can only happen during certain times of day or weather?, or some types/attributes
+                  get buffed)
                 </li>
+                <li>More priority levels to choose from</li>
+                <li>More task types to choose from</li>
               </ul>
-            </li>
-            <li>The Max Party size has been decrease from 12 to 9. I felt like managing 12 different Digimon at a time was too much to really focus on.</li>
-            <li>Daily Bonus Stat Cap Removed: Having a cap worked against the feeling of progression</li>
-            <li>Improved UI for battles, dashboard, and tasks screens</li>
-            <li>Your party can now be viewed in a more compact view on the dashboard screen</li>
-            <li>Plans for future:</li>
-            <ul className="pl-6 list-[square] marker:text-indigo-400">
-              <li>Possibly adding in moves and blocking to battles, based on their learnset from Cyber Sleuth</li>
-              <li>Adding in new Digimon from Time Stranger, however I'd need to find a rip of their dot sprites (32x32)</li>
-              <li>Possibly using realtime weather/time of day to influence things (some evolutions can only happen during certain times of day or weather?, or some types/attributes get buffed)</li>
-              <li>More priority levels to choose from</li>
-              <li>More task types to choose from</li>
-            </ul>
             </ul>
           </div>
-        <div className="mb-6">
-          <div className="flex items-center mb-2">
-            <h3 className="text-lg font-medium ml-2 dark:text-gray-200">Small Update</h3>
-            <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">June 19, 2025</span>
-          </div>
-          <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
-            <li>Updated Team Manager UI to be cleaner and more compact.</li>
-            <li>Fixed bug where Weekly Boss page did not work on mobile.</li>
-          </ul>
-        </div>
-        <div className="mb-6">
+          <div className="mb-6">
             <div className="flex items-center mb-2">
-              <h3 className="text-lg font-medium ml-2 dark:text-gray-200">Bokomon Assistant, Weekly Bosses</h3>
-              <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">June 16, 2025</span>
+              <h3 className="text-lg font-medium ml-2 dark:text-gray-200">Small Update</h3>
+              <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">
+                June 19, 2025
+              </span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
-            <li>Added Bokomon as a chat assistant!</li>
-            <li>You can ask it questions about Digimon or the website.</li>
-            <li>This is just a fun, experimental feature, so use it as you please!</li>
-            <li>Weekly Bosses are now in testing! This week will just be a test of the format, so expect some bugs.</li>
-            <li>Weekly Bosses come in 2 phases:.</li>
-            <li>The first phase which lasts M-F is the community effort, where you can contribute by completing tasks to weaken the boss.</li>
-            <li>The second phase which lasts Sat-Sun is the battle phase, where you can battle the boss to decrease its HP.</li>
-            <li>Rewards will be probably be some mix of bits, exp, titles, and items.</li>
-            <li>New Digimon: Ancient Digimon, Sovereigns!</li>
-            <li>Fixed bug where 5% personality buff was not being applied when checking for evolution.</li>
-            <li>Fixed bug where bonus stats were not being given from tasks.</li>
+              <li>Updated Team Manager UI to be cleaner and more compact.</li>
+              <li>Fixed bug where Weekly Boss page did not work on mobile.</li>
             </ul>
           </div>
-        <div className="mb-6">
+          <div className="mb-6">
+            <div className="flex items-center mb-2">
+              <h3 className="text-lg font-medium ml-2 dark:text-gray-200">
+                Bokomon Assistant, Weekly Bosses
+              </h3>
+              <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">
+                June 16, 2025
+              </span>
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
+              <li>Added Bokomon as a chat assistant!</li>
+              <li>You can ask it questions about Digimon or the website.</li>
+              <li>This is just a fun, experimental feature, so use it as you please!</li>
+              <li>
+                Weekly Bosses are now in testing! This week will just be a test of the format, so
+                expect some bugs.
+              </li>
+              <li>Weekly Bosses come in 2 phases:.</li>
+              <li>
+                The first phase which lasts M-F is the community effort, where you can contribute by
+                completing tasks to weaken the boss.
+              </li>
+              <li>
+                The second phase which lasts Sat-Sun is the battle phase, where you can battle the
+                boss to decrease its HP.
+              </li>
+              <li>Rewards will be probably be some mix of bits, exp, titles, and items.</li>
+              <li>New Digimon: Ancient Digimon, Sovereigns!</li>
+              <li>
+                Fixed bug where 5% personality buff was not being applied when checking for
+                evolution.
+              </li>
+              <li>Fixed bug where bonus stats were not being given from tasks.</li>
+            </ul>
+          </div>
+          <div className="mb-6">
             <div className="flex items-center mb-2">
               <h3 className="text-lg font-medium ml-2 dark:text-gray-200">Dark Mode!</h3>
-              <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">June 10, 2025</span>
+              <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">
+                June 10, 2025
+              </span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
-            <li>Added Dark mode!</li>
-            <li>Restyled some UI elements and pages.</li>
-            <li>DigiFarm page, Store page, and more have been restyled.</li>
+              <li>Added Dark mode!</li>
+              <li>Restyled some UI elements and pages.</li>
+              <li>DigiFarm page, Store page, and more have been restyled.</li>
             </ul>
           </div>
-        <div className="mb-6">
+          <div className="mb-6">
             <div className="flex items-center mb-2">
-                  <h3 className="text-lg font-medium ml-2 dark:text-gray-200">Evolution Items</h3>
+              <h3 className="text-lg font-medium ml-2 dark:text-gray-200">Evolution Items</h3>
               <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">June 8, 2025</span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
-            <li>Added Evolution items (Digi-Eggs and Spirits) to the store!</li>
-            <li>Some existing evolutions now require these items to evolve.</li>
-            <li>These include:</li>
-            <ul>
-              <li>Digi-Egg of Courage (for Flamedramon)</li>
-              <li>Digi-Egg of Miracles (for Magnamon)</li>
-              <li>Digi-Egg of Destiny (for Rapidmon (Armor))</li>
-              <li>Digi-Egg of Reliability (for Submarimon)</li>
-              <li>Digi-Egg of Hope (for Pegasusmon X)</li>
-              <li>Digi-Egg of Light (for Nefertimon X)</li>
-              <li>Human Spirit of Flame (for Agunimon)</li>
-              <li>Human Spirit of Light (for Lobomon)</li>
-              <li>Beast Spirit of Flame (for BurningGreymon)</li>
-              <li>Beast Spirit of Light (for KendoGarurumon)</li>
-            </ul>
-            <li>These items are one-time use, and can be purchased in the store.</li>
-            <li>New Digimon have been added:</li>
+              <li>Added Evolution items (Digi-Eggs and Spirits) to the store!</li>
+              <li>Some existing evolutions now require these items to evolve.</li>
+              <li>These include:</li>
+              <ul>
+                <li>Digi-Egg of Courage (for Flamedramon)</li>
+                <li>Digi-Egg of Miracles (for Magnamon)</li>
+                <li>Digi-Egg of Destiny (for Rapidmon (Armor))</li>
+                <li>Digi-Egg of Reliability (for Submarimon)</li>
+                <li>Digi-Egg of Hope (for Pegasusmon X)</li>
+                <li>Digi-Egg of Light (for Nefertimon X)</li>
+                <li>Human Spirit of Flame (for Agunimon)</li>
+                <li>Human Spirit of Light (for Lobomon)</li>
+                <li>Beast Spirit of Flame (for BurningGreymon)</li>
+                <li>Beast Spirit of Light (for KendoGarurumon)</li>
+              </ul>
+              <li>These items are one-time use, and can be purchased in the store.</li>
+              <li>New Digimon have been added:</li>
               <ul>
                 <li>Armor evolutions</li>
                 <li>X-Antibody Evolutions:</li>
@@ -178,22 +260,30 @@ const PatchNotes = () => {
                 <li>Justimon X</li>
                 <li>Rapidmon X</li>
               </ul>
-            <li>Made task completion into a single database call, hopefully fixing some bugs.</li>
-            <li>Coming soon: Rasenmon line, Hexeblaumon line, and more X-Antibody/Armor evolutions.</li>
+              <li>Made task completion into a single database call, hopefully fixing some bugs.</li>
+              <li>
+                Coming soon: Rasenmon line, Hexeblaumon line, and more X-Antibody/Armor evolutions.
+              </li>
             </ul>
           </div>
-        <div className="mb-6">
+          <div className="mb-6">
             <div className="flex items-center mb-2">
               <h3 className="text-lg font-medium ml-2">Small Update</h3>
               <span className="text-sm text-gray-500 ml-auto">June 2, 2025</span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
-            <li>Nerfed Wild Digimon battles in Arena, so they're more easier to win.</li>
-            <li>For the difficulties, easy should feel like almost always win, mediums 50/50, and hard should be beatable if your type/attributes matchup counter them.</li>
-            <li>Made some UI more responsive (ex. Stat Cap Meter after completing tasks).</li>
-            <li>What to expect in future updates:</li>
-            <li>Item requirements for some existing evolutions (ex. Armor evolutions require an item).</li>
-            <li>Mobile app version in the works, so expect slower updates.</li>
+              <li>Nerfed Wild Digimon battles in Arena, so they're more easier to win.</li>
+              <li>
+                For the difficulties, easy should feel like almost always win, mediums 50/50, and
+                hard should be beatable if your type/attributes matchup counter them.
+              </li>
+              <li>Made some UI more responsive (ex. Stat Cap Meter after completing tasks).</li>
+              <li>What to expect in future updates:</li>
+              <li>
+                Item requirements for some existing evolutions (ex. Armor evolutions require an
+                item).
+              </li>
+              <li>Mobile app version in the works, so expect slower updates.</li>
             </ul>
           </div>
           <div className="mb-6">
@@ -202,13 +292,25 @@ const PatchNotes = () => {
               <span className="text-sm text-gray-500 ml-auto">May 28, 2025</span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
-            <li>Better Arena battle matchmaking (strength is determined by stats not level).</li>
-            <li>Example for reasoning behind this was level 1 Ultimate Digimon were the same as a level 1 Baby Digimon.</li>
-            <li>As such, battles may seem harder than before, so bit rewards have been overall increased.</li>
-            <li>New store item icons and replaced ABI booster with EXP item.</li>
-            <li>Ogremon X, Craniamon X (forgot in last update), and Numemon X added.</li>
-            <li>Fixed a bug where currency was reset to 0 after a battle, if shop wasn't visited during session.</li>
-            <li>If this affected you, please let me know, and I'll manually add the missing currency.</li>
+              <li>Better Arena battle matchmaking (strength is determined by stats not level).</li>
+              <li>
+                Example for reasoning behind this was level 1 Ultimate Digimon were the same as a
+                level 1 Baby Digimon.
+              </li>
+              <li>
+                As such, battles may seem harder than before, so bit rewards have been overall
+                increased.
+              </li>
+              <li>New store item icons and replaced ABI booster with EXP item.</li>
+              <li>Ogremon X, Craniamon X (forgot in last update), and Numemon X added.</li>
+              <li>
+                Fixed a bug where currency was reset to 0 after a battle, if shop wasn't visited
+                during session.
+              </li>
+              <li>
+                If this affected you, please let me know, and I'll manually add the missing
+                currency.
+              </li>
             </ul>
           </div>
           <div className="mb-6">
@@ -217,17 +319,20 @@ const PatchNotes = () => {
               <span className="text-sm text-gray-500 ml-auto">May 26, 2025</span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
-            <li>X-Antibody item has been reworked to be a permanent application to a Digimon, allowing it to freely switch between X-Antibody and regular forms.</li>
-            <li>Cost has also been reduced to 3000 bits.</li>
-            <li>Added more X-Antibody Digimon!</li>
-            <ul>
-              <li>Royal Knights</li>
-              <li>Salamon, Gatomon, Angewomon, Ophanimon</li>
-              <li>Lilithmon, evolving from LadyDevimon</li>
-              <li>Palmon, Togemon, Lillymon, Rosemon</li>
-            </ul>
-            <li>More to come soon, feel free to send more suggestions through feedback form!</li>
-            <li>More items such as Personality changer and Stat extractor added!</li>
+              <li>
+                X-Antibody item has been reworked to be a permanent application to a Digimon,
+                allowing it to freely switch between X-Antibody and regular forms.
+              </li>
+              <li>Cost has also been reduced to 3000 bits.</li>
+              <li>Added more X-Antibody Digimon!</li>
+              <ul>
+                <li>Royal Knights</li>
+                <li>Salamon, Gatomon, Angewomon, Ophanimon</li>
+                <li>Lilithmon, evolving from LadyDevimon</li>
+                <li>Palmon, Togemon, Lillymon, Rosemon</li>
+              </ul>
+              <li>More to come soon, feel free to send more suggestions through feedback form!</li>
+              <li>More items such as Personality changer and Stat extractor added!</li>
             </ul>
           </div>
           <div className="mb-6">
@@ -236,94 +341,172 @@ const PatchNotes = () => {
               <span className="text-sm text-gray-500 ml-auto">May 25, 2025</span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
-            <li>Added <b>DigiFarm</b>! Send Digimon that you want to keep, but don't want to use, to the DigiFarm!</li>
-            <li>These Digimon won't gain any experience, and they can be freely moved back.</li>
-            <li>The limit for your active Party still remains 12, but you can have a potentially unlimited number in the DigiFarm.</li>
-            <li>Bringing back <b>Playground mode</b> as part of DigiFarm to play with stored Digimon!</li>
-            <li>Introducing the <b>Store</b>! Gain bits from Arena battles to purchase various items from Neemon!</li>
-            <li>Items available in the store are:</li>
-            <ul>
-              <li>+4 of any bonus stat or +2 ABI for 1000 bits</li>
-              <li>Random Data: Discover a random Digimon for 2000 bits</li>
-              <li>Avatar Chip: Unlock a random, rare Digimon profile picture for 600 bits</li>
-              <li>X-Antibody: 8000 bits</li>
-            </ul>
-            <li>Item prices may change or more items will be added in the future, so give any suggestions through the feedback form!</li>
-            <li>Bits are a currency only gained from Arena battles; increasing difficulty will reward more bits, but losing will give significantly less.</li>
-            <li>Bit rewards are as follows:</li>
-            <ul>
-              <li>Easy: 60 for win, 30 for loss</li>
-              <li>Medium: 80 for win, 25 for loss</li>
-              <li>Hard: 120 for win, 15 for loss</li>
-            </ul>
-            <li>As you can see, it's very much a risk/reward system, so gauge your matchups before entering.</li>
+              <li>
+                Added <b>DigiFarm</b>! Send Digimon that you want to keep, but don't want to use, to
+                the DigiFarm!
+              </li>
+              <li>These Digimon won't gain any experience, and they can be freely moved back.</li>
+              <li>
+                The limit for your active Party still remains 12, but you can have a potentially
+                unlimited number in the DigiFarm.
+              </li>
+              <li>
+                Bringing back <b>Playground mode</b> as part of DigiFarm to play with stored
+                Digimon!
+              </li>
+              <li>
+                Introducing the <b>Store</b>! Gain bits from Arena battles to purchase various items
+                from Neemon!
+              </li>
+              <li>Items available in the store are:</li>
+              <ul>
+                <li>+4 of any bonus stat or +2 ABI for 1000 bits</li>
+                <li>Random Data: Discover a random Digimon for 2000 bits</li>
+                <li>Avatar Chip: Unlock a random, rare Digimon profile picture for 600 bits</li>
+                <li>X-Antibody: 8000 bits</li>
+              </ul>
+              <li>
+                Item prices may change or more items will be added in the future, so give any
+                suggestions through the feedback form!
+              </li>
+              <li>
+                Bits are a currency only gained from Arena battles; increasing difficulty will
+                reward more bits, but losing will give significantly less.
+              </li>
+              <li>Bit rewards are as follows:</li>
+              <ul>
+                <li>Easy: 60 for win, 30 for loss</li>
+                <li>Medium: 80 for win, 25 for loss</li>
+                <li>Hard: 120 for win, 15 for loss</li>
+              </ul>
+              <li>
+                As you can see, it's very much a risk/reward system, so gauge your matchups before
+                entering.
+              </li>
             </ul>
           </div>
           <div className="mb-6">
             <div className="flex items-center mb-2">
-              <h3 className="text-lg font-medium ml-2">Title Tiers, Apollomon and GraceNovamon line!</h3>
+              <h3 className="text-lg font-medium ml-2">
+                Title Tiers, Apollomon and GraceNovamon line!
+              </h3>
               <span className="text-sm text-gray-500 ml-auto">May 22, 2025</span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
-            <li>Added tiers to Titles, so they are visually distinct from each other based on their difficulty.</li>
-            <li>Added Apollomon line and GraceNovamon to the game!</li>
-            <li>These includes Coronamon, Firamon, Flaremon, and Apollomon, which DNA Digivolve into GraceNovamon with Dianamon.</li>
-            <li>Added more animated sprites for Digimon that weren't working because of naming inconsistencies.</li>
-            <li>X-Antibody forms can only be achieved with a high enough ABI now (&gt;= 60), might be reworked later.</li>
-            <li>Changed Digitask Logo from Agumon to Agumon Expert.</li>
+              <li>
+                Added tiers to Titles, so they are visually distinct from each other based on their
+                difficulty.
+              </li>
+              <li>Added Apollomon line and GraceNovamon to the game!</li>
+              <li>
+                These includes Coronamon, Firamon, Flaremon, and Apollomon, which DNA Digivolve into
+                GraceNovamon with Dianamon.
+              </li>
+              <li>
+                Added more animated sprites for Digimon that weren't working because of naming
+                inconsistencies.
+              </li>
+              <li>
+                X-Antibody forms can only be achieved with a high enough ABI now (&gt;= 60), might
+                be reworked later.
+              </li>
+              <li>Changed Digitask Logo from Agumon to Agumon Expert.</li>
             </ul>
           </div>
           <div className="mb-6">
             <div className="flex items-center mb-2">
-              <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
+              <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-xs font-medium px-2.5 py-0.5 rounded">
+                Latest
+              </span>
               <h3 className="text-lg font-medium ml-2 dark:text-gray-200">New Titles!</h3>
               <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">May 21, 2025</span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
-            <li>New titles are added for reaching new milestones for daily quota streaks.</li>
-            <li>Updated avatar sprites and Digidex to use the new sprites from the animation update.</li>
-            <li>Battle animations now use the new sprites, animating the Digimon attacking/defending, or victory/defeat.</li>
-            <li>Added egg sprites for the starters when claiming Digimon.</li>
-            <li>Updated Navigation bar to be more compact.</li>
+              <li>New titles are added for reaching new milestones for daily quota streaks.</li>
+              <li>
+                Updated avatar sprites and Digidex to use the new sprites from the animation update.
+              </li>
+              <li>
+                Battle animations now use the new sprites, animating the Digimon
+                attacking/defending, or victory/defeat.
+              </li>
+              <li>Added egg sprites for the starters when claiming Digimon.</li>
+              <li>Updated Navigation bar to be more compact.</li>
             </ul>
-        </div>
+          </div>
           <div className="mb-6">
             <div className="flex items-center mb-2">
               <h3 className="text-lg font-medium ml-2">X-Antibody, Bokomon and Neemon!</h3>
               <span className="text-sm text-gray-500 ml-auto">May 20, 2025</span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
-            <li>Introducing <b>X-Antibody Digimon</b>! These are mutated variants of the original Digimon, providing a 10% boost to all stats.</li>
-            <li>If a Digimon has an X-Antibody form, you will see a new button in the Evolution window.</li>
-            <li>Unlike digivolution, you can transform back and forth between the original and X-Antibody forms without losing levels.</li>
-            <li>For now, you will be free to transform as much as you want, but expect there to be some requirement in the future.</li>
-            <li>The X-Antibody Digimon added in this update are:</li>
-            <ul>
-              <li>Agumon X, Greymon X, MetalGreymon X, WarGreymon X</li>
-              <li>Gabumon X, WereGarurumon X, MetalGarurumon X</li>
-              <li>Omnimon X</li>
-              <li>Guilmon X, Growlmon X, WarGrowlmon X, Megidramon X, Gallantmon X</li>
-              <li>Dracomon X</li>
-              <li>LadyDevimon X, BeelStarmon X</li>
-              <li>Beelzemon X</li>
+              <li>
+                Introducing <b>X-Antibody Digimon</b>! These are mutated variants of the original
+                Digimon, providing a 10% boost to all stats.
+              </li>
+              <li>
+                If a Digimon has an X-Antibody form, you will see a new button in the Evolution
+                window.
+              </li>
+              <li>
+                Unlike digivolution, you can transform back and forth between the original and
+                X-Antibody forms without losing levels.
+              </li>
+              <li>
+                For now, you will be free to transform as much as you want, but expect there to be
+                some requirement in the future.
+              </li>
+              <li>The X-Antibody Digimon added in this update are:</li>
+              <ul>
+                <li>Agumon X, Greymon X, MetalGreymon X, WarGreymon X</li>
+                <li>Gabumon X, WereGarurumon X, MetalGarurumon X</li>
+                <li>Omnimon X</li>
+                <li>Guilmon X, Growlmon X, WarGrowlmon X, Megidramon X, Gallantmon X</li>
+                <li>Dracomon X</li>
+                <li>LadyDevimon X, BeelStarmon X</li>
+                <li>Beelzemon X</li>
+              </ul>
+              <li>
+                All X-Antibody Digimon can be achieved through their normal Digimon counterpart, or
+                evolving an X-Antibody Digimon that usually evolves into the Digimon.
+              </li>
+              <li>BeelStarmon, a female counterpart to Beelzemon, has also been added.</li>
+              <li>
+                Added <b>Bokomon and Neemon</b> (from Digimon Frontier) as guides to the game!
+                Sprites are from @otro_jorch on twitter
+              </li>
+              <li>Added an onboarding flow to the game to help new users get started!</li>
+              <li>Removed Playground mode, until I can find a way for it to be more useful.</li>
             </ul>
-            <li>All X-Antibody Digimon can be achieved through their normal Digimon counterpart, or evolving an X-Antibody Digimon that usually evolves into the Digimon.</li>
-            <li>BeelStarmon, a female counterpart to Beelzemon, has also been added.</li>
-            <li>Added <b>Bokomon and Neemon</b> (from Digimon Frontier) as guides to the game! Sprites are from @otro_jorch on twitter</li>
-            <li>Added an onboarding flow to the game to help new users get started!</li>
-            <li>Removed Playground mode, until I can find a way for it to be more useful.</li>
-            </ul>
-        </div>
+          </div>
           <div className="mb-6">
             <div className="flex items-center mb-2">
               <h3 className="text-lg font-medium ml-2">Animation Update</h3>
               <span className="text-sm text-gray-500 ml-auto">May 19, 2025</span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
-            <li>Several Digimon sprites have gotten animations/new sprites (ex. idle animation, happy, sad, sleeping)</li>
-            <li>Source: <a href="https://drive.google.com/drive/folders/1EgoXHwlXNiurD4X_9WEgoyzm9OuWf_tf" target="_blank" rel="noopener noreferrer">https://drive.google.com/drive/folders/1EgoXHwlXNiurD4X_9WEgoyzm9OuWf_tf</a></li>
-            <li>Unfortunately, I couldn't find sprites for all Digimon, so many Digimon are still static.</li>
-            <li>Due to influx of all these new sprites, I'll be able to add more Digimon to the game! Notably a lot of the X-Antibody Digimon!</li>
+              <li>
+                Several Digimon sprites have gotten animations/new sprites (ex. idle animation,
+                happy, sad, sleeping)
+              </li>
+              <li>
+                Source:{' '}
+                <a
+                  href="https://drive.google.com/drive/folders/1EgoXHwlXNiurD4X_9WEgoyzm9OuWf_tf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  https://drive.google.com/drive/folders/1EgoXHwlXNiurD4X_9WEgoyzm9OuWf_tf
+                </a>
+              </li>
+              <li>
+                Unfortunately, I couldn't find sprites for all Digimon, so many Digimon are still
+                static.
+              </li>
+              <li>
+                Due to influx of all these new sprites, I'll be able to add more Digimon to the
+                game! Notably a lot of the X-Antibody Digimon!
+              </li>
             </ul>
           </div>
           <div className="mb-6">
@@ -332,46 +515,111 @@ const PatchNotes = () => {
               <span className="text-sm text-gray-500 ml-auto">May 17, 2025</span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
-            <li>Completed tasks that are recurring or daily can now still be edited.</li>
-            <li>Improved Digimon team card UI.</li>
-            <li>Added 3 new Digimon: BlitzGreymon, CresGarurumon, and Omnimon Alter-S</li>
-            <li>BlitzGreymon are evolved through MetalGreymon (Blue), CresGarurumon from WereGarurumon, and Omnimon Alter-S from the fusion of the two.</li>
-            <li>Made ABI Milestones easier to reach, especially earlier ones.</li>
+              <li>Completed tasks that are recurring or daily can now still be edited.</li>
+              <li>Improved Digimon team card UI.</li>
+              <li>Added 3 new Digimon: BlitzGreymon, CresGarurumon, and Omnimon Alter-S</li>
+              <li>
+                BlitzGreymon are evolved through MetalGreymon (Blue), CresGarurumon from
+                WereGarurumon, and Omnimon Alter-S from the fusion of the two.
+              </li>
+              <li>Made ABI Milestones easier to reach, especially earlier ones.</li>
             </ul>
           </div>
           <div className="mb-6">
             <div className="flex items-center mb-2">
-              <h3 className="text-lg font-medium ml-2">Big Update: Campaign Mode, Titles, and more</h3>
+              <h3 className="text-lg font-medium ml-2">
+                Big Update: Campaign Mode, Titles, and more
+              </h3>
               <span className="text-sm text-gray-500 ml-auto">May 15, 2025</span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
-            <li><b>Campaign mode is now available!</b> The first 60 stages are made and follows a similar journey to Digimon Adventure.</li>
-            <li>This mode is just meant to be something you slowly do over time, or have something to work towards with the strength of your Digimon. Progress the stages at your own pace, and expect to be added in the future. </li>
-            <li>Some stages offer multiple options (A, B, C, for example), and only clearing one is required to progress.</li>
-            <li>⚠️NOTE: Any feedback on the difficulty of the campaign is welcome, please send it through the feedback form.</li>
-            <li>You can now set the Battle Speed for turn animations (1x-4x)</li>
-            <li><b>Titles are now available!</b> You can now earn titles by completing certain achievements such as campaign progression, discovering and evolving Digimon, and doing team battles.</li>
-            <li>These titles can be displayed on your profile page for others to see (up to 3).</li>
-            <li><b>Fusion (aka DNA Digivolution) is now possible!</b> This mechanic is used to evolve into certain Digimon such as Omnimon. These evolutions require another Digimon to fuse with and the process consumes them.</li>
-            <li>⚠️NOTE: Fusion consumes the Digimon listed as the requirement, and not the current one. No, the bonus stats or ABI are not combined.</li>
-            <li>HP Bonus is now effectively 10x what it was previously, so expect a lot more HP for your Digimon. The (+Number) displayed is just number of stat points into HP, but the effective increase is 10x that.</li>
-            <li>In the future, some higher stage evolutions may also be locked behind a Campaign stage clear such as some of the Royal Knights or Ultra Digimon.</li>
-            <li>Expect potential bugs and issues with these new features, please report any issues to the feedback form!</li>
-            <li>Thank you to everyone who has been using the site and providing feedback, I appreciate it!</li>
+              <li>
+                <b>Campaign mode is now available!</b> The first 60 stages are made and follows a
+                similar journey to Digimon Adventure.
+              </li>
+              <li>
+                This mode is just meant to be something you slowly do over time, or have something
+                to work towards with the strength of your Digimon. Progress the stages at your own
+                pace, and expect to be added in the future.{' '}
+              </li>
+              <li>
+                Some stages offer multiple options (A, B, C, for example), and only clearing one is
+                required to progress.
+              </li>
+              <li>
+                ⚠️NOTE: Any feedback on the difficulty of the campaign is welcome, please send it
+                through the feedback form.
+              </li>
+              <li>You can now set the Battle Speed for turn animations (1x-4x)</li>
+              <li>
+                <b>Titles are now available!</b> You can now earn titles by completing certain
+                achievements such as campaign progression, discovering and evolving Digimon, and
+                doing team battles.
+              </li>
+              <li>
+                These titles can be displayed on your profile page for others to see (up to 3).
+              </li>
+              <li>
+                <b>Fusion (aka DNA Digivolution) is now possible!</b> This mechanic is used to
+                evolve into certain Digimon such as Omnimon. These evolutions require another
+                Digimon to fuse with and the process consumes them.
+              </li>
+              <li>
+                ⚠️NOTE: Fusion consumes the Digimon listed as the requirement, and not the current
+                one. No, the bonus stats or ABI are not combined.
+              </li>
+              <li>
+                HP Bonus is now effectively 10x what it was previously, so expect a lot more HP for
+                your Digimon. The (+Number) displayed is just number of stat points into HP, but the
+                effective increase is 10x that.
+              </li>
+              <li>
+                In the future, some higher stage evolutions may also be locked behind a Campaign
+                stage clear such as some of the Royal Knights or Ultra Digimon.
+              </li>
+              <li>
+                Expect potential bugs and issues with these new features, please report any issues
+                to the feedback form!
+              </li>
+              <li>
+                Thank you to everyone who has been using the site and providing feedback, I
+                appreciate it!
+              </li>
             </ul>
           </div>
           <div className="mb-6">
             <div className="flex items-center mb-2">
-              <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-xs font-medium px-2.5 py-0.5 rounded">Latest</span>
+              <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-xs font-medium px-2.5 py-0.5 rounded">
+                Latest
+              </span>
               <h3 className="text-lg font-medium ml-2 dark:text-gray-200">Minor Changes</h3>
               <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">May 9, 2025</span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
-            <li>Updated task list UI to be more compact on mobile.</li>
-            <li>Final stat calculations fixed, bonus stats were being applied multiplicatively instead of additively.</li>
-            <li>Users are now suggested a category in task creation, but can change it freely during creation.</li>
-            <li>Campaign mode is in development, please send any suggestions for enemy teams or rewards through the feedback form!</li>
-            <li>A preview of the new campaign mode is available if you go to <a className="text-blue-500" href="https://digitask-pi.vercel.app/campaign" rel="noopener noreferrer">https://digitask-pi.vercel.app/campaign</a>.</li>
+              <li>Updated task list UI to be more compact on mobile.</li>
+              <li>
+                Final stat calculations fixed, bonus stats were being applied multiplicatively
+                instead of additively.
+              </li>
+              <li>
+                Users are now suggested a category in task creation, but can change it freely during
+                creation.
+              </li>
+              <li>
+                Campaign mode is in development, please send any suggestions for enemy teams or
+                rewards through the feedback form!
+              </li>
+              <li>
+                A preview of the new campaign mode is available if you go to{' '}
+                <a
+                  className="text-blue-500"
+                  href="https://digitask-pi.vercel.app/campaign"
+                  rel="noopener noreferrer"
+                >
+                  https://digitask-pi.vercel.app/campaign
+                </a>
+                .
+              </li>
             </ul>
           </div>
           <div className="mb-6">
@@ -380,10 +628,19 @@ const PatchNotes = () => {
               <span className="text-sm text-gray-500 ml-auto">May 7, 2025</span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
-              <li>Digimon species data and evolution paths are saved locally, so should reduce the load on the server.</li>
+              <li>
+                Digimon species data and evolution paths are saved locally, so should reduce the
+                load on the server.
+              </li>
               <li>Fixed rare battle bug where turn animations would get out of sync.</li>
-              <li><b>Campaign mode is coming soon</b>, where you fight a series of progressively harder pre-made battles.</li>
-              <li>Rewards will probably(?) just be titles or achievements, so it won't be required to complete the campaign.</li>
+              <li>
+                <b>Campaign mode is coming soon</b>, where you fight a series of progressively
+                harder pre-made battles.
+              </li>
+              <li>
+                Rewards will probably(?) just be titles or achievements, so it won't be required to
+                complete the campaign.
+              </li>
               <li>Let us know what you want to see in campaign mode in the feedback form!</li>
             </ul>
           </div>
@@ -393,11 +650,22 @@ const PatchNotes = () => {
               <span className="text-sm text-gray-500 ml-auto">May 6, 2025</span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
-              <li>Digimon created before the update recieved ABI depending on their stage. Rookie: 5, Champion: 8, Ultimate: 15, Mega: 20</li>
-              <li>Digimon with bonus stats that exceeded their ABI cap were granted the ABI needed to reach the cap (at most 25 ABI).</li>
-              <li>Note: Digimon were not granted both of these ABI rewards, only whichever was higher.</li>
+              <li>
+                Digimon created before the update recieved ABI depending on their stage. Rookie: 5,
+                Champion: 8, Ultimate: 15, Mega: 20
+              </li>
+              <li>
+                Digimon with bonus stats that exceeded their ABI cap were granted the ABI needed to
+                reach the cap (at most 25 ABI).
+              </li>
+              <li>
+                Note: Digimon were not granted both of these ABI rewards, only whichever was higher.
+              </li>
               <li>Fixed bug where Digimon did not recieve happiness from tasks</li>
-              <li>Fixed bug where Digimon on Dashboard was not visually updated when task was completed</li>
+              <li>
+                Fixed bug where Digimon on Dashboard was not visually updated when task was
+                completed
+              </li>
               <li>Thank you for the suggestions, please continue to send in any feedback!</li>
             </ul>
           </div>
@@ -407,20 +675,46 @@ const PatchNotes = () => {
               <span className="text-sm text-gray-500 ml-auto">May 5, 2025</span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
-              <li>ABI (or Ability) is now a stat that can be increased by evolving or devolving Digimon.</li>
-              <li>ABI is used to calculate the cap of total bonus stats a Digimon can have (50 + ABI/2).</li>
-              <li>You will not be able to allocate bonus stats to a Digimon once it has reached or past its cap, auto allocation will instead save the stats.</li>
-              <li>Because of this new system, <b>tasks only give 1 bonus stat point</b>.</li>
-              <li>Evolving and devolving will now give ABI based on experience instead of bonus stats (flat 1 ABI with an additional ABI / 5 levels for devolution, ABI / 10 levels for evolution).</li>
-              <li>Reaching certain ABI thresholds will also give more Digimon, replacing task/daily quota milestones.</li>
-              <li>Depending on how many Digimon you have, thresholds to claim the next Digimon will be different.
+              <li>
+                ABI (or Ability) is now a stat that can be increased by evolving or devolving
+                Digimon.
+              </li>
+              <li>
+                ABI is used to calculate the cap of total bonus stats a Digimon can have (50 +
+                ABI/2).
+              </li>
+              <li>
+                You will not be able to allocate bonus stats to a Digimon once it has reached or
+                past its cap, auto allocation will instead save the stats.
+              </li>
+              <li>
+                Because of this new system, <b>tasks only give 1 bonus stat point</b>.
+              </li>
+              <li>
+                Evolving and devolving will now give ABI based on experience instead of bonus stats
+                (flat 1 ABI with an additional ABI / 5 levels for devolution, ABI / 10 levels for
+                evolution).
+              </li>
+              <li>
+                Reaching certain ABI thresholds will also give more Digimon, replacing task/daily
+                quota milestones.
+              </li>
+              <li>
+                Depending on how many Digimon you have, thresholds to claim the next Digimon will be
+                different.
                 <ul>
                   <li>In order: 5, 10, 25, 40, 60, 85, 115, 150, 200, 240, 300</li>
                 </ul>
               </li>
               <li>ABI is also used as a stat requirement for some evolutions.</li>
-              <li>Tasks now give all reserve Digimon 50% of the experience. (ex. active Digimon gets 100 exp, all reserve Digimon get 50 exp)</li>
-              <li>The balancing of this system is still being tested, so expect changes in the future and give feedback if you have any suggestions.</li>
+              <li>
+                Tasks now give all reserve Digimon 50% of the experience. (ex. active Digimon gets
+                100 exp, all reserve Digimon get 50 exp)
+              </li>
+              <li>
+                The balancing of this system is still being tested, so expect changes in the future
+                and give feedback if you have any suggestions.
+              </li>
             </ul>
           </div>
           <div className="mb-6">
@@ -429,12 +723,24 @@ const PatchNotes = () => {
               <span className="text-sm text-gray-500 ml-auto">April 26, 2025</span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
-              <li>Playground mode is now available. Allows you to play and interact with all your Digimon.</li>
+              <li>
+                Playground mode is now available. Allows you to play and interact with all your
+                Digimon.
+              </li>
               <li>Mode is currently just cosmetic, and provides no benefits.</li>
-              <li>Digimon are now randomly assigned a personality, each increasing one of their stats by 5% (applied after bonus stats).</li>
-              <li>Personality can be Durable (HP), Lively (SP), Fighter (ATK), Defender (DEF), Brainy (INT), or Nimble (SPD).</li>
+              <li>
+                Digimon are now randomly assigned a personality, each increasing one of their stats
+                by 5% (applied after bonus stats).
+              </li>
+              <li>
+                Personality can be Durable (HP), Lively (SP), Fighter (ATK), Defender (DEF), Brainy
+                (INT), or Nimble (SPD).
+              </li>
               <li>Max # of Digimon per user is increased to 12 (from 9).</li>
-              <li>Stats displayed in Digimon details are now displayed like so: Total Stat # (+ Bonus Stat #). The total stat # already has the bonus stats and personality applied.</li>
+              <li>
+                Stats displayed in Digimon details are now displayed like so: Total Stat # (+ Bonus
+                Stat #). The total stat # already has the bonus stats and personality applied.
+              </li>
             </ul>
           </div>
           <div className="mb-6">
@@ -443,11 +749,26 @@ const PatchNotes = () => {
               <span className="text-sm text-gray-500 ml-auto">April 26, 2025</span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
-              <li>Battle options now have a 33% chance to force a wild encounter even if there's a real opponent</li>
-              <li>Wild encounters have a chance to all be the same Type, or same Attribute to add some variety.</li>
-              <li>Wild encounters have a chance of being an Alpha + Minions, meaning one of the Digimon will be a higher stage and level than the others.</li>
-              <li>Wild encounters now choose Digimon with stages that would match the level (ex. not level 5 Mega Digimon, or level 50 Baby Digimon)</li>
-              <li>The battle teams of other players, will now be the Digimon on their team, instead of their 3 highest level Digimon.</li>
+              <li>
+                Battle options now have a 33% chance to force a wild encounter even if there's a
+                real opponent
+              </li>
+              <li>
+                Wild encounters have a chance to all be the same Type, or same Attribute to add some
+                variety.
+              </li>
+              <li>
+                Wild encounters have a chance of being an Alpha + Minions, meaning one of the
+                Digimon will be a higher stage and level than the others.
+              </li>
+              <li>
+                Wild encounters now choose Digimon with stages that would match the level (ex. not
+                level 5 Mega Digimon, or level 50 Baby Digimon)
+              </li>
+              <li>
+                The battle teams of other players, will now be the Digimon on their team, instead of
+                their 3 highest level Digimon.
+              </li>
               <li>Evolving or devolving a Digimon will now play a short animation.</li>
             </ul>
           </div>
@@ -468,9 +789,14 @@ const PatchNotes = () => {
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
               <li>New Task Type: Recurring. These are different from Daily tasks.</li>
-              <li>You can set these to refresh on specific days of the week (every Sunday and Saturday, or every weekday, for example).</li>
+              <li>
+                You can set these to refresh on specific days of the week (every Sunday and
+                Saturday, or every weekday, for example).
+              </li>
               <li>They give the same rewards as Daily tasks, 50 EXP and 2 stat points.</li>
-              <li>Made some changes to the Evolution/Devolution UI and Battle page for mobile users.</li>
+              <li>
+                Made some changes to the Evolution/Devolution UI and Battle page for mobile users.
+              </li>
             </ul>
           </div>
           <div className="mb-6">
@@ -479,12 +805,21 @@ const PatchNotes = () => {
               <span className="text-sm text-gray-500 ml-auto">April 23, 2025</span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
-              <li>Digivolving and De-digivolution will now reset the Digimon's level back to 1, but convert experience to bonus stats.</li>
+              <li>
+                Digivolving and De-digivolution will now reset the Digimon's level back to 1, but
+                convert experience to bonus stats.
+              </li>
               <li>Digivolving will reward +1 points to all stats per 1000 experience points.</li>
               <li>De-digivolution will reward +1 points to all stats per 1500 experince points.</li>
               <li>De-digivolution will only be possible if the Digimon has been discovered.</li>
-              <li>These changes are still being experimented with, so any feedback on this system is welcome!</li>
-              <li>Future changes: Asa a result of this update, EXP rewards may be increased in the future.</li>
+              <li>
+                These changes are still being experimented with, so any feedback on this system is
+                welcome!
+              </li>
+              <li>
+                Future changes: Asa a result of this update, EXP rewards may be increased in the
+                future.
+              </li>
             </ul>
           </div>
           <div className="mb-6">
@@ -493,8 +828,22 @@ const PatchNotes = () => {
               <span className="text-sm text-gray-500 ml-auto">April 22, 2025</span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
-              <li>Added icons for Digimon Types and Attributes (credit to <a href="https://www.deviantart.com/sergiogransol/art/Digimon-Icons-Official-and-Fanmade-947832465" target="_blank" rel="noopener noreferrer">SergioGranSol</a>)</li>
-              <li>De-digivolution is now possible, allowing Digimon to revert to a previously discovered Digimon, for now it will come at no costs. Future updates to this system will happen soon!</li>
+              <li>
+                Added icons for Digimon Types and Attributes (credit to{' '}
+                <a
+                  href="https://www.deviantart.com/sergiogransol/art/Digimon-Icons-Official-and-Fanmade-947832465"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  SergioGranSol
+                </a>
+                )
+              </li>
+              <li>
+                De-digivolution is now possible, allowing Digimon to revert to a previously
+                discovered Digimon, for now it will come at no costs. Future updates to this system
+                will happen soon!
+              </li>
               <li>Future changes: Reworked EXP system</li>
               <li>Fixed a bug where user's couldn't login after signing up (sorry about that!)</li>
             </ul>
@@ -516,7 +865,10 @@ const PatchNotes = () => {
               <span className="text-sm text-gray-500 ml-auto">April 20, 2025</span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
-              <li>Removed health from Digimon; felt that it was too punishing when there's already incentive to do tasks</li>
+              <li>
+                Removed health from Digimon; felt that it was too punishing when there's already
+                incentive to do tasks
+              </li>
               <li>Milestone rewards now give a selectable starter Digimon, rather than random</li>
               <li>Added report feature for inappropriate content</li>
             </ul>
@@ -531,7 +883,10 @@ const PatchNotes = () => {
               <li>Added a profile page for each user, showing their Digimon and player stats</li>
               <li>Leaderboard page showing the top players based on battles and streaks</li>
               <li>A page to search and view other user profiles</li>
-              <li>Avatar pictures, which can be set in the profile page and only for discovered Digimon</li>
+              <li>
+                Avatar pictures, which can be set in the profile page and only for discovered
+                Digimon
+              </li>
               <li>Friends soon?</li>
             </ul>
           </div>
@@ -542,14 +897,17 @@ const PatchNotes = () => {
               <span className="text-sm text-gray-500 ml-auto">April 18, 2025</span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
-              <li>Based on suggestion, the stats gained from tasks can now be automatically applied to active Digimon or saved for later use</li>
+              <li>
+                Based on suggestion, the stats gained from tasks can now be automatically applied to
+                active Digimon or saved for later use
+              </li>
               <li>Stat cap isn't on a Digimon-by-Digimon basis anymore, but cumulative</li>
               <li>The stat cap is now 2 + 2 per Digimon you own</li>
               <li>Digivolution now requires a level check and stat check</li>
               <li>Not heavily tested, so expect some bugs</li>
             </ul>
           </div>
-          
+
           <div className="mb-6">
             <div className="flex items-center mb-2">
               <h3 className="text-lg font-medium ml-2">Battle System Improvements</h3>
@@ -563,7 +921,7 @@ const PatchNotes = () => {
               <li>Improved the visual layout of battle cards</li>
             </ul>
           </div>
-          
+
           <div className="mb-6">
             <div className="flex items-center mb-2">
               <h3 className="text-lg font-medium">Team Management</h3>
@@ -576,7 +934,7 @@ const PatchNotes = () => {
               <li>Now supporting teams of up to 3 Digimon</li>
             </ul>
           </div>
-          
+
           <div className="mb-6">
             <div className="flex items-center mb-2">
               <h3 className="text-lg font-medium">Initial Beta Release</h3>
@@ -590,7 +948,7 @@ const PatchNotes = () => {
             </ul>
           </div>
         </div>
-        
+
         {/* <div>
           <h2 className="text-xl font-semibold mb-4">Upcoming Features</h2>
           <div className="mb-6">
@@ -641,4 +999,4 @@ const PatchNotes = () => {
   );
 };
 
-export default PatchNotes; 
+export default PatchNotes;

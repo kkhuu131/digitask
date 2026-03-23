@@ -1,6 +1,6 @@
-import { create } from "zustand";
-import { supabase } from "../lib/supabase";
-import { User } from "@supabase/supabase-js";
+import { create } from 'zustand';
+import { supabase } from '../lib/supabase';
+import { User } from '@supabase/supabase-js';
 
 interface AuthState {
   user: User | null;
@@ -40,25 +40,23 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
       // Validate inputs before making API calls
       if (!email || !password || !username) {
-        throw new Error("Email, password, and username are required");
+        throw new Error('Email, password, and username are required');
       }
 
       // Check if username is available
       const { data: existingUsers, error: checkError } = await supabase
-        .from("profiles")
-        .select("username")
-        .eq("username", username);
+        .from('profiles')
+        .select('username')
+        .eq('username', username);
 
       if (checkError) {
-        console.error("Error checking username availability:", checkError);
-        throw new Error(
-          "Unable to verify username availability. Please try again."
-        );
+        console.error('Error checking username availability:', checkError);
+        throw new Error('Unable to verify username availability. Please try again.');
       }
 
       // Only check for duplicates if the query was successful
       if (existingUsers && existingUsers.length > 0) {
-        throw new Error("Username is already taken");
+        throw new Error('Username is already taken');
       }
 
       // Sign up the user
@@ -94,9 +92,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       }
     } catch (error) {
       set({
-        error:
-          (error as Error).message ||
-          "An unknown error occurred during sign up",
+        error: (error as Error).message || 'An unknown error occurred during sign up',
         loading: false,
       });
     }
@@ -183,7 +179,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
       set({ loading: false });
     } catch (error) {
-      console.error("Error checking session:", error);
+      console.error('Error checking session:', error);
       set({ loading: false });
     }
   },
@@ -195,20 +191,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const { user, userProfile } = useAuthStore.getState();
 
       if (!user || !userProfile) {
-        throw new Error("You must be logged in to update your profile");
+        throw new Error('You must be logged in to update your profile');
       }
 
-      const { error } = await supabase
-        .from("profiles")
-        .update(updates)
-        .eq("id", user.id);
+      const { error } = await supabase.from('profiles').update(updates).eq('id', user.id);
 
       if (error) throw error;
 
       const { data: updatedProfile } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", user.id)
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
         .single();
 
       set({
@@ -231,17 +224,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         return;
       }
 
-      const { data, error } = await supabase.rpc("is_admin");
+      const { data, error } = await supabase.rpc('is_admin');
 
       if (error) {
-        console.error("Error checking admin status:", error);
+        console.error('Error checking admin status:', error);
         set({ isAdmin: false });
         return;
       }
 
       set({ isAdmin: !!data });
     } catch (error) {
-      console.error("Error checking admin status:", error);
+      console.error('Error checking admin status:', error);
       set({ isAdmin: false });
     }
   },
@@ -250,13 +243,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       const { user } = useAuthStore.getState();
       if (!user) {
-        throw new Error("User not logged in");
+        throw new Error('User not logged in');
       }
 
       const { data: profile, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", user.id)
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
         .single();
 
       if (error) throw error;
@@ -266,7 +259,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         loading: false,
       });
     } catch (error) {
-      console.error("Error fetching user profile:", error);
+      console.error('Error fetching user profile:', error);
       set({
         error: (error as Error).message,
         loading: false,
@@ -278,7 +271,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 // Add this function to create a profile after signup
 const createProfile = async (userId: string, username: string) => {
   try {
-    const { error } = await supabase.from("profiles").insert([
+    const { error } = await supabase.from('profiles').insert([
       {
         id: userId,
         username,
@@ -292,7 +285,7 @@ const createProfile = async (userId: string, username: string) => {
     if (error) throw error;
     return true;
   } catch (error) {
-    console.error("Error creating profile:", error);
+    console.error('Error creating profile:', error);
     return false;
   }
 };

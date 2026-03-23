@@ -12,7 +12,7 @@ enum OnboardingStage {
   INTRO,
   CREATE_TASK,
   SELECT_DIGIMON,
-  COMPLETE
+  COMPLETE,
 }
 
 const Onboarding: React.FC = () => {
@@ -22,37 +22,37 @@ const Onboarding: React.FC = () => {
   const { createUserDigimon, fetchAllUserDigimon } = useDigimonStore();
   const navigate = useNavigate();
   const { markOnboardingComplete } = useOnboardingStore();
-  
+
   useEffect(() => {
     // Check if we actually need onboarding
     const checkOnboardingStatus = async () => {
       try {
         const { data: sessionData } = await supabase.auth.getSession();
         const userId = sessionData.session?.user?.id;
-        
+
         if (!userId) return;
-        
+
         // Check if user has completed onboarding
         const { data: profileData, error } = await supabase
           .from('profiles')
           .select('has_completed_onboarding')
           .eq('id', userId)
           .single();
-          
+
         if (error) {
-          console.error("Error checking onboarding status:", error);
+          console.error('Error checking onboarding status:', error);
           return;
         }
-        
+
         // If onboarding is already completed, redirect to dashboard
         if (profileData && profileData.has_completed_onboarding) {
-          navigate("/", { replace: true });
+          navigate('/', { replace: true });
         }
       } catch (error) {
-        console.error("Error in checkOnboardingStatus:", error);
+        console.error('Error in checkOnboardingStatus:', error);
       }
     };
-    
+
     checkOnboardingStatus();
   }, [navigate]);
 
@@ -73,13 +73,13 @@ const Onboarding: React.FC = () => {
 
       // Check if user already has any Digimon
       const { data: existingDigimon, error: checkError } = await supabase
-        .from("user_digimon")
-        .select("id")
-        .eq("user_id", userData.user.id)
+        .from('user_digimon')
+        .select('id')
+        .eq('user_id', userData.user.id)
         .limit(1);
 
       if (checkError) {
-        console.error("Error checking existing Digimon:", checkError);
+        console.error('Error checking existing Digimon:', checkError);
         throw checkError;
       }
 
@@ -88,7 +88,7 @@ const Onboarding: React.FC = () => {
         await createUserDigimon(selections[0].name, selections[0].digimonId);
 
         // Create the remaining two as inactive party members
-        const rows = selections.slice(1).map(sel => ({
+        const rows = selections.slice(1).map((sel) => ({
           user_id: userData.user!.id,
           digimon_id: sel.digimonId,
           name: sel.name,
@@ -99,13 +99,13 @@ const Onboarding: React.FC = () => {
           current_level: 1,
         }));
 
-        const { error: insertError } = await supabase.from("user_digimon").insert(rows);
+        const { error: insertError } = await supabase.from('user_digimon').insert(rows);
         if (insertError) {
-          console.error("Error creating additional starter Digimon:", insertError);
+          console.error('Error creating additional starter Digimon:', insertError);
           throw insertError;
         }
       } else {
-        console.log("User already has Digimon, skipping creation");
+        console.log('User already has Digimon, skipping creation');
       }
 
       await fetchAllUserDigimon();
@@ -121,103 +121,100 @@ const Onboarding: React.FC = () => {
   const welcomeSteps: DialogueStep[] = [
     {
       speaker: 'bokomon',
-      text: "Welcome, DigiDestined! I'm Bokomon, chronicler of all things Digimon!"
+      text: "Welcome, DigiDestined! I'm Bokomon, chronicler of all things Digimon!",
     },
     {
       speaker: 'neemon',
-      text: "And I'm Neemon! I eat crackers! Uh, I mean... I help too!"
+      text: "And I'm Neemon! I eat crackers! Uh, I mean... I help too!",
     },
     {
       speaker: 'bokomon',
       text: "We'll be your guides in this world. Let's get you started on your journey!",
       action: {
         label: "Let's Go!",
-        onClick: () => setStage(OnboardingStage.INTRO)
-      }
-    }
+        onClick: () => setStage(OnboardingStage.INTRO),
+      },
+    },
   ];
 
   const introSteps: DialogueStep[] = [
     {
       speaker: 'bokomon',
-      text: "This world needs your help! To keep Digimon happy and growing, you must complete real-life tasks!"
+      text: 'This world needs your help! To keep Digimon happy and growing, you must complete real-life tasks!',
     },
     {
       speaker: 'neemon',
-      text: "Like brushing your teeth! Or... taking a nap! Wait, is napping a task?"
+      text: 'Like brushing your teeth! Or... taking a nap! Wait, is napping a task?',
     },
     {
       speaker: 'bokomon',
       text: "Let's begin your journey! First, add your first task — it can be something you do daily or a one-time goal!",
       action: {
-        label: "Create My First Task",
+        label: 'Create My First Task',
         onClick: () => {
           setStage(OnboardingStage.CREATE_TASK);
           setShowTaskForm(true);
-        }
-      }
-    }
+        },
+      },
+    },
   ];
 
   const selectDigimonSteps: DialogueStep[] = [
     {
       speaker: 'bokomon',
-      text: "Great job! Now, every hero needs a team! Choose 3 Digimon to start your journey — no duplicates allowed!"
+      text: 'Great job! Now, every hero needs a team! Choose 3 Digimon to start your journey — no duplicates allowed!',
     },
     {
       speaker: 'neemon',
-      text: "Ooh, three whole partners! Pick wisely... or just pick the cutest ones. Like me!"
+      text: 'Ooh, three whole partners! Pick wisely... or just pick the cutest ones. Like me!',
     },
     {
       speaker: 'both',
-      text: "Your first partner will be your active Digimon, and the other two will join your team. Choose all three!",
+      text: 'Your first partner will be your active Digimon, and the other two will join your team. Choose all three!',
       action: {
-        label: "Select My Partners",
+        label: 'Select My Partners',
         onClick: () => {
           setShowDigimonSelection(true);
-        }
-      }
-    }
+        },
+      },
+    },
   ];
 
   const completeSteps: DialogueStep[] = [
     {
       speaker: 'bokomon',
-      text: "All set! Check in daily to complete tasks and care for your Digimon."
+      text: 'All set! Check in daily to complete tasks and care for your Digimon.',
     },
     {
       speaker: 'neemon',
-      text: "Don't forget to feed them! And maybe hug them. Hugs are important."
+      text: "Don't forget to feed them! And maybe hug them. Hugs are important.",
     },
     {
       speaker: 'both',
-      text: "Your adventure begins now! Good luck, DigiDestined!",
+      text: 'Your adventure begins now! Good luck, DigiDestined!',
       action: {
-        label: "Start My Adventure!",
-        onClick: handleComplete
-      }
-    }
+        label: 'Start My Adventure!',
+        onClick: handleComplete,
+      },
+    },
   ];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-indigo-100">
       {stage === OnboardingStage.WELCOME && (
-        <DigimonDialogue 
-          steps={welcomeSteps} 
-          onComplete={() => setStage(OnboardingStage.INTRO)} 
-        />
+        <DigimonDialogue steps={welcomeSteps} onComplete={() => setStage(OnboardingStage.INTRO)} />
       )}
-      
+
       {stage === OnboardingStage.INTRO && (
-        <DigimonDialogue 
-          steps={introSteps} 
+        <DigimonDialogue
+          steps={introSteps}
           onComplete={() => {
             setStage(OnboardingStage.CREATE_TASK);
             setShowTaskForm(true);
-          }} 
+          }}
         />
       )}
-      
+
       {stage === OnboardingStage.CREATE_TASK && showTaskForm && (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white rounded-lg p-6 shadow-lg max-w-md w-full">
@@ -226,36 +223,36 @@ const Onboarding: React.FC = () => {
           </div>
         </div>
       )}
-      
+
       {stage === OnboardingStage.SELECT_DIGIMON && (
         <>
           {!showDigimonSelection && (
-            <DigimonDialogue 
-              steps={selectDigimonSteps} 
-              onComplete={() => setShowDigimonSelection(true)} 
+            <DigimonDialogue
+              steps={selectDigimonSteps}
+              onComplete={() => setShowDigimonSelection(true)}
             />
           )}
-          
+
           {showDigimonSelection && (
             <div className="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50">
               <div className="bg-white rounded-lg p-6 shadow-lg max-w-2xl w-full">
                 <h2 className="text-xl font-bold mb-1">Choose Your 3 Partners</h2>
-                <DigimonSelection onSelect={() => {}} multiSelect onMultiSelect={handleDigimonSelected} />
+                <DigimonSelection
+                  onSelect={() => {}}
+                  multiSelect
+                  onMultiSelect={handleDigimonSelected}
+                />
               </div>
             </div>
           )}
         </>
       )}
-      
+
       {stage === OnboardingStage.COMPLETE && (
-        <DigimonDialogue 
-          steps={completeSteps} 
-          onComplete={handleComplete}
-          isSkippable={false}
-        />
+        <DigimonDialogue steps={completeSteps} onComplete={handleComplete} isSkippable={false} />
       )}
     </div>
   );
 };
 
-export default Onboarding; 
+export default Onboarding;

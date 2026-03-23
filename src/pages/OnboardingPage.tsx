@@ -5,4 +5,4 @@ const OnboardingPage: React.FC = () => {
   return <Onboarding />;
 };
 
-export default OnboardingPage; 
+export default OnboardingPage;

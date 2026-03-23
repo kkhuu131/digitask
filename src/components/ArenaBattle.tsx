@@ -4,8 +4,14 @@ import { Swords, Zap, Star, Wind, Skull } from 'lucide-react';
 import { BattleDigimon } from '../types/battle';
 import { initArenaDigimon, runFrame } from '../engine/arenaEngine';
 import {
-  ArenaDigimon, ArenaEvent, Strategy, SpriteState,
-  WORLD_W, WORLD_H, VIEWPORT_W, VIEWPORT_H,
+  ArenaDigimon,
+  ArenaEvent,
+  Strategy,
+  SpriteState,
+  WORLD_W,
+  WORLD_H,
+  VIEWPORT_W,
+  VIEWPORT_H,
   STRATEGY_CONFIGS,
 } from '../engine/arenaTypes';
 import BattleDigimonSprite from './BattleDigimonSprite';
@@ -33,15 +39,15 @@ interface LogEntry {
 // ─── Hit particle ─────────────────────────────────────────────────────────────
 interface HitParticle {
   id: string;
-  wx: number;         // world-space X of target center
-  wy: number;         // world-space Y of target center
-  angleDeg: number;   // outward direction
-  dist: number;       // travel distance (px) — 0 for flash/ring
+  wx: number; // world-space X of target center
+  wy: number; // world-space Y of target center
+  angleDeg: number; // outward direction
+  dist: number; // travel distance (px) — 0 for flash/ring
   color: string;
-  size: number;       // diameter (px)
+  size: number; // diameter (px)
   durationMs: number;
-  isRing: boolean;    // expanding shockwave ring
-  delay?: number;     // animation-delay (ms) for staggered rings
+  isRing: boolean; // expanding shockwave ring
+  delay?: number; // animation-delay (ms) for staggered rings
 }
 
 // ─── Hit effect spawner ────────────────────────────────────────────────────────
@@ -50,7 +56,7 @@ function spawnHitEffect(
   wy: number,
   type: 'normal' | 'crit' | 'skill',
   attrColor: string,
-  batchId: string,
+  batchId: string
 ): HitParticle[] {
   const r = Math.random;
   const out: HitParticle[] = [];
@@ -59,7 +65,10 @@ function spawnHitEffect(
     // Central impact flash — large glowing circle that just shrinks in place
     out.push({
       id: `${batchId}-flash`,
-      wx, wy, angleDeg: 0, dist: 0,
+      wx,
+      wy,
+      angleDeg: 0,
+      dist: 0,
       color: '#ffffff',
       size: 44,
       durationMs: 220,
@@ -70,7 +79,8 @@ function spawnHitEffect(
     for (let i = 0; i < 14; i++) {
       out.push({
         id: `${batchId}-${i}`,
-        wx, wy,
+        wx,
+        wy,
         angleDeg: (360 / 14) * i + (r() - 0.5) * 18,
         dist: 38 + r() * 38,
         color: colors[Math.floor(r() * colors.length)],
@@ -82,7 +92,10 @@ function spawnHitEffect(
     // Single fast shockwave
     out.push({
       id: `${batchId}-ring0`,
-      wx, wy, angleDeg: 0, dist: 0,
+      wx,
+      wy,
+      angleDeg: 0,
+      dist: 0,
       color: 'rgba(255,255,255,0.7)',
       size: 80,
       durationMs: 350,
@@ -92,7 +105,10 @@ function spawnHitEffect(
     // Big gold impact flash
     out.push({
       id: `${batchId}-flash`,
-      wx, wy, angleDeg: 0, dist: 0,
+      wx,
+      wy,
+      angleDeg: 0,
+      dist: 0,
       color: '#fcd34d',
       size: 70,
       durationMs: 280,
@@ -103,7 +119,8 @@ function spawnHitEffect(
     for (let i = 0; i < 20; i++) {
       out.push({
         id: `${batchId}-${i}`,
-        wx, wy,
+        wx,
+        wy,
         angleDeg: (360 / 20) * i + (r() - 0.5) * 14,
         dist: 60 + r() * 55,
         color: colors[Math.floor(r() * colors.length)],
@@ -115,7 +132,10 @@ function spawnHitEffect(
     // Two staggered rings
     out.push({
       id: `${batchId}-ring0`,
-      wx, wy, angleDeg: 0, dist: 0,
+      wx,
+      wy,
+      angleDeg: 0,
+      dist: 0,
       color: '#fbbf24',
       size: 100,
       durationMs: 420,
@@ -124,7 +144,10 @@ function spawnHitEffect(
     });
     out.push({
       id: `${batchId}-ring1`,
-      wx, wy, angleDeg: 0, dist: 0,
+      wx,
+      wy,
+      angleDeg: 0,
+      dist: 0,
       color: '#ffffff',
       size: 140,
       durationMs: 500,
@@ -136,7 +159,10 @@ function spawnHitEffect(
     // Large attr-color flash
     out.push({
       id: `${batchId}-flash`,
-      wx, wy, angleDeg: 0, dist: 0,
+      wx,
+      wy,
+      angleDeg: 0,
+      dist: 0,
       color: attrColor,
       size: 100,
       durationMs: 320,
@@ -145,7 +171,10 @@ function spawnHitEffect(
     // Inner white hot flash
     out.push({
       id: `${batchId}-flash2`,
-      wx, wy, angleDeg: 0, dist: 0,
+      wx,
+      wy,
+      angleDeg: 0,
+      dist: 0,
       color: '#ffffff',
       size: 52,
       durationMs: 200,
@@ -156,7 +185,8 @@ function spawnHitEffect(
     for (let i = 0; i < 24; i++) {
       out.push({
         id: `${batchId}-${i}`,
-        wx, wy,
+        wx,
+        wy,
         angleDeg: (360 / 24) * i + (r() - 0.5) * 12,
         dist: 75 + r() * 65,
         color: colors[Math.floor(r() * colors.length)],
@@ -168,7 +198,10 @@ function spawnHitEffect(
     // Three staggered shockwave rings
     out.push({
       id: `${batchId}-ring0`,
-      wx, wy, angleDeg: 0, dist: 0,
+      wx,
+      wy,
+      angleDeg: 0,
+      dist: 0,
       color: attrColor,
       size: 110,
       durationMs: 480,
@@ -177,7 +210,10 @@ function spawnHitEffect(
     });
     out.push({
       id: `${batchId}-ring1`,
-      wx, wy, angleDeg: 0, dist: 0,
+      wx,
+      wy,
+      angleDeg: 0,
+      dist: 0,
       color: '#ffffff',
       size: 160,
       durationMs: 560,
@@ -186,7 +222,10 @@ function spawnHitEffect(
     });
     out.push({
       id: `${batchId}-ring2`,
-      wx, wy, angleDeg: 0, dist: 0,
+      wx,
+      wy,
+      angleDeg: 0,
+      dist: 0,
       color: attrColor,
       size: 210,
       durationMs: 650,
@@ -210,8 +249,7 @@ const INITIAL_CAMERA_X = WORLD_W / 2 - VIEWPORT_W / 2; // 250
 const INITIAL_CAMERA_Y = WORLD_H / 2 - VIEWPORT_H / 2; // 70
 
 // ─── HP bar color helper ───────────────────────────────────────────────────────
-const hpBarColor = (pct: number) =>
-  pct > 0.5 ? '#4ade80' : pct > 0.25 ? '#facc15' : '#f87171';
+const hpBarColor = (pct: number) => (pct > 0.5 ? '#4ade80' : pct > 0.25 ? '#facc15' : '#f87171');
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 
@@ -240,21 +278,21 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
       userTeam,
       opponentTeam,
       userStrategies,
-      opponentStrategies ?? opponentTeam.map(() => 'balanced' as Strategy),
+      opponentStrategies ?? opponentTeam.map(() => 'balanced' as Strategy)
     );
   }
 
-  const lastTsRef       = useRef<number>(0);
-  const battleEndedRef  = useRef(false);
-  const cameraRef       = useRef({ x: INITIAL_CAMERA_X, y: INITIAL_CAMERA_Y });
+  const lastTsRef = useRef<number>(0);
+  const battleEndedRef = useRef(false);
+  const cameraRef = useRef({ x: INITIAL_CAMERA_X, y: INITIAL_CAMERA_Y });
   // Current auto-zoom factor applied to worldDiv (< 1 = zoomed out to show all Digimon).
-  const autoZoomRef     = useRef(1);
-  const worldDivRef     = useRef<HTMLDivElement>(null);
+  const autoZoomRef = useRef(1);
+  const worldDivRef = useRef<HTMLDivElement>(null);
   const scaleWrapperRef = useRef<HTMLDivElement>(null);
   // Viewport div for cinematic zoom-in (CSS transform applied directly, no React state).
-  const viewportDivRef  = useRef<HTMLDivElement>(null);
+  const viewportDivRef = useRef<HTMLDivElement>(null);
   // Active cinematic — null = no cinematic, mutated directly in RAF + event handler.
-  const cinematicRef    = useRef<CinematicState | null>(null);
+  const cinematicRef = useRef<CinematicState | null>(null);
 
   // Sprite container DOM elements — position mutated directly each frame.
   const spriteContainerRefs = useRef<Map<string, HTMLDivElement>>(new Map());
@@ -273,7 +311,7 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
 
   // Last-pushed sprite states — only call setSpriteStates when something changes.
   const lastSpriteStatesRef = useRef<Record<string, SpriteState>>(
-    Object.fromEntries(digimonRef.current.map(d => [d.id, 'idle' as SpriteState])),
+    Object.fromEntries(digimonRef.current.map((d) => [d.id, 'idle' as SpriteState]))
   );
 
   // Last windup IDs — only call setWindupIds when the set changes.
@@ -282,24 +320,24 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
   // ── React state (updated only on discrete events) ───────────────────────────
 
   const [hpSnapshot, setHpSnapshot] = useState<Record<string, { hp: number; maxHp: number }>>(() =>
-    Object.fromEntries(digimonRef.current.map(d => [d.id, { hp: d.hp, maxHp: d.maxHp }])),
+    Object.fromEntries(digimonRef.current.map((d) => [d.id, { hp: d.hp, maxHp: d.maxHp }]))
   );
-  const [deadIds, setDeadIds]           = useState<Set<string>>(new Set());
+  const [deadIds, setDeadIds] = useState<Set<string>>(new Set());
   const [spriteStates, setSpriteStates] = useState<Record<string, SpriteState>>(() =>
-    Object.fromEntries(digimonRef.current.map(d => [d.id, 'idle' as SpriteState])),
+    Object.fromEntries(digimonRef.current.map((d) => [d.id, 'idle' as SpriteState]))
   );
   const [spriteToggle, setSpriteToggle] = useState(false);
-  const [battlePhase, setBattlePhase]   = useState<'fighting' | 'complete'>('fighting');
-  const [winner, setWinner]             = useState<'user' | 'opponent' | null>(null);
-  const [battleLog, setBattleLog]       = useState<LogEntry[]>([]);
-  const [scale, setScale]               = useState(1);
-  const [windupIds, setWindupIds]       = useState<Set<string>>(new Set());
-  const [hitEffects, setHitEffects]     = useState<HitParticle[]>([]);
-  const particleTimeoutsRef             = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const [battlePhase, setBattlePhase] = useState<'fighting' | 'complete'>('fighting');
+  const [winner, setWinner] = useState<'user' | 'opponent' | null>(null);
+  const [battleLog, setBattleLog] = useState<LogEntry[]>([]);
+  const [scale, setScale] = useState(1);
+  const [windupIds, setWindupIds] = useState<Set<string>>(new Set());
+  const [hitEffects, setHitEffects] = useState<HitParticle[]>([]);
+  const particleTimeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   // ── Idle-animation toggle ────────────────────────────────────────────────────
   useEffect(() => {
-    const id = setInterval(() => setSpriteToggle(t => !t), 600);
+    const id = setInterval(() => setSpriteToggle((t) => !t), 600);
     return () => clearInterval(id);
   }, []);
 
@@ -328,8 +366,7 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
   useLayoutEffect(() => {
     if (worldDivRef.current) {
       worldDivRef.current.style.transformOrigin = '0 0';
-      worldDivRef.current.style.transform =
-        `scale(1) translate(-${INITIAL_CAMERA_X}px, -${INITIAL_CAMERA_Y}px)`;
+      worldDivRef.current.style.transform = `scale(1) translate(-${INITIAL_CAMERA_X}px, -${INITIAL_CAMERA_Y}px)`;
     }
     for (const d of digimonRef.current) {
       const el = spriteContainerRefs.current.get(d.id);
@@ -361,18 +398,29 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
       const S = autoZoomRef.current;
       const effW = VIEWPORT_W / S;
       const effH = VIEWPORT_H / S;
-      tx = Math.max(0, Math.min(Math.max(0, WORLD_W - effW), cinematicRef.current.focusX - effW / 2));
-      ty = Math.max(0, Math.min(Math.max(0, WORLD_H - effH), cinematicRef.current.focusY - effH / 2));
+      tx = Math.max(
+        0,
+        Math.min(Math.max(0, WORLD_W - effW), cinematicRef.current.focusX - effW / 2)
+      );
+      ty = Math.max(
+        0,
+        Math.min(Math.max(0, WORLD_H - effH), cinematicRef.current.focusY - effH / 2)
+      );
       lerp = 0.1;
     } else {
-      const alive = digimonRef.current.filter(d => d.state !== 'dead');
+      const alive = digimonRef.current.filter((d) => d.state !== 'dead');
       if (alive.length === 0) return;
 
       // Compute bounding box of all alive Digimon
-      let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+      let minX = Infinity,
+        maxX = -Infinity,
+        minY = Infinity,
+        maxY = -Infinity;
       for (const d of alive) {
-        minX = Math.min(minX, d.x); maxX = Math.max(maxX, d.x);
-        minY = Math.min(minY, d.y); maxY = Math.max(maxY, d.y);
+        minX = Math.min(minX, d.x);
+        maxX = Math.max(maxX, d.x);
+        minY = Math.min(minY, d.y);
+        maxY = Math.max(maxY, d.y);
       }
       const bbW = maxX - minX + PAD * 2;
       const bbH = maxY - minY + PAD * 2;
@@ -400,12 +448,17 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
     // Apply both scale and pan to the world div — scale(S) changes how many world units
     // are visible; translate pans within that scaled space (origin 0 0 set on mount).
     const S = autoZoomRef.current;
-    worldDivRef.current.style.transform =
-      `scale(${S.toFixed(4)}) translate(-${cameraRef.current.x.toFixed(2)}px, -${cameraRef.current.y.toFixed(2)}px)`;
+    worldDivRef.current.style.transform = `scale(${S.toFixed(4)}) translate(-${cameraRef.current.x.toFixed(2)}px, -${cameraRef.current.y.toFixed(2)}px)`;
   };
 
   // ── Cinematic helpers ─────────────────────────────────────────────────────────
-  const startCinematic = (focusX: number, focusY: number, durationMs: number, timeScale: number, zoomScale: number) => {
+  const startCinematic = (
+    focusX: number,
+    focusY: number,
+    durationMs: number,
+    timeScale: number,
+    zoomScale: number
+  ) => {
     if (cinematicRef.current) return; // don't interrupt an existing cinematic
     cinematicRef.current = { realRemainingMs: durationMs, timeScale, focusX, focusY };
     if (viewportDivRef.current) {
@@ -464,7 +517,7 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
 
     for (const ev of events) {
       if (ev.type === 'damage') {
-        const tgt = digimonRef.current.find(d => d.id === ev.targetId);
+        const tgt = digimonRef.current.find((d) => d.id === ev.targetId);
         if (tgt) hpUpdates[tgt.id] = { hp: tgt.hp, maxHp: tgt.maxHp };
 
         // Spawn particle hit effect
@@ -473,15 +526,15 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
           const attrColor = ATTRIBUTE_COLORS[tgt.attribute] ?? '#ffffff';
           const batchId = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
           const particles = spawnHitEffect(ev.targetX, ev.targetY, hitType, attrColor, batchId);
-          const maxDur = Math.max(...particles.map(p => p.durationMs));
-          setHitEffects(prev => [...prev, ...particles]);
+          const maxDur = Math.max(...particles.map((p) => p.durationMs));
+          setHitEffects((prev) => [...prev, ...particles]);
           const t = setTimeout(() => {
-            setHitEffects(prev => prev.filter(p => !p.id.startsWith(batchId)));
+            setHitEffects((prev) => prev.filter((p) => !p.id.startsWith(batchId)));
           }, maxDur + 80);
           particleTimeoutsRef.current.push(t);
         }
 
-        const atk = digimonRef.current.find(d => d.id === ev.attackerId);
+        const atk = digimonRef.current.find((d) => d.id === ev.attackerId);
         const id = `${Date.now()}-${Math.random()}`;
 
         if (ev.isMiss) {
@@ -503,7 +556,7 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
         }
       } else if (ev.type === 'death') {
         newDeadIds.push(ev.digimonId);
-        const dead = digimonRef.current.find(d => d.id === ev.digimonId);
+        const dead = digimonRef.current.find((d) => d.id === ev.digimonId);
         if (dead) {
           newLogEntries.push({
             id: `${Date.now()}-${Math.random()}`,
@@ -515,7 +568,10 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
           if (el) animate(el, { opacity: [0.1, 1, 0.15, 1, 0.3] }, { duration: 0.5 });
           // Zero out HP and skill bars
           const hpEl = hpBarFillRefs.current.get(ev.digimonId);
-          if (hpEl) { hpEl.style.width = '0%'; hpEl.style.background = '#f87171'; }
+          if (hpEl) {
+            hpEl.style.width = '0%';
+            hpEl.style.background = '#f87171';
+          }
           const skillEl = skillBarFillRefs.current.get(ev.digimonId);
           if (skillEl) skillEl.style.width = '0%';
 
@@ -529,12 +585,10 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
 
     if (Object.keys(hpUpdates).length > 0) {
       syncHpBarFills(hpUpdates);
-      setHpSnapshot(prev => ({ ...prev, ...hpUpdates }));
+      setHpSnapshot((prev) => ({ ...prev, ...hpUpdates }));
     }
-    if (newDeadIds.length > 0)
-      setDeadIds(prev => new Set([...prev, ...newDeadIds]));
-    if (newLogEntries.length > 0)
-      setBattleLog(prev => [...prev, ...newLogEntries].slice(-8));
+    if (newDeadIds.length > 0) setDeadIds((prev) => new Set([...prev, ...newDeadIds]));
+    if (newLogEntries.length > 0) setBattleLog((prev) => [...prev, ...newLogEntries].slice(-8));
     if (endWinner) {
       battleEndedRef.current = true;
       setBattlePhase('complete');
@@ -578,7 +632,7 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
 
           if (d.state === 'skill_windup') {
             // Face toward the target so the ult looks intentional
-            const target = digimonRef.current.find(o => o.id === d.currentTargetId);
+            const target = digimonRef.current.find((o) => o.id === d.currentTargetId);
             if (target) facingRight = target.x > d.x;
           } else if (Math.abs(d.vx) > 0.01) {
             // Normal case: face the direction of steering velocity (not knockback)
@@ -597,9 +651,10 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
           const config = STRATEGY_CONFIGS[d.strategy];
           // SP now affects drain rate, not base value — use raw skillCooldownBase here
           const skillBase = Math.max(6000, config.skillCooldownBase);
-          const fillPct = d.state === 'skill_windup'
-            ? 100
-            : Math.max(0, Math.min(100, (1 - d.skillCooldownMs / skillBase) * 100));
+          const fillPct =
+            d.state === 'skill_windup'
+              ? 100
+              : Math.max(0, Math.min(100, (1 - d.skillCooldownMs / skillBase) * 100));
           skillEl.style.width = `${fillPct}%`;
         }
       }
@@ -615,21 +670,21 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
         }
       }
       if (Object.keys(spriteChanges).length > 0)
-        setSpriteStates(prev => ({ ...prev, ...spriteChanges }));
+        setSpriteStates((prev) => ({ ...prev, ...spriteChanges }));
 
       // Windup diff + skill cinematic trigger
       const currentWindups = new Set(
-        digimonRef.current.filter(d => d.state === 'skill_windup').map(d => d.id),
+        digimonRef.current.filter((d) => d.state === 'skill_windup').map((d) => d.id)
       );
       const prevWindups = lastWindupIdsRef.current;
       const windupChanged =
         currentWindups.size !== prevWindups.size ||
-        [...currentWindups].some(id => !prevWindups.has(id));
+        [...currentWindups].some((id) => !prevWindups.has(id));
       if (windupChanged) {
         // Trigger cinematic for newly-entering skill_windup Digimon
         for (const id of currentWindups) {
           if (!prevWindups.has(id)) {
-            const d = digimonRef.current.find(f => f.id === id);
+            const d = digimonRef.current.find((f) => f.id === id);
             if (d) startCinematic(d.x, d.y, 1600, 0.25, 1.4);
             break; // one cinematic at a time
           }
@@ -650,8 +705,8 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
   }, []);
 
   // ── Derived counts ────────────────────────────────────────────────────────────
-  const userTeamList     = digimonRef.current.filter(d =>  d.isUserTeam);
-  const opponentTeamList = digimonRef.current.filter(d => !d.isUserTeam);
+  const userTeamList = digimonRef.current.filter((d) => d.isUserTeam);
+  const opponentTeamList = digimonRef.current.filter((d) => !d.isUserTeam);
 
   // ── Render ────────────────────────────────────────────────────────────────────
   return (
@@ -688,7 +743,6 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
         ref={scaleWrapperRef}
         style={{ width: '100%', height: VIEWPORT_H * scale, overflow: 'hidden' }}
       >
-
         {/* Scale container */}
         <div
           style={{
@@ -713,62 +767,109 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
             {/* World div — panned by camera via direct DOM mutation */}
             <div
               ref={worldDivRef}
-              style={{ position: 'absolute', width: WORLD_W, height: WORLD_H, top: 0, left: 0, background: '#07060f' }}
+              style={{
+                position: 'absolute',
+                width: WORLD_W,
+                height: WORLD_H,
+                top: 0,
+                left: 0,
+                background: '#07060f',
+              }}
             >
               {/* ── Hexagonal arena floor ── */}
               {/* The hex clip-path is applied to a world-sized div; only the hex region is visible */}
-              <div style={{
-                position: 'absolute', inset: 0,
-                clipPath: 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)',
-              }}>
-                {/* Floor surface */}
-                <div style={{
-                  position: 'absolute', inset: 0,
-                  background: 'radial-gradient(ellipse at 50% 50%, #c9a668 0%, #aa7f48 20%, #7d5930 48%, #3e2510 76%, #1a0c06 100%)',
-                  boxShadow: 'inset 0 0 180px rgba(0,0,0,0.55)',
-                }} />
-                {/* Grid lines */}
-                <div style={{
-                  position: 'absolute', inset: 0,
-                  backgroundImage: [
-                    'linear-gradient(rgba(255,255,255,0.048) 1px, transparent 1px)',
-                    'linear-gradient(90deg, rgba(255,255,255,0.048) 1px, transparent 1px)',
-                  ].join(','),
-                  backgroundSize: '65px 65px',
-                }} />
-                {/* Center dividing line */}
-                <div style={{
+              <div
+                style={{
                   position: 'absolute',
-                  left: WORLD_W / 2 - 1, top: 0, width: 2, height: WORLD_H,
-                  background: 'linear-gradient(to bottom, transparent, rgba(255,255,255,0.1) 30%, rgba(255,255,255,0.14) 50%, rgba(255,255,255,0.1) 70%, transparent)',
-                  pointerEvents: 'none',
-                }} />
+                  inset: 0,
+                  clipPath: 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)',
+                }}
+              >
+                {/* Floor surface */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    background:
+                      'radial-gradient(ellipse at 50% 50%, #c9a668 0%, #aa7f48 20%, #7d5930 48%, #3e2510 76%, #1a0c06 100%)',
+                    boxShadow: 'inset 0 0 180px rgba(0,0,0,0.55)',
+                  }}
+                />
+                {/* Grid lines */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    backgroundImage: [
+                      'linear-gradient(rgba(255,255,255,0.048) 1px, transparent 1px)',
+                      'linear-gradient(90deg, rgba(255,255,255,0.048) 1px, transparent 1px)',
+                    ].join(','),
+                    backgroundSize: '65px 65px',
+                  }}
+                />
+                {/* Center dividing line */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: WORLD_W / 2 - 1,
+                    top: 0,
+                    width: 2,
+                    height: WORLD_H,
+                    background:
+                      'linear-gradient(to bottom, transparent, rgba(255,255,255,0.1) 30%, rgba(255,255,255,0.14) 50%, rgba(255,255,255,0.1) 70%, transparent)',
+                    pointerEvents: 'none',
+                  }}
+                />
                 {/* User-side glow (left) */}
-                <div style={{
-                  position: 'absolute', left: 0, top: 0, width: '30%', height: '100%',
-                  background: 'linear-gradient(to right, rgba(99,102,241,0.28) 0%, transparent 100%)',
-                }} />
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: 0,
+                    top: 0,
+                    width: '30%',
+                    height: '100%',
+                    background:
+                      'linear-gradient(to right, rgba(99,102,241,0.28) 0%, transparent 100%)',
+                  }}
+                />
                 {/* Opponent-side glow (right) */}
-                <div style={{
-                  position: 'absolute', right: 0, top: 0, width: '30%', height: '100%',
-                  background: 'linear-gradient(to left, rgba(239,68,68,0.28) 0%, transparent 100%)',
-                }} />
+                <div
+                  style={{
+                    position: 'absolute',
+                    right: 0,
+                    top: 0,
+                    width: '30%',
+                    height: '100%',
+                    background:
+                      'linear-gradient(to left, rgba(239,68,68,0.28) 0%, transparent 100%)',
+                  }}
+                />
               </div>
 
               {/* ── Hex border SVG — sits over the floor in world space ── */}
               <svg
-                style={{ position: 'absolute', inset: 0, width: WORLD_W, height: WORLD_H, pointerEvents: 'none', overflow: 'visible' }}
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  width: WORLD_W,
+                  height: WORLD_H,
+                  pointerEvents: 'none',
+                  overflow: 'visible',
+                }}
                 viewBox={`0 0 ${WORLD_W} ${WORLD_H}`}
               >
                 <defs>
                   <filter id="hexBorderGlow" x="-20%" y="-20%" width="140%" height="140%">
                     <feGaussianBlur stdDeviation="4" result="blur" />
-                    <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+                    <feMerge>
+                      <feMergeNode in="blur" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
                   </filter>
                 </defs>
                 {/* Outer glow */}
                 <polygon
-                  points={`${WORLD_W*0.25},0 ${WORLD_W*0.75},0 ${WORLD_W},${WORLD_H/2} ${WORLD_W*0.75},${WORLD_H} ${WORLD_W*0.25},${WORLD_H} 0,${WORLD_H/2}`}
+                  points={`${WORLD_W * 0.25},0 ${WORLD_W * 0.75},0 ${WORLD_W},${WORLD_H / 2} ${WORLD_W * 0.75},${WORLD_H} ${WORLD_W * 0.25},${WORLD_H} 0,${WORLD_H / 2}`}
                   fill="none"
                   stroke="rgba(160,180,255,0.4)"
                   strokeWidth="10"
@@ -776,33 +877,40 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
                 />
                 {/* Crisp border */}
                 <polygon
-                  points={`${WORLD_W*0.25},1 ${WORLD_W*0.75},1 ${WORLD_W-1},${WORLD_H/2} ${WORLD_W*0.75},${WORLD_H-1} ${WORLD_W*0.25},${WORLD_H-1} 1,${WORLD_H/2}`}
+                  points={`${WORLD_W * 0.25},1 ${WORLD_W * 0.75},1 ${WORLD_W - 1},${WORLD_H / 2} ${WORLD_W * 0.75},${WORLD_H - 1} ${WORLD_W * 0.25},${WORLD_H - 1} 1,${WORLD_H / 2}`}
                   fill="none"
                   stroke="rgba(200,215,255,0.6)"
                   strokeWidth="2.5"
                 />
                 {/* Corner accent dots */}
-                {([
-                  [WORLD_W*0.25, 0], [WORLD_W*0.75, 0],
-                  [WORLD_W, WORLD_H/2],
-                  [WORLD_W*0.75, WORLD_H], [WORLD_W*0.25, WORLD_H],
-                  [0, WORLD_H/2],
-                ] as [number,number][]).map(([cx, cy], i) => (
+                {(
+                  [
+                    [WORLD_W * 0.25, 0],
+                    [WORLD_W * 0.75, 0],
+                    [WORLD_W, WORLD_H / 2],
+                    [WORLD_W * 0.75, WORLD_H],
+                    [WORLD_W * 0.25, WORLD_H],
+                    [0, WORLD_H / 2],
+                  ] as [number, number][]
+                ).map(([cx, cy], i) => (
                   <circle key={i} cx={cx} cy={cy} r={5} fill="rgba(210,225,255,0.8)" />
                 ))}
               </svg>
 
               {/* Digimon sprite containers — positioned via direct DOM in RAF loop */}
-              {digimonRef.current.map(d => (
+              {digimonRef.current.map((d) => (
                 <div
                   key={d.id}
-                  ref={el => {
+                  ref={(el) => {
                     if (el) spriteContainerRefs.current.set(d.id, el);
                     else spriteContainerRefs.current.delete(d.id);
                   }}
                   style={{
-                    position: 'absolute', top: 0, left: 0,
-                    width: SPRITE_W, height: SPRITE_H,
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: SPRITE_W,
+                    height: SPRITE_H,
                     willChange: 'transform',
                     pointerEvents: 'none',
                   }}
@@ -817,9 +925,7 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
                       width: 44,
                       height: 10,
                       borderRadius: '50%',
-                      background: d.isUserTeam
-                        ? 'rgba(99,102,241,0.55)'
-                        : 'rgba(239,68,68,0.55)',
+                      background: d.isUserTeam ? 'rgba(99,102,241,0.55)' : 'rgba(239,68,68,0.55)',
                       boxShadow: d.isUserTeam
                         ? '0 0 12px 4px rgba(99,102,241,0.7)'
                         : '0 0 12px 4px rgba(239,68,68,0.7)',
@@ -829,7 +935,7 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
 
                   {/* Sprite — facing direction updated by RAF loop via facingRefs */}
                   <div
-                    ref={el => {
+                    ref={(el) => {
                       if (el) facingRefs.current.set(d.id, el);
                       else facingRefs.current.delete(d.id);
                     }}
@@ -847,7 +953,8 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
                     {windupIds.has(d.id) && (
                       <div
                         style={{
-                          position: 'absolute', inset: -6,
+                          position: 'absolute',
+                          inset: -6,
                           borderRadius: '50%',
                           border: `3px solid ${ATTRIBUTE_COLORS[d.attribute] ?? '#fff'}`,
                           boxShadow: `0 0 12px 4px ${ATTRIBUTE_COLORS[d.attribute] ?? '#fff'}`,
@@ -860,7 +967,7 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
                 </div>
               ))}
               {/* Hit particle effects — rendered in world-space, panned by camera */}
-              {hitEffects.map(p => {
+              {hitEffects.map((p) => {
                 if (p.isRing) {
                   return (
                     <div
@@ -920,7 +1027,9 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
             {/* Vignette — subtle darkening around the rectangular viewport edges */}
             <div
               style={{
-                position: 'absolute', inset: 0, pointerEvents: 'none',
+                position: 'absolute',
+                inset: 0,
+                pointerEvents: 'none',
                 boxShadow: 'inset 0 0 60px rgba(0,0,0,0.5)',
               }}
             />
@@ -941,27 +1050,39 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
           ) : (
             [...battleLog].reverse().map((entry, i) => {
               const iconClass = `w-3.5 h-3.5 shrink-0 ${
-                entry.type === 'death'  ? 'text-red-500 dark:text-red-400' :
-                entry.type === 'skill'  ? 'text-violet-500 dark:text-violet-400' :
-                entry.type === 'crit'   ? 'text-amber-500 dark:text-amber-400' :
-                entry.type === 'miss'   ? 'text-gray-400 dark:text-gray-500' :
-                                          'text-gray-500 dark:text-gray-400'
+                entry.type === 'death'
+                  ? 'text-red-500 dark:text-red-400'
+                  : entry.type === 'skill'
+                    ? 'text-violet-500 dark:text-violet-400'
+                    : entry.type === 'crit'
+                      ? 'text-amber-500 dark:text-amber-400'
+                      : entry.type === 'miss'
+                        ? 'text-gray-400 dark:text-gray-500'
+                        : 'text-gray-500 dark:text-gray-400'
               }`;
               const textClass = `text-sm font-body leading-snug transition-opacity duration-300 ${
                 i === 0 ? 'font-semibold' : 'font-normal'
               } ${
-                entry.type === 'death'  ? 'text-red-500 dark:text-red-400' :
-                entry.type === 'skill'  ? 'text-violet-500 dark:text-violet-400' :
-                entry.type === 'crit'   ? 'text-amber-500 dark:text-amber-400' :
-                entry.type === 'miss'   ? 'text-gray-400 dark:text-gray-500' :
-                                          'text-gray-700 dark:text-gray-300'
+                entry.type === 'death'
+                  ? 'text-red-500 dark:text-red-400'
+                  : entry.type === 'skill'
+                    ? 'text-violet-500 dark:text-violet-400'
+                    : entry.type === 'crit'
+                      ? 'text-amber-500 dark:text-amber-400'
+                      : entry.type === 'miss'
+                        ? 'text-gray-400 dark:text-gray-500'
+                        : 'text-gray-700 dark:text-gray-300'
               }`;
               const Icon =
-                entry.type === 'death'  ? Skull  :
-                entry.type === 'skill'  ? Zap    :
-                entry.type === 'crit'   ? Star   :
-                entry.type === 'miss'   ? Wind   :
-                                          Swords;
+                entry.type === 'death'
+                  ? Skull
+                  : entry.type === 'skill'
+                    ? Zap
+                    : entry.type === 'crit'
+                      ? Star
+                      : entry.type === 'miss'
+                        ? Wind
+                        : Swords;
               return (
                 <div
                   key={entry.id}
@@ -996,7 +1117,12 @@ interface StatusPanelProps {
 }
 
 const StatusPanel: React.FC<StatusPanelProps> = ({
-  userTeam, opponentTeam, hpSnapshot, deadIds, hpBarFillRefs, skillBarFillRefs,
+  userTeam,
+  opponentTeam,
+  hpSnapshot,
+  deadIds,
+  hpBarFillRefs,
+  skillBarFillRefs,
 }) => {
   const renderBar = (d: ArenaDigimon, isUser: boolean) => {
     const snap = hpSnapshot[d.id];
@@ -1018,14 +1144,16 @@ const StatusPanel: React.FC<StatusPanelProps> = ({
         {/* HP bar */}
         <div className="mb-1.5">
           <div className="flex justify-between items-center mb-0.5">
-            <span className="text-[9px] font-extrabold tracking-widest uppercase text-gray-400 dark:text-gray-500 font-heading">HP</span>
+            <span className="text-[9px] font-extrabold tracking-widest uppercase text-gray-400 dark:text-gray-500 font-heading">
+              HP
+            </span>
             <span className="text-[9px] text-gray-400 dark:text-gray-500 tabular-nums">
               {isDead ? 'Fainted' : `${Math.max(0, hp)} / ${maxHp}`}
             </span>
           </div>
           <div className="h-1.5 rounded-full bg-gray-200 dark:bg-dark-100 overflow-hidden">
             <div
-              ref={el => {
+              ref={(el) => {
                 if (el) hpBarFillRefs.current.set(d.id, el);
                 else hpBarFillRefs.current.delete(d.id);
               }}
@@ -1042,10 +1170,12 @@ const StatusPanel: React.FC<StatusPanelProps> = ({
 
         {/* Skill bar */}
         <div>
-          <span className="text-[9px] font-extrabold tracking-widest uppercase text-gray-400 dark:text-gray-500 font-heading">Skill</span>
+          <span className="text-[9px] font-extrabold tracking-widest uppercase text-gray-400 dark:text-gray-500 font-heading">
+            Skill
+          </span>
           <div className="h-1 rounded-full bg-gray-200 dark:bg-dark-100 overflow-hidden mt-0.5">
             <div
-              ref={el => {
+              ref={(el) => {
                 if (el) skillBarFillRefs.current.set(d.id, el);
                 else skillBarFillRefs.current.delete(d.id);
               }}
@@ -1071,14 +1201,14 @@ const StatusPanel: React.FC<StatusPanelProps> = ({
           <p className="text-[9px] font-extrabold tracking-widest uppercase font-heading text-indigo-600 dark:text-indigo-400 mb-2">
             Your Team
           </p>
-          <div className="flex gap-3">
-            {userTeam.map(d => renderBar(d, true))}
-          </div>
+          <div className="flex gap-3">{userTeam.map((d) => renderBar(d, true))}</div>
         </div>
 
         {/* VS divider */}
         <div className="flex-shrink-0 pt-3">
-          <span className="text-xs font-extrabold tracking-widest text-gray-300 dark:text-gray-600">VS</span>
+          <span className="text-xs font-extrabold tracking-widest text-gray-300 dark:text-gray-600">
+            VS
+          </span>
         </div>
 
         {/* Opponent team — right */}
@@ -1087,7 +1217,7 @@ const StatusPanel: React.FC<StatusPanelProps> = ({
             Opponent
           </p>
           <div className="flex gap-3 justify-end">
-            {opponentTeam.map(d => renderBar(d, false))}
+            {opponentTeam.map((d) => renderBar(d, false))}
           </div>
         </div>
       </div>
@@ -1104,11 +1234,15 @@ const WinnerOverlay: React.FC<{ winner: 'user' | 'opponent' }> = ({ winner }) =>
       animate={{ opacity: 1 }}
       transition={{ duration: 0.35 }}
       style={{
-        position: 'absolute', inset: 0,
+        position: 'absolute',
+        inset: 0,
         background: won
           ? 'radial-gradient(ellipse at center, rgba(99,102,241,0.55) 0%, rgba(0,0,0,0.88) 65%)'
           : 'radial-gradient(ellipse at center, rgba(239,68,68,0.45) 0%, rgba(0,0,0,0.88) 65%)',
-        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
         gap: 8,
       }}
     >
@@ -1118,7 +1252,10 @@ const WinnerOverlay: React.FC<{ winner: 'user' | 'opponent' }> = ({ winner }) =>
         transition={{ delay: 0.1, type: 'spring', damping: 14, stiffness: 220 }}
         className="font-heading"
         style={{
-          fontSize: 42, fontWeight: 600, color: '#fff', letterSpacing: 1,
+          fontSize: 42,
+          fontWeight: 600,
+          color: '#fff',
+          letterSpacing: 1,
           textShadow: won
             ? '0 0 40px rgba(99,102,241,0.9), 0 2px 12px rgba(0,0,0,0.8)'
             : '0 0 40px rgba(239,68,68,0.9), 0 2px 12px rgba(0,0,0,0.8)',

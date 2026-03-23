@@ -1,14 +1,9 @@
-import { useState, useEffect } from "react";
-import { Task, useTaskStore } from "../store/taskStore";
+import { useState, useEffect } from 'react';
+import { Task, useTaskStore } from '../store/taskStore';
 import Select from 'react-select';
-import {
-  StatCategory,
-  categoryOptions
-} from "../utils/categoryDetection";
+import { StatCategory, categoryOptions } from '../utils/categoryDetection';
 
-const DAYS_OF_WEEK = [
-  "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
-];
+const DAYS_OF_WEEK = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 interface EditTaskModalProps {
   task: Task;
@@ -19,18 +14,24 @@ interface EditTaskModalProps {
 const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) => {
   const { editTask } = useTaskStore();
   const [description, setDescription] = useState(task.description);
-  const [notes, setNotes] = useState(task.notes || "");
-  const [dueDate, setDueDate] = useState<string>("");
-  const [dueTime, setDueTime] = useState<string>("12:00");
-  const [category, setCategory] = useState<StatCategory | null>(task.category as StatCategory || null);
+  const [notes, setNotes] = useState(task.notes || '');
+  const [dueDate, setDueDate] = useState<string>('');
+  const [dueTime, setDueTime] = useState<string>('12:00');
+  const [category, setCategory] = useState<StatCategory | null>(
+    (task.category as StatCategory) || null
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [taskType, setTaskType] = useState<"daily" | "one-time" | "recurring">(
-    task.is_daily ? "daily" :
-    (task.recurring_days && task.recurring_days.length > 0) ? "recurring" :
-    "one-time"
+  const [taskType, setTaskType] = useState<'daily' | 'one-time' | 'recurring'>(
+    task.is_daily
+      ? 'daily'
+      : task.recurring_days && task.recurring_days.length > 0
+        ? 'recurring'
+        : 'one-time'
   );
   const [recurringDays, setRecurringDays] = useState<string[]>(task.recurring_days || []);
-  const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard'>(task.difficulty || 'medium');
+  const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard'>(
+    task.difficulty || 'medium'
+  );
   const [priority, setPriority] = useState<'low' | 'medium' | 'high'>(task.priority || 'medium');
 
   useEffect(() => {
@@ -46,7 +47,7 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
 
   const isFormValid = () => {
     if (!description.trim()) return false;
-    if (taskType === "recurring" && recurringDays.length === 0) return false;
+    if (taskType === 'recurring' && recurringDays.length === 0) return false;
     return true;
   };
 
@@ -61,11 +62,11 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
         difficulty,
         priority,
       };
-      if (taskType === "daily") {
+      if (taskType === 'daily') {
         updates.is_daily = true;
         updates.recurring_days = null;
         updates.due_date = null;
-      } else if (taskType === "recurring") {
+      } else if (taskType === 'recurring') {
         updates.is_daily = false;
         updates.recurring_days = recurringDays;
         updates.due_date = null;
@@ -80,7 +81,7 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
       await editTask(task.id, updates);
       onClose();
     } catch (error) {
-      console.error("Error updating task:", error);
+      console.error('Error updating task:', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -89,11 +90,13 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
   if (!isOpen) return null;
 
   const inputClass =
-    "w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-300 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors font-body text-sm";
+    'w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-300 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors font-body text-sm';
 
-  const pillBase = "flex-1 px-3 py-2 text-sm rounded-xl font-body font-semibold transition-all duration-150 border focus:outline-none cursor-pointer";
-  const pillActive = "bg-secondary-600 text-white border-secondary-600 shadow-sm";
-  const pillInactive = "bg-gray-100 dark:bg-dark-200 text-gray-600 dark:text-gray-400 border-transparent hover:bg-gray-200 dark:hover:bg-dark-100";
+  const pillBase =
+    'flex-1 px-3 py-2 text-sm rounded-xl font-body font-semibold transition-all duration-150 border focus:outline-none cursor-pointer';
+  const pillActive = 'bg-secondary-600 text-white border-secondary-600 shadow-sm';
+  const pillInactive =
+    'bg-gray-100 dark:bg-dark-200 text-gray-600 dark:text-gray-400 border-transparent hover:bg-gray-200 dark:hover:bg-dark-100';
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
@@ -117,8 +120,19 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
               onClick={onClose}
               className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-dark-200 transition-colors"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
@@ -126,7 +140,10 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
           <form onSubmit={handleSubmit} className="p-6 space-y-5">
             {/* Description */}
             <div>
-              <label htmlFor="edit-description" className="block text-sm font-heading font-semibold text-gray-700 dark:text-gray-200 mb-1">
+              <label
+                htmlFor="edit-description"
+                className="block text-sm font-heading font-semibold text-gray-700 dark:text-gray-200 mb-1"
+              >
                 Task Description
               </label>
               <input
@@ -146,7 +163,7 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
               </label>
               <Select
                 options={categoryOptions}
-                value={categoryOptions.find(opt => opt.value === category) ?? null}
+                value={categoryOptions.find((opt) => opt.value === category) ?? null}
                 onChange={(selected) => setCategory(selected?.value as StatCategory)}
                 isClearable
                 placeholder="Select a stat category..."
@@ -157,21 +174,22 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
                         ? '!border-purple-500 dark:!border-purple-500 !ring-2 !ring-purple-500/30'
                         : '!border-gray-200'
                     }`,
-                  menu: () => "!rounded-xl !bg-white dark:!bg-dark-200 !border dark:!border-dark-100 !shadow-lg",
+                  menu: () =>
+                    '!rounded-xl !bg-white dark:!bg-dark-200 !border dark:!border-dark-100 !shadow-lg',
                   option: (state) =>
                     `!text-sm ${
                       state.isSelected
                         ? '!bg-secondary-600 !text-white'
                         : state.isFocused
-                        ? '!bg-purple-50 dark:!bg-dark-300 dark:!text-gray-200'
-                        : 'dark:!text-gray-300'
+                          ? '!bg-purple-50 dark:!bg-dark-300 dark:!text-gray-200'
+                          : 'dark:!text-gray-300'
                     }`,
-                  singleValue: () => "dark:!text-gray-100 !text-sm",
-                  placeholder: () => "dark:!text-gray-500 !text-sm",
-                  input: () => "dark:!text-gray-100",
-                  clearIndicator: () => "dark:!text-gray-400 hover:dark:!text-gray-200",
-                  dropdownIndicator: () => "dark:!text-gray-400",
-                  indicatorSeparator: () => "dark:!bg-dark-100",
+                  singleValue: () => 'dark:!text-gray-100 !text-sm',
+                  placeholder: () => 'dark:!text-gray-500 !text-sm',
+                  input: () => 'dark:!text-gray-100',
+                  clearIndicator: () => 'dark:!text-gray-400 hover:dark:!text-gray-200',
+                  dropdownIndicator: () => 'dark:!text-gray-400',
+                  indicatorSeparator: () => 'dark:!bg-dark-100',
                 }}
               />
             </div>
@@ -188,11 +206,14 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
                       key={p}
                       type="button"
                       onClick={() => setPriority(p)}
-                      className={`${pillBase} ${priority === p
-                        ? p === 'low' ? 'bg-gray-500 text-white border-gray-500 shadow-sm'
-                          : p === 'medium' ? 'bg-indigo-500 text-white border-indigo-500 shadow-sm'
-                          : 'bg-orange-500 text-white border-orange-500 shadow-sm'
-                        : pillInactive
+                      className={`${pillBase} ${
+                        priority === p
+                          ? p === 'low'
+                            ? 'bg-gray-500 text-white border-gray-500 shadow-sm'
+                            : p === 'medium'
+                              ? 'bg-indigo-500 text-white border-indigo-500 shadow-sm'
+                              : 'bg-orange-500 text-white border-orange-500 shadow-sm'
+                          : pillInactive
                       }`}
                     >
                       {p.charAt(0).toUpperCase() + p.slice(1)}
@@ -249,7 +270,7 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
                 ))}
               </div>
 
-              {taskType === "recurring" && (
+              {taskType === 'recurring' && (
                 <div>
                   <label className="block text-xs font-heading font-semibold text-gray-600 dark:text-gray-400 mb-2">
                     Recurs On
@@ -261,15 +282,15 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
                         type="button"
                         onClick={() => {
                           if (recurringDays.includes(day)) {
-                            setRecurringDays(recurringDays.filter(d => d !== day));
+                            setRecurringDays(recurringDays.filter((d) => d !== day));
                           } else {
                             setRecurringDays([...recurringDays, day]);
                           }
                         }}
                         className={`py-1.5 text-xs rounded-lg font-body font-semibold transition-all duration-150 ${
                           recurringDays.includes(day)
-                            ? "bg-secondary-600 text-white shadow-sm"
-                            : "bg-gray-100 dark:bg-dark-200 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-dark-100"
+                            ? 'bg-secondary-600 text-white shadow-sm'
+                            : 'bg-gray-100 dark:bg-dark-200 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-dark-100'
                         }`}
                       >
                         {day.substring(0, 3)}
@@ -277,15 +298,20 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
                     ))}
                   </div>
                   {recurringDays.length === 0 && (
-                    <p className="mt-1.5 text-xs text-red-500 font-body">Select at least one day.</p>
+                    <p className="mt-1.5 text-xs text-red-500 font-body">
+                      Select at least one day.
+                    </p>
                   )}
                 </div>
               )}
 
-              {taskType === "one-time" && (
+              {taskType === 'one-time' && (
                 <div className="flex flex-col sm:flex-row gap-3">
                   <div className="flex-1">
-                    <label htmlFor="edit-due-date" className="block text-xs font-heading font-semibold text-gray-600 dark:text-gray-400 mb-1">
+                    <label
+                      htmlFor="edit-due-date"
+                      className="block text-xs font-heading font-semibold text-gray-600 dark:text-gray-400 mb-1"
+                    >
                       Due Date
                     </label>
                     <input
@@ -298,7 +324,10 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
                     />
                   </div>
                   <div className="flex-1">
-                    <label htmlFor="edit-due-time" className="block text-xs font-heading font-semibold text-gray-600 dark:text-gray-400 mb-1">
+                    <label
+                      htmlFor="edit-due-time"
+                      className="block text-xs font-heading font-semibold text-gray-600 dark:text-gray-400 mb-1"
+                    >
                       Due Time
                     </label>
                     <input
@@ -316,8 +345,14 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose }) 
 
             {/* Notes */}
             <div>
-              <label htmlFor="edit-notes" className="block text-sm font-heading font-semibold text-gray-700 dark:text-gray-200 mb-1">
-                Notes <span className="text-gray-400 dark:text-gray-500 font-body font-normal text-xs">(optional)</span>
+              <label
+                htmlFor="edit-notes"
+                className="block text-sm font-heading font-semibold text-gray-700 dark:text-gray-200 mb-1"
+              >
+                Notes{' '}
+                <span className="text-gray-400 dark:text-gray-500 font-body font-normal text-xs">
+                  (optional)
+                </span>
               </label>
               <textarea
                 id="edit-notes"

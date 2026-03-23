@@ -21,10 +21,10 @@ const TaskHeatmap: React.FC = () => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
-    
+
     checkMobile();
     window.addEventListener('resize', checkMobile);
-    
+
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
@@ -40,14 +40,16 @@ const TaskHeatmap: React.FC = () => {
   const fetchTaskHistory = async () => {
     try {
       setLoading(true);
-      
+
       // Get current user
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) {
         console.error('No user found');
         return;
       }
-      
+
       // Get last 365 days on desktop, 30 days on mobile
       const daysToFetch = isMobile ? 120 : 365;
       const startDate = new Date();
@@ -66,19 +68,15 @@ const TaskHeatmap: React.FC = () => {
         return;
       }
 
-
       // Add today's data from dailyQuota since it won't be in task_history yet
       const today = new Date().toLocaleDateString('en-CA'); // Use local timezone consistently
       const todayTasksCompleted = dailyQuota?.completed_today || 0;
-      
-      
+
       const combinedData = [...(data || [])];
 
-      
-      
       combinedData.push({
         date: today,
-        tasks_completed: todayTasksCompleted
+        tasks_completed: todayTasksCompleted,
       });
 
       setHistory(combinedData);
@@ -88,7 +86,6 @@ const TaskHeatmap: React.FC = () => {
       setLoading(false);
     }
   };
-
 
   if (loading) {
     return (
@@ -152,26 +149,24 @@ const TaskHeatmap: React.FC = () => {
         /* Weekday labels – slightly smaller */
         .react-calendar-heatmap .react-calendar-heatmap-weekday-labels text { font-size: 10px; }
       `}</style>
-      
+
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-          Task Activity
-        </h3>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Task Activity</h3>
       </div>
-      
+
       {/* Calendar Heatmap */}
       <div className="w-full overflow-x-auto">
         <div>
           <CalendarHeatmap
             startDate={new Date(Date.now() - (isMobile ? 120 : 365) * 24 * 60 * 60 * 1000)}
             endDate={new Date()}
-            values={history.map(entry => {
+            values={history.map((entry) => {
               const [year, month, day] = entry.date.split('-').map(Number);
               const dateObj = new Date(year, month - 1, day);
-              
+
               return {
                 date: dateObj,
-                count: entry.tasks_completed
+                count: entry.tasks_completed,
               };
             })}
             classForValue={(value) => {
@@ -195,7 +190,7 @@ const TaskHeatmap: React.FC = () => {
           />
         </div>
       </div>
-      
+
       {/* Stats + Quota Donut */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center mt-4">
         {/* Left: Streak stats */}
@@ -206,7 +201,9 @@ const TaskHeatmap: React.FC = () => {
               {dailyQuota?.current_streak || 0} days
               {(dailyQuota?.current_streak || 0) > 0 && <span className="ml-1">🔥</span>}
               {(dailyQuota?.current_streak || 0) > 1 && (
-                <span className="text-[11px] font-semibold text-amber-600 dark:text-amber-300">×{getExpMultiplier().toFixed(1)} XP</span>
+                <span className="text-[11px] font-semibold text-amber-600 dark:text-amber-300">
+                  ×{getExpMultiplier().toFixed(1)} XP
+                </span>
               )}
             </span>
           </div>
@@ -230,11 +227,8 @@ const TaskHeatmap: React.FC = () => {
             const circumference = 2 * Math.PI * radius;
             const dash = (pct / 100) * circumference;
 
-            const colorClass = pct >= 100
-              ? 'text-green-500'
-              : pct >= 66
-                ? 'text-yellow-500'
-                : 'text-red-500';
+            const colorClass =
+              pct >= 100 ? 'text-green-500' : pct >= 66 ? 'text-yellow-500' : 'text-red-500';
 
             return (
               <div className="flex items-center gap-3">

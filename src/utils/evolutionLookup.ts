@@ -1,7 +1,4 @@
-import {
-  EVOLUTION_LOOKUP_TABLE,
-  type EvolutionPath,
-} from "../constants/evolutionLookup";
+import { EVOLUTION_LOOKUP_TABLE, type EvolutionPath } from '../constants/evolutionLookup';
 
 export interface EvolutionData {
   evolvesFrom: EvolutionPath[];

@@ -13,7 +13,11 @@ interface DigimonSelectionProps {
   onMultiSelect?: (selections: StarterSelection[]) => void;
 }
 
-const DigimonSelection: React.FC<DigimonSelectionProps> = ({ onSelect, multiSelect = false, onMultiSelect }) => {
+const DigimonSelection: React.FC<DigimonSelectionProps> = ({
+  onSelect,
+  multiSelect = false,
+  onMultiSelect,
+}) => {
   // Single-select state
   const [selectedDigimon, setSelectedDigimon] = useState<number | null>(null);
   const [digimonName, setDigimonName] = useState('');
@@ -48,11 +52,11 @@ const DigimonSelection: React.FC<DigimonSelectionProps> = ({ onSelect, multiSele
 
   // --- Multi-select logic ---
   const handleMultiSelectToggle = (id: number) => {
-    setSelections(prev => {
-      const idx = prev.findIndex(s => s.digimonId === id);
+    setSelections((prev) => {
+      const idx = prev.findIndex((s) => s.digimonId === id);
       if (idx !== -1) {
         // Deselect
-        const next = prev.filter(s => s.digimonId !== id);
+        const next = prev.filter((s) => s.digimonId !== id);
         setMultiNameErrors(['', '', '']);
         return next;
       }
@@ -62,12 +66,12 @@ const DigimonSelection: React.FC<DigimonSelectionProps> = ({ onSelect, multiSele
   };
 
   const handleMultiNameChange = (index: number, value: string) => {
-    setSelections(prev => {
+    setSelections((prev) => {
       const next = [...prev];
       next[index] = { ...next[index], name: value };
       return next;
     });
-    setMultiNameErrors(prev => {
+    setMultiNameErrors((prev) => {
       const next = [...prev];
       next[index] = '';
       return next;
@@ -77,13 +81,13 @@ const DigimonSelection: React.FC<DigimonSelectionProps> = ({ onSelect, multiSele
   const handleMultiSubmit = () => {
     if (selections.length !== 3) return;
 
-    const errors = selections.map(s => {
+    const errors = selections.map((s) => {
       if (!s.name.trim()) return 'Please give your Digimon a name';
       if (s.name.length > 20) return 'Name must be 20 characters or less';
       return '';
     });
 
-    if (errors.some(e => e)) {
+    if (errors.some((e) => e)) {
       setMultiNameErrors(errors);
       return;
     }
@@ -91,19 +95,20 @@ const DigimonSelection: React.FC<DigimonSelectionProps> = ({ onSelect, multiSele
     onMultiSelect?.(selections);
   };
 
-  const isMultiSelected = (id: number) => selections.some(s => s.digimonId === id);
-  const multiSelectionIndex = (id: number) => selections.findIndex(s => s.digimonId === id);
+  const isMultiSelected = (id: number) => selections.some((s) => s.digimonId === id);
+  const multiSelectionIndex = (id: number) => selections.findIndex((s) => s.digimonId === id);
 
   // --- Render ---
   if (multiSelect) {
     return (
       <div className="max-h-[80vh] overflow-y-auto px-2">
         <p className="text-sm text-center text-gray-500 mb-4">
-          Select <span className="font-semibold text-blue-600">{selections.length}/3</span> Digimon to start your journey
+          Select <span className="font-semibold text-blue-600">{selections.length}/3</span> Digimon
+          to start your journey
         </p>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 sm:gap-3 mb-6">
-          {starterDigimon.map(id => {
+          {starterDigimon.map((id) => {
             const digimon = DIGIMON_LOOKUP_TABLE[id];
             const selected = isMultiSelected(id);
             const slotIndex = multiSelectionIndex(id);
@@ -130,9 +135,7 @@ const DigimonSelection: React.FC<DigimonSelectionProps> = ({ onSelect, multiSele
                     showHappinessAnimations={true}
                   />
                 </div>
-                <p className="mt-1 text-xs sm:text-sm font-medium text-center">
-                  {digimon.name}
-                </p>
+                <p className="mt-1 text-xs sm:text-sm font-medium text-center">{digimon.name}</p>
               </div>
             );
           })}
@@ -150,7 +153,7 @@ const DigimonSelection: React.FC<DigimonSelectionProps> = ({ onSelect, multiSele
                   <input
                     type="text"
                     value={sel.name}
-                    onChange={e => handleMultiNameChange(index, e.target.value)}
+                    onChange={(e) => handleMultiNameChange(index, e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     placeholder="Enter a name"
                     maxLength={20}
@@ -173,7 +176,9 @@ const DigimonSelection: React.FC<DigimonSelectionProps> = ({ onSelect, multiSele
               ${selections.length === 3 ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-400 cursor-not-allowed'}
             `}
           >
-            {selections.length === 3 ? 'Start Your Journey' : `Choose ${3 - selections.length} more`}
+            {selections.length === 3
+              ? 'Start Your Journey'
+              : `Choose ${3 - selections.length} more`}
           </button>
         </div>
       </div>
@@ -183,11 +188,10 @@ const DigimonSelection: React.FC<DigimonSelectionProps> = ({ onSelect, multiSele
   // Single-select (original behavior, used by CreatePet)
   return (
     <div className="max-h-[80vh] overflow-y-auto px-2">
-      <div className="text-center mb-4">
-      </div>
+      <div className="text-center mb-4"></div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-4 mb-6">
-        {starterDigimon.map(id => {
+        {starterDigimon.map((id) => {
           const digimon = DIGIMON_LOOKUP_TABLE[id];
 
           return (
@@ -207,9 +211,7 @@ const DigimonSelection: React.FC<DigimonSelectionProps> = ({ onSelect, multiSele
                   showHappinessAnimations={false}
                 />
               </div>
-              <p className="mt-2 text-sm sm:text-base font-medium text-center">
-                {digimon.name}
-              </p>
+              <p className="mt-2 text-sm sm:text-base font-medium text-center">{digimon.name}</p>
             </div>
           );
         })}

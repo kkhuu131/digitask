@@ -1,16 +1,14 @@
-import { useState, useEffect } from "react";
-import { Task, useTaskStore } from "../store/taskStore";
+import { useState, useEffect } from 'react';
+import { Task, useTaskStore } from '../store/taskStore';
 import Select from 'react-select';
 import {
   StatCategory,
   detectCategory,
   categoryDescriptions,
   categoryIcons,
-} from "../utils/categoryDetection";
+} from '../utils/categoryDetection';
 
-const DAYS_OF_WEEK = [
-  "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
-];
+const DAYS_OF_WEEK = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 interface TaskFormProps {
   onTaskCreated?: () => void;
@@ -18,14 +16,14 @@ interface TaskFormProps {
 
 const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
   const { createTask } = useTaskStore();
-  const [description, setDescription] = useState("");
-  const [taskType, setTaskType] = useState<"daily" | "one-time" | "recurring">("daily");
-  const [dueDate, setDueDate] = useState<string>("");
-  const [dueTime, setDueTime] = useState<string>("12:00"); // Default to noon
+  const [description, setDescription] = useState('');
+  const [taskType, setTaskType] = useState<'daily' | 'one-time' | 'recurring'>('daily');
+  const [dueDate, setDueDate] = useState<string>('');
+  const [dueTime, setDueTime] = useState<string>('12:00'); // Default to noon
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [category, setCategory] = useState<StatCategory | null>(null);
   const [detectedCategory, setDetectedCategory] = useState<StatCategory | null>(null);
-  const [notes, setNotes] = useState("");
+  const [notes, setNotes] = useState('');
   const [recurringDays, setRecurringDays] = useState<string[]>([]);
   const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard'>('medium');
   const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('medium');
@@ -90,7 +88,7 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
   // Create category options for the dropdown
   const categoryOptions = Object.entries(categoryDescriptions).map(([value, description]) => ({
     value: value as StatCategory,
-    label: `${categoryIcons[value as StatCategory]} ${value} - ${description}`
+    label: `${categoryIcons[value as StatCategory]} ${value} - ${description}`,
   }));
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -103,14 +101,14 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
         description: description.trim(),
         notes: notes.trim() || null,
         category: category || detectedCategory,
-        is_daily: taskType === "daily",
-        recurring_days: taskType === "recurring" ? recurringDays : null,
+        is_daily: taskType === 'daily',
+        recurring_days: taskType === 'recurring' ? recurringDays : null,
         difficulty,
         priority,
       };
 
       // Add due date for one-time tasks
-      if (taskType === "one-time" && dueDate) {
+      if (taskType === 'one-time' && dueDate) {
         const combinedDateTime = new Date(`${dueDate}T${dueTime}`);
         taskData.due_date = combinedDateTime.toISOString();
       }
@@ -118,8 +116,8 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
       await createTask(taskData);
 
       // Reset form
-      setDescription("");
-      setNotes("");
+      setDescription('');
+      setNotes('');
       setCategory(null);
       setDetectedCategory(null);
       setIsSubmitting(false);
@@ -128,22 +126,24 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
         onTaskCreated();
       }
     } catch (error) {
-      console.error("Error creating task:", error);
+      console.error('Error creating task:', error);
       setIsSubmitting(false);
     }
   };
 
   // Shared input class
   const inputClass =
-    "w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-300 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors font-body text-sm";
+    'w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-300 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors font-body text-sm';
 
   // Pill button helpers
-  const pillBase = "flex-1 px-3 py-2 text-sm rounded-xl font-body font-semibold transition-all duration-150 border focus:outline-none";
-  const pillActive = "bg-secondary-600 text-white border-secondary-600 shadow-sm";
-  const pillInactive = "bg-gray-100 dark:bg-dark-200 text-gray-600 dark:text-gray-400 border-transparent hover:bg-gray-200 dark:hover:bg-dark-100";
+  const pillBase =
+    'flex-1 px-3 py-2 text-sm rounded-xl font-body font-semibold transition-all duration-150 border focus:outline-none';
+  const pillActive = 'bg-secondary-600 text-white border-secondary-600 shadow-sm';
+  const pillInactive =
+    'bg-gray-100 dark:bg-dark-200 text-gray-600 dark:text-gray-400 border-transparent hover:bg-gray-200 dark:hover:bg-dark-100';
 
   // Compute EXP preview values
-  const baseExp = taskType === "daily" ? 75 : taskType === "recurring" ? 75 : 100;
+  const baseExp = taskType === 'daily' ? 75 : taskType === 'recurring' ? 75 : 100;
   const difficultyMultiplier = difficulty === 'easy' ? 0.7 : difficulty === 'medium' ? 1.0 : 1.5;
   const priorityMultiplier = priority === 'low' ? 0.8 : priority === 'medium' ? 1.0 : 1.3;
   const activeExp = Math.round(baseExp * difficultyMultiplier * priorityMultiplier);
@@ -151,10 +151,12 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
-
       {/* Task Description */}
       <div>
-        <label htmlFor="description" className="block text-sm font-heading font-semibold text-gray-700 dark:text-gray-200 mb-1">
+        <label
+          htmlFor="description"
+          className="block text-sm font-heading font-semibold text-gray-700 dark:text-gray-200 mb-1"
+        >
           Task Description
         </label>
         <input
@@ -188,7 +190,7 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
           <Select
             id="category"
             options={categoryOptions}
-            value={categoryOptions.find(opt => opt.value === category) ?? null}
+            value={categoryOptions.find((opt) => opt.value === category) ?? null}
             onChange={(selected) => setCategory(selected?.value || null)}
             placeholder="Select a stat category..."
             isClearable
@@ -199,21 +201,22 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
                     ? '!border-purple-500 dark:!border-purple-500 !ring-2 !ring-purple-500/30'
                     : '!border-gray-200'
                 }`,
-              menu: () => "!rounded-xl !bg-white dark:!bg-dark-200 !border dark:!border-dark-100 !shadow-lg",
+              menu: () =>
+                '!rounded-xl !bg-white dark:!bg-dark-200 !border dark:!border-dark-100 !shadow-lg',
               option: (state) =>
                 `!text-sm ${
                   state.isSelected
                     ? '!bg-secondary-600 !text-white'
                     : state.isFocused
-                    ? '!bg-purple-50 dark:!bg-dark-300 dark:!text-gray-200'
-                    : 'dark:!text-gray-300'
+                      ? '!bg-purple-50 dark:!bg-dark-300 dark:!text-gray-200'
+                      : 'dark:!text-gray-300'
                 }`,
-              singleValue: () => "dark:!text-gray-100 !text-sm",
-              placeholder: () => "dark:!text-gray-500 !text-sm",
-              input: () => "dark:!text-gray-100",
-              clearIndicator: () => "dark:!text-gray-400 hover:dark:!text-gray-200",
-              dropdownIndicator: () => "dark:!text-gray-400",
-              indicatorSeparator: () => "dark:!bg-dark-100",
+              singleValue: () => 'dark:!text-gray-100 !text-sm',
+              placeholder: () => 'dark:!text-gray-500 !text-sm',
+              input: () => 'dark:!text-gray-100',
+              clearIndicator: () => 'dark:!text-gray-400 hover:dark:!text-gray-200',
+              dropdownIndicator: () => 'dark:!text-gray-400',
+              indicatorSeparator: () => 'dark:!bg-dark-100',
             }}
           />
         </div>
@@ -230,9 +233,10 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
             <button
               type="button"
               onClick={() => setPriority('low')}
-              className={`${pillBase} ${priority === 'low'
-                ? 'bg-gray-500 text-white border-gray-500 shadow-sm'
-                : 'bg-gray-100 dark:bg-dark-200 text-gray-500 dark:text-gray-400 border-transparent hover:bg-gray-200 dark:hover:bg-dark-100'
+              className={`${pillBase} ${
+                priority === 'low'
+                  ? 'bg-gray-500 text-white border-gray-500 shadow-sm'
+                  : 'bg-gray-100 dark:bg-dark-200 text-gray-500 dark:text-gray-400 border-transparent hover:bg-gray-200 dark:hover:bg-dark-100'
               }`}
             >
               Low
@@ -240,9 +244,10 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
             <button
               type="button"
               onClick={() => setPriority('medium')}
-              className={`${pillBase} ${priority === 'medium'
-                ? 'bg-indigo-500 text-white border-indigo-500 shadow-sm'
-                : 'bg-gray-100 dark:bg-dark-200 text-gray-500 dark:text-gray-400 border-transparent hover:bg-gray-200 dark:hover:bg-dark-100'
+              className={`${pillBase} ${
+                priority === 'medium'
+                  ? 'bg-indigo-500 text-white border-indigo-500 shadow-sm'
+                  : 'bg-gray-100 dark:bg-dark-200 text-gray-500 dark:text-gray-400 border-transparent hover:bg-gray-200 dark:hover:bg-dark-100'
               }`}
             >
               Medium
@@ -250,9 +255,10 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
             <button
               type="button"
               onClick={() => setPriority('high')}
-              className={`${pillBase} ${priority === 'high'
-                ? 'bg-orange-500 text-white border-orange-500 shadow-sm'
-                : 'bg-gray-100 dark:bg-dark-200 text-gray-500 dark:text-gray-400 border-transparent hover:bg-gray-200 dark:hover:bg-dark-100'
+              className={`${pillBase} ${
+                priority === 'high'
+                  ? 'bg-orange-500 text-white border-orange-500 shadow-sm'
+                  : 'bg-gray-100 dark:bg-dark-200 text-gray-500 dark:text-gray-400 border-transparent hover:bg-gray-200 dark:hover:bg-dark-100'
               }`}
             >
               High
@@ -269,9 +275,10 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
             <button
               type="button"
               onClick={() => setDifficulty('easy')}
-              className={`${pillBase} ${difficulty === 'easy'
-                ? 'bg-green-500 text-white border-green-500 shadow-sm'
-                : 'bg-gray-100 dark:bg-dark-200 text-gray-500 dark:text-gray-400 border-transparent hover:bg-gray-200 dark:hover:bg-dark-100'
+              className={`${pillBase} ${
+                difficulty === 'easy'
+                  ? 'bg-green-500 text-white border-green-500 shadow-sm'
+                  : 'bg-gray-100 dark:bg-dark-200 text-gray-500 dark:text-gray-400 border-transparent hover:bg-gray-200 dark:hover:bg-dark-100'
               }`}
             >
               ★ Easy
@@ -279,9 +286,10 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
             <button
               type="button"
               onClick={() => setDifficulty('medium')}
-              className={`${pillBase} ${difficulty === 'medium'
-                ? 'bg-yellow-500 text-white border-yellow-500 shadow-sm'
-                : 'bg-gray-100 dark:bg-dark-200 text-gray-500 dark:text-gray-400 border-transparent hover:bg-gray-200 dark:hover:bg-dark-100'
+              className={`${pillBase} ${
+                difficulty === 'medium'
+                  ? 'bg-yellow-500 text-white border-yellow-500 shadow-sm'
+                  : 'bg-gray-100 dark:bg-dark-200 text-gray-500 dark:text-gray-400 border-transparent hover:bg-gray-200 dark:hover:bg-dark-100'
               }`}
             >
               ★★ Med
@@ -289,9 +297,10 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
             <button
               type="button"
               onClick={() => setDifficulty('hard')}
-              className={`${pillBase} ${difficulty === 'hard'
-                ? 'bg-red-500 text-white border-red-500 shadow-sm'
-                : 'bg-gray-100 dark:bg-dark-200 text-gray-500 dark:text-gray-400 border-transparent hover:bg-gray-200 dark:hover:bg-dark-100'
+              className={`${pillBase} ${
+                difficulty === 'hard'
+                  ? 'bg-red-500 text-white border-red-500 shadow-sm'
+                  : 'bg-gray-100 dark:bg-dark-200 text-gray-500 dark:text-gray-400 border-transparent hover:bg-gray-200 dark:hover:bg-dark-100'
               }`}
             >
               ★★★ Hard
@@ -308,32 +317,35 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
         <div className="flex gap-2 mb-3">
           <button
             type="button"
-            onClick={() => setTaskType("one-time")}
-            className={`${pillBase} ${taskType === "one-time" ? pillActive : pillInactive}`}
+            onClick={() => setTaskType('one-time')}
+            className={`${pillBase} ${taskType === 'one-time' ? pillActive : pillInactive}`}
           >
             One-time
           </button>
           <button
             type="button"
-            onClick={() => setTaskType("daily")}
-            className={`${pillBase} ${taskType === "daily" ? pillActive : pillInactive}`}
+            onClick={() => setTaskType('daily')}
+            className={`${pillBase} ${taskType === 'daily' ? pillActive : pillInactive}`}
           >
             Daily
           </button>
           <button
             type="button"
-            onClick={() => setTaskType("recurring")}
-            className={`${pillBase} ${taskType === "recurring" ? pillActive : pillInactive}`}
+            onClick={() => setTaskType('recurring')}
+            className={`${pillBase} ${taskType === 'recurring' ? pillActive : pillInactive}`}
           >
             Recurring
           </button>
         </div>
 
         {/* One-time: date + time pickers */}
-        {taskType === "one-time" && (
+        {taskType === 'one-time' && (
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="flex-1">
-              <label htmlFor="due-date" className="block text-xs font-heading font-semibold text-gray-600 dark:text-gray-400 mb-1">
+              <label
+                htmlFor="due-date"
+                className="block text-xs font-heading font-semibold text-gray-600 dark:text-gray-400 mb-1"
+              >
                 Due Date
               </label>
               <input
@@ -346,7 +358,10 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
               />
             </div>
             <div className="flex-1">
-              <label htmlFor="due-time" className="block text-xs font-heading font-semibold text-gray-600 dark:text-gray-400 mb-1">
+              <label
+                htmlFor="due-time"
+                className="block text-xs font-heading font-semibold text-gray-600 dark:text-gray-400 mb-1"
+              >
                 Due Time
               </label>
               <input
@@ -362,7 +377,7 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
         )}
 
         {/* Recurring: day-of-week picker */}
-        {taskType === "recurring" && (
+        {taskType === 'recurring' && (
           <div>
             <label className="block text-xs font-heading font-semibold text-gray-600 dark:text-gray-400 mb-2">
               Recurs On
@@ -374,15 +389,15 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
                   type="button"
                   onClick={() => {
                     if (recurringDays.includes(day)) {
-                      setRecurringDays(recurringDays.filter(d => d !== day));
+                      setRecurringDays(recurringDays.filter((d) => d !== day));
                     } else {
                       setRecurringDays([...recurringDays, day]);
                     }
                   }}
                   className={`py-1.5 text-xs rounded-lg font-body font-semibold transition-all duration-150 ${
                     recurringDays.includes(day)
-                      ? "bg-secondary-600 text-white shadow-sm"
-                      : "bg-gray-100 dark:bg-dark-200 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-dark-100"
+                      ? 'bg-secondary-600 text-white shadow-sm'
+                      : 'bg-gray-100 dark:bg-dark-200 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-dark-100'
                   }`}
                 >
                   {day.substring(0, 3)}
@@ -390,9 +405,7 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
               ))}
             </div>
             {recurringDays.length === 0 && (
-              <p className="mt-1.5 text-xs text-red-500 font-body">
-                Select at least one day.
-              </p>
+              <p className="mt-1.5 text-xs text-red-500 font-body">Select at least one day.</p>
             )}
           </div>
         )}
@@ -400,8 +413,14 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
 
       {/* Notes */}
       <div>
-        <label htmlFor="notes" className="block text-sm font-heading font-semibold text-gray-700 dark:text-gray-200 mb-1">
-          Notes <span className="text-gray-400 dark:text-gray-500 font-body font-normal text-xs">(optional)</span>
+        <label
+          htmlFor="notes"
+          className="block text-sm font-heading font-semibold text-gray-700 dark:text-gray-200 mb-1"
+        >
+          Notes{' '}
+          <span className="text-gray-400 dark:text-gray-500 font-body font-normal text-xs">
+            (optional)
+          </span>
         </label>
         <textarea
           id="notes"
@@ -425,25 +444,33 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
           {/* Badges row */}
           <div className="flex flex-wrap gap-1.5">
             {/* Priority badge */}
-            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-body font-semibold ${
-              priority === 'low'
-                ? 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
-                : priority === 'medium'
-                ? 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300'
-                : 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300'
-            }`}>
+            <span
+              className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-body font-semibold ${
+                priority === 'low'
+                  ? 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
+                  : priority === 'medium'
+                    ? 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300'
+                    : 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300'
+              }`}
+            >
               {priority === 'low' ? 'Low' : priority === 'medium' ? 'Medium' : 'High'} Priority
             </span>
 
             {/* Difficulty badge */}
-            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-body font-semibold ${
-              difficulty === 'easy'
-                ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+            <span
+              className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-body font-semibold ${
+                difficulty === 'easy'
+                  ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+                  : difficulty === 'medium'
+                    ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
+                    : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
+              }`}
+            >
+              {difficulty === 'easy'
+                ? '★ Easy'
                 : difficulty === 'medium'
-                ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
-                : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
-            }`}>
-              {difficulty === 'easy' ? '★ Easy' : difficulty === 'medium' ? '★★ Medium' : '★★★ Hard'}
+                  ? '★★ Medium'
+                  : '★★★ Hard'}
             </span>
 
             {/* Category badge */}
@@ -455,17 +482,17 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
             )}
 
             {/* Type badge */}
-            {taskType === "daily" && (
+            {taskType === 'daily' && (
               <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-body font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
                 Daily
               </span>
             )}
-            {taskType === "recurring" && recurringDays.length > 0 && (
+            {taskType === 'recurring' && recurringDays.length > 0 && (
               <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-body font-semibold bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300">
-                {recurringDays.map(d => d.substring(0, 3)).join(", ")}
+                {recurringDays.map((d) => d.substring(0, 3)).join(', ')}
               </span>
             )}
-            {taskType === "one-time" && dueDate && (
+            {taskType === 'one-time' && dueDate && (
               <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-body font-semibold bg-gray-100 text-gray-700 dark:bg-dark-200 dark:text-gray-300">
                 {new Date(`${dueDate}T${dueTime}`).toLocaleDateString('en-US', {
                   month: 'short',
@@ -483,11 +510,16 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
               <span className="font-semibold text-amber-500">{activeExp} EXP</span> active
             </span>
             <span>
-              <span className="font-semibold text-gray-400 dark:text-gray-500">{reserveExp} EXP</span> reserve
+              <span className="font-semibold text-gray-400 dark:text-gray-500">
+                {reserveExp} EXP
+              </span>{' '}
+              reserve
             </span>
             {(category || detectedCategory) && (
               <span>
-                <span className="font-semibold text-teal-500">+{difficulty === 'hard' ? 2 : 1}</span>{" "}
+                <span className="font-semibold text-teal-500">
+                  +{difficulty === 'hard' ? 2 : 1}
+                </span>{' '}
                 {category ?? detectedCategory} stat
               </span>
             )}
@@ -498,10 +530,10 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
       {/* Submit button */}
       <button
         type="submit"
-        disabled={isSubmitting || (taskType === "recurring" && recurringDays.length === 0)}
+        disabled={isSubmitting || (taskType === 'recurring' && recurringDays.length === 0)}
         className="w-full py-3 rounded-xl font-heading font-bold text-base text-white bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-amber-400/40 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-amber-400/60"
       >
-        {isSubmitting ? "Adding Task..." : "Add Task"}
+        {isSubmitting ? 'Adding Task...' : 'Add Task'}
       </button>
     </form>
   );
