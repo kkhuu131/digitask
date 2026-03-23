@@ -222,7 +222,7 @@ const AchievementsPage: React.FC = () => {
       setInitialCheckDone(true);
     };
     init();
-  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [user]);
 
   // Build a map of earned titles for quick lookup
   const earnedMap = new Map<number, UserTitle>();

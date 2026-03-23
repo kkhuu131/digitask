@@ -213,7 +213,7 @@ const DigimonEvolutionGraph: React.FC = () => {
     }
     
     // Combine discovered Digimon with their direct evolutions
-    let result = [...discoveredOnes];
+    const result = [...discoveredOnes];
     
     // Add direct evolutions that aren't already discovered
     digimon.forEach(d => {

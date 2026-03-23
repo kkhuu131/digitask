@@ -251,6 +251,31 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
     );
   };
 
+  // Hooks must be called before any early returns (Rules of Hooks)
+  // Add this useEffect to fetch devolution options when the modal opens
+  useEffect(() => {
+    const loadDevolutionOptions = async () => {
+      if (!localDigimon || !localDigimon.digimon_id) return;
+
+      const options = await useDigimonStore.getState().fetchDevolutionOptions(localDigimon.digimon_id);
+      setDevolutionOptions(options);
+    };
+
+    loadDevolutionOptions();
+  }, [localDigimon]);
+
+  // Add this useEffect to fetch evolution options when the modal opens or digimon changes
+  useEffect(() => {
+    const loadEvolutionOptions = async () => {
+      if (!localDigimon || !localDigimon.digimon_id) return;
+
+      const options = await useDigimonStore.getState().fetchEvolutionOptions(localDigimon.digimon_id);
+      setEvolutionOptions(options);
+    };
+
+    loadEvolutionOptions();
+  }, [localDigimon]);
+
   if (!localDigimon) return null;
 
   // Add a helper function to calculate age in days
@@ -366,30 +391,6 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
       setDevolutionError((error as Error).message);
     }
   };
-
-  // Add this useEffect to fetch devolution options when the modal opens
-  useEffect(() => {
-    const loadDevolutionOptions = async () => {
-      if (!localDigimon || !localDigimon.digimon_id) return;
-      
-      const options = await useDigimonStore.getState().fetchDevolutionOptions(localDigimon.digimon_id);
-      setDevolutionOptions(options);
-    };
-    
-    loadDevolutionOptions();
-  }, [localDigimon]);
-
-  // Add this useEffect to fetch evolution options when the modal opens or digimon changes
-  useEffect(() => {
-    const loadEvolutionOptions = async () => {
-      if (!localDigimon || !localDigimon.digimon_id) return;
-      
-      const options = await useDigimonStore.getState().fetchEvolutionOptions(localDigimon.digimon_id);
-      setEvolutionOptions(options);
-    };
-    
-    loadEvolutionOptions();
-  }, [localDigimon]);
 
   const digimonDetailModalTutorialSteps: DialogueStep[] = [
     {

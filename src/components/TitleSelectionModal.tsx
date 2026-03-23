@@ -23,7 +23,7 @@ const TitleSelectionModal: React.FC<TitleSelectionModalProps> = ({
   const toggleTitleDisplay = async (titleId: number, currentlyDisplayed: boolean) => {
     try {
       // If we're adding a new displayed title and already have 3, find the oldest one to remove
-      let titlesToUpdate = [{ id: titleId, is_displayed: !currentlyDisplayed }];
+      const titlesToUpdate = [{ id: titleId, is_displayed: !currentlyDisplayed }];
       
       if (!currentlyDisplayed && displayedTitles.length >= 3) {
         // Find the oldest displayed title to un-display

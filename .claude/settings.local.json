@@ -60,7 +60,18 @@
       "Bash(done)",
       "Bash(rm src/api/bokomonHandler.ts src/server/middleware.ts api/bokomon.ts)",
       "Bash(rmdir src/components/bokomon-assistant)",
-      "Bash(rm -f src/components/bokomon-assistant/BokomonAssistant.tsx)"
+      "Bash(rm -f src/components/bokomon-assistant/BokomonAssistant.tsx)",
+      "Bash(find . -maxdepth 1 -type f -name .eslintrc* -o -name eslint.config.*)",
+      "Bash(find . -path ./node_modules -prune -o -type f -name *.test.ts -o -name *.test.tsx -o -name *.spec.ts -o -name *.spec.tsx)",
+      "Bash(wc -l src/store/*.ts)",
+      "Bash(find src:*)",
+      "Bash(wc -l src/pages/*.tsx src/components/*.tsx)",
+      "Bash(xargs grep:*)",
+      "Bash(xargs wc:*)",
+      "Bash(find . -path ./node_modules -prune -o -type f -name *.yml -o -name *.yaml)",
+      "Bash(find . -path ./node_modules -prune -o -name Makefile -o -name .env* -type f)",
+      "Bash(wc -l src/engine/*.ts src/hooks/*.ts)",
+      "Bash(npm test:*)"
     ]
   },
   "enabledMcpjsonServers": [

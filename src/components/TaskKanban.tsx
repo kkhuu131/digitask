@@ -73,7 +73,7 @@ const TaskKanban: React.FC<TaskKanbanProps> = ({ tasks }) => {
     if (!task) return;
 
     // Update task based on target column
-    let updates: Partial<Task> = {};
+    const updates: Partial<Task> = {};
     
     switch (targetColumnId) {
       case "today":
