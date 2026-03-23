@@ -18,36 +18,38 @@ import { useOnboardingStore } from './store/onboardingStore';
 import React from 'react';
 import ErrorBoundary from './components/ErrorBoundary';
 
-// Pages
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Dashboard from './pages/Dashboard';
-import ForgotPassword from './pages/ForgotPassword';
-import CreatePet from './pages/CreatePet';
-import DigimonDexPage from './pages/DigimonDexPage';
+// Shell components — always needed, eager-loaded
 import Layout from './components/Layout';
-import Debug from './pages/Debug';
-import ResetPassword from './pages/ResetPassword';
-import AuthCallback from './pages/AuthCallback';
-import Battle from './pages/Battle';
-import Settings from './pages/Settings';
-import Tutorial from './pages/Tutorial';
-import PatchNotes from './pages/PatchNotes';
-import ProfilePage from './pages/ProfilePage';
-import UserSearchPage from './pages/UserSearchPage';
-import LeaderboardPage from './pages/LeaderboardPage';
-import AdminReportsPage from './pages/AdminReportsPage';
-import DigimonPlayground from './pages/DigimonPlayground';
-import Tournament from './pages/Tournament';
-import AdminUserDigimonPage from './pages/AdminUserDigimonPage';
-import AdminTitlesPage from './pages/AdminTitlesPage';
-import AdminTournamentTeamsPage from './pages/AdminTournamentTeamsPage';
-import OnboardingPage from './pages/OnboardingPage';
-import LandingPage from './pages/LandingPage';
-import RosterPage from './pages/RosterPage';
-import DigimonStorePage from './pages/DigimonStorePage';
-import AdminDigimonManager from './pages/AdminDigimonManager';
-import AchievementsPage from './pages/AchievementsPage';
+
+// Pages — lazy-loaded so each route is a separate chunk
+const Login = React.lazy(() => import('./pages/Login'));
+const Register = React.lazy(() => import('./pages/Register'));
+const Dashboard = React.lazy(() => import('./pages/Dashboard'));
+const ForgotPassword = React.lazy(() => import('./pages/ForgotPassword'));
+const CreatePet = React.lazy(() => import('./pages/CreatePet'));
+const DigimonDexPage = React.lazy(() => import('./pages/DigimonDexPage'));
+const Debug = React.lazy(() => import('./pages/Debug'));
+const ResetPassword = React.lazy(() => import('./pages/ResetPassword'));
+const AuthCallback = React.lazy(() => import('./pages/AuthCallback'));
+const Battle = React.lazy(() => import('./pages/Battle'));
+const Settings = React.lazy(() => import('./pages/Settings'));
+const Tutorial = React.lazy(() => import('./pages/Tutorial'));
+const PatchNotes = React.lazy(() => import('./pages/PatchNotes'));
+const ProfilePage = React.lazy(() => import('./pages/ProfilePage'));
+const UserSearchPage = React.lazy(() => import('./pages/UserSearchPage'));
+const LeaderboardPage = React.lazy(() => import('./pages/LeaderboardPage'));
+const AdminReportsPage = React.lazy(() => import('./pages/AdminReportsPage'));
+const DigimonPlayground = React.lazy(() => import('./pages/DigimonPlayground'));
+const Tournament = React.lazy(() => import('./pages/Tournament'));
+const AdminUserDigimonPage = React.lazy(() => import('./pages/AdminUserDigimonPage'));
+const AdminTitlesPage = React.lazy(() => import('./pages/AdminTitlesPage'));
+const AdminTournamentTeamsPage = React.lazy(() => import('./pages/AdminTournamentTeamsPage'));
+const OnboardingPage = React.lazy(() => import('./pages/OnboardingPage'));
+const LandingPage = React.lazy(() => import('./pages/LandingPage'));
+const RosterPage = React.lazy(() => import('./pages/RosterPage'));
+const DigimonStorePage = React.lazy(() => import('./pages/DigimonStorePage'));
+const AdminDigimonManager = React.lazy(() => import('./pages/AdminDigimonManager'));
+const AchievementsPage = React.lazy(() => import('./pages/AchievementsPage'));
 
 // Define a clear app initialization state
 interface AppInitState {
@@ -498,6 +500,13 @@ function App() {
     <ErrorBoundary>
       <Router>
         <div className="min-h-screen bg-gray-50 dark:bg-dark-400 transition-colors duration-200">
+          <React.Suspense
+            fallback={
+              <div className="flex items-center justify-center min-h-screen">
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary-500"></div>
+              </div>
+            }
+          >
           <Routes>
             {process.env.NODE_ENV === 'development' && <Route path="/debug" element={<Debug />} />}
             <Route path="/landing" element={<LandingPage />} />
@@ -747,6 +756,7 @@ function App() {
 
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
+          </React.Suspense>
           <NotificationCenter />
           <UpdateNotification />
         </div>

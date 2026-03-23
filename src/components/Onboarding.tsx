@@ -105,7 +105,6 @@ const Onboarding: React.FC = () => {
           throw insertError;
         }
       } else {
-        console.log('User already has Digimon, skipping creation');
       }
 
       await fetchAllUserDigimon();

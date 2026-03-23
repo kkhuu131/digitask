@@ -20,7 +20,6 @@ import {
   ChevronDown,
   Heart,
   ShoppingBag,
-  Map,
 } from 'lucide-react';
 
 interface LayoutProps {
@@ -195,7 +194,7 @@ const Layout = ({ children }: LayoutProps) => {
                   {/* Battle dropdown */}
                   <NavDropdown
                     label="Battle"
-                    isActive={isAnyActive(['/battle', '/battle', '/campaign', '/store'])}
+                    isActive={isAnyActive(['/battle', '/store'])}
                   >
                     <Link
                       to="/battle"
@@ -204,14 +203,6 @@ const Layout = ({ children }: LayoutProps) => {
                     >
                       <Sword className="h-4 w-4" />
                       Arena
-                    </Link>
-                    <Link
-                      to="/campaign"
-                      className={dropdownLinkClass}
-                      onClick={() => setActiveMenu(null)}
-                    >
-                      <Map className="h-4 w-4" />
-                      Campaign
                     </Link>
                     <Link
                       to="/store"
@@ -461,7 +452,7 @@ const Layout = ({ children }: LayoutProps) => {
                 onClick={() => handleMenuClick('battle')}
                 className={`w-full flex flex-col items-center justify-center py-2 gap-0.5 transition-colors ${
                   activeMenu === 'battle' ||
-                  isAnyActive(['/battle', '/battle', '/campaign', '/store'])
+                  isAnyActive(['/battle', '/store'])
                     ? 'text-primary-600 dark:text-accent-500'
                     : 'text-gray-500 dark:text-gray-400'
                 }`}
@@ -469,7 +460,7 @@ const Layout = ({ children }: LayoutProps) => {
                 <Sword className="h-5 w-5" />
                 <span className="text-xs font-body">Battle</span>
                 {(activeMenu === 'battle' ||
-                  isAnyActive(['/battle', '/battle', '/campaign', '/store'])) && (
+                  isAnyActive(['/battle', '/store'])) && (
                   <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full bg-primary-500 dark:bg-accent-500" />
                 )}
               </button>
@@ -490,14 +481,6 @@ const Layout = ({ children }: LayoutProps) => {
                       >
                         <Sword className="h-4 w-4" />
                         Arena
-                      </Link>
-                      <Link
-                        to="/campaign"
-                        className={`flex items-center gap-2 px-4 py-2 text-sm font-body ${isActive('/campaign') ? 'bg-primary-50 text-primary-700 dark:bg-dark-200 dark:text-accent-400' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-200'}`}
-                        onClick={() => setActiveMenu(null)}
-                      >
-                        <Map className="h-4 w-4" />
-                        Campaign
                       </Link>
                       <Link
                         to="/store"

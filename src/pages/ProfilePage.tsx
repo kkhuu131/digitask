@@ -137,7 +137,7 @@ const ProfilePage = () => {
             }
           }
         } catch (err) {
-          console.log('No streak data found:', err);
+          console.error('No streak data found:', err);
         }
 
         setProfileData({
