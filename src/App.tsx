@@ -9,6 +9,7 @@ import 'reactflow/dist/style.css';
 import UpdateNotification from './components/UpdateNotification';
 import { useOnboardingStore } from './store/onboardingStore';
 import React from 'react';
+import ErrorBoundary from './components/ErrorBoundary';
 
 // Pages
 import Login from './pages/Login';
@@ -470,6 +471,7 @@ function App() {
   }
 
   return (
+    <ErrorBoundary>
     <Router>
       <div className="min-h-screen bg-gray-50 dark:bg-dark-400 transition-colors duration-200">
         <Routes>
@@ -664,6 +666,7 @@ function App() {
         <UpdateNotification />
       </div>
     </Router>
+    </ErrorBoundary>
   );
 }
 

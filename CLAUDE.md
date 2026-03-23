@@ -13,10 +13,12 @@ npm run build         # tsc + vite build
 npm run lint          # ESLint with zero warnings allowed
 npm run preview       # Preview the production build locally
 
-# Tests
-# Note: No test files currently exist in the repo. The test runner is configured
-# (jest in package.json scripts, vitest also listed as a dependency) but unused.
-npm test              # Would run Jest if tests existed
+# Tests (vitest)
+npm test              # Run all tests once — used by CI
+npm run test:watch    # Watch mode for local development
+npm run test:coverage # Run with coverage report
+# Test files live in src/__tests__/utils/ — pure utility unit tests (39 tests)
+# .env.test provides dummy Supabase credentials so store imports don't throw during tests
 
 # Data-generation scripts (require SUPABASE_SERVICE_ROLE_KEY in .env, except animated list)
 node scripts/generate-digimon-lookup.js        # Regenerates src/constants/digimonLookup.ts from DB
@@ -35,6 +37,10 @@ VITE_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=    # Only needed when running data-generation scripts
 ```
 
+`.env.test` (committed) provides dummy credentials so `npm test` can import store files without Supabase throwing. Do not put real credentials in `.env.test`.
+
+CI (`github/workflows/ci.yml`) reads `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` from GitHub repository secrets for the build step.
+
 ## Architecture Overview
 
 **Digitask** is a productivity app that gamifies task completion using Digimon as virtual pets. Users create real-life tasks; completing them gives EXP and stat gains to their active Digimon.
@@ -50,6 +56,8 @@ SUPABASE_SERVICE_ROLE_KEY=    # Only needed when running data-generation scripts
 ```
 src/
   App.tsx             # Root router, auth init sequence, protected routes
+  __tests__/          # Vitest unit tests (mirrors src/ structure)
+    utils/            # Tests for pure utility functions
   store/              # Zustand stores (one per domain)
   pages/              # Route-level components
   components/         # Shared/feature components

@@ -95,10 +95,12 @@ Navigate to `http://localhost:5173`. Unauthenticated users see the landing page.
 ### Other Commands
 
 ```bash
-npm run build      # tsc type-check + Vite production build → dist/
-npm run preview    # Serve the production build locally
-npm run lint       # ESLint — zero warnings enforced
-npm test           # Jest (runner configured; no test files exist yet)
+npm run build         # tsc type-check + Vite production build → dist/
+npm run preview       # Serve the production build locally
+npm run lint          # ESLint — zero warnings enforced
+npm test              # Vitest — run all tests once (CI mode)
+npm run test:watch    # Vitest — watch mode for development
+npm run test:coverage # Vitest — run tests with coverage report
 ```
 
 ---
@@ -220,7 +222,7 @@ Evolution paths (956 entries) are read from `EVOLUTION_LOOKUP_TABLE`, a pre-gene
 
 - **Cost:** 20 energy per battle (energy regenerates at +1 per completed task via `grant_energy_self`)
 - **Daily cap:** 5 battles, tracked in `battle_limits`
-- **Opponents:** Real users via `get_random_users` RPC, or CPU wild teams generated client-side and scaled to the user's power rating
+- **Opponents:** CPU wild teams generated client-side via `generateBattleOption()`, scaled to the user's power rating at easy/medium/hard difficulty
 - **First-win daily bonus:** Tracked via `last_arena_first_win` on the user profile
 
 ### Weekly Tournament
@@ -370,7 +372,6 @@ All tables are in the `public` schema with RLS enabled.
 | `check_and_set_first_win_self()` | `battleStore` | Claim the daily first-win arena bonus |
 | `spend_energy_self(amount)` | `battleStore`, battle pages | Deduct battle energy from the calling user |
 | `grant_energy_self(amount)` | `taskStore` | Add battle energy (+1 per completed task) |
-| `get_random_users(exclude_user_id)` | `battleStore` | Return random opponent users for PvP matchmaking |
 | `is_admin()` | `authStore` | Check if the calling user is in `admin_users` |
 
 ### Server-Side Cron Jobs
