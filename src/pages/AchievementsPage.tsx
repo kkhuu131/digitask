@@ -276,9 +276,10 @@ const AchievementsPage: React.FC = () => {
   const handleEggSelect = async (digimonId: number) => {
     if (!eggModal) return;
     const { userTitleId } = eggModal;
-    setEggModal(null);
+    if (claimingId !== null) return;
     setClaimingId(userTitleId);
-    await claimAchievement(userTitleId, digimonId);
+    const success = await claimAchievement(userTitleId, digimonId);
+    if (success) setEggModal(null);
     setClaimingId(null);
   };
 

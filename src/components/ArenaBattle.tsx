@@ -15,7 +15,7 @@ import {
   STRATEGY_CONFIGS,
 } from '../engine/arenaTypes';
 import BattleDigimonSprite from './BattleDigimonSprite';
-import { ATTRIBUTE_COLORS } from './ArenaDamageEffect';
+import { ATTRIBUTE_COLORS } from '../constants/battleAttributeColors';
 
 // ─── Cinematic state ──────────────────────────────────────────────────────────
 interface CinematicState {

@@ -325,13 +325,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
 
       await get().fetchDailyQuota();
 
-      // Each completed task restores 1 battle energy (max is enforced server-side).
-      // Energy is the currency for entering arena and campaign battles.
-      try {
-        await supabase.rpc('grant_energy_self', { p_amount: 1 });
-      } catch (e) {
-        console.error('grant_energy_self(+1) failed:', e);
-      }
+      // The task-completion transaction awards one battle ticket server-side.
       window.dispatchEvent(new Event('energy-updated'));
 
       // Optimistically bump the tournament weekly task counter so the UI
@@ -555,7 +549,22 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       .on(
         'postgres_changes',
         {
-          event: '*',
+          event: 'INSERT',
+          schema: 'public',
+          table: 'daily_quotas',
+          filter: `user_id=eq.${userData.user.id}`,
+        },
+        async (payload) => {
+          set({
+            dailyQuota: payload.new as DailyQuota,
+            penalizedTasks: (payload.new as DailyQuota).penalized_tasks || [],
+          });
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
           schema: 'public',
           table: 'daily_quotas',
           filter: `user_id=eq.${userData.user.id}`,

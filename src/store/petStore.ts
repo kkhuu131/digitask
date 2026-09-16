@@ -254,11 +254,12 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         digimon_id: digimonId,
       });
 
-      if (error) throw error;
+      if (error && error.code !== '23505') throw error;
 
-      // Update local state
-      set({ discoveredDigimon: [...discoveredDigimon, digimonId] });
-      await useTitleStore.getState().checkCollectionTitles(discoveredDigimon.length);
+      // The database trigger may have already recorded this species.
+      const updatedIds = [...new Set([...get().discoveredDigimon, digimonId])];
+      set({ discoveredDigimon: updatedIds });
+      await useTitleStore.getState().checkCollectionTitles(updatedIds.length);
     } catch (error) {
       console.error('Error adding discovered Digimon:', error);
     }
@@ -1058,33 +1059,31 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       return () => {};
     }
 
+    const refreshDigimon = async () => {
+      await get().fetchUserDigimon();
+    };
+    const filter = {
+      schema: 'public',
+      table: 'user_digimon',
+      filter: `user_id=eq.${userData.user.id}`,
+    };
     const subscription = supabase
       .channel('digimon_changes')
+      .on('postgres_changes', { ...filter, event: 'INSERT' }, refreshDigimon)
+      .on('postgres_changes', { ...filter, event: 'UPDATE' }, refreshDigimon)
       .on(
         'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'user_digimon',
-          filter: `user_id=eq.${userData.user.id}`,
-        },
-        async (payload) => {
-          if (payload.eventType === 'DELETE' && get().userDigimon?.id === payload.old.id) {
-            set({ userDigimon: null, digimonData: null, evolutionOptions: [] });
-
-            useNotificationStore.getState().addNotification({
-              message: "Your Digimon has died due to neglect. You'll need to create a new one.",
-              type: 'error',
-              persistent: true,
-            });
-
-            window.dispatchEvent(new CustomEvent('digimon-died'));
-
-            return;
-          }
-
-          // For other events, refresh the Digimon data
-          await get().fetchUserDigimon();
+        { schema: 'public', table: 'user_digimon', event: 'DELETE' },
+        (payload) => {
+          // Default replica identity gives only the deleted primary key; match it locally.
+          if (!get().userDigimon || get().userDigimon?.id !== payload.old.id) return;
+          set({ userDigimon: null, digimonData: null, evolutionOptions: [] });
+          useNotificationStore.getState().addNotification({
+            message: "Your Digimon has died due to neglect. You'll need to create a new one.",
+            type: 'error',
+            persistent: true,
+          });
+          window.dispatchEvent(new CustomEvent('digimon-died'));
         }
       )
       .subscribe();

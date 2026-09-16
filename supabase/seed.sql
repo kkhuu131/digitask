@@ -1,0 +1,3 @@
+-- Optional development fixtures go here, after migrations.
+-- Required reference data is installed by the baseline, including on fresh remote projects.
+-- Do not add production users, task history, credentials or private data.

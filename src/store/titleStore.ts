@@ -63,7 +63,6 @@ async function awardNewTitles(titlesToAdd: Title[], userId: string): Promise<voi
   const rows = newOnes.map((title) => ({
     title_id: title.id,
     user_id: userId,
-    claimed_at: null, // unclaimed until user visits Achievements page
   }));
 
   const { error } = await supabase.from('user_titles').insert(rows);
@@ -287,92 +286,48 @@ export const useTitleStore = create<TitleState>((set, get) => ({
   },
 
   claimAchievement: async (userTitleId: number, chosenDigimonId?: number) => {
+    const { user } = useAuthStore.getState();
+    if (!user) return false;
+    set({ error: null });
     try {
-      const { user } = useAuthStore.getState();
-      if (!user) return false;
-
-      // Find the user title entry
-      const userTitle = get().userTitles.find((ut) => ut.id === userTitleId);
-      if (!userTitle) return false;
-      if (userTitle.claimed_at) return false; // already claimed
-
-      const title = userTitle.title;
-
-      // 1. Mark as claimed
-      const { error: claimError } = await supabase
-        .from('user_titles')
-        .update({ claimed_at: new Date().toISOString() })
-        .eq('id', userTitleId);
-
-      if (claimError) throw claimError;
-
-      // 2. Grant bits reward
-      if (title?.rewards?.bits) {
-        const { error: bitsError } = await supabase.rpc('grant_bits_self', {
-          p_amount: title.rewards.bits,
-        });
-        // Non-fatal: log but don't throw (RPC may not exist yet)
-        if (bitsError) {
-          console.warn('grant_bits_self failed, falling back to direct update:', bitsError);
-          // Fallback: direct update
-          await supabase.rpc('grant_energy_self', { p_amount: 0 }); // no-op to check connection
-          const { data: currencyData } = await supabase
-            .from('user_currency')
-            .select('bits')
-            .eq('user_id', user.id)
-            .single();
-          if (currencyData) {
-            await supabase
-              .from('user_currency')
-              .update({ bits: currencyData.bits + title.rewards.bits })
-              .eq('user_id', user.id);
-          }
-        }
-        window.dispatchEvent(new Event('currency-updated'));
-      }
-
-      // 3. Grant DigiEgg (add chosen Digimon to party/storage)
-      if (chosenDigimonId) {
-        const { data: partyData } = await supabase
-          .from('user_digimon')
-          .select('id', { count: 'exact' })
-          .eq('user_id', user.id)
-          .eq('is_in_storage', false);
-
-        const partyCount = partyData?.length ?? 0;
-        const goesToStorage = partyCount >= 9;
-
-        const { error: digimonError } = await supabase.from('user_digimon').insert({
-          user_id: user.id,
-          digimon_id: chosenDigimonId,
-          name: '',
-          happiness: 100,
-          experience_points: 0,
-          current_level: 1,
-          is_active: false,
-          is_in_storage: goesToStorage,
-        });
-
-        if (digimonError) throw digimonError;
-
-        useDigimonStore.getState().addDiscoveredDigimon(chosenDigimonId);
-        await useDigimonStore.getState().fetchAllUserDigimon();
-        await useDigimonStore.getState().fetchStorageDigimon();
-
+      const { data, error } = await supabase.rpc('claim_achievement', {
+        p_user_title_id: userTitleId,
+        p_digimon_id: chosenDigimonId ?? null,
+      });
+      if (error) throw error;
+      if (!data?.claimed_at) throw new Error('Claim could not be confirmed. Please try again.');
+      // Commit is confirmed. A subsequent refresh failure must not imply rewards failed.
+      set({
+        userTitles: get().userTitles.map((title) =>
+          title.id === userTitleId ? { ...title, claimed_at: data.claimed_at } : title
+        ),
+      });
+      if (data.claimed && data.bits > 0) window.dispatchEvent(new Event('currency-updated'));
+      if (data.claimed && data.digimon_id) {
         useNotificationStore.getState().addNotification({
-          message: goesToStorage
-            ? 'Your new Digimon was sent to DigiFarm storage — your party is full!'
+          message: data.is_in_storage
+            ? 'Your new Digimon was sent to DigiFarm storage because your party is full!'
             : 'Your new Digimon joined your party!',
           type: 'success',
         });
       }
-
-      // 4. Refresh local state
-      await get().fetchUserTitles();
-
+      const refreshes = await Promise.allSettled([
+        get().fetchUserTitles(),
+        useDigimonStore.getState().fetchAllUserDigimon(),
+        useDigimonStore.getState().fetchStorageDigimon(),
+        useDigimonStore.getState().fetchDiscoveredDigimon(),
+      ]);
+      refreshes.forEach((result) => {
+        if (result.status === 'rejected') console.error('Claim refresh failed:', result.reason);
+      });
       return true;
     } catch (error) {
-      console.error('Error claiming achievement:', error);
+      const message =
+        error && typeof error === 'object' && 'message' in error
+          ? String(error.message)
+          : 'Unable to claim achievement. Please try again.';
+      set({ error: message });
+      useNotificationStore.getState().addNotification({ message, type: 'error' });
       return false;
     }
   },

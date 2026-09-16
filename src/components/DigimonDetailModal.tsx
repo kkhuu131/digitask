@@ -145,13 +145,13 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
       localStorage.setItem('savedStats', JSON.stringify(newSavedStats));
 
       // 5. Now perform the actual database update in the background
-      const { error } = await supabase.rpc('allocate_stat', {
+      const { data, error } = await supabase.rpc('allocate_stat', {
         p_digimon_id: localDigimon.id,
         p_stat_type: upperType,
         p_user_id: userData.user.id,
       });
 
-      if (error) {
+      if (error || data !== true) {
         // If error, revert the optimistic update
         setLocalDigimon(localDigimon);
 
@@ -163,7 +163,10 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
         setSavedStats(originalSavedStats);
         localStorage.setItem('savedStats', JSON.stringify(originalSavedStats));
 
-        throw error;
+        throw (
+          error ||
+          new Error('No saved points are available or this Digimon has reached its stat cap')
+        );
       }
 
       // 6. Fetch the updated saved stats from the database (in the background)

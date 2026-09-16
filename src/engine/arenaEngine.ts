@@ -164,7 +164,7 @@ const clampToHex = (d: ArenaDigimon, margin = ARENA_MARGIN) => {
  * Converts two BattleDigimon teams into ArenaDigimon[], ready for the engine.
  * Assigns spawn positions and initialises all timers.
  *
- * @param userTeam        User's team as BattleDigimon[] (use convertToBattleDigimon from interactiveBattleStore)
+ * @param userTeam        User's team as BattleDigimon[] (use convertToBattleDigimon from utils/convertToBattleDigimon)
  * @param opponentTeam    Opponent's team as BattleDigimon[]
  * @param userStrategies  One Strategy per user Digimon (index-aligned)
  * @param opponentStrategies  One Strategy per opponent Digimon (defaults to 'balanced')

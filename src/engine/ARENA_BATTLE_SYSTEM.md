@@ -1,7 +1,7 @@
 # Arena Battle System — Developer Reference
 
-> **Last updated:** March 2026
-> **Scope:** All files under `src/engine/arena*`, `src/components/ArenaBattle.tsx`, `src/components/StrategyPicker.tsx`, `src/components/ArenaDamageEffect.tsx`, and the arena flow wiring in `src/pages/Battle.tsx`.
+> **Last updated:** September 2026
+> **Scope:** All files under `src/engine/arena*`, `src/components/ArenaBattle.tsx`, `src/components/StrategyPicker.tsx`, `src/constants/battleAttributeColors.ts`, and the arena flow wiring in `src/pages/Battle.tsx`.
 
 ---
 
@@ -49,9 +49,9 @@ The Arena Battle system is a real-time, physics-driven battle engine rendered in
 | `src/engine/steeringBehaviors.ts` | Pure functions: `seek`, `wander`, `orbit`, `flee`, `separation` |
 | `src/components/ArenaBattle.tsx` | Main React component: RAF loop, DOM mutations, cinematic system, camera |
 | `src/components/StrategyPicker.tsx` | Pre-battle strategy selection UI |
-| `src/components/ArenaDamageEffect.tsx` | `ATTRIBUTE_COLORS` map (used by windup ring); floating damage effect component is no longer rendered |
+| `src/constants/battleAttributeColors.ts` | `ATTRIBUTE_COLORS` map used by windup rings and attribute glows |
 | `src/components/BattleDigimonSprite.tsx` | Sprite renderer supporting `'victory'`/`'defeat'`/`'idle'`/`'attacking'`/`'hit'`/`'dead'` states |
-| `src/pages/Battle.tsx` | Wires everything: mode toggle, team selection, strategy picker, arena, results screen |
+| `src/pages/Battle.tsx` | Wires team selection, strategy picker, arena and results screen |
 
 ---
 
@@ -644,29 +644,26 @@ Each Digimon row shows: sprite, name, level + type/attribute, current strategy b
 
 ```
 Battle Options (difficulty cards)
-      ↓ handleSelectOption()
+      ? handleSelectOption()
 BattleTeamSelector (pick up to 3 Digimon)
-      ↓ handleConfirmTeam()  [spends energy via spend_energy_self RPC]
-      ↓
-  Arena mode? ──yes──→ StrategyPicker
-                             ↓ handleStartArenaBattle(strategies)
-                       ArenaBattle (live battle)
-                             ↓ onBattleComplete({ winner }) [auto after 2.5s]
-                       handleArenaBattleComplete()
-                       [calc bits, insert team_battles, update profiles, check titles]
-                             ↓ sets arenaResult
-                       ArenaResultsScreen
-                             ↓ handleArenaResultsContinue()
-                       [reset all state → back to Battle Options]
-
-Classic mode? ──→ InteractiveBattle (unchanged)
+      ? handleConfirmTeam() [spends one ticket via spend_energy_self]
+      ? convertToBattleDigimon() [utils/convertToBattleDigimon.ts]
+StrategyPicker
+      ? handleStartArenaBattle(strategies)
+ArenaBattle (live battle)
+      ? onBattleComplete({ winner, turns })
+handleArenaBattleComplete()
+      [calculate bits, insert team_battles, update profiles, check titles]
+      ? sets arenaResult
+ArenaResultsScreen
+      ? handleArenaResultsContinue()
+      [reset state ? back to Battle Options]
 ```
 
 ### State for Arena Flow in Battle.tsx
 
 | State | Purpose |
 |-------|---------|
-| `battleMode` | `'arena'` or `'interactive'` |
 | `showStrategyPicker` | Show StrategyPicker after team selection |
 | `arenaBattleActive` | Show ArenaBattle component |
 | `preparedUserTeam` | `BattleDigimon[]` — kept alive through results screen |

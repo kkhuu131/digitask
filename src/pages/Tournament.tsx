@@ -4,7 +4,7 @@ import { Trophy, Crown, ChevronRight, AlertCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../store/authStore';
 import { useDigimonStore, UserDigimon } from '../store/petStore';
-import { convertToBattleDigimon } from '../store/interactiveBattleStore';
+import { convertToBattleDigimon } from '../utils/convertToBattleDigimon';
 import { useCurrencyStore } from '../store/currencyStore';
 import { useTitleStore } from '../store/titleStore';
 import { useTournamentStore, PLACEMENT_BITS } from '../store/tournamentStore';
@@ -162,7 +162,7 @@ const Tournament: React.FC = () => {
     // Record in team_battles
     try {
       if (user) {
-        await supabase.from('team_battles').insert({
+        const { error: battleError } = await supabase.from('team_battles').insert({
           user_id: user.id,
           winner_id: isWin ? user.id : null,
           user_team: battleTeam.map((d) => ({
@@ -177,17 +177,20 @@ const Tournament: React.FC = () => {
           created_at: new Date().toISOString(),
         });
 
+        if (battleError) throw battleError;
+
         if (isWin) {
           const { data: profile } = await supabase
             .from('profiles')
             .select('battles_won')
             .eq('id', user.id)
             .single();
-          if (profile)
-            await useTitleStore.getState().checkBattleTitles((profile.battles_won ?? 0) + 1);
+          if (profile) await useTitleStore.getState().checkBattleTitles(profile.battles_won ?? 0);
         }
       }
-    } catch {}
+    } catch (error) {
+      console.error('Failed to record tournament battle:', error);
+    }
 
     // Placement bits for the result screen
     let placementBits = 0;

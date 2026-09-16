@@ -7,6 +7,26 @@ on:
     branches: [main]
 
 jobs:
+  database:
+    name: Rebuild and verify database
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run db:start:database
+      - run: npm run db:reset
+      - run: npm run db:test
+      - run: npm run db:test:authorization
+      - run: npm run db:lint:check
+      - run: npm run db:check
+      - run: npm run db:stop
+        if: always()
+
   ci:
     name: Lint, Type-check & Build
     runs-on: ubuntu-latest

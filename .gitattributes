@@ -1,0 +1,2 @@
+# Stored SQL function bodies participate in schema comparisons; keep checkout endings stable.
+*.sql text eol=lf

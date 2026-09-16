@@ -25,7 +25,7 @@ function hashSeed(str: string): number {
 interface DigiEggSelectionModalProps {
   pool: number[]; // full pool of eligible digimon IDs
   seed: string; // deterministic seed (e.g. userId + userTitleId)
-  onSelect: (digimonId: number) => void;
+  onSelect: (digimonId: number) => Promise<void>;
   onClose: () => void;
 }
 
@@ -67,7 +67,11 @@ const DigiEggSelectionModal: React.FC<DigiEggSelectionModalProps> = ({
   const handleConfirm = async () => {
     if (!selectedId || isSubmitting) return;
     setIsSubmitting(true);
-    onSelect(selectedId);
+    try {
+      await onSelect(selectedId);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const tierColor: Record<string, string> = {

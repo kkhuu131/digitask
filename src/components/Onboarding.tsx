@@ -104,10 +104,10 @@ const Onboarding: React.FC = () => {
           console.error('Error creating additional starter Digimon:', insertError);
           throw insertError;
         }
-      } else {
       }
 
       await fetchAllUserDigimon();
+      await useDigimonStore.getState().fetchDiscoveredDigimon();
 
       setShowDigimonSelection(false);
       setStage(OnboardingStage.COMPLETE);

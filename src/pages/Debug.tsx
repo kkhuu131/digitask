@@ -128,33 +128,6 @@ const Debug = () => {
           try {
             console.log('Attempting direct deletion of Digimon:', userDigimon.id);
 
-            // First, delete all battles that reference this Digimon
-            console.log('Deleting battles that reference this Digimon...');
-
-            // Delete battles where this Digimon is the user's Digimon
-            const { error: userBattlesError } = await supabase
-              .from('battles')
-              .delete()
-              .eq('user_digimon_id', userDigimon.id);
-
-            if (userBattlesError) {
-              console.error('Error deleting user battles:', userBattlesError);
-              return;
-            }
-
-            // Delete battles where this Digimon is the opponent's Digimon
-            const { error: opponentBattlesError } = await supabase
-              .from('battles')
-              .delete()
-              .eq('opponent_digimon_id', userDigimon.id);
-
-            if (opponentBattlesError) {
-              console.error('Error deleting opponent battles:', opponentBattlesError);
-              return;
-            }
-
-            console.log('Successfully deleted all battles referencing this Digimon');
-
             // Now delete the Digimon
             const { error } = await supabase.from('user_digimon').delete().eq('id', userDigimon.id);
 

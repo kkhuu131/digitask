@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDigimonStore, UserDigimon } from '../store/petStore';
 import { useBattleStore, DigimonAttribute, DigimonType } from '../store/battleStore';
-import { convertToBattleDigimon } from '../store/interactiveBattleStore';
+import { convertToBattleDigimon } from '../utils/convertToBattleDigimon';
 import { useCurrencyStore } from '../store/currencyStore';
 import { useTournamentStore } from '../store/tournamentStore';
 import { supabase } from '../lib/supabase';
@@ -169,7 +169,7 @@ const Battle = () => {
               ? null
               : (currentOption.team.user_id ?? null);
 
-          await supabase.from('team_battles').insert({
+          const { error: battleError } = await supabase.from('team_battles').insert({
             user_id: userId,
             ...(currentOption.isWild ? {} : { opponent_id: currentOption.team.user_id }),
             winner_id: winnerId,
@@ -187,6 +187,8 @@ const Battle = () => {
             turns: result.turns,
           });
 
+          if (battleError) throw battleError;
+
           if (isUserWin) {
             try {
               await supabase.rpc('check_and_set_first_win_self');
@@ -195,23 +197,18 @@ const Battle = () => {
 
           const { data: profile } = await supabase
             .from('profiles')
-            .select('battles_won, battles_completed')
+            .select('battles_won')
             .eq('id', userId)
             .single();
 
           if (profile) {
-            const newWon = isUserWin ? (profile.battles_won || 0) + 1 : profile.battles_won || 0;
-            await supabase
-              .from('profiles')
-              .update({
-                battles_completed: (profile.battles_completed || 0) + 1,
-                battles_won: newWon,
-              })
-              .eq('id', userId);
-            if (isUserWin) await useTitleStore.getState().checkBattleTitles(newWon);
+            if (isUserWin)
+              await useTitleStore.getState().checkBattleTitles(profile.battles_won || 0);
           }
         }
-      } catch {}
+      } catch (error) {
+        console.error('Failed to record arena battle:', error);
+      }
 
       // Show results screen — preparedUserTeam intentionally kept so the screen can render Digimon sprites.
       setArenaBattleActive(false);
