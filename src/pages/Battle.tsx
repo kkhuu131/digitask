@@ -20,7 +20,7 @@ import {
   Trophy,
   ShoppingBag,
   ChevronRight,
-  Zap,
+  Ticket,
   Swords,
   Shield,
   Coins,
@@ -335,7 +335,13 @@ const Battle = () => {
       <div
         className={`ui-page ${!arenaBattleActive && !arenaResult && !pendingOption ? 'max-w-3xl' : ''}`}
       >
-        <h1 className="ui-page-title mb-6">Battle</h1>
+        <div className="ui-page-header">
+          <h1 className="ui-page-title">Battle</h1>
+          <p className="ui-description">
+            Each arena battle costs one ticket. Complete tasks to earn tickets; battles award Bits
+            you can spend in the shop.
+          </p>
+        </div>
 
         {/* ── Hub navigation cards (always visible in idle state) ── */}
         {!arenaResult && !arenaBattleActive && !pendingOption && (
@@ -343,7 +349,10 @@ const Battle = () => {
             {/* Daily AI — active/current */}
             <div className="card border-l-4 border-l-primary-500 dark:border-l-accent-500 flex items-center gap-3 py-3 px-4">
               <div className="p-2 rounded-lg bg-primary-50 dark:bg-accent-900/30 shrink-0">
-                <Zap className="w-4 h-4 text-primary-600 dark:text-accent-400" />
+                <Ticket
+                  className="w-4 h-4 text-primary-600 dark:text-accent-400"
+                  aria-hidden="true"
+                />
               </div>
               <div className="min-w-0">
                 <p className="text-sm font-heading font-semibold text-gray-900 dark:text-gray-100">

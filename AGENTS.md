@@ -100,6 +100,9 @@ on a candidate or restoring an old implementation.
 - Active arena code is in `src/engine/`. Shared conversion is in
   `src/utils/convertToBattleDigimon.ts`; attribute colors are in
   `src/constants/battleAttributeColors.ts`.
+- Digidex completion uses `src/utils/digidexProgress.ts` across profiles, the
+  leaderboard and the Digidex. Count unique discovered catalog species and derive
+  the total from the bundled catalog; do not hard-code a species total.
 - Generated species, evolution, form and sprite constants are updated with their
   scripts. Other constants are authored game definitions or content.
 - Before deleting code, inspect direct/dynamic imports, routes, callers and

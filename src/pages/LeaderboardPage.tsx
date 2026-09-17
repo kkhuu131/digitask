@@ -3,11 +3,11 @@ import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import ReportButton from '../components/ReportButton';
 
-import { DIGIMON_LOOKUP_TABLE } from '../constants/digimonLookup';
-import { countDiscoveries, fetchLeaderboardPages, rankLeaderboard } from '../utils/leaderboard';
+import { countDiscoveries, rankLeaderboard } from '../utils/leaderboard';
 import type { LeaderboardProfile, LeaderboardType } from '../utils/leaderboard';
 
-const catalogIds = new Set(Object.values(DIGIMON_LOOKUP_TABLE).map((digimon) => digimon.id));
+import { fetchAllRows } from '../utils/fetchAllRows';
+import { getDigidexPercentage } from '../utils/digidexProgress';
 
 const rankColors = [
   'text-accent-800 dark:text-accent-400',
@@ -48,21 +48,21 @@ const LeaderboardPage = () => {
       setLoading(true);
       try {
         const [profilesData, streakData, discoveryData] = await Promise.all([
-          fetchLeaderboardPages((from, to) =>
+          fetchAllRows((from, to) =>
             supabase
               .from('profiles')
               .select('id, username, battles_won, battles_completed, avatar_url')
               .order('id')
               .range(from, to)
           ),
-          fetchLeaderboardPages((from, to) =>
+          fetchAllRows((from, to) =>
             supabase
               .from('daily_quotas')
               .select('longest_streak, current_streak, user_id')
               .order('user_id')
               .range(from, to)
           ),
-          fetchLeaderboardPages((from, to) =>
+          fetchAllRows((from, to) =>
             supabase
               .from('user_discovered_digimon')
               .select('user_id, digimon_id')
@@ -70,7 +70,7 @@ const LeaderboardPage = () => {
               .range(from, to)
           ),
         ]);
-        const discoveries = countDiscoveries(discoveryData, catalogIds);
+        const discoveries = countDiscoveries(discoveryData);
         const streaks = new Map(streakData.map((entry) => [entry.user_id, entry]));
 
         const combinedData =
@@ -122,7 +122,7 @@ const LeaderboardPage = () => {
 
   const getSubValue = (user: LeaderboardProfile) => {
     if (leaderboardType === 'discoveries')
-      return `${Math.round((user.discoveries / catalogIds.size) * 100)}% of Digidex`;
+      return `${getDigidexPercentage(user.discoveries)}% of Digidex`;
     if (leaderboardType === 'winrate')
       return `${user.battles_won} wins / ${user.battles_completed} battles`;
     if (leaderboardType === 'streak') return `${user.current_streak ?? 0}d now`;

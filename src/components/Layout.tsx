@@ -1,3 +1,4 @@
+import ResourceBalance from './ResourceBalance';
 import { ReactNode, Suspense, useState, useRef, useEffect } from 'react';
 import LoadingIndicator from './LoadingIndicator';
 import { useAuthStore } from '../store/authStore';
@@ -16,7 +17,8 @@ import {
   ScrollText,
   Settings,
   BookOpen,
-  Zap,
+  Ticket,
+  Coins,
   LogOut,
   ChevronDown,
   Heart,
@@ -186,7 +188,7 @@ const Layout = ({ children }: LayoutProps) => {
                 </div>
 
                 {/* Primary nav */}
-                <div className="hidden lg:ml-8 lg:flex lg:items-center lg:space-x-6 h-[4.5rem]">
+                <div className="hidden lg:ml-4 xl:ml-8 lg:flex lg:items-center lg:space-x-3 xl:space-x-6 h-[4.5rem]">
                   {/* Dashboard */}
                   <Link
                     to="/"
@@ -291,35 +293,21 @@ const Layout = ({ children }: LayoutProps) => {
               </div>
 
               {/* Right side: HUDs + Settings + Sign out */}
-              <div className="hidden sm:ml-6 sm:flex sm:items-center space-x-3">
-                {/* Energy HUD */}
-                <Link
+              <div className="hidden sm:ml-6 sm:flex sm:items-center space-x-2">
+                <ResourceBalance
+                  icon={Ticket}
+                  label="Tickets"
+                  value={`${energy.current}/${energy.max}`}
                   to="/battle"
-                  className="flex items-center gap-2 px-2 py-1 rounded-full bg-gray-100 dark:bg-dark-200 border border-gray-200 dark:border-dark-100 hover:bg-gray-200 dark:hover:bg-dark-100 transition-colors cursor-pointer"
-                >
-                  <Zap className="h-3.5 w-3.5 text-indigo-500" />
-                  <span className="text-xs text-gray-700 dark:text-gray-200 font-body">
-                    {energy.current}/{energy.max}
-                  </span>
-                  <div className="w-20 h-1.5 bg-gray-300 dark:bg-dark-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-indigo-500"
-                      style={{
-                        width: `${Math.min(100, (energy.current / Math.max(1, energy.max)) * 100)}%`,
-                      }}
-                    />
-                  </div>
-                </Link>
-
-                {/* Bits */}
-                <Link
+                  description="Used to start arena battles. Complete tasks to earn tickets. Each arena battle costs one ticket."
+                />
+                <ResourceBalance
+                  icon={Coins}
+                  label="Bits"
+                  value={bits.toLocaleString()}
                   to="/store"
-                  className="flex items-center gap-1 px-2 py-1 rounded-full bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-colors cursor-pointer"
-                >
-                  <span className="text-xs font-medium font-body text-amber-700 dark:text-amber-300">
-                    {bits.toLocaleString()} bits
-                  </span>
-                </Link>
+                  description="Spend Bits in the shop on items and upgrades. Earn them through arena battles, tournaments and achievements."
+                />
 
                 {/* Settings icon */}
                 <Link
@@ -385,6 +373,25 @@ const Layout = ({ children }: LayoutProps) => {
                 )}
               </Link>
             </div>
+          </div>
+          <div
+            className="flex flex-wrap items-center gap-2 border-t border-gray-100 px-4 py-2 dark:border-dark-100"
+            aria-label="Resources"
+          >
+            <ResourceBalance
+              icon={Ticket}
+              label="Tickets"
+              value={`${energy.current}/${energy.max}`}
+              to="/battle"
+              description="Used to start arena battles. Complete tasks to earn tickets. Each arena battle costs one ticket."
+            />
+            <ResourceBalance
+              icon={Coins}
+              label="Bits"
+              value={bits.toLocaleString()}
+              to="/store"
+              description="Spend Bits in the shop on items and upgrades. Earn them through arena battles, tournaments and achievements."
+            />{' '}
           </div>
         </header>
       )}

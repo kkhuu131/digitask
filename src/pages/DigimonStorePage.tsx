@@ -1,3 +1,5 @@
+import ResourceBalance from '../components/ResourceBalance';
+import { Coins } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useCurrencyStore } from '../store/currencyStore';
 import {
@@ -621,14 +623,18 @@ const DigimonStorePage: React.FC = () => {
           <div>
             <h1 className="ui-page-title">Neemon's Store</h1>
             <p className="text-gray-600 dark:text-gray-400 text-sm">{neeemonDialogue}</p>
+            <p className="ui-description mt-2">
+              Spend Bits on items and upgrades for your Digimon. Earn them through arena battles,
+              tournaments and achievements.
+            </p>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="bg-accent-50 dark:bg-accent-900/20 border border-accent-200 dark:border-accent-800/40 px-4 py-2.5 rounded-lg">
-              <span className="font-semibold text-accent-800 dark:text-accent-400">
-                {bits.toLocaleString()} bits
-              </span>
-            </div>
-          </div>
+          <ResourceBalance
+            icon={Coins}
+            label="Bits"
+            value={bits.toLocaleString()}
+            to="/store"
+            description="Spend Bits in the shop on items and upgrades. Earn them through arena battles, tournaments and achievements."
+          />
         </div>
       </div>
 

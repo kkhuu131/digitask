@@ -1,3 +1,4 @@
+import { getDigidexProgress } from '../utils/digidexProgress';
 import LoadingIndicator from './LoadingIndicator';
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { useReducedMotion } from 'framer-motion';
@@ -73,6 +74,7 @@ const DigimonDex = () => {
   const [selectedDigimon, setSelectedDigimon] = useState<Digimon | null>(null);
   const [evolutionPathsData, setEvolutionPaths] = useState<any>({});
   const { discoveredDigimon } = useDigimonStore();
+  const discoveryProgress = getDigidexProgress(discoveredDigimon);
   const [statLevel, setStatLevel] = useState<1 | 50 | 99>(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [stageFilter, setStageFilter] = useState<StageFilter>('All');
@@ -251,11 +253,11 @@ const DigimonDex = () => {
         <p className="text-sm font-body text-gray-500 dark:text-gray-400 mb-3">
           Discovered:{' '}
           <span className="font-semibold text-gray-700 dark:text-gray-300">
-            {discoveredDigimon.length}
+            {discoveryProgress.count}
           </span>{' '}
           /{' '}
           <span className="font-semibold text-gray-700 dark:text-gray-300">
-            {allDigimon.length}
+            {discoveryProgress.total}
           </span>
         </p>
 

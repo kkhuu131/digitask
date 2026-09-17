@@ -1,5 +1,6 @@
+import { fetchAllRows } from '../../utils/fetchAllRows';
 import { describe, expect, it } from 'vitest';
-import { countDiscoveries, fetchLeaderboardPages, rankLeaderboard } from '../../utils/leaderboard';
+import { countDiscoveries, rankLeaderboard } from '../../utils/leaderboard';
 import type { LeaderboardProfile } from '../../utils/leaderboard';
 
 const player = (
@@ -32,16 +33,13 @@ describe('leaderboard rankings', () => {
   });
 
   it('counts unique catalog species rather than pets or duplicate rows', () => {
-    const counts = countDiscoveries(
-      [
-        { user_id: 'a', digimon_id: 1 },
-        { user_id: 'a', digimon_id: 1 },
-        { user_id: 'a', digimon_id: 2 },
-        { user_id: 'a', digimon_id: 999 },
-        { user_id: 'b', digimon_id: 2 },
-      ],
-      new Set([1, 2])
-    );
+    const counts = countDiscoveries([
+      { user_id: 'a', digimon_id: 1 },
+      { user_id: 'a', digimon_id: 1 },
+      { user_id: 'a', digimon_id: 2 },
+      { user_id: 'a', digimon_id: 999 },
+      { user_id: 'b', digimon_id: 2 },
+    ]);
     expect(counts.get('a')).toBe(2);
     expect(counts.get('b')).toBe(1);
     expect(
@@ -54,7 +52,7 @@ describe('leaderboard rankings', () => {
   it('includes players beyond the first page before selecting the top fifty', async () => {
     const rows = Array.from({ length: 501 }, (_, i) => player(String(i), i, i));
     const ranges: number[][] = [];
-    const users = await fetchLeaderboardPages(async (from, to) => {
+    const users = await fetchAllRows(async (from, to) => {
       ranges.push([from, to]);
       return { data: rows.slice(from, to + 1), error: null };
     });
@@ -68,7 +66,7 @@ describe('leaderboard rankings', () => {
 
   it('rejects failed pages instead of showing a partial ranking', async () => {
     await expect(
-      fetchLeaderboardPages(async () => ({ data: null, error: new Error('Unavailable') }))
+      fetchAllRows(async () => ({ data: null, error: new Error('Unavailable') }))
     ).rejects.toThrow('Unavailable');
   });
 });

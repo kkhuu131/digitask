@@ -92,6 +92,14 @@ relying on color intensity. Reserve purple for experience displays.
 
 ## Arena presentation
 
+Resource balances use `ResourceBalance`: matching neutral controls with amber
+ticket/coin icons, an explicit resource name and a formatted count. The balance
+links to its destination; the separate help button explains earning and spending
+on hover, keyboard focus or touch, with Escape/outside dismissal. Do not use a
+ticket fill meter that suggests passive regeneration. Compact navigation puts
+resources in a wrapping row below the header. Keep earning/spending explanations
+visible on the Battle and Store pages as well.
+
 Arena playback: show attacker-to-target cues at recorded hit time, target markers
 during special charging, and damage labels that remain readable as the arena
 scales. Use attacker attribute colors for specials, quieter normal impacts and

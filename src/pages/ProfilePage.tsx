@@ -1,3 +1,5 @@
+import { getDigidexProgress, getDigidexPercentage } from '../utils/digidexProgress';
+import { fetchAllRows } from '../utils/fetchAllRows';
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import AchievementsPage from './AchievementsPage';
@@ -125,16 +127,17 @@ const ProfilePage = () => {
           }
 
           if (isOwnProfile) {
-            discoveredCount = discoveredDigimon.length || 0;
+            discoveredCount = getDigidexProgress(discoveredDigimon).count;
           } else {
-            const { count: discoveredCountData, error: discoveredCountError } = await supabase
-              .from('user_discovered_digimon')
-              .select('*', { count: 'exact', head: true })
-              .eq('user_id', profileId);
-
-            if (!discoveredCountError && discoveredCountData !== null) {
-              discoveredCount = discoveredCountData || 0;
-            }
+            const discoveries = await fetchAllRows((from, to) =>
+              supabase
+                .from('user_discovered_digimon')
+                .select('digimon_id')
+                .eq('user_id', profileId)
+                .order('id')
+                .range(from, to)
+            );
+            discoveredCount = getDigidexProgress(discoveries.map((row) => row.digimon_id)).count;
           }
         } catch (err) {
           console.error('No streak data found:', err);
@@ -223,13 +226,9 @@ const ProfilePage = () => {
     fetchUserTitles,
   ]);
 
-  // Calculate Digimon discovery percentage
-  const discoveryPercentage = () => {
-    const totalDigimon = 341;
-    return profileData?.discovered_count
-      ? Math.round((profileData.discovered_count / totalDigimon) * 100)
-      : 0;
-  };
+  const discoveryPercentage = isOwnProfile
+    ? getDigidexProgress(discoveredDigimon).percentage
+    : getDigidexPercentage(profileData?.discovered_count ?? 0);
 
   const handleDigimonClick = (digimon: UserDigimon) => {
     setSelectedDetailDigimon(digimon);
@@ -327,7 +326,7 @@ const ProfilePage = () => {
     },
     {
       label: 'DigiDex',
-      value: `${discoveryPercentage()}%`,
+      value: `${discoveryPercentage}%`,
       color: 'text-primary-700 dark:text-primary-400',
       bg: 'bg-blue-400/10 border-blue-400/20',
     },
