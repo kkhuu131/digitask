@@ -26,31 +26,11 @@ const DigimonDNASelectionModal: React.FC<DigimonDNASelectionModalProps> = ({
   const digimonDNASelectionModalTutorialSteps: DialogueStep[] = [
     {
       speaker: 'bokomon',
-      text: "Looks like you've found a new way to evolve your Digimon!",
-    },
-    {
-      speaker: 'neemon',
-      text: "OH LOOK! It's DNA Digivolution!",
+      text: 'Choose the required species to use as a DNA partner. The selected Digimon is consumed in the fusion; this is permanent.',
     },
     {
       speaker: 'bokomon',
-      text: 'Yep, DNA Digivolution, or Fusion is a special way to evolve that only some Digimon can do! It requires a fusion with another Digimon.',
-    },
-    {
-      speaker: 'neemon',
-      text: 'So, how do we do it?',
-    },
-    {
-      speaker: 'bokomon',
-      text: "In addition to the usual requirements, you'll also need a specific DNA partner Digimon. Be warned though, the DNA partner Digimon will be consumed in the fusion process! Bonus stats or ABI will not be transferred.",
-    },
-    {
-      speaker: 'neemon',
-      text: 'You think we can fuse?',
-    },
-    {
-      speaker: 'bokomon',
-      text: '...',
+      text: 'The consumed partner’s bonus stats and ABI are not transferred. If you are unsure, close this window and keep training your current partner.',
     },
   ];
 
@@ -90,6 +70,10 @@ const DigimonDNASelectionModal: React.FC<DigimonDNASelectionModalProps> = ({
             )}
           </div>
 
+          <PageTutorial
+            tutorialId="digimon_dna_selection_modal_intro"
+            steps={digimonDNASelectionModalTutorialSteps}
+          />
           {candidateDigimon.length > 0 ? (
             <div className="grid grid-cols-1 gap-3 mt-4">
               {candidateDigimon.map((digimon) => (
@@ -136,10 +120,6 @@ const DigimonDNASelectionModal: React.FC<DigimonDNASelectionModalProps> = ({
           </div>
         </div>
       </div>
-      <PageTutorial
-        tutorialId="digimon_dna_selection_modal_intro"
-        steps={digimonDNASelectionModalTutorialSteps}
-      />
     </>
   );
 };

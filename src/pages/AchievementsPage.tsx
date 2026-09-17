@@ -4,7 +4,7 @@ import { useTitleStore, UserTitle } from '../store/titleStore';
 import { Title, TITLES } from '../constants/titles';
 import { useAuthStore } from '../store/authStore';
 import DigiEggSelectionModal from '../components/DigiEggSelectionModal';
-import { Lock, Medal, CheckCircle2, Clock, Bookmark, X } from 'lucide-react';
+import { Lock, Medal, Clock, Bookmark, X } from 'lucide-react';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -19,7 +19,7 @@ const TIER_STYLES: Record<string, { badge: string; text: string }> = {
   },
   silver: {
     badge: 'bg-slate-400/10 text-slate-500 dark:text-slate-300 border border-slate-400/30',
-    text: 'text-slate-500 dark:text-slate-300',
+    text: 'text-slate-600 dark:text-slate-300',
   },
   gold: {
     badge: 'bg-yellow-400/10 text-yellow-800 dark:text-yellow-300 border border-yellow-400/30',
@@ -112,14 +112,16 @@ const AchievementCard: React.FC<AchievementCardProps> = ({
       }`}
     >
       <div className="p-4 flex flex-col gap-2 flex-1">
-        {/* Top row: tier badge + actions */}
-        <div className="flex items-center justify-between">
-          <span
-            className={`text-[10px] font-heading font-bold uppercase tracking-widest px-2 py-0.5 rounded-full ${styles.badge}`}
+        {/* Achievement name and actions */}
+        <div className="flex items-center justify-between gap-2">
+          <h3
+            className={`min-w-0 text-sm font-heading font-bold leading-tight ${styles.text}`}
+            title={`${title.tier.charAt(0).toUpperCase() + title.tier.slice(1)} tier`}
           >
-            {title.tier}
-          </span>
-          <div className="flex items-center gap-1.5">
+            {earned ? title.name : '???'}
+            <span className="sr-only"> ({title.tier} tier)</span>
+          </h3>
+          <div className="flex shrink-0 items-center gap-1.5">
             {/* Pin button — only for claimed titles when handler is provided */}
             {claimed && onToggleDisplay && (
               <button
@@ -128,30 +130,20 @@ const AchievementCard: React.FC<AchievementCardProps> = ({
                 title={isPinned ? 'Unpin from profile' : 'Pin to profile'}
                 aria-label={`${isPinned ? 'Unpin' : 'Pin'} ${title.name}`}
                 aria-pressed={isPinned}
-                className={`ui-icon-button ${
+                className={`ui-icon-button -my-3.5 -mr-3.5 ${
                   isPinned ? 'text-accent-800 dark:text-accent-400' : ''
                 }`}
               >
                 <Bookmark className={`h-4 w-4 ${isPinned ? 'fill-current' : ''}`} />
               </button>
             )}
-            {claimed && <CheckCircle2 className="h-4 w-4 text-green-500 flex-shrink-0" />}
             {unclaimed && <Clock className={`h-4 w-4 ${styles.text} flex-shrink-0`} />}
             {!earned && <Lock className="h-4 w-4 text-gray-400 dark:text-gray-600 flex-shrink-0" />}
           </div>
         </div>
 
-        {/* Title name */}
+        {/* Description or unlock requirement */}
         <div>
-          {earned ? (
-            <h3 className="text-sm font-heading font-bold text-gray-900 dark:text-gray-100 leading-tight">
-              {title.name}
-            </h3>
-          ) : (
-            <h3 className="text-sm font-heading font-bold text-gray-600 dark:text-gray-400 leading-tight">
-              ???
-            </h3>
-          )}
           <p className="text-xs font-body text-gray-500 dark:text-gray-400 mt-0.5 leading-snug">
             {earned ? title.description : formatRequirement(title)}
           </p>
@@ -333,13 +325,12 @@ const AchievementsPage: React.FC = () => {
                   className="flex items-center justify-between gap-2 px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-gray-50 dark:bg-dark-200"
                 >
                   <div className="min-w-0 flex-1">
-                    <div className={`text-xs font-heading font-bold truncate ${s.text}`}>
-                      {title.name}
-                    </div>
                     <div
-                      className={`text-[10px] font-body uppercase tracking-wide opacity-70 ${s.text}`}
+                      className={`text-xs font-heading font-bold truncate ${s.text}`}
+                      title={`${title.tier} tier`}
                     >
-                      {title.tier}
+                      {title.name}
+                      <span className="sr-only"> ({title.tier} tier)</span>
                     </div>
                   </div>
                   <button

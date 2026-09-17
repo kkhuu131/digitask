@@ -2,13 +2,8 @@ import { useState } from 'react';
 import { Digimon } from '../store/petStore';
 import { DIGIMON_LOOKUP_TABLE } from '../constants/digimonLookup';
 import { getAllEvolutions } from '@/utils/evolutionsHelper';
-
-export interface EvolutionPath {
-  id: number;
-  from_digimon_id: number;
-  to_digimon_id: number;
-  level_required: number;
-}
+import type { EvolutionPath } from '../constants/evolutionLookup';
+export type { EvolutionPath } from '../constants/evolutionLookup';
 
 // The catalog is bundled with the app; initialize synchronously without a loading flash.
 let cachedCatalog: { digimon: Digimon[]; evolutionPaths: EvolutionPath[] } | null = null;

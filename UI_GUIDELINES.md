@@ -59,6 +59,10 @@ or labels rather than coloring whole cards. Arena scenery, sprite lighting and
 brief XP/evolution effects may use gradients because they depict the game.
 Use existing named palette tokens instead of duplicating hex colors.
 
+On the Achievements page, show tier colors on achievement names instead of
+repeating tier badges on every card or pinned title. Keep tier names available
+to assistive technology and on hover; use a readable color in both themes.
+
 Task activity uses neutral day cells with subtle amber fills for active days and
 an amber outline for today. Show counts and readable weekday labels rather than
 relying on color intensity. Reserve purple for experience displays.
@@ -107,6 +111,20 @@ short camera highlights with cooldowns. Reduced motion uses a fixed wide view
 with labels and targeting cues, without zooms, recoil or particle bursts. These
 effects must not change recorded combat, rewards or replay format. Keep playback
 focused on the arena: no battle log or behavior captions beneath skill bars.
+
+## Onboarding and contextual help
+
+- Teach the task → real-life completion → partner growth loop first. Setup should
+  use short inline steps and a simple first-task form, deferring advanced settings,
+  battles and evolution mechanics until users explore those features.
+- First-visit page help is a dismissible inline tip. Longer guidance is optional,
+  with explicit Next/Back controls and progress. Keep a visible way to replay help
+  after dismissal; preserve existing tutorial completion flags.
+- Put modal help inside the modal's scrolling content. Do not stack a fullscreen
+  dialogue over a detail, evolution or DNA selection window. Permanent consequences
+  such as DNA partner consumption must remain visible outside dismissible help.
+- Keep Bokomon/Neemon as concise guides, with small sprites rather than large
+  blocking character overlays. Help must not prevent users from using the page.
 
 ## Loading states
 

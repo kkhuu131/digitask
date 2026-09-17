@@ -68,9 +68,6 @@ const Dashboard: React.FC = () => {
   const [weekActivity, setWeekActivity] = useState<number[]>([]);
 
   // Phase 3 — banner dismissal persists across sessions via localStorage
-  const [bannerDismissed, setBannerDismissed] = useState(
-    () => localStorage.getItem('beta-banner-dismissed') === 'true'
-  );
 
   // Phase 3 — quota strip data (safe defaults when dailyQuota is null on first load)
   const completedToday = dailyQuota?.completed_today ?? 0;
@@ -157,43 +154,15 @@ const Dashboard: React.FC = () => {
   const dashboardTutorialSteps: DialogueStep[] = [
     {
       speaker: 'bokomon',
-      text: "Welcome to your Digitask dashboard! This is where you'll manage your tasks and watch your Digimon grow.",
-    },
-    {
-      speaker: 'neemon',
-      text: "Ooh, look at your Digimon! That's your digital partner. It gets stronger when you complete tasks!",
+      text: 'Start with one real-life task. Use Add Task, then check it off only after you finish it to help your Digimon grow.',
     },
     {
       speaker: 'bokomon',
-      text: "Indeed! Your Digimon's happiness will decrease if you miss tasks, so be diligent in completing them.",
+      text: 'Completed tasks earn XP and one battle ticket. Medium and hard tasks also earn stat points; you can save these or turn on auto-allocation in the task list.',
     },
     {
       speaker: 'neemon',
-      text: 'And you can create new tasks over there! Just click the button and fill in what you need to do.',
-    },
-    {
-      speaker: 'bokomon',
-      text: 'Completing tasks earns you experience points and stat points. Daily tasks and recurring tasks will reset at 8:00 UTC each day or specific days, respectively. One-time tasks have a specific due date and time.',
-    },
-    {
-      speaker: 'neemon',
-      text: "What are these meters? 'Daily Quota' and 'Stats Gained Today'?",
-    },
-    {
-      speaker: 'bokomon',
-      text: "The 'Daily Quota' meter shows how many tasks you've completed today. You'll want to complete at least 3 tasks daily to maintain a streak and earn extra XP.",
-    },
-    {
-      speaker: 'bokomon',
-      text: "The 'Stats Gained Today' meter shows how many stat points you've gained today from tasks. These will increase with your Digimon collection.",
-    },
-    {
-      speaker: 'neemon',
-      text: 'Oh, and in your tasks, you can see an option to auto allocate the stat points from completed tasks to your active Digimon or to save to add later.',
-    },
-    {
-      speaker: 'both',
-      text: "We're excited to see how you and your Digimon grow together. Good luck on your journey!",
+      text: 'Keep it small! You can work toward the daily goal of 3 tasks for a streak. DigiFarm, evolution and battles can wait until you feel ready.',
     },
   ];
 
@@ -202,6 +171,7 @@ const Dashboard: React.FC = () => {
       <div role="status">
         <span className="sr-only">Loading dashboard…</span>
         <h1 className="ui-page-title mb-6">Dashboard</h1>
+
         <div
           className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-4 ui-skeleton-pulse"
           aria-hidden="true"
@@ -230,6 +200,7 @@ const Dashboard: React.FC = () => {
   return (
     <>
       <h1 className="ui-page-title mb-6">Dashboard</h1>
+      <PageTutorial tutorialId="dashboard_intro" steps={dashboardTutorialSteps} />
 
       <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-4">
         {/* ── Left column: Digimon panel + Party + Milestone ── */}
@@ -331,36 +302,6 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Phase 3 — beta banner demoted below the main grid and made dismissible.
-          Dismissed state persists across sessions via localStorage. */}
-      {!bannerDismissed && (
-        <div className="mt-4 bg-indigo-50 dark:bg-indigo-900/30 border-l-4 border-indigo-500 dark:border-indigo-600 p-3 rounded-r-md flex items-center justify-between">
-          <p className="text-sm text-indigo-800 dark:text-indigo-200">
-            Check out the latest updates in the patch notes page.
-          </p>
-          <div className="flex items-center gap-2 ml-4 flex-shrink-0">
-            <a
-              href="https://forms.gle/4geGdXkywwAQcZDt6"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs bg-indigo-100 dark:bg-indigo-800/50 hover:bg-indigo-200 dark:hover:bg-indigo-700/50 text-indigo-800 dark:text-indigo-200 px-2 py-1 rounded-full transition-colors"
-            >
-              Feedback
-            </a>
-            <button
-              onClick={() => {
-                setBannerDismissed(true);
-                localStorage.setItem('beta-banner-dismissed', 'true');
-              }}
-              className="text-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-200 text-lg leading-none cursor-pointer"
-              aria-label="Dismiss banner"
-            >
-              ×
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* Phase 4.6 — task form modal (desktop) / slide-up sheet (mobile).
           AnimatePresence handles the mount/unmount animation. The sheet springs up
           from the bottom on mobile and appears centered on sm+. max-h-[90vh] +
@@ -392,6 +333,7 @@ const Dashboard: React.FC = () => {
                 </h3>
                 <button
                   onClick={() => setShowTaskForm(false)}
+                  aria-label="Close task form"
                   className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer"
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -409,8 +351,6 @@ const Dashboard: React.FC = () => {
           </div>
         )}
       </AnimatePresence>
-
-      <PageTutorial tutorialId="dashboard_intro" steps={dashboardTutorialSteps} />
     </>
   );
 };

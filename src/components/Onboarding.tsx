@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import DigimonDialogue, { DialogueStep } from './DigimonDialogue';
-import TaskForm from './TaskForm';
 import DigimonSelection from './DigimonSelection';
 import { useDigimonStore } from '../store/petStore';
 import { useOnboardingStore } from '../store/onboardingStore';
 import { supabase } from '../lib/supabase';
+import { useTaskStore } from '../store/taskStore';
+import { TutorialManager } from '../utils/tutorialManager';
 
 enum OnboardingStage {
   WELCOME,
-  INTRO,
   CREATE_TASK,
   SELECT_DIGIMON,
   COMPLETE,
@@ -17,11 +16,13 @@ enum OnboardingStage {
 
 const Onboarding: React.FC = () => {
   const [stage, setStage] = useState<OnboardingStage>(OnboardingStage.WELCOME);
-  const [showTaskForm, setShowTaskForm] = useState(false);
-  const [showDigimonSelection, setShowDigimonSelection] = useState(false);
   const { createUserDigimon, fetchAllUserDigimon } = useDigimonStore();
   const navigate = useNavigate();
   const { markOnboardingComplete } = useOnboardingStore();
+  const [taskDescription, setTaskDescription] = useState('');
+  const [dailyTask, setDailyTask] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     // Check if we actually need onboarding
@@ -57,19 +58,57 @@ const Onboarding: React.FC = () => {
   }, [navigate]);
 
   const handleComplete = async () => {
-    await markOnboardingComplete();
-    navigate('/');
+    if (busy) return;
+    setBusy(true);
+    setError('');
+    try {
+      await markOnboardingComplete();
+      if (!useOnboardingStore.getState().hasCompletedOnboarding)
+        throw new Error('Could not finish setup. Please try again.');
+      // The setup already teaches the dashboard's first action; keep help replayable.
+      TutorialManager.markCompleted('dashboard_intro');
+      navigate('/', { replace: true });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not finish setup. Please try again.');
+    } finally {
+      setBusy(false);
+    }
   };
 
-  const handleTaskCreated = () => {
-    setShowTaskForm(false);
-    setStage(OnboardingStage.SELECT_DIGIMON);
+  const handleTaskCreated = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (busy || !taskDescription.trim()) return;
+    setBusy(true);
+    setError('');
+    try {
+      const previousCount = useTaskStore.getState().tasks.length;
+      await useTaskStore.getState().createTask({
+        description: taskDescription.trim(),
+        is_daily: dailyTask,
+        recurring_days: null,
+        due_date: null,
+        category: null,
+        difficulty: 'medium',
+        priority: 'medium',
+      });
+      const taskState = useTaskStore.getState();
+      if (taskState.error || taskState.tasks.length <= previousCount)
+        throw new Error(taskState.error || 'Could not add your task. Please try again.');
+      setStage(OnboardingStage.SELECT_DIGIMON);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not add your task. Please try again.');
+    } finally {
+      setBusy(false);
+    }
   };
 
   const handleDigimonSelected = async (selections: Array<{ digimonId: number; name: string }>) => {
+    if (busy) return;
+    setBusy(true);
+    setError('');
     try {
       const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) return;
+      if (!userData.user) throw new Error('Please sign in again to choose your partners.');
 
       // Check if user already has any Digimon
       const { data: existingDigimon, error: checkError } = await supabase
@@ -109,148 +148,177 @@ const Onboarding: React.FC = () => {
       await fetchAllUserDigimon();
       await useDigimonStore.getState().fetchDiscoveredDigimon();
 
-      setShowDigimonSelection(false);
       setStage(OnboardingStage.COMPLETE);
     } catch (error) {
       console.error('Error during Digimon selection:', error);
+      setError(
+        error instanceof Error ? error.message : 'Could not save your partners. Please try again.'
+      );
+    } finally {
+      setBusy(false);
     }
   };
 
-  // Define dialogue steps for each stage
-  const welcomeSteps: DialogueStep[] = [
-    {
-      speaker: 'bokomon',
-      text: "Welcome, DigiDestined! I'm Bokomon, chronicler of all things Digimon!",
-    },
-    {
-      speaker: 'neemon',
-      text: "And I'm Neemon! I eat crackers! Uh, I mean... I help too!",
-    },
-    {
-      speaker: 'bokomon',
-      text: "We'll be your guides in this world. Let's get you started on your journey!",
-      action: {
-        label: "Let's Go!",
-        onClick: () => setStage(OnboardingStage.INTRO),
-      },
-    },
-  ];
-
-  const introSteps: DialogueStep[] = [
-    {
-      speaker: 'bokomon',
-      text: 'This world needs your help! To keep Digimon happy and growing, you must complete real-life tasks!',
-    },
-    {
-      speaker: 'neemon',
-      text: 'Like brushing your teeth! Or... taking a nap! Wait, is napping a task?',
-    },
-    {
-      speaker: 'bokomon',
-      text: "Let's begin your journey! First, add your first task — it can be something you do daily or a one-time goal!",
-      action: {
-        label: 'Create My First Task',
-        onClick: () => {
-          setStage(OnboardingStage.CREATE_TASK);
-          setShowTaskForm(true);
-        },
-      },
-    },
-  ];
-
-  const selectDigimonSteps: DialogueStep[] = [
-    {
-      speaker: 'bokomon',
-      text: 'Great job! Now, every hero needs a team! Choose 3 Digimon to start your journey — no duplicates allowed!',
-    },
-    {
-      speaker: 'neemon',
-      text: 'Ooh, three whole partners! Pick wisely... or just pick the cutest ones. Like me!',
-    },
-    {
-      speaker: 'both',
-      text: 'Your first partner will be your active Digimon, and the other two will join your team. Choose all three!',
-      action: {
-        label: 'Select My Partners',
-        onClick: () => {
-          setShowDigimonSelection(true);
-        },
-      },
-    },
-  ];
-
-  const completeSteps: DialogueStep[] = [
-    {
-      speaker: 'bokomon',
-      text: 'All set! Check in daily to complete tasks and care for your Digimon.',
-    },
-    {
-      speaker: 'neemon',
-      text: "Don't forget to feed them! And maybe hug them. Hugs are important.",
-    },
-    {
-      speaker: 'both',
-      text: 'Your adventure begins now! Good luck, DigiDestined!',
-      action: {
-        label: 'Start My Adventure!',
-        onClick: handleComplete,
-      },
-    },
-  ];
-
+  const stepNumber =
+    stage === OnboardingStage.SELECT_DIGIMON ? 2 : stage === OnboardingStage.COMPLETE ? 3 : 1;
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-dark-400 text-gray-900 dark:text-gray-100">
-      {stage === OnboardingStage.WELCOME && (
-        <DigimonDialogue steps={welcomeSteps} onComplete={() => setStage(OnboardingStage.INTRO)} />
-      )}
-
-      {stage === OnboardingStage.INTRO && (
-        <DigimonDialogue
-          steps={introSteps}
-          onComplete={() => {
-            setStage(OnboardingStage.CREATE_TASK);
-            setShowTaskForm(true);
-          }}
-        />
-      )}
-
-      {stage === OnboardingStage.CREATE_TASK && showTaskForm && (
-        <div className="fixed inset-0 z-modal flex items-center justify-center p-4 bg-black bg-opacity-50">
-          <div className="card max-w-md w-full max-h-[90dvh] overflow-y-auto">
-            <h2 className="ui-section-title mb-4">Create Your First Task</h2>
-            <TaskForm onTaskCreated={handleTaskCreated} />
-          </div>
-        </div>
-      )}
-
-      {stage === OnboardingStage.SELECT_DIGIMON && (
-        <>
-          {!showDigimonSelection && (
-            <DigimonDialogue
-              steps={selectDigimonSteps}
-              onComplete={() => setShowDigimonSelection(true)}
+    <main className="min-h-screen bg-gray-50 dark:bg-dark-400 text-gray-900 dark:text-gray-100 px-4 py-8 sm:py-12">
+      <div className="max-w-2xl mx-auto">
+        <header className="mb-6">
+          <h1 className="ui-page-title mb-2">Start small. Grow together.</h1>
+          <p className="ui-description">
+            Turn real-life tasks into progress for your Digimon. You can learn the rest as you go.
+          </p>
+        </header>
+        <ol aria-label="Setup progress" className="grid grid-cols-3 gap-2 mb-6">
+          {['Add a task', 'Choose partners', 'You’re ready'].map((label, index) => (
+            <li
+              key={label}
+              aria-current={stepNumber === index + 1 ? 'step' : undefined}
+              className={`rounded-lg p-3 text-sm ${stepNumber === index + 1 ? 'bg-accent-50 text-accent-800 dark:bg-accent-900/20 dark:text-accent-300' : 'bg-gray-100 text-gray-600 dark:bg-dark-200 dark:text-gray-400'}`}
+            >
+              <span className="block font-semibold">{index + 1}</span>
+              {label}
+            </li>
+          ))}
+        </ol>
+        {error && (
+          <p
+            role="alert"
+            className="mb-4 rounded-lg p-3 bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-300"
+          >
+            {error}
+          </p>
+        )}
+        <section className="card">
+          <div className="flex items-center gap-3 mb-4">
+            <img
+              src="/assets/digimon/bokomon.png"
+              alt="Bokomon"
+              className="w-12 h-12 object-contain"
+              style={{ imageRendering: 'pixelated' }}
             />
+            <p className="text-sm text-gray-600 dark:text-gray-300">
+              {stepNumber === 1
+                ? 'Bokomon: One small task is all you need to start.'
+                : stepNumber === 2
+                  ? 'Bokomon: Pick the partners you like. There is no need to optimize your team yet.'
+                  : 'Bokomon: You’re ready. Focus on your tasks; we’ll explain the game as you explore.'}
+            </p>
+          </div>
+          {stage === OnboardingStage.WELCOME && (
+            <>
+              <h2 className="ui-section-title mb-2">A little progress, every day</h2>
+              <p className="ui-description mb-4">
+                Add a task, do it in real life, then check it off. Your partners gain experience and
+                you earn a battle ticket.
+              </p>
+              <p className="ui-description mb-6">
+                Battles, evolution and collection goals are optional things to explore later.
+              </p>
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={() =>
+                  setStage(
+                    useTaskStore.getState().tasks.length > 0
+                      ? OnboardingStage.SELECT_DIGIMON
+                      : OnboardingStage.CREATE_TASK
+                  )
+                }
+              >
+                Let’s get started
+              </button>
+            </>
           )}
-
-          {showDigimonSelection && (
-            <div className="fixed inset-0 z-modal flex items-center justify-center p-4 bg-black bg-opacity-50">
-              <div className="card max-w-2xl w-full max-h-[90dvh] overflow-y-auto">
-                <h2 className="ui-section-title mb-1">Choose Your 3 Partners</h2>
+          {stage === OnboardingStage.CREATE_TASK && (
+            <form onSubmit={handleTaskCreated} className="space-y-4">
+              <h2 className="ui-section-title">Choose one achievable task</h2>
+              <p className="ui-description">
+                Something you can finish today is ideal. You can change its settings later.
+              </p>
+              <div>
+                <label htmlFor="first-task" className="block text-sm font-semibold mb-2">
+                  What will you do?
+                </label>
+                <input
+                  id="first-task"
+                  className="input w-full"
+                  value={taskDescription}
+                  onChange={(event) => setTaskDescription(event.target.value)}
+                  placeholder="For example, take a 10-minute walk"
+                  required
+                  maxLength={500}
+                  disabled={busy}
+                />
+              </div>
+              <label className="flex items-center gap-3 min-h-11 text-sm">
+                <input
+                  type="checkbox"
+                  checked={dailyTask}
+                  onChange={(event) => setDailyTask(event.target.checked)}
+                  disabled={busy}
+                />
+                Repeat this task daily
+              </label>
+              <button
+                className="btn-primary"
+                type="submit"
+                disabled={busy || !taskDescription.trim()}
+              >
+                {busy ? 'Adding task...' : 'Add task & choose partners'}
+              </button>
+            </form>
+          )}
+          {stage === OnboardingStage.SELECT_DIGIMON && (
+            <>
+              <h2 className="ui-section-title mb-2">Choose your 3 partners</h2>
+              <p className="ui-description mb-4">
+                Your first pick is your active partner. The others join your party. Their species
+                names work as nicknames too.
+              </p>
+              <fieldset disabled={busy} aria-busy={busy} className="min-w-0">
                 <DigimonSelection
                   onSelect={() => {}}
                   multiSelect
                   onMultiSelect={handleDigimonSelected}
                 />
-              </div>
-            </div>
+              </fieldset>
+              {busy && (
+                <p role="status" className="text-sm mt-3">
+                  Saving your partners...
+                </p>
+              )}
+            </>
           )}
-        </>
-      )}
-
-      {stage === OnboardingStage.COMPLETE && (
-        <DigimonDialogue steps={completeSteps} onComplete={handleComplete} isSkippable={false} />
-      )}
-    </div>
+          {stage === OnboardingStage.COMPLETE && (
+            <>
+              <h2 className="ui-section-title mb-2">Your next step: finish your task</h2>
+              <p className="ui-description mb-4">
+                On the dashboard, check off your task after you do it in real life. That’s the main
+                loop: do something useful, then watch your partners grow.
+              </p>
+              <div className="rounded-lg bg-gray-50 dark:bg-dark-200 p-4 mb-6">
+                <h3 className="text-sm font-semibold mb-2">Explore when you’re ready</h3>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-2">
+                  <li>DigiFarm: manage partners and inspect evolution options.</li>
+                  <li>Battle: spend earned tickets on optional arena fights.</li>
+                  <li>Help: reopen tips whenever you need them.</li>
+                </ul>
+              </div>
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={handleComplete}
+                disabled={busy}
+              >
+                {busy ? 'Finishing setup...' : 'Go to my dashboard'}
+              </button>
+            </>
+          )}
+        </section>
+      </div>
+    </main>
   );
 };
 

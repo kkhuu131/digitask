@@ -32,6 +32,55 @@ const PatchNotes = () => {
                 Latest
               </span>
               <h3 className="text-lg font-medium ml-2 dark:text-gray-200">
+                Dashboard & Feedback Improvements
+              </h3>
+              <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">
+                September 17, 2026
+              </span>
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
+              <li>
+                Overdue and high-priority tasks use subtle card borders while keeping their colored
+                left-edge markers.
+              </li>
+              <li>Removed the patch-notes reminder banner from the dashboard.</li>
+              <li>Feedback is available in the footer alongside Tutorial and Patch Notes.</li>
+              <li>
+                Digidex evolution previews include required stats and items alongside the evolution
+                level in both list and graph views.
+              </li>
+              <li>
+                List and evolution graph views share the same Digimon details, stat bars, badges and
+                evolution cards.
+              </li>
+              <li>
+                The evolution graph fills its canvas; selecting a node opens the same detail drawer
+                as the list view.
+              </li>
+              <li>
+                First-visit help uses short, dismissible tips instead of blocking dialogue. Optional
+                guides have Next and Back controls and can be reopened on each page or window.
+              </li>
+              <li>
+                New-player setup focuses on one achievable task and starter partners, with simpler
+                task settings and a clear next step on the dashboard.
+              </li>
+              <li>
+                Achievement names use tier colors instead of repeated tier labels. Removed
+                completion checkmarks and aligned bookmark actions with the names for a quieter
+                layout.
+              </li>
+              <li>Arena playback begins with a 3, 2, 1, START countdown before Digimon move.</li>
+              <li>
+                Victory and defeat panels have a compact desktop width and use the same Bits icon as
+                the header.
+              </li>
+            </ul>
+          </div>
+
+          <div className="mb-6">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
+              <h3 className="text-lg font-medium ml-2 dark:text-gray-200">
                 UI and QoL Improvements
               </h3>
               <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">

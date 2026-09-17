@@ -645,7 +645,7 @@ const Layout = ({ children }: LayoutProps) => {
             <span className="text-sm font-body text-gray-500 dark:text-gray-400">
               This is a fan project. Digimon™ is owned by Bandai/Toei Animation.
             </span>
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center justify-center gap-4">
               <Link
                 to="/tutorial"
                 className="text-xs font-body text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
@@ -658,6 +658,14 @@ const Layout = ({ children }: LayoutProps) => {
               >
                 Patch Notes
               </Link>
+              <a
+                href="https://forms.gle/4geGdXkywwAQcZDt6"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs font-body text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors inline-flex items-center min-h-11 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent-500 focus-visible:outline-offset-2 rounded"
+              >
+                Feedback
+              </a>
             </div>
           </div>
         </div>

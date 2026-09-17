@@ -10,15 +10,15 @@ const DigimonDexPage = () => {
   const digimonPageTutorialSteps: DialogueStep[] = [
     {
       speaker: 'bokomon',
-      text: "Welcome to the DigiDex! Here you can see all the Digimon partners you've acquired on your journey.",
+      text: 'The Digidex records species you have discovered. Select a discovered Digimon to see its stats and evolution paths.',
     },
     {
       speaker: 'bokomon',
-      text: 'You can click on any Digimon card to see more details about them, including their stats, level, and evolution options.',
+      text: 'Evolves To shows the level, stats and items needed for each path. Unknown species stay silhouetted until you discover them.',
     },
     {
-      speaker: 'bokomon',
-      text: 'Evolve and devolve your Digimon to both increase their ABI and explore new evolution paths!',
+      speaker: 'neemon',
+      text: 'Use View Evolution Graph on larger screens to explore connections. Selecting a node opens the same detail drawer as the list.',
     },
   ];
 
@@ -64,6 +64,7 @@ const DigimonDexPage = () => {
           </button>
         </div>
 
+        <PageTutorial tutorialId="digidex_intro" steps={digimonPageTutorialSteps} />
         {showEvolutionGraph ? (
           <div className="h-[calc(100vh-200px)]">
             <DigimonEvolutionGraph />
@@ -72,7 +73,6 @@ const DigimonDexPage = () => {
           <DigimonDex />
         )}
       </div>
-      <PageTutorial tutorialId="digidex_intro" steps={digimonPageTutorialSteps} />
     </>
   );
 };

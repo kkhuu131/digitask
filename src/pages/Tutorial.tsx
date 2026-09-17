@@ -904,8 +904,8 @@ const Tutorial = () => {
                   for detailed information.
                 </li>
                 <li>
-                  <span className="font-medium">Feedback Form:</span> Use the feedback button in the
-                  app to report issues or suggest improvements.
+                  <span className="font-medium">Feedback Form:</span> Use the Feedback link in the
+                  footer to report issues or suggest improvements.
                 </li>
                 <li>
                   <span className="font-medium">Community:</span> Connect with other players to

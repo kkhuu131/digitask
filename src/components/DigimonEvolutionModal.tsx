@@ -149,27 +149,15 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
   const digimonEvolutionModalTutorialSteps: DialogueStep[] = [
     {
       speaker: 'bokomon',
-      text: 'Look at all the different evolutions your Digimon can undergo!',
+      text: 'Compare each evolution’s level, stat, ABI and item requirements. A path becomes available when your partner meets its requirements.',
+    },
+    {
+      speaker: 'bokomon',
+      text: 'Evolution and devolution reset the partner’s level to 1 and increase ABI. The notice above the options shows the ABI gain for this change.',
     },
     {
       speaker: 'neemon',
-      text: "Why can't we see what some of them look like?",
-    },
-    {
-      speaker: 'bokomon',
-      text: "You'll only be able to see the Digimon when you've discovered them beforehand!",
-    },
-    {
-      speaker: 'bokomon',
-      text: 'Evolutions typically will require both a certain level and a certain amount of stat requirements to be met. However, some of them may require ABI as well!',
-    },
-    {
-      speaker: 'neemon',
-      text: 'You can also evolve your Digimon by using DNA Fusion!',
-    },
-    {
-      speaker: 'bokomon',
-      text: "Spoilers! Also, Digimon's levels reset to 1 after they evolve and gain ABI based on their level before evolving. Keep completing your tasks everyday and evolve your Digimon, good luck!",
+      text: 'Some paths need a DNA partner too. Read the fusion warning carefully: the selected partner is consumed.',
     },
   ];
 
@@ -184,6 +172,10 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
           onClick={(e) => e.stopPropagation()}
         >
           <h3 className="text-xl font-bold mb-2 dark:text-gray-100">{modalTitle}</h3>
+          <PageTutorial
+            tutorialId="digimon_evolution_modal_intro"
+            steps={digimonEvolutionModalTutorialSteps}
+          />
           <div className="text-md text-gray-500 dark:text-gray-300 mb-4">
             {actionText} will
             <b className="text-red-500 dark:text-red-400">
@@ -460,10 +452,6 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
         dnaRequirementId={dnaRequirementId}
         candidateDigimon={candidateDigimon}
         onSelectDigimon={handleDNASelection}
-      />
-      <PageTutorial
-        tutorialId="digimon_evolution_modal_intro"
-        steps={digimonEvolutionModalTutorialSteps}
       />
 
       {showFormModal && selectedFormInfo && (

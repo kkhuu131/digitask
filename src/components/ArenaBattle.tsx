@@ -278,6 +278,9 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
   const targetRingRefs = useRef<Map<string, SVGCircleElement>>(new Map());
   const hpTrailRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const [attackEffects, setAttackEffects] = useState<AttackEffect[]>([]);
+  const [countdown, setCountdown] = useState<string | null>('3');
+  const countdownElapsedRef = useRef(0);
+  const countdownLabelRef = useRef<string | null>('3');
   // ── Game-state refs (never trigger re-renders) ──────────────────────────────
 
   const replayPlayerRef = useRef<ReturnType<typeof createReplayPlayer> | null>(null);
@@ -390,6 +393,7 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
       const el = spriteContainerRefs.current.get(d.id);
       if (el) {
         el.style.transform = `translate(${d.x - SPRITE_W / 2}px, ${d.y - SPRITE_H / 2}px)`;
+        el.style.zIndex = String(Math.round(d.y));
       }
       // User team spawns left → initially faces right (scaleX -1).
       // Opponent team spawns right → initially faces left (no flip).
@@ -400,6 +404,8 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
         facingEl.style.transform = facingRight ? 'scaleX(-1)' : '';
       }
     }
+    // Fit both starting teams immediately, before the countdown is shown.
+    updateCamera(10000);
   }, []);
 
   // ── Camera helper ─────────────────────────────────────────────────────────────
@@ -664,6 +670,29 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
       if (reducedMotionRef.current && cinematicRef.current) endCinematic();
       lastTsRef.current = ts;
 
+      // Hold the initial scene before advancing either live combat or recorded playback.
+      if (countdownLabelRef.current !== null) {
+        countdownElapsedRef.current += realDelta;
+        const elapsed = countdownElapsedRef.current;
+        const label =
+          elapsed < 1000
+            ? '3'
+            : elapsed < 2000
+              ? '2'
+              : elapsed < 3000
+                ? '1'
+                : elapsed < 3600
+                  ? 'START'
+                  : null;
+        if (label !== countdownLabelRef.current) {
+          countdownLabelRef.current = label;
+          setCountdown(label);
+        }
+        if (label === null) lastTsRef.current = 0;
+        rafId = requestAnimationFrame(loop);
+        return;
+      }
+
       // ── Cinematic time scaling ────────────────────────────────────────────────
       let gameDelta = realDelta;
       if (cinematicRef.current) {
@@ -840,8 +869,35 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
       {/* ── Arena — scaled to fill container width ── */}
       <div
         ref={scaleWrapperRef}
-        style={{ width: '100%', height: VIEWPORT_H * scale, overflow: 'hidden' }}
+        style={{
+          position: 'relative',
+          width: '100%',
+          height: VIEWPORT_H * scale,
+          overflow: 'hidden',
+        }}
       >
+        {countdown !== null && (
+          <div
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+            className="absolute inset-0 z-20 flex items-center justify-center bg-black/30 pointer-events-none"
+          >
+            <span className="sr-only">
+              {countdown === 'START' ? 'Battle starting' : `Battle begins in ${countdown}`}
+            </span>
+            <motion.span
+              key={countdown}
+              aria-hidden="true"
+              initial={reducedMotion ? false : { opacity: 0, scale: 0.85 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: reducedMotion ? 0 : 0.2 }}
+              className="font-heading font-bold text-6xl sm:text-8xl text-accent-400 drop-shadow-lg"
+            >
+              {countdown}
+            </motion.span>
+          </div>
+        )}
         {/* Scale container */}
         <div
           style={{

@@ -109,22 +109,17 @@ const DigimonPlayground: React.FC = () => {
   const emptyPartySlots = maxActivePartySize - partyDigimon.length;
 
   const tutorialSteps: DialogueStep[] = [
-    { speaker: 'neemon', text: 'Oh hey, tamer! Welcome to the DigiFarm!' },
     {
       speaker: 'bokomon',
-      text: 'This is the DigiFarm — manage your party and storage all in one place!',
-    },
-    {
-      speaker: 'neemon',
-      text: 'Your party can hold up to 9 Digimon. The rest hang out in the DigiFarm.',
+      text: 'DigiFarm is where you manage your party and storage. Select a Digimon to see its details, train its stats or explore evolutions.',
     },
     {
       speaker: 'bokomon',
-      text: 'Click any Digimon to view their full details, stats, and evolution options!',
+      text: 'Your party can hold up to 9 Digimon. Move partners between your party and storage using their card actions.',
     },
     {
       speaker: 'neemon',
-      text: 'Use the buttons to swap Digimon between your party and storage. Easy!',
+      text: 'You do not need to fill every spot right away. Get comfortable with your starter partners first!',
     },
   ];
 
@@ -138,6 +133,7 @@ const DigimonPlayground: React.FC = () => {
         </p>
       </div>
 
+      <PageTutorial tutorialId="digifarm_intro" steps={tutorialSteps} />
       <div className="flex flex-col lg:flex-row gap-4">
         {/* ── Left: Party Panel ── */}
         <div className="w-full lg:w-[368px] flex-shrink-0">
@@ -356,8 +352,6 @@ const DigimonPlayground: React.FC = () => {
           className="z-40"
         />
       )}
-
-      <PageTutorial tutorialId="digifarm_intro" steps={tutorialSteps} />
     </div>
   );
 };

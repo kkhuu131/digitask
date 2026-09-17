@@ -254,15 +254,11 @@ const ProfilePage = () => {
   const profilePageTutorialSteps: DialogueStep[] = [
     {
       speaker: 'bokomon',
-      text: 'Welcome to your profile page! Here you can view your Digimon, your titles, and your stats.',
+      text: 'Your profile shows your collection, achievements and progress. Use the profile controls to change your avatar.',
     },
     {
       speaker: 'neemon',
-      text: 'Ooh you can change your avatar here!',
-    },
-    {
-      speaker: 'bokomon',
-      text: 'You can also change and set up to 3 titles to show off your achievements!',
+      text: 'Choose up to 3 earned titles to show off. You can come back to customize these later!',
     },
   ];
 
@@ -346,6 +342,7 @@ const ProfilePage = () => {
 
   return (
     <div className="ui-page max-w-4xl space-y-6">
+      {isOwnProfile && <PageTutorial tutorialId="profile_intro" steps={profilePageTutorialSteps} />}
       {/* Profile Header Card */}
       <div className="bg-white dark:bg-dark-300 rounded-xl border border-gray-200 dark:border-dark-100 p-4 sm:p-6">
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
@@ -603,8 +600,6 @@ const ProfilePage = () => {
           onSelect={handleAvatarUpdate}
         />
       )}
-
-      {isOwnProfile && <PageTutorial tutorialId="profile_intro" steps={profilePageTutorialSteps} />}
     </div>
   );
 };

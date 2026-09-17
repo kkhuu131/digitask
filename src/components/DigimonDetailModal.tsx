@@ -418,31 +418,15 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
   const digimonDetailModalTutorialSteps: DialogueStep[] = [
     {
       speaker: 'bokomon',
-      text: 'Here you can see more details about your Digimon, including their stats, level, and evolution options.',
-    },
-    {
-      speaker: 'neemon',
-      text: 'Oh, you can also change their nickname here!',
+      text: 'This is your partner’s detail window. You can change its nickname, allocate saved stat points and inspect evolution options.',
     },
     {
       speaker: 'bokomon',
-      text: 'You can also allocate stat points gained from your tasks here, as well as evolve and devolve your Digimon.',
-    },
-    {
-      speaker: 'bokomon',
-      text: "There's a lot of important information here about your Digimon. Your Digimon has a personality, which increases one of their stats by 5%!",
+      text: 'Digivolve and Devolve show the available paths and requirements. Read the level-reset notice before choosing a path.',
     },
     {
       speaker: 'neemon',
-      text: `Ooh, your Digimon's personality is ${localDigimon.personality}!`,
-    },
-    {
-      speaker: 'bokomon',
-      text: 'Click the Digivolve button to view possible evolutions for your Digimon!',
-    },
-    {
-      speaker: 'neemon',
-      text: 'You can also click the Devolve button to view possible devolutions for your Digimon!',
+      text: 'You do not need to optimize everything now. Completing your real-life tasks is the best place to start!',
     },
   ];
 
@@ -493,6 +477,10 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
             </svg>
           </button>
 
+          <PageTutorial
+            tutorialId="digimon_detail_modal_intro"
+            steps={digimonDetailModalTutorialSteps}
+          />
           <div className="flex flex-col md:flex-row gap-6">
             {/* Left column */}
             <div className="md:w-2/5 flex flex-col items-center">
@@ -831,10 +819,6 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
           allUserDigimon={allUserDigimon}
         />
       </motion.div>
-      <PageTutorial
-        tutorialId="digimon_detail_modal_intro"
-        steps={digimonDetailModalTutorialSteps}
-      />
     </>
   );
 };

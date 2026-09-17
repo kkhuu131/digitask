@@ -18,6 +18,12 @@ on a candidate or restoring an old implementation.
    blocks the npm shim. CI uses Node.js 20.
 4. Commit related code, tests, SQL and regenerated types together. Distinguish
    changes actually deployed from changes merely prepared for deployment.
+5. Update `src/pages/PatchNotes.tsx` for each substantial batch of user-facing
+   changes (features, fixes or UI improvements). Group related work into one dated
+   entry rather than adding an entry for every commit. Small related changes may
+   be folded into the current batch; internal-only changes do not need an entry.
+   Describe the final user-visible behavior and do not claim deployment before
+   it has happened.
 
 ## Database rules
 

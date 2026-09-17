@@ -273,19 +273,16 @@ const Battle = () => {
   const digimonPageTutorialSteps: DialogueStep[] = [
     {
       speaker: 'bokomon',
-      text: 'Welcome to Daily AI Battles! Battle against AI-generated teams to earn Bits.',
+      text: 'Daily arena battles are optional. When you are ready, choose a difficulty and a team of up to 3 Digimon to earn Bits.',
     },
-    { speaker: 'neemon', text: 'Ooh, some of these Digimon look pretty tough!' },
     {
       speaker: 'bokomon',
-      text: 'Choose a difficulty, then pick up to 3 Digimon for your battle team. Each battle costs 1 ticket — complete tasks to earn more!',
+      text: 'Each new battle costs one ticket. Completing tasks earns tickets. You can choose your team yourself or use the strongest-team shortcut.',
     },
-    { speaker: 'neemon', text: 'W-wait, what happens if we lose?' },
     {
-      speaker: 'bokomon',
-      text: "No need to worry! Your Digimon won't die. Even a defeat earns Bits, and your result is saved before playback.",
+      speaker: 'neemon',
+      text: 'Your partners will not die if you lose, and defeats still earn Bits. Watching or replaying a recorded fight does not cost another ticket.',
     },
-    { speaker: 'both', text: 'Good luck, Tamer!' },
   ];
 
   const difficultyConfig = {
@@ -343,6 +340,9 @@ const Battle = () => {
           </p>
         </div>
 
+        {!arenaBattleActive && !arenaResult && !pendingOption && (
+          <PageTutorial tutorialId="battle_intro" steps={digimonPageTutorialSteps} />
+        )}
         {/* ── Hub navigation cards (always visible in idle state) ── */}
         {!arenaResult && !arenaBattleActive && !pendingOption && (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
@@ -703,7 +703,6 @@ const Battle = () => {
           </AnimatePresence>
         )}
       </div>
-      <PageTutorial tutorialId="battle_intro" steps={digimonPageTutorialSteps} />
     </>
   );
 };
@@ -727,7 +726,7 @@ const ArenaResultsScreen: React.FC<{
 
   return (
     <motion.div
-      className="card !p-0 overflow-hidden"
+      className="card !p-0 w-full max-w-lg mx-auto overflow-hidden"
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35 }}
@@ -790,7 +789,7 @@ const ArenaResultsScreen: React.FC<{
           </h3>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-amber-400" />
+              <Coins className="h-4 w-4 text-amber-700 dark:text-amber-400" aria-hidden="true" />
               <span className="text-sm font-body text-gray-600 dark:text-gray-400">
                 Bits earned
               </span>

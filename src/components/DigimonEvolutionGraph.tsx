@@ -1,4 +1,6 @@
 import LoadingIndicator from './LoadingIndicator';
+import DigimonDetails from './DigimonDetails';
+import DigimonDetailsDrawer from './DigimonDetailsDrawer';
 // App.tsx
 import React, { useState, useEffect, useMemo, memo, useCallback, useRef } from 'react';
 import ReactFlow, {
@@ -469,43 +471,6 @@ const DigimonEvolutionGraph: React.FC = () => {
   }, []);
 
   // Update the getStatsForLevel function to use actual database values
-  const getStatsForLevel = (digimon: Digimon, level: 1 | 50 | 99) => {
-    if (level === 1) {
-      return {
-        hp: digimon.hp_level1 || digimon.hp,
-        sp: digimon.sp_level1 || digimon.sp,
-        atk: digimon.atk_level1 || digimon.atk,
-        def: digimon.def_level1 || digimon.def,
-        int: digimon.int_level1 || digimon.int,
-        spd: digimon.spd_level1 || digimon.spd,
-      };
-    } else if (level === 99) {
-      return {
-        hp: digimon.hp_level99,
-        sp: digimon.sp_level99,
-        atk: digimon.atk_level99,
-        def: digimon.def_level99,
-        int: digimon.int_level99,
-        spd: digimon.spd_level99,
-      };
-    } else {
-      // For level 50, interpolate between level 1 and 99
-      const calculateMidpoint = (val1: number | null, val99: number | null) => {
-        if (val1 === null || val99 === null) return null;
-        return Math.floor(val1 + (val99 - val1) * 0.5);
-      };
-
-      return {
-        hp: calculateMidpoint(digimon.hp_level1, digimon.hp_level99),
-        sp: calculateMidpoint(digimon.sp_level1, digimon.sp_level99),
-        atk: calculateMidpoint(digimon.atk_level1, digimon.atk_level99),
-        def: calculateMidpoint(digimon.def_level1, digimon.def_level99),
-        int: calculateMidpoint(digimon.int_level1, digimon.int_level99),
-        spd: calculateMidpoint(digimon.spd_level1, digimon.spd_level99),
-      };
-    }
-  };
-
   // Update the evolution path click handlers to center on the selected node
   const handleEvolutionClick = useCallback((digimonToSelect: Digimon) => {
     setSelectedDigimon(digimonToSelect);
@@ -582,7 +547,7 @@ const DigimonEvolutionGraph: React.FC = () => {
         </div>
       </div>
 
-      {/* Main content - update to fixed width side panel */}
+      {/* Evolution graph canvas */}
       <div
         className="flex min-w-0 flex-1 overflow-hidden border border-gray-200 dark:border-dark-100 rounded-xl"
         style={{ height: 'calc(100vh - 250px)' }}
@@ -631,277 +596,28 @@ const DigimonEvolutionGraph: React.FC = () => {
             </div>
           )}
         </div>
-
-        {/* Side panel with fixed width of 350px */}
-        <div className="hidden md:block w-72 xl:w-[350px] flex-shrink-0 h-full bg-gray-50 dark:bg-dark-400 p-4 overflow-y-auto border-l border-gray-200 dark:border-dark-100">
-          {selectedDigimon ? (
-            <div className="ui-panel text-gray-900 dark:text-gray-100 overflow-hidden">
-              {/* Header */}
-              <div className="bg-gray-50 dark:bg-dark-200 p-4 text-gray-900 dark:text-gray-100 border-b border-gray-200 dark:border-dark-100">
-                <h2 className="text-xl font-bold">
-                  {discoveredDigimon.has(selectedDigimon.id) ? selectedDigimon.name : '???'}
-                </h2>
-                <p className="text-sm opacity-80">
-                  #{selectedDigimon.id} • {selectedDigimon.stage}
-                </p>
-              </div>
-
-              {/* Image section with background */}
-              <div className="p-4 bg-gray-100 dark:bg-dark-200 flex justify-center">
-                {selectedDigimon.sprite_url && (
-                  <img
-                    src={selectedDigimon.sprite_url}
-                    alt={
-                      discoveredDigimon.has(selectedDigimon.id)
-                        ? selectedDigimon.name
-                        : 'Unknown Digimon'
-                    }
-                    style={{
-                      imageRendering: 'pixelated',
-                      filter: discoveredDigimon.has(selectedDigimon.id) ? 'none' : 'brightness(0)',
-                    }}
-                    className={`w-32 h-32 ${!discoveredDigimon.has(selectedDigimon.id) && 'opacity-70'}`}
-                  />
-                )}
-              </div>
-
-              {/* Details section */}
-              <div className="p-4">
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <p className="text-xs text-gray-500 uppercase font-medium">Type</p>
-                    <p className="font-medium text-gray-800 dark:text-gray-200">
-                      {discoveredDigimon.has(selectedDigimon.id)
-                        ? selectedDigimon.type || 'Unknown'
-                        : '???'}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-500 uppercase font-medium">Attribute</p>
-                    <p className="font-medium text-gray-800 dark:text-gray-200">
-                      {discoveredDigimon.has(selectedDigimon.id)
-                        ? selectedDigimon.attribute || 'Unknown'
-                        : '???'}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Only show stats for discovered Digimon */}
-                {discoveredDigimon.has(selectedDigimon.id) && (
-                  <>
-                    {/* Level tabs with updated styling */}
-                    <div className="flex mb-4 bg-gray-100 dark:bg-dark-200 border border-gray-200 dark:border-dark-100 rounded-lg overflow-hidden">
-                      {[1, 50, 99].map((level) => (
-                        <button
-                          key={level}
-                          className={`ui-tab flex-1 m-1 ${
-                            statLevel === level ? 'ui-tab-active' : ''
-                          }`}
-                          onClick={() => setStatLevel(level as 1 | 50 | 99)}
-                        >
-                          Level {level}
-                        </button>
-                      ))}
-                    </div>
-
-                    {/* Stats display with consistent styling */}
-                    <div className="grid grid-cols-2 gap-4">
-                      {Object.entries(getStatsForLevel(selectedDigimon, statLevel)).map(
-                        ([stat, value]) => (
-                          <div
-                            key={stat}
-                            className="bg-white p-3 rounded-lg border border-gray-200 shadow-sm"
-                          >
-                            <p className="text-xs text-gray-500 uppercase font-medium mb-1">
-                              {stat === 'hp'
-                                ? 'HP'
-                                : stat === 'sp'
-                                  ? 'SP'
-                                  : stat === 'atk'
-                                    ? 'Attack'
-                                    : stat === 'def'
-                                      ? 'Defense'
-                                      : stat === 'int'
-                                        ? 'Intelligence'
-                                        : 'Speed'}
-                            </p>
-                            <p className="font-medium text-gray-800 dark:text-gray-200 text-lg">
-                              {value || 'N/A'}
-                            </p>
-                          </div>
-                        )
-                      )}
-                    </div>
-                  </>
-                )}
-
-                {/* Evolution paths section - always show this section */}
-                <div className="mt-5">
-                  <h3 className="text-lg font-semibold mb-3 text-gray-800 border-b pb-2">
-                    Evolution Paths
-                  </h3>
-
-                  <div className="space-y-4">
-                    <div>
-                      <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-4 w-4 mr-1 text-blue-500"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                        Evolves From
-                      </h4>
-
-                      <div className="pl-2 border-l-2 border-blue-200">
-                        {evolutionPaths.filter((p) => p.to_digimon_id === selectedDigimon.id)
-                          .length > 0 ? (
-                          <ul className="space-y-1">
-                            {evolutionPaths
-                              .filter((p) => p.to_digimon_id === selectedDigimon.id)
-                              .map((p) => {
-                                const fromDigimon = digimon.find((d) => d.id === p.from_digimon_id);
-                                const isDiscovered =
-                                  fromDigimon && discoveredDigimon.has(fromDigimon.id);
-
-                                return fromDigimon ? (
-                                  <li
-                                    key={`from-${p.id}`}
-                                    className="p-2 bg-blue-50 rounded hover:bg-blue-100 transition-colors cursor-pointer flex items-center"
-                                    onClick={() => handleEvolutionClick(fromDigimon)}
-                                  >
-                                    {fromDigimon.sprite_url && (
-                                      <img
-                                        src={fromDigimon.sprite_url}
-                                        alt={isDiscovered ? fromDigimon.name : 'Unknown Digimon'}
-                                        style={{
-                                          imageRendering: 'pixelated',
-                                          filter: isDiscovered ? 'none' : 'brightness(0)',
-                                        }}
-                                        className={`w-8 h-8 mr-2 ${!isDiscovered && 'opacity-70'}`}
-                                      />
-                                    )}
-                                    <span className="font-medium text-black">
-                                      {isDiscovered ? fromDigimon.name : '???'}
-                                    </span>
-                                    <span className="ml-auto text-xs text-gray-500">
-                                      {fromDigimon.stage}
-                                    </span>
-                                  </li>
-                                ) : null;
-                              })}
-                          </ul>
-                        ) : (
-                          <p className="text-sm text-gray-500 italic">None found</p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div>
-                      <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-4 w-4 mr-1 text-green-500"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                        Evolves To
-                      </h4>
-
-                      <div className="pl-2 border-l-2 border-green-200">
-                        {evolutionPaths.filter((p) => p.from_digimon_id === selectedDigimon.id)
-                          .length > 0 ? (
-                          <ul className="space-y-1">
-                            {evolutionPaths
-                              .filter((p) => p.from_digimon_id === selectedDigimon.id)
-                              .map((p) => {
-                                const toDigimon = digimon.find((d) => d.id === p.to_digimon_id);
-                                const isDiscovered =
-                                  toDigimon && discoveredDigimon.has(toDigimon.id);
-
-                                return toDigimon ? (
-                                  <li
-                                    key={`to-${p.id}`}
-                                    className="p-2 bg-green-50 rounded hover:bg-green-100 transition-colors cursor-pointer flex items-center"
-                                    onClick={() => handleEvolutionClick(toDigimon)}
-                                  >
-                                    {toDigimon.sprite_url && (
-                                      <img
-                                        src={toDigimon.sprite_url}
-                                        alt={isDiscovered ? toDigimon.name : 'Unknown Digimon'}
-                                        style={{
-                                          imageRendering: 'pixelated',
-                                          filter: isDiscovered ? 'none' : 'brightness(0)',
-                                        }}
-                                        className={`w-8 h-8 mr-2 ${!isDiscovered && 'opacity-70'}`}
-                                      />
-                                    )}
-                                    <div className="flex flex-col ml-2">
-                                      <div>
-                                        <span className="font-medium text-black">
-                                          {isDiscovered ? toDigimon.name : '???'}
-                                        </span>
-                                      </div>
-                                      <div>
-                                        {p.level_required > 0 && (
-                                          <span className="text-xs text-gray-600">
-                                            Level: {p.level_required}
-                                          </span>
-                                        )}
-                                      </div>
-                                    </div>
-                                    <span className="ml-auto text-xs text-gray-500">
-                                      {toDigimon.stage}
-                                    </span>
-                                  </li>
-                                ) : null;
-                              })}
-                          </ul>
-                        ) : (
-                          <p className="text-sm text-gray-500 italic">None found</p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center h-full text-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-16 w-16 text-gray-300 mb-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <p className="text-gray-500 font-medium">Click a Digimon to view details</p>
-              <p className="text-gray-400 text-sm mt-2">
-                Select any node in the diagram to see its information
-              </p>
-            </div>
-          )}
-        </div>
       </div>
+      {selectedDigimon && (
+        <DigimonDetailsDrawer
+          onClose={() => {
+            setSelectedDigimon(null);
+            setStatLevel(1);
+          }}
+        >
+          <DigimonDetails
+            selectedDigimon={selectedDigimon}
+            allDigimon={digimon}
+            isDiscovered={(id) => discoveredDigimon.has(id)}
+            statLevel={statLevel}
+            setStatLevel={setStatLevel}
+            onClose={() => {
+              setSelectedDigimon(null);
+              setStatLevel(1);
+            }}
+            navigateEvolution={handleEvolutionClick}
+          />
+        </DigimonDetailsDrawer>
+      )}
     </div>
   );
 };
