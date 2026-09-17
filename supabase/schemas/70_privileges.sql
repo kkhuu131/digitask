@@ -445,3 +445,13 @@ GRANT EXECUTE ON FUNCTION public.claim_achievement(integer, integer) TO authenti
 REVOKE INSERT, UPDATE ON public.user_titles FROM anon, authenticated;
 GRANT INSERT (user_id, title_id) ON public.user_titles TO authenticated;
 GRANT UPDATE (is_displayed) ON public.user_titles TO authenticated;
+
+REVOKE ALL ON public.arena_battle_offers,public.arena_battle_requests FROM PUBLIC,anon,authenticated;
+GRANT SELECT ON public.arena_battle_offers,public.arena_battle_requests TO authenticated;
+GRANT ALL ON public.arena_battle_offers,public.arena_battle_requests TO service_role;
+REVOKE ALL ON FUNCTION public.prepare_arena_battle(uuid,uuid,uuid,uuid[],text[]) FROM PUBLIC,anon,authenticated;
+REVOKE ALL ON FUNCTION public.settle_arena_battle(uuid,uuid,jsonb) FROM PUBLIC,anon,authenticated;
+REVOKE ALL ON FUNCTION public.arena_battle_context(uuid) FROM PUBLIC,anon,authenticated;
+GRANT EXECUTE ON FUNCTION public.prepare_arena_battle(uuid,uuid,uuid,uuid[],text[]) TO service_role;
+GRANT EXECUTE ON FUNCTION public.settle_arena_battle(uuid,uuid,jsonb) TO service_role;
+GRANT EXECUTE ON FUNCTION public.arena_battle_context(uuid) TO service_role;

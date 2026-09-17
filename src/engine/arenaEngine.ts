@@ -89,13 +89,14 @@ const findNearestEnemy = (attacker: ArenaDigimon, all: ArenaDigimon[]): ArenaDig
 const spawnPositions = (
   count: number,
   xMin: number,
-  xMax: number
+  xMax: number,
+  random: () => number
 ): Array<{ x: number; y: number }> => {
   const ySpacing = (WORLD_H * 0.5) / Math.max(count, 1);
   const yStart = WORLD_H * 0.25;
   return Array.from({ length: count }, (_, i) => ({
-    x: xMin + Math.random() * (xMax - xMin),
-    y: yStart + i * ySpacing + (Math.random() - 0.5) * 30,
+    x: xMin + random() * (xMax - xMin),
+    y: yStart + i * ySpacing + (random() - 0.5) * 30,
   }));
 };
 
@@ -173,10 +174,11 @@ export const initArenaDigimon = (
   userTeam: BattleDigimon[],
   opponentTeam: BattleDigimon[],
   userStrategies: Strategy[],
-  opponentStrategies: Strategy[] = opponentTeam.map(() => 'balanced')
+  opponentStrategies: Strategy[] = opponentTeam.map(() => 'balanced'),
+  random: () => number = Math.random
 ): ArenaDigimon[] => {
-  const userSpawns = spawnPositions(userTeam.length, 200, 320);
-  const opponentSpawns = spawnPositions(opponentTeam.length, 980, 1100);
+  const userSpawns = spawnPositions(userTeam.length, 200, 320, random);
+  const opponentSpawns = spawnPositions(opponentTeam.length, 980, 1100, random);
 
   const make = (
     bd: BattleDigimon,
@@ -186,10 +188,10 @@ export const initArenaDigimon = (
   ): ArenaDigimon => {
     const config = STRATEGY_CONFIGS[strategy];
     // Stagger skill cooldown so all Digimon don't charge at the same moment
-    const skillCooldown = Math.max(6000, config.skillCooldownBase + Math.random() * 5000);
+    const skillCooldown = Math.max(6000, config.skillCooldownBase + random() * 5000);
     // Initial attack cooldown is near-zero so Digimon engage immediately on first contact.
     // The full cooldown (attackCooldownBase) only kicks in between subsequent attacks.
-    const attackCooldown = Math.random() * 400;
+    const attackCooldown = random() * 400;
 
     return {
       // Identity
@@ -233,7 +235,7 @@ export const initArenaDigimon = (
       deathLanded: false,
 
       // Steering
-      wanderAngle: Math.random() * Math.PI * 2,
+      wanderAngle: random() * Math.PI * 2,
       currentTargetId: null,
       lastAttackerTeam: null,
 
@@ -262,7 +264,11 @@ export const initArenaDigimon = (
  * Returns a (possibly empty) list of events that occurred this frame.
  * The caller should stop invoking runFrame after receiving a 'battle_end' event.
  */
-export const runFrame = (digimon: ArenaDigimon[], deltaMs: number): ArenaEvent[] => {
+export const runFrame = (
+  digimon: ArenaDigimon[],
+  deltaMs: number,
+  random: () => number = Math.random
+): ArenaEvent[] => {
   const events: ArenaEvent[] = [];
 
   // ── Per-Digimon update ───────────────────────────────────────────────────────
@@ -338,7 +344,7 @@ export const runFrame = (digimon: ArenaDigimon[], deltaMs: number): ArenaEvent[]
         // Fire the skill
         const calcAttacker = toCalcDigimon(d);
         const calcTarget = toCalcDigimon(target);
-        const result = calculateDamage(calcAttacker, calcTarget);
+        const result = calculateDamage(calcAttacker, calcTarget, random);
         const rawDamage = result.isMiss ? 0 : Math.round(result.damage * SKILL_DAMAGE_MULTIPLIER);
 
         target.hp = Math.max(0, target.hp - rawDamage);
@@ -362,7 +368,7 @@ export const runFrame = (digimon: ArenaDigimon[], deltaMs: number): ArenaEvent[]
           target.lastAttackerTeam = d.isUserTeam ? 'user' : 'opponent';
 
           // Hit-stun: target slides on knockback, no steering for a moment (skill = longer)
-          target.stunTimerMs = 750 + Math.random() * 350;
+          target.stunTimerMs = 750 + random() * 350;
 
           // Apply heavy knockback away from attacker
           const kbDx = target.x - d.x;
@@ -399,10 +405,10 @@ export const runFrame = (digimon: ArenaDigimon[], deltaMs: number): ArenaEvent[]
         d.retreatTimerMs = config.fleeDuration;
         d.spriteState = 'attacking';
         d.spriteTimerMs = ATTACK_SPRITE_MS;
-        d.attackCooldownMs = config.attackCooldownBase + Math.random() * 2000;
+        d.attackCooldownMs = config.attackCooldownBase + random() * 2000;
 
         // Reset skill cooldown — SP now affects drain rate, not base value
-        d.skillCooldownMs = config.skillCooldownBase + Math.random() * 3000;
+        d.skillCooldownMs = config.skillCooldownBase + random() * 3000;
       }
       // No movement while winding up
       continue;
@@ -423,7 +429,7 @@ export const runFrame = (digimon: ArenaDigimon[], deltaMs: number): ArenaEvent[]
     // Priority c: finish retreating → enter wandering (recovery) phase
     if (d.state === 'retreating' && d.retreatTimerMs <= 0) {
       d.state = 'wandering';
-      d.wanderTimerMs = config.wanderDurationBase + Math.random() * 2000;
+      d.wanderTimerMs = config.wanderDurationBase + random() * 2000;
     }
 
     // Priority d: finish wandering → re-engage
@@ -449,17 +455,17 @@ export const runFrame = (digimon: ArenaDigimon[], deltaMs: number): ArenaEvent[]
 
       if (targetReadyToAttack) {
         const totalSpd = d.spd + target.spd;
-        attackerWins = Math.random() < d.spd / totalSpd;
+        attackerWins = random() < d.spd / totalSpd;
         if (!attackerWins) {
           // Loser hesitates — gives the winner time to land their hit
-          d.attackCooldownMs = 350 + Math.random() * 200;
+          d.attackCooldownMs = 350 + random() * 200;
         }
       }
 
       if (attackerWins) {
         const calcAttacker = toCalcDigimon(d);
         const calcTarget = toCalcDigimon(target);
-        const result = calculateDamage(calcAttacker, calcTarget);
+        const result = calculateDamage(calcAttacker, calcTarget, random);
 
         target.hp = Math.max(0, target.hp - result.damage);
 
@@ -485,7 +491,7 @@ export const runFrame = (digimon: ArenaDigimon[], deltaMs: number): ArenaEvent[]
           target.lastAttackerTeam = d.isUserTeam ? 'user' : 'opponent';
 
           // Hit-stun: target slides on knockback only, no steering
-          target.stunTimerMs = 450 + Math.random() * 250;
+          target.stunTimerMs = 450 + random() * 250;
 
           // Apply knockback — push target away from attacker
           const kbDx = target.x - d.x;
@@ -519,7 +525,7 @@ export const runFrame = (digimon: ArenaDigimon[], deltaMs: number): ArenaEvent[]
         // Attacker backs off after landing a hit — full retreat then wander
         d.state = 'retreating';
         d.retreatTimerMs = config.fleeDuration * 0.7;
-        d.attackCooldownMs = config.attackCooldownBase + Math.random() * 1500;
+        d.attackCooldownMs = config.attackCooldownBase + random() * 1500;
       }
     }
 
@@ -560,7 +566,8 @@ export const runFrame = (digimon: ArenaDigimon[], deltaMs: number): ArenaEvent[]
         d.vx,
         d.vy,
         d.wanderAngle,
-        BASE_FORCE * config.wanderWeight
+        BASE_FORCE * config.wanderWeight,
+        random
       );
       d.wanderAngle = newWanderAngle;
       totalFx += wanderForce.fx;
@@ -588,7 +595,8 @@ export const runFrame = (digimon: ArenaDigimon[], deltaMs: number): ArenaEvent[]
         d.vx,
         d.vy,
         d.wanderAngle,
-        BASE_FORCE * config.wanderWeight
+        BASE_FORCE * config.wanderWeight,
+        random
       );
       d.wanderAngle = newWanderAngle;
       totalFx += wanderForce.fx;
@@ -601,7 +609,8 @@ export const runFrame = (digimon: ArenaDigimon[], deltaMs: number): ArenaEvent[]
         d.vx,
         d.vy,
         d.wanderAngle,
-        BASE_FORCE * config.wanderWeight * 1.4
+        BASE_FORCE * config.wanderWeight * 1.4,
+        random
       );
       d.wanderAngle = newWanderAngle;
       totalFx += wanderForce.fx;
@@ -634,7 +643,8 @@ export const runFrame = (digimon: ArenaDigimon[], deltaMs: number): ArenaEvent[]
         d.vx,
         d.vy,
         d.wanderAngle,
-        BASE_FORCE * config.wanderWeight * 0.6
+        BASE_FORCE * config.wanderWeight * 0.6,
+        random
       );
       d.wanderAngle = newWanderAngle;
       totalFx += wanderForce.fx;

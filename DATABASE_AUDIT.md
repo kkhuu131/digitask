@@ -1,8 +1,8 @@
-# Database audit and deployed cleanup — 2026-09-16
+# Database audit and deployed cleanup — 2026-09-17
 
-The linked `digitask` database now has **19 public tables, 2 views, 28 application function overloads and 5 scheduled jobs**. The realtime publication contains `user_digimon` and `daily_quotas`, matching the app subscriptions.
+The linked `digitask` database now has **21 public tables, 2 views, 31 application function overloads and 5 scheduled jobs**. The realtime publication contains `user_digimon` and `daily_quotas`, matching the app subscriptions.
 
-The inspection covered application/scripts, stored-function callers, attached triggers, policies, catalog dependencies and cron commands. All 20 original orphan-function candidates have been removed. The regenerated audit reports **no functions without known callers**. Historical migrations still contain original definitions as required for replay; they are not runtime callers.
+The inspection covered application/scripts, stored-function callers, attached triggers, policies, catalog dependencies and cron commands. All 20 original orphan-function candidates have been removed. The current audit flags three legacy frontend RPCs (`check_and_set_first_win_self`, `grant_energy_self`, `spend_energy_self`) after their callers were replaced. They remain for older deployed clients and should be retired in a separate migration after rollout. Historical migrations still contain original definitions as required for replay; they are not runtime callers.
 
 ## Completed and deployed
 
@@ -15,8 +15,9 @@ The inspection covered application/scripts, stored-function callers, attached tr
 | `20260916233000_consolidate_battle_and_levelup_writers` | Kept one battle-counter trigger and one BEFORE level-up trigger; validated battle inserts and protected counter columns from browser writes. |
 | `20260916234000_publish_active_realtime_tables` | Published the two tables used by app subscriptions. Existing read permissions and RLS were retained. |
 | `20260916235000_atomic_achievement_claims_and_discoveries` | Atomic claims with server-owned reward definitions, ownership/pool validation and repeat protection. Added eight missing task achievements and repaired six missing discoveries. Discovery triggers cover pet inserts and species changes. |
+| `20260917000000_persist_atomic_arena_battles` | Private offers/requests, service-only preparation and atomic settlement. Prepared requests charge nothing; settlement saves ticket, Bits, history, counters and recorded playback once. The authenticated arena-battle Edge Function is deployed. |
 
-Drops use explicit signatures and no CASCADE. No table or user data was deleted or rewritten by these migrations. Baseline seeds were not replayed on production. The earlier review-only orphan-removal proposal has been replaced by the deployed migration.
+Drops use explicit signatures and no CASCADE. No existing user rows were deleted or rewritten by these migrations. The discovery backfill inserted six missing records. Baseline seeds were not replayed on production. The earlier review-only orphan-removal proposal has been replaced by the deployed migration.
 
 ### Mutation ownership
 
@@ -52,18 +53,22 @@ The five retained jobs are `check-overdue-tasks`, `reset-battle-limits`, `daily_
 
 ## Remaining work, in order
 
-1. **Client rollout and old partial claims:** deploy the prepared frontend to use `claim_achievement`; browser writes to claim timestamps are now denied. Old claims may have delivered partial rewards; repair individual cases only with evidence, never reset all claims. Newly discovered species are tracked automatically, and all currently owned species have discovery records.
+1. **Client rollout and old partial claims:** deploy the prepared frontend to use `claim_achievement` and the persisted arena Edge flow; browser writes to claim timestamps are now denied. Old claims may have delivered partial rewards; repair individual cases only with evidence, never reset all claims. Newly discovered species are tracked automatically, and all currently owned species have discovery records.
 2. **Broader mutation authorization:** currency, daily-quota bonuses, saved stats and some other gameplay fields still have browser write paths. `user_milestones` also has a permissive update policy. Achievement earning is also still client-driven: an owned title row is the current claim entitlement, not server-verified accomplishment. Restricting the patched RPCs/counters does not secure every mutation; move each operation behind validated server transactions with role/ownership tests.
 3. **Typed database client:** generated types are checked in and verified, but `src/lib/supabase.ts` does not yet use `Database`. Convert it and resolve real schema/domain mismatches rather than adding broad casts.
-4. **Remaining legacy integrations:** migrate scraper DDL bootstrap, remove the boss compatibility invocation, retire battle-limit cron/Debug uses, then assess reporting views. The audit now also flags `grant_energy_self` after removing its client connectivity fallback; retire it after the client rollout and update its permission tests. Preserve current dependencies until their callers change.
+4. **Remaining legacy integrations:** migrate scraper DDL bootstrap, remove the boss compatibility invocation, retire battle-limit cron/Debug uses, then assess reporting views. The audit flags the three old energy/first-win RPCs above; retire them after the client rollout and update their permission tests. Preserve current dependencies until their callers change.
 5. **Frontend deployment and runtime verification:** publish the prepared client changes through the normal deployment process and test achievement/battle/progression/realtime behavior with staging accounts.
 
 ## Verification and rollback materials
 
-Fresh local replay, declarative consistency, generated types, reference data, authorization/atomic-rollback tests, battle-counter/spoofing tests, wild-loss insertion, multi-level progression, changed-cron-command protection, database lint, application lint/format/build and all 43 application tests pass. Read-only live assertions verify history, removed overloads, permissions, single triggers and publication membership.
+Fresh local replay, declarative consistency, generated types, reference data, authorization/atomic-rollback tests, battle-counter/spoofing tests, wild-loss insertion, multi-level progression, changed-cron-command protection, database lint, application lint/format/build and all 52 application tests pass. Local HTTP tests use actual Auth/API/Edge Runtime and cover concurrent starts, aborted-request recovery, private request reads and server-only settlement. Replay tests verify reproducible seeds and identical events/final health across playback frame rates. Read-only live assertions verify history, removed overloads, permissions, single triggers and publication membership; the deployed Edge Function rejects anonymous callers. No paid production battle was created as a test.
 
-All 28 local and remote normalized function bodies, inspected attributes and grants match. Eighteen older stored bodies retain CRLF on production; raw CLI diff treats those line endings as cosmetic replacements. Do not generate functional migrations from that cosmetic difference.
+All 31 local and remote normalized function bodies, inspected attributes and grants match. Eighteen older stored bodies retain CRLF on production; raw CLI diff treats those line endings as cosmetic replacements. Do not generate functional migrations from that cosmetic difference.
 
 Run `npm run db:audit` for the current conservative caller inventory. Raw exports/results are ignored `*.local.*` files. A pre-achievement schema snapshot and rollback notes are under `supabase/.temp/backups/achievement-discovery-20260916/`. Original schema/metadata and restoration materials are stored locally under ignored `supabase/.temp/backups/baseline-adoption-20260916/` and `supabase/.temp/backups/function-cleanup-20260916/`; they contain no user-data backup. Preserve nullable winners if rolling back after new wild-loss rows have been recorded.
 
 Follow [supabase/README.md](supabase/README.md) for the ongoing migration workflow. Production baseline adoption is complete and must not be repeated.
+
+## Arena operational follow-up
+
+The production migration and arena-battle function are deployed; the website still needs the prepared client commit/deployment. The old client remains compatible with the additive arena migration but retains its old ticket-loss behavior until rollout. Tournament combat/settlement is still separate and has not been converted. Recordings are currently retained indefinitely; define a retention policy and monitor storage before scaling usage. The worst-case local replay is approximately 1 MiB; a bounded 120-second simulation took about 60 ms in the current local test. A schema-only pre-arena backup and rollback notes are under ignored `supabase/.temp/backups/atomic-arena-20260917/`. Do not delete settled records or refund paid fights merely because playback was interrupted.

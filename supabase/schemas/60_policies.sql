@@ -157,3 +157,8 @@ ALTER TABLE "public"."user_titles" ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "user_titles_update" ON "public"."user_titles" FOR UPDATE USING (("auth"."uid"() = "user_id")) WITH CHECK (("auth"."uid"() = "user_id"));
 
 ALTER TABLE "public"."user_tournaments" ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE public.arena_battle_offers ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.arena_battle_requests ENABLE ROW LEVEL SECURITY;
+CREATE POLICY arena_offers_read_own ON public.arena_battle_offers FOR SELECT TO authenticated USING (auth.uid()=user_id);
+CREATE POLICY arena_requests_read_own ON public.arena_battle_requests FOR SELECT TO authenticated USING (auth.uid()=user_id);

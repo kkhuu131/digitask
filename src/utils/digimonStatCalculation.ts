@@ -1,4 +1,4 @@
-import { Digimon, UserDigimon } from '@/store/petStore';
+import type { Digimon, UserDigimon } from '@/store/petStore';
 
 /**
  * XP required to advance from `level` to `level + 1`.

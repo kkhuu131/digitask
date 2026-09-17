@@ -1,6 +1,6 @@
 # Database workflow
 
-The live public schema was captured on 2026-09-16. The baseline deliberately preserves its behavior. The same day, its history was adopted on production and six tested follow-up migrations added authorization, atomic task rewards, orphan cleanup, authoritative battle/progression writers realtime publication membership, atomic achievement claims and automatic discoveries. See [DATABASE_AUDIT.md](../DATABASE_AUDIT.md) for completed changes and remaining defects.
+The live public schema was captured on 2026-09-16. The baseline deliberately preserves its behavior. The same day, its history was adopted on production and six tested follow-up migrations added authorization, atomic task rewards, orphan cleanup, authoritative battle/progression writers, realtime publication membership, atomic achievement claims and automatic discoveries. See [DATABASE_AUDIT.md](../DATABASE_AUDIT.md) for completed changes and remaining defects.
 
 ## What belongs where
 
@@ -8,7 +8,7 @@ The live public schema was captured on 2026-09-16. The baseline deliberately pre
 - `migrations/`: immutable, ordered deployment SQL. The baseline recreates the captured public schema and required species, forms, evolution paths and titles.
 - `seeds/reference.sql`: provenance snapshot of those four reference tables; the baseline includes it, so production creation does not depend on development seeding. No user data is included.
 - `seed.sql`: optional development fixtures only.
-- `operations/scheduled-jobs.sql`: live cron snapshot for review, **not an installation script**. One captured job is broken. Schedules, reference-data changes and other DML need explicit migrations; schema generation does not capture them.
+- `operations/scheduled-jobs.sql`: live cron snapshot for review, **not an installation script**. The five retained jobs are healthy; the broken job was removed. Schedules, reference-data changes and other DML need explicit migrations; schema generation does not capture them.
 - `archive/`: previous local migrations, partial schema and the four recorded remote migrations, preserved for investigation rather than replay.
 - `diagnostics/`: read-only inventory and reference-data checks.
 - `src/types/database.types.ts`: generated public database types. The existing client has not yet been converted to use them.
@@ -39,9 +39,9 @@ Use `npm.cmd` in PowerShell if script execution is blocked. `db:start:database` 
 
 `db:check` compares declarative SQL with replayed migrations in an isolated temporary workspace and checks local generated types. CI rebuilds locally and checks schema consistency, reference data, authorization, atomic reward rollback, legacy cleanup and database lint without production credentials. `db:lint` shows warnings for investigation; `db:lint:check` uses `--fail-on error` and fails CI for invalid functions. The tests target only `supabase_db_digitask` and roll back their fixtures; they accept no production target.
 
-## One-time adoption: completed on 2026-09-16
+## One-time adoption: completed on 2026-09-16 (arena update 2026-09-17)
 
-The linked `digitask` project now records all seven active migrations in this checkout, from `20260916220000` through `20260916235000`. The four previous March 2026 versions were archived and removed from the active history metadata. The baseline was marked applied, **never executed** on the existing database. Only the six follow-up migrations were deployed, without seeds, role updates or vault updates.
+The linked `digitask` project now records all eight active migrations in this checkout, from `20260916220000` through `20260917000000`. The four previous March 2026 versions were archived and removed from the active history metadata. The baseline was marked applied, **never executed** on the existing database. The six September 16 follow-ups and the September 17 additive arena migration were deployed without development seeds, role updates or vault updates. The authenticated arena-battle Edge Function is also deployed.
 
 The complete pre-adoption schema export matched the original capture before repair. Original definitions, grants, cron commands and recorded migration statements, plus manual restoration SQL, are backed up locally under ignored `supabase/.temp/backups/baseline-adoption-20260916/`. These are schema/metadata rollback materials, not a user-data backup. Adoption and the first five follow-ups did not modify production user rows. The achievement/discovery follow-up repaired six missing discovery records for currently owned species without resetting claims. Old checkouts must update before deploying; do not repeat this repair procedure.
 
@@ -49,7 +49,7 @@ New Supabase projects replay the baseline normally. Provisioning the five health
 
 ## Live verification
 
-`diagnostics/deployment-check.sql` contains read-only assertions for the September 16 deployment. `diagnostics/function-fingerprints.sql` compares normalized stored bodies, authorization attributes and grants. All 28 application overloads match the local schema after normalization; 18 older production bodies retain CRLF while the imported sources use LF. Raw CLI diff treats these as cosmetic replacements, not new functional migrations to apply. Declarative checks against migration history remain clean.
+`diagnostics/deployment-check.sql` contains read-only assertions for the September 16-17 deployments. `diagnostics/function-fingerprints.sql` compares normalized stored bodies, authorization attributes and grants. All 31 application overloads match the local schema after normalization; 18 older production bodies retain CRLF while the imported sources use LF. Raw CLI diff treats these as cosmetic replacements, not new functional migrations to apply. Declarative checks against migration history remain clean.
 
 `.gitattributes` keeps SQL checkouts in LF on Windows and Linux to prevent new line-ending drift.
 
@@ -66,3 +66,17 @@ See the official [migration guidance](https://supabase.com/docs/guides/deploymen
 `claim_achievement` locks the profile and owned earned-title row, validates the selected egg, grants Bits/pets and marks the claim in one transaction. Repeat attempts return the existing confirmation without another reward. Browser inserts into `user_titles` can supply only `user_id/title_id`; browser updates can change only `is_displayed`. Earning remains client-driven and requires a separate server-authorization follow-up.
 
 `record_digimon_discovery_trigger` records species on pet insertion and species/owner changes, preserving prior discoveries. The migration backfills currently owned species only; deleted/evolved historical species without records cannot be reconstructed. Deploy the prepared web client to use the new claim flow. Do not reset historical claimed flags based only on a failure report. Account-specific diagnostic SQL belongs in ignored `*.local.sql` files.
+
+## Persisted daily arena battles
+
+Daily arena fights call the authenticated arena-battle Edge Function. Its source is in src/server/ and the shared engine; npm run arena:build creates the ignored function bundle. The database migration adds private offers/requests and three service-role-only RPCs. Prepared requests charge nothing. Settlement commits the ticket spend, existing win/loss Bits reward, history, counters and saved playback in one transaction. Browser-supplied user IDs, winners, stats and reward amounts are not trusted.
+
+Deploy the reviewed arena migration first, then run npm run arena:deploy, then deploy the compatible website. The legacy frontend remains compatible with the additive SQL migration, but it keeps its original ticket-loss problem until the new frontend is deployed. Verify the Edge Function and database deployment separately. No additional custom secret is needed: Supabase supplies its URL, anon key and service role key to the Edge runtime.
+
+For local HTTP testing, build the function before starting the local stack. Start Auth/API/Edge services (a database-only start is insufficient), rebuild the database, then run npm run arena:serve in another terminal and npm run arena:test:integration. The test accepts only the local API, creates disposable users, exercises concurrent and aborted requests and removes its fixtures. CI starts the minimal Auth/API/Edge stack and runs this test alongside database checks. For browser testing, configure local VITE_ credentials deliberately; Docker does not redirect existing production configuration.
+
+Recordings sample presentation state every 64ms and preserve combat events; movement is interpolated during playback. A worst-case replay is approximately 1 MiB in the current test. Requests and recordings are retained; monitor database growth and define a retention policy before expanding usage. The battle_id is a historical identifier rather than a foreign key, so the existing team_battles pruning job does not erase or block saved arena results. Replays can show results after the team or reference balance changes. Update replay readers compatibly, and preserve or explicitly migrate uncharged prepared requests when changing engine versions.
+
+The 120-second simulation limit uses the greater remaining team HP fraction; ties count as defeats. Existing easy/medium/hard Bits rewards remain unchanged. Playback may be interrupted without losing rewards; it performs no database mutation. Tournament settlement remains a separate existing flow.
+
+See the official [Edge Function authentication guide](https://supabase.com/docs/guides/functions/auth-legacy-jwt) and [runtime limits](https://supabase.com/docs/guides/functions/limits). Keep the engine bounded and benchmark it when changing simulation costs.

@@ -1,13 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDigimonStore, UserDigimon } from '../store/petStore';
 import { useBattleStore, DigimonAttribute, DigimonType } from '../store/battleStore';
-import { convertToBattleDigimon } from '../utils/convertToBattleDigimon';
-import { useCurrencyStore } from '../store/currencyStore';
+
 import { useTournamentStore } from '../store/tournamentStore';
 import { supabase } from '../lib/supabase';
 import ArenaBattle from '../components/ArenaBattle';
-import StrategyPicker from '../components/StrategyPicker';
+
 import BattleDigimonSprite from '../components/BattleDigimonSprite';
 import { useAuthStore } from '../store/authStore';
 import { useTitleStore } from '../store/titleStore';
@@ -15,16 +14,24 @@ import TypeAttributeIcon from '../components/TypeAttributeIcon';
 import PageTutorial from '../components/PageTutorial';
 import { DialogueStep } from '../components/DigimonDialogue';
 import DigimonSprite from '@/components/DigimonSprite';
-import { DIGIMON_LOOKUP_TABLE } from '../constants/digimonLookup';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Trophy, ShoppingBag, ChevronRight, Zap } from 'lucide-react';
 import BattleTeamSelector, { OpponentDigimonPreview } from '../components/BattleTeamSelector';
 import { BattleDigimon } from '../types/battle';
-import { Strategy } from '../engine/arenaTypes';
+import type { Strategy } from '../engine/arenaTypes';
+import {
+  fetchArenaContext,
+  startSavedArenaBattle,
+  resumeSavedArenaBattle,
+  rememberArenaIntent,
+  readArenaIntent,
+  forgetArenaIntent,
+} from '../lib/arenaBattle';
+import type { ArenaBattleIntent, SavedArenaBattle } from '../lib/arenaBattle';
 
 const Battle = () => {
   const navigate = useNavigate();
-  const { userDigimon, digimonData, allUserDigimon, fetchAllUserDigimon } = useDigimonStore();
+  const { allUserDigimon, fetchAllUserDigimon } = useDigimonStore();
   const { battleOptions, getBattleOptions, loading, error } = useBattleStore();
   const { currentTournament, weeklyTaskCount, fetchTournament, isUnlocked, isActive, isCompleted } =
     useTournamentStore();
@@ -33,23 +40,12 @@ const Battle = () => {
   useEffect(() => {
     fetchAllUserDigimon();
     fetchTournament();
-    const battleStore = useBattleStore.getState();
-    if (
-      battleStore.shouldRefreshOptions ||
-      battleStore.battleOptions.length === 0 ||
-      !battleStore.lastOptionsRefresh
-    ) {
-      getBattleOptions();
-    }
   }, [user?.id]);
 
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [pendingOption, setPendingOption] = useState<(typeof battleOptions)[0] | null>(null);
-  const [battleTeam, setBattleTeam] = useState<UserDigimon[]>([]);
   const [localLoading, setLocalLoading] = useState(false);
 
   // Arena-specific state
-  const [showStrategyPicker, setShowStrategyPicker] = useState(false);
   const [arenaBattleActive, setArenaBattleActive] = useState(false);
   const [preparedUserTeam, setPreparedUserTeam] = useState<BattleDigimon[] | null>(null);
   const [preparedOpponentTeam, setPreparedOpponentTeam] = useState<BattleDigimon[] | null>(null);
@@ -89,155 +85,182 @@ const Battle = () => {
     return () => window.removeEventListener('energy-updated', onEnergyUpdated);
   }, []);
 
-  // Step 1: user clicks a difficulty card — open team selector
-  const handleSelectOption = (option: (typeof battleOptions)[0]) => {
-    setPendingOption(option);
+  const [savedBattle, setSavedBattle] = useState<SavedArenaBattle | null>(null);
+  const [pendingBattle, setPendingBattle] = useState<SavedArenaBattle | null>(null);
+  const [latestBattle, setLatestBattle] = useState<SavedArenaBattle | null>(null);
+  const [retryIntent, setRetryIntent] = useState<ArenaBattleIntent | null>(null);
+  const [startError, setStartError] = useState<string | null>(null);
+  const startInFlight = useRef(false);
+
+  const loadArenaContext = async () => {
+    const context = await fetchArenaContext();
+    if (useAuthStore.getState().user?.id !== user?.id)
+      throw new Error('Session changed. Reload the arena.');
+    useBattleStore.setState({
+      battleOptions: context.offers.map((offer) => ({
+        id: offer.id,
+        difficulty: offer.difficulty,
+        isWild: true,
+        team: {
+          user_id: '00000000-0000-0000-0000-000000000000',
+          username: offer.opponent_name,
+          digimon: offer.opponent_team,
+        },
+      })),
+      loading: false,
+      error: null,
+      lastOptionsRefresh: Date.now(),
+      shouldRefreshOptions: false,
+    });
+    setPendingBattle(context.pending);
+    if (context.pending) setPendingOption(null);
+    setLatestBattle(context.latest);
+    const intent = user ? readArenaIntent(user.id) : null;
+    if (user && intent && context.latest?.id === intent.requestId) {
+      forgetArenaIntent(user.id);
+      setRetryIntent(null);
+    } else setRetryIntent(intent);
+    return context;
   };
 
-  // Step 2: user confirms team — spend ticket + branch on battle mode
-  const handleConfirmTeam = async (selectedTeam: UserDigimon[]) => {
-    if (!pendingOption || localLoading) return;
+  useEffect(() => {
+    if (!user) return;
+    setSavedBattle(null);
+    setPendingBattle(null);
+    setLatestBattle(null);
+    setRetryIntent(null);
+    setArenaBattleActive(false);
+    setArenaResult(null);
+    setPendingOption(null);
+    useBattleStore.setState({ loading: true, error: null });
+    loadArenaContext().catch((error) =>
+      useBattleStore.setState({ loading: false, error: String(error.message) })
+    );
+  }, [user?.id]);
+
+  const displaySavedBattle = (battle: SavedArenaBattle, play: boolean) => {
+    if (!battle.replay || battle.status !== 'settled')
+      throw new Error('Battle is not yet confirmed. Retry the same request.');
+    const team = (isUser: boolean): BattleDigimon[] =>
+      battle
+        .replay!.initial.filter((d) => d.isUserTeam === isUser)
+        .map((d) => ({
+          id: d.id,
+          name: d.name,
+          digimon_name: d.digimon_name,
+          current_level: 1,
+          sprite_url: d.sprite_url,
+          type: d.type,
+          attribute: d.attribute,
+          stats: {
+            hp: d.hp,
+            max_hp: d.maxHp,
+            atk: d.atk,
+            def: d.def,
+            int: d.int,
+            spd: d.spd,
+            sp: d.sp,
+          },
+          isAlive: true,
+          isOnUserTeam: isUser,
+        }));
+    setPreparedUserTeam(team(true));
+    setPreparedOpponentTeam(team(false));
+    setUserStrategies(battle.snapshot.strategies);
+    setSavedBattle(battle);
+    setPendingOption(null);
+    setArenaResult(
+      play ? null : { winner: battle.replay.winner, bitsReward: battle.bits_reward ?? 0 }
+    );
+    setArenaBattleActive(play);
+  };
+
+  const runStart = async (intent?: ArenaBattleIntent) => {
+    if (!user || startInFlight.current) return;
+    startInFlight.current = true;
+    setLocalLoading(true);
+    setStartError(null);
     try {
-      setLocalLoading(true);
-      setSelectedOption(pendingOption.id);
-
-      // Spend 1 battle ticket
-      const { data: spentOk } = await supabase.rpc('spend_energy_self', { p_amount: 1 });
-      if (!spentOk) {
-        alert('Not enough Battle Tickets. Complete tasks to earn tickets!');
-        return;
+      if (intent) {
+        rememberArenaIntent(user.id, intent);
+        setRetryIntent(intent);
       }
+      const response = intent
+        ? await startSavedArenaBattle(intent)
+        : await resumeSavedArenaBattle(pendingBattle!.id);
+      if (useAuthStore.getState().user?.id !== user.id) return;
+      displaySavedBattle(response.battle, true);
+      setLatestBattle(response.battle);
+      setPendingBattle(null);
+      setRetryIntent(null);
+      forgetArenaIntent(user.id);
+      // Rewards were already committed. Playback completion performs no writes.
       window.dispatchEvent(new Event('energy-updated'));
-
-      const userTeamData = selectedTeam.map((d) => ({
-        ...d,
-        digimon: DIGIMON_LOOKUP_TABLE[d.digimon_id as keyof typeof DIGIMON_LOOKUP_TABLE],
-      }));
-      const opponentTeamData = pendingOption.team.digimon.map((d: any) => ({
-        ...d,
-        digimon_id: d.digimon_id || d.id,
-        digimon: DIGIMON_LOOKUP_TABLE[(d.digimon_id || d.id) as keyof typeof DIGIMON_LOOKUP_TABLE],
-      }));
-
-      setBattleTeam(selectedTeam);
-
-      // Arena battle path
-      const userBattle = userTeamData.map((d) => convertToBattleDigimon(d, true));
-      const opponentBattle = opponentTeamData.map((d) => convertToBattleDigimon(d, false));
-      setPreparedUserTeam(userBattle);
-      setPreparedOpponentTeam(opponentBattle);
-      setShowStrategyPicker(true);
+      window.dispatchEvent(new Event('currency-updated'));
+      const refreshes = await Promise.allSettled([
+        loadArenaContext(),
+        fetchAllUserDigimon(),
+        useBattleStore.getState().fetchTeamBattleHistory(),
+        useTitleStore.getState().checkForNewTitles(),
+      ]);
+      refreshes.forEach((result) => {
+        if (result.status === 'rejected')
+          console.error('Saved battle refresh failed:', result.reason);
+      });
+    } catch (error) {
+      setStartError(
+        error instanceof Error
+          ? error.message
+          : 'Battle could not be confirmed. Retry your saved request.'
+      );
+      // A response may have been lost after commit. Query server state before another start.
+      try {
+        const context = await loadArenaContext();
+        const requestId = intent?.requestId ?? pendingBattle?.id;
+        if (requestId && context.latest && context.latest.id === requestId) {
+          displaySavedBattle(context.latest, false);
+          window.dispatchEvent(new Event('energy-updated'));
+          window.dispatchEvent(new Event('currency-updated'));
+          setStartError(null);
+        }
+      } catch {
+        /* Offline: keep the original request ID for a later retry. */
+      }
     } finally {
+      startInFlight.current = false;
       setLocalLoading(false);
     }
   };
 
-  // Step 2b (arena only): user picks strategies → start arena
-  const handleStartArenaBattle = (strategies: Strategy[]) => {
-    setUserStrategies(strategies);
-    setShowStrategyPicker(false);
-    setArenaBattleActive(true);
+  const handleSelectOption = (option: (typeof battleOptions)[0]) => setPendingOption(option);
+  const handleConfirmTeam = (selectedTeam: UserDigimon[], strategies: Strategy[]) => {
+    if (!pendingOption || localLoading) return;
+    const intent = retryIntent ?? {
+      requestId: crypto.randomUUID(),
+      offerId: pendingOption.id,
+      teamIds: selectedTeam.map((d) => d.id),
+      strategies,
+    };
+    void runStart(intent);
   };
-
-  const handleArenaBattleComplete = async (result: {
-    winner: 'user' | 'opponent';
-    turns: any[];
-  }) => {
-    try {
-      const currentOption = battleOptions.find((opt) => opt.id === selectedOption);
-      if (!currentOption) {
-        setArenaBattleActive(false);
-        return;
-      }
-
-      const bitsReward = (() => {
-        const won = result.winner === 'user';
-        const d = currentOption.difficulty;
-        if (won) return d === 'hard' ? 200 : d === 'medium' ? 100 : 75;
-        return d === 'hard' ? 40 : 50;
-      })();
-      useCurrencyStore.getState().addCurrency('bits', bitsReward);
-
-      try {
-        const { data: userData } = await supabase.auth.getUser();
-        if (userData.user) {
-          const userId = userData.user.id;
-          const isUserWin = result.winner === 'user';
-          const winnerId = isUserWin
-            ? userId
-            : currentOption.isWild
-              ? null
-              : (currentOption.team.user_id ?? null);
-
-          const { error: battleError } = await supabase.from('team_battles').insert({
-            user_id: userId,
-            ...(currentOption.isWild ? {} : { opponent_id: currentOption.team.user_id }),
-            winner_id: winnerId,
-            user_team: battleTeam.map((d) => ({
-              ...d,
-              digimon: DIGIMON_LOOKUP_TABLE[d.digimon_id as keyof typeof DIGIMON_LOOKUP_TABLE],
-            })),
-            opponent_team: currentOption.team.digimon.map((d: any) => ({
-              ...d,
-              digimon_id: d.digimon_id || d.id,
-              digimon:
-                DIGIMON_LOOKUP_TABLE[(d.digimon_id || d.id) as keyof typeof DIGIMON_LOOKUP_TABLE],
-            })),
-            created_at: new Date().toISOString(),
-            turns: result.turns,
-          });
-
-          if (battleError) throw battleError;
-
-          if (isUserWin) {
-            try {
-              await supabase.rpc('check_and_set_first_win_self');
-            } catch {}
-          }
-
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('battles_won')
-            .eq('id', userId)
-            .single();
-
-          if (profile) {
-            if (isUserWin)
-              await useTitleStore.getState().checkBattleTitles(profile.battles_won || 0);
-          }
-        }
-      } catch (error) {
-        console.error('Failed to record arena battle:', error);
-      }
-
-      // Show results screen — preparedUserTeam intentionally kept so the screen can render Digimon sprites.
-      setArenaBattleActive(false);
-      setArenaResult({ winner: result.winner, bitsReward });
-
-      // Refresh data in the background
-      fetchAllUserDigimon();
-      useBattleStore.getState().fetchTeamBattleHistory();
-      getBattleOptions(true);
-    } catch {
-      setArenaBattleActive(false);
-    }
+  const handleArenaBattleComplete = () => {
+    if (!savedBattle?.replay) return;
+    setArenaBattleActive(false);
+    setArenaResult({ winner: savedBattle.replay.winner, bitsReward: savedBattle.bits_reward ?? 0 });
   };
-
-  // Called when the user clicks Continue on the arena results screen
   const handleArenaResultsContinue = () => {
     setArenaResult(null);
     setPreparedUserTeam(null);
     setPreparedOpponentTeam(null);
     setUserStrategies([]);
-    setSelectedOption(null);
     setPendingOption(null);
-    setBattleTeam([]);
+    setSavedBattle(null);
   };
 
   const digimonPageTutorialSteps: DialogueStep[] = [
     {
       speaker: 'bokomon',
-      text: 'Welcome to Daily AI Battles! Battle against AI-generated teams to earn experience and level up your team.',
+      text: 'Welcome to Daily AI Battles! Battle against AI-generated teams to earn Bits.',
     },
     { speaker: 'neemon', text: 'Ooh, some of these Digimon look pretty tough!' },
     {
@@ -247,18 +270,10 @@ const Battle = () => {
     { speaker: 'neemon', text: 'W-wait, what happens if we lose?' },
     {
       speaker: 'bokomon',
-      text: "No need to worry! Your Digimon won't die — they just earn less experience.",
+      text: "No need to worry! Your Digimon won't die. Even a defeat earns Bits, and your result is saved before playback.",
     },
     { speaker: 'both', text: 'Good luck, Tamer!' },
   ];
-
-  if (!userDigimon || !digimonData) {
-    return (
-      <div className="text-center py-12">
-        <p>Loading your Digimon...</p>
-      </div>
-    );
-  }
 
   const difficultyConfig = {
     easy: {
@@ -308,7 +323,7 @@ const Battle = () => {
         <h1 className="text-2xl font-heading font-semibold dark:text-gray-100 mb-6">Battle</h1>
 
         {/* ── Hub navigation cards (always visible in idle state) ── */}
-        {!arenaResult && !arenaBattleActive && !showStrategyPicker && !pendingOption && (
+        {!arenaResult && !arenaBattleActive && !pendingOption && (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
             {/* Daily AI — active/current */}
             <div className="card border-l-4 border-l-primary-500 dark:border-l-accent-500 flex items-center gap-3 py-3 px-4">
@@ -366,15 +381,83 @@ const Battle = () => {
         )}
 
         {/* ── Main battle content ── */}
+        {startError && (
+          <p
+            role="alert"
+            className="mb-4 rounded-lg bg-red-50 dark:bg-red-950/30 p-3 text-sm text-red-600 dark:text-red-400"
+          >
+            {startError}
+          </p>
+        )}
+        {!arenaBattleActive && !arenaResult && (pendingBattle || retryIntent) && (
+          <div className="card mb-4">
+            <p className="text-sm mb-3">
+              A battle start was interrupted. Retry it to confirm the result; the same request
+              cannot spend another ticket.
+            </p>
+            <button
+              className="btn-primary"
+              disabled={localLoading}
+              onClick={() => void runStart(pendingBattle ? undefined : retryIntent!)}
+            >
+              {localLoading ? 'Confirming battle...' : 'Retry saved battle'}
+            </button>
+            {!pendingBattle && retryIntent && (
+              <button
+                className="ml-3 text-sm underline"
+                disabled={localLoading}
+                onClick={() => {
+                  if (user) forgetArenaIntent(user.id);
+                  setRetryIntent(null);
+                  setPendingOption(null);
+                }}
+              >
+                Back to setup
+              </button>
+            )}
+          </div>
+        )}
+        {!arenaBattleActive && !arenaResult && !pendingOption && latestBattle?.replay && (
+          <div className="card mb-4">
+            <p className="text-sm mb-3">
+              Last battle: {latestBattle.replay.winner === 'user' ? 'Victory' : 'Defeat'} ·{' '}
+              {latestBattle.snapshot.opponent_name} · +{latestBattle.bits_reward} Bits already
+              awarded
+              {latestBattle.replay.reason === 'time_limit' ? ' · Time limit' : ''}
+            </p>
+            <button
+              className="btn-primary"
+              disabled={localLoading}
+              onClick={() => displaySavedBattle(latestBattle, true)}
+            >
+              Watch replay
+            </button>
+            <button
+              className="ml-3 text-sm underline"
+              disabled={localLoading}
+              onClick={() => displaySavedBattle(latestBattle, false)}
+            >
+              View result
+            </button>
+          </div>
+        )}
+        {arenaBattleActive && (
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+            Your result and rewards are saved. You can leave and watch the replay later.
+          </p>
+        )}
         {arenaResult && preparedUserTeam ? (
           <ArenaResultsScreen
             winner={arenaResult.winner}
             bitsReward={arenaResult.bitsReward}
+            timeLimit={savedBattle?.replay?.reason === 'time_limit'}
             userTeam={preparedUserTeam}
             onContinue={handleArenaResultsContinue}
           />
         ) : arenaBattleActive && preparedUserTeam && preparedOpponentTeam ? (
           <ArenaBattle
+            key={savedBattle?.id}
+            replay={savedBattle?.replay ?? undefined}
             userTeam={preparedUserTeam}
             opponentTeam={preparedOpponentTeam}
             userStrategies={userStrategies}
@@ -382,20 +465,7 @@ const Battle = () => {
           />
         ) : (
           <AnimatePresence mode="wait">
-            {showStrategyPicker && preparedUserTeam ? (
-              <StrategyPicker
-                key="strategy-picker"
-                team={preparedUserTeam}
-                onConfirm={handleStartArenaBattle}
-                onBack={() => {
-                  setShowStrategyPicker(false);
-                  setPreparedUserTeam(null);
-                  setPreparedOpponentTeam(null);
-                  setPendingOption(null);
-                  setSelectedOption(null);
-                }}
-              />
-            ) : pendingOption ? (
+            {pendingOption ? (
               <BattleTeamSelector
                 key="team-selector"
                 opponentName={
@@ -406,7 +476,8 @@ const Battle = () => {
                 contextLabel={`${pendingOption.difficulty.charAt(0).toUpperCase() + pendingOption.difficulty.slice(1)} · ${pendingOption.isWild ? 'Wild' : 'AI'}`}
                 isFree={false}
                 costLabel="1 ticket"
-                confirmLabel="Fight!"
+                showBehaviors
+                confirmLabel="Start battle"
                 onConfirm={handleConfirmTeam}
                 onBack={() => setPendingOption(null)}
                 loading={localLoading}
@@ -463,6 +534,8 @@ const Battle = () => {
                       const canBattle =
                         !loading &&
                         !localLoading &&
+                        !pendingBattle &&
+                        !retryIntent &&
                         partyDigimon.length >= 1 &&
                         energy.current >= 1;
                       return (
@@ -575,9 +648,10 @@ const Battle = () => {
 const ArenaResultsScreen: React.FC<{
   winner: 'user' | 'opponent';
   bitsReward: number;
+  timeLimit?: boolean;
   userTeam: BattleDigimon[];
   onContinue: () => void;
-}> = ({ winner, bitsReward, userTeam, onContinue }) => {
+}> = ({ winner, bitsReward, timeLimit, userTeam, onContinue }) => {
   const won = winner === 'user';
   const [spriteToggle, setSpriteToggle] = useState(false);
 
@@ -613,6 +687,7 @@ const ArenaResultsScreen: React.FC<{
         </motion.p>
         <p className="font-body text-sm text-gray-500 dark:text-gray-400">
           {won ? 'Your team emerged victorious!' : 'Your team fought bravely.'}
+          {timeLimit && ' Time limit reached; the result was decided by remaining team HP.'}
         </p>
       </div>
 

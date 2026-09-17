@@ -205,3 +205,13 @@ ALTER TABLE ONLY public.team_battles
   ) NOT VALID;
 ALTER TABLE ONLY public.team_battles
   ADD CONSTRAINT team_battles_distinct_opponent CHECK (opponent_id IS NULL OR opponent_id <> user_id) NOT VALID;
+
+ALTER TABLE ONLY public.arena_battle_offers ADD CONSTRAINT arena_battle_offers_pkey PRIMARY KEY(id);
+ALTER TABLE ONLY public.arena_battle_offers ADD CONSTRAINT arena_battle_offers_user_fkey FOREIGN KEY(user_id) REFERENCES auth.users(id) ON DELETE CASCADE;
+ALTER TABLE ONLY public.arena_battle_requests ADD CONSTRAINT arena_battle_requests_pkey PRIMARY KEY(id);
+ALTER TABLE ONLY public.arena_battle_requests ADD CONSTRAINT arena_battle_requests_user_fkey FOREIGN KEY(user_id) REFERENCES auth.users(id) ON DELETE CASCADE;
+ALTER TABLE ONLY public.arena_battle_requests ADD CONSTRAINT arena_battle_requests_offer_fkey FOREIGN KEY(offer_id) REFERENCES public.arena_battle_offers(id);
+CREATE INDEX arena_offers_user_expiry ON public.arena_battle_offers(user_id,expires_at);
+CREATE INDEX arena_requests_user_settled ON public.arena_battle_requests(user_id,settled_at DESC);
+CREATE UNIQUE INDEX arena_one_pending_per_user ON public.arena_battle_requests(user_id) WHERE status='prepared';
+CREATE UNIQUE INDEX arena_offer_settled_once ON public.arena_battle_requests(offer_id) WHERE status='settled';

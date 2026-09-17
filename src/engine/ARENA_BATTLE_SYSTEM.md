@@ -34,7 +34,7 @@
 
 ## 1. Overview
 
-The Arena Battle system is a real-time, physics-driven battle engine rendered in React. Digimon move autonomously using steering behaviors, attack each other based on configurable strategies, and the result is displayed with cinematics, HP bars, a battle log, and an animated results screen.
+The Arena Battle system is a physics-driven simulation with animated React playback. Daily arena combat is calculated on the server and recorded before playback; tournament combat still uses the live browser mode. Digimon move autonomously using steering behaviors, attack each other based on configurable strategies, and the result is displayed with cinematics, HP bars, a battle log, and an animated results screen.
 
 **Key design principle:** The game loop runs at ~60fps using `requestAnimationFrame`. To avoid React re-renders on every frame, all per-frame visual updates (sprite positions, HP/skill bar widths, camera panning, sprite facing, zoom) are applied by **directly mutating DOM element styles** via refs. React state is only updated on discrete events (attack hit, death, battle end).
 
@@ -45,13 +45,15 @@ The Arena Battle system is a real-time, physics-driven battle engine rendered in
 | File | Role |
 |------|------|
 | `src/engine/arenaTypes.ts` | All TypeScript types, interfaces, and tunable constants |
+| `src/engine/arenaReplay.ts` | Seeded headless simulation and recorded playback |
+| `src/server/arenaBattleHandler.ts` | Authenticated request orchestration |
 | `src/engine/arenaEngine.ts` | `initArenaDigimon()` + `runFrame()` — pure game logic, no React |
 | `src/engine/steeringBehaviors.ts` | Pure functions: `seek`, `wander`, `orbit`, `flee`, `separation` |
 | `src/components/ArenaBattle.tsx` | Main React component: RAF loop, DOM mutations, cinematic system, camera |
-| `src/components/StrategyPicker.tsx` | Pre-battle strategy selection UI |
+| `src/components/StrategyPicker.tsx` | Strategy selection for the separate tournament flow |
 | `src/constants/battleAttributeColors.ts` | `ATTRIBUTE_COLORS` map used by windup rings and attribute glows |
 | `src/components/BattleDigimonSprite.tsx` | Sprite renderer supporting `'victory'`/`'defeat'`/`'idle'`/`'attacking'`/`'hit'`/`'dead'` states |
-| `src/pages/Battle.tsx` | Wires team selection, strategy picker, arena and results screen |
+| `src/pages/Battle.tsx` | Wires combined setup, durable server requests, saved playback and results |
 
 ---
 
@@ -624,6 +626,8 @@ Rendered in `Battle.tsx` when `arenaResult` state is set (after `handleArenaBatt
 
 ## 20. StrategyPicker
 
+Daily arena behavior selection is embedded in BattleTeamSelector. StrategyPicker remains used by tournaments.
+
 Pre-battle screen where the user assigns a strategy to each of their Digimon before the arena starts. Strategies map directly to `STRATEGY_CONFIGS` in `arenaTypes.ts`.
 
 **Three options:**
@@ -640,50 +644,22 @@ Each Digimon row shows: sprite, name, level + type/attribute, current strategy b
 
 ---
 
-## 21. Battle.tsx — Full Flow Wiring
+## 21. Daily arena flow and durable settlement
 
-```
-Battle Options (difficulty cards)
-      ? handleSelectOption()
-BattleTeamSelector (pick up to 3 Digimon)
-      ? handleConfirmTeam() [spends one ticket via spend_energy_self]
-      ? convertToBattleDigimon() [utils/convertToBattleDigimon.ts]
-StrategyPicker
-      ? handleStartArenaBattle(strategies)
-ArenaBattle (live battle)
-      ? onBattleComplete({ winner, turns })
-handleArenaBattleComplete()
-      [calculate bits, insert team_battles, update profiles, check titles]
-      ? sets arenaResult
-ArenaResultsScreen
-      ? handleArenaResultsContinue()
-      [reset state ? back to Battle Options]
-```
+1. Difficulty cards show server-issued, user-scoped opponent offers.
+2. BattleTeamSelector collects one to three party members and behaviors together. Setup is free.
+3. Starting creates a UUID request before the HTTP call. The authenticated Edge handler obtains the user from Supabase Auth; client user IDs, stats, winners and reward amounts are not trusted.
+4. prepare_arena_battle locks the profile, validates the private offer, party ownership and behaviors, then saves a seed and immutable species/stat snapshot. No ticket is spent. Only one prepared request per user is allowed.
+5. The shared engine runs headlessly with explicit seeded randomness and 16ms steps. Movement/state samples are retained every 64ms with combat events. The 120-second limit uses remaining team HP fraction to decide; ties are defeats. Cinematic slow motion affects playback only.
+6. settle_arena_battle commits one ticket spend, the existing win/loss Bits formula, team_battles history, trigger-driven counters and the full recording together. Its profile/request locks and saved status make repeated/concurrent requests idempotent. Errors roll back all settlement writes.
+7. ArenaBattle consumes recorded states/events, interpolates movement and adds existing effects/camera behavior. Completion only changes the screen. No reward or history writes happen in playback.
+8. Returning to the arena retrieves the latest result and replay. Interrupted starts are resumed with the same saved request; a browser cache stores the original intent if the response was lost before confirmation. Requests which fail before settlement do not spend a ticket.
 
-### State for Arena Flow in Battle.tsx
+The server bundle is generated from src/server/arenaEdge.ts using npm run arena:build; its build rejects browser-store imports. Damage rules live in engine/battleRules.ts and opponent generation in engine/arenaOpponents.ts. arenaReplay.ts implements seeded simulation and recording playback. Replay format version 1 is independent of engine version 1, so recorded fights do not need to be recalculated after balance updates. Engine changes must retain or explicitly migrate uncharged prepared requests.
 
-| State | Purpose |
-|-------|---------|
-| `showStrategyPicker` | Show StrategyPicker after team selection |
-| `arenaBattleActive` | Show ArenaBattle component |
-| `preparedUserTeam` | `BattleDigimon[]` — kept alive through results screen |
-| `preparedOpponentTeam` | `BattleDigimon[]` |
-| `userStrategies` | `Strategy[]` — one per user Digimon |
-| `arenaResult` | `{ winner, bitsReward } \| null` — triggers ArenaResultsScreen |
+Tournament callers still use StrategyPicker and the existing live simulation mode of ArenaBattle. Their lifecycle is a separate follow-up. Sections explaining runFrame describe simulation; daily arena presentation uses createReplayPlayer instead. The browser may choose random cosmetic particles without affecting combat.
 
-### Render Priority in Battle.tsx Tab Panel
-
-```tsx
-{arenaResult && preparedUserTeam ? (
-  <ArenaResultsScreen ... />   // ← shown first (covers arenaBattleActive)
-) : arenaBattleActive ? (
-  <ArenaBattle ... />
-) : showStrategyPicker ? (
-  <StrategyPicker ... />
-) : (
-  // normal battle hub UI
-)}
-```
+Local SQL tests cover permissions, ownership, one pending request, repeat settlement, win/loss rewards and injected rollback. HTTP tests exercise actual local Auth/API/Edge Runtime, concurrent starts, mid-request abort, recovery, saved results without watching and cross-user isolation. Replay tests compare seeded results, event streams and final health across playback frame rates.
 
 ---
 
@@ -744,8 +720,8 @@ Edit `WORLD_W`, `WORLD_H`, `VIEWPORT_W`, `VIEWPORT_H` in `arenaTypes.ts`.
 
 ### Add more Digimon to a team (beyond 3)
 
-`arenaEngine.ts` supports any team size. The limits on team size (max 3 `is_on_team` Digimon) are enforced in `BattleTeamSelector` and `petStore`. `StatusPanel` in `ArenaBattle.tsx` uses `.map()` over the full team array — it will auto-expand to more entries.
+`arenaEngine.ts` supports any team size. Daily arena limits are also enforced by `prepare_arena_battle` (one to three distinct party members) and the three-member opponent offer constraint/generator. Update those sources and add a migration when changing team-size rules. `StatusPanel` in `ArenaBattle.tsx` uses `.map()` over the full team array — it will auto-expand to more entries.
 
 ### Change bits rewards
 
-In `Battle.tsx`, find `handleArenaBattleComplete()`. The bits calculation is a simple inline object lookup — edit the values there directly.
+Edit the reward formula in `supabase/schemas/functions/settle_arena_battle.sql`, add a new reviewed migration and update the SQL reward tests. Playback completion must not grant rewards.

@@ -3,6 +3,8 @@ import { animate, motion } from 'framer-motion';
 import { Swords, Zap, Star, Wind, Skull } from 'lucide-react';
 import { BattleDigimon } from '../types/battle';
 import { initArenaDigimon, runFrame } from '../engine/arenaEngine';
+import { createReplayPlayer } from '../engine/arenaReplay';
+import type { ArenaReplay } from '../engine/arenaReplay';
 import {
   ArenaDigimon,
   ArenaEvent,
@@ -258,6 +260,7 @@ export interface ArenaBattleProps {
   opponentTeam: BattleDigimon[];
   userStrategies: Strategy[];
   opponentStrategies?: Strategy[];
+  replay?: ArenaReplay;
   onBattleComplete: (result: { winner: 'user' | 'opponent'; turns: any[] }) => void;
 }
 
@@ -269,17 +272,22 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
   userStrategies,
   opponentStrategies,
   onBattleComplete,
+  replay,
 }) => {
   // ── Game-state refs (never trigger re-renders) ──────────────────────────────
 
+  const replayPlayerRef = useRef<ReturnType<typeof createReplayPlayer> | null>(null);
+  if (replay && !replayPlayerRef.current) replayPlayerRef.current = createReplayPlayer(replay);
   const digimonRef = useRef<ArenaDigimon[]>(null!);
   if (!digimonRef.current) {
-    digimonRef.current = initArenaDigimon(
-      userTeam,
-      opponentTeam,
-      userStrategies,
-      opponentStrategies ?? opponentTeam.map(() => 'balanced' as Strategy)
-    );
+    digimonRef.current =
+      replayPlayerRef.current?.state ??
+      initArenaDigimon(
+        userTeam,
+        opponentTeam,
+        userStrategies,
+        opponentStrategies ?? opponentTeam.map(() => 'balanced' as Strategy)
+      );
   }
 
   const lastTsRef = useRef<number>(0);
@@ -614,7 +622,9 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
         }
       }
 
-      const events = runFrame(digimonRef.current, gameDelta);
+      const events = replayPlayerRef.current
+        ? replayPlayerRef.current.advance(gameDelta)
+        : runFrame(digimonRef.current, gameDelta);
 
       // Direct DOM: sprite positions + facing direction
       for (const d of digimonRef.current) {

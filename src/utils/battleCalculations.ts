@@ -8,7 +8,7 @@ import {
   criticalHitChance,
   DigimonType,
   DigimonAttribute,
-} from '../store/battleStore';
+} from '../engine/battleRules';
 
 export interface DamageResult {
   damage: number;
@@ -21,11 +21,15 @@ export interface DamageResult {
  * Uses ATK/DEF or INT/INT (whichever ATK stat is higher), type matchup,
  * attribute matchup, random variance, and SP-based crit multiplier.
  */
-export const calculateDamage = (attacker: BattleDigimon, target: BattleDigimon): DamageResult => {
-  const isMiss = Math.random() < missChance;
+export const calculateDamage = (
+  attacker: BattleDigimon,
+  target: BattleDigimon,
+  random: () => number = Math.random
+): DamageResult => {
+  const isMiss = random() < missChance;
   if (isMiss) return { damage: 0, isCritical: false, isMiss: true };
 
-  const isCritical = Math.random() < criticalHitChance;
+  const isCritical = random() < criticalHitChance;
   const critMultiplier = isCritical ? calculateCritMultiplier(attacker.stats.sp) : 1;
 
   // Physical vs. magic: use whichever of ATK or INT is higher for the attacker
@@ -46,7 +50,7 @@ export const calculateDamage = (attacker: BattleDigimon, target: BattleDigimon):
       target.attribute as DigimonAttribute
     ] ?? 1.0;
 
-  const damageVariance = 0.8 + Math.random() * 0.4;
+  const damageVariance = 0.8 + random() * 0.4;
 
   const damage = Math.max(
     1,

@@ -18,12 +18,16 @@ jobs:
           node-version: '20'
           cache: 'npm'
       - run: npm ci
-      - run: npm run db:start:database
+      - run: npm run arena:build
+      - run: npx supabase start --exclude storage-api,imgproxy,studio,mailpit,realtime,postgres-meta,logflare,vector,supavisor --agent no > supabase/start-arena.local.log
       - run: npm run db:reset
       - run: npm run db:test
       - run: npm run db:test:authorization
       - run: npm run db:lint:check
       - run: npm run db:check
+      - name: Serve local arena function
+        run: npx supabase functions serve arena-battle --agent no > supabase/serve-arena.local.log 2>&1 &
+      - run: npm run arena:test:integration
       - run: npm run db:stop
         if: always()
 
@@ -55,6 +59,9 @@ jobs:
 
       - name: Test
         run: npm test
+
+      - name: Build shared arena Edge Function
+        run: npm run arena:build
 
       - name: Build
         run: npm run build

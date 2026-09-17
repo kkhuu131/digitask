@@ -21,6 +21,89 @@ export type Database = {
         };
         Relationships: [];
       };
+      arena_battle_offers: {
+        Row: {
+          created_at: string;
+          difficulty: string;
+          expires_at: string;
+          id: string;
+          opponent_name: string;
+          opponent_team: Json;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          difficulty: string;
+          expires_at?: string;
+          id?: string;
+          opponent_name: string;
+          opponent_team: Json;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          difficulty?: string;
+          expires_at?: string;
+          id?: string;
+          opponent_name?: string;
+          opponent_team?: Json;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
+      arena_battle_requests: {
+        Row: {
+          battle_id: string | null;
+          bits_reward: number | null;
+          created_at: string;
+          engine_version: number;
+          id: string;
+          offer_id: string;
+          replay: Json | null;
+          seed: number;
+          settled_at: string | null;
+          snapshot: Json;
+          status: string;
+          user_id: string;
+        };
+        Insert: {
+          battle_id?: string | null;
+          bits_reward?: number | null;
+          created_at?: string;
+          engine_version?: number;
+          id: string;
+          offer_id: string;
+          replay?: Json | null;
+          seed: number;
+          settled_at?: string | null;
+          snapshot: Json;
+          status?: string;
+          user_id: string;
+        };
+        Update: {
+          battle_id?: string | null;
+          bits_reward?: number | null;
+          created_at?: string;
+          engine_version?: number;
+          id?: string;
+          offer_id?: string;
+          replay?: Json | null;
+          seed?: number;
+          settled_at?: string | null;
+          snapshot?: Json;
+          status?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'arena_battle_requests_offer_fkey';
+            columns: ['offer_id'];
+            isOneToOne: false;
+            referencedRelation: 'arena_battle_offers';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       battle_limits: {
         Row: {
           battles_used: number | null;
@@ -886,6 +969,7 @@ export type Database = {
         Args: { p_digimon_id: string; p_stat_type: string; p_user_id: string };
         Returns: boolean;
       };
+      arena_battle_context: { Args: { p_user_id: string }; Returns: Json };
       check_all_overdue_tasks: { Args: never; Returns: undefined };
       check_and_set_first_win_self: { Args: never; Returns: boolean };
       claim_achievement: {
@@ -922,9 +1006,23 @@ export type Database = {
       };
       grant_energy_self: { Args: { p_amount: number }; Returns: undefined };
       is_admin: { Args: never; Returns: boolean };
+      prepare_arena_battle: {
+        Args: {
+          p_offer_id: string;
+          p_request_id: string;
+          p_strategies: string[];
+          p_team_ids: string[];
+          p_user_id: string;
+        };
+        Returns: Json;
+      };
       process_daily_quotas: { Args: never; Returns: undefined };
       reset_all_battle_limits: { Args: never; Returns: undefined };
       reset_daily_tasks: { Args: never; Returns: undefined };
+      settle_arena_battle: {
+        Args: { p_replay: Json; p_request_id: string; p_user_id: string };
+        Returns: Json;
+      };
       spend_energy_self: { Args: { p_amount: number }; Returns: boolean };
       swap_team_members: {
         Args: {

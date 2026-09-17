@@ -361,3 +361,31 @@ ALTER TABLE ONLY "public"."evolution_paths" ALTER COLUMN "id" SET DEFAULT "nextv
 ALTER TABLE ONLY "public"."titles" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."titles_id_seq"'::"regclass");
 
 ALTER TABLE ONLY "public"."user_titles" ALTER COLUMN "id" SET DEFAULT "nextval"('"public"."user_titles_id_seq"'::"regclass");
+
+CREATE TABLE IF NOT EXISTS "public"."arena_battle_offers" (
+  "id" uuid DEFAULT extensions.uuid_generate_v4() NOT NULL,
+  "user_id" uuid NOT NULL,
+  "difficulty" text NOT NULL CHECK (difficulty IN ('easy','medium','hard')),
+  "opponent_name" text NOT NULL,
+  "opponent_team" jsonb NOT NULL CHECK (jsonb_typeof(opponent_team)='array' AND jsonb_array_length(opponent_team)=3),
+  "expires_at" timestamptz NOT NULL DEFAULT (now()+interval '1 day'),
+  "created_at" timestamptz NOT NULL DEFAULT now()
+);
+ALTER TABLE public.arena_battle_offers OWNER TO postgres;
+CREATE TABLE IF NOT EXISTS "public"."arena_battle_requests" (
+  "id" uuid NOT NULL,
+  "user_id" uuid NOT NULL,
+  "offer_id" uuid NOT NULL,
+  "seed" bigint NOT NULL CHECK (seed BETWEEN 0 AND 4294967295),
+  "engine_version" integer NOT NULL DEFAULT 1,
+  "snapshot" jsonb NOT NULL,
+  "status" text NOT NULL DEFAULT 'prepared' CHECK (status IN ('prepared','settled')),
+  "replay" jsonb,
+  "bits_reward" integer,
+  "battle_id" uuid,
+  "created_at" timestamptz NOT NULL DEFAULT now(),
+  "settled_at" timestamptz,
+  CONSTRAINT arena_settlement_complete CHECK ((status='prepared' AND replay IS NULL AND bits_reward IS NULL AND battle_id IS NULL AND settled_at IS NULL)
+    OR (status='settled' AND replay IS NOT NULL AND bits_reward IS NOT NULL AND battle_id IS NOT NULL AND settled_at IS NOT NULL))
+);
+ALTER TABLE public.arena_battle_requests OWNER TO postgres;

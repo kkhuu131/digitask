@@ -58,7 +58,7 @@ export const convertToBattleDigimon = (userDigimon: any, isUserTeam: boolean): B
   const stats = calculateFinalStats(structuredDigimon);
 
   return {
-    id: userDigimon.id,
+    id: String(userDigimon.id),
     name: userDigimon.name || digimonData.name,
     digimon_name: digimonData.name,
     current_level: userDigimon.current_level,

@@ -16,8 +16,25 @@ BEGIN
   END IF;
   IF (SELECT array_agg(version ORDER BY version) FROM supabase_migrations.schema_migrations)
     IS DISTINCT FROM ARRAY['20260916220000', '20260916230000', '20260916231000',
-      '20260916232000', '20260916233000', '20260916234000', '20260916235000']::text[] THEN
+      '20260916232000', '20260916233000', '20260916234000', '20260916235000',
+      '20260917000000']::text[] THEN
     RAISE EXCEPTION 'Unexpected migration history';
+  END IF;
+  FOREACH f IN ARRAY ARRAY[
+    'public.prepare_arena_battle(uuid,uuid,uuid,uuid[],text[])'::regprocedure,
+    'public.settle_arena_battle(uuid,uuid,jsonb)'::regprocedure,
+    'public.arena_battle_context(uuid)'::regprocedure
+  ] LOOP
+    IF has_function_privilege('anon',f,'EXECUTE') OR
+      has_function_privilege('authenticated',f,'EXECUTE') OR
+      NOT has_function_privilege('service_role',f,'EXECUTE') THEN
+      RAISE EXCEPTION 'Arena service RPC has incorrect permissions: %',f;
+    END IF;
+  END LOOP;
+  IF has_table_privilege('authenticated','public.arena_battle_requests','INSERT') OR
+    has_table_privilege('authenticated','public.arena_battle_requests','UPDATE') OR
+    has_table_privilege('anon','public.arena_battle_requests','SELECT') THEN
+    RAISE EXCEPTION 'Arena request table has incorrect permissions';
   END IF;
   FOREACH f IN ARRAY ARRAY[
     'public.admin_rename_user(uuid,text)'::regprocedure,

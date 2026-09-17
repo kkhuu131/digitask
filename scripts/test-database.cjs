@@ -24,6 +24,7 @@ DO $$ BEGIN
     THEN RAISE EXCEPTION 'Achievement pool references missing species'; END IF;
 END $$;
 `;
+sql += '\n' + fs.readFileSync(path.join(__dirname, '../supabase/tests/arena-battles.sql'), 'utf8');
 const baseline = fs.readFileSync(path.join(__dirname, '../supabase/migrations/20260916220000_baseline.sql'), 'utf8');
 const retired = new Set(['user_can_battle_boss', 'user_participated_in_phase1',
   'reset_boss_hp', 'set_event_phase', 'show_event_status', 'show_user_participation']);

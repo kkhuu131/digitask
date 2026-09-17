@@ -6,6 +6,7 @@ import { DigimonType, DigimonAttribute } from '../store/battleStore';
 import { calculateFinalStats } from '../utils/digimonStatCalculation';
 import DigimonSprite from './DigimonSprite';
 import TypeAttributeIcon from './TypeAttributeIcon';
+import type { Strategy } from '../engine/arenaTypes';
 
 // ─── Shared types ─────────────────────────────────────────────────────────────
 
@@ -29,7 +30,8 @@ export interface BattleTeamSelectorProps {
   /** e.g. "1 ticket" — shown as a cost badge when isFree is false */
   costLabel?: string;
   confirmLabel?: string;
-  onConfirm: (team: UserDigimon[]) => void;
+  showBehaviors?: boolean;
+  onConfirm: (team: UserDigimon[], strategies: Strategy[]) => void;
   onBack: () => void;
   loading?: boolean;
 }
@@ -255,13 +257,18 @@ const BattleTeamSelector: React.FC<BattleTeamSelectorProps> = ({
   onConfirm,
   onBack,
   loading = false,
+  showBehaviors = false,
 }) => {
   const [slots, setSlots] = useState<(UserDigimon | null)[]>([null, null, null]);
   const [pickerSlot, setPickerSlot] = useState<number | null>(null);
 
+  const [strategies, setStrategies] = useState<Strategy[]>(['balanced', 'balanced', 'balanced']);
+
   const teamSize = slots.filter(Boolean).length;
 
-  const handleSlotClick = (index: number) => setPickerSlot(index);
+  const handleSlotClick = (index: number) => {
+    if (!loading) setPickerSlot(index);
+  };
 
   const handlePickerSelect = (digimon: UserDigimon) => {
     if (pickerSlot === null) return;
@@ -273,6 +280,7 @@ const BattleTeamSelector: React.FC<BattleTeamSelectorProps> = ({
 
   const handleRemoveSlot = (index: number, e: React.MouseEvent) => {
     e.stopPropagation();
+    if (loading) return;
     const next = [...slots];
     next[index] = null;
     setSlots(next);
@@ -280,8 +288,11 @@ const BattleTeamSelector: React.FC<BattleTeamSelectorProps> = ({
 
   const handleConfirm = () => {
     const team = slots.filter(Boolean) as UserDigimon[];
-    if (team.length === 0) return;
-    onConfirm(team);
+    if (team.length === 0 || loading) return;
+    onConfirm(
+      team,
+      strategies.filter((_, index) => slots[index] !== null)
+    );
   };
 
   // Exclude Digimon in other slots from the picker's "already selected" list
@@ -302,6 +313,7 @@ const BattleTeamSelector: React.FC<BattleTeamSelectorProps> = ({
       <div className="flex items-center gap-3 mb-6 flex-wrap">
         <button
           onClick={onBack}
+          disabled={loading}
           className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
         >
           <ChevronLeft className="w-4 h-4" />
@@ -335,12 +347,12 @@ const BattleTeamSelector: React.FC<BattleTeamSelectorProps> = ({
           <h3 className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">
             Your Team
           </h3>
-          <div className="flex gap-3 justify-center">
+          <div className="flex gap-2 justify-center">
             {slots.map((d, i) => (
               <div
                 key={i}
                 onClick={() => handleSlotClick(i)}
-                className={`relative w-20 h-28 sm:w-24 sm:h-32 rounded-xl border-2 transition-all cursor-pointer flex flex-col items-center justify-center gap-1 select-none ${
+                className={`relative w-0 min-w-0 flex-1 max-w-28 min-h-32 py-3 rounded-xl border-2 transition-all cursor-pointer flex flex-col items-center justify-center gap-1 select-none ${
                   d
                     ? 'border-indigo-300 dark:border-accent-600 bg-indigo-50 dark:bg-accent-900/20 hover:border-indigo-400 dark:hover:border-accent-500'
                     : 'border-dashed border-gray-300 dark:border-dark-100 hover:border-indigo-300 dark:hover:border-accent-600 hover:bg-indigo-50/40 dark:hover:bg-accent-900/10'
@@ -368,6 +380,26 @@ const BattleTeamSelector: React.FC<BattleTeamSelectorProps> = ({
                     <span className="text-[9px] text-gray-400 dark:text-gray-500">
                       Lv.{d.current_level}
                     </span>
+                    {showBehaviors && (
+                      <select
+                        aria-label={`Behavior for ${d.name || d.digimon?.name}`}
+                        value={strategies[i]}
+                        disabled={loading}
+                        onClick={(event) => event.stopPropagation()}
+                        onChange={(event) =>
+                          setStrategies((current) =>
+                            current.map((value, index) =>
+                              index === i ? (event.target.value as Strategy) : value
+                            )
+                          )
+                        }
+                        className="w-full mt-1 rounded-md bg-white dark:bg-dark-300 px-1 py-1 text-[11px] border border-gray-200 dark:border-dark-100"
+                      >
+                        <option value="aggressive">Aggressive</option>
+                        <option value="balanced">Balanced</option>
+                        <option value="defensive">Defensive</option>
+                      </select>
+                    )}
                   </>
                 ) : (
                   <>
@@ -378,6 +410,11 @@ const BattleTeamSelector: React.FC<BattleTeamSelectorProps> = ({
               </div>
             ))}
           </div>
+          {showBehaviors && teamSize > 0 && (
+            <p className="text-xs text-gray-500 dark:text-gray-400 text-center mt-3">
+              Choose each Digimon's behavior. Setup is free; starting costs one ticket.
+            </p>
+          )}
           {teamSize === 0 && (
             <p className="text-xs text-gray-400 dark:text-gray-500 text-center mt-4">
               Click a slot to add Digimon

@@ -73,9 +73,9 @@ Routes are defined in `src/App.tsx`. Main features include the dashboard, DigiDe
 
 ## Application paths
 
-- Tasks: `Dashboard` → `TaskList` → `CleanTaskList`; mutations go through `taskStore` and Supabase. Task completion calls `complete_task_all_triggers` and grants one battle ticket through `grant_energy_self`.
+- Tasks: `Dashboard` → `TaskList` → `CleanTaskList`; mutations go through `taskStore` and Supabase. Task completion calls `complete_task_all_triggers`, which awards one battle ticket within the same database transaction.
 - Digimon: `petStore` handles party/storage, evolution and progression. Species, evolution paths and forms are imported from generated constants. `digimonStatCalculation.ts` contains stat interpolation and final-stat calculations.
-- Arena: `Battle` → `BattleTeamSelector` → `StrategyPicker` → `ArenaBattle`. Teams are converted by `utils/convertToBattleDigimon.ts`. The active entry flow spends one battle ticket through `spend_energy_self`. See [the arena reference](src/engine/ARENA_BATTLE_SYSTEM.md).
+- Arena: `Battle` and `BattleTeamSelector` collect teams and behaviors together. The authenticated `arena-battle` Edge Function simulates and settles fights, then `ArenaBattle` plays the saved recording. Ticket spend, Bits, history and counters commit atomically; playback has no reward writes. See [the arena reference](src/engine/ARENA_BATTLE_SYSTEM.md).
 - Tournaments: `Tournament` and `tournamentStore` provide weekly entry, opponent selection, rounds and placement rewards.
 - Achievements: `AchievementsPage` and `titleStore` handle titles, claims and DigiEgg rewards.
 - Shop: `DigimonStorePage`, `inventoryStore` and `currencyStore` handle items, effects and balances.
@@ -100,3 +100,9 @@ npx tsx scripts/analyze-stage-thresholds.ts   # Analyzes checked-in species/evol
 `scripts/scrape-digimon.js` scrapes reference data, downloads sprites, writes `digimon_list.json` and `evolution_data.json`, and updates Supabase. Review it before running because it writes data and assets.
 
 Edit generator inputs or scripts rather than generated lookup files, then review the regenerated diff. Keep fallback images and dynamically named sprite files unless their references have been audited.
+
+## Development workflow
+
+Coding-agent instructions are in [AGENTS.md](AGENTS.md). The authoritative database workflow is in [supabase/README.md](supabase/README.md), and deployed fixes and remaining work are tracked in [DATABASE_AUDIT.md](DATABASE_AUDIT.md). Follow these documents when starting a new session; baseline adoption is already complete.
+
+For application work, edit the active components and stores, run the relevant checks above, then commit and deploy the web app. For database work, edit `supabase/schemas/`, generate and review a new migration, add explicit data changes as needed, rebuild/test locally, regenerate types and check consistency. Commit SQL, types and client changes together; deploy reviewed migrations and the compatible web client in a coordinated order.

@@ -54,13 +54,14 @@ export const wander = (
   velX: number,
   velY: number,
   wanderAngle: number,
-  strength: number
+  strength: number,
+  random: () => number = Math.random
 ): { force: Force; newWanderAngle: number } => {
   const CIRCLE_DIST = 60; // how far ahead to project the wander circle
   const CIRCLE_RADIUS = 35; // radius of the wander circle
   const JITTER = 0.15; // max radians the wander angle drifts per frame
 
-  const newWanderAngle = wanderAngle + (Math.random() - 0.5) * JITTER * 2;
+  const newWanderAngle = wanderAngle + (random() - 0.5) * JITTER * 2;
 
   // Forward direction based on current velocity; fall back to rightward if stationary
   const speed = Math.sqrt(velX * velX + velY * velY);
