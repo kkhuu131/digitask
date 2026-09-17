@@ -388,9 +388,9 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({
                   completingTasks.has(task.id)
                     ? 'border-green-400 dark:border-green-600 bg-green-50 dark:bg-green-900/20'
                     : groupedTasks.overdue.includes(task)
-                      ? 'border border-l-[3px] border-l-red-500 bg-red-50 dark:bg-dark-300 dark:bg-red-500/10'
+                      ? 'border-gray-200 dark:border-dark-200 border-l-[3px] border-l-red-500 dark:border-l-red-500 bg-red-50 dark:bg-dark-300 dark:bg-red-500/10'
                       : task.priority === 'high'
-                        ? 'border border-l-[3px] border-l-orange-400 bg-orange-50/60 dark:bg-dark-300 dark:bg-orange-500/[0.06]'
+                        ? 'border-gray-200 dark:border-dark-200 border-l-[3px] border-l-orange-400 dark:border-l-orange-400 bg-orange-50/60 dark:bg-dark-300 dark:bg-orange-500/[0.06]'
                         : task.priority === 'medium'
                           ? 'border-gray-200 dark:border-dark-200 border-l-[2px] border-l-indigo-400 dark:border-l-indigo-500 bg-white dark:bg-dark-300'
                           : 'border-gray-200 dark:border-dark-200 bg-white dark:bg-dark-300'
@@ -673,9 +673,9 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({
                         completingTasks.has(task.id)
                           ? 'border-green-400 dark:border-green-600 bg-green-50 dark:bg-green-900/20'
                           : groupedTasks.overdue.includes(task)
-                            ? 'border border-l-[3px] border-l-red-500 bg-red-50 dark:bg-dark-300 dark:bg-red-500/10'
+                            ? 'border-gray-200 dark:border-dark-200 border-l-[3px] border-l-red-500 dark:border-l-red-500 bg-red-50 dark:bg-dark-300 dark:bg-red-500/10'
                             : task.priority === 'high'
-                              ? 'border border-l-[3px] border-l-orange-400 bg-orange-50/60 dark:bg-dark-300 dark:bg-orange-500/[0.06]'
+                              ? 'border-gray-200 dark:border-dark-200 border-l-[3px] border-l-orange-400 dark:border-l-orange-400 bg-orange-50/60 dark:bg-dark-300 dark:bg-orange-500/[0.06]'
                               : task.priority === 'medium'
                                 ? 'border-gray-200 dark:border-dark-200 border-l-[2px] border-l-indigo-400 dark:border-l-indigo-500 bg-white dark:bg-dark-300'
                                 : 'border-gray-200 dark:border-dark-200 bg-white dark:bg-dark-300'
