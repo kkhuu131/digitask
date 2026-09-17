@@ -10,6 +10,50 @@ import DigimonDetailModal from '../components/DigimonDetailModal';
 import { Star, Warehouse, UserPlus, Plus, Users } from 'lucide-react';
 import { LoadingSpinner } from '../components/LoadingIndicator';
 
+const FarmCardControl = ({
+  status,
+  label,
+  busy,
+  icon,
+  onClick,
+}: {
+  status?: 'Active' | 'Full';
+  label: string;
+  busy: boolean;
+  icon: React.ReactNode;
+  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+}) =>
+  status && !busy ? (
+    <div className="ui-card-action mt-1">
+      <span
+        className="rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600 dark:bg-dark-100 dark:text-gray-400"
+        title={status === 'Active' ? "Can't send active Digimon to Farm" : 'Party is full'}
+      >
+        {status}
+      </span>
+    </div>
+  ) : (
+    <button
+      onClick={onClick}
+      disabled={busy}
+      aria-label={label}
+      aria-busy={busy}
+      title={label}
+      className="ui-card-action group mt-1 disabled:cursor-wait"
+    >
+      <span className="flex h-8 w-full items-center justify-center gap-1 rounded-lg bg-gray-100 text-xs font-medium text-gray-700 transition-colors group-hover:bg-accent-100 group-hover:text-accent-800 group-disabled:opacity-60 dark:bg-dark-100 dark:text-gray-300 dark:group-hover:bg-accent-900/30 dark:group-hover:text-accent-300">
+        {busy ? (
+          <LoadingSpinner />
+        ) : (
+          <>
+            {icon}
+            <span>{label === 'Send to DigiFarm' ? 'Farm' : 'Party'}</span>
+          </>
+        )}
+      </span>
+    </button>
+  );
+
 const DigimonPlayground: React.FC = () => {
   const {
     allUserDigimon,
@@ -176,31 +220,13 @@ const DigimonPlayground: React.FC = () => {
                     </div>
 
                     {/* Send to Farm button */}
-                    <button
+                    <FarmCardControl
+                      status={digimon.is_active ? 'Active' : undefined}
+                      label="Send to DigiFarm"
+                      busy={transferringDigimon === digimon.id}
+                      icon={<Warehouse className="h-3 w-3" />}
                       onClick={(e) => handleTransferToStorage(e, digimon.id)}
-                      disabled={digimon.is_active || transferringDigimon === digimon.id}
-                      className={`mt-1 w-full flex items-center justify-center gap-1 min-h-11 py-2 rounded-lg text-xs font-medium transition-colors ${
-                        digimon.is_active
-                          ? 'bg-gray-100 dark:bg-dark-100 text-gray-500 dark:text-gray-400 cursor-not-allowed'
-                          : transferringDigimon === digimon.id
-                            ? 'bg-gray-100 dark:bg-dark-100 text-gray-400'
-                            : 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-800/30'
-                      }`}
-                      title={
-                        digimon.is_active ? "Can't send active Digimon to Farm" : 'Send to DigiFarm'
-                      }
-                    >
-                      {transferringDigimon === digimon.id ? (
-                        <LoadingSpinner />
-                      ) : digimon.is_active ? (
-                        'Active'
-                      ) : (
-                        <>
-                          <Warehouse className="w-2.5 h-2.5" />
-                          <span>Farm</span>
-                        </>
-                      )}
-                    </button>
+                    />
                   </div>
                 </motion.div>
               ))}
@@ -305,34 +331,13 @@ const DigimonPlayground: React.FC = () => {
                       </div>
 
                       {/* Add to Party button */}
-                      <button
+                      <FarmCardControl
+                        status={activePartyCount >= maxActivePartySize ? 'Full' : undefined}
+                        label="Add to Party"
+                        busy={transferringDigimon === digimon.id}
+                        icon={<UserPlus className="h-3 w-3" />}
                         onClick={(e) => handleTransferToActiveParty(e, digimon.id)}
-                        disabled={
-                          transferringDigimon === digimon.id ||
-                          activePartyCount >= maxActivePartySize
-                        }
-                        className={`mt-1 w-full flex items-center justify-center gap-1 min-h-11 py-2 rounded-lg text-xs font-medium transition-colors ${
-                          activePartyCount >= maxActivePartySize
-                            ? 'bg-gray-100 dark:bg-dark-100 text-gray-500 dark:text-gray-400 cursor-not-allowed'
-                            : transferringDigimon === digimon.id
-                              ? 'bg-gray-100 dark:bg-dark-100 text-gray-400'
-                              : 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-800/30'
-                        }`}
-                        title={
-                          activePartyCount >= maxActivePartySize ? 'Party is full' : 'Add to Party'
-                        }
-                      >
-                        {transferringDigimon === digimon.id ? (
-                          <LoadingSpinner />
-                        ) : activePartyCount >= maxActivePartySize ? (
-                          'Full'
-                        ) : (
-                          <>
-                            <UserPlus className="w-2.5 h-2.5" />
-                            <span>Party</span>
-                          </>
-                        )}
-                      </button>
+                      />
                     </div>
                   </motion.div>
                 ))}

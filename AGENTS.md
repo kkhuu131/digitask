@@ -65,7 +65,9 @@ on a candidate or restoring an old implementation.
 - Battle counters and level progression each have one database trigger. Do not
   restore duplicate triggers or browser counter increments.
 - Daily arena fights use the authenticated `arena-battle` Edge Function. Setup
-  includes team and behavior selection. Prepared requests spend nothing;
+  includes team selection with optional strongest-team auto-fill. New battles use
+  Balanced behavior automatically; recorded replay behaviors remain intact.
+  Prepared requests spend nothing;
   `settle_arena_battle` atomically saves the ticket spend, rewards, history and
   recorded replay. The three arena service RPCs are service-role-only. Browser
   playback completion must never spend tickets, award rewards or write history.

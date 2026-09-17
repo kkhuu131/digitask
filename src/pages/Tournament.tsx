@@ -11,7 +11,6 @@ import { useTitleStore } from '../store/titleStore';
 import { useTournamentStore, PLACEMENT_BITS } from '../store/tournamentStore';
 import { DIGIMON_LOOKUP_TABLE } from '../constants/digimonLookup';
 import ArenaBattle from '../components/ArenaBattle';
-import StrategyPicker from '../components/StrategyPicker';
 import DigimonSprite from '@/components/DigimonSprite';
 import TournamentBracket from '../components/TournamentBracket';
 import BattleTeamSelector, { OpponentDigimonPreview } from '../components/BattleTeamSelector';
@@ -53,7 +52,6 @@ const Tournament: React.FC = () => {
 
   // Arena battle state
   const [isSelectingTeam, setIsSelectingTeam] = useState(false);
-  const [showStrategyPicker, setShowStrategyPicker] = useState(false);
   const [arenaBattleActive, setArenaBattleActive] = useState(false);
   const [preparedUserTeam, setPreparedUserTeam] = useState<BattleDigimon[] | null>(null);
   const [preparedOpponentTeam, setPreparedOpponentTeam] = useState<BattleDigimon[] | null>(null);
@@ -107,7 +105,7 @@ const Tournament: React.FC = () => {
     setIsSelectingTeam(true);
   };
 
-  // Step 2: team confirmed → convert to BattleDigimon and open strategy picker
+  // Step 2: team confirmed → convert to BattleDigimon and start the battle
   const handleConfirmTeam = (selectedTeam: UserDigimon[]) => {
     if (!currentTournament) return;
     setIsSelectingTeam(false);
@@ -131,13 +129,7 @@ const Tournament: React.FC = () => {
     const opponentBattle = opponentTeamData.map((d) => convertToBattleDigimon(d, false));
     setPreparedUserTeam(userBattle);
     setPreparedOpponentTeam(opponentBattle);
-    setShowStrategyPicker(true);
-  };
-
-  // Step 3: strategies chosen → start arena battle
-  const handleStartArenaBattle = (strategies: Strategy[]) => {
-    setUserStrategies(strategies);
-    setShowStrategyPicker(false);
+    setUserStrategies(selectedTeam.map(() => 'balanced'));
     setArenaBattleActive(true);
   };
 
@@ -216,12 +208,7 @@ const Tournament: React.FC = () => {
 
   const isLockedState = !isUnlocked() && !currentTournament;
   const isNotEntered = isUnlocked() && !currentTournament && !isCompleted();
-  const isActiveState =
-    isActive() &&
-    !arenaBattleActive &&
-    !roundResultState &&
-    !isSelectingTeam &&
-    !showStrategyPicker;
+  const isActiveState = isActive() && !arenaBattleActive && !roundResultState && !isSelectingTeam;
   const isFinishedState = isCompleted();
 
   const currentOpponent = getCurrentRoundOpponent();
@@ -241,22 +228,7 @@ const Tournament: React.FC = () => {
     return monday.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
   })();
 
-  // Full-page takeovers: Strategy Picker, Arena Battle
-  if (showStrategyPicker && preparedUserTeam) {
-    return (
-      <div className="ui-page max-w-5xl">
-        <StrategyPicker
-          team={preparedUserTeam}
-          onConfirm={handleStartArenaBattle}
-          onBack={() => {
-            setShowStrategyPicker(false);
-            setIsSelectingTeam(true);
-          }}
-        />
-      </div>
-    );
-  }
-
+  // Full-page takeover: Arena Battle
   if (arenaBattleActive && preparedUserTeam && preparedOpponentTeam) {
     return (
       <ArenaBattle
@@ -430,7 +402,7 @@ const Tournament: React.FC = () => {
                     2
                   </span>
                   <p>
-                    Pick your team and assign battle strategies, then fight through{' '}
+                    Pick your team, then fight through{' '}
                     <span className="font-semibold text-gray-800 dark:text-gray-200">
                       Quarterfinal → Semifinal → Grand Final
                     </span>{' '}
@@ -481,8 +453,8 @@ const Tournament: React.FC = () => {
                 Tournament Open!
               </h3>
               <p className="text-sm text-accent-800 dark:text-accent-400 mb-4">
-                You've completed enough tasks to enter. Pick your team, choose your strategies, and
-                battle through 3 rounds in the Arena — completely free, no energy cost.
+                You've completed enough tasks to enter. Pick your team and battle through 3 rounds
+                in the Arena — completely free, no energy cost.
               </p>
 
               <div className="grid grid-cols-2 gap-2 mb-5 text-sm">

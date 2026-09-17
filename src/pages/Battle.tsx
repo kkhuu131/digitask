@@ -16,7 +16,19 @@ import PageTutorial from '../components/PageTutorial';
 import { DialogueStep } from '../components/DigimonDialogue';
 import DigimonSprite from '@/components/DigimonSprite';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Trophy, ShoppingBag, ChevronRight, Zap } from 'lucide-react';
+import {
+  Trophy,
+  ShoppingBag,
+  ChevronRight,
+  Zap,
+  Swords,
+  Shield,
+  Coins,
+  CircleCheck,
+  Timer,
+  Play,
+  ListChecks,
+} from 'lucide-react';
 import BattleTeamSelector, { OpponentDigimonPreview } from '../components/BattleTeamSelector';
 import { BattleDigimon } from '../types/battle';
 import type { Strategy } from '../engine/arenaTypes';
@@ -320,7 +332,9 @@ const Battle = () => {
 
   return (
     <>
-      <div className="ui-page">
+      <div
+        className={`ui-page ${!arenaBattleActive && !arenaResult && !pendingOption ? 'max-w-3xl' : ''}`}
+      >
         <h1 className="ui-page-title mb-6">Battle</h1>
 
         {/* ── Hub navigation cards (always visible in idle state) ── */}
@@ -419,28 +433,72 @@ const Battle = () => {
           </div>
         )}
         {!arenaBattleActive && !arenaResult && !pendingOption && latestBattle?.replay && (
-          <div className="card mb-4">
-            <p className="text-sm mb-3">
-              Last battle: {latestBattle.replay.winner === 'user' ? 'Victory' : 'Defeat'} ·{' '}
-              {latestBattle.snapshot.opponent_name} · +{latestBattle.bits_reward} Bits already
-              awarded
-              {latestBattle.replay.reason === 'time_limit' ? ' · Time limit' : ''}
-            </p>
-            <button
-              className="btn-primary"
-              disabled={localLoading}
-              onClick={() => displaySavedBattle(latestBattle, true)}
-            >
-              Watch replay
-            </button>
-            <button
-              className="ml-3 text-sm underline"
-              disabled={localLoading}
-              onClick={() => displaySavedBattle(latestBattle, false)}
-            >
-              View result
-            </button>
-          </div>
+          <section className="card mb-6" aria-labelledby="last-battle-title">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div className="flex min-w-0 items-center gap-3">
+                <div className="rounded-xl bg-accent-50 p-3 text-accent-800 dark:bg-accent-900/20 dark:text-accent-300">
+                  <Swords className="h-5 w-5" aria-hidden="true" />
+                </div>
+                <div className="min-w-0">
+                  <h2
+                    id="last-battle-title"
+                    className="text-xs font-semibold text-gray-600 dark:text-gray-400"
+                  >
+                    Last arena battle
+                  </h2>
+                  <p className="mt-1 break-words font-heading text-lg font-semibold text-gray-900 dark:text-gray-100">
+                    {latestBattle.snapshot.opponent_name}
+                  </p>
+                </div>
+              </div>
+              <span
+                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${latestBattle.replay.winner === 'user' ? 'bg-green-50 text-green-800 dark:bg-green-900/20 dark:text-green-300' : 'bg-red-50 text-red-800 dark:bg-red-900/20 dark:text-red-300'}`}
+              >
+                {latestBattle.replay.winner === 'user' ? (
+                  <Trophy className="h-3.5 w-3.5" aria-hidden="true" />
+                ) : (
+                  <Shield className="h-3.5 w-3.5" aria-hidden="true" />
+                )}
+                {latestBattle.replay.winner === 'user' ? 'Victory' : 'Defeat'}
+              </span>
+            </div>
+            <div className="my-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
+              <span className="inline-flex items-center gap-2 font-semibold text-accent-800 dark:text-accent-300">
+                <Coins className="h-4 w-4" aria-hidden="true" />+{latestBattle.bits_reward} Bits
+              </span>
+              <span className="inline-flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400">
+                <CircleCheck
+                  className="h-3.5 w-3.5 text-green-700 dark:text-green-400"
+                  aria-hidden="true"
+                />
+                Rewards already awarded
+              </span>
+              {latestBattle.replay.reason === 'time_limit' && (
+                <span className="inline-flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400">
+                  <Timer className="h-3.5 w-3.5" aria-hidden="true" />
+                  Time limit reached
+                </span>
+              )}
+            </div>
+            <div className="flex flex-wrap gap-2 border-t border-gray-200 pt-4 dark:border-dark-100">
+              <button
+                className="btn-primary"
+                disabled={localLoading}
+                onClick={() => displaySavedBattle(latestBattle, true)}
+              >
+                <Play className="h-4 w-4" aria-hidden="true" />
+                Watch replay
+              </button>
+              <button
+                className="btn-secondary"
+                disabled={localLoading}
+                onClick={() => displaySavedBattle(latestBattle, false)}
+              >
+                <ListChecks className="h-4 w-4" aria-hidden="true" />
+                View result
+              </button>
+            </div>
+          </section>
         )}
         {arenaBattleActive && (
           <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
@@ -477,7 +535,6 @@ const Battle = () => {
                 contextLabel={`${pendingOption.difficulty.charAt(0).toUpperCase() + pendingOption.difficulty.slice(1)} · ${pendingOption.isWild ? 'Wild' : 'AI'}`}
                 isFree={false}
                 costLabel="1 ticket"
-                showBehaviors
                 confirmLabel="Start battle"
                 onConfirm={handleConfirmTeam}
                 onBack={() => setPendingOption(null)}
@@ -545,7 +602,7 @@ const Battle = () => {
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: idx * 0.06, duration: 0.2 }}
                         >
-                          <div className="px-5 py-4 flex items-center gap-4 sm:gap-6">
+                          <div className="grid grid-cols-2 items-center gap-4 px-4 py-4 sm:grid-cols-[6rem_minmax(0,1fr)_8rem] sm:px-5">
                             {/* Difficulty info */}
                             <div className="w-24 shrink-0">
                               <span
@@ -564,7 +621,7 @@ const Battle = () => {
                             </div>
 
                             {/* Digimon sprites */}
-                            <div className="flex items-center gap-3 sm:gap-5 flex-1 justify-center min-h-[80px]">
+                            <div className="order-3 col-span-2 flex min-w-0 flex-wrap items-center justify-center gap-3 sm:order-2 sm:col-span-1 sm:gap-5 min-h-[80px]">
                               {option.team.digimon.map((digimon: any) => (
                                 <div
                                   key={`${digimon.id}-${digimon.name}`}
@@ -599,7 +656,7 @@ const Battle = () => {
                             </div>
 
                             {/* Opponent + fight */}
-                            <div className="shrink-0 text-right w-28 sm:w-32">
+                            <div className="order-2 min-w-0 text-right sm:order-3">
                               <p className="text-[11px] font-body text-gray-400 dark:text-gray-500 uppercase tracking-wide">
                                 Opponent
                               </p>

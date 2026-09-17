@@ -51,6 +51,17 @@
     @apply btn bg-accent-700 text-white hover:bg-accent-800 focus:ring-accent-600;
   }
 
+  /* Compact card actions retain a 44px target on touch devices. */
+  .ui-card-action {
+    @apply flex min-h-11 w-full items-center justify-center rounded-lg;
+  }
+
+  @media (min-width: 640px) and (pointer: fine) {
+    .ui-card-action {
+      min-height: 32px;
+    }
+  }
+
   .dark .btn-primary,
   html.dark .btn-primary {
     @apply bg-accent-500 text-gray-950 hover:bg-accent-400 focus:ring-accent-400;

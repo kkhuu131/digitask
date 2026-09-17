@@ -1,7 +1,7 @@
 # Arena Battle System — Developer Reference
 
 > **Last updated:** September 2026
-> **Scope:** All files under `src/engine/arena*`, `src/components/ArenaBattle.tsx`, `src/components/StrategyPicker.tsx`, `src/constants/battleAttributeColors.ts`, and the arena flow wiring in `src/pages/Battle.tsx`.
+> **Scope:** All files under `src/engine/arena*`, `src/components/ArenaBattle.tsx`, `src/components/BattleTeamSelector.tsx`, `src/constants/battleAttributeColors.ts`, and the arena flow wiring in `src/pages/Battle.tsx`.
 
 ---
 
@@ -23,10 +23,10 @@
 14. [Responsive Scaling](#14-responsive-scaling)
 15. [Sprite Facing Direction](#15-sprite-facing-direction)
 16. [StatusPanel — HP/Skill Bars](#16-statuspanel--hpskill-bars)
-17. [Battle Log Panel](#17-battle-log-panel)
+17. [Playback information](#17-playback-information)
 18. [WinnerOverlay & Auto-Advance](#18-winneroverlay--auto-advance)
 19. [ArenaResultsScreen (Battle.tsx)](#19-arenaresultsscreen-battletsx)
-20. [StrategyPicker](#20-strategypicker)
+20. [Team selection](#20-team-selection)
 21. [Battle.tsx — Full Flow Wiring](#21-battletsx--full-flow-wiring)
 22. [How to Extend / Tune](#22-how-to-extend--tune)
 
@@ -34,7 +34,7 @@
 
 ## 1. Overview
 
-The Arena Battle system is a physics-driven simulation with animated React playback. Daily arena combat is calculated on the server and recorded before playback; tournament combat still uses the live browser mode. Digimon move autonomously using steering behaviors, attack each other based on configurable strategies, and the result is displayed with cinematics, HP bars, a battle log, and an animated results screen.
+The Arena Battle system is a physics-driven simulation with animated React playback. Daily arena combat is calculated on the server and recorded before playback; tournament combat still uses the live browser mode. Digimon move autonomously using steering behaviors, attack each other based on configurable strategies, and the result is displayed with cinematics, HP and skill bars, and an animated results screen.
 
 **Key design principle:** The game loop runs at ~60fps using `requestAnimationFrame`. To avoid React re-renders on every frame, all per-frame visual updates (sprite positions, HP/skill bar widths, camera panning, sprite facing, zoom) are applied by **directly mutating DOM element styles** via refs. React state is only updated on discrete events (attack hit, death, battle end).
 
@@ -42,18 +42,18 @@ The Arena Battle system is a physics-driven simulation with animated React playb
 
 ## 2. File Map
 
-| File | Role |
-|------|------|
-| `src/engine/arenaTypes.ts` | All TypeScript types, interfaces, and tunable constants |
-| `src/engine/arenaReplay.ts` | Seeded headless simulation and recorded playback |
-| `src/server/arenaBattleHandler.ts` | Authenticated request orchestration |
-| `src/engine/arenaEngine.ts` | `initArenaDigimon()` + `runFrame()` — pure game logic, no React |
-| `src/engine/steeringBehaviors.ts` | Pure functions: `seek`, `wander`, `orbit`, `flee`, `separation` |
-| `src/components/ArenaBattle.tsx` | Main React component: RAF loop, DOM mutations, cinematic system, camera |
-| `src/components/StrategyPicker.tsx` | Strategy selection for the separate tournament flow |
-| `src/constants/battleAttributeColors.ts` | `ATTRIBUTE_COLORS` map used by windup rings and attribute glows |
+| File                                     | Role                                                                                             |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `src/engine/arenaTypes.ts`               | All TypeScript types, interfaces, and tunable constants                                          |
+| `src/engine/arenaReplay.ts`              | Seeded headless simulation and recorded playback                                                 |
+| `src/server/arenaBattleHandler.ts`       | Authenticated request orchestration                                                              |
+| `src/engine/arenaEngine.ts`              | `initArenaDigimon()` + `runFrame()` — pure game logic, no React                                  |
+| `src/engine/steeringBehaviors.ts`        | Pure functions: `seek`, `wander`, `orbit`, `flee`, `separation`                                  |
+| `src/components/ArenaBattle.tsx`         | Main React component: RAF loop, DOM mutations, cinematic system, camera                          |
+| `src/components/BattleTeamSelector.tsx`  | Shared arena/tournament team selection and strongest-team auto-fill                              |
+| `src/constants/battleAttributeColors.ts` | `ATTRIBUTE_COLORS` map used by windup rings and attribute glows                                  |
 | `src/components/BattleDigimonSprite.tsx` | Sprite renderer supporting `'victory'`/`'defeat'`/`'idle'`/`'attacking'`/`'hit'`/`'dead'` states |
-| `src/pages/Battle.tsx` | Wires combined setup, durable server requests, saved playback and results |
+| `src/pages/Battle.tsx`                   | Wires combined setup, durable server requests, saved playback and results                        |
 
 ---
 
@@ -65,6 +65,7 @@ Viewport:  900 × 380 px  (the clipped window rendered to the user)
 ```
 
 The **world div** is absolutely positioned inside the viewport div and shifted by the camera:
+
 ```
 worldDiv.style.transform = `translate(-${cameraX}px, -${cameraY}px)`
 ```
@@ -82,47 +83,47 @@ All constants live in `src/engine/arenaTypes.ts`.
 
 ### World / Viewport
 
-| Constant | Value | Effect |
-|----------|-------|--------|
-| `WORLD_W` | `1400` | Scrollable world width (world units) |
-| `WORLD_H` | `520` | Scrollable world height |
-| `VIEWPORT_W` | `900` | Rendered viewport width |
-| `VIEWPORT_H` | `380` | Rendered viewport height |
-| `ARENA_MARGIN` | `30` | Min distance Digimon must stay from world edges |
+| Constant       | Value  | Effect                                          |
+| -------------- | ------ | ----------------------------------------------- |
+| `WORLD_W`      | `1400` | Scrollable world width (world units)            |
+| `WORLD_H`      | `520`  | Scrollable world height                         |
+| `VIEWPORT_W`   | `900`  | Rendered viewport width                         |
+| `VIEWPORT_H`   | `380`  | Rendered viewport height                        |
+| `ARENA_MARGIN` | `30`   | Min distance Digimon must stay from world edges |
 
 ### Combat
 
-| Constant | Value | Effect |
-|----------|-------|--------|
-| `ATTACK_RADIUS` | `55` | Distance (world units) at which a normal attack can land |
-| `SKILL_WINDUP_MS` | `700` | ms of charge-up before skill damage fires |
-| `SKILL_DAMAGE_MULTIPLIER` | `2.5` | Skill damage = normal damage × this |
-| `ATTACK_SPRITE_MS` | `400` | How long the attack sprite is shown |
-| `HIT_SPRITE_MS` | `300` | How long the hit sprite is shown |
+| Constant                  | Value | Effect                                                   |
+| ------------------------- | ----- | -------------------------------------------------------- |
+| `ATTACK_RADIUS`           | `55`  | Distance (world units) at which a normal attack can land |
+| `SKILL_WINDUP_MS`         | `700` | ms of charge-up before skill damage fires                |
+| `SKILL_DAMAGE_MULTIPLIER` | `2.5` | Skill damage = normal damage × this                      |
+| `ATTACK_SPRITE_MS`        | `400` | How long the attack sprite is shown                      |
+| `HIT_SPRITE_MS`           | `300` | How long the hit sprite is shown                         |
 
 ### Physics
 
-| Constant | Value | Effect |
-|----------|-------|--------|
-| `SEPARATION_RADIUS` | `68` | Distance within which allied Digimon repel each other |
-| `BASE_FORCE` | `0.006` | Base steering force magnitude (world units / ms²) |
-| `DAMPING` | `0.88` | Velocity damping per frame — lower = more friction |
-| `MAX_SPEED` | `0.5` | Max velocity (world units / ms) |
-| `KNOCKBACK_IMPULSE` | `0.8` | Impulse magnitude on a normal hit |
-| `KNOCKBACK_SKILL_MULTIPLIER` | `2.2` | Skill knockback = `KNOCKBACK_IMPULSE × 2.2` |
-| `KNOCKBACK_DEATH_MULTIPLIER` | `6` | Applied on top of skill/normal knockback for the killing blow |
-| `DEATH_BOUNCE_VY_INIT` | `-0.28` | Initial upward velocity on death |
-| `DEATH_GRAVITY` | `0.001` | Gravity pulling dead Digimon back down |
+| Constant                     | Value   | Effect                                                        |
+| ---------------------------- | ------- | ------------------------------------------------------------- |
+| `SEPARATION_RADIUS`          | `68`    | Distance within which allied Digimon repel each other         |
+| `BASE_FORCE`                 | `0.006` | Base steering force magnitude (world units / ms²)             |
+| `DAMPING`                    | `0.88`  | Velocity damping per frame — lower = more friction            |
+| `MAX_SPEED`                  | `0.5`   | Max velocity (world units / ms)                               |
+| `KNOCKBACK_IMPULSE`          | `0.8`   | Impulse magnitude on a normal hit                             |
+| `KNOCKBACK_SKILL_MULTIPLIER` | `2.2`   | Skill knockback = `KNOCKBACK_IMPULSE × 2.2`                   |
+| `KNOCKBACK_DEATH_MULTIPLIER` | `6`     | Applied on top of skill/normal knockback for the killing blow |
+| `DEATH_BOUNCE_VY_INIT`       | `-0.28` | Initial upward velocity on death                              |
+| `DEATH_GRAVITY`              | `0.001` | Gravity pulling dead Digimon back down                        |
 
 ### Strategy Configs
 
-| Strategy | Speed | Attack CD | Skill CD | Orbit R | Flee Duration |
-|----------|-------|-----------|----------|---------|---------------|
-| `aggressive` | 1.35× | 1000ms | 12000ms | 65 wu | 300ms |
-| `balanced` | 1.0× | 1500ms | 13000ms | 110 wu | 650ms |
-| `defensive` | 0.82× | 2000ms | 15000ms | 145 wu | 900ms |
+| Strategy     | Speed | Attack CD | Skill CD | Orbit R | Flee Duration |
+| ------------ | ----- | --------- | -------- | ------- | ------------- |
+| `aggressive` | 1.35× | 1000ms    | 12000ms  | 65 wu   | 300ms         |
+| `balanced`   | 1.0×  | 1500ms    | 13000ms  | 110 wu  | 650ms         |
+| `defensive`  | 0.82× | 2000ms    | 15000ms  | 145 wu  | 900ms         |
 
-*(wu = world units)*
+_(wu = world units)_
 
 ---
 
@@ -137,24 +138,32 @@ interface ArenaDigimon {
   name: string;
   digimon_name: string;
   sprite_url: string;
-  type: string;          // DigimonType — fed to calculateDamage
-  attribute: string;     // DigimonAttribute — fed to calculateDamage
+  type: string; // DigimonType — fed to calculateDamage
+  attribute: string; // DigimonAttribute — fed to calculateDamage
   isUserTeam: boolean;
 
   // Physics (world units)
-  x: number; y: number;
-  vx: number; vy: number;               // steering velocity
-  knockbackVx: number; knockbackVy: number;  // independent knockback velocity
+  x: number;
+  y: number;
+  vx: number;
+  vy: number; // steering velocity
+  knockbackVx: number;
+  knockbackVy: number; // independent knockback velocity
 
   // Combat stats (mirror BattleDigimon.stats)
-  hp: number; maxHp: number;
-  atk: number; def: number; int: number; spd: number; sp: number;
+  hp: number;
+  maxHp: number;
+  atk: number;
+  def: number;
+  int: number;
+  spd: number;
+  sp: number;
 
   // State machine
   state: ArenaDigimonState;
-  attackCooldownMs: number;   // ms until next normal attack allowed
-  skillCooldownMs: number;    // ms until skill fires (enters windup at 0)
-  retreatTimerMs: number;     // ms remaining in retreat state
+  attackCooldownMs: number; // ms until next normal attack allowed
+  skillCooldownMs: number; // ms until skill fires (enters windup at 0)
+  retreatTimerMs: number; // ms remaining in retreat state
   skillWindupTimerMs: number; // ms remaining in windup (fires at 0)
 
   // Death animation
@@ -210,21 +219,21 @@ Each Digimon cycles through these states every frame (priority order — higher 
 
 All in `src/engine/steeringBehaviors.ts`. Each returns `{ fx, fy }`.
 
-| Function | Used when | Effect |
-|----------|-----------|--------|
-| `seek(x, y, tx, ty, force)` | `approaching`, `circling` | Accelerates toward target |
-| `wander(x, y, vx, vy, angle, force)` | All non-dead, non-windup | Adds organic randomness |
-| `orbit(x, y, cx, cy, radius, force)` | `circling` | Circles around a point |
-| `flee(x, y, fx, fy, force)` | `retreating` | Accelerates away from a point |
-| `separation(x, y, others[], radius, force)` | Always | Pushes allies apart |
+| Function                                    | Used when                 | Effect                        |
+| ------------------------------------------- | ------------------------- | ----------------------------- |
+| `seek(x, y, tx, ty, force)`                 | `approaching`, `circling` | Accelerates toward target     |
+| `wander(x, y, vx, vy, angle, force)`        | All non-dead, non-windup  | Adds organic randomness       |
+| `orbit(x, y, cx, cy, radius, force)`        | `circling`                | Circles around a point        |
+| `flee(x, y, fx, fy, force)`                 | `retreating`              | Accelerates away from a point |
+| `separation(x, y, others[], radius, force)` | Always                    | Pushes allies apart           |
 
 **Force blending by state** (weights from `STRATEGY_CONFIGS[strategy]`):
 
-| State | Blend |
-|-------|-------|
-| `approaching` | `seekWeight * seek + wanderWeight * wander + separation` |
-| `circling` | `0.35 * seek + orbitWeight * orbit + wanderWeight * wander + separation` |
-| `retreating` | `fleeDecay * flee + 0.6 * wanderWeight * wander + separation` |
+| State         | Blend                                                                    |
+| ------------- | ------------------------------------------------------------------------ |
+| `approaching` | `seekWeight * seek + wanderWeight * wander + separation`                 |
+| `circling`    | `0.35 * seek + orbitWeight * orbit + wanderWeight * wander + separation` |
+| `retreating`  | `fleeDecay * flee + 0.6 * wanderWeight * wander + separation`            |
 
 ---
 
@@ -236,7 +245,7 @@ Delegates to `calculateDamage()` from `src/utils/battleCalculations.ts`. The eng
 
 ### Speed Race (One Attacker at a Time)
 
-When two Digimon meet and *both* have `attackCooldownMs ≤ 0`, only one wins the right to attack:
+When two Digimon meet and _both_ have `attackCooldownMs ≤ 0`, only one wins the right to attack:
 
 ```ts
 const totalSpd = d.spd + target.spd;
@@ -283,11 +292,11 @@ d.y += d.knockbackVy * deltaMs;
 d.skillCooldownMs -= deltaMs * (1 + d.sp / 300);
 ```
 
-| SP value | Drain rate | Effect |
-|----------|-----------|--------|
-| 0 | 1.0× | Baseline charge speed |
-| 150 | 1.5× | 50% faster |
-| 300 | 2.0× | Twice as fast |
+| SP value | Drain rate | Effect                |
+| -------- | ---------- | --------------------- |
+| 0        | 1.0×       | Baseline charge speed |
+| 150      | 1.5×       | 50% faster            |
+| 300      | 2.0×       | Twice as fast         |
 
 **Initial skill cooldown** is staggered: `config.skillCooldownBase + Math.random() * 5000` — prevents all Digimon from firing skills simultaneously at battle start.
 
@@ -321,17 +330,12 @@ When a Digimon dies or enters `skill_windup`, the game triggers a cinematic: slo
 
 ### Trigger Points
 
-**On death:**
-```ts
-startCinematic(dead.x, dead.y, durationMs=2200, timeScale=0.2, zoomFactor=1.5);
-// 2200ms real-time, 5× slow-motion (timeScale=0.2), 1.5× zoom
-```
+**On death:** a 650ms highlight at 0.7 playback speed and 1.08 zoom.
 
-**On skill windup (detected when new windup IDs appear in RAF loop):**
-```ts
-startCinematic(d.x, d.y, durationMs=1600, timeScale=0.25, zoomFactor=1.4);
-// 1600ms real-time, 4× slow-motion, 1.4× zoom
-```
+**On skill windup:** frame the attacker/target midpoint for 900ms at normal
+playback speed, with zoom capped at 1.12 and constrained to fit both participants.
+Highlights respect a 2.2-second cooldown after the previous highlight and are
+skipped for reduced motion.
 
 ### `startCinematic()` Implementation
 
@@ -344,8 +348,8 @@ function startCinematic(focusX, focusY, durationMs, timeScale, zoomScale) {
   // Compute the actual viewport position of the focus Digimon after camera clamping
   const clampedCamX = Math.max(0, Math.min(WORLD_W - VIEWPORT_W, focusX - VIEWPORT_W / 2));
   const clampedCamY = Math.max(0, Math.min(WORLD_H - VIEWPORT_H, focusY - VIEWPORT_H / 2));
-  const vpX = focusX - clampedCamX;  // Digimon's X in viewport coords
-  const vpY = focusY - clampedCamY;  // Digimon's Y in viewport coords
+  const vpX = focusX - clampedCamX; // Digimon's X in viewport coords
+  const vpY = focusY - clampedCamY; // Digimon's Y in viewport coords
 
   const originX = ((vpX / VIEWPORT_W) * 100).toFixed(1) + '%';
   const originY = ((vpY / VIEWPORT_H) * 100).toFixed(1) + '%';
@@ -358,7 +362,7 @@ function startCinematic(focusX, focusY, durationMs, timeScale, zoomScale) {
 
 ### Why `transform-origin` Matters
 
-The viewport is zoomed using CSS `transform: scale()`. The zoom always expands **from the `transform-origin` point**. If the default `center center` is used, zoom always expands from the viewport center — but when a Digimon is near the top/bottom of the map, the camera clamps and the Digimon appears near a viewport edge. This makes the zoom expand *away* from the Digimon.
+The viewport is zoomed using CSS `transform: scale()`. The zoom always expands **from the `transform-origin` point**. If the default `center center` is used, zoom always expands from the viewport center — but when a Digimon is near the top/bottom of the map, the camera clamps and the Digimon appears near a viewport edge. This makes the zoom expand _away_ from the Digimon.
 
 By computing the Digimon's actual position in viewport coordinates (after camera clamping), `transform-origin` is set to point directly at the Digimon — so the zoom always expands toward it, regardless of where it is on the map.
 
@@ -368,13 +372,13 @@ By computing the Digimon's actual position in viewport coordinates (after camera
 let gameDelta = realDelta;
 if (cinematicRef.current) {
   gameDelta = realDelta * cinematicRef.current.timeScale; // slowed game time
-  cinematicRef.current.realRemainingMs -= realDelta;       // real-time countdown
+  cinematicRef.current.realRemainingMs -= realDelta; // real-time countdown
   if (cinematicRef.current.realRemainingMs <= 0) endCinematic();
 }
 const events = runFrame(digimonRef.current, gameDelta); // engine runs at slowed time
 ```
 
-`endCinematic()` resets: `transform: scale(1)` with 550ms ease transition, then resets `transformOrigin` back to `center center` after 580ms.
+`endCinematic()` resets `transform: scale(1)` with a 350ms ease transition. The next highlight sets its own transform origin; no delayed reset timer is needed.
 
 ---
 
@@ -382,27 +386,27 @@ const events = runFrame(digimonRef.current, gameDelta); // engine runs at slowed
 
 ### Direct DOM Mutations (60fps safe, no re-renders)
 
-| Ref | DOM element | Updated when |
-|-----|-------------|-------------|
-| `spriteContainerRefs` | Sprite position wrappers | Every frame (translate) |
-| `facingRefs` | Sprite facing wrappers | When horizontal direction changes (scaleX) |
-| `hpBarFillRefs` | HP bar fills in StatusPanel | On damage events |
-| `skillBarFillRefs` | Skill bar fills in StatusPanel | Every frame (width%) |
-| `worldDivRef` | World scrolling div | Every frame (translate via camera) |
-| `viewportDivRef` | Viewport clip div | On cinematic start/end (scale + transformOrigin) |
+| Ref                   | DOM element                    | Updated when                                     |
+| --------------------- | ------------------------------ | ------------------------------------------------ |
+| `spriteContainerRefs` | Sprite position wrappers       | Every frame (translate)                          |
+| `facingRefs`          | Sprite facing wrappers         | When horizontal direction changes (scaleX)       |
+| `hpBarFillRefs`       | HP bar fills in StatusPanel    | On damage events                                 |
+| `skillBarFillRefs`    | Skill bar fills in StatusPanel | Every frame (width%)                             |
+| `worldDivRef`         | World scrolling div            | Every frame (translate via camera)               |
+| `viewportDivRef`      | Viewport clip div              | On cinematic start/end (scale + transformOrigin) |
 
 ### React State (Discrete Events Only)
 
-| State | Updated when |
-|-------|-------------|
-| `hpSnapshot` | On damage events (keeps HP numbers in sync on re-renders) |
-| `deadIds` | On death events |
-| `spriteStates` | When `spriteState` field changes on any Digimon (diffed via `lastSpriteStatesRef`) |
-| `windupIds` | When `skill_windup` set changes (diffed via `lastWindupIdsRef`) |
-| `battleLog` | On any loggable event (attack, skill, death) |
-| `battlePhase` / `winner` | On `battle_end` event |
-| `spriteToggle` | Every 600ms (drives idle animation alternation) |
-| `scale` | On container resize (responsive scaling) |
+| State                    | Updated when                                                                       |
+| ------------------------ | ---------------------------------------------------------------------------------- |
+| `hpSnapshot`             | On damage events (keeps HP numbers in sync on re-renders)                          |
+| `deadIds`                | On death events                                                                    |
+| `spriteStates`           | When `spriteState` field changes on any Digimon (diffed via `lastSpriteStatesRef`) |
+| `windupIds`              | When `skill_windup` set changes (diffed via `lastWindupIdsRef`)                    |
+| `battleLog`              | On any loggable event (attack, skill, death)                                       |
+| `battlePhase` / `winner` | On `battle_end` event                                                              |
+| `spriteToggle`           | Every 600ms (drives idle animation alternation)                                    |
+| `scale`                  | On container resize (responsive scaling)                                           |
 
 ---
 
@@ -442,8 +446,10 @@ const loop = (ts: number) => {
     // Skill bar — direct DOM every frame
     const skillEl = skillBarFillRefs.current[d.id];
     if (skillEl) {
-      const fillPct = Math.max(0, Math.min(100,
-        100 * (1 - d.skillCooldownMs / config.skillCooldownBase)));
+      const fillPct = Math.max(
+        0,
+        Math.min(100, 100 * (1 - d.skillCooldownMs / config.skillCooldownBase))
+      );
       skillEl.style.width = `${fillPct}%`;
     }
   }
@@ -484,8 +490,7 @@ if (cinematicRef.current) {
 
 cameraXRef.current += (tx - cameraXRef.current) * lerp;
 cameraYRef.current += (ty - cameraYRef.current) * lerp;
-worldDivRef.current.style.transform =
-  `translate(-${cameraXRef.current}px, -${cameraYRef.current}px)`;
+worldDivRef.current.style.transform = `translate(-${cameraXRef.current}px, -${cameraYRef.current}px)`;
 ```
 
 ---
@@ -501,6 +506,7 @@ setScale(scale);
 ```
 
 Applied via:
+
 ```tsx
 <div
   style={{
@@ -521,10 +527,12 @@ The outer scale wrapper sets an explicit `height: VIEWPORT_H * scale` to prevent
 Sprites default to facing **LEFT**. Facing is controlled by `scaleX(-1)` applied to the sprite wrapper div referenced by `facingRefs`.
 
 **Initial facing** (set in `useLayoutEffect`):
+
 - User team spawns on the **left** → should face right → `scaleX(-1)`
 - Opponent team spawns on the **right** → faces left → no flip (default)
 
 **Dynamic facing** (updated in RAF loop per frame):
+
 ```ts
 const combinedVx = d.vx + d.knockbackVx;
 if (Math.abs(combinedVx) > 0.01) {
@@ -545,12 +553,14 @@ if (Math.abs(combinedVx) > 0.01) {
 Rendered above the arena. Two columns: user team (left, indigo) and opponent team (right, red).
 
 **HP bars** are driven by both:
+
 - React state (`hpSnapshot`) — keeps HP numbers correct on re-renders
 - Direct DOM (`hpBarFillRefs`) — provides instant visual response on damage events
 
 **Skill bars** are **direct DOM only** (`skillBarFillRefs`) — updated every frame, no React state.
 
 **Design tokens:**
+
 - Bar track: `bg-gray-200 dark:bg-dark-100`
 - User HP fill: `bg-indigo-600 dark:bg-indigo-400`
 - Opponent HP fill: `bg-red-500 dark:bg-red-400`
@@ -559,31 +569,12 @@ Rendered above the arena. Two columns: user team (left, indigo) and opponent tea
 
 ---
 
-## 17. Battle Log Panel
+## 17. Playback information
 
-Rendered as a `.card` below the arena. Stores up to **8** `LogEntry` objects in React state:
-
-```ts
-interface LogEntry {
-  id: string;
-  text: string;
-  type: 'attack' | 'skill' | 'crit' | 'miss' | 'death';
-}
-```
-
-Displayed newest-first with fading opacity per entry (`Math.max(0.2, 1 - i * 0.18)`).
-
-**Color coding by type:**
-
-| Type | Class |
-|------|-------|
-| `death` | `text-red-500` |
-| `skill` | `text-violet-500` |
-| `crit` | `text-amber-500` |
-| `miss` | `text-gray-400` |
-| `attack` | `text-gray-700 dark:text-gray-300` |
-
-Typography: panel label uses `font-heading` (Fredoka); entry text uses `font-body` (Nunito).
+Playback deliberately omits a battle log and per-Digimon behavior captions beneath
+skill bars. HP and skill bars, targeting cues, impact effects, damage numbers and
+the winner overlay communicate combat without competing text panels. Recorded
+events remain available to replay playback; this is a presentation-only choice.
 
 ---
 
@@ -604,6 +595,7 @@ A `useEffect` auto-calls `onBattleComplete({ winner, turns: [] })` after **2500m
 Rendered in `Battle.tsx` when `arenaResult` state is set (after `handleArenaBattleComplete` completes DB work). `preparedUserTeam` is intentionally kept alive until the user clicks Continue — it powers the sprite display.
 
 **Layout:**
+
 - Gradient header band (indigo for win, red for loss)
 - `font-heading` 5xl victory/defeat title with Framer Motion spring entrance
 - User Digimon displayed with staggered `motion.div` per sprite
@@ -614,40 +606,33 @@ Rendered in `Battle.tsx` when `arenaResult` state is set (after `handleArenaBatt
 
 **Bits reward amounts:**
 
-| Outcome | Difficulty | Reward |
-|---------|-----------|--------|
-| Win | Hard | 200 bits |
-| Win | Medium | 100 bits |
-| Win | Easy | 75 bits |
-| Loss | Hard | 40 bits |
-| Loss | Easy/Medium | 50 bits |
+| Outcome | Difficulty  | Reward   |
+| ------- | ----------- | -------- |
+| Win     | Hard        | 200 bits |
+| Win     | Medium      | 100 bits |
+| Win     | Easy        | 75 bits  |
+| Loss    | Hard        | 40 bits  |
+| Loss    | Easy/Medium | 50 bits  |
 
 ---
 
-## 20. StrategyPicker
+## 20. Team selection
 
-Daily arena behavior selection is embedded in BattleTeamSelector. StrategyPicker remains used by tournaments.
-
-Pre-battle screen where the user assigns a strategy to each of their Digimon before the arena starts. Strategies map directly to `STRATEGY_CONFIGS` in `arenaTypes.ts`.
-
-**Three options:**
-
-| Strategy | Label | Active Color |
-|----------|-------|-------------|
-| `aggressive` | Aggressive | Red `#ef4444` |
-| `balanced` | Balanced | Indigo `#6366f1` |
-| `defensive` | Defensive | Green `#22c55e` |
-
-Default: all `'balanced'`. Confirmed via "Fight!" button → `onConfirm(strategies[])`.
-
-Each Digimon row shows: sprite, name, level + type/attribute, current strategy badge, and three strategy buttons with colored active state.
+BattleTeamSelector collects up to three active-party Digimon. Behavior selection
+is removed for both arena and tournament setup; new teams use Balanced behavior.
+Existing saved replays and prepared requests retain their recorded strategies.
+Auto-fill replaces selected slots with the strongest three eligible party members,
+ranked by final `HP / 10 + SP + ATK + DEF + INT + SPD`, then level and stable ID.
+This avoids HP's larger numerical scale dominating the score. It is a general
+stat ranking, not an opponent matchup optimizer; users can still change any pick.
+The shared helper is `src/utils/selectStrongestTeam.ts`.
 
 ---
 
 ## 21. Daily arena flow and durable settlement
 
 1. Difficulty cards show server-issued, user-scoped opponent offers.
-2. BattleTeamSelector collects one to three party members and behaviors together. Setup is free.
+2. BattleTeamSelector collects one to three party members, with optional strongest-team auto-fill. New battles use Balanced behavior; setup is free.
 3. Starting creates a UUID request before the HTTP call. The authenticated Edge handler obtains the user from Supabase Auth; client user IDs, stats, winners and reward amounts are not trusted.
 4. prepare_arena_battle locks the profile, validates the private offer, party ownership and behaviors, then saves a seed and immutable species/stat snapshot. No ticket is spent. Only one prepared request per user is allowed.
 5. The shared engine runs headlessly with explicit seeded randomness and 16ms steps. Movement/state samples are retained every 64ms with combat events. The 120-second limit uses remaining team HP fraction to decide; ties are defeats. Cinematic slow motion affects playback only.
@@ -657,7 +642,7 @@ Each Digimon row shows: sprite, name, level + type/attribute, current strategy b
 
 The server bundle is generated from src/server/arenaEdge.ts using npm run arena:build; its build rejects browser-store imports. Damage rules live in engine/battleRules.ts and opponent generation in engine/arenaOpponents.ts. arenaReplay.ts implements seeded simulation and recording playback. Replay format version 1 is independent of engine version 1, so recorded fights do not need to be recalculated after balance updates. Engine changes must retain or explicitly migrate uncharged prepared requests.
 
-Tournament callers still use StrategyPicker and the existing live simulation mode of ArenaBattle. Their lifecycle is a separate follow-up. Sections explaining runFrame describe simulation; daily arena presentation uses createReplayPlayer instead. The browser may choose random cosmetic particles without affecting combat.
+Tournament callers use the shared team selector and the existing live simulation mode of ArenaBattle. Their lifecycle is a separate follow-up. Sections explaining runFrame describe simulation; daily arena presentation uses createReplayPlayer instead. The browser may choose random cosmetic particles without affecting combat.
 
 Local SQL tests cover permissions, ownership, one pending request, repeat settlement, win/loss rewards and injected rollback. HTTP tests exercise actual local Auth/API/Edge Runtime, concurrent starts, mid-request abort, recovery, saved results without watching and cross-user isolation. Replay tests compare seeded results, event streams and final health across playback frame rates.
 
@@ -675,7 +660,7 @@ Local SQL tests cover permissions, ownership, one pending request, repeat settle
 
 1. Add to the `Strategy` union type in `arenaTypes.ts`
 2. Add entry to `STRATEGY_CONFIGS` with all required fields
-3. Add to the `STRATEGIES` array in `StrategyPicker.tsx` with `label`, `desc`, `activeColor`, `activeBg`
+3. Player behavior selection is intentionally absent; new teams default to Balanced. Preserve old strategy values for replay compatibility.
 
 ### Change cinematic durations and intensity
 
@@ -683,15 +668,15 @@ Find `startCinematic(...)` calls in `ArenaBattle.tsx`:
 
 ```ts
 // Signature:
-startCinematic(focusX, focusY, realDurationMs, timeScale, zoomFactor)
+startCinematic(focusX, focusY, realDurationMs, timeScale, zoomFactor);
 
 // Death:
-startCinematic(dead.x, dead.y, 2200, 0.2, 1.5);
+startCinematic(dead.x, dead.y, 650, 0.7, 1.08);
 //                              ^^^^  ^^^  ^^^
 //                              ms    speed  zoom
 
 // Skill windup:
-startCinematic(d.x, d.y, 1600, 0.25, 1.4);
+startCinematic((d.x + target.x) / 2, (d.y + target.y) / 2, 900, 1, zoom);
 ```
 
 - `realDurationMs` — how long the slow-mo lasts in wall-clock time
@@ -701,6 +686,7 @@ startCinematic(d.x, d.y, 1600, 0.25, 1.4);
 ### Change knockback feel
 
 In `arenaTypes.ts`:
+
 - Stronger hits → raise `KNOCKBACK_IMPULSE`
 - More dramatic deaths → raise `KNOCKBACK_DEATH_MULTIPLIER`
 - Longer slide → raise `DAMPING` (closer to 1.0)
@@ -725,3 +711,27 @@ Edit `WORLD_W`, `WORLD_H`, `VIEWPORT_W`, `VIEWPORT_H` in `arenaTypes.ts`.
 ### Change bits rewards
 
 Edit the reward formula in `supabase/schemas/functions/settle_arena_battle.sql`, add a new reviewed migration and update the SQL reward tests. Playback completion must not grant rewards.
+
+## Presentation readability
+
+`BattleAttackEffects.tsx` connects attacker and target at the recorded damage event,
+with directional hit traces and outlined damage numbers, yellow CRIT numbers and
+MISS labels. Damage labels have no box or minus sign; specials use attack effects
+and targeting cues rather than a floating caption. It does not
+simulate projectile flight or delay recorded HP changes. Labels counter-scale to
+stay readable on phones. Special windups show an attribute-colored targeting line
+and target ring. Special-hit particles use the attacker's attribute.
+
+Sprite anticipation, lunge and recoil animate a separate wrapper, leaving world
+positions and facing transforms independent. HP bars include a delayed amber trail;
+status rows expose charging, attack, retreat and recovery cues. Phone status panels
+stack the teams to keep names and HP legible.
+
+The camera uses time-normalized smoothing, small pan/zoom dead zones, and a 2.2-second
+cooldown after highlights. Specials frame both participants for 900ms at normal
+speed (zoom capped at 1.12); knockouts use a 650ms, 0.7-speed highlight at 1.08 zoom.
+Reduced motion uses a fixed view of the whole world, with static targeting cues
+and damage labels but no camera highlights, sprite recoil or particle bursts.
+Effect lifetimes and animation handles are cleaned up on unmount; simultaneous
+hit cues and particles are capped. Combat rules, engine version, replay format,
+server settlement and rewards are unchanged.

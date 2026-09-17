@@ -13,6 +13,10 @@ Extend these before copying another set of button or card classes.
   `max-w-2xl` for settings, and `max-w-4xl` for profiles/long reading. Collections
   and admin tools may use the full shell. Standalone auth and marketing screens
   supply their own gutters.
+- The arena lobby is capped at `max-w-3xl` (768px) to keep difficulty, team and
+  opponent columns close together. Team setup and battle playback may use the
+  wider shell. Battle summaries use compact result badges and reward icons on
+  neutral panels, with amber replay actions.
 - Use the 4px spacing scale: 8px between related controls, 12px for compact rows,
   16px between cards, 24px between sections and after page headers. Use 32px only
   when separating major groups. Avoid nested outer padding and stacked margins.
@@ -67,6 +71,9 @@ relying on color intensity. Reserve purple for experience displays.
   numerals are a game-specific exception, not a pattern for forms or paragraphs.
 - Shared buttons, fields, tabs and icon buttons have a minimum 44px target. Use
   `ui-icon-button` and an explicit `aria-label` for icon-only actions.
+- Dense Digimon cards use `ui-card-action`: a 32px visible action with a 44px
+  target on phones/touch devices, and a 32px target on larger screens with a fine
+  pointer. Active/Full are compact neutral status badges, not disabled buttons.
 - Give every field a visible associated label or an accessible name. Expose toggle
   state using `aria-pressed` or the native checkbox state. Use native buttons and
   links for keyboard interaction.
@@ -82,6 +89,16 @@ relying on color intensity. Reserve purple for experience displays.
   alone. Respect reduced-motion preferences.
 - Use the named z-index scale: `sticky` navigation, `dropdown` menus, `modal`
   dialogs, `toast` notifications, `overlay` fullscreen game animations.
+
+## Arena presentation
+
+Arena playback: show attacker-to-target cues at recorded hit time, target markers
+during special charging, and damage labels that remain readable as the arena
+scales. Use attacker attribute colors for specials, quieter normal impacts and
+short camera highlights with cooldowns. Reduced motion uses a fixed wide view
+with labels and targeting cues, without zooms, recoil or particle bursts. These
+effects must not change recorded combat, rewards or replay format. Keep playback
+focused on the arena: no battle log or behavior captions beneath skill bars.
 
 ## Loading states
 
