@@ -3,15 +3,11 @@ import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import ReportButton from '../components/ReportButton';
 
-interface ProfileData {
-  id: string;
-  username: string;
-  battles_won: number;
-  battles_completed: number;
-  current_streak?: number;
-  longest_streak?: number;
-  avatar_url?: string;
-}
+import { DIGIMON_LOOKUP_TABLE } from '../constants/digimonLookup';
+import { countDiscoveries, fetchLeaderboardPages, rankLeaderboard } from '../utils/leaderboard';
+import type { LeaderboardProfile, LeaderboardType } from '../utils/leaderboard';
+
+const catalogIds = new Set(Object.values(DIGIMON_LOOKUP_TABLE).map((digimon) => digimon.id));
 
 const rankColors = [
   'text-accent-800 dark:text-accent-400',
@@ -40,32 +36,49 @@ const UserIcon = () => (
 );
 
 const LeaderboardPage = () => {
-  const [allUsers, setAllUsers] = useState<ProfileData[]>([]);
+  const [allUsers, setAllUsers] = useState<LeaderboardProfile[]>([]);
   const [loading, setLoading] = useState(true);
-  const [leaderboardType, setLeaderboardType] = useState<'wins' | 'winrate' | 'streak'>('wins');
+  const [leaderboardType, setLeaderboardType] = useState<LeaderboardType>('wins');
+
+  const [error, setError] = useState(false);
 
   useEffect(() => {
+    let cancelled = false;
     const fetchAllLeaderboardData = async () => {
       setLoading(true);
       try {
-        const { data: profilesData, error: profilesError } = await supabase
-          .from('profiles')
-          .select('id, username, battles_won, battles_completed, avatar_url')
-          .limit(100);
-        if (profilesError) throw profilesError;
-
-        const { data: streakData, error: streakError } = await supabase
-          .from('daily_quotas')
-          .select('longest_streak, current_streak, user_id')
-          .order('longest_streak', { ascending: false })
-          .limit(100);
-        if (streakError) throw streakError;
+        const [profilesData, streakData, discoveryData] = await Promise.all([
+          fetchLeaderboardPages((from, to) =>
+            supabase
+              .from('profiles')
+              .select('id, username, battles_won, battles_completed, avatar_url')
+              .order('id')
+              .range(from, to)
+          ),
+          fetchLeaderboardPages((from, to) =>
+            supabase
+              .from('daily_quotas')
+              .select('longest_streak, current_streak, user_id')
+              .order('user_id')
+              .range(from, to)
+          ),
+          fetchLeaderboardPages((from, to) =>
+            supabase
+              .from('user_discovered_digimon')
+              .select('user_id, digimon_id')
+              .order('id')
+              .range(from, to)
+          ),
+        ]);
+        const discoveries = countDiscoveries(discoveryData, catalogIds);
+        const streaks = new Map(streakData.map((entry) => [entry.user_id, entry]));
 
         const combinedData =
           profilesData?.map((profile) => {
-            const streakEntry = streakData?.find((s) => s.user_id === profile.id);
+            const streakEntry = streaks.get(profile.id);
             return {
               ...profile,
+              discoveries: discoveries.get(profile.id) ?? 0,
               battles_won: profile.battles_won || 0,
               battles_completed: profile.battles_completed || 0,
               current_streak: streakEntry?.current_streak || 0,
@@ -73,52 +86,45 @@ const LeaderboardPage = () => {
             };
           }) || [];
 
-        setAllUsers(combinedData);
+        if (!cancelled) setAllUsers(combinedData);
       } catch (err) {
         console.error('Error fetching leaderboard data:', err);
+        if (!cancelled) setError(true);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
     fetchAllLeaderboardData();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const displayUsers = useMemo(() => {
-    if (!allUsers.length) return [];
-    const filteredUsers = [...allUsers];
-    if (leaderboardType === 'wins') {
-      return filteredUsers.sort((a, b) => b.battles_won - a.battles_won).slice(0, 50);
-    } else if (leaderboardType === 'winrate') {
-      return filteredUsers
-        .sort((a, b) => {
-          const aRate = a.battles_completed > 0 ? a.battles_won / a.battles_completed : -1;
-          const bRate = b.battles_completed > 0 ? b.battles_won / b.battles_completed : -1;
-          if (aRate === -1 && bRate === -1) return b.battles_won - a.battles_won;
-          return bRate - aRate;
-        })
-        .filter((user) => user.battles_completed > 0)
-        .slice(0, 50);
-    } else {
-      return filteredUsers
-        .sort((a, b) => (b.longest_streak || 0) - (a.longest_streak || 0))
-        .slice(0, 50);
-    }
-  }, [allUsers, leaderboardType]);
+  const displayUsers = useMemo(
+    () => rankLeaderboard(allUsers, leaderboardType),
+    [allUsers, leaderboardType]
+  );
 
   const tabs = [
     { key: 'wins' as const, label: 'Most Wins' },
     { key: 'winrate' as const, label: 'Win Rate' },
     { key: 'streak' as const, label: 'Streaks' },
+    { key: 'discoveries' as const, label: 'Digidex' },
   ];
 
-  const getStatValue = (user: ProfileData) => {
+  const getStatValue = (user: LeaderboardProfile) => {
+    if (leaderboardType === 'discoveries') return `${user.discoveries} discovered`;
     if (leaderboardType === 'wins') return `${user.battles_won} W`;
     if (leaderboardType === 'winrate')
       return `${Math.round((user.battles_won / user.battles_completed || 0) * 100)}%`;
     return `${user.longest_streak ?? 0}d`;
   };
 
-  const getSubValue = (user: ProfileData) => {
+  const getSubValue = (user: LeaderboardProfile) => {
+    if (leaderboardType === 'discoveries')
+      return `${Math.round((user.discoveries / catalogIds.size) * 100)}% of Digidex`;
+    if (leaderboardType === 'winrate')
+      return `${user.battles_won} wins / ${user.battles_completed} battles`;
     if (leaderboardType === 'streak') return `${user.current_streak ?? 0}d now`;
     return `${user.battles_completed || 0} battles`;
   };
@@ -139,6 +145,7 @@ const LeaderboardPage = () => {
           <button
             key={tab.key}
             onClick={() => setLeaderboardType(tab.key)}
+            aria-pressed={leaderboardType === tab.key}
             className={`ui-tab ${
               leaderboardType === tab.key
                 ? 'ui-tab-active'
@@ -159,6 +166,10 @@ const LeaderboardPage = () => {
               className="h-16 bg-gray-100 dark:bg-dark-200 rounded-xl ui-skeleton-pulse"
             />
           ))}
+        </div>
+      ) : error ? (
+        <div className="ui-empty" role="alert">
+          Could not load the leaderboard. Please refresh to try again.
         </div>
       ) : displayUsers.length === 0 ? (
         <div className="ui-empty">No data yet.</div>

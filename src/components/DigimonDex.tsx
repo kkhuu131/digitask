@@ -1,5 +1,6 @@
 import LoadingIndicator from './LoadingIndicator';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
+import { useReducedMotion } from 'framer-motion';
 import { useDigimonStore, Digimon } from '../store/petStore';
 import { useDigimonData } from '../hooks/useDigimonData';
 import { DIGIMON_LOOKUP_TABLE } from '../constants/digimonLookup';
@@ -75,6 +76,9 @@ const DigimonDex = () => {
   const [statLevel, setStatLevel] = useState<1 | 50 | 99>(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [stageFilter, setStageFilter] = useState<StageFilter>('All');
+  const rowRefs = useRef(new Map<number, HTMLDivElement>());
+  const [scrollTargetId, setScrollTargetId] = useState<number | null>(null);
+  const reducedMotion = useReducedMotion();
 
   // ── Helpers ──────────────────────────────────────────────────────────────
 
@@ -187,6 +191,35 @@ const DigimonDex = () => {
     });
   }, [sortedDigimon, searchQuery, stageFilter, discoveredDigimon]);
 
+  const navigateEvolution = (digimon: Digimon) => {
+    if (!isDiscovered(digimon.id)) return;
+    if (stageFilter !== 'All' && stageFilter !== digimon.stage) setStageFilter('All');
+    const query = searchQuery.toLowerCase().trim();
+    if (
+      query &&
+      ![digimon.name, digimon.stage, digimon.type, digimon.attribute].some((value) =>
+        value?.toLowerCase().includes(query)
+      )
+    )
+      setSearchQuery('');
+    handleDigimonSelect(digimon);
+    setScrollTargetId(digimon.id);
+  };
+
+  // Wait for any cleared filters to render the destination row before scrolling.
+  useEffect(() => {
+    if (scrollTargetId === null) return;
+    const frame = requestAnimationFrame(() => {
+      rowRefs.current.get(scrollTargetId)?.scrollIntoView({
+        behavior: reducedMotion ? 'auto' : 'smooth',
+        block: 'start',
+        inline: 'nearest',
+      });
+      setScrollTargetId(null);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [scrollTargetId, filteredDigimon, reducedMotion]);
+
   // Max Lv99 stats across ALL digimon, used to normalise stat bars
   const globalMaxStats = useMemo(() => {
     const maxes = { hp: 1, sp: 1, atk: 1, def: 1, int: 1, spd: 1 };
@@ -285,8 +318,12 @@ const DigimonDex = () => {
               return (
                 <div
                   key={digimon.id}
+                  ref={(element) => {
+                    if (element) rowRefs.current.set(digimon.id, element);
+                    else rowRefs.current.delete(digimon.id);
+                  }}
                   onClick={() => discovered && handleDigimonSelect(digimon)}
-                  className={`flex items-center gap-3 px-3 py-2 transition-colors
+                  className={`scroll-mt-24 flex items-center gap-3 px-3 py-2 transition-colors
                     ${idx % 2 === 0 ? 'bg-white dark:bg-dark-300' : 'bg-gray-50 dark:bg-dark-200/60'}
                     ${discovered ? 'cursor-pointer hover:bg-blue-50 dark:hover:bg-dark-100' : 'opacity-60 cursor-default'}
                     ${isSelected ? 'bg-blue-50 dark:bg-dark-100 ring-1 ring-inset ring-blue-300 dark:ring-amber-500/50' : ''}
@@ -505,10 +542,21 @@ const DigimonDex = () => {
                             <div className="grid grid-cols-3 gap-2">
                               {evolutionPathsData.evolvesFrom.map((path: any) => {
                                 const disc = isDiscovered(path.from_digimon.id);
+                                const target = allDigimon.find(
+                                  (digimon) => digimon.id === path.from_digimon.id
+                                );
                                 return (
-                                  <div
+                                  <button
+                                    type="button"
                                     key={path.id}
-                                    className="flex flex-col items-center gap-1 p-2 rounded-lg bg-gray-50 dark:bg-dark-200"
+                                    disabled={!disc || !target}
+                                    onClick={() => {
+                                      if (target) navigateEvolution(target);
+                                    }}
+                                    aria-label={
+                                      disc ? `View ${target?.name}` : 'Undiscovered Digimon'
+                                    }
+                                    className="flex min-w-0 flex-col items-center gap-1 p-2 rounded-lg bg-gray-50 dark:bg-dark-200 transition-colors enabled:hover:bg-accent-50 dark:enabled:hover:bg-dark-100 enabled:hover:ring-1 enabled:hover:ring-accent-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 disabled:cursor-default"
                                   >
                                     <div className="w-12 h-12 flex items-center justify-center">
                                       <DigimonSprite
@@ -526,7 +574,7 @@ const DigimonDex = () => {
                                     <span className="text-xs font-body text-gray-400 dark:text-gray-500">
                                       Lv {path.level_required}
                                     </span>
-                                  </div>
+                                  </button>
                                 );
                               })}
                             </div>
@@ -543,10 +591,21 @@ const DigimonDex = () => {
                             <div className="grid grid-cols-3 gap-2">
                               {evolutionPathsData.evolvesTo.map((path: any) => {
                                 const disc = isDiscovered(path.to_digimon.id);
+                                const target = allDigimon.find(
+                                  (digimon) => digimon.id === path.to_digimon.id
+                                );
                                 return (
-                                  <div
+                                  <button
+                                    type="button"
                                     key={path.id}
-                                    className="flex flex-col items-center gap-1 p-2 rounded-lg bg-gray-50 dark:bg-dark-200"
+                                    disabled={!disc || !target}
+                                    onClick={() => {
+                                      if (target) navigateEvolution(target);
+                                    }}
+                                    aria-label={
+                                      disc ? `View ${target?.name}` : 'Undiscovered Digimon'
+                                    }
+                                    className="flex min-w-0 flex-col items-center gap-1 p-2 rounded-lg bg-gray-50 dark:bg-dark-200 transition-colors enabled:hover:bg-accent-50 dark:enabled:hover:bg-dark-100 enabled:hover:ring-1 enabled:hover:ring-accent-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 disabled:cursor-default"
                                   >
                                     <div className="w-12 h-12 flex items-center justify-center">
                                       <DigimonSprite
@@ -564,7 +623,7 @@ const DigimonDex = () => {
                                     <span className="text-xs font-body text-gray-400 dark:text-gray-500">
                                       Lv {path.level_required}
                                     </span>
-                                  </div>
+                                  </button>
                                 );
                               })}
                             </div>
