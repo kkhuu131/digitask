@@ -614,17 +614,19 @@ const DigimonStorePage: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-6 max-w-7xl">
+    <div className="ui-page">
       {/* Header Section */}
-      <div className="mb-8">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+      <div className="mb-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold dark:text-gray-100 mb-2">Neemon's Store</h1>
+            <h1 className="ui-page-title">Neemon's Store</h1>
             <p className="text-gray-600 dark:text-gray-400 text-sm">{neeemonDialogue}</p>
           </div>
           <div className="flex items-center gap-3">
-            <div className="bg-gradient-to-r from-amber-500 to-amber-600 dark:from-amber-600 dark:to-amber-700 px-5 py-2.5 rounded-lg shadow-sm">
-              <span className="font-semibold text-white">{bits.toLocaleString()} bits</span>
+            <div className="bg-accent-50 dark:bg-accent-900/20 border border-accent-200 dark:border-accent-800/40 px-4 py-2.5 rounded-lg">
+              <span className="font-semibold text-accent-800 dark:text-accent-400">
+                {bits.toLocaleString()} bits
+              </span>
             </div>
           </div>
         </div>
@@ -653,7 +655,7 @@ const DigimonStorePage: React.FC = () => {
             </Tab.List>
           </div>
 
-          <div className="p-6">
+          <div className="p-4 sm:p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {filteredItems.map((item) => (
                 <div
@@ -711,17 +713,7 @@ const DigimonStorePage: React.FC = () => {
                           (item.currency === 'bits' ? bits < item.price : digicoins < item.price) ||
                           (item.id === 'abi_enhancer' && !userDigimon)
                         }
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                          processingPurchase === item.id
-                            ? 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-wait'
-                            : item.currency === 'bits'
-                              ? bits < item.price
-                                ? 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'
-                                : 'bg-amber-500 hover:bg-amber-600 dark:bg-amber-600 dark:hover:bg-amber-700 text-white shadow-sm hover:shadow'
-                              : digicoins < item.price
-                                ? 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'
-                                : 'bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white shadow-sm hover:shadow'
-                        }`}
+                        className="btn-primary"
                       >
                         {processingPurchase === item.id ? 'Processing...' : 'Buy'}
                       </button>
@@ -742,7 +734,7 @@ const DigimonStorePage: React.FC = () => {
 
       {/* Modals */}
       {showDigimonSelectionModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-modal p-4">
           <div className="bg-white dark:bg-dark-300 rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
             <div className="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
               <div>
@@ -798,7 +790,7 @@ const DigimonStorePage: React.FC = () => {
 
       {/* Stat Reset Digimon Selection Modal */}
       {showStatResetModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-modal p-4">
           <div className="bg-white dark:bg-dark-300 rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
             <div className="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
               <div>
@@ -852,7 +844,7 @@ const DigimonStorePage: React.FC = () => {
 
       {/* Stat Selection Modal - shows after selecting a Digimon */}
       {selectedDigimonForStatReset && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-modal p-4">
           <div className="bg-white dark:bg-dark-300 rounded-xl shadow-xl max-w-md w-full">
             <div className="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
               <h2 className="text-2xl font-bold dark:text-gray-100">Select Stat to Reset</h2>
@@ -864,8 +856,8 @@ const DigimonStorePage: React.FC = () => {
               </button>
             </div>
 
-            <div className="p-6">
-              <div className="flex items-center gap-4 mb-6 p-4 bg-gray-50 dark:bg-dark-200 rounded-xl">
+            <div className="p-4 sm:p-6">
+              <div className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-dark-200 rounded-xl">
                 <img
                   src={selectedDigimonForStatReset.digimon?.sprite_url || ''}
                   alt={
@@ -911,7 +903,7 @@ const DigimonStorePage: React.FC = () => {
 
       {/* X-Antibody Selection Modal */}
       {showXAntibodyModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-modal p-4">
           <div className="bg-white dark:bg-dark-300 rounded-xl shadow-xl max-w-md w-full max-h-[80vh] overflow-hidden flex flex-col">
             <div className="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
               <div>

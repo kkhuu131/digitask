@@ -39,12 +39,12 @@ const ManualSection = ({ title, children }: { title: string; children: React.Rea
   return (
     <div className="mb-6 bg-white dark:bg-dark-300 rounded-lg shadow-sm border border-gray-200 dark:border-dark-200 overflow-hidden">
       <button
-        className="w-full px-4 py-3 flex justify-between items-center bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors"
+        className="w-full px-4 py-3 flex justify-between items-center gap-3 text-left bg-gray-50 dark:bg-dark-200 hover:bg-gray-100 dark:hover:bg-dark-100 transition-colors"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <h3 className="text-xl font-semibold text-blue-800 dark:text-blue-300">{title}</h3>
+        <h3 className="ui-section-title">{title}</h3>
         <FaChevronUp
-          className={`text-blue-800 dark:text-blue-300 transition-transform ${isOpen ? '' : 'transform rotate-180'}`}
+          className={`text-gray-500 dark:text-gray-400 transition-transform ${isOpen ? '' : 'transform rotate-180'}`}
         />
       </button>
 
@@ -933,11 +933,11 @@ const Tutorial = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-6">
-      <h1 className="text-3xl font-bold mb-8 dark:text-gray-100">Tutorial</h1>
+    <div className="ui-page">
+      <h1 className="ui-page-title mb-6">Tutorial</h1>
 
       <div className="flex flex-col md:flex-row gap-6">
-        <div className="md:w-1/5">
+        <div className="md:w-52 md:shrink-0">
           <div className="bg-white dark:bg-dark-300 rounded-lg shadow-sm p-4 sticky top-20 border border-gray-200 dark:border-dark-200">
             <h2 className="text-lg font-semibold mb-4 dark:text-gray-100">Sections</h2>
             <ul className="space-y-2">
@@ -947,7 +947,7 @@ const Tutorial = () => {
                     onClick={() => setActiveSection(section.id)}
                     className={`flex items-center w-full px-3 py-2 rounded-md transition-colors ${
                       activeSection === section.id
-                        ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300'
+                        ? 'ui-tab-active'
                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-200'
                     }`}
                   >
@@ -962,8 +962,7 @@ const Tutorial = () => {
 
         <div
           ref={contentRef}
-          className="md:w-4/5 bg-white dark:bg-dark-300 rounded-lg shadow-sm p-4 border border-gray-200 dark:border-dark-200 overflow-y-auto"
-          style={{ maxHeight: 'calc(100vh - 120px)' }}
+          className="min-w-0 flex-1 ui-panel p-4 sm:p-6 md:overflow-y-auto md:max-h-[calc(100vh-160px)]"
         >
           {renderContent()}
         </div>

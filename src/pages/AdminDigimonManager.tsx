@@ -951,22 +951,20 @@ const AdminDigimonManager = () => {
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="ui-page">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-          Digimon Species Manager
-        </h1>
+        <h1 className="ui-page-title">Digimon Species Manager</h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
           Manage Digimon species, evolution paths, and form transformations.
         </p>
       </div>
       <Tab.Group>
-        <Tab.List className="flex border-b border-gray-200 dark:border-dark-100 mb-6">
+        <Tab.List className="flex overflow-x-auto border-b border-gray-200 dark:border-dark-100 mb-6">
           <Tab
             className={({ selected }) =>
-              `px-4 py-2 font-medium transition-colors cursor-pointer ${
+              `shrink-0 min-h-11 px-4 py-2 text-sm font-medium transition-colors cursor-pointer ${
                 selected
-                  ? 'text-indigo-600 dark:text-accent-400 border-b-2 border-indigo-600 dark:border-accent-500'
+                  ? 'text-accent-800 dark:text-accent-400 border-b-2 border-accent-600 dark:border-accent-500'
                   : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
               }`
             }
@@ -975,9 +973,9 @@ const AdminDigimonManager = () => {
           </Tab>
           <Tab
             className={({ selected }) =>
-              `px-4 py-2 font-medium transition-colors cursor-pointer ${
+              `shrink-0 min-h-11 px-4 py-2 text-sm font-medium transition-colors cursor-pointer ${
                 selected
-                  ? 'text-indigo-600 dark:text-accent-400 border-b-2 border-indigo-600 dark:border-accent-500'
+                  ? 'text-accent-800 dark:text-accent-400 border-b-2 border-accent-600 dark:border-accent-500'
                   : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
               }`
             }
@@ -986,9 +984,9 @@ const AdminDigimonManager = () => {
           </Tab>
           <Tab
             className={({ selected }) =>
-              `px-4 py-2 font-medium transition-colors cursor-pointer ${
+              `shrink-0 min-h-11 px-4 py-2 text-sm font-medium transition-colors cursor-pointer ${
                 selected
-                  ? 'text-indigo-600 dark:text-accent-400 border-b-2 border-indigo-600 dark:border-accent-500'
+                  ? 'text-accent-800 dark:text-accent-400 border-b-2 border-accent-600 dark:border-accent-500'
                   : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
               }`
             }
@@ -1027,7 +1025,7 @@ const AdminDigimonManager = () => {
                         name="digimon_id"
                         value={digimonForm.digimon_id}
                         onChange={handleDigimonInputChange}
-                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                        className="input"
                       />
                     </div>
 
@@ -1040,7 +1038,7 @@ const AdminDigimonManager = () => {
                         name="request_id"
                         value={digimonForm.request_id}
                         onChange={handleDigimonInputChange}
-                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                        className="input"
                       />
                     </div>
 
@@ -1053,7 +1051,7 @@ const AdminDigimonManager = () => {
                         name="name"
                         value={digimonForm.name}
                         onChange={handleDigimonInputChange}
-                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                        className="input"
                       />
                     </div>
 
@@ -1065,7 +1063,7 @@ const AdminDigimonManager = () => {
                         name="stage"
                         value={digimonForm.stage}
                         onChange={handleDigimonInputChange}
-                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                        className="input"
                       >
                         {digimonStages.map((stage) => (
                           <option key={stage} value={stage}>
@@ -1083,7 +1081,7 @@ const AdminDigimonManager = () => {
                         name="type"
                         value={digimonForm.type}
                         onChange={handleDigimonInputChange}
-                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                        className="input"
                       >
                         {digimonTypes.map((type) => (
                           <option key={type} value={type}>
@@ -1101,7 +1099,7 @@ const AdminDigimonManager = () => {
                         name="attribute"
                         value={digimonForm.attribute}
                         onChange={handleDigimonInputChange}
-                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                        className="input"
                       >
                         {digimonAttributes.map((attribute) => (
                           <option key={attribute} value={attribute}>
@@ -1120,7 +1118,7 @@ const AdminDigimonManager = () => {
                         name="sprite_url"
                         value={digimonForm.sprite_url}
                         onChange={handleDigimonInputChange}
-                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                        className="input"
                       />
                     </div>
 
@@ -1133,7 +1131,7 @@ const AdminDigimonManager = () => {
                         name="detail_url"
                         value={digimonForm.detail_url}
                         onChange={handleDigimonInputChange}
-                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                        className="input"
                       />
                     </div>
                   </div>
@@ -1153,7 +1151,7 @@ const AdminDigimonManager = () => {
                           name="hp_level1"
                           value={digimonForm.hp_level1 || ''}
                           onChange={handleDigimonInputChange}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                          className="input"
                         />
                       </div>
 
@@ -1166,7 +1164,7 @@ const AdminDigimonManager = () => {
                           name="sp_level1"
                           value={digimonForm.sp_level1 || ''}
                           onChange={handleDigimonInputChange}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                          className="input"
                         />
                       </div>
 
@@ -1179,7 +1177,7 @@ const AdminDigimonManager = () => {
                           name="atk_level1"
                           value={digimonForm.atk_level1 || ''}
                           onChange={handleDigimonInputChange}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                          className="input"
                         />
                       </div>
 
@@ -1192,7 +1190,7 @@ const AdminDigimonManager = () => {
                           name="def_level1"
                           value={digimonForm.def_level1 || ''}
                           onChange={handleDigimonInputChange}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                          className="input"
                         />
                       </div>
 
@@ -1205,7 +1203,7 @@ const AdminDigimonManager = () => {
                           name="int_level1"
                           value={digimonForm.int_level1 || ''}
                           onChange={handleDigimonInputChange}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                          className="input"
                         />
                       </div>
 
@@ -1218,7 +1216,7 @@ const AdminDigimonManager = () => {
                           name="spd_level1"
                           value={digimonForm.spd_level1 || ''}
                           onChange={handleDigimonInputChange}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                          className="input"
                         />
                       </div>
                     </div>
@@ -1239,7 +1237,7 @@ const AdminDigimonManager = () => {
                           name="hp"
                           value={digimonForm.hp || ''}
                           onChange={handleDigimonInputChange}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                          className="input"
                         />
                       </div>
 
@@ -1252,7 +1250,7 @@ const AdminDigimonManager = () => {
                           name="sp"
                           value={digimonForm.sp || ''}
                           onChange={handleDigimonInputChange}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                          className="input"
                         />
                       </div>
 
@@ -1265,7 +1263,7 @@ const AdminDigimonManager = () => {
                           name="atk"
                           value={digimonForm.atk || ''}
                           onChange={handleDigimonInputChange}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                          className="input"
                         />
                       </div>
 
@@ -1278,7 +1276,7 @@ const AdminDigimonManager = () => {
                           name="def"
                           value={digimonForm.def || ''}
                           onChange={handleDigimonInputChange}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                          className="input"
                         />
                       </div>
 
@@ -1291,7 +1289,7 @@ const AdminDigimonManager = () => {
                           name="int"
                           value={digimonForm.int || ''}
                           onChange={handleDigimonInputChange}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                          className="input"
                         />
                       </div>
 
@@ -1304,7 +1302,7 @@ const AdminDigimonManager = () => {
                           name="spd"
                           value={digimonForm.spd || ''}
                           onChange={handleDigimonInputChange}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                          className="input"
                         />
                       </div>
                     </div>
@@ -1325,7 +1323,7 @@ const AdminDigimonManager = () => {
                           name="hp_level99"
                           value={digimonForm.hp_level99 || ''}
                           onChange={handleDigimonInputChange}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                          className="input"
                         />
                       </div>
 
@@ -1338,7 +1336,7 @@ const AdminDigimonManager = () => {
                           name="sp_level99"
                           value={digimonForm.sp_level99 || ''}
                           onChange={handleDigimonInputChange}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                          className="input"
                         />
                       </div>
 
@@ -1351,7 +1349,7 @@ const AdminDigimonManager = () => {
                           name="atk_level99"
                           value={digimonForm.atk_level99 || ''}
                           onChange={handleDigimonInputChange}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                          className="input"
                         />
                       </div>
 
@@ -1364,7 +1362,7 @@ const AdminDigimonManager = () => {
                           name="def_level99"
                           value={digimonForm.def_level99 || ''}
                           onChange={handleDigimonInputChange}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                          className="input"
                         />
                       </div>
 
@@ -1377,7 +1375,7 @@ const AdminDigimonManager = () => {
                           name="int_level99"
                           value={digimonForm.int_level99 || ''}
                           onChange={handleDigimonInputChange}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                          className="input"
                         />
                       </div>
 
@@ -1390,7 +1388,7 @@ const AdminDigimonManager = () => {
                           name="spd_level99"
                           value={digimonForm.spd_level99 || ''}
                           onChange={handleDigimonInputChange}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                          className="input"
                         />
                       </div>
                     </div>
@@ -1402,7 +1400,7 @@ const AdminDigimonManager = () => {
                       className={`px-4 py-2 text-white rounded-lg text-sm font-medium transition-colors cursor-pointer ${
                         isEditingDigimon
                           ? 'bg-amber-600 hover:bg-amber-700'
-                          : 'bg-indigo-600 dark:bg-accent-600 hover:bg-indigo-700 dark:hover:bg-accent-700'
+                          : 'bg-accent-700 dark:bg-accent-700 hover:bg-accent-800 dark:hover:bg-accent-800'
                       }`}
                     >
                       {isEditingDigimon ? 'Update Digimon' : 'Add Digimon'}
@@ -1429,7 +1427,7 @@ const AdminDigimonManager = () => {
                           type: 'success',
                         });
                       }}
-                      className="absolute top-4 right-8 px-3 py-1 bg-indigo-600 dark:bg-accent-600 text-white rounded-lg text-sm hover:bg-indigo-700 dark:hover:bg-accent-700 transition-colors cursor-pointer"
+                      className="absolute top-4 right-8 px-3 py-1 bg-accent-700 dark:bg-accent-700 text-white rounded-lg text-sm hover:bg-accent-800 dark:hover:bg-accent-800 transition-colors cursor-pointer"
                     >
                       Copy to Clipboard
                     </button>
@@ -1451,7 +1449,7 @@ const AdminDigimonManager = () => {
                     <input
                       type="text"
                       placeholder="Search by name or ID..."
-                      className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                      className="input"
                       value={digimonSearchTerm}
                       onChange={(e) => setDigimonSearchTerm(e.target.value)}
                     />
@@ -1463,7 +1461,7 @@ const AdminDigimonManager = () => {
                         Stage
                       </label>
                       <select
-                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                        className="input"
                         value={stageFilter}
                         onChange={(e) => setStageFilter(e.target.value)}
                       >
@@ -1481,7 +1479,7 @@ const AdminDigimonManager = () => {
                         Type
                       </label>
                       <select
-                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                        className="input"
                         value={typeFilter}
                         onChange={(e) => setTypeFilter(e.target.value)}
                       >
@@ -1499,7 +1497,7 @@ const AdminDigimonManager = () => {
                         Attribute
                       </label>
                       <select
-                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                        className="input"
                         value={attributeFilter}
                         onChange={(e) => setAttributeFilter(e.target.value)}
                       >
@@ -1586,7 +1584,7 @@ const AdminDigimonManager = () => {
                             setFromDigimonSearch(e.target.value);
                             setShowFromDigimonResults(true);
                           }}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                          className="input"
                           onBlur={() => setTimeout(() => setShowFromDigimonResults(false), 200)}
                           onFocus={() => setShowFromDigimonResults(true)}
                         />
@@ -1634,7 +1632,7 @@ const AdminDigimonManager = () => {
                             setToDigimonSearch(e.target.value);
                             setShowToDigimonResults(true);
                           }}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                          className="input"
                           onBlur={() => setTimeout(() => setShowToDigimonResults(false), 200)}
                           onFocus={() => setShowToDigimonResults(true)}
                         />
@@ -1677,7 +1675,7 @@ const AdminDigimonManager = () => {
                         name="level_required"
                         value={evolutionForm.level_required || ''}
                         onChange={handleEvolutionInputChange}
-                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                        className="input"
                         min="0"
                         max="99"
                       />
@@ -1691,7 +1689,7 @@ const AdminDigimonManager = () => {
                         name="dna_requirement"
                         value={evolutionForm.dna_requirement || ''}
                         onChange={handleEvolutionInputChange}
-                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                        className="input"
                       >
                         <option value="">None (Normal Evolution)</option>
                         {digimonList.map((digimon) => (
@@ -1721,7 +1719,7 @@ const AdminDigimonManager = () => {
                           name="hp"
                           value={evolutionForm.stat_requirements.hp || ''}
                           onChange={handleStatRequirementChange}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                          className="input"
                           min="0"
                         />
                       </div>
@@ -1735,7 +1733,7 @@ const AdminDigimonManager = () => {
                           name="sp"
                           value={evolutionForm.stat_requirements.sp || ''}
                           onChange={handleStatRequirementChange}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                          className="input"
                           min="0"
                         />
                       </div>
@@ -1749,7 +1747,7 @@ const AdminDigimonManager = () => {
                           name="atk"
                           value={evolutionForm.stat_requirements.atk || ''}
                           onChange={handleStatRequirementChange}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                          className="input"
                           min="0"
                         />
                       </div>
@@ -1763,7 +1761,7 @@ const AdminDigimonManager = () => {
                           name="def"
                           value={evolutionForm.stat_requirements.def || ''}
                           onChange={handleStatRequirementChange}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                          className="input"
                           min="0"
                         />
                       </div>
@@ -1777,7 +1775,7 @@ const AdminDigimonManager = () => {
                           name="int"
                           value={evolutionForm.stat_requirements.int || ''}
                           onChange={handleStatRequirementChange}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                          className="input"
                           min="0"
                         />
                       </div>
@@ -1791,7 +1789,7 @@ const AdminDigimonManager = () => {
                           name="spd"
                           value={evolutionForm.stat_requirements.spd || ''}
                           onChange={handleStatRequirementChange}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                          className="input"
                           min="0"
                         />
                       </div>
@@ -1805,7 +1803,7 @@ const AdminDigimonManager = () => {
                           name="abi"
                           value={evolutionForm.stat_requirements.abi || ''}
                           onChange={handleStatRequirementChange}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                          className="input"
                           min="0"
                         />
                       </div>
@@ -1818,7 +1816,7 @@ const AdminDigimonManager = () => {
                       className={`px-4 py-2 text-white rounded-lg text-sm font-medium transition-colors cursor-pointer ${
                         isEditingEvolution
                           ? 'bg-amber-600 hover:bg-amber-700'
-                          : 'bg-indigo-600 dark:bg-accent-600 hover:bg-indigo-700 dark:hover:bg-accent-700'
+                          : 'bg-accent-700 dark:bg-accent-700 hover:bg-accent-800 dark:hover:bg-accent-800'
                       }`}
                     >
                       {isEditingEvolution ? 'Update Evolution Path' : 'Add Evolution Path'}
@@ -1837,7 +1835,7 @@ const AdminDigimonManager = () => {
                   <input
                     type="text"
                     placeholder="Search evolution paths..."
-                    className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                    className="input"
                     value={evolutionSearchTerm}
                     onChange={(e) => setEvolutionSearchTerm(e.target.value)}
                   />
@@ -1988,7 +1986,7 @@ const AdminDigimonManager = () => {
                             setBaseDigimonSearch(e.target.value);
                             setShowBaseDigimonResults(true);
                           }}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                          className="input"
                           onBlur={() => setTimeout(() => setShowBaseDigimonResults(false), 200)}
                           onFocus={() => setShowBaseDigimonResults(true)}
                         />
@@ -2036,7 +2034,7 @@ const AdminDigimonManager = () => {
                             setFormDigimonSearch(e.target.value);
                             setShowFormDigimonResults(true);
                           }}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                          className="input"
                           onBlur={() => setTimeout(() => setShowFormDigimonResults(false), 200)}
                           onFocus={() => setShowFormDigimonResults(true)}
                         />
@@ -2078,7 +2076,7 @@ const AdminDigimonManager = () => {
                         name="form_type"
                         value={formForm.form_type}
                         onChange={handleFormInputChange}
-                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                        className="input"
                       >
                         {formTypes.map((type) => (
                           <option key={type} value={type}>
@@ -2097,7 +2095,7 @@ const AdminDigimonManager = () => {
                         name="unlock_condition"
                         value={formForm.unlock_condition || ''}
                         onChange={handleFormInputChange}
-                        className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                        className="input"
                       />
                     </div>
                   </div>
@@ -2108,7 +2106,7 @@ const AdminDigimonManager = () => {
                       className={`px-4 py-2 text-white rounded-lg text-sm font-medium transition-colors cursor-pointer ${
                         isEditingForm
                           ? 'bg-amber-600 hover:bg-amber-700'
-                          : 'bg-indigo-600 dark:bg-accent-600 hover:bg-indigo-700 dark:hover:bg-accent-700'
+                          : 'bg-accent-700 dark:bg-accent-700 hover:bg-accent-800 dark:hover:bg-accent-800'
                       }`}
                     >
                       {isEditingForm ? 'Update Digimon Form' : 'Add Digimon Form'}
@@ -2127,7 +2125,7 @@ const AdminDigimonManager = () => {
                   <input
                     type="text"
                     placeholder="Search forms..."
-                    className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors"
+                    className="input"
                     value={formSearchTerm}
                     onChange={(e) => setFormSearchTerm(e.target.value)}
                   />

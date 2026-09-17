@@ -12,28 +12,20 @@ type FilterCategory = 'all' | Title['category'];
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-const TIER_STYLES: Record<string, { border: string; glow: string; badge: string; text: string }> = {
+const TIER_STYLES: Record<string, { badge: string; text: string }> = {
   bronze: {
-    border: 'border-amber-600/60',
-    glow: 'shadow-amber-500/20',
-    badge: 'bg-amber-700/20 text-amber-600 dark:text-amber-400 border border-amber-600/30',
-    text: 'text-amber-600 dark:text-amber-400',
+    badge: 'bg-amber-700/20 text-amber-800 dark:text-amber-400 border border-amber-600/30',
+    text: 'text-amber-800 dark:text-amber-400',
   },
   silver: {
-    border: 'border-slate-400/60',
-    glow: 'shadow-slate-400/20',
     badge: 'bg-slate-400/10 text-slate-500 dark:text-slate-300 border border-slate-400/30',
     text: 'text-slate-500 dark:text-slate-300',
   },
   gold: {
-    border: 'border-yellow-400/60',
-    glow: 'shadow-yellow-400/30',
-    badge: 'bg-yellow-400/10 text-yellow-600 dark:text-yellow-300 border border-yellow-400/30',
-    text: 'text-yellow-600 dark:text-yellow-300',
+    badge: 'bg-yellow-400/10 text-yellow-800 dark:text-yellow-300 border border-yellow-400/30',
+    text: 'text-yellow-800 dark:text-yellow-300',
   },
   platinum: {
-    border: 'border-purple-400/60',
-    glow: 'shadow-purple-400/30',
     badge: 'bg-purple-400/10 text-purple-600 dark:text-purple-300 border border-purple-400/30',
     text: 'text-purple-600 dark:text-purple-300',
   },
@@ -86,6 +78,9 @@ interface AchievementCardProps {
   userTitle: UserTitle | null;
   onClaim: (userTitleId: number) => void;
   onToggleDisplay?: (userTitleId: number, isCurrentlyDisplayed: boolean) => void;
+  claiming: boolean;
+  claimDisabled: boolean;
+  pinDisabled: boolean;
 }
 
 const AchievementCard: React.FC<AchievementCardProps> = ({
@@ -93,6 +88,9 @@ const AchievementCard: React.FC<AchievementCardProps> = ({
   userTitle,
   onClaim,
   onToggleDisplay,
+  claiming,
+  claimDisabled,
+  pinDisabled,
 }) => {
   const earned = !!userTitle;
   const claimed = earned && userTitle!.claimed_at !== null;
@@ -105,21 +103,14 @@ const AchievementCard: React.FC<AchievementCardProps> = ({
       layout
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`relative flex flex-col rounded-xl border-2 overflow-hidden transition-shadow duration-300 ${
+      className={`relative flex flex-col rounded-xl border overflow-hidden ${
         unclaimed
-          ? `${styles.border} shadow-lg ${styles.glow} bg-white dark:bg-dark-300`
+          ? 'border-accent-400 dark:border-accent-600 bg-white dark:bg-dark-300'
           : claimed
             ? 'border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-300'
-            : 'border-gray-200 dark:border-dark-100 bg-gray-50 dark:bg-dark-400 opacity-70'
+            : 'border-gray-200 dark:border-dark-100 bg-gray-50 dark:bg-dark-400'
       }`}
     >
-      {/* Unclaimed glow pulse */}
-      {unclaimed && (
-        <div
-          className={`absolute inset-0 rounded-xl ${styles.border} border-2 animate-pulse pointer-events-none`}
-        />
-      )}
-
       <div className="p-4 flex flex-col gap-2 flex-1">
         {/* Top row: tier badge + actions */}
         <div className="flex items-center justify-between">
@@ -133,11 +124,12 @@ const AchievementCard: React.FC<AchievementCardProps> = ({
             {claimed && onToggleDisplay && (
               <button
                 onClick={() => onToggleDisplay(userTitle!.id, isPinned)}
+                disabled={pinDisabled}
                 title={isPinned ? 'Unpin from profile' : 'Pin to profile'}
-                className={`transition-colors ${
-                  isPinned
-                    ? 'text-purple-500 hover:text-purple-400'
-                    : 'text-gray-300 dark:text-gray-600 hover:text-purple-400'
+                aria-label={`${isPinned ? 'Unpin' : 'Pin'} ${title.name}`}
+                aria-pressed={isPinned}
+                className={`ui-icon-button ${
+                  isPinned ? 'text-accent-800 dark:text-accent-400' : ''
                 }`}
               >
                 <Bookmark className={`h-4 w-4 ${isPinned ? 'fill-current' : ''}`} />
@@ -156,7 +148,7 @@ const AchievementCard: React.FC<AchievementCardProps> = ({
               {title.name}
             </h3>
           ) : (
-            <h3 className="text-sm font-heading font-bold text-gray-400 dark:text-gray-600 leading-tight">
+            <h3 className="text-sm font-heading font-bold text-gray-600 dark:text-gray-400 leading-tight">
               ???
             </h3>
           )}
@@ -169,12 +161,12 @@ const AchievementCard: React.FC<AchievementCardProps> = ({
         {earned && title.rewards && (
           <div className="flex flex-wrap gap-1 mt-1">
             {title.rewards.bits && (
-              <span className="inline-flex items-center gap-1 text-[10px] font-body bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800/40 rounded-full px-2 py-0.5">
+              <span className="inline-flex items-center gap-1 text-xs font-body bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800/40 rounded-full px-2 py-0.5">
                 <span className="font-semibold">{title.rewards.bits}</span> bits
               </span>
             )}
             {title.rewards.digiEggPool && (
-              <span className="inline-flex items-center gap-1 text-[10px] font-body bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400 border border-purple-200 dark:border-purple-800/40 rounded-full px-2 py-0.5">
+              <span className="inline-flex items-center gap-1 text-xs font-body bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400 border border-purple-200 dark:border-purple-800/40 rounded-full px-2 py-0.5">
                 DigiEgg
               </span>
             )}
@@ -183,7 +175,7 @@ const AchievementCard: React.FC<AchievementCardProps> = ({
 
         {/* Claimed date */}
         {claimed && userTitle!.earned_at && (
-          <p className="text-[10px] font-body text-gray-400 dark:text-gray-600 mt-auto pt-1">
+          <p className="text-xs font-body text-gray-500 dark:text-gray-400 mt-auto pt-1">
             Earned {formatDate(userTitle!.earned_at)}
           </p>
         )}
@@ -194,9 +186,11 @@ const AchievementCard: React.FC<AchievementCardProps> = ({
         <div className="px-4 pb-4">
           <button
             onClick={() => onClaim(userTitle!.id)}
-            className="w-full py-2 px-3 rounded-lg text-sm font-heading font-semibold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 shadow-sm transition-all duration-150"
+            disabled={claimDisabled}
+            aria-busy={claiming}
+            className="w-full btn-primary"
           >
-            Claim Reward
+            {claiming ? 'Claiming...' : 'Claim Reward'}
           </button>
         </div>
       )}
@@ -293,24 +287,22 @@ const AchievementsPage: React.FC = () => {
   const pending = unclaimedCount();
 
   return (
-    <div className="w-full">
+    <div className="ui-page">
       {/* Page header */}
       <div className="mb-6">
-        <div className="flex items-center gap-3 mb-1">
-          <Medal className="h-6 w-6 text-purple-500" />
-          <h1 className="text-2xl font-heading font-bold text-gray-900 dark:text-gray-100">
-            Achievements
-          </h1>
+        <div className="flex flex-wrap items-center gap-3 mb-1">
+          <Medal className="h-6 w-6 text-accent-700 dark:text-accent-400" />
+          <h1 className="ui-page-title">Achievements</h1>
           {pending > 0 && (
-            <span className="ml-1 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold font-body bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800/40">
+            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-accent-50 dark:bg-accent-900/20 text-accent-800 dark:text-accent-400 border border-accent-200 dark:border-accent-800/40">
               {pending} to claim
             </span>
           )}
         </div>
-        <p className="text-sm font-body text-gray-500 dark:text-gray-400">
+        <p className="ui-description">
           Complete challenges to unlock titles, bits, and new Digimon.
           {!initialCheckDone && (
-            <span className="ml-2 text-purple-500 animate-pulse">
+            <span className="ml-2 text-accent-700 dark:text-accent-400 animate-pulse">
               Checking for new achievements…
             </span>
           )}
@@ -318,17 +310,17 @@ const AchievementsPage: React.FC = () => {
       </div>
 
       {/* Pinned to Profile */}
-      <div className="mb-6 bg-white dark:bg-dark-300 rounded-xl border border-gray-100 dark:border-dark-100 p-4">
-        <div className="flex items-center gap-2 mb-3">
-          <Bookmark className="h-4 w-4 text-purple-500 fill-current" />
+      <div className="mb-6 ui-panel p-4 sm:p-6">
+        <div className="flex flex-wrap items-center gap-2 mb-3">
+          <Bookmark className="h-4 w-4 text-accent-700 dark:text-accent-400 fill-current" />
           <span className="text-sm font-heading font-semibold text-gray-900 dark:text-gray-100">
             Pinned to Profile
           </span>
-          <span className="text-xs font-body text-gray-400 dark:text-gray-500">
+          <span className="text-xs font-body text-gray-500 dark:text-gray-400">
             · up to 3, shown publicly
           </span>
         </div>
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {[0, 1, 2].map((i) => {
             const ut = pinnedTitles[i];
             const title = ut ? TITLES.find((t) => t.id === ut.title_id) : null;
@@ -338,7 +330,7 @@ const AchievementsPage: React.FC = () => {
               return (
                 <div
                   key={ut.id}
-                  className={`flex items-center justify-between gap-2 px-3 py-2 rounded-lg border-2 ${s.border} bg-white dark:bg-dark-400`}
+                  className="flex items-center justify-between gap-2 px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-gray-50 dark:bg-dark-200"
                 >
                   <div className="min-w-0 flex-1">
                     <div className={`text-xs font-heading font-bold truncate ${s.text}`}>
@@ -354,7 +346,8 @@ const AchievementsPage: React.FC = () => {
                     onClick={() => handleToggleDisplay(ut.id, true)}
                     disabled={togglingId !== null}
                     title="Unpin from profile"
-                    className="flex-shrink-0 text-gray-300 dark:text-gray-600 hover:text-red-400 transition-colors disabled:opacity-50"
+                    aria-label={`Unpin ${title.name}`}
+                    className="ui-icon-button hover:text-red-600 dark:hover:text-red-400"
                   >
                     <X className="h-3.5 w-3.5" />
                   </button>
@@ -365,18 +358,19 @@ const AchievementsPage: React.FC = () => {
             return (
               <div
                 key={i}
-                className="flex items-center justify-center px-3 py-2 rounded-lg border-2 border-dashed border-gray-200 dark:border-dark-100"
+                className="flex min-h-16 items-center justify-center px-3 py-2 rounded-lg border border-dashed border-gray-300 dark:border-dark-100"
               >
-                <span className="text-xs font-body text-gray-300 dark:text-gray-600">
+                <span className="text-xs font-body text-gray-500 dark:text-gray-400">
                   Empty slot
                 </span>
               </div>
             );
           })}
         </div>
-        <p className="text-[11px] font-body text-gray-400 dark:text-gray-500 mt-2.5">
-          Click the <Bookmark className="inline h-3 w-3 fill-current text-purple-400" /> icon on any
-          claimed title below to pin it here.
+        <p className="text-xs font-body text-gray-500 dark:text-gray-400 mt-3">
+          Click the{' '}
+          <Bookmark className="inline h-3 w-3 fill-current text-accent-700 dark:text-accent-400" />{' '}
+          icon on any claimed title below to pin it here.
           {pinnedTitles.length >= 3 && ' Adding a 4th will replace the oldest.'}
         </p>
       </div>
@@ -389,11 +383,8 @@ const AchievementsPage: React.FC = () => {
             <button
               key={key}
               onClick={() => setActiveFilter(key)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-heading font-semibold transition-all duration-150 ${
-                isActive
-                  ? 'bg-purple-600 text-white shadow-sm'
-                  : 'bg-gray-100 dark:bg-dark-200 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-dark-100'
-              }`}
+              aria-pressed={isActive}
+              className={`ui-tab ${isActive ? 'ui-tab-active' : ''}`}
             >
               {label}
             </button>
@@ -412,7 +403,7 @@ const AchievementsPage: React.FC = () => {
           return (
             <div
               key={tier}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border ${s.border} bg-white dark:bg-dark-300`}
+              className="flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-300"
             >
               <span className={`text-xs font-heading font-bold uppercase ${s.text}`}>{tier}</span>
               <span className="text-xs font-body text-gray-600 dark:text-gray-400">
@@ -431,8 +422,11 @@ const AchievementsPage: React.FC = () => {
               key={title.id}
               title={title}
               userTitle={earnedMap.get(title.id) ?? null}
-              onClaim={claimingId === null ? handleClaim : () => {}}
-              onToggleDisplay={togglingId === null ? handleToggleDisplay : undefined}
+              onClaim={handleClaim}
+              claiming={claimingId === (earnedMap.get(title.id)?.id ?? null) && claimingId !== null}
+              claimDisabled={claimingId !== null}
+              onToggleDisplay={handleToggleDisplay}
+              pinDisabled={togglingId !== null}
             />
           ))}
         </AnimatePresence>

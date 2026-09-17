@@ -46,13 +46,13 @@ const DigimonDialogue: React.FC<DigimonDialogueProps> = ({
 
   return (
     <motion.div
-      className="fixed inset-0 z-[10000] flex items-center justify-center bg-black bg-opacity-50"
+      className="fixed inset-0 z-overlay flex items-center justify-center bg-black bg-opacity-50"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={handleAdvance}
     >
-      <div className="relative w-full max-w-4xl px-4 pb-4 md:pb-4 pb-16 transform translate-y-[60%]">
+      <div className="relative w-full max-w-4xl px-4 pt-28 pb-6 sm:pb-10">
         {/* Character sprites */}
         <div className="absolute bottom-full right-4 mb-2 flex">
           {(currentDialogue.speaker === 'bokomon' || currentDialogue.speaker === 'both') && (
@@ -83,24 +83,24 @@ const DigimonDialogue: React.FC<DigimonDialogueProps> = ({
         <AnimatePresence mode="wait">
           <motion.div
             key={currentStep}
-            className="bg-white rounded-lg p-4 md:p-6 shadow-lg border-2 border-blue-400 max-h-[60vh] overflow-y-auto"
+            className="ui-panel p-4 md:p-6 max-h-[60dvh] overflow-y-auto"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -20, opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="flex items-start mb-4">
-              <div className="font-bold text-blue-600 mr-2">
+            <div className="flex flex-col sm:flex-row gap-2 mb-4">
+              <div className="font-bold text-accent-800 dark:text-accent-400 mr-2 shrink-0">
                 {currentDialogue.speaker === 'bokomon'
                   ? 'Bokomon:'
                   : currentDialogue.speaker === 'neemon'
                     ? 'Neemon:'
                     : 'Bokomon & Neemon:'}
               </div>
-              <div className="text-gray-800">{currentDialogue.text}</div>
+              <div className="text-gray-800 dark:text-gray-200">{currentDialogue.text}</div>
             </div>
 
-            <div className="flex justify-between items-center">
+            <div className="flex flex-wrap justify-between items-center gap-3">
               {currentDialogue.action ? (
                 <button
                   className="btn-primary"
@@ -117,7 +117,7 @@ const DigimonDialogue: React.FC<DigimonDialogueProps> = ({
 
               {isSkippable && (
                 <button
-                  className="text-sm text-gray-500 hover:text-gray-700"
+                  className="btn-outline"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleSkip();

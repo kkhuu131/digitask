@@ -15,7 +15,7 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({
   showCompleted = false,
   autoAllocateStats = false,
 }) => {
-  const { tasks, completeTask, deleteTask } = useTaskStore();
+  const { tasks, completeTask, deleteTask, loading } = useTaskStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [showEditModal, setShowEditModal] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<SortOption>('due');
@@ -48,13 +48,16 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({
     }
 
     // Commit to store after animation window
-    setTimeout(() => {
-      completeTask(taskId, autoAllocateStats);
-      setCompletingTasks((prev) => {
-        const next = new Set(prev);
-        next.delete(taskId);
-        return next;
-      });
+    setTimeout(async () => {
+      try {
+        await completeTask(taskId, autoAllocateStats);
+      } finally {
+        setCompletingTasks((prev) => {
+          const next = new Set(prev);
+          next.delete(taskId);
+          return next;
+        });
+      }
     }, delay);
   };
 
@@ -256,10 +259,11 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({
       <div className="relative">
         <input
           type="text"
+          aria-label="Search tasks"
           placeholder="Search tasks..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-dark-200 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+          className="input pr-10"
         />
         <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
           <svg
@@ -281,11 +285,17 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({
       {/* Sort and Group Controls */}
       <div className="flex flex-wrap gap-4 items-center">
         <div className="flex items-center space-x-2">
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Sort:</label>
+          <label
+            htmlFor="task-sort"
+            className="text-sm font-medium text-gray-700 dark:text-gray-300"
+          >
+            Sort:
+          </label>
           <select
+            id="task-sort"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as SortOption)}
-            className="text-sm border border-gray-300 dark:border-gray-600 rounded-md px-3 py-1 bg-white dark:bg-dark-200 text-gray-900 dark:text-gray-100 focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+            className="input !w-auto"
           >
             <option value="due">Due Date</option>
             <option value="priority">Priority</option>
@@ -297,11 +307,17 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({
         </div>
 
         <div className="flex items-center space-x-2">
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Group:</label>
+          <label
+            htmlFor="task-group"
+            className="text-sm font-medium text-gray-700 dark:text-gray-300"
+          >
+            Group:
+          </label>
           <select
+            id="task-group"
             value={groupBy}
             onChange={(e) => setGroupBy(e.target.value as GroupOption)}
-            className="text-sm border border-gray-300 dark:border-gray-600 rounded-md px-3 py-1 bg-white dark:bg-dark-200 text-gray-900 dark:text-gray-100 focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+            className="input !w-auto"
           >
             <option value="none">None</option>
             <option value="priority">Priority</option>
@@ -395,7 +411,7 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({
                     </motion.span>
                   )}
                 </AnimatePresence>
-                <div className="flex items-start gap-3">
+                <div className="grid grid-cols-[2.75rem_minmax(0,1fr)] sm:grid-cols-[2.75rem_minmax(0,1fr)_auto] items-start gap-3">
                   {/* Checkbox — spring-pop checkmark, green fill on completing */}
                   <button
                     onClick={() =>
@@ -403,36 +419,45 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({
                       !completingTasks.has(task.id) &&
                       handleComplete(task.id, getExpPoints(task))
                     }
-                    className={`flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors duration-150 mt-0.5 cursor-pointer disabled:cursor-not-allowed ${
-                      task.is_completed || completingTasks.has(task.id)
-                        ? 'bg-green-500 border-green-500 dark:bg-green-600 dark:border-green-600'
-                        : 'border-gray-300 hover:border-green-500 dark:border-gray-600 dark:hover:border-accent-500'
-                    }`}
+                    className="w-11 h-11 row-span-2 sm:row-span-1 self-center flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-dark-200 transition-colors disabled:cursor-not-allowed"
                     disabled={task.is_completed || completingTasks.has(task.id)}
-                    aria-label={task.is_completed ? 'Completed' : 'Mark complete'}
+                    aria-label={
+                      task.is_completed
+                        ? `Completed: ${task.description}`
+                        : `Complete ${task.description}`
+                    }
                   >
-                    <AnimatePresence>
-                      {(task.is_completed || completingTasks.has(task.id)) && (
-                        <motion.svg
-                          key="check"
-                          className="w-3 h-3 text-white"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          initial={{ scale: 0, rotate: -20 }}
-                          animate={{ scale: 1, rotate: 0 }}
-                          exit={{ scale: 0 }}
-                          transition={{ type: 'spring', stiffness: 600, damping: 22 }}
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="3"
-                            d="M5 13l4 4L19 7"
-                          />
-                        </motion.svg>
-                      )}
-                    </AnimatePresence>
+                    <span
+                      aria-hidden="true"
+                      className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors duration-150 ${
+                        task.is_completed || completingTasks.has(task.id)
+                          ? 'bg-green-500 border-green-500 dark:bg-green-600 dark:border-green-600'
+                          : 'border-gray-300 hover:border-green-500 dark:border-gray-600 dark:hover:border-accent-500'
+                      }`}
+                    >
+                      <AnimatePresence>
+                        {(task.is_completed || completingTasks.has(task.id)) && (
+                          <motion.svg
+                            key="check"
+                            className="w-3 h-3 text-white"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            initial={{ scale: 0, rotate: -20 }}
+                            animate={{ scale: 1, rotate: 0 }}
+                            exit={{ scale: 0 }}
+                            transition={{ type: 'spring', stiffness: 600, damping: 22 }}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="3"
+                              d="M5 13l4 4L19 7"
+                            />
+                          </motion.svg>
+                        )}
+                      </AnimatePresence>
+                    </span>
                   </button>
 
                   {/* Content */}
@@ -445,7 +470,7 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({
                         />
                       )}
                       <p
-                        className={`text-base ${
+                        className={`text-sm sm:text-base break-words ${
                           task.is_completed
                             ? 'line-through text-gray-500 dark:text-gray-400'
                             : 'text-gray-900 dark:text-gray-100'
@@ -520,7 +545,7 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({
                   </div>
 
                   {/* Actions */}
-                  <div className="flex items-center gap-2">
+                  <div className="col-start-2 sm:col-start-auto flex flex-wrap items-center justify-end gap-1">
                     {/* Phase 4.2 — XP reward badge; hidden on completed tasks */}
                     {!task.is_completed && (
                       <span className="text-xs font-medium px-1.5 py-0.5 rounded-full flex-shrink-0 bg-accent-100 dark:bg-accent-900/40 text-accent-700 dark:text-accent-300">
@@ -528,8 +553,10 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({
                       </span>
                     )}
                     <button
+                      aria-label={`Edit ${task.description}`}
+                      disabled={loading || completingTasks.has(task.id)}
                       onClick={() => setShowEditModal(task.id)}
-                      className="p-2 text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors cursor-pointer"
+                      className="ui-icon-button hover:text-accent-800 dark:hover:text-accent-400"
                     >
                       <svg
                         className="w-4 h-4"
@@ -546,8 +573,10 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({
                       </svg>
                     </button>
                     <button
+                      aria-label={`Delete ${task.description}`}
+                      disabled={loading || completingTasks.has(task.id)}
                       onClick={() => deleteTask(task.id)}
-                      className="p-2 text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors cursor-pointer"
+                      className="ui-icon-button hover:text-red-600 dark:hover:text-red-400"
                     >
                       <svg
                         className="w-4 h-4"
@@ -667,7 +696,7 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({
                           </motion.span>
                         )}
                       </AnimatePresence>
-                      <div className="flex items-start gap-3">
+                      <div className="grid grid-cols-[2.75rem_minmax(0,1fr)] sm:grid-cols-[2.75rem_minmax(0,1fr)_auto] items-start gap-3">
                         {/* Checkbox — spring-pop checkmark, green fill on completing */}
                         <button
                           onClick={() =>
@@ -675,36 +704,45 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({
                             !completingTasks.has(task.id) &&
                             handleComplete(task.id, getExpPoints(task))
                           }
-                          className={`flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors duration-150 mt-0.5 cursor-pointer disabled:cursor-not-allowed ${
-                            task.is_completed || completingTasks.has(task.id)
-                              ? 'bg-green-500 border-green-500 dark:bg-green-600 dark:border-green-600'
-                              : 'border-gray-300 hover:border-green-500 dark:border-gray-600 dark:hover:border-accent-500'
-                          }`}
+                          className="w-11 h-11 row-span-2 sm:row-span-1 self-center flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-dark-200 transition-colors disabled:cursor-not-allowed"
                           disabled={task.is_completed || completingTasks.has(task.id)}
-                          aria-label={task.is_completed ? 'Completed' : 'Mark complete'}
+                          aria-label={
+                            task.is_completed
+                              ? `Completed: ${task.description}`
+                              : `Complete ${task.description}`
+                          }
                         >
-                          <AnimatePresence>
-                            {(task.is_completed || completingTasks.has(task.id)) && (
-                              <motion.svg
-                                key="check"
-                                className="w-3 h-3 text-white"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                                initial={{ scale: 0, rotate: -20 }}
-                                animate={{ scale: 1, rotate: 0 }}
-                                exit={{ scale: 0 }}
-                                transition={{ type: 'spring', stiffness: 600, damping: 22 }}
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth="3"
-                                  d="M5 13l4 4L19 7"
-                                />
-                              </motion.svg>
-                            )}
-                          </AnimatePresence>
+                          <span
+                            aria-hidden="true"
+                            className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors duration-150 ${
+                              task.is_completed || completingTasks.has(task.id)
+                                ? 'bg-green-500 border-green-500 dark:bg-green-600 dark:border-green-600'
+                                : 'border-gray-300 hover:border-green-500 dark:border-gray-600 dark:hover:border-accent-500'
+                            }`}
+                          >
+                            <AnimatePresence>
+                              {(task.is_completed || completingTasks.has(task.id)) && (
+                                <motion.svg
+                                  key="check"
+                                  className="w-3 h-3 text-white"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                  initial={{ scale: 0, rotate: -20 }}
+                                  animate={{ scale: 1, rotate: 0 }}
+                                  exit={{ scale: 0 }}
+                                  transition={{ type: 'spring', stiffness: 600, damping: 22 }}
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="3"
+                                    d="M5 13l4 4L19 7"
+                                  />
+                                </motion.svg>
+                              )}
+                            </AnimatePresence>
+                          </span>
                         </button>
 
                         {/* Content */}
@@ -717,7 +755,7 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({
                               />
                             )}
                             <p
-                              className={`text-base ${
+                              className={`text-sm sm:text-base break-words ${
                                 task.is_completed
                                   ? 'line-through text-gray-500 dark:text-gray-400'
                                   : 'text-gray-900 dark:text-gray-100'
@@ -794,7 +832,7 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({
                         </div>
 
                         {/* Actions */}
-                        <div className="flex items-center gap-2">
+                        <div className="col-start-2 sm:col-start-auto flex flex-wrap items-center justify-end gap-1">
                           {/* Phase 4.2 — XP reward badge; hidden on completed tasks */}
                           {!task.is_completed && (
                             <span className="text-xs font-medium px-1.5 py-0.5 rounded-full flex-shrink-0 bg-accent-100 dark:bg-accent-900/40 text-accent-700 dark:text-accent-300">
@@ -802,8 +840,10 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({
                             </span>
                           )}
                           <button
+                            aria-label={`Edit ${task.description}`}
+                            disabled={loading || completingTasks.has(task.id)}
                             onClick={() => setShowEditModal(task.id)}
-                            className="p-2 text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors cursor-pointer"
+                            className="ui-icon-button hover:text-accent-800 dark:hover:text-accent-400"
                           >
                             <svg
                               className="w-4 h-4"
@@ -820,8 +860,10 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({
                             </svg>
                           </button>
                           <button
+                            aria-label={`Delete ${task.description}`}
+                            disabled={loading || completingTasks.has(task.id)}
                             onClick={() => deleteTask(task.id)}
-                            className="p-2 text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors cursor-pointer"
+                            className="ui-icon-button hover:text-red-600 dark:hover:text-red-400"
                           >
                             <svg
                               className="w-4 h-4"

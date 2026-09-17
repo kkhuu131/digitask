@@ -1,9 +1,9 @@
 const PatchNotes = () => {
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="ui-page max-w-4xl [overflow-wrap:anywhere]">
       <div className="card mb-6">
-        <h1 className="text-2xl font-bold mb-4">Updates & Roadmap</h1>
-        <p className="text-gray-600 mb-6">
+        <h1 className="ui-page-title mb-6">Updates & Roadmap</h1>
+        <p className="text-gray-600 dark:text-gray-400 mb-6">
           Stay informed about recent changes and upcoming features for Digitask.
         </p>
         <div className="my-6 p-4 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg">
@@ -27,7 +27,7 @@ const PatchNotes = () => {
           <h2 className="text-xl font-semibold mb-4 dark:text-gray-100">Patch Notes</h2>
 
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-xs font-medium px-2.5 py-0.5 rounded">
                 Latest
               </span>
@@ -54,7 +54,7 @@ const PatchNotes = () => {
           </div>
 
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium ml-2 dark:text-gray-200">
                 Task Rewards Adjustments
               </h3>
@@ -79,7 +79,7 @@ const PatchNotes = () => {
           </div>
 
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium ml-2 dark:text-gray-200">Core Mechanics Rework</h3>
               <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">
                 October 23, 2025
@@ -170,7 +170,7 @@ const PatchNotes = () => {
             </ul>
           </div>
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium ml-2 dark:text-gray-200">Small Update</h3>
               <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">
                 June 19, 2025
@@ -182,7 +182,7 @@ const PatchNotes = () => {
             </ul>
           </div>
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium ml-2 dark:text-gray-200">
                 Bokomon Assistant, Weekly Bosses
               </h3>
@@ -217,7 +217,7 @@ const PatchNotes = () => {
             </ul>
           </div>
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium ml-2 dark:text-gray-200">Dark Mode!</h3>
               <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">
                 June 10, 2025
@@ -230,7 +230,7 @@ const PatchNotes = () => {
             </ul>
           </div>
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium ml-2 dark:text-gray-200">Evolution Items</h3>
               <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">June 8, 2025</span>
             </div>
@@ -267,7 +267,7 @@ const PatchNotes = () => {
             </ul>
           </div>
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium ml-2">Small Update</h3>
               <span className="text-sm text-gray-500 ml-auto">June 2, 2025</span>
             </div>
@@ -287,7 +287,7 @@ const PatchNotes = () => {
             </ul>
           </div>
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium ml-2">Arena Matchmaking Rework</h3>
               <span className="text-sm text-gray-500 ml-auto">May 28, 2025</span>
             </div>
@@ -314,7 +314,7 @@ const PatchNotes = () => {
             </ul>
           </div>
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium ml-2">X-Antibody Rework!</h3>
               <span className="text-sm text-gray-500 ml-auto">May 26, 2025</span>
             </div>
@@ -336,7 +336,7 @@ const PatchNotes = () => {
             </ul>
           </div>
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium ml-2">DigiFarm, Store, and more!</h3>
               <span className="text-sm text-gray-500 ml-auto">May 25, 2025</span>
             </div>
@@ -386,7 +386,7 @@ const PatchNotes = () => {
             </ul>
           </div>
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium ml-2">
                 Title Tiers, Apollomon and GraceNovamon line!
               </h3>
@@ -414,7 +414,7 @@ const PatchNotes = () => {
             </ul>
           </div>
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-xs font-medium px-2.5 py-0.5 rounded">
                 Latest
               </span>
@@ -435,7 +435,7 @@ const PatchNotes = () => {
             </ul>
           </div>
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium ml-2">X-Antibody, Bokomon and Neemon!</h3>
               <span className="text-sm text-gray-500 ml-auto">May 20, 2025</span>
             </div>
@@ -480,7 +480,7 @@ const PatchNotes = () => {
             </ul>
           </div>
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium ml-2">Animation Update</h3>
               <span className="text-sm text-gray-500 ml-auto">May 19, 2025</span>
             </div>
@@ -510,7 +510,7 @@ const PatchNotes = () => {
             </ul>
           </div>
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium ml-2">UI Changes, 3 New Digimon</h3>
               <span className="text-sm text-gray-500 ml-auto">May 17, 2025</span>
             </div>
@@ -526,7 +526,7 @@ const PatchNotes = () => {
             </ul>
           </div>
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium ml-2">
                 Big Update: Campaign Mode, Titles, and more
               </h3>
@@ -588,7 +588,7 @@ const PatchNotes = () => {
             </ul>
           </div>
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-xs font-medium px-2.5 py-0.5 rounded">
                 Latest
               </span>
@@ -623,7 +623,7 @@ const PatchNotes = () => {
             </ul>
           </div>
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium ml-2">Minor Changes</h3>
               <span className="text-sm text-gray-500 ml-auto">May 7, 2025</span>
             </div>
@@ -645,7 +645,7 @@ const PatchNotes = () => {
             </ul>
           </div>
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium ml-2">ABI Rewards, Bug Fixes</h3>
               <span className="text-sm text-gray-500 ml-auto">May 6, 2025</span>
             </div>
@@ -670,7 +670,7 @@ const PatchNotes = () => {
             </ul>
           </div>
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium ml-2">ABI System</h3>
               <span className="text-sm text-gray-500 ml-auto">May 5, 2025</span>
             </div>
@@ -718,7 +718,7 @@ const PatchNotes = () => {
             </ul>
           </div>
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium ml-2">Playground Mode and Personality System</h3>
               <span className="text-sm text-gray-500 ml-auto">April 26, 2025</span>
             </div>
@@ -744,7 +744,7 @@ const PatchNotes = () => {
             </ul>
           </div>
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium ml-2">Enhanced Wild Encounter Generation</h3>
               <span className="text-sm text-gray-500 ml-auto">April 26, 2025</span>
             </div>
@@ -773,7 +773,7 @@ const PatchNotes = () => {
             </ul>
           </div>
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium ml-2">Digidex Graph Display</h3>
               <span className="text-sm text-gray-500 ml-auto">April 25, 2025</span>
             </div>
@@ -783,7 +783,7 @@ const PatchNotes = () => {
             </ul>
           </div>
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium ml-2">Recurring Tasks</h3>
               <span className="text-sm text-gray-500 ml-auto">April 24, 2025</span>
             </div>
@@ -800,7 +800,7 @@ const PatchNotes = () => {
             </ul>
           </div>
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium ml-2">Digivolution and De-digivolution Update</h3>
               <span className="text-sm text-gray-500 ml-auto">April 23, 2025</span>
             </div>
@@ -823,7 +823,7 @@ const PatchNotes = () => {
             </ul>
           </div>
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium ml-2">De-digivolution, EXP Rework, UI Updates</h3>
               <span className="text-sm text-gray-500 ml-auto">April 22, 2025</span>
             </div>
@@ -849,7 +849,7 @@ const PatchNotes = () => {
             </ul>
           </div>
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium ml-2">Task Updates</h3>
               <span className="text-sm text-gray-500 ml-auto">April 21, 2025</span>
             </div>
@@ -860,7 +860,7 @@ const PatchNotes = () => {
             </ul>
           </div>
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium ml-2">Reworks</h3>
               <span className="text-sm text-gray-500 ml-auto">April 20, 2025</span>
             </div>
@@ -875,7 +875,7 @@ const PatchNotes = () => {
           </div>
 
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium ml-2">Profiles and Leaderboards</h3>
               <span className="text-sm text-gray-500 ml-auto">April 19, 2025</span>
             </div>
@@ -892,7 +892,7 @@ const PatchNotes = () => {
           </div>
 
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium ml-2">Reworked Stat Cap System</h3>
               <span className="text-sm text-gray-500 ml-auto">April 18, 2025</span>
             </div>
@@ -909,7 +909,7 @@ const PatchNotes = () => {
           </div>
 
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium ml-2">Battle System Improvements</h3>
               <span className="text-sm text-gray-500 ml-auto">April 16, 2025</span>
             </div>
@@ -923,7 +923,7 @@ const PatchNotes = () => {
           </div>
 
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium">Team Management</h3>
               <span className="text-sm text-gray-500 ml-auto">April 12, 2025</span>
             </div>
@@ -936,7 +936,7 @@ const PatchNotes = () => {
           </div>
 
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium">Initial Beta Release</h3>
               <span className="text-sm text-gray-500 ml-auto">April 8, 2025</span>
             </div>
@@ -952,7 +952,7 @@ const PatchNotes = () => {
         {/* <div>
           <h2 className="text-xl font-semibold mb-4">Upcoming Features</h2>
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <span className="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">Possible?</span>
               <h3 className="text-lg font-medium ml-2">More Activities?</h3>
             </div>
@@ -965,7 +965,7 @@ const PatchNotes = () => {
             </ul>
           </div>
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <span className="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">Possible?</span>
               <h3 className="text-lg font-medium ml-2">More Digimon Mechanics</h3>
             </div>
@@ -979,7 +979,7 @@ const PatchNotes = () => {
           </div>
           
           <div className="mb-6">
-            <div className="flex items-center mb-2">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <span className="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">Possible?</span>
               <h3 className="text-lg font-medium ml-2">Social Features</h3>
             </div>

@@ -176,7 +176,7 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
   return (
     <>
       <div
-        className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto"
+        className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-modal p-4 overflow-y-auto"
         onClick={onClose}
       >
         <div

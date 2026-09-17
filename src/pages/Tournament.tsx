@@ -1,3 +1,4 @@
+import LoadingIndicator from '../components/LoadingIndicator';
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trophy, Crown, ChevronRight, AlertCircle } from 'lucide-react';
@@ -243,7 +244,7 @@ const Tournament: React.FC = () => {
   // Full-page takeovers: Strategy Picker, Arena Battle
   if (showStrategyPicker && preparedUserTeam) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-5xl">
+      <div className="ui-page max-w-5xl">
         <StrategyPicker
           team={preparedUserTeam}
           onConfirm={handleStartArenaBattle}
@@ -268,9 +269,9 @@ const Tournament: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-5xl">
+    <div className="ui-page max-w-5xl">
       {/* Header */}
-      <div className="mb-8 text-center relative">
+      <div className="mb-6 relative">
         {import.meta.env.DEV && currentTournament && (
           <button
             onClick={handleDevReset}
@@ -283,7 +284,7 @@ const Tournament: React.FC = () => {
         <motion.h1
           initial={{ opacity: 0, y: -16 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-3xl md:text-4xl font-heading font-semibold dark:text-gray-100 mb-2 flex items-center justify-center gap-3"
+          className="ui-page-title mb-2 flex items-center gap-3"
         >
           <Trophy className="w-8 h-8 text-amber-500" />
           Weekly Tournament
@@ -318,7 +319,7 @@ const Tournament: React.FC = () => {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
+            className="fixed inset-0 bg-black/60 flex items-center justify-center z-modal p-4"
           >
             <div className="bg-white dark:bg-dark-300 rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl">
               {roundResultState.winner === 'user' ? (
@@ -367,10 +368,7 @@ const Tournament: React.FC = () => {
                 )}
               </div>
 
-              <button
-                onClick={handleContinue}
-                className="w-full py-3 bg-indigo-500 dark:bg-accent-600 hover:bg-indigo-600 dark:hover:bg-accent-700 text-white rounded-xl font-semibold transition-colors flex items-center justify-center gap-2"
-              >
+              <button onClick={handleContinue} className="w-full btn-primary">
                 {roundResultState.winner === 'user' && roundResultState.round < 3 ? (
                   <>
                     <span>Continue</span>
@@ -478,11 +476,11 @@ const Tournament: React.FC = () => {
 
           {/* State 2: Unlocked, not entered */}
           {isNotEntered && (
-            <div className="bg-indigo-50 dark:bg-accent-900/20 rounded-2xl border border-indigo-200 dark:border-accent-700 p-6">
+            <div className="bg-accent-50 dark:bg-accent-900/20 rounded-2xl border border-accent-200 dark:border-accent-700 p-6">
               <h3 className="font-bold text-indigo-800 dark:text-accent-300 text-lg mb-1">
                 Tournament Open!
               </h3>
-              <p className="text-sm text-indigo-600 dark:text-accent-400 mb-4">
+              <p className="text-sm text-accent-800 dark:text-accent-400 mb-4">
                 You've completed enough tasks to enter. Pick your team, choose your strategies, and
                 battle through 3 rounds in the Arena — completely free, no energy cost.
               </p>
@@ -517,7 +515,7 @@ const Tournament: React.FC = () => {
                 onClick={handleEnter}
                 disabled={enterLoading || hasNoParty}
                 title={hasNoParty ? 'Add Digimon to your party first' : undefined}
-                className="w-full py-3 bg-indigo-500 dark:bg-accent-600 hover:bg-indigo-600 dark:hover:bg-accent-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl font-semibold transition-colors"
+                className="w-full btn-primary"
               >
                 {enterLoading ? 'Entering…' : hasNoParty ? 'No party Digimon' : 'Enter Tournament'}
               </button>
@@ -575,7 +573,7 @@ const Tournament: React.FC = () => {
               <button
                 onClick={handleFightClick}
                 disabled={hasNoParty}
-                className="w-full py-3 bg-indigo-500 dark:bg-accent-600 hover:bg-indigo-600 dark:hover:bg-accent-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl font-semibold transition-colors flex items-center justify-center gap-2"
+                className="w-full btn-primary"
               >
                 {hasNoParty ? 'No party Digimon' : 'Select Team & Fight'}
               </button>
@@ -619,11 +617,7 @@ const Tournament: React.FC = () => {
             </div>
           )}
 
-          {loading && !currentTournament && (
-            <div className="text-center text-gray-400 dark:text-gray-500 text-sm py-4">
-              Loading tournament…
-            </div>
-          )}
+          {loading && !currentTournament && <LoadingIndicator message="Loading tournament…" />}
           {error && !loading && (
             <div className="text-center text-red-500 text-sm py-4">{error}</div>
           )}

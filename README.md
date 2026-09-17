@@ -2,6 +2,9 @@
 
 A productivity app where completing real-life tasks grows your Digimon. Raise a party, evolve its members, fight CPU arena opponents, enter weekly tournaments, and claim achievement rewards.
 
+UI changes follow [UI_GUIDELINES.md](UI_GUIDELINES.md); the current review and
+remaining interaction work are in [UI_REVIEW.md](UI_REVIEW.md).
+
 ## Stack
 
 React 18, TypeScript, Vite, React Router, Zustand, Tailwind CSS, Framer Motion, and Supabase (Postgres, Auth, Realtime). Exact dependency versions and commands are in [package.json](package.json).

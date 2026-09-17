@@ -22,15 +22,15 @@ const AchievementsCallout: React.FC = () => {
       to="/achievements"
       className={`card border-l-4 flex items-center gap-3 py-3 px-4 transition-all duration-150 hover:shadow-md ${
         pending > 0
-          ? 'border-l-purple-500 bg-purple-50/60 dark:bg-purple-900/20'
+          ? 'border-l-accent-500 bg-accent-50 dark:bg-accent-900/20'
           : 'border-l-gray-300 dark:border-l-gray-600'
       }`}
     >
       <div
-        className={`p-2 rounded-lg shrink-0 ${pending > 0 ? 'bg-purple-100 dark:bg-purple-900/40' : 'bg-gray-100 dark:bg-dark-200'}`}
+        className={`p-2 rounded-lg shrink-0 ${pending > 0 ? 'bg-accent-100 dark:bg-accent-900/30' : 'bg-gray-100 dark:bg-dark-200'}`}
       >
         <Award
-          className={`w-4 h-4 ${pending > 0 ? 'text-purple-600 dark:text-purple-400' : 'text-gray-500 dark:text-gray-400'}`}
+          className={`w-4 h-4 ${pending > 0 ? 'text-accent-800 dark:text-accent-400' : 'text-gray-500 dark:text-gray-400'}`}
         />
       </div>
       <div className="flex-1 min-w-0">
@@ -199,22 +199,29 @@ const Dashboard: React.FC = () => {
 
   if (!userDigimon || !digimonData) {
     return (
-      <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-4 animate-pulse">
-        {/* Digimon panel skeleton */}
-        <div className="card flex flex-col items-center gap-4 py-8">
-          <div className="w-36 h-5 bg-gray-200 dark:bg-dark-200 rounded-full" />
-          <div className="w-40 h-40 bg-gray-200 dark:bg-dark-200 rounded-full" />
-          <div className="w-full space-y-2 mt-2">
-            <div className="h-2.5 bg-gray-200 dark:bg-dark-200 rounded-full" />
-            <div className="h-2.5 bg-gray-200 dark:bg-dark-200 rounded-full" />
+      <div role="status">
+        <span className="sr-only">Loading dashboard…</span>
+        <h1 className="ui-page-title mb-6">Dashboard</h1>
+        <div
+          className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-4 ui-skeleton-pulse"
+          aria-hidden="true"
+        >
+          {/* Digimon panel skeleton */}
+          <div className="card flex flex-col items-center gap-4 py-8">
+            <div className="w-36 h-5 bg-gray-200 dark:bg-dark-200 rounded-full" />
+            <div className="w-40 h-40 bg-gray-200 dark:bg-dark-200 rounded-full" />
+            <div className="w-full space-y-2 mt-2">
+              <div className="h-2.5 bg-gray-200 dark:bg-dark-200 rounded-full" />
+              <div className="h-2.5 bg-gray-200 dark:bg-dark-200 rounded-full" />
+            </div>
           </div>
-        </div>
-        {/* Task panel skeleton */}
-        <div className="card space-y-4">
-          <div className="w-28 h-5 bg-gray-200 dark:bg-dark-200 rounded-full" />
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="h-14 bg-gray-200 dark:bg-dark-200 rounded-lg" />
-          ))}
+          {/* Task panel skeleton */}
+          <div className="card space-y-4">
+            <div className="w-28 h-5 bg-gray-200 dark:bg-dark-200 rounded-full" />
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-14 bg-gray-200 dark:bg-dark-200 rounded-lg" />
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -222,7 +229,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <>
-      <h1 className="text-2xl font-heading font-semibold dark:text-gray-100 mb-6">Dashboard</h1>
+      <h1 className="ui-page-title mb-6">Dashboard</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-4">
         {/* ── Left column: Digimon panel + Party + Milestone ── */}
@@ -247,48 +254,46 @@ const Dashboard: React.FC = () => {
             </div>
           )}
 
-          <div className="card px-0 sm:px-4">
-            <div className="flex justify-between items-center mb-4 px-4">
+          <div className="card">
+            <div className="flex flex-wrap justify-between items-center gap-3 mb-4">
               <h2 className="text-xl font-heading font-semibold text-center sm:text-left dark:text-gray-100">
                 Your Tasks
               </h2>
 
-              {/* Desktop "Add Task" button — FAB handles this on mobile */}
-              <button
-                onClick={() => setShowTaskForm(true)}
-                className="hidden sm:flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 dark:bg-amber-600 dark:hover:bg-amber-700 text-white rounded-lg transition-colors text-sm font-medium cursor-pointer"
-              >
+              {/* Keep creation available without covering row actions on phones. */}
+              <button onClick={() => setShowTaskForm(true)} className="btn-primary">
                 <Plus className="w-4 h-4" />
                 Add Task
               </button>
             </div>
 
             {/* Activity strip — 7 day dots + quota bar */}
-            <div className="px-4 mb-3 space-y-2">
+            <div className="mb-3 space-y-2">
               {/* 7-day dots */}
               {weekActivity.length === 7 && (
                 <div className="flex items-end gap-1.5">
                   {weekActivity.map((count, i) => {
                     const d = new Date();
                     d.setDate(d.getDate() - (6 - i));
-                    const dayLabel = ['S', 'M', 'T', 'W', 'T', 'F', 'S'][d.getDay()];
+                    const dayLabel = d.toLocaleDateString('en-US', { weekday: 'short' });
                     const isToday = i === 6;
-                    const intensity =
-                      count === 0 ? 0 : count <= 2 ? 1 : count <= DAILY_QUOTA_AMOUNT ? 2 : 3;
-                    const bgClass = [
-                      'bg-gray-200 dark:bg-dark-200',
-                      'bg-purple-300 dark:bg-purple-900',
-                      'bg-purple-400 dark:bg-purple-700',
-                      'bg-purple-600 dark:bg-purple-500',
-                    ][intensity];
+                    const daySummary = `${d.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}: ${count} ${count === 1 ? 'task' : 'tasks'}${isToday ? ' (today)' : ''}`;
                     return (
-                      <div key={i} className="flex flex-col items-center gap-0.5 flex-1">
+                      <div key={i} className="flex min-w-0 flex-1 flex-col items-center gap-1">
                         <div
-                          className={`w-full h-3 rounded-sm ${bgClass} ${isToday ? 'ring-1 ring-purple-400 ring-offset-1 ring-offset-white dark:ring-offset-dark-300' : ''}`}
-                          title={`${d.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}: ${count} tasks`}
-                        />
+                          className={`flex h-8 w-full items-center justify-center rounded-lg border text-xs font-semibold ${
+                            count > 0
+                              ? 'bg-accent-50 text-accent-800 dark:bg-accent-900/20 dark:text-accent-300'
+                              : 'bg-gray-50 text-gray-500 dark:bg-dark-200 dark:text-gray-400'
+                          } ${isToday ? 'border-accent-500' : 'border-transparent'}`}
+                          title={daySummary}
+                          role="img"
+                          aria-label={daySummary}
+                        >
+                          <span aria-hidden="true">{count}</span>
+                        </div>
                         <span
-                          className={`text-[9px] font-body ${isToday ? 'text-purple-500 dark:text-purple-400 font-semibold' : 'text-gray-400 dark:text-gray-500'}`}
+                          className={`text-xs font-body ${isToday ? 'text-accent-800 dark:text-accent-300 font-semibold' : 'text-gray-600 dark:text-gray-400'}`}
                         >
                           {dayLabel}
                         </span>
@@ -298,7 +303,7 @@ const Dashboard: React.FC = () => {
                   {streak > 0 && (
                     <div className="flex flex-col items-center gap-0.5 ml-1 pl-1.5 border-l border-gray-200 dark:border-dark-100">
                       <span className="text-sm leading-none">🔥</span>
-                      <span className="text-[9px] font-body font-semibold text-accent-600 dark:text-accent-400 whitespace-nowrap">
+                      <span className="text-xs font-body font-semibold text-accent-800 dark:text-accent-300 whitespace-nowrap">
                         {streak}d
                       </span>
                     </div>
@@ -404,16 +409,6 @@ const Dashboard: React.FC = () => {
           </div>
         )}
       </AnimatePresence>
-
-      {/* Phase 3 — mobile FAB. Dashboard-scoped (not in Layout) so it doesn't bleed
-          onto Battle, DigiDex, or Profile pages. bottom-20 clears the bottom nav. */}
-      <button
-        className="sm:hidden fixed bottom-20 right-4 z-sticky w-12 h-12 rounded-full bg-accent-500 hover:bg-accent-400 text-white shadow-amber-glow flex items-center justify-center transition-colors duration-150 cursor-pointer"
-        aria-label="Add task"
-        onClick={() => setShowTaskForm(true)}
-      >
-        <Plus className="w-6 h-6" />
-      </button>
 
       <PageTutorial tutorialId="dashboard_intro" steps={dashboardTutorialSteps} />
     </>

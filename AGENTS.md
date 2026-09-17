@@ -85,6 +85,12 @@ on a candidate or restoring an old implementation.
 
 ## Code and cleanup conventions
 
+- Before UI work, read [UI_GUIDELINES.md](UI_GUIDELINES.md). Use the shared
+  styles in `src/index.css`, preserve shell-owned gutters, keep actions amber
+  across themes and avoid decorative multicolor gradients. Update the guidelines
+  when introducing a deliberate new convention. [UI_REVIEW.md](UI_REVIEW.md)
+  records the consistency review and remaining interaction work.
+
 - Routes/initialization are in `src/App.tsx`; screens are lazy-loaded. Zustand
   stores are in `src/store/`; inspect consumers before changing actions.
 - Database access uses `src/lib/supabase.ts`. Generated types are checked in, but

@@ -1,3 +1,4 @@
+import LoadingIndicator from './LoadingIndicator';
 import { useState, useEffect } from 'react';
 import { useDigimonStore } from '../store/petStore';
 import { DIGIMON_LOOKUP_TABLE } from '../constants/digimonLookup';
@@ -131,7 +132,7 @@ const AvatarSelectionModal = ({ isOpen, onClose, onSelect }: AvatarSelectionModa
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-modal">
       <div className="bg-white dark:bg-dark-300 rounded-lg p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold dark:text-white">Choose Your Avatar</h2>
@@ -155,9 +156,7 @@ const AvatarSelectionModal = ({ isOpen, onClose, onSelect }: AvatarSelectionModa
         </p>
 
         {loading ? (
-          <div className="text-center py-8">
-            <p className="text-gray-500 dark:text-gray-400">Loading available avatars...</p>
-          </div>
+          <LoadingIndicator message="Loading avatars…" />
         ) : (
           <>
             <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-4">
@@ -171,7 +170,7 @@ const AvatarSelectionModal = ({ isOpen, onClose, onSelect }: AvatarSelectionModa
                       onSelect(sprite.sprite_url);
                       onClose();
                     }}
-                    className="bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/60 dark:to-amber-800/70 rounded-lg p-2 hover:bg-amber-200 dark:hover:bg-amber-700 transition-colors flex flex-col items-center justify-center aspect-square relative border-2 border-amber-300 dark:border-amber-600"
+                    className="bg-accent-50 dark:bg-accent-900/20 rounded-lg p-2 hover:bg-amber-200 dark:hover:bg-amber-700 transition-colors flex flex-col items-center justify-center aspect-square relative border-2 border-amber-300 dark:border-amber-600"
                   >
                     <img
                       src={sprite.sprite_url}

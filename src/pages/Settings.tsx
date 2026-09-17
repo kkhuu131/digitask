@@ -50,10 +50,14 @@ const Settings = () => {
     userProfile?.username === 'demo' || userProfile?.id === 'digitaskdemo@gmail.com';
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="ui-page max-w-2xl">
+      <div className="mb-6">
+        <h1 className="ui-page-title">Settings</h1>
+        <p className="ui-description">Manage your profile and appearance.</p>
+      </div>
       {/* User Profile Settings */}
       <div className="card mb-6">
-        <h2 className="text-xl font-bold mb-6 dark:text-gray-100">Profile Settings</h2>
+        <h2 className="ui-section-title mb-4">Profile Settings</h2>
 
         {isDemoAccount ? (
           <div className="bg-yellow-50 dark:bg-yellow-900/10 border-l-4 border-yellow-500 p-4 mb-4">
@@ -75,7 +79,7 @@ const Settings = () => {
                 id="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-dark-200 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-amber-500"
+                className="input"
                 required
               />
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
@@ -90,13 +94,7 @@ const Settings = () => {
               >
                 Email
               </label>
-              <input
-                type="text"
-                id="email"
-                value={user?.email}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-dark-300 rounded-md text-gray-500 dark:text-gray-400"
-                disabled
-              />
+              <input type="text" id="email" value={user?.email} className="input" disabled />
             </div>
 
             <button type="submit" className="btn-primary" disabled={profileLoading}>
@@ -124,7 +122,7 @@ const Settings = () => {
 
       {/* Theme Settings */}
       <div className="card">
-        <h2 className="text-xl font-bold mb-6 dark:text-gray-100">App Settings</h2>
+        <h2 className="ui-section-title mb-4">App Settings</h2>
 
         <section className="mb-8">
           <h3 className="text-lg font-semibold mb-3 dark:text-gray-200">Theme</h3>
@@ -141,6 +139,7 @@ const Settings = () => {
                   type="checkbox"
                   checked={isDarkMode}
                   onChange={toggleTheme}
+                  aria-label="Dark mode"
                   className="sr-only peer"
                 />
                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary-300 dark:peer-focus:ring-accent-600 rounded-full peer dark:bg-dark-200 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-dark-300 peer-checked:bg-accent-600"></div>

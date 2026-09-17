@@ -60,7 +60,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#0A0A0F] py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-dark-400 py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
       <div className="max-w-md w-full">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
@@ -71,12 +71,7 @@ const Login = () => {
               className="h-16 w-16"
               style={{ imageRendering: 'pixelated' }}
             />
-            <span
-              className="font-heading text-4xl font-bold text-gray-900 dark:text-white"
-              style={{
-                textShadow: '0 0 12px rgba(245, 158, 11, 0.5), 0 0 24px rgba(245, 158, 11, 0.2)',
-              }}
-            >
+            <span className="font-heading text-4xl font-bold text-gray-900 dark:text-white">
               DIGITASK
             </span>
           </Link>
@@ -86,7 +81,7 @@ const Login = () => {
         </div>
 
         {/* Card */}
-        <div className="bg-white dark:bg-[#13131A] border border-gray-200 dark:border-[#2A2A38] rounded-2xl p-8 space-y-6 shadow-md dark:shadow-none">
+        <div className="bg-white dark:bg-dark-300 border border-gray-200 dark:border-dark-100 rounded-xl p-4 sm:p-6 space-y-6 shadow-md dark:shadow-none">
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Error */}
             {error && (
@@ -109,7 +104,7 @@ const Login = () => {
                 type="email"
                 autoComplete="email"
                 required
-                className="block w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-[#1C1C26] border border-gray-200 dark:border-[#2A2A38] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-150"
+                className="input"
                 placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -130,7 +125,7 @@ const Login = () => {
                 type="password"
                 autoComplete="current-password"
                 required
-                className="block w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-[#1C1C26] border border-gray-200 dark:border-[#2A2A38] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-150"
+                className="input"
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -138,11 +133,7 @@ const Login = () => {
             </div>
 
             {/* Sign In */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-white font-heading text-lg font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-            >
+            <button type="submit" disabled={loading} className="w-full btn-primary">
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
 
@@ -151,7 +142,7 @@ const Login = () => {
               type="button"
               onClick={handleDemoLogin}
               disabled={loading}
-              className="w-full py-3 rounded-xl border border-gray-200 dark:border-[#2A2A38] text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-amber-500 dark:hover:border-amber-500 transition-all duration-200 font-body disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              className="w-full py-3 rounded-xl border border-gray-200 dark:border-dark-100 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-amber-500 dark:hover:border-amber-500 transition-all duration-200 font-body disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               Try Demo Account
             </button>
@@ -171,7 +162,7 @@ const Login = () => {
           </form>
 
           {/* Feedback */}
-          <div className="bg-gray-50 dark:bg-[#1C1C26] border border-gray-200 dark:border-[#2A2A38] rounded-xl p-4 text-center">
+          <div className="bg-gray-50 dark:bg-dark-200 border border-gray-200 dark:border-dark-100 rounded-xl p-4 text-center">
             <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
               Something not working?
             </h3>
@@ -182,7 +173,7 @@ const Login = () => {
               href="https://forms.gle/HrgybGG7BL1xj5wg6"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block text-xs border border-gray-200 dark:border-[#2A2A38] text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-amber-500 dark:hover:border-amber-500 px-4 py-1.5 rounded-full transition-all duration-150 cursor-pointer"
+              className="inline-block text-xs border border-gray-200 dark:border-dark-100 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-amber-500 dark:hover:border-amber-500 px-4 py-1.5 rounded-full transition-all duration-150 cursor-pointer"
             >
               Submit Feedback
             </a>

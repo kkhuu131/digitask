@@ -9,7 +9,7 @@ import DigimonSprite from '@/components/DigimonSprite';
 import { Save } from 'lucide-react';
 
 const inputCls =
-  'w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors';
+  'w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-accent-600 dark:focus:ring-accent-400 transition-colors';
 const selectCls = inputCls;
 const labelCls = 'block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1';
 
@@ -130,11 +130,9 @@ const AdminUserDigimonPage = () => {
   const speciesData = DIGIMON_LOOKUP_TABLE[editForm.digimon_id];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="ui-page">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-          User Digimon Manager
-        </h1>
+        <h1 className="ui-page-title">User Digimon Manager</h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
           Edit individual user-owned Digimon stats and properties.
         </p>
@@ -209,7 +207,7 @@ const AdminUserDigimonPage = () => {
                   <button
                     key={d.id}
                     onClick={() => handleDigimonSelection(d)}
-                    className={`flex flex-col items-center p-2 rounded-lg border cursor-pointer transition-all duration-150 ${editForm.digimon_id === d.id ? 'border-indigo-400 dark:border-accent-500 bg-indigo-50 dark:bg-accent-900/20' : 'border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 hover:border-indigo-300 dark:hover:border-accent-600 hover:bg-gray-50 dark:hover:bg-dark-200'}`}
+                    className={`flex flex-col items-center p-2 rounded-lg border cursor-pointer transition-all duration-150 ${editForm.digimon_id === d.id ? 'border-accent-500 dark:border-accent-500 bg-accent-50 dark:bg-accent-900/20' : 'border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 hover:border-indigo-300 dark:hover:border-accent-600 hover:bg-gray-50 dark:hover:bg-dark-200'}`}
                   >
                     <p className="text-[9px] text-gray-400 dark:text-gray-500">{d.id}</p>
                     <div className="w-8 h-8">
@@ -243,7 +241,7 @@ const AdminUserDigimonPage = () => {
                   <button
                     key={d.id}
                     onClick={() => setSelectedDigimon(d)}
-                    className={`flex flex-col items-center p-3 rounded-lg border cursor-pointer transition-all duration-150 ${selectedDigimon?.id === d.id ? 'border-indigo-400 dark:border-accent-500 bg-indigo-50 dark:bg-accent-900/20' : 'border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 hover:border-indigo-300 dark:hover:border-accent-600 hover:shadow-sm'}`}
+                    className={`flex flex-col items-center p-3 rounded-lg border cursor-pointer transition-all duration-150 ${selectedDigimon?.id === d.id ? 'border-accent-500 dark:border-accent-500 bg-accent-50 dark:bg-accent-900/20' : 'border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 hover:border-indigo-300 dark:hover:border-accent-600 hover:shadow-sm'}`}
                   >
                     <DigimonSprite
                       digimonName={d.digimon?.name || ''}
@@ -298,7 +296,7 @@ const AdminUserDigimonPage = () => {
                 </div>
               </div>
               <form onSubmit={handleSubmit} className="space-y-5">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className={labelCls}>Name</label>
                     <input
@@ -345,7 +343,7 @@ const AdminUserDigimonPage = () => {
                     ))}
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className={labelCls}>ABI</label>
                     <input
@@ -370,10 +368,7 @@ const AdminUserDigimonPage = () => {
                   </div>
                 </div>
                 <div className="flex justify-end pt-2">
-                  <button
-                    type="submit"
-                    className="flex items-center gap-2 px-4 py-2 bg-indigo-600 dark:bg-accent-600 text-white rounded-lg hover:bg-indigo-700 dark:hover:bg-accent-700 text-sm font-medium transition-colors cursor-pointer"
-                  >
+                  <button type="submit" className="btn-primary">
                     <Save className="w-4 h-4" />
                     Save Changes
                   </button>

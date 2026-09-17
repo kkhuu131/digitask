@@ -531,7 +531,7 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
       <button
         type="submit"
         disabled={isSubmitting || (taskType === 'recurring' && recurringDays.length === 0)}
-        className="w-full py-3 rounded-xl font-heading font-bold text-base text-white bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-amber-400/40 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-amber-400/60"
+        className="w-full btn-primary"
       >
         {isSubmitting ? 'Adding Task...' : 'Add Task'}
       </button>

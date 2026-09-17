@@ -1,3 +1,4 @@
+import LoadingIndicator from './LoadingIndicator';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Laugh, Smile, Meh, Frown, Moon } from 'lucide-react';
 import {
@@ -386,7 +387,7 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
   };
 
   if (!userDigimon || !digimonData) {
-    return <div>Loading Digimon...</div>;
+    return <LoadingIndicator message="Loading your Digimon…" />;
   }
 
   // Phase 5.2 — resolve the attribute glow class (empty string = no glow applied).

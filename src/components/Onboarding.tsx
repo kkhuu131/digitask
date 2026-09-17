@@ -199,7 +199,7 @@ const Onboarding: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gray-50 dark:bg-dark-400 text-gray-900 dark:text-gray-100">
       {stage === OnboardingStage.WELCOME && (
         <DigimonDialogue steps={welcomeSteps} onComplete={() => setStage(OnboardingStage.INTRO)} />
       )}
@@ -215,9 +215,9 @@ const Onboarding: React.FC = () => {
       )}
 
       {stage === OnboardingStage.CREATE_TASK && showTaskForm && (
-        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg p-6 shadow-lg max-w-md w-full">
-            <h2 className="text-xl font-bold mb-4">Create Your First Task</h2>
+        <div className="fixed inset-0 z-modal flex items-center justify-center p-4 bg-black bg-opacity-50">
+          <div className="card max-w-md w-full max-h-[90dvh] overflow-y-auto">
+            <h2 className="ui-section-title mb-4">Create Your First Task</h2>
             <TaskForm onTaskCreated={handleTaskCreated} />
           </div>
         </div>
@@ -233,9 +233,9 @@ const Onboarding: React.FC = () => {
           )}
 
           {showDigimonSelection && (
-            <div className="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50">
-              <div className="bg-white rounded-lg p-6 shadow-lg max-w-2xl w-full">
-                <h2 className="text-xl font-bold mb-1">Choose Your 3 Partners</h2>
+            <div className="fixed inset-0 z-modal flex items-center justify-center p-4 bg-black bg-opacity-50">
+              <div className="card max-w-2xl w-full max-h-[90dvh] overflow-y-auto">
+                <h2 className="ui-section-title mb-1">Choose Your 3 Partners</h2>
                 <DigimonSelection
                   onSelect={() => {}}
                   multiSelect

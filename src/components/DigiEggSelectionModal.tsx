@@ -1,5 +1,6 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { DIGIMON_LOOKUP_TABLE } from '../constants/digimonLookup';
 import DigimonSprite from './DigimonSprite';
 
@@ -55,15 +56,6 @@ const DigiEggSelectionModal: React.FC<DigiEggSelectionModalProps> = ({
     });
   }, [pool, seed]);
 
-  // Close on Escape
-  useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
-  }, [onClose]);
-
   const handleConfirm = async () => {
     if (!selectedId || isSubmitting) return;
     setIsSubmitting(true);
@@ -83,11 +75,12 @@ const DigiEggSelectionModal: React.FC<DigiEggSelectionModalProps> = ({
 
   return (
     <AnimatePresence>
-      <div
-        className="fixed inset-0 z-modal flex items-center justify-center p-4"
-        onClick={(e) => {
-          if (e.target === e.currentTarget) onClose();
+      <Dialog
+        open
+        onClose={() => {
+          if (!isSubmitting) onClose();
         }}
+        className="fixed inset-0 z-modal flex items-center justify-center p-4"
       >
         {/* Backdrop */}
         <motion.div
@@ -98,41 +91,41 @@ const DigiEggSelectionModal: React.FC<DigiEggSelectionModalProps> = ({
         />
 
         {/* Modal */}
-        <motion.div
-          className="relative z-10 w-full max-w-lg bg-white dark:bg-dark-300 rounded-2xl shadow-2xl border border-gray-200 dark:border-dark-100 overflow-hidden"
+        <DialogPanel
+          as={motion.div}
+          className="relative z-10 w-full max-w-lg bg-white dark:bg-dark-300 rounded-2xl shadow-2xl border border-gray-200 dark:border-dark-100 max-h-[90dvh] overflow-y-auto"
           initial={{ opacity: 0, scale: 0.92, y: 16 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.92, y: 16 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 24 }}
         >
           {/* Header */}
-          <div className="bg-gradient-to-r from-purple-600 to-indigo-600 px-6 py-4">
-            <h2 className="text-lg font-heading font-bold text-white">Choose Your DigiEgg</h2>
-            <p className="text-sm text-purple-200 mt-0.5">
-              Select one Digimon to hatch from your reward.
-            </p>
+          <div className="bg-gray-50 dark:bg-dark-200 border-b border-gray-200 dark:border-dark-100 px-4 sm:px-6 py-4">
+            <DialogTitle className="ui-section-title">Choose Your DigiEgg</DialogTitle>
+            <p className="ui-description">Select one Digimon to hatch from your reward.</p>
           </div>
 
           {/* Cards */}
-          <div className="p-6">
-            <div className="grid grid-cols-3 gap-4">
+          <div className="p-4 sm:p-6">
+            <div className="grid grid-cols-1 min-[400px]:grid-cols-3 gap-3">
               {choices.map((digimon) => {
                 const isSelected = selectedId === digimon.id;
                 return (
                   <motion.button
                     key={digimon.id}
+                    disabled={isSubmitting}
+                    aria-pressed={isSelected}
                     onClick={() => setSelectedId(digimon.id)}
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}
                     className={`relative flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all duration-150 cursor-pointer text-left ${
                       isSelected
-                        ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/30 shadow-md shadow-purple-200 dark:shadow-purple-900/50'
-                        : 'border-gray-200 dark:border-dark-100 bg-gray-50 dark:bg-dark-200 hover:border-gray-300 dark:hover:border-dark-50'
+                        ? 'border-accent-500 bg-accent-50 dark:bg-accent-900/20'
+                        : 'border-gray-200 dark:border-dark-100 bg-gray-50 dark:bg-dark-200 hover:border-gray-300 dark:hover:border-gray-500'
                     }`}
                   >
                     {/* Selection indicator */}
                     {isSelected && (
-                      <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-purple-500 flex items-center justify-center">
+                      <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-accent-700 dark:bg-accent-500 flex items-center justify-center">
                         <svg
                           className="w-2.5 h-2.5 text-white"
                           fill="none"
@@ -176,27 +169,20 @@ const DigiEggSelectionModal: React.FC<DigiEggSelectionModalProps> = ({
 
             {/* Actions */}
             <div className="flex gap-3 mt-5">
-              <button
-                onClick={onClose}
-                className="flex-1 py-2.5 px-4 rounded-xl text-sm font-heading font-semibold text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-dark-200 hover:bg-gray-200 dark:hover:bg-dark-100 transition-colors"
-              >
+              <button onClick={onClose} disabled={isSubmitting} className="flex-1 btn-secondary">
                 Cancel
               </button>
               <button
                 onClick={handleConfirm}
                 disabled={!selectedId || isSubmitting}
-                className={`flex-1 py-2.5 px-4 rounded-xl text-sm font-heading font-semibold transition-all duration-150 ${
-                  selectedId && !isSubmitting
-                    ? 'text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 shadow-sm'
-                    : 'text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-dark-200 cursor-not-allowed'
-                }`}
+                className="flex-1 btn-primary"
               >
                 {isSubmitting ? 'Hatching...' : 'Hatch Egg'}
               </button>
             </div>
           </div>
-        </motion.div>
-      </div>
+        </DialogPanel>
+      </Dialog>
     </AnimatePresence>
   );
 };

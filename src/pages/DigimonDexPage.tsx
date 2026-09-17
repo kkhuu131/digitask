@@ -10,7 +10,7 @@ const DigimonDexPage = () => {
   const digimonPageTutorialSteps: DialogueStep[] = [
     {
       speaker: 'bokomon',
-      text: "Welcome to the Digidex! Here you can see all the Digimon partners you've acquired on your journey.",
+      text: "Welcome to the DigiDex! Here you can see all the Digimon partners you've acquired on your journey.",
     },
     {
       speaker: 'bokomon',
@@ -24,13 +24,13 @@ const DigimonDexPage = () => {
 
   return (
     <>
-      <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold dark:text-gray-100">Digidex</h1>
+      <div className="ui-page">
+        <div className="ui-page-header">
+          <h1 className="ui-page-title">DigiDex</h1>
 
           <button
             onClick={() => setShowEvolutionGraph(!showEvolutionGraph)}
-            className="px-4 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium shadow-md hover:shadow-lg transition-all duration-200 flex items-center hidden md:block"
+            className={`btn-outline ${showEvolutionGraph ? 'inline-flex' : 'hidden md:inline-flex'}`}
           >
             {showEvolutionGraph ? (
               <>

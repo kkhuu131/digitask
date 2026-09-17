@@ -26,7 +26,7 @@ const NotificationCenter: React.FC = () => {
 
   return (
     <div
-      className={`fixed z-[9999] flex flex-col gap-2 p-4 pointer-events-none
+      className={`fixed z-toast flex flex-col gap-2 p-4 pointer-events-none
         ${isMobile ? 'top-0 left-0 right-0 items-center' : 'bottom-4 right-4 max-w-sm'}`}
     >
       <AnimatePresence>

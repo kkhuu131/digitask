@@ -170,20 +170,24 @@ const ReportModal: React.FC<ReportModalProps> = ({ userId, username, onClose }) 
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-modal p-4">
+      <div className="ui-panel shadow-xl max-w-md w-full max-h-[90dvh] overflow-y-auto">
         <div className="p-6">
-          <h2 className="text-xl font-bold mb-4">Report User: {username}</h2>
+          <h2 className="ui-section-title mb-4">Report User: {username}</h2>
 
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="report-category"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
                 Report Category
               </label>
               <select
+                id="report-category"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                className="input"
               >
                 {reportCategories.map((cat) => (
                   <option key={cat.value} value={cat.value}>
@@ -194,25 +198,25 @@ const ReportModal: React.FC<ReportModalProps> = ({ userId, username, onClose }) 
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="report-reason"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
                 Reason for Report
               </label>
               <textarea
+                id="report-reason"
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
                 rows={4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                className="input"
                 placeholder="Please provide details about why you're reporting this user..."
                 required
               />
             </div>
 
             <div className="flex justify-end space-x-3">
-              <button
-                type="button"
-                onClick={onClose}
-                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-              >
+              <button type="button" onClick={onClose} className="btn-secondary">
                 Cancel
               </button>
               <button

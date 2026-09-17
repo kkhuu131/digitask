@@ -81,9 +81,9 @@ const steps = [
 
 const LandingPage: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900 dark:bg-[#0A0A0F] dark:text-white transition-colors duration-200">
+    <div className="min-h-screen bg-gray-50 text-gray-900 dark:bg-dark-400 dark:text-white transition-colors duration-200">
       {/* Nav */}
-      <header className="sticky top-0 z-10 border-b border-gray-200 bg-white/80 dark:border-[#2A2A38] dark:bg-[#0A0A0F]/80 backdrop-blur-md">
+      <header className="sticky top-0 z-10 border-b border-gray-200 bg-white/80 dark:border-dark-100 dark:bg-dark-400/80 backdrop-blur-md">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <img
@@ -100,13 +100,13 @@ const LandingPage: React.FC = () => {
             <ThemeToggle />
             <Link
               to="/login"
-              className="px-4 py-1.5 rounded-lg border border-gray-200 text-gray-600 hover:text-gray-900 hover:border-amber-500 dark:border-[#2A2A38] dark:text-gray-400 dark:hover:text-white dark:hover:border-amber-500 text-sm font-body transition-all duration-150 cursor-pointer"
+              className="px-4 py-1.5 rounded-lg border border-gray-200 text-gray-600 hover:text-gray-900 hover:border-amber-500 dark:border-dark-100 dark:text-gray-400 dark:hover:text-white dark:hover:border-amber-500 text-sm font-body transition-all duration-150 cursor-pointer"
             >
               Login
             </Link>
             <Link
               to="/register"
-              className="px-4 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-white text-sm font-body font-semibold transition-all duration-150 cursor-pointer"
+              className="px-4 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-gray-950 text-sm font-body font-semibold transition-all duration-150 cursor-pointer"
             >
               Register
             </Link>
@@ -126,9 +126,7 @@ const LandingPage: React.FC = () => {
           >
             Raise Digimon.
             <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-teal-500 dark:from-amber-400 dark:to-teal-400">
-              Complete Your Goals.
-            </span>
+            <span className="text-accent-800 dark:text-accent-400">Complete Your Goals.</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-10 font-body leading-relaxed">
             Digitask turns real-life productivity into a Digimon adventure. Complete tasks to train,
@@ -137,13 +135,13 @@ const LandingPage: React.FC = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               to="/register"
-              className="px-8 py-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-white font-heading font-bold text-lg transition-all duration-200 shadow-lg shadow-amber-200 dark:shadow-amber-900/40 cursor-pointer"
+              className="px-8 py-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-gray-950 font-heading font-bold text-lg transition-all duration-200 shadow-lg shadow-amber-200 dark:shadow-amber-900/40 cursor-pointer"
             >
               Start Your Journey
             </Link>
             <Link
               to="/login"
-              className="px-8 py-4 rounded-xl border border-gray-300 text-gray-700 hover:text-gray-900 hover:border-amber-500 dark:border-[#2A2A38] dark:text-gray-300 dark:hover:text-white dark:hover:border-amber-500 font-body font-semibold text-lg transition-all duration-150 cursor-pointer"
+              className="px-8 py-4 rounded-xl border border-gray-300 text-gray-700 hover:text-gray-900 hover:border-amber-500 dark:border-dark-100 dark:text-gray-300 dark:hover:text-white dark:hover:border-amber-500 font-body font-semibold text-lg transition-all duration-150 cursor-pointer"
             >
               Sign In
             </Link>
@@ -151,7 +149,7 @@ const LandingPage: React.FC = () => {
         </section>
 
         {/* Digimon Showcase */}
-        <section className="border-t border-gray-200 dark:border-[#2A2A38] py-16">
+        <section className="border-t border-gray-200 dark:border-dark-100 py-16">
           <div className="container mx-auto px-4">
             <h2 className="font-heading text-3xl font-bold text-center mb-2 text-gray-900 dark:text-white">
               400+ Digimon Partners
@@ -162,7 +160,7 @@ const LandingPage: React.FC = () => {
             <div className="flex justify-center mb-8">
               <a
                 href="/roster"
-                className="px-5 py-2 rounded-lg border border-gray-200 text-gray-600 hover:text-gray-900 hover:border-amber-500 dark:border-[#2A2A38] dark:text-gray-400 dark:hover:text-white dark:hover:border-amber-500 text-sm font-body transition-all duration-150 cursor-pointer"
+                className="px-5 py-2 rounded-lg border border-gray-200 text-gray-600 hover:text-gray-900 hover:border-amber-500 dark:border-dark-100 dark:text-gray-400 dark:hover:text-white dark:hover:border-amber-500 text-sm font-body transition-all duration-150 cursor-pointer"
               >
                 Browse Full Roster
               </a>
@@ -172,7 +170,7 @@ const LandingPage: React.FC = () => {
         </section>
 
         {/* Features */}
-        <section className="border-t border-gray-200 dark:border-[#2A2A38] py-20">
+        <section className="border-t border-gray-200 dark:border-dark-100 py-20">
           <div className="container mx-auto px-4">
             <h2 className="font-heading text-3xl font-bold text-center mb-12 text-gray-900 dark:text-white">
               Everything You Need
@@ -196,7 +194,7 @@ const LandingPage: React.FC = () => {
         </section>
 
         {/* How it works */}
-        <section className="border-t border-gray-200 dark:border-[#2A2A38] py-20">
+        <section className="border-t border-gray-200 dark:border-dark-100 py-20">
           <div className="container mx-auto px-4 max-w-3xl">
             <h2 className="font-heading text-3xl font-bold text-center mb-12 text-gray-900 dark:text-white">
               How It Works
@@ -221,7 +219,7 @@ const LandingPage: React.FC = () => {
         </section>
 
         {/* Dashboard Preview */}
-        <section className="border-t border-gray-200 dark:border-[#2A2A38] py-20">
+        <section className="border-t border-gray-200 dark:border-dark-100 py-20">
           <div className="container mx-auto px-4">
             <h2 className="font-heading text-3xl font-bold text-center mb-2 text-gray-900 dark:text-white">
               See What Awaits You
@@ -229,7 +227,7 @@ const LandingPage: React.FC = () => {
             <p className="text-gray-500 text-center font-body mb-10">
               Manage your tasks and watch your Digimon grow as you complete them
             </p>
-            <div className="max-w-4xl mx-auto overflow-hidden rounded-2xl border border-gray-200 dark:border-[#2A2A38] shadow-2xl shadow-black/10 dark:shadow-black/40">
+            <div className="max-w-4xl mx-auto overflow-hidden rounded-2xl border border-gray-200 dark:border-dark-100 shadow-2xl shadow-black/10 dark:shadow-black/40">
               <img
                 src="/assets/dashboard.png"
                 alt="Digitask Dashboard Preview"
@@ -240,9 +238,9 @@ const LandingPage: React.FC = () => {
         </section>
 
         {/* CTA / Feedback */}
-        <section className="border-t border-gray-200 dark:border-[#2A2A38] py-20">
+        <section className="border-t border-gray-200 dark:border-dark-100 py-20">
           <div className="container mx-auto px-4">
-            <div className="max-w-2xl mx-auto text-center bg-gray-100 dark:bg-[#13131A] rounded-2xl border border-gray-200 dark:border-[#2A2A38] p-12">
+            <div className="max-w-2xl mx-auto text-center bg-gray-100 dark:bg-dark-300 rounded-2xl border border-gray-200 dark:border-dark-100 p-6 sm:p-10">
               <h2 className="font-heading text-4xl font-bold mb-4 text-gray-900 dark:text-white">
                 Ready to Begin?
               </h2>
@@ -252,7 +250,7 @@ const LandingPage: React.FC = () => {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   to="/register"
-                  className="px-8 py-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-white font-heading font-bold text-lg transition-all duration-200 shadow-lg shadow-amber-200 dark:shadow-amber-900/40 cursor-pointer"
+                  className="px-8 py-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-gray-950 font-heading font-bold text-lg transition-all duration-200 shadow-lg shadow-amber-200 dark:shadow-amber-900/40 cursor-pointer"
                 >
                   Get Started Free
                 </Link>
@@ -260,7 +258,7 @@ const LandingPage: React.FC = () => {
                   href="https://forms.gle/4geGdXkywwAQcZDt6"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-8 py-4 rounded-xl border border-gray-300 text-gray-700 hover:text-gray-900 hover:border-amber-500 dark:border-[#2A2A38] dark:text-gray-300 dark:hover:text-white dark:hover:border-amber-500 font-body font-semibold text-lg transition-all duration-150 cursor-pointer"
+                  className="px-8 py-4 rounded-xl border border-gray-300 text-gray-700 hover:text-gray-900 hover:border-amber-500 dark:border-dark-100 dark:text-gray-300 dark:hover:text-white dark:hover:border-amber-500 font-body font-semibold text-lg transition-all duration-150 cursor-pointer"
                 >
                   Share Feedback
                 </a>
@@ -270,7 +268,7 @@ const LandingPage: React.FC = () => {
         </section>
       </main>
 
-      <footer className="border-t border-gray-200 dark:border-[#2A2A38] py-8">
+      <footer className="border-t border-gray-200 dark:border-dark-100 py-8">
         <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-2">
             <img

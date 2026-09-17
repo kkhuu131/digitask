@@ -1,11 +1,7 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
-/* Game typography — loaded alongside Inter so the fallback is instant.
-   Fredoka: rounded display font for Digimon names, section headers, CTAs.
-   Nunito:  friendly body font for task text and descriptive copy.
-   Both are applied selectively via font-heading / font-body Tailwind classes
-   and are NOT set globally on body until a full audit is complete (Phase 7). */
-@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+/* Fredoka for headings, Nunito for body text; Inter remains a legacy fallback. */
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -23,6 +19,10 @@
 
   body {
     @apply min-h-screen transition-colors duration-200 font-body;
+  }
+
+  :where(button, a, input, select, textarea, [tabindex]):focus-visible {
+    @apply outline outline-2 outline-offset-2 outline-accent-600 dark:outline-accent-400;
   }
 
   /* Dark mode scrollbar customization */
@@ -44,38 +44,38 @@
 
 @layer components {
   .btn {
-    @apply px-4 py-2 rounded-lg font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2;
+    @apply inline-flex min-h-11 items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-dark-300 disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
   .btn-primary {
-    @apply btn bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500;
+    @apply btn bg-accent-700 text-white hover:bg-accent-800 focus:ring-accent-600;
   }
 
   .dark .btn-primary,
   html.dark .btn-primary {
-    @apply bg-accent-600 hover:bg-accent-700 focus:ring-accent-500;
+    @apply bg-accent-500 text-gray-950 hover:bg-accent-400 focus:ring-accent-400;
   }
 
   .btn-secondary {
-    @apply btn bg-secondary-600 text-white hover:bg-secondary-700 focus:ring-secondary-500;
+    @apply btn bg-gray-100 text-gray-800 hover:bg-gray-200 focus:ring-accent-600;
   }
 
   .dark .btn-secondary,
   html.dark .btn-secondary {
-    @apply bg-primary-700 hover:bg-primary-800 focus:ring-primary-600;
+    @apply bg-dark-200 text-gray-200 hover:bg-dark-100 focus:ring-accent-400;
   }
 
   .btn-outline {
-    @apply btn border border-gray-300 hover:bg-gray-100 focus:ring-gray-500;
+    @apply btn border border-gray-300 text-gray-700 hover:bg-gray-100 focus:ring-accent-600;
   }
 
   .dark .btn-outline,
   html.dark .btn-outline {
-    @apply border-dark-100 hover:bg-dark-300 focus:ring-dark-100 text-gray-200;
+    @apply border-dark-100 hover:bg-dark-200 focus:ring-accent-400 text-gray-200;
   }
 
   .input {
-    @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors duration-200;
+    @apply w-full min-h-11 px-3 py-2 text-sm border border-gray-300 bg-white text-gray-900 placeholder:text-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-600 focus:border-transparent transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed;
   }
 
   .dark .input,
@@ -83,17 +83,48 @@
     @apply border-dark-100 bg-dark-200 text-gray-200 focus:ring-accent-500;
   }
 
-  /* TODO (ui-redesign Phase 3+): Evaluate migrating .card dark mode background to
-     game-surface (#13131A) using the game.surface token added in tailwind.config.js.
-     Do NOT change .card globally — it is used in ~15+ components. Migrate
-     component-by-component using a .card-game variant class to contain the risk. */
   .card {
-    @apply bg-white rounded-xl shadow-md p-6 transition-all duration-200;
+    @apply bg-white rounded-xl border border-gray-200 shadow-sm p-4 sm:p-6 transition-colors duration-200;
   }
 
   .dark .card,
   html.dark .card {
-    @apply bg-dark-300 shadow-card-dark border border-dark-100 text-gray-200;
+    @apply bg-dark-300 shadow-none border-dark-100 text-gray-200;
+  }
+
+  /* See UI_GUIDELINES.md. Layout owns outer gutters; pages own their content width. */
+  .ui-page {
+    @apply w-full min-w-0 mx-auto;
+  }
+  .ui-page-header {
+    @apply mb-6 flex flex-wrap items-start justify-between gap-4;
+  }
+  .ui-page-title {
+    @apply min-w-0 break-words font-heading text-2xl font-semibold leading-tight text-gray-900 dark:text-gray-100;
+  }
+  .ui-section-title {
+    @apply font-heading text-lg font-semibold text-gray-900 dark:text-gray-100;
+  }
+  .ui-description {
+    @apply mt-1 text-sm leading-relaxed text-gray-600 dark:text-gray-400;
+  }
+  .ui-panel {
+    @apply bg-white dark:bg-dark-300 rounded-xl border border-gray-200 dark:border-dark-100 shadow-sm dark:shadow-none;
+  }
+  .ui-tab {
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-dark-200 transition-colors;
+  }
+  .ui-tab-active {
+    @apply bg-accent-50 text-accent-800 hover:bg-accent-100 dark:bg-accent-900/20 dark:text-accent-400 dark:hover:bg-accent-900/30;
+  }
+  .ui-icon-button {
+    @apply inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-dark-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .ui-link {
+    @apply font-semibold text-accent-800 dark:text-accent-400 hover:underline underline-offset-4;
+  }
+  .ui-empty {
+    @apply rounded-xl border border-dashed border-gray-300 dark:border-dark-100 px-4 py-10 text-center text-sm text-gray-600 dark:text-gray-400;
   }
 
   /* Glass card effect for modals and important elements */
@@ -104,6 +135,17 @@
   .dark .glass-card,
   html.dark .glass-card {
     @apply bg-dark-300/80 border-dark-200/50;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
@@ -124,25 +166,37 @@
    by an inline radial-gradient in Digimon.tsx (Phase 5).
    Applied via the ATTRIBUTE_GLOW_CLASS lookup object — not template literals —
    to avoid any risk of Tailwind purging (plain CSS classes are always included). */
-.sprite-stage-vaccine { --stage-glow: rgba(59,  130, 246, 0.12); } /* blue  */
-.sprite-stage-virus   { --stage-glow: rgba(139,  92, 246, 0.12); } /* purple */
-.sprite-stage-data    { --stage-glow: rgba(16,  185, 129, 0.12); } /* green  */
-.sprite-stage-free    { --stage-glow: rgba(245, 158,  11, 0.12); } /* amber  */
+.sprite-stage-vaccine {
+  --stage-glow: rgba(59, 130, 246, 0.12);
+} /* blue  */
+.sprite-stage-virus {
+  --stage-glow: rgba(139, 92, 246, 0.12);
+} /* purple */
+.sprite-stage-data {
+  --stage-glow: rgba(16, 185, 129, 0.12);
+} /* green  */
+.sprite-stage-free {
+  --stage-glow: rgba(245, 158, 11, 0.12);
+} /* amber  */
 
 /* XP bar shimmer
    Triggered by swapping the class on the XP bar fill element when experience
    points increase (Phase 7). Uses background-position animation so the shimmer
    travels left-to-right without layout reflow — GPU-composited, 60fps safe. */
 @keyframes xp-shimmer {
-  0%   { background-position: -200% center; }
-  100% { background-position:  200% center; }
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
 }
 .xp-shimmer {
   background: linear-gradient(
     90deg,
-    #8B5CF6 25%,   /* secondary-500 — matches XP bar base colour */
-    #a78bfa 50%,   /* secondary-400 — bright mid-point           */
-    #8B5CF6 75%
+    #8b5cf6 25%,
+    /* secondary-500 — matches XP bar base colour */ #a78bfa 50%,
+    /* secondary-400 — bright mid-point           */ #8b5cf6 75%
   );
   background-size: 200% auto;
   animation: xp-shimmer 0.8s ease-in-out;
@@ -151,6 +205,47 @@
 /* =============================================================================
    END game UI — Phase 1
    ============================================================================= */
+
+/* Shared loading motion: reserve layout space, avoid flashes and respect reduced motion. */
+@keyframes loading-reveal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes loading-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes skeleton-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+.ui-loading-reveal {
+  animation: loading-reveal 120ms ease-out 150ms both;
+}
+.ui-spinner {
+  animation: loading-spin 900ms linear infinite;
+}
+.ui-skeleton-pulse {
+  animation: skeleton-pulse 2s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ui-spinner,
+  .ui-skeleton-pulse {
+    animation: none;
+  }
+  .ui-loading-reveal {
+    animation-duration: 1ms;
+  }
+}
 
 /* Container query for Digimon cards */
 .card-container {

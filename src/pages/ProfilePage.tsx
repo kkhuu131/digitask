@@ -28,12 +28,12 @@ interface ProfileData {
 }
 
 const statColors: Record<string, string> = {
-  HP: 'text-red-400',
-  SP: 'text-cyan-400',
-  ATK: 'text-orange-400',
-  DEF: 'text-blue-400',
-  INT: 'text-purple-400',
-  SPD: 'text-green-400',
+  HP: 'text-red-700 dark:text-red-400',
+  SP: 'text-cyan-700 dark:text-cyan-400',
+  ATK: 'text-orange-700 dark:text-orange-400',
+  DEF: 'text-primary-700 dark:text-primary-400',
+  INT: 'text-accent-800 dark:text-accent-400',
+  SPD: 'text-teal-700 dark:text-teal-400',
 };
 
 const ProfilePage = () => {
@@ -269,15 +269,19 @@ const ProfilePage = () => {
 
   if (loading) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="ui-page max-w-4xl" role="status">
+        <span className="sr-only">Loading profile…</span>
         <div className="space-y-4">
-          <div className="h-40 bg-gray-100 dark:bg-dark-200 rounded-2xl animate-pulse" />
+          <div className="h-40 bg-gray-100 dark:bg-dark-200 rounded-2xl ui-skeleton-pulse" />
           <div className="grid grid-cols-4 gap-3">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-20 bg-gray-100 dark:bg-dark-200 rounded-xl animate-pulse" />
+              <div
+                key={i}
+                className="h-20 bg-gray-100 dark:bg-dark-200 rounded-xl ui-skeleton-pulse"
+              />
             ))}
           </div>
-          <div className="h-32 bg-gray-100 dark:bg-dark-200 rounded-2xl animate-pulse" />
+          <div className="h-32 bg-gray-100 dark:bg-dark-200 rounded-2xl ui-skeleton-pulse" />
         </div>
       </div>
     );
@@ -287,7 +291,10 @@ const ProfilePage = () => {
     return (
       <div className="max-w-4xl mx-auto px-4 py-16 text-center">
         <p className="font-body text-red-500 mb-4">{error || 'Profile not found'}</p>
-        <Link to="/" className="font-body text-purple-500 hover:text-purple-400 transition-colors">
+        <Link
+          to="/"
+          className="font-body text-accent-800 dark:text-accent-400 hover:underline transition-colors"
+        >
           Return to Dashboard
         </Link>
       </div>
@@ -303,25 +310,25 @@ const ProfilePage = () => {
     {
       label: 'Victories',
       value: profileData.battles_won,
-      color: 'text-purple-400',
-      bg: 'bg-purple-400/10 border-purple-400/20',
+      color: 'text-accent-800 dark:text-accent-400',
+      bg: 'bg-accent-50 dark:bg-accent-900/20 border-accent-200 dark:border-accent-800/40',
     },
     {
       label: 'Win Rate',
       value: `${winRate}%`,
-      color: 'text-green-400',
+      color: 'text-teal-700 dark:text-teal-400',
       bg: 'bg-green-400/10 border-green-400/20',
     },
     {
       label: 'Streak',
       value: `${profileData.current_streak}d`,
-      color: 'text-amber-400',
+      color: 'text-accent-800 dark:text-accent-400',
       bg: 'bg-amber-400/10 border-amber-400/20',
     },
     {
       label: 'DigiDex',
       value: `${discoveryPercentage()}%`,
-      color: 'text-blue-400',
+      color: 'text-primary-700 dark:text-primary-400',
       bg: 'bg-blue-400/10 border-blue-400/20',
     },
   ];
@@ -339,13 +346,13 @@ const ProfilePage = () => {
     : [];
 
   return (
-    <div className="max-w-4xl mx-auto px-2 sm:px-4 py-4 space-y-4">
+    <div className="ui-page max-w-4xl space-y-6">
       {/* Profile Header Card */}
-      <div className="bg-white dark:bg-dark-300 rounded-2xl border border-gray-100 dark:border-dark-100 p-6">
+      <div className="bg-white dark:bg-dark-300 rounded-xl border border-gray-200 dark:border-dark-100 p-4 sm:p-6">
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
           {/* Avatar */}
           <div className="relative flex-shrink-0">
-            <div className="w-24 h-24 rounded-full bg-gray-100 dark:bg-dark-200 flex items-center justify-center overflow-hidden border-4 border-purple-500/40 shadow-lg shadow-purple-900/20">
+            <div className="w-24 h-24 rounded-full bg-gray-100 dark:bg-dark-200 flex items-center justify-center overflow-hidden border-2 border-accent-500/50">
               {profileData.avatar_url ? (
                 <img
                   src={profileData.avatar_url}
@@ -363,7 +370,7 @@ const ProfilePage = () => {
               <button
                 onClick={() => setIsAvatarModalOpen(true)}
                 aria-label="Change avatar"
-                className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-purple-600 hover:bg-purple-500 text-white flex items-center justify-center transition-colors shadow-md cursor-pointer"
+                className="absolute bottom-0 right-0 w-11 h-11 rounded-full bg-accent-700 hover:bg-accent-800 text-white dark:bg-accent-500 dark:text-gray-950 dark:hover:bg-accent-400 flex items-center justify-center transition-colors shadow-md cursor-pointer"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -380,9 +387,7 @@ const ProfilePage = () => {
           {/* Username + Titles */}
           <div className="flex-1 min-w-0 text-center sm:text-left">
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-3">
-              <h1 className="font-heading text-2xl font-bold text-gray-900 dark:text-gray-100">
-                {profileData.username}
-              </h1>
+              <h1 className="ui-page-title">{profileData.username}</h1>
               {!isOwnProfile && (
                 <ReportButton
                   userId={profileData.id}
@@ -438,9 +443,9 @@ const ProfilePage = () => {
         <div className="flex gap-1 bg-gray-100 dark:bg-dark-200 p-1 rounded-xl">
           <button
             onClick={() => setActiveTab('overview')}
-            className={`flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg text-sm font-heading font-semibold transition-all duration-150 ${
+            className={`flex-1 ui-tab ${
               activeTab === 'overview'
-                ? 'bg-white dark:bg-dark-300 text-gray-900 dark:text-gray-100 shadow-sm'
+                ? 'ui-tab-active'
                 : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
             }`}
           >
@@ -448,9 +453,9 @@ const ProfilePage = () => {
           </button>
           <button
             onClick={() => setActiveTab('achievements')}
-            className={`relative flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg text-sm font-heading font-semibold transition-all duration-150 ${
+            className={`relative flex-1 ui-tab ${
               activeTab === 'achievements'
-                ? 'bg-white dark:bg-dark-300 text-gray-900 dark:text-gray-100 shadow-sm'
+                ? 'ui-tab-active'
                 : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
             }`}
           >
@@ -472,7 +477,7 @@ const ProfilePage = () => {
         <>
           {/* Active Digimon */}
           {favoriteDigimon && (
-            <div className="bg-white dark:bg-dark-300 rounded-2xl border border-gray-100 dark:border-dark-100 p-6">
+            <div className="bg-white dark:bg-dark-300 rounded-xl border border-gray-200 dark:border-dark-100 p-4 sm:p-6">
               <h2 className="font-heading text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">
                 {isOwnProfile ? 'Active Digimon' : `${profileData.username}'s Active Digimon`}
               </h2>
@@ -502,7 +507,7 @@ const ProfilePage = () => {
                     </div>
                     <button
                       onClick={() => handleDigimonClick(favoriteDigimon)}
-                      className="px-3 py-1.5 rounded-lg border border-purple-300 dark:border-purple-700 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 font-body font-semibold text-xs transition-colors cursor-pointer"
+                      className="btn-outline"
                     >
                       View Details
                     </button>
@@ -532,7 +537,7 @@ const ProfilePage = () => {
           )}
 
           {/* Digimon Collection */}
-          <div className="bg-white dark:bg-dark-300 rounded-2xl border border-gray-100 dark:border-dark-100 p-6">
+          <div className="bg-white dark:bg-dark-300 rounded-xl border border-gray-200 dark:border-dark-100 p-4 sm:p-6">
             <h2 className="font-heading text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">
               {isOwnProfile ? 'My Digimon' : `${profileData.username}'s Digimon`}
               <span className="ml-2 font-body font-normal text-sm text-gray-400 dark:text-gray-500">
@@ -574,7 +579,7 @@ const ProfilePage = () => {
 
           {/* Activity Heatmap — own profile only */}
           {isOwnProfile && (
-            <div className="bg-white dark:bg-dark-300 rounded-2xl border border-gray-100 dark:border-dark-100 p-6">
+            <div className="bg-white dark:bg-dark-300 rounded-xl border border-gray-200 dark:border-dark-100 p-4 sm:p-6">
               <h2 className="font-heading text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">
                 Activity
               </h2>

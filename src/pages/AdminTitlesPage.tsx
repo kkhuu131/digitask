@@ -1,3 +1,4 @@
+import LoadingIndicator, { LoadingSpinner } from '../components/LoadingIndicator';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
@@ -69,29 +70,23 @@ const AdminTitlesPage = () => {
   if (!isAdmin) return null;
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      <div className="flex items-center justify-between mb-6">
+    <div className="ui-page">
+      <div className="ui-page-header">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Titles Manager</h1>
+          <h1 className="ui-page-title">Titles Manager</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
             Sync title definitions from constants to the database.
           </p>
         </div>
-        <button
-          onClick={syncTitles}
-          disabled={syncing}
-          className="flex items-center gap-2 px-4 py-2 bg-indigo-600 dark:bg-accent-600 text-white rounded-lg hover:bg-indigo-700 dark:hover:bg-accent-700 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <RefreshCw className={`w-4 h-4 ${syncing ? 'animate-spin' : ''}`} />
+        <button onClick={syncTitles} disabled={syncing} className="btn-primary">
+          {syncing ? <LoadingSpinner /> : <RefreshCw className="w-4 h-4" />}
           {syncing ? 'Syncing…' : 'Sync from Constants'}
         </button>
       </div>
 
       <div className="bg-white dark:bg-dark-300 rounded-xl border border-gray-200 dark:border-dark-100 shadow-sm overflow-hidden">
         {loading ? (
-          <div className="flex items-center justify-center py-16">
-            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500 dark:border-accent-500" />
-          </div>
+          <LoadingIndicator message="Loading titles…" />
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-dark-100">

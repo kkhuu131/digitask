@@ -24,7 +24,7 @@ const UpdateNotification = () => {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 50 }}
-          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black bg-opacity-50 dark:bg-opacity-70"
+          className="fixed inset-0 z-modal flex items-center justify-center p-4 bg-black bg-opacity-50 dark:bg-opacity-70"
           onClick={handleClose}
         >
           <motion.div
@@ -52,10 +52,7 @@ const UpdateNotification = () => {
               </ul>
             </div>
 
-            <button
-              onClick={handleClose}
-              className="mt-6 w-full bg-primary-600 dark:bg-accent-600 text-white py-2 px-4 rounded hover:bg-primary-700 dark:hover:bg-accent-700 transition-colors"
-            >
+            <button onClick={handleClose} className="mt-6 w-full btn-primary">
               Got it!
             </button>
           </motion.div>

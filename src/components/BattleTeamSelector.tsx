@@ -73,7 +73,7 @@ const DigimonPickerModal: React.FC<PickerModalProps> = ({
   const stats = preview ? calculateFinalStats(preview) : null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div className="fixed inset-0 z-modal flex items-end sm:items-center justify-center p-0 sm:p-4">
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/60" onClick={onClose} />
 
@@ -113,10 +113,10 @@ const DigimonPickerModal: React.FC<PickerModalProps> = ({
                       onClick={() => !used && setPreview(d)}
                       className={`relative flex flex-col items-center gap-0.5 p-1.5 rounded-xl border-2 transition-all ${
                         isPreviewing
-                          ? 'border-indigo-500 dark:border-accent-500 bg-indigo-50 dark:bg-accent-900/20'
+                          ? 'border-indigo-500 dark:border-accent-500 bg-accent-50 dark:bg-accent-900/20'
                           : used
                             ? 'border-gray-200 dark:border-dark-100 opacity-40 cursor-not-allowed bg-gray-50 dark:bg-dark-400'
-                            : 'border-gray-200 dark:border-dark-100 hover:border-indigo-300 dark:hover:border-accent-600 bg-white dark:bg-dark-400 cursor-pointer'
+                            : 'border-gray-200 dark:border-dark-100 hover:border-accent-300 dark:hover:border-accent-600 bg-white dark:bg-dark-400 cursor-pointer'
                       }`}
                     >
                       {used && (
@@ -223,10 +223,7 @@ const DigimonPickerModal: React.FC<PickerModalProps> = ({
                       Already on team
                     </button>
                   ) : (
-                    <button
-                      onClick={() => onSelect(preview)}
-                      className="w-full py-3 rounded-xl bg-indigo-500 dark:bg-accent-600 hover:bg-indigo-600 dark:hover:bg-accent-700 text-white font-semibold transition-colors text-sm"
-                    >
+                    <button onClick={() => onSelect(preview)} className="w-full btn-primary">
                       Add to Team
                     </button>
                   )}
@@ -354,8 +351,8 @@ const BattleTeamSelector: React.FC<BattleTeamSelectorProps> = ({
                 onClick={() => handleSlotClick(i)}
                 className={`relative w-0 min-w-0 flex-1 max-w-28 min-h-32 py-3 rounded-xl border-2 transition-all cursor-pointer flex flex-col items-center justify-center gap-1 select-none ${
                   d
-                    ? 'border-indigo-300 dark:border-accent-600 bg-indigo-50 dark:bg-accent-900/20 hover:border-indigo-400 dark:hover:border-accent-500'
-                    : 'border-dashed border-gray-300 dark:border-dark-100 hover:border-indigo-300 dark:hover:border-accent-600 hover:bg-indigo-50/40 dark:hover:bg-accent-900/10'
+                    ? 'border-accent-300 dark:border-accent-600 bg-accent-50 dark:bg-accent-900/20 hover:border-accent-400 dark:hover:border-accent-500'
+                    : 'border-dashed border-gray-300 dark:border-dark-100 hover:border-accent-300 dark:hover:border-accent-600 hover:bg-accent-50/40 dark:hover:bg-accent-900/10'
                 }`}
               >
                 {d ? (
@@ -393,7 +390,7 @@ const BattleTeamSelector: React.FC<BattleTeamSelectorProps> = ({
                             )
                           )
                         }
-                        className="w-full mt-1 rounded-md bg-white dark:bg-dark-300 px-1 py-1 text-[11px] border border-gray-200 dark:border-dark-100"
+                        className="w-full mt-1 rounded-md bg-white dark:bg-dark-300 min-h-11 px-1 py-2 text-xs border border-gray-200 dark:border-dark-100"
                       >
                         <option value="aggressive">Aggressive</option>
                         <option value="balanced">Balanced</option>
@@ -489,7 +486,7 @@ const BattleTeamSelector: React.FC<BattleTeamSelectorProps> = ({
       <button
         onClick={handleConfirm}
         disabled={teamSize === 0 || loading}
-        className="w-full py-4 rounded-2xl font-bold text-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed bg-indigo-500 dark:bg-accent-600 hover:bg-indigo-600 dark:hover:bg-accent-700 active:scale-[0.99] text-white shadow-lg hover:shadow-indigo-200 dark:hover:shadow-none flex items-center justify-center gap-3"
+        className="w-full btn-primary py-3"
       >
         {loading ? (
           <span>Starting…</span>

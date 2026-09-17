@@ -47,12 +47,10 @@ const UserSearchPage = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-2 sm:px-4 py-4">
+    <div className="ui-page max-w-3xl">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="font-heading text-2xl font-bold text-gray-900 dark:text-gray-100">
-          Find Players
-        </h1>
+        <h1 className="ui-page-title">Find Players</h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 font-body mt-1">
           Search for other Digitask trainers
         </p>
@@ -60,8 +58,8 @@ const UserSearchPage = () => {
 
       {/* Search form */}
       <form onSubmit={handleSearch} className="mb-8">
-        <div className="flex gap-2">
-          <div className="relative flex-1">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="relative flex-1 min-w-0">
             <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -82,15 +80,12 @@ const UserSearchPage = () => {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              aria-label="Search players by username"
               placeholder="Search by username..."
-              className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-300 text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors font-body text-sm"
+              className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-300 text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-accent-600 dark:focus:ring-accent-400 transition-colors font-body text-sm"
             />
           </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-heading font-bold text-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
-          >
+          <button type="submit" disabled={loading} className="btn-primary">
             {loading ? 'Searching...' : 'Search'}
           </button>
         </div>
@@ -99,9 +94,13 @@ const UserSearchPage = () => {
       {/* Results */}
       {hasSearched ? (
         loading ? (
-          <div className="space-y-3">
+          <div className="space-y-3" role="status">
+            <span className="sr-only">Searching users…</span>
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-16 bg-gray-100 dark:bg-dark-200 rounded-xl animate-pulse" />
+              <div
+                key={i}
+                className="h-16 bg-gray-100 dark:bg-dark-200 rounded-xl ui-skeleton-pulse"
+              />
             ))}
           </div>
         ) : users.length > 0 ? (
@@ -110,7 +109,7 @@ const UserSearchPage = () => {
               <Link
                 key={user.id}
                 to={`/profile/name/${user.username}`}
-                className="flex items-center gap-3 px-4 py-3 rounded-xl border border-gray-100 dark:border-dark-100 bg-white dark:bg-dark-300 hover:border-purple-300 dark:hover:border-purple-700 hover:shadow-sm transition-all duration-150 cursor-pointer"
+                className="flex items-center gap-3 px-4 py-3 rounded-xl border border-gray-100 dark:border-dark-100 bg-white dark:bg-dark-300 hover:border-accent-400 dark:hover:border-accent-600 hover:shadow-sm transition-all duration-150 cursor-pointer"
               >
                 {/* Avatar */}
                 <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-100 dark:bg-dark-200 flex items-center justify-center overflow-hidden border border-gray-200 dark:border-dark-100">
@@ -155,14 +154,10 @@ const UserSearchPage = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center py-16 font-body text-gray-400 dark:text-gray-500">
-            No players found matching "{searchQuery}"
-          </div>
+          <div className="ui-empty">No players found matching "{searchQuery}"</div>
         )
       ) : (
-        <div className="text-center py-16 font-body text-gray-400 dark:text-gray-500">
-          Enter a username above to find other trainers
-        </div>
+        <div className="ui-empty">Enter a username above to find other trainers</div>
       )}
     </div>
   );

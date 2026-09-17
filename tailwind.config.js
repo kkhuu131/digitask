@@ -74,8 +74,7 @@ export default {
         sans: ["Inter", "sans-serif"],
         // Game typography — Fredoka for display/headings (rounded, playful, matches
         // Digimon aesthetic), Nunito for body text (friendly, readable).
-        // Applied selectively via font-heading / font-body classes; not set globally
-        // on body until a full audit of admin/dense UI pages is done (Phase 7).
+        // Body uses Nunito globally; headings opt into Fredoka with shared UI classes.
         heading: ["Fredoka", "sans-serif"],
         body:    ["Nunito", "sans-serif"],
       },

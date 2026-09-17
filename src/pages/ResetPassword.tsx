@@ -57,9 +57,9 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10">
-      <div className="card">
-        <h1 className="text-2xl font-bold mb-6">Reset Your Password</h1>
+    <div className="min-h-screen flex items-center justify-center px-4 py-12">
+      <div className="card w-full max-w-md">
+        <h1 className="ui-page-title mb-6">Reset Your Password</h1>
 
         {error && (
           <div className="bg-red-50 dark:bg-red-900/30 border-l-4 border-red-500 dark:border-red-600 p-4 mb-4">
@@ -87,7 +87,7 @@ const ResetPassword = () => {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-dark-200 dark:text-gray-200 rounded-md"
+                className="input"
                 required
               />
             </div>
@@ -104,7 +104,7 @@ const ResetPassword = () => {
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-dark-200 dark:text-gray-200 rounded-md"
+                className="input"
                 required
               />
             </div>

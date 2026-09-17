@@ -36,13 +36,10 @@ const STAGE_COLORS: Record<string, string> = {
   Ultra: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
 };
 
-const inputCls =
-  'w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors';
+const inputCls = 'input';
 const selectCls = inputCls;
-const btnPrimary =
-  'px-4 py-2 bg-indigo-600 dark:bg-accent-600 text-white rounded-lg hover:bg-indigo-700 dark:hover:bg-accent-700 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed';
-const btnSecondary =
-  'px-3 py-1.5 rounded-lg border border-gray-200 dark:border-dark-100 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-dark-200 text-sm font-medium transition-colors cursor-pointer';
+const btnPrimary = 'btn-primary';
+const btnSecondary = 'btn-outline';
 
 const AdminTournamentTeamsPage = () => {
   const { isAdmin } = useAuthStore();
@@ -211,13 +208,11 @@ const AdminTournamentTeamsPage = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="ui-page">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="ui-page-header">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-            Tournament Team Editor
-          </h1>
+          <h1 className="ui-page-title">Tournament Team Editor</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
             Build curated teams for the weekly tournament pool. Copy TypeScript to update the
             constants file.
@@ -232,16 +227,16 @@ const AdminTournamentTeamsPage = () => {
         </button>
       </div>
 
-      <div className="flex gap-6 items-start">
+      <div className="flex flex-col lg:flex-row gap-6 items-start">
         {/* ── LEFT: Digimon browser ───────────────────────────────────────────── */}
-        <div className="w-[40%] shrink-0 flex flex-col gap-4">
+        <div className="w-full lg:w-[40%] shrink-0 flex flex-col gap-4">
           <div className="bg-white dark:bg-dark-300 rounded-xl border border-gray-200 dark:border-dark-100 shadow-sm p-4">
             <h2 className="text-base font-semibold text-gray-800 dark:text-gray-100 mb-3">
               Digimon Browser
             </h2>
 
             {activeSlot !== null && (
-              <div className="mb-3 px-3 py-2 bg-indigo-50 dark:bg-accent-900/20 border border-indigo-200 dark:border-accent-700 rounded-lg text-xs text-indigo-700 dark:text-accent-300 font-medium">
+              <div className="mb-3 px-3 py-2 bg-accent-50 dark:bg-accent-900/20 border border-accent-200 dark:border-accent-700 rounded-lg text-xs text-indigo-700 dark:text-accent-300 font-medium">
                 Click a Digimon to fill Slot {activeSlot + 1}
               </div>
             )}
@@ -321,12 +316,12 @@ const AdminTournamentTeamsPage = () => {
                       className={`relative flex flex-col items-center p-2 rounded-lg border cursor-pointer transition-all duration-150 text-left
                         ${
                           inSlot
-                            ? 'border-indigo-400 dark:border-accent-500 bg-indigo-50 dark:bg-accent-900/20'
+                            ? 'border-accent-500 dark:border-accent-500 bg-accent-50 dark:bg-accent-900/20'
                             : 'border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400 hover:border-indigo-300 dark:hover:border-accent-600 hover:bg-indigo-50/50 dark:hover:bg-accent-900/10'
                         }`}
                     >
                       {useCount > 0 && (
-                        <span className="absolute top-1 right-1 text-[8px] font-bold px-1 py-0.5 rounded bg-indigo-100 dark:bg-accent-900/40 text-indigo-600 dark:text-accent-400 leading-none">
+                        <span className="absolute top-1 right-1 text-[8px] font-bold px-1 py-0.5 rounded bg-indigo-100 dark:bg-accent-900/40 text-accent-800 dark:text-accent-400 leading-none">
                           ×{useCount}
                         </span>
                       )}
@@ -363,7 +358,7 @@ const AdminTournamentTeamsPage = () => {
         </div>
 
         {/* ── RIGHT: Builder + team list ───────────────────────────────────────── */}
-        <div className="flex-1 flex flex-col gap-4">
+        <div className="w-full min-w-0 flex-1 flex flex-col gap-4">
           {/* Builder card */}
           <div className="bg-white dark:bg-dark-300 rounded-xl border border-gray-200 dark:border-dark-100 shadow-sm p-4">
             <h2 className="text-base font-semibold text-gray-800 dark:text-gray-100 mb-3">
@@ -398,7 +393,7 @@ const AdminTournamentTeamsPage = () => {
                       className={`relative flex flex-col items-center p-3 rounded-lg border-2 transition-all duration-150 cursor-pointer
                         ${
                           isActive
-                            ? 'border-indigo-500 dark:border-accent-500 bg-indigo-50 dark:bg-accent-900/20'
+                            ? 'border-indigo-500 dark:border-accent-500 bg-accent-50 dark:bg-accent-900/20'
                             : species
                               ? 'border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-400'
                               : 'border-dashed border-gray-300 dark:border-dark-100 bg-gray-50 dark:bg-dark-400 hover:border-indigo-300 dark:hover:border-accent-600'
@@ -574,7 +569,7 @@ const AdminTournamentTeamsPage = () => {
 
       {/* Export Modal */}
       {showExport && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+        <div className="fixed inset-0 z-modal flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div className="bg-white dark:bg-dark-300 rounded-xl border border-gray-200 dark:border-dark-100 shadow-xl w-full max-w-2xl">
             <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-dark-100">
               <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100">
@@ -591,11 +586,11 @@ const AdminTournamentTeamsPage = () => {
             <div className="p-5">
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
                 Copy this and paste it into{' '}
-                <code className="bg-gray-100 dark:bg-dark-400 px-1.5 py-0.5 rounded text-xs font-mono text-indigo-600 dark:text-accent-400">
+                <code className="bg-gray-100 dark:bg-dark-400 px-1.5 py-0.5 rounded text-xs font-mono text-accent-800 dark:text-accent-400">
                   src/constants/tournamentBossTeams.ts
                 </code>{' '}
                 to replace the current{' '}
-                <code className="bg-gray-100 dark:bg-dark-400 px-1.5 py-0.5 rounded text-xs font-mono text-indigo-600 dark:text-accent-400">
+                <code className="bg-gray-100 dark:bg-dark-400 px-1.5 py-0.5 rounded text-xs font-mono text-accent-800 dark:text-accent-400">
                   TOURNAMENT_TEAM_POOL
                 </code>{' '}
                 export.

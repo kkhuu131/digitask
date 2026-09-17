@@ -11,7 +11,7 @@ const getSavedAutoAllocateSetting = () => {
 };
 
 const TaskList = () => {
-  const { loading } = useTaskStore();
+  const { loading, tasks } = useTaskStore();
   const [, forceUpdate] = useState({});
   // Initialize with the value from localStorage
   const [autoAllocateStats, setAutoAllocateStats] = useState(getSavedAutoAllocateSetting());
@@ -53,20 +53,21 @@ const TaskList = () => {
   }, []);
 
   // Loading: skeleton rows that match the real task card layout so nothing jumps
-  if (loading) {
+  if (loading && tasks.length === 0) {
     return (
-      <div className="py-2">
+      <div className="py-2" role="status">
+        <span className="sr-only">Loading tasks…</span>
         {/* Auto-allocate row skeleton */}
         <div className="flex justify-end items-center gap-2 mb-4">
-          <div className="h-4 w-32 bg-gray-200 dark:bg-dark-200 rounded-full animate-pulse" />
-          <div className="h-5 w-9 bg-gray-200 dark:bg-dark-200 rounded-full animate-pulse" />
+          <div className="h-4 w-32 bg-gray-200 dark:bg-dark-200 rounded-full ui-skeleton-pulse" />
+          <div className="h-5 w-9 bg-gray-200 dark:bg-dark-200 rounded-full ui-skeleton-pulse" />
         </div>
         {/* Search + controls skeleton */}
         <div className="space-y-3 mb-4">
-          <div className="h-11 bg-gray-200 dark:bg-dark-200 rounded-lg animate-pulse" />
+          <div className="h-11 bg-gray-200 dark:bg-dark-200 rounded-lg ui-skeleton-pulse" />
           <div className="flex gap-4">
-            <div className="h-7 w-36 bg-gray-200 dark:bg-dark-200 rounded animate-pulse" />
-            <div className="h-7 w-36 bg-gray-200 dark:bg-dark-200 rounded animate-pulse" />
+            <div className="h-7 w-36 bg-gray-200 dark:bg-dark-200 rounded ui-skeleton-pulse" />
+            <div className="h-7 w-36 bg-gray-200 dark:bg-dark-200 rounded ui-skeleton-pulse" />
           </div>
         </div>
         {/* Task card skeletons */}
@@ -74,8 +75,7 @@ const TaskList = () => {
           {([0.82, 0.6, 0.74, 0.5, 0.68] as number[]).map((titleWidth, i) => (
             <div
               key={i}
-              className="rounded-lg p-4 border border-gray-200 dark:border-dark-200 bg-white dark:bg-dark-300 animate-pulse"
-              style={{ animationDelay: `${i * 60}ms` }}
+              className="rounded-lg p-4 border border-gray-200 dark:border-dark-200 bg-white dark:bg-dark-300 ui-skeleton-pulse"
             >
               <div className="flex items-start gap-3">
                 <div className="flex-shrink-0 w-5 h-5 rounded-full bg-gray-200 dark:bg-dark-200 mt-0.5" />
@@ -95,7 +95,7 @@ const TaskList = () => {
   }
 
   return (
-    <div className="py-2">
+    <div className="py-2" aria-busy={loading}>
       {/* Phase 4.5 — pill-style toggle switch replacing the raw checkbox.
           State logic (autoAllocateStats, localStorage) is unchanged. */}
       <div className="flex justify-end items-center gap-2 mb-4">
@@ -104,6 +104,7 @@ const TaskList = () => {
         </span>
         <button
           role="switch"
+          aria-label="Auto-allocate stats"
           aria-checked={autoAllocateStats}
           onClick={() => setAutoAllocateStats(!autoAllocateStats)}
           className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-primary-500 dark:focus:ring-accent-500 ${

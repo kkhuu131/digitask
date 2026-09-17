@@ -1,3 +1,4 @@
+import LoadingIndicator from '../components/LoadingIndicator';
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../store/authStore';
@@ -176,16 +177,16 @@ const AdminReportsPage = () => {
   if (!isAdmin) return null;
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
+    <div className="ui-page">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">User Reports</h1>
+        <h1 className="ui-page-title">User Reports</h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
           Review and act on reported users.
         </p>
       </div>
 
       {/* Filter tabs */}
-      <div className="flex items-center gap-2 mb-5">
+      <div className="flex flex-wrap items-center gap-2 mb-5">
         {FILTER_TABS.map((tab) => (
           <button
             key={tab.key}
@@ -198,9 +199,7 @@ const AdminReportsPage = () => {
       </div>
 
       {loading ? (
-        <div className="flex items-center justify-center py-20">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500 dark:border-accent-500" />
-        </div>
+        <LoadingIndicator message="Loading reports…" />
       ) : reports.length === 0 ? (
         <div className="bg-white dark:bg-dark-300 rounded-xl border border-gray-200 dark:border-dark-100 p-12 text-center">
           <p className="text-gray-500 dark:text-gray-400 text-sm">
@@ -208,7 +207,7 @@ const AdminReportsPage = () => {
           </p>
         </div>
       ) : (
-        <div className="bg-white dark:bg-dark-300 rounded-xl border border-gray-200 dark:border-dark-100 shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-dark-300 rounded-xl border border-gray-200 dark:border-dark-100 shadow-sm overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200 dark:divide-dark-100">
             <thead className="bg-gray-50 dark:bg-dark-400">
               <tr>
@@ -348,7 +347,7 @@ const ReportRow: React.FC<ReportRowProps> = ({ report, onUpdateStatus, onRenameU
                     </label>
                     <textarea
                       rows={3}
-                      className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-300 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-accent-500 transition-colors resize-none"
+                      className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-dark-100 bg-white dark:bg-dark-300 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-accent-600 dark:focus:ring-accent-400 transition-colors resize-none"
                       placeholder="Add notes about this report..."
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
@@ -362,7 +361,7 @@ const ReportRow: React.FC<ReportRowProps> = ({ report, onUpdateStatus, onRenameU
                           e.stopPropagation();
                           onRenameUser(report.reported_user_id);
                         }}
-                        className="px-3 py-1.5 bg-indigo-600 dark:bg-accent-600 text-white rounded-lg hover:bg-indigo-700 dark:hover:bg-accent-700 text-sm font-medium transition-colors cursor-pointer"
+                        className="btn-primary"
                       >
                         Rename User
                       </button>

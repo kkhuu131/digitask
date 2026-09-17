@@ -22,9 +22,9 @@ const RosterPage: React.FC = () => {
   const paginatedDigimon = filteredDigimon.slice(startIndex, startIndex + itemsPerPage);
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900 dark:bg-[#0A0A0F] dark:text-white transition-colors duration-200">
+    <div className="min-h-screen bg-gray-50 text-gray-900 dark:bg-dark-400 dark:text-white transition-colors duration-200">
       {/* Nav */}
-      <header className="sticky top-0 z-10 border-b border-gray-200 bg-white/80 dark:border-[#2A2A38] dark:bg-[#0A0A0F]/80 backdrop-blur-md">
+      <header className="sticky top-0 z-10 border-b border-gray-200 bg-white/80 dark:border-dark-100 dark:bg-dark-400/80 backdrop-blur-md">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <img
@@ -44,13 +44,13 @@ const RosterPage: React.FC = () => {
             <ThemeToggle />
             <Link
               to="/login"
-              className="px-4 py-1.5 rounded-lg border border-gray-200 text-gray-600 hover:text-gray-900 hover:border-amber-500 dark:border-[#2A2A38] dark:text-gray-400 dark:hover:text-white dark:hover:border-amber-500 text-sm font-body transition-all duration-150 cursor-pointer"
+              className="px-4 py-1.5 rounded-lg border border-gray-200 text-gray-600 hover:text-gray-900 hover:border-amber-500 dark:border-dark-100 dark:text-gray-400 dark:hover:text-white dark:hover:border-amber-500 text-sm font-body transition-all duration-150 cursor-pointer"
             >
               Login
             </Link>
             <Link
               to="/register"
-              className="px-4 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-white text-sm font-body font-semibold transition-all duration-150 cursor-pointer"
+              className="px-4 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-gray-950 text-sm font-body font-semibold transition-all duration-150 cursor-pointer"
             >
               Register
             </Link>
@@ -86,7 +86,7 @@ const RosterPage: React.FC = () => {
             <input
               type="text"
               placeholder="Search Digimon by name..."
-              className="w-full px-4 py-3 rounded-xl bg-white dark:bg-[#13131A] border border-gray-200 dark:border-[#2A2A38] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-150"
+              className="w-full px-4 py-3 rounded-xl bg-white dark:bg-dark-300 border border-gray-200 dark:border-dark-100 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-150"
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
@@ -122,7 +122,7 @@ const RosterPage: React.FC = () => {
             return (
               <div
                 key={id}
-                className="bg-white dark:bg-[#13131A] border border-gray-200 dark:border-[#2A2A38] p-3 rounded-xl flex flex-col items-center hover:border-amber-400 dark:hover:border-amber-500/50 hover:bg-gray-50 dark:hover:bg-[#1C1C26] transition-all duration-150 cursor-default shadow-sm dark:shadow-none"
+                className="bg-white dark:bg-dark-300 border border-gray-200 dark:border-dark-100 p-3 rounded-xl flex flex-col items-center hover:border-amber-400 dark:hover:border-amber-500/50 hover:bg-gray-50 dark:hover:bg-dark-200 transition-all duration-150 cursor-default shadow-sm dark:shadow-none"
               >
                 <div className="w-24 h-24 flex items-center justify-center">
                   <DigimonSprite
@@ -146,7 +146,7 @@ const RosterPage: React.FC = () => {
             <button
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
-              className="px-4 py-2 rounded-lg bg-white dark:bg-[#13131A] border border-gray-200 dark:border-[#2A2A38] text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:border-amber-500 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 font-body text-sm cursor-pointer shadow-sm dark:shadow-none"
+              className="px-4 py-2 rounded-lg bg-white dark:bg-dark-300 border border-gray-200 dark:border-dark-100 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:border-amber-500 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 font-body text-sm cursor-pointer shadow-sm dark:shadow-none"
             >
               Previous
             </button>
@@ -156,7 +156,7 @@ const RosterPage: React.FC = () => {
             <button
               onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
-              className="px-4 py-2 rounded-lg bg-white dark:bg-[#13131A] border border-gray-200 dark:border-[#2A2A38] text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:border-amber-500 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 font-body text-sm cursor-pointer shadow-sm dark:shadow-none"
+              className="px-4 py-2 rounded-lg bg-white dark:bg-dark-300 border border-gray-200 dark:border-dark-100 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:border-amber-500 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 font-body text-sm cursor-pointer shadow-sm dark:shadow-none"
             >
               Next
             </button>
@@ -173,7 +173,7 @@ const RosterPage: React.FC = () => {
         )}
       </main>
 
-      <footer className="border-t border-gray-200 dark:border-[#2A2A38] py-8">
+      <footer className="border-t border-gray-200 dark:border-dark-100 py-8">
         <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-2">
             <img

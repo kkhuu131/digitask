@@ -1,3 +1,4 @@
+import LoadingIndicator from '../components/LoadingIndicator';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDigimonStore, UserDigimon } from '../store/petStore';
@@ -319,8 +320,8 @@ const Battle = () => {
 
   return (
     <>
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-2xl font-heading font-semibold dark:text-gray-100 mb-6">Battle</h1>
+      <div className="ui-page">
+        <h1 className="ui-page-title mb-6">Battle</h1>
 
         {/* ── Hub navigation cards (always visible in idle state) ── */}
         {!arenaResult && !arenaBattleActive && !pendingOption && (
@@ -505,7 +506,7 @@ const Battle = () => {
                         className="text-xs px-2.5 py-1.5 bg-gray-100 dark:bg-dark-200 hover:bg-gray-200 dark:hover:bg-dark-100 text-gray-700 dark:text-gray-300 rounded-md transition-colors cursor-pointer border border-gray-200 dark:border-dark-100"
                         disabled={loading}
                       >
-                        {loading ? '...' : 'Refresh'}
+                        {loading ? 'Refreshing…' : 'Refresh'}
                       </button>
                     )}
                   </div>
@@ -517,10 +518,8 @@ const Battle = () => {
                   </div>
                 )}
 
-                {loading ? (
-                  <div className="flex justify-center py-16">
-                    <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary-500 dark:border-accent-500" />
-                  </div>
+                {loading && battleOptions.length === 0 ? (
+                  <LoadingIndicator message="Loading opponents…" />
                 ) : battleOptions.length === 0 ? (
                   <div className="text-center py-12 text-gray-500 dark:text-gray-400 font-body text-sm">
                     No battle options available. Try adding Digimon to your party.
@@ -670,9 +669,7 @@ const ArenaResultsScreen: React.FC<{
       {/* Coloured header band */}
       <div
         className={`px-6 pt-8 pb-6 text-center ${
-          won
-            ? 'bg-gradient-to-b from-indigo-50 to-white dark:from-indigo-950/40 dark:to-dark-300'
-            : 'bg-gradient-to-b from-red-50 to-white dark:from-red-950/40 dark:to-dark-300'
+          won ? 'bg-white dark:bg-dark-300' : 'bg-white dark:bg-dark-300'
         }`}
       >
         <motion.p

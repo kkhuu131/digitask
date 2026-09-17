@@ -138,7 +138,7 @@ const PartyMembersGrid: React.FC = () => {
 
   return (
     <>
-      <div className="grid grid-cols-4 gap-2">
+      <div className="grid grid-cols-3 min-[400px]:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-2">
         {nonActiveDigimon.slice(0, 8).map((digimon) => {
           // Calculate experience progress
           const expForCurrentLevel = xpForNextLevel(digimon.current_level);
@@ -146,7 +146,9 @@ const PartyMembersGrid: React.FC = () => {
           const isLevelUp = !!levelUpSprites[digimon.id];
 
           return (
-            <div
+            <button
+              type="button"
+              aria-label={`View ${digimon.name || digimon.digimon?.name}, level ${digimon.current_level}`}
               key={digimon.id}
               className="relative bg-gray-100 dark:bg-dark-200 rounded-lg p-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-dark-400 transition-colors "
               onClick={() => {
@@ -209,7 +211,7 @@ const PartyMembersGrid: React.FC = () => {
                   )}
                 </div>
               </div>
-            </div>
+            </button>
           );
         })}
       </div>

@@ -1,3 +1,4 @@
+import LoadingIndicator from '../components/LoadingIndicator';
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
@@ -153,11 +154,7 @@ const AuthCallback = () => {
     };
   }, [navigate]);
 
-  return (
-    <div className="flex items-center justify-center h-screen">
-      <p>Processing authentication...</p>
-    </div>
-  );
+  return <LoadingIndicator variant="screen" message="Signing you in…" />;
 };
 
 export default AuthCallback;

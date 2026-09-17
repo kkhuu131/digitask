@@ -140,7 +140,7 @@ const EvolutionAnimation: React.FC<EvolutionAnimationProps> = ({
   }, [createSparkles]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80">
+    <div className="fixed inset-0 z-overlay flex items-center justify-center bg-black bg-opacity-80">
       <div className="relative w-full max-w-2xl mx-auto">
         {/* Title text */}
         <AnimatePresence>

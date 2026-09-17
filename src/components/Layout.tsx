@@ -1,4 +1,5 @@
-import { ReactNode, useState, useRef, useEffect } from 'react';
+import { ReactNode, Suspense, useState, useRef, useEffect } from 'react';
+import LoadingIndicator from './LoadingIndicator';
 import { useAuthStore } from '../store/authStore';
 import { useCurrencyStore } from '../store/currencyStore';
 import { useTitleStore } from '../store/titleStore';
@@ -37,6 +38,11 @@ const NavDropdown = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const location = useLocation();
+
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location.pathname]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -49,13 +55,23 @@ const NavDropdown = ({
   }, []);
 
   return (
-    <div className="relative flex items-center h-full" ref={dropdownRef}>
+    <div
+      className="relative flex items-center h-full"
+      ref={dropdownRef}
+      onKeyDown={(event) => {
+        if (event.key === 'Escape') {
+          setIsOpen(false);
+          dropdownRef.current?.querySelector('button')?.focus();
+        }
+      }}
+    >
       <button
         className={`inline-flex items-center gap-1 px-1 pb-2 border-b-2 text-sm font-medium font-body transition-colors ${
           isActive
-            ? 'border-primary-500 text-gray-900 dark:border-accent-500 dark:text-gray-100'
+            ? 'border-accent-600 text-gray-900 dark:border-accent-500 dark:text-gray-100'
             : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-100 dark:hover:border-gray-500'
         }`}
+        aria-expanded={isOpen}
         onClick={() => setIsOpen(!isOpen)}
       >
         {label}
@@ -64,9 +80,7 @@ const NavDropdown = ({
 
       {isOpen && (
         <div className="absolute left-0 top-full mt-1 w-48 rounded-md shadow-lg bg-white dark:bg-dark-200 ring-1 ring-black ring-opacity-5 z-dropdown">
-          <div className="py-1" role="menu" aria-orientation="vertical">
-            {children}
-          </div>
+          <div className="py-1">{children}</div>
         </div>
       )}
     </div>
@@ -81,6 +95,18 @@ const Layout = ({ children }: LayoutProps) => {
   const [activeMenu, setActiveMenu] = useState<'digimon' | 'battle' | 'more' | null>(null);
   const [energy, setEnergy] = useState<{ current: number; max: number }>({ current: 0, max: 10 });
   const pendingAchievements = unclaimedCount();
+
+  useEffect(() => {
+    setActiveMenu(null);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const closeMenu = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setActiveMenu(null);
+    };
+    window.addEventListener('keydown', closeMenu);
+    return () => window.removeEventListener('keydown', closeMenu);
+  }, []);
 
   const handleSignOut = async () => {
     await signOut();
@@ -133,8 +159,14 @@ const Layout = ({ children }: LayoutProps) => {
 
   return (
     <div className="flex flex-col min-h-screen">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-overlay btn-primary"
+      >
+        Skip to content
+      </a>
       {user && (
-        <header className="bg-white dark:bg-dark-300 shadow-sm border-b border-gray-200 dark:border-dark-200 hidden sm:block">
+        <header className="bg-white dark:bg-dark-300 shadow-sm border-b border-gray-200 dark:border-dark-200 hidden lg:block">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between h-[4.5rem]">
               <div className="flex">
@@ -147,20 +179,20 @@ const Layout = ({ children }: LayoutProps) => {
                   />
                   <Link
                     to="/"
-                    className="text-2xl font-bold font-heading text-primary-600 dark:text-accent-500 tracking-wide"
+                    className="text-2xl font-bold font-heading text-accent-800 dark:text-accent-400 tracking-wide"
                   >
                     Digitask
                   </Link>
                 </div>
 
                 {/* Primary nav */}
-                <div className="hidden sm:ml-8 sm:flex sm:items-center sm:space-x-8 h-[4.5rem]">
+                <div className="hidden lg:ml-8 lg:flex lg:items-center lg:space-x-6 h-[4.5rem]">
                   {/* Dashboard */}
                   <Link
                     to="/"
                     className={`inline-flex items-center gap-1.5 px-1 pb-2 border-b-2 text-sm font-medium font-body transition-colors ${
                       isActive('/')
-                        ? 'border-primary-500 text-gray-900 dark:border-accent-500 dark:text-gray-100'
+                        ? 'border-accent-600 text-gray-900 dark:border-accent-500 dark:text-gray-100'
                         : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-100 dark:hover:border-gray-500'
                     }`}
                   >
@@ -179,7 +211,7 @@ const Layout = ({ children }: LayoutProps) => {
                       onClick={() => setActiveMenu(null)}
                     >
                       <Sprout className="h-4 w-4" />
-                      Digifarm
+                      DigiFarm
                     </Link>
                     <Link
                       to="/digimon-dex"
@@ -239,7 +271,7 @@ const Layout = ({ children }: LayoutProps) => {
                     to={profilePath}
                     className={`relative inline-flex items-center gap-1.5 px-1 pb-2 border-b-2 text-sm font-medium font-body transition-colors ${
                       isProfileActive
-                        ? 'border-primary-500 text-gray-900 dark:border-accent-500 dark:text-gray-100'
+                        ? 'border-accent-600 text-gray-900 dark:border-accent-500 dark:text-gray-100'
                         : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-100 dark:hover:border-gray-500'
                     }`}
                   >
@@ -295,7 +327,7 @@ const Layout = ({ children }: LayoutProps) => {
                   title="Settings"
                   className={`p-1.5 rounded-full transition-colors ${
                     isActive('/settings')
-                      ? 'text-primary-600 dark:text-accent-500 bg-gray-100 dark:bg-dark-200'
+                      ? 'text-accent-800 dark:text-accent-400 bg-gray-100 dark:bg-dark-200'
                       : 'text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-dark-200'
                   }`}
                 >
@@ -305,7 +337,7 @@ const Layout = ({ children }: LayoutProps) => {
                 {/* Sign out */}
                 <button
                   type="button"
-                  className="bg-white dark:bg-dark-200 rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-accent-500 p-1 text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-100 transition-colors"
+                  className="bg-white dark:bg-dark-200 rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-600 dark:focus:ring-accent-400 p-1 text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-100 transition-colors"
                   onClick={handleSignOut}
                   title="Sign out"
                 >
@@ -320,7 +352,7 @@ const Layout = ({ children }: LayoutProps) => {
 
       {/* Mobile header */}
       {user && (
-        <header className="bg-white dark:bg-dark-300 shadow-sm border-b border-gray-200 dark:border-dark-200 sm:hidden">
+        <header className="bg-white dark:bg-dark-300 shadow-sm border-b border-gray-200 dark:border-dark-200 lg:hidden">
           <div className="flex justify-between items-center h-14 px-4">
             <div className="flex items-center">
               <img
@@ -330,14 +362,14 @@ const Layout = ({ children }: LayoutProps) => {
               />
               <Link
                 to="/"
-                className="text-xl font-bold font-heading text-primary-600 dark:text-accent-500 tracking-wide"
+                className="text-xl font-bold font-heading text-accent-800 dark:text-accent-400 tracking-wide"
               >
                 Digitask
               </Link>
             </div>
             <div className="flex items-center space-x-3">
               <Link
-                to={`/profile/name/${userProfile?.username}`}
+                to={profilePath}
                 className="relative flex items-center justify-center"
                 title="View Profile"
               >
@@ -357,40 +389,34 @@ const Layout = ({ children }: LayoutProps) => {
         </header>
       )}
 
-      <main className="flex-grow bg-gray-50 dark:bg-dark-400 transition-colors duration-200 pb-16 sm:pb-0">
-        <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 px-4">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={location.pathname}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -4 }}
-              transition={{ duration: 0.15 }}
-            >
-              {children}
-            </motion.div>
-          </AnimatePresence>
+      <main
+        id="main-content"
+        tabIndex={-1}
+        className="flex-grow bg-gray-50 dark:bg-dark-400 transition-colors duration-200 pb-[calc(5rem+env(safe-area-inset-bottom))] lg:pb-0"
+      >
+        <div className="max-w-7xl min-w-0 mx-auto py-6 px-4 sm:px-6 lg:px-8">
+          <Suspense fallback={<LoadingIndicator message="Loading page…" />}>{children}</Suspense>
         </div>
       </main>
 
       {/* Mobile bottom nav */}
       {user && (
-        <div className="sm:hidden fixed bottom-0 inset-x-0 bg-white dark:bg-dark-300 border-t border-gray-200 dark:border-dark-200 z-sticky shadow-lg">
-          <div className="grid grid-cols-4 px-4 py-1">
+        <div className="lg:hidden fixed bottom-0 inset-x-0 bg-white dark:bg-dark-300 border-t border-gray-200 dark:border-dark-200 z-sticky shadow-lg">
+          <div className="grid grid-cols-4 px-4 pt-1 pb-[max(0.25rem,env(safe-area-inset-bottom))]">
             {/* Home */}
             <div className="relative">
               <Link
                 to="/"
                 className={`flex flex-col items-center justify-center py-2 gap-0.5 transition-colors ${
                   isActive('/')
-                    ? 'text-primary-600 dark:text-accent-500'
+                    ? 'text-accent-800 dark:text-accent-400'
                     : 'text-gray-500 dark:text-gray-400'
                 }`}
               >
                 <Home className="h-5 w-5" />
                 <span className="text-xs font-body">Home</span>
                 {isActive('/') && (
-                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full bg-primary-500 dark:bg-accent-500" />
+                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full bg-accent-600 dark:bg-accent-500" />
                 )}
               </Link>
             </div>
@@ -398,17 +424,18 @@ const Layout = ({ children }: LayoutProps) => {
             {/* Digimon dropdown */}
             <div className="relative">
               <button
+                aria-expanded={activeMenu === 'digimon'}
                 onClick={() => handleMenuClick('digimon')}
                 className={`w-full flex flex-col items-center justify-center py-2 gap-0.5 transition-colors ${
                   activeMenu === 'digimon' || isAnyActive(['/digifarm', '/digimon-dex'])
-                    ? 'text-primary-600 dark:text-accent-500'
+                    ? 'text-accent-800 dark:text-accent-400'
                     : 'text-gray-500 dark:text-gray-400'
                 }`}
               >
                 <Heart className="h-5 w-5" />
                 <span className="text-xs font-body">Digimon</span>
                 {(activeMenu === 'digimon' || isAnyActive(['/digifarm', '/digimon-dex'])) && (
-                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full bg-primary-500 dark:bg-accent-500" />
+                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full bg-accent-600 dark:bg-accent-500" />
                 )}
               </button>
               <AnimatePresence>
@@ -427,7 +454,7 @@ const Layout = ({ children }: LayoutProps) => {
                         onClick={() => setActiveMenu(null)}
                       >
                         <Sprout className="h-4 w-4" />
-                        Digifarm
+                        DigiFarm
                       </Link>
                       <Link
                         to="/digimon-dex"
@@ -446,17 +473,18 @@ const Layout = ({ children }: LayoutProps) => {
             {/* Battle dropdown */}
             <div className="relative">
               <button
+                aria-expanded={activeMenu === 'battle'}
                 onClick={() => handleMenuClick('battle')}
                 className={`w-full flex flex-col items-center justify-center py-2 gap-0.5 transition-colors ${
                   activeMenu === 'battle' || isAnyActive(['/battle', '/store'])
-                    ? 'text-primary-600 dark:text-accent-500'
+                    ? 'text-accent-800 dark:text-accent-400'
                     : 'text-gray-500 dark:text-gray-400'
                 }`}
               >
                 <Sword className="h-5 w-5" />
                 <span className="text-xs font-body">Battle</span>
                 {(activeMenu === 'battle' || isAnyActive(['/battle', '/store'])) && (
-                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full bg-primary-500 dark:bg-accent-500" />
+                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full bg-accent-600 dark:bg-accent-500" />
                 )}
               </button>
               <AnimatePresence>
@@ -494,10 +522,11 @@ const Layout = ({ children }: LayoutProps) => {
             {/* Profile / More */}
             <div className="relative">
               <button
+                aria-expanded={activeMenu === 'more'}
                 onClick={() => handleMenuClick('more')}
                 className={`w-full flex flex-col items-center justify-center py-2 gap-0.5 transition-colors ${
                   activeMenu === 'more' || isProfileActive
-                    ? 'text-primary-600 dark:text-accent-500'
+                    ? 'text-accent-800 dark:text-accent-400'
                     : 'text-gray-500 dark:text-gray-400'
                 }`}
               >
@@ -519,7 +548,7 @@ const Layout = ({ children }: LayoutProps) => {
                 </div>
                 <span className="text-xs font-body">Profile</span>
                 {(activeMenu === 'more' || isProfileActive) && (
-                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full bg-primary-500 dark:bg-accent-500" />
+                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full bg-accent-600 dark:bg-accent-500" />
                 )}
               </button>
               <AnimatePresence>

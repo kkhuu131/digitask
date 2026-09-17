@@ -65,7 +65,7 @@ const SlotCard: React.FC<SlotCardProps> = ({
     colorClass = `bg-blue-50 dark:bg-blue-900/30 border-blue-300 dark:border-blue-700 ${result === 'win' ? 'shadow-md shadow-green-400/30' : result === 'loss' ? 'opacity-50' : isCurrent ? 'ring-2 ring-blue-400 dark:ring-blue-500' : ''}`;
   } else if (isCurrent) {
     colorClass =
-      'bg-indigo-50 dark:bg-accent-900/20 border-indigo-300 dark:border-accent-700 ring-2 ring-indigo-300 dark:ring-accent-600';
+      'bg-accent-50 dark:bg-accent-900/20 border-indigo-300 dark:border-accent-700 ring-2 ring-indigo-300 dark:ring-accent-600';
   } else if (result === 'loss') {
     colorClass = 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-900 opacity-60';
   } else if (result === 'win') {
@@ -112,10 +112,10 @@ const SlotCard: React.FC<SlotCardProps> = ({
 const Connector: React.FC<{ active?: boolean }> = ({ active }) => (
   <div className="flex flex-col items-end w-3 self-stretch">
     <div
-      className={`flex-1 border-r-2 border-t-2 rounded-tr-md ${active ? 'border-indigo-400 dark:border-accent-500' : 'border-gray-200 dark:border-dark-100'}`}
+      className={`flex-1 border-r-2 border-t-2 rounded-tr-md ${active ? 'border-accent-500 dark:border-accent-500' : 'border-gray-200 dark:border-dark-100'}`}
     />
     <div
-      className={`flex-1 border-r-2 border-b-2 rounded-br-md ${active ? 'border-indigo-400 dark:border-accent-500' : 'border-gray-200 dark:border-dark-100'}`}
+      className={`flex-1 border-r-2 border-b-2 rounded-br-md ${active ? 'border-accent-500 dark:border-accent-500' : 'border-gray-200 dark:border-dark-100'}`}
     />
   </div>
 );
@@ -433,7 +433,7 @@ const TournamentBracket: React.FC<TournamentBracketProps> = ({
                 : result === 'loss'
                   ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 opacity-70'
                   : isCurrentRound
-                    ? 'bg-indigo-50 dark:bg-accent-900/20 border-indigo-200 dark:border-accent-700'
+                    ? 'bg-accent-50 dark:bg-accent-900/20 border-accent-200 dark:border-accent-700'
                     : hidden
                       ? 'bg-gray-50 dark:bg-dark-400 border-dashed border-gray-200 dark:border-dark-200 opacity-50'
                       : 'bg-gray-50 dark:bg-dark-300 border-gray-200 dark:border-dark-100 opacity-60'

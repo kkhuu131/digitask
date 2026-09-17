@@ -1,3 +1,4 @@
+import LoadingIndicator from './LoadingIndicator';
 // App.tsx
 import React, { useState, useEffect, useMemo, memo, useCallback, useRef } from 'react';
 import ReactFlow, {
@@ -80,7 +81,7 @@ const DigimonNode = memo(
     // For undiscovered evolutions, show silhouette
     const renderUndiscoveredNode = () => (
       <div
-        className={`p-2 ${bg} rounded-lg shadow-lg border-2 ${data.isHighlighted ? 'border-blue-500' : border} 
+        className={`p-2 text-gray-900 ${bg} rounded-lg shadow-lg border-2 ${data.isHighlighted ? 'border-blue-500' : border}
         transition-colors cursor-pointer w-32 flex flex-col items-center justify-center`}
       >
         <Handle type="target" position={Position.Left} />
@@ -105,7 +106,7 @@ const DigimonNode = memo(
     if (data.zoomLevel < 0.4) {
       return (
         <div
-          className={`p-1 ${bg} rounded-lg shadow-sm border-2 ${data.isHighlighted ? 'border-blue-500' : border} 
+          className={`p-1 text-gray-900 ${bg} rounded-lg shadow-sm border-2 ${data.isHighlighted ? 'border-blue-500' : border}
           transition-colors w-16 h-16 flex items-center justify-center`}
         >
           <Handle type="target" position={Position.Left} />
@@ -123,7 +124,7 @@ const DigimonNode = memo(
     // If discovered, show normally
     return (
       <div
-        className={`p-2 ${bg} rounded-lg shadow-lg border-2 ${data.isHighlighted ? 'border-blue-500' : border} 
+        className={`p-2 text-gray-900 ${bg} rounded-lg shadow-lg border-2 ${data.isHighlighted ? 'border-blue-500' : border}
         transition-colors cursor-pointer w-32 flex flex-col items-center justify-center`}
       >
         <Handle type="target" position={Position.Left} />
@@ -528,9 +529,9 @@ const DigimonEvolutionGraph: React.FC = () => {
   return (
     <div className="flex flex-col h-full">
       {/* Search bar - updated styling */}
-      <div className="bg-white border border-gray-200 rounded-lg p-3 shadow-sm mb-4">
-        <div className="flex items-center">
-          <div className="relative flex-grow">
+      <div className="ui-panel p-4 mb-4">
+        <div className="flex flex-col lg:flex-row gap-3">
+          <div className="relative min-w-0 flex-grow">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <svg
                 className="h-5 w-5 text-gray-400"
@@ -547,14 +548,16 @@ const DigimonEvolutionGraph: React.FC = () => {
             </div>
             <input
               type="text"
+              aria-label="Search evolution graph"
               placeholder="Search by name, type, or attribute..."
-              className="block w-full pl-10 pr-10 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-800"
+              className="input pl-10 pr-10"
               value={searchTerm}
               onChange={handleSearchChange}
             />
             {searchTerm && (
               <button
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                aria-label="Clear evolution search"
+                className="absolute inset-y-0 right-0 ui-icon-button"
                 onClick={clearSearch}
               >
                 <svg
@@ -572,7 +575,7 @@ const DigimonEvolutionGraph: React.FC = () => {
               </button>
             )}
           </div>
-          <div className="ml-4 text-sm text-gray-600 font-medium">
+          <div className="text-sm text-gray-600 dark:text-gray-400 font-medium">
             {filteredDigimon.length} of {digimon.length} Digimon, only showing discovered and direct
             evolutions
           </div>
@@ -581,14 +584,12 @@ const DigimonEvolutionGraph: React.FC = () => {
 
       {/* Main content - update to fixed width side panel */}
       <div
-        className="flex flex-1 overflow-hidden border border-gray-200 rounded-lg"
+        className="flex min-w-0 flex-1 overflow-hidden border border-gray-200 dark:border-dark-100 rounded-xl"
         style={{ height: 'calc(100vh - 250px)' }}
       >
-        <div className="flex-grow h-full" style={{ position: 'relative' }}>
+        <div className="min-w-0 flex-grow h-full" style={{ position: 'relative' }}>
           {loading ? (
-            <div className="flex items-center justify-center h-full">
-              <p className="text-xl">Loading Digimon data...</p>
-            </div>
+            <LoadingIndicator message="Loading evolutions…" className="h-full" />
           ) : (
             <div
               style={{
@@ -632,11 +633,11 @@ const DigimonEvolutionGraph: React.FC = () => {
         </div>
 
         {/* Side panel with fixed width of 350px */}
-        <div className="w-[350px] flex-shrink-0 h-full bg-gray-50 p-4 overflow-y-auto border-l border-gray-200 shadow-inner">
+        <div className="hidden md:block w-72 xl:w-[350px] flex-shrink-0 h-full bg-gray-50 dark:bg-dark-400 p-4 overflow-y-auto border-l border-gray-200 dark:border-dark-100">
           {selectedDigimon ? (
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-              {/* Header with gradient background */}
-              <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-4 text-white">
+            <div className="ui-panel text-gray-900 dark:text-gray-100 overflow-hidden">
+              {/* Header */}
+              <div className="bg-gray-50 dark:bg-dark-200 p-4 text-gray-900 dark:text-gray-100 border-b border-gray-200 dark:border-dark-100">
                 <h2 className="text-xl font-bold">
                   {discoveredDigimon.has(selectedDigimon.id) ? selectedDigimon.name : '???'}
                 </h2>
@@ -646,7 +647,7 @@ const DigimonEvolutionGraph: React.FC = () => {
               </div>
 
               {/* Image section with background */}
-              <div className="p-4 bg-gray-100 flex justify-center">
+              <div className="p-4 bg-gray-100 dark:bg-dark-200 flex justify-center">
                 {selectedDigimon.sprite_url && (
                   <img
                     src={selectedDigimon.sprite_url}
@@ -669,7 +670,7 @@ const DigimonEvolutionGraph: React.FC = () => {
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <div>
                     <p className="text-xs text-gray-500 uppercase font-medium">Type</p>
-                    <p className="font-medium text-gray-800">
+                    <p className="font-medium text-gray-800 dark:text-gray-200">
                       {discoveredDigimon.has(selectedDigimon.id)
                         ? selectedDigimon.type || 'Unknown'
                         : '???'}
@@ -677,7 +678,7 @@ const DigimonEvolutionGraph: React.FC = () => {
                   </div>
                   <div>
                     <p className="text-xs text-gray-500 uppercase font-medium">Attribute</p>
-                    <p className="font-medium text-gray-800">
+                    <p className="font-medium text-gray-800 dark:text-gray-200">
                       {discoveredDigimon.has(selectedDigimon.id)
                         ? selectedDigimon.attribute || 'Unknown'
                         : '???'}
@@ -689,12 +690,12 @@ const DigimonEvolutionGraph: React.FC = () => {
                 {discoveredDigimon.has(selectedDigimon.id) && (
                   <>
                     {/* Level tabs with updated styling */}
-                    <div className="flex mb-4 bg-white border border-gray-200 rounded-lg overflow-hidden">
+                    <div className="flex mb-4 bg-gray-100 dark:bg-dark-200 border border-gray-200 dark:border-dark-100 rounded-lg overflow-hidden">
                       {[1, 50, 99].map((level) => (
                         <button
                           key={level}
-                          className={`py-2 px-4 font-medium text-sm flex-1 text-black m-1 ${
-                            statLevel === level ? 'bg-gray-200' : 'bg-white hover:bg-gray-100'
+                          className={`ui-tab flex-1 m-1 ${
+                            statLevel === level ? 'ui-tab-active' : ''
                           }`}
                           onClick={() => setStatLevel(level as 1 | 50 | 99)}
                         >
@@ -724,7 +725,9 @@ const DigimonEvolutionGraph: React.FC = () => {
                                         ? 'Intelligence'
                                         : 'Speed'}
                             </p>
-                            <p className="font-medium text-gray-800 text-lg">{value || 'N/A'}</p>
+                            <p className="font-medium text-gray-800 dark:text-gray-200 text-lg">
+                              {value || 'N/A'}
+                            </p>
                           </div>
                         )
                       )}
@@ -740,7 +743,7 @@ const DigimonEvolutionGraph: React.FC = () => {
 
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-medium text-gray-700 mb-2 flex items-center">
+                      <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           className="h-4 w-4 mr-1 text-blue-500"
@@ -801,7 +804,7 @@ const DigimonEvolutionGraph: React.FC = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-medium text-gray-700 mb-2 flex items-center">
+                      <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           className="h-4 w-4 mr-1 text-green-500"
@@ -902,8 +905,5 @@ const DigimonEvolutionGraph: React.FC = () => {
     </div>
   );
 };
-
-// Install dependencies:
-// npm install @supabase/supabase-js react-flow-renderer
 
 export default DigimonEvolutionGraph;
