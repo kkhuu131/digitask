@@ -245,6 +245,19 @@ const Dashboard: React.FC = () => {
             {/* Activity strip — 7 day dots + quota bar */}
             <div className="mb-3 space-y-2">
               {/* 7-day dots */}
+              {weekActivity.length !== 7 && (
+                <div role="status">
+                  <span className="sr-only">Loading weekly activity…</span>
+                  <div className="flex gap-1.5 ui-skeleton-pulse" aria-hidden="true">
+                    {Array.from({ length: 7 }, (_, index) => (
+                      <div key={index} className="flex-1 space-y-1">
+                        <div className="h-8 rounded-lg bg-gray-200 dark:bg-dark-200" />
+                        <div className="h-4 mx-auto w-6 rounded bg-gray-200 dark:bg-dark-200" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
               {weekActivity.length === 7 && (
                 <div className="flex items-end gap-1.5">
                   {weekActivity.map((count, i) => {

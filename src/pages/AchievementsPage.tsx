@@ -1,4 +1,5 @@
 import NextPartnerReward from '../components/NextPartnerReward';
+import ContentSkeleton from '../components/ContentSkeleton';
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTitleStore, UserTitle } from '../store/titleStore';
@@ -291,6 +292,36 @@ const AchievementsPage: React.FC = () => {
 
   const pending = unclaimedCount();
 
+  if (!initialCheckDone && userTitles.length === 0) {
+    return (
+      <div className="ui-page">
+        <div className="mb-6">
+          <div className="flex items-center gap-3 mb-1">
+            <Medal className="h-6 w-6 text-accent-700 dark:text-accent-400" />
+            <h1 className="ui-page-title">Achievements</h1>
+          </div>
+          <p className="ui-description">
+            Complete challenges to unlock titles, bits, and new Digimon.
+          </p>
+        </div>
+        <ContentSkeleton
+          label="Loading achievements…"
+          count={1}
+          itemClassName="min-h-32"
+          className="mb-6"
+        />
+        <ContentSkeleton
+          label="Loading pinned titles…"
+          layout="grid"
+          count={3}
+          itemClassName="!h-24"
+          className="ui-panel p-4 mb-6"
+        />
+        <ContentSkeleton label="Loading achievement cards…" layout="grid" count={6} />
+      </div>
+    );
+  }
+
   return (
     <div className="ui-page">
       {/* Page header */}
@@ -306,11 +337,6 @@ const AchievementsPage: React.FC = () => {
         </div>
         <p className="ui-description">
           Complete challenges to unlock titles, bits, and new Digimon.
-          {!initialCheckDone && (
-            <span className="ml-2 text-accent-700 dark:text-accent-400 animate-pulse">
-              Checking for new achievements…
-            </span>
-          )}
         </p>
       </div>
 

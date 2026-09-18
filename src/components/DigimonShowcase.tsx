@@ -1,13 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { DIGIMON_LOOKUP_TABLE } from '../constants/digimonLookup';
 import DigimonSprite from './DigimonSprite';
 
 const DigimonShowcase: React.FC = () => {
-  const [digimonImages, setDigimonImages] = useState<
-    Array<{ id: number; name: string; sprite: string }>
-  >([]);
-
-  useEffect(() => {
+  const [digimonImages] = useState<Array<{ id: number; name: string; sprite: string }>>(() => {
     // Convert the lookup table to an array
     const allDigimon = Object.values(DIGIMON_LOOKUP_TABLE).map((digimon) => ({
       id: digimon.id,
@@ -19,8 +15,8 @@ const DigimonShowcase: React.FC = () => {
     const shuffled = [...allDigimon].sort(() => 0.5 - Math.random());
     const selectedDigimon = shuffled.slice(0, 30);
 
-    setDigimonImages(selectedDigimon);
-  }, []);
+    return selectedDigimon;
+  });
 
   return (
     <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-10 gap-2 p-4 bg-white rounded-lg shadow-md dark:bg-gray-900/80 dark:border dark:border-gray-700">

@@ -19,10 +19,16 @@ export default function NextPartnerReward({
   const earned = useTitleStore((state) => state.userTitles);
   const [progress, setProgress] = useState<PartnerProgress | null>(null);
   const [failed, setFailed] = useState(false);
+  const titlesLoading = useTitleStore((state) => state.loading);
+  const [hasShownProgress, setHasShownProgress] = useState(false);
+  useEffect(() => {
+    if (progress && !titlesLoading) setHasShownProgress(true);
+  }, [progress, titlesLoading]);
   useEffect(() => {
     let active = true;
     setProgress(null);
     setFailed(false);
+    setHasShownProgress(false);
     const refresh = async () => {
       if (!userId) return;
       try {
@@ -61,6 +67,49 @@ export default function NextPartnerReward({
       window.removeEventListener('focus', refresh);
     };
   }, [userId]);
+  if (!failed && (!progress || (!hasShownProgress && titlesLoading))) {
+    return compact ? (
+      <div
+        className="border-t border-gray-200 dark:border-dark-100 px-4 py-3 space-y-3"
+        aria-label="DigiEgg reward paths"
+        aria-busy="true"
+        role="status"
+      >
+        <span className="sr-only">Loading partner progress…</span>
+        <div className="space-y-3 ui-skeleton-pulse" aria-hidden="true">
+          {[0, 1, 2, 3].map((index) => (
+            <div key={index}>
+              <div className="flex items-center gap-2 h-4">
+                <div className="w-4 h-4 shrink-0 rounded bg-gray-200 dark:bg-dark-200" />
+                <div className="h-3 w-3/4 rounded bg-gray-200 dark:bg-dark-200" />
+                <div className="h-3 w-10 ml-auto rounded bg-gray-200 dark:bg-dark-200" />
+              </div>
+              <div className="mt-2 h-1.5 rounded-full bg-gray-200 dark:bg-dark-200" />
+            </div>
+          ))}
+        </div>
+      </div>
+    ) : (
+      <section
+        id="partner-reward"
+        className="card mb-6"
+        aria-label="Next partner reward"
+        aria-busy="true"
+        role="status"
+      >
+        <span className="sr-only">Loading partner progress…</span>
+        <div className="flex items-start gap-3 ui-skeleton-pulse" aria-hidden="true">
+          <div className="w-5 h-5 mt-0.5 shrink-0 rounded bg-gray-200 dark:bg-dark-200" />
+          <div className="flex-1 min-w-0">
+            <div className="h-7 w-48 max-w-full rounded bg-gray-200 dark:bg-dark-200" />
+            <div className="h-5 mt-1 w-full rounded bg-gray-200 dark:bg-dark-200" />
+            <div className="mt-3 h-4 w-24 rounded bg-gray-200 dark:bg-dark-200" />
+            <div className="mt-1 h-2 rounded-full bg-gray-200 dark:bg-dark-200" />
+          </div>
+        </div>
+      </section>
+    );
+  }
   const next = nextPartnerReward(earned, progress);
   const requirement =
     next?.title.requirement_type === 'tasks_completed'
@@ -136,9 +185,7 @@ export default function NextPartnerReward({
           );
         })}
         {!progress && (
-          <p className="text-xs text-gray-500 dark:text-gray-400">
-            {failed ? 'Progress unavailable.' : 'Checking progress…'}
-          </p>
+          <p className="text-xs text-gray-500 dark:text-gray-400">Progress unavailable.</p>
         )}
         {next?.ready && (
           <Link
@@ -197,7 +244,7 @@ export default function NextPartnerReward({
           )}
           {next && !next.ready && !progress && (
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-              {failed ? 'Progress unavailable. Revisit this page to retry.' : 'Checking progress…'}
+              Progress unavailable. Revisit this page to retry.
             </p>
           )}
           {next?.ready && onClaim && (

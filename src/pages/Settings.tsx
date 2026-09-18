@@ -6,7 +6,7 @@ const Settings = () => {
   const { isDarkMode, toggleTheme, setDarkMode } = useThemeStore();
   const { user, userProfile, updateProfile, error: profileError } = useAuthStore();
   const [success] = useState(false);
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState(() => userProfile?.username || '');
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [profileLoading, setProfileLoading] = useState(false);
 

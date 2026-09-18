@@ -40,12 +40,23 @@ const DigimonEvolutionHistory = ({ petId, speciesId }: Props) => {
   const selectedSpecies = selected && DIGIMON_LOOKUP_TABLE[selected.digimon_id];
 
   return (
-    <section className="mt-6" aria-label="Evolution history">
+    <section className="mt-6" aria-label="Evolution history" aria-busy={loading}>
       <h4 className="ui-section-title mb-2">Evolution History</h4>
       {loading ? (
-        <p className="text-sm text-gray-600 dark:text-gray-400" role="status">
-          Loading history…
-        </p>
+        <div role="status">
+          <span className="sr-only">Loading evolution history…</span>
+          <div
+            className="grid grid-cols-[repeat(auto-fill,minmax(44px,1fr))] gap-2 p-1 ui-skeleton-pulse"
+            aria-hidden="true"
+          >
+            {[0, 1, 2, 3].map((index) => (
+              <div key={index} className="min-h-[56px] flex flex-col items-center justify-center">
+                <div className="w-8 h-8 rounded bg-gray-200 dark:bg-dark-200" />
+                <div className="w-6 h-3 mt-1 rounded bg-gray-200 dark:bg-dark-200" />
+              </div>
+            ))}
+          </div>
+        </div>
       ) : error ? (
         <div className="text-sm text-gray-600 dark:text-gray-400" role="status">
           <p>Couldn’t load evolution history.</p>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import ContentSkeleton from '../components/ContentSkeleton';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../store/authStore';
@@ -20,6 +21,7 @@ const AdminUserDigimonPage = () => {
   const navigate = useNavigate();
 
   const [selectedDigimon, setSelectedDigimon] = useState<UserDigimon | null>(null);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [editForm, setEditForm] = useState({
     digimon_id: 0,
     name: '',
@@ -49,7 +51,7 @@ const AdminUserDigimonPage = () => {
       navigate('/');
       addNotification({ message: 'You do not have permission to access this page', type: 'error' });
     } else {
-      fetchAllUserDigimon();
+      void fetchAllUserDigimon().finally(() => setInitialLoading(false));
     }
   }, [isAdmin, navigate, addNotification, fetchAllUserDigimon]);
 
@@ -233,7 +235,9 @@ const AdminUserDigimonPage = () => {
             <h2 className="text-base font-semibold text-gray-800 dark:text-gray-100 mb-3">
               User Digimon
             </h2>
-            {allUserDigimon.length === 0 ? (
+            {initialLoading && allUserDigimon.length === 0 ? (
+              <ContentSkeleton label="Loading user Digimon…" layout="grid" />
+            ) : allUserDigimon.length === 0 ? (
               <p className="text-sm text-gray-400 dark:text-gray-500">No Digimon found.</p>
             ) : (
               <div className="grid grid-cols-3 gap-3">

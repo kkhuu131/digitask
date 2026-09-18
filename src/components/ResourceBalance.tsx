@@ -8,6 +8,7 @@ interface ResourceBalanceProps {
   value: string;
   to: string;
   description: string;
+  loading?: boolean;
 }
 
 export default function ResourceBalance({
@@ -16,6 +17,7 @@ export default function ResourceBalance({
   value,
   to,
   description,
+  loading = false,
 }: ResourceBalanceProps) {
   const [open, setOpen] = useState(false);
   const wrapper = useRef<HTMLDivElement>(null);
@@ -68,7 +70,18 @@ export default function ResourceBalance({
           aria-hidden="true"
         />
         <span className="truncate tabular-nums">
-          {value} <span className="font-medium">{label}</span>
+          {loading ? (
+            <span role="status" aria-busy="true" className="inline-block align-middle mr-1">
+              <span className="sr-only">Loading {label}…</span>
+              <span
+                aria-hidden="true"
+                className="block h-3 w-8 rounded bg-gray-200 dark:bg-dark-100 ui-skeleton-pulse"
+              />
+            </span>
+          ) : (
+            value
+          )}{' '}
+          <span className="font-medium">{label}</span>
         </span>
       </Link>
       <button

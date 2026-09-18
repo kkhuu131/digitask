@@ -47,6 +47,16 @@ const PatchNotes = () => {
               <li>
                 Existing Digimon start from their current species when history tracking begins.
               </li>
+              <li>
+                Data sections across the app use compact placeholders while loading, including
+                evolution history, achievement progress, farm storage, shop inventory, tournament
+                status, avatar choices and admin lists. Existing content stays visible during
+                background refreshes.
+              </li>
+              <li>
+                DigiFarm’s active party uses a three-column grid, with larger sprites on both party
+                and storage cards.
+              </li>
             </ul>
           </div>
 

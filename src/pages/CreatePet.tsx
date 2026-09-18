@@ -10,7 +10,7 @@ import { useOnboardingStore } from '../store/onboardingStore';
 const CreatePet = () => {
   const { createUserDigimon, error, fetchUserDigimon, userDigimon } = useDigimonStore();
   const [creationError, setCreationError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const [needsEmailConfirmation, setNeedsEmailConfirmation] = useState(false);
 

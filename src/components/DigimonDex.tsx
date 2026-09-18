@@ -1,5 +1,5 @@
 import { getDigidexProgress } from '../utils/digidexProgress';
-import LoadingIndicator from './LoadingIndicator';
+import ContentSkeleton from './ContentSkeleton';
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import { useDigimonStore, Digimon } from '../store/petStore';
@@ -114,7 +114,7 @@ const DigimonDex = () => {
   // ── Loading state ─────────────────────────────────────────────────────────
 
   if (loading && allDigimon.length === 0) {
-    return <LoadingIndicator message="Loading DigiDex…" />;
+    return <ContentSkeleton label="Loading DigiDex…" count={6} />;
   }
 
   // ── Render ────────────────────────────────────────────────────────────────

@@ -142,6 +142,11 @@ focused on the arena: no battle log or behavior captions beneath skill bars.
 - Use neutral skeletons matching the final layout for initial data loads, with
   the shared `ui-skeleton-pulse` animation and a single accessible status label.
   Keep headings, gutters and panel sizes stable.
+- Use `ContentSkeleton` for repeated card, list and table placeholders. Use
+  custom skeletons for compact sprite histories, progress rows and activity
+  strips. Reserve the section from the first render; do not temporarily present
+  unknown counters as zero, missing inventory as unavailable, or an unfinished
+  lookup as an empty result. Related labels, values and actions reveal together.
 - Keep existing content during refreshes and saves. Indicate pending work on
   the initiating control and disable duplicate submissions instead of replacing
   a populated page with a loader. Clear old content when its account or query

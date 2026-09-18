@@ -46,6 +46,13 @@ These require deliberate interaction changes beyond spacing/color consistency:
 
 ## Validation
 
+The September 18 follow-up audits all page/component sources and active data
+callers for loading-text flashes, provisional empty/zero states and independently
+appearing sections. Coverage, changes and limits are recorded in
+[LOADING_REVIEW.md](LOADING_REVIEW.md). Shared list/card/table skeletons now cover
+initial reads; existing populated content remains visible during background
+refreshes. Operation feedback retains the delayed shared indicator.
+
 Loading follow-up: added shared amber indicators with a delayed visual reveal and
 reduced-motion support, plus one gentle skeleton animation. Lazy route fallbacks
 now stay inside the navigation shell, without sliding page transitions. Populated

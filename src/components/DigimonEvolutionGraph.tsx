@@ -1,4 +1,4 @@
-import LoadingIndicator from './LoadingIndicator';
+import ContentSkeleton from './ContentSkeleton';
 import DigimonDetails from './DigimonDetails';
 import DigimonDetailsDrawer from './DigimonDetailsDrawer';
 // App.tsx
@@ -554,7 +554,12 @@ const DigimonEvolutionGraph: React.FC = () => {
       >
         <div className="min-w-0 flex-grow h-full" style={{ position: 'relative' }}>
           {loading ? (
-            <LoadingIndicator message="Loading evolutions…" className="h-full" />
+            <ContentSkeleton
+              label="Loading evolutions…"
+              layout="grid"
+              className="h-full p-4"
+              count={6}
+            />
           ) : (
             <div
               style={{

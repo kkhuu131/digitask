@@ -9,6 +9,7 @@ import PageTutorial from './PageTutorial';
 import { DialogueStep } from './DigimonDialogue';
 import { BASE_TO_FORMS_MAP } from '../constants/digimonFormsLookup';
 import DigimonFormTransformationModal from './DigimonFormTransformationModal';
+import ContentSkeleton from './ContentSkeleton';
 import DigimonSprite from './DigimonSprite';
 import { useInventoryStore } from '../store/inventoryStore';
 import { getItemName } from '@/constants/storeItems';
@@ -198,212 +199,222 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
           )}
 
           <div className="overflow-y-auto max-h-[60vh] mb-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {options.map((option) => {
-                let canEvolve = true;
-                const statRequirementsList: {
-                  name: string;
-                  current: number;
-                  required: number;
-                  meets: boolean;
-                }[] = [];
+            {itemsLoading && !isDevolution && options.some((option) => option.item_requirement) ? (
+              <ContentSkeleton
+                label="Loading evolution item requirements…"
+                layout="grid"
+                count={options.length}
+                gridClassName="grid-cols-1 sm:grid-cols-2 md:grid-cols-3"
+                itemClassName="min-h-64"
+              />
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {options.map((option) => {
+                  let canEvolve = true;
+                  const statRequirementsList: {
+                    name: string;
+                    current: number;
+                    required: number;
+                    meets: boolean;
+                  }[] = [];
 
-                if (!isDevolution) {
-                  const finalStats = calculateFinalStats(selectedDigimon);
+                  if (!isDevolution) {
+                    const finalStats = calculateFinalStats(selectedDigimon);
 
-                  const meetsLevelRequirement =
-                    selectedDigimon.current_level >= option.level_required;
+                    const meetsLevelRequirement =
+                      selectedDigimon.current_level >= option.level_required;
 
-                  let meetsStatRequirements = true;
+                    let meetsStatRequirements = true;
 
-                  if (option.stat_requirements) {
-                    const statReqs = option.stat_requirements;
+                    if (option.stat_requirements) {
+                      const statReqs = option.stat_requirements;
 
-                    if (statReqs.hp && statReqs.hp > 0) {
-                      const currentHP = finalStats.hp;
-                      if (currentHP < statReqs.hp) meetsStatRequirements = false;
-                      statRequirementsList.push({
-                        name: 'HP',
-                        current: currentHP,
-                        required: statReqs.hp,
-                        meets: currentHP >= statReqs.hp,
-                      });
+                      if (statReqs.hp && statReqs.hp > 0) {
+                        const currentHP = finalStats.hp;
+                        if (currentHP < statReqs.hp) meetsStatRequirements = false;
+                        statRequirementsList.push({
+                          name: 'HP',
+                          current: currentHP,
+                          required: statReqs.hp,
+                          meets: currentHP >= statReqs.hp,
+                        });
+                      }
+
+                      if (statReqs.sp && statReqs.sp > 0) {
+                        const currentSP = finalStats.sp;
+                        if (currentSP < statReqs.sp) meetsStatRequirements = false;
+                        statRequirementsList.push({
+                          name: 'SP',
+                          current: currentSP,
+                          required: statReqs.sp,
+                          meets: currentSP >= statReqs.sp,
+                        });
+                      }
+
+                      if (statReqs.atk && statReqs.atk > 0) {
+                        const currentATK = finalStats.atk;
+                        if (currentATK < statReqs.atk) meetsStatRequirements = false;
+                        statRequirementsList.push({
+                          name: 'ATK',
+                          current: currentATK,
+                          required: statReqs.atk,
+                          meets: currentATK >= statReqs.atk,
+                        });
+                      }
+
+                      if (statReqs.def && statReqs.def > 0) {
+                        const currentDEF = finalStats.def;
+                        if (currentDEF < statReqs.def) meetsStatRequirements = false;
+                        statRequirementsList.push({
+                          name: 'DEF',
+                          current: currentDEF,
+                          required: statReqs.def,
+                          meets: currentDEF >= statReqs.def,
+                        });
+                      }
+
+                      if (statReqs.int && statReqs.int > 0) {
+                        const currentINT = finalStats.int;
+                        if (currentINT < statReqs.int) meetsStatRequirements = false;
+                        statRequirementsList.push({
+                          name: 'INT',
+                          current: currentINT,
+                          required: statReqs.int,
+                          meets: currentINT >= statReqs.int,
+                        });
+                      }
+
+                      if (statReqs.spd && statReqs.spd > 0) {
+                        const currentSPD = finalStats.spd;
+                        if (currentSPD < statReqs.spd) meetsStatRequirements = false;
+                        statRequirementsList.push({
+                          name: 'SPD',
+                          current: currentSPD,
+                          required: statReqs.spd,
+                          meets: currentSPD >= statReqs.spd,
+                        });
+                      }
+
+                      if (statReqs.abi && statReqs.abi > 0) {
+                        const currentABI = selectedDigimon.abi || 0;
+                        if (currentABI < statReqs.abi) meetsStatRequirements = false;
+                        statRequirementsList.push({
+                          name: 'ABI',
+                          current: currentABI,
+                          required: statReqs.abi,
+                          meets: currentABI >= statReqs.abi,
+                        });
+                      }
                     }
 
-                    if (statReqs.sp && statReqs.sp > 0) {
-                      const currentSP = finalStats.sp;
-                      if (currentSP < statReqs.sp) meetsStatRequirements = false;
-                      statRequirementsList.push({
-                        name: 'SP',
-                        current: currentSP,
-                        required: statReqs.sp,
-                        meets: currentSP >= statReqs.sp,
-                      });
+                    // Check for item requirement
+                    let hasRequiredItem = true;
+                    if (option.item_requirement) {
+                      hasRequiredItem =
+                        !itemsLoading && userHasItems[option.item_requirement] === true;
                     }
 
-                    if (statReqs.atk && statReqs.atk > 0) {
-                      const currentATK = finalStats.atk;
-                      if (currentATK < statReqs.atk) meetsStatRequirements = false;
-                      statRequirementsList.push({
-                        name: 'ATK',
-                        current: currentATK,
-                        required: statReqs.atk,
-                        meets: currentATK >= statReqs.atk,
-                      });
-                    }
-
-                    if (statReqs.def && statReqs.def > 0) {
-                      const currentDEF = finalStats.def;
-                      if (currentDEF < statReqs.def) meetsStatRequirements = false;
-                      statRequirementsList.push({
-                        name: 'DEF',
-                        current: currentDEF,
-                        required: statReqs.def,
-                        meets: currentDEF >= statReqs.def,
-                      });
-                    }
-
-                    if (statReqs.int && statReqs.int > 0) {
-                      const currentINT = finalStats.int;
-                      if (currentINT < statReqs.int) meetsStatRequirements = false;
-                      statRequirementsList.push({
-                        name: 'INT',
-                        current: currentINT,
-                        required: statReqs.int,
-                        meets: currentINT >= statReqs.int,
-                      });
-                    }
-
-                    if (statReqs.spd && statReqs.spd > 0) {
-                      const currentSPD = finalStats.spd;
-                      if (currentSPD < statReqs.spd) meetsStatRequirements = false;
-                      statRequirementsList.push({
-                        name: 'SPD',
-                        current: currentSPD,
-                        required: statReqs.spd,
-                        meets: currentSPD >= statReqs.spd,
-                      });
-                    }
-
-                    if (statReqs.abi && statReqs.abi > 0) {
-                      const currentABI = selectedDigimon.abi || 0;
-                      if (currentABI < statReqs.abi) meetsStatRequirements = false;
-                      statRequirementsList.push({
-                        name: 'ABI',
-                        current: currentABI,
-                        required: statReqs.abi,
-                        meets: currentABI >= statReqs.abi,
-                      });
-                    }
+                    canEvolve = meetsLevelRequirement && meetsStatRequirements && hasRequiredItem;
                   }
 
-                  // Check for item requirement
-                  let hasRequiredItem = true;
-                  if (option.item_requirement) {
-                    hasRequiredItem =
-                      !itemsLoading && userHasItems[option.item_requirement] === true;
-                  }
+                  const discovered = isDiscovered(option.digimon_id);
+                  const canProceed = isDevolution ? discovered : canEvolve;
 
-                  canEvolve = meetsLevelRequirement && meetsStatRequirements && hasRequiredItem;
-                }
-
-                const discovered = isDiscovered(option.digimon_id);
-                const canProceed = isDevolution ? discovered : canEvolve;
-
-                return (
-                  <div
-                    key={option.id}
-                    className={`border dark:border-gray-700 rounded-lg p-4 flex flex-col items-center ${
-                      canProceed
-                        ? 'hover:shadow-md cursor-pointer opacity-100'
-                        : 'opacity-60 bg-gray-100 dark:bg-dark-200'
-                    } ${option.dna_requirement ? 'border-2 border-yellow-400 dark:border-yellow-500 shadow-lg shadow-yellow-200/50 dark:shadow-yellow-500/20' : ''}
+                  return (
+                    <div
+                      key={option.id}
+                      className={`border dark:border-gray-700 rounded-lg p-4 flex flex-col items-center ${
+                        canProceed
+                          ? 'hover:shadow-md cursor-pointer opacity-100'
+                          : 'opacity-60 bg-gray-100 dark:bg-dark-200'
+                      } ${option.dna_requirement ? 'border-2 border-yellow-400 dark:border-yellow-500 shadow-lg shadow-yellow-200/50 dark:shadow-yellow-500/20' : ''}
                     ${option.item_requirement ? 'border-2 border-purple-400 dark:border-purple-500 shadow-lg shadow-purple-200/50 dark:shadow-purple-500/20' : ''}`}
-                    onClick={() => canProceed && handleEvolve(option.digimon_id)}
-                  >
-                    <DigimonSprite
-                      digimonName={option.name}
-                      fallbackSpriteUrl={option.sprite_url}
-                      size="md"
-                      showHappinessAnimations={false}
-                      silhouette={!discovered}
-                    />
+                      onClick={() => canProceed && handleEvolve(option.digimon_id)}
+                    >
+                      <DigimonSprite
+                        digimonName={option.name}
+                        fallbackSpriteUrl={option.sprite_url}
+                        size="md"
+                        showHappinessAnimations={false}
+                        silhouette={!discovered}
+                      />
 
-                    <h4 className="font-bold dark:text-gray-200">
-                      {discovered
-                        ? option.name
-                        : option.name.includes('(')
-                          ? `??? ${option.name.substring(option.name.indexOf('('))}`
-                          : '???'}
-                    </h4>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{option.stage}</p>
-                    {!isDevolution && (
-                      <p className="text-sm my-1 dark:text-gray-300">
-                        Lv.{' '}
-                        <span
-                          className={
-                            selectedDigimon.current_level >= option.level_required
-                              ? 'text-green-600 dark:text-green-400'
-                              : 'text-red-600 dark:text-red-400'
-                          }
-                        >
-                          {selectedDigimon.current_level}/{option.level_required}
-                        </span>
-                      </p>
-                    )}
+                      <h4 className="font-bold dark:text-gray-200">
+                        {discovered
+                          ? option.name
+                          : option.name.includes('(')
+                            ? `??? ${option.name.substring(option.name.indexOf('('))}`
+                            : '???'}
+                      </h4>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">{option.stage}</p>
+                      {!isDevolution && (
+                        <p className="text-sm my-1 dark:text-gray-300">
+                          Lv.{' '}
+                          <span
+                            className={
+                              selectedDigimon.current_level >= option.level_required
+                                ? 'text-green-600 dark:text-green-400'
+                                : 'text-red-600 dark:text-red-400'
+                            }
+                          >
+                            {selectedDigimon.current_level}/{option.level_required}
+                          </span>
+                        </p>
+                      )}
 
-                    {!isDevolution && statRequirementsList.length > 0 && (
-                      <div className="mt-2 w-full">
-                        <div className="space-y-1">
-                          {statRequirementsList.map((stat, idx) => (
-                            <p key={idx} className="text-xs dark:text-gray-300">
-                              {stat.name}{' '}
-                              <span
-                                className={
-                                  stat.meets
-                                    ? 'text-green-600 dark:text-green-400'
-                                    : 'text-red-600 dark:text-red-400'
-                                }
-                              >
-                                {stat.current}/{stat.required}
-                              </span>
-                            </p>
-                          ))}
+                      {!isDevolution && statRequirementsList.length > 0 && (
+                        <div className="mt-2 w-full">
+                          <div className="space-y-1">
+                            {statRequirementsList.map((stat, idx) => (
+                              <p key={idx} className="text-xs dark:text-gray-300">
+                                {stat.name}{' '}
+                                <span
+                                  className={
+                                    stat.meets
+                                      ? 'text-green-600 dark:text-green-400'
+                                      : 'text-red-600 dark:text-red-400'
+                                  }
+                                >
+                                  {stat.current}/{stat.required}
+                                </span>
+                              </p>
+                            ))}
 
-                          {option.dna_requirement && (
-                            <p className="text-xs font-medium dark:text-gray-300">
-                              Digimon:{' '}
-                              <span className="text-yellow-600 dark:text-yellow-400 font-bold">
-                                {DIGIMON_LOOKUP_TABLE[option.dna_requirement].name}
-                              </span>
-                            </p>
-                          )}
+                            {option.dna_requirement && (
+                              <p className="text-xs font-medium dark:text-gray-300">
+                                Digimon:{' '}
+                                <span className="text-yellow-600 dark:text-yellow-400 font-bold">
+                                  {DIGIMON_LOOKUP_TABLE[option.dna_requirement].name}
+                                </span>
+                              </p>
+                            )}
 
-                          {option.item_requirement && (
-                            <p className="text-xs font-medium dark:text-gray-300">
-                              Item:{' '}
-                              <span
-                                className={
-                                  userHasItems[option.item_requirement]
-                                    ? 'text-purple-600 dark:text-purple-400 font-bold'
-                                    : 'text-red-600 dark:text-red-400 font-bold'
-                                }
-                              >
-                                {getItemName(option.item_requirement) ||
-                                  option.item_requirement
-                                    .split('_')
-                                    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                                    .join(' ')}
-                              </span>
-                            </p>
-                          )}
+                            {option.item_requirement && (
+                              <p className="text-xs font-medium dark:text-gray-300">
+                                Item:{' '}
+                                <span
+                                  className={
+                                    userHasItems[option.item_requirement]
+                                      ? 'text-purple-600 dark:text-purple-400 font-bold'
+                                      : 'text-red-600 dark:text-red-400 font-bold'
+                                  }
+                                >
+                                  {getItemName(option.item_requirement) ||
+                                    option.item_requirement
+                                      .split('_')
+                                      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                                      .join(' ')}
+                                </span>
+                              </p>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           <div className="flex justify-between sticky bottom-0 bg-white dark:bg-dark-300 pt-4 border-t dark:border-dark-100">

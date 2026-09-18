@@ -1,4 +1,5 @@
 import ResourceBalance from '../components/ResourceBalance';
+import ContentSkeleton from '../components/ContentSkeleton';
 import { Coins } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useCurrencyStore } from '../store/currencyStore';
@@ -54,7 +55,10 @@ const DigimonStorePage: React.FC = () => {
     INT: 0,
     SPD: 0,
   });
-  const [neeemonDialogue, setNeeemonDialogue] = useState('');
+  const [neeemonDialogue] = useState(
+    () => NEEMON_DIALOGUE[Math.floor(Math.random() * NEEMON_DIALOGUE.length)]
+  );
+  const [initialLoading, setInitialLoading] = useState(true);
   const [showDigimonSelectionModal, setShowDigimonSelectionModal] = useState<StoreItem | null>(
     null
   );
@@ -70,8 +74,9 @@ const DigimonStorePage: React.FC = () => {
   ]);
   const [showXAntibodyModal, setShowXAntibodyModal] = useState(false);
   const [digimonForXAntibody, setDigimonForXAntibody] = useState<UserDigimon[]>([]);
-  // Add state to track item quantities
-  const [itemQuantities, setItemQuantities] = useState<Record<string, number>>({});
+  const itemQuantities: Record<string, number> = Object.fromEntries(
+    items.map((item) => [item.item_id, item.quantity])
+  );
 
   // Set categories for filtering
   const categories = [
@@ -92,29 +97,13 @@ const DigimonStorePage: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchCurrency();
-    fetchUserDigimon();
-    fetchUserStats();
-    fetchInventory();
+    void Promise.all([
+      fetchCurrency(),
+      fetchUserDigimon(),
+      fetchUserStats(),
+      fetchInventory(),
+    ]).finally(() => setInitialLoading(false));
   }, [fetchCurrency, fetchUserDigimon, fetchInventory]);
-
-  // Add a separate useEffect to update item quantities whenever inventory changes
-  useEffect(() => {
-    const quantities: Record<string, number> = {};
-
-    // Map inventory items to their quantities
-    items.forEach((item) => {
-      quantities[item.item_id] = item.quantity;
-    });
-
-    setItemQuantities(quantities);
-  }, [items]);
-
-  // Add a SEPARATE useEffect just for the dialogue that only runs ONCE on component mount
-  useEffect(() => {
-    // Set random Neemon dialogue only on initial page load
-    setNeeemonDialogue(NEEMON_DIALOGUE[Math.floor(Math.random() * NEEMON_DIALOGUE.length)]);
-  }, []); // Empty dependency array means this runs once on mount
 
   // Fetch user stats from profile
   const fetchUserStats = async () => {
@@ -632,6 +621,7 @@ const DigimonStorePage: React.FC = () => {
             icon={Coins}
             label="Bits"
             value={bits.toLocaleString()}
+            loading={initialLoading}
             to="/store"
             description="Spend Bits in the shop on items and upgrades. Earn them through arena battles, tournaments and achievements."
           />
@@ -662,78 +652,90 @@ const DigimonStorePage: React.FC = () => {
           </div>
 
           <div className="p-4 sm:p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {filteredItems.map((item) => (
-                <div
-                  key={item.id}
-                  className="group bg-white dark:bg-dark-200 rounded-xl p-4 border border-gray-200 dark:border-gray-700 hover:border-amber-400 dark:hover:border-amber-500/60 hover:shadow-md transition-all duration-200"
-                >
-                  {/* Item Image */}
-                  <div className="flex items-center justify-center mb-4 bg-gray-50 dark:bg-dark-100 rounded-lg p-3 h-20">
-                    <img
-                      src={item.imageUrl}
-                      alt={item.name}
-                      className="w-16 h-16 object-contain"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = '/assets/items/default.png';
-                      }}
-                    />
-                  </div>
-
-                  {/* Item Info */}
-                  <div className="space-y-2">
-                    <div className="flex items-start justify-between gap-2">
-                      <h3 className="font-bold text-gray-900 dark:text-gray-100 text-base leading-tight">
-                        {item.name}
-                      </h3>
-                      {item.applyType === ItemApplyType.INVENTORY &&
-                        itemQuantities[item.id] > 0 && (
-                          <span className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0">
-                            {itemQuantities[item.id]}
-                          </span>
-                        )}
+            {initialLoading ? (
+              <ContentSkeleton
+                label="Loading shop inventory…"
+                layout="grid"
+                count={8}
+                gridClassName="grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                itemClassName="min-h-64"
+              />
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {filteredItems.map((item) => (
+                  <div
+                    key={item.id}
+                    className="group bg-white dark:bg-dark-200 rounded-xl p-4 border border-gray-200 dark:border-gray-700 hover:border-amber-400 dark:hover:border-amber-500/60 hover:shadow-md transition-all duration-200"
+                  >
+                    {/* Item Image */}
+                    <div className="flex items-center justify-center mb-4 bg-gray-50 dark:bg-dark-100 rounded-lg p-3 h-20">
+                      <img
+                        src={item.imageUrl}
+                        alt={item.name}
+                        className="w-16 h-16 object-contain"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = '/assets/items/default.png';
+                        }}
+                      />
                     </div>
 
-                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                      {item.category}
-                    </p>
-
-                    <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 min-h-[2.5rem]">
-                      {item.description}
-                    </p>
-
-                    {/* Price and Buy Button */}
-                    <div className="flex items-center justify-between pt-2 border-t border-gray-100 dark:border-gray-700">
-                      <div className="flex items-baseline gap-1">
-                        <span className="font-bold text-lg text-gray-900 dark:text-gray-100">
-                          {item.price}
-                        </span>
-                        <span className="text-xs text-gray-500 dark:text-gray-400 uppercase">
-                          {item.currency}
-                        </span>
+                    {/* Item Info */}
+                    <div className="space-y-2">
+                      <div className="flex items-start justify-between gap-2">
+                        <h3 className="font-bold text-gray-900 dark:text-gray-100 text-base leading-tight">
+                          {item.name}
+                        </h3>
+                        {item.applyType === ItemApplyType.INVENTORY &&
+                          itemQuantities[item.id] > 0 && (
+                            <span className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0">
+                              {itemQuantities[item.id]}
+                            </span>
+                          )}
                       </div>
-                      <button
-                        onClick={() => handlePurchase(item)}
-                        disabled={
-                          processingPurchase === item.id ||
-                          (item.currency === 'bits' ? bits < item.price : digicoins < item.price) ||
-                          (item.id === 'abi_enhancer' && !userDigimon)
-                        }
-                        className="btn-primary"
-                      >
-                        {processingPurchase === item.id ? 'Processing...' : 'Buy'}
-                      </button>
-                    </div>
 
-                    {item.id === 'abi_enhancer' && !userDigimon && (
-                      <p className="text-xs text-red-500 dark:text-red-400 mt-1">
-                        Requires active Digimon
+                      <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                        {item.category}
                       </p>
-                    )}
+
+                      <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 min-h-[2.5rem]">
+                        {item.description}
+                      </p>
+
+                      {/* Price and Buy Button */}
+                      <div className="flex items-center justify-between pt-2 border-t border-gray-100 dark:border-gray-700">
+                        <div className="flex items-baseline gap-1">
+                          <span className="font-bold text-lg text-gray-900 dark:text-gray-100">
+                            {item.price}
+                          </span>
+                          <span className="text-xs text-gray-500 dark:text-gray-400 uppercase">
+                            {item.currency}
+                          </span>
+                        </div>
+                        <button
+                          onClick={() => handlePurchase(item)}
+                          disabled={
+                            processingPurchase === item.id ||
+                            (item.currency === 'bits'
+                              ? bits < item.price
+                              : digicoins < item.price) ||
+                            (item.id === 'abi_enhancer' && !userDigimon)
+                          }
+                          className="btn-primary"
+                        >
+                          {processingPurchase === item.id ? 'Processing...' : 'Buy'}
+                        </button>
+                      </div>
+
+                      {item.id === 'abi_enhancer' && !userDigimon && (
+                        <p className="text-xs text-red-500 dark:text-red-400 mt-1">
+                          Requires active Digimon
+                        </p>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </Tab.Group>
       </div>

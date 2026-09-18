@@ -1,4 +1,4 @@
-import LoadingIndicator from '../components/LoadingIndicator';
+import ContentSkeleton from '../components/ContentSkeleton';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDigimonStore, UserDigimon } from '../store/petStore';
@@ -583,7 +583,7 @@ const Battle = () => {
                 )}
 
                 {loading && battleOptions.length === 0 ? (
-                  <LoadingIndicator message="Loading opponents…" />
+                  <ContentSkeleton label="Loading opponents…" itemClassName="min-h-32" />
                 ) : battleOptions.length === 0 ? (
                   <div className="text-center py-12 text-gray-500 dark:text-gray-400 font-body text-sm">
                     No battle options available. Try adding Digimon to your party.

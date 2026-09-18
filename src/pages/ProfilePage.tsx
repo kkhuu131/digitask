@@ -56,6 +56,8 @@ const ProfilePage = () => {
   const [userDigimon, setUserDigimon] = useState<UserDigimon[]>([]);
   const [favoriteDigimon, setFavoriteDigimon] = useState<UserDigimon | null>(null);
   const [loading, setLoading] = useState(true);
+  const profileKey = `${id ?? ''}:${username ?? ''}:${user?.id ?? ''}`;
+  const [loadedProfileKey, setLoadedProfileKey] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [selectedDetailDigimon, setSelectedDetailDigimon] = useState<UserDigimon | null>(null);
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
@@ -70,8 +72,10 @@ const ProfilePage = () => {
   );
 
   useEffect(() => {
+    let cancelled = false;
     const fetchProfileData = async () => {
       setLoading(true);
+      setError(null);
       try {
         let profileId = id || user?.id;
 
@@ -143,6 +147,7 @@ const ProfilePage = () => {
           console.error('No streak data found:', err);
         }
 
+        if (cancelled) return;
         setProfileData({
           ...profile,
           battles_won: profile.battles_won || 0,
@@ -156,6 +161,7 @@ const ProfilePage = () => {
           const active = allUserDigimon.find((d) => d.is_active);
           if (active) setFavoriteDigimon(active);
           await fetchUserTitles();
+          if (cancelled) return;
           const { userTitles } = useTitleStore.getState();
           setUserTitles(userTitles);
         } else {
@@ -173,6 +179,7 @@ const ProfilePage = () => {
             digimon: DIGIMON_LOOKUP_TABLE[digimon.digimon_id],
           }));
 
+          if (cancelled) return;
           setUserDigimon(digimonData);
           const active = digimonData.find((d) => d.is_active);
           if (active) setFavoriteDigimon(active);
@@ -200,21 +207,27 @@ const ProfilePage = () => {
                   .availableTitles.find((t) => t.id === userTitle.title_id),
               }));
 
+              if (cancelled) return;
               setUserTitles(enrichedTitles);
             }
           } catch (err) {
             console.error('Error fetching user titles:', err);
           }
         }
+        if (!cancelled) setLoadedProfileKey(profileKey);
       } catch (err) {
         console.error('Error fetching profile:', err);
-        setError(err instanceof Error ? err.message : 'Failed to load profile data');
+        if (!cancelled)
+          setError(err instanceof Error ? err.message : 'Failed to load profile data');
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
 
     fetchProfileData();
+    return () => {
+      cancelled = true;
+    };
   }, [
     id,
     username,
@@ -262,9 +275,9 @@ const ProfilePage = () => {
     },
   ];
 
-  if (loading) {
+  if ((loading && !profileData) || (!error && loadedProfileKey !== profileKey)) {
     return (
-      <div className="ui-page max-w-4xl" role="status">
+      <div className="ui-page max-w-4xl" role="status" aria-busy="true">
         <span className="sr-only">Loading profile…</span>
         <div className="space-y-4">
           <div className="h-40 bg-gray-100 dark:bg-dark-200 rounded-2xl ui-skeleton-pulse" />

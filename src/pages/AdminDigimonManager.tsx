@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import ContentSkeleton from '../components/ContentSkeleton';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../store/authStore';
@@ -138,6 +139,7 @@ const AdminDigimonManager = () => {
 
   // State for list data
   const [digimonList, setDigimonList] = useState<Digimon[]>([]);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [evolutionPaths, setEvolutionPaths] = useState<EvolutionPathData[]>([]);
 
   // Search and filter state
@@ -264,9 +266,9 @@ const AdminDigimonManager = () => {
         type: 'error',
       });
     } else {
-      fetchDigimonList();
-      fetchEvolutionPaths();
-      fetchDigimonForms();
+      void Promise.all([fetchDigimonList(), fetchEvolutionPaths(), fetchDigimonForms()]).finally(
+        () => setInitialLoading(false)
+      );
     }
   }, [isAdmin, navigate, addNotification]);
 
@@ -949,6 +951,20 @@ const AdminDigimonManager = () => {
 
     return matchesSearch;
   });
+
+  if (initialLoading) {
+    return (
+      <div className="ui-page">
+        <div className="mb-6">
+          <h1 className="ui-page-title">Digimon Species Manager</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+            Manage Digimon species, evolution paths, and form transformations.
+          </p>
+        </div>
+        <ContentSkeleton label="Loading species, evolutions and forms…" layout="table" count={6} />
+      </div>
+    );
+  }
 
   return (
     <div className="ui-page">

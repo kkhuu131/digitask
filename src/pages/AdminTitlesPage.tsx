@@ -1,4 +1,5 @@
-import LoadingIndicator, { LoadingSpinner } from '../components/LoadingIndicator';
+import { LoadingSpinner } from '../components/LoadingIndicator';
+import ContentSkeleton from '../components/ContentSkeleton';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
@@ -85,8 +86,8 @@ const AdminTitlesPage = () => {
       </div>
 
       <div className="bg-white dark:bg-dark-300 rounded-xl border border-gray-200 dark:border-dark-100 shadow-sm overflow-hidden">
-        {loading ? (
-          <LoadingIndicator message="Loading titles…" />
+        {loading && titles.length === 0 ? (
+          <ContentSkeleton label="Loading titles…" layout="table" />
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-dark-100">

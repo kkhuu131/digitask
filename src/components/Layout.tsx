@@ -96,6 +96,8 @@ const Layout = ({ children }: LayoutProps) => {
   const location = useLocation();
   const [activeMenu, setActiveMenu] = useState<'digimon' | 'battle' | 'more' | null>(null);
   const [energy, setEnergy] = useState<{ current: number; max: number }>({ current: 0, max: 10 });
+  const [resourcesLoadedFor, setResourcesLoadedFor] = useState<string | null>(null);
+  const resourcesLoading = !!user && resourcesLoadedFor !== user.id;
   const pendingAchievements = unclaimedCount();
 
   useEffect(() => {
@@ -121,6 +123,7 @@ const Layout = ({ children }: LayoutProps) => {
   const { bits, fetchCurrency } = useCurrencyStore();
 
   useEffect(() => {
+    let cancelled = false;
     const fetchEnergy = async () => {
       if (!user) return;
       const { data: profile } = await supabase
@@ -128,11 +131,12 @@ const Layout = ({ children }: LayoutProps) => {
         .select('battle_energy, max_battle_energy')
         .eq('id', user.id)
         .single();
-      if (profile)
+      if (profile && !cancelled)
         setEnergy({ current: profile.battle_energy ?? 0, max: profile.max_battle_energy ?? 10 });
     };
-    fetchEnergy();
-    fetchCurrency();
+    void Promise.all([fetchEnergy(), fetchCurrency()]).finally(() => {
+      if (!cancelled) setResourcesLoadedFor(user?.id ?? null);
+    });
 
     const onUpdate = () => {
       fetchEnergy();
@@ -142,6 +146,7 @@ const Layout = ({ children }: LayoutProps) => {
     window.addEventListener('energy-updated', onUpdate);
     window.addEventListener('currency-updated', onUpdate);
     return () => {
+      cancelled = true;
       window.removeEventListener('task-completed', onUpdate);
       window.removeEventListener('energy-updated', onUpdate);
       window.removeEventListener('currency-updated', onUpdate);
@@ -298,6 +303,7 @@ const Layout = ({ children }: LayoutProps) => {
                   icon={Ticket}
                   label="Tickets"
                   value={`${energy.current}/${energy.max}`}
+                  loading={resourcesLoading}
                   to="/battle"
                   description="Used to start arena battles. Complete tasks to earn tickets. Each arena battle costs one ticket."
                 />
@@ -305,6 +311,7 @@ const Layout = ({ children }: LayoutProps) => {
                   icon={Coins}
                   label="Bits"
                   value={bits.toLocaleString()}
+                  loading={resourcesLoading}
                   to="/store"
                   description="Spend Bits in the shop on items and upgrades. Earn them through arena battles, tournaments and achievements."
                 />
@@ -382,6 +389,7 @@ const Layout = ({ children }: LayoutProps) => {
               icon={Ticket}
               label="Tickets"
               value={`${energy.current}/${energy.max}`}
+              loading={resourcesLoading}
               to="/battle"
               description="Used to start arena battles. Complete tasks to earn tickets. Each arena battle costs one ticket."
             />
@@ -389,6 +397,7 @@ const Layout = ({ children }: LayoutProps) => {
               icon={Coins}
               label="Bits"
               value={bits.toLocaleString()}
+              loading={resourcesLoading}
               to="/store"
               description="Spend Bits in the shop on items and upgrades. Earn them through arena battles, tournaments and achievements."
             />{' '}

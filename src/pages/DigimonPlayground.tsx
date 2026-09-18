@@ -9,6 +9,7 @@ import TypeAttributeIcon from '../components/TypeAttributeIcon';
 import DigimonDetailModal from '../components/DigimonDetailModal';
 import { Star, Warehouse, UserPlus, Plus, Users } from 'lucide-react';
 import { LoadingSpinner } from '../components/LoadingIndicator';
+import ContentSkeleton from '../components/ContentSkeleton';
 
 const FarmCardControl = ({
   status,
@@ -69,10 +70,12 @@ const DigimonPlayground: React.FC = () => {
 
   const [selectedDetailDigimon, setSelectedDetailDigimon] = useState<UserDigimon | null>(null);
   const [transferringDigimon, setTransferringDigimon] = useState<string | null>(null);
+  const [initialLoading, setInitialLoading] = useState(true);
 
   useEffect(() => {
-    fetchAllUserDigimon();
-    fetchStorageDigimon();
+    void Promise.all([fetchAllUserDigimon(), fetchStorageDigimon()]).finally(() =>
+      setInitialLoading(false)
+    );
   }, [fetchAllUserDigimon, fetchStorageDigimon]);
 
   const handleTransferToStorage = async (e: React.MouseEvent, digimonId: string) => {
@@ -136,7 +139,7 @@ const DigimonPlayground: React.FC = () => {
       <PageTutorial tutorialId="digifarm_intro" steps={tutorialSteps} />
       <div className="flex flex-col lg:flex-row gap-4">
         {/* ── Left: Party Panel ── */}
-        <div className="w-full lg:w-[368px] flex-shrink-0">
+        <div className="w-full lg:w-[416px] flex-shrink-0">
           <div className="card">
             {/* Panel header */}
             <div className="flex items-center justify-between mb-4">
@@ -148,13 +151,28 @@ const DigimonPlayground: React.FC = () => {
                   </h2>
                 </div>
                 <p className="text-xs font-body text-gray-400 dark:text-gray-500 mt-0.5">
-                  {partyDigimon.length} / {maxActivePartySize} Digimon
+                  {initialLoading && partyDigimon.length === 0 ? (
+                    <span
+                      aria-hidden="true"
+                      className="inline-block h-3 w-24 rounded bg-gray-200 dark:bg-dark-200 ui-skeleton-pulse"
+                    />
+                  ) : (
+                    `${partyDigimon.length} / ${maxActivePartySize} Digimon`
+                  )}
                 </p>
               </div>
             </div>
 
             {/* Party grid — always 3 columns */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-3">
+            {initialLoading && partyDigimon.length === 0 && (
+              <ContentSkeleton
+                label="Loading party…"
+                layout="grid"
+                count={9}
+                gridClassName="grid-cols-3"
+              />
+            )}
+            <div className="grid grid-cols-3 gap-3">
               {partyDigimon.map((digimon) => (
                 <motion.div
                   key={digimon.id}
@@ -189,7 +207,7 @@ const DigimonPlayground: React.FC = () => {
                     <DigimonSprite
                       digimonName={digimon.digimon?.name || ''}
                       fallbackSpriteUrl={digimon.digimon?.sprite_url || ''}
-                      size="xs"
+                      size="sm"
                       showHappinessAnimations={true}
                     />
                   </div>
@@ -228,7 +246,9 @@ const DigimonPlayground: React.FC = () => {
               ))}
 
               {/* Empty slots */}
-              {Array.from({ length: emptyPartySlots }).map((_, i) => (
+              {Array.from({
+                length: initialLoading && partyDigimon.length === 0 ? 0 : emptyPartySlots,
+              }).map((_, i) => (
                 <div
                   key={`empty-${i}`}
                   className="rounded-xl border-2 border-dashed border-gray-200 dark:border-dark-100 aspect-square flex flex-col items-center justify-center gap-1"
@@ -254,7 +274,14 @@ const DigimonPlayground: React.FC = () => {
                   </h2>
                 </div>
                 <p className="text-xs font-body text-gray-400 dark:text-gray-500 mt-0.5">
-                  {storageDigimon.length} Digimon in storage
+                  {initialLoading && storageDigimon.length === 0 ? (
+                    <span
+                      aria-hidden="true"
+                      className="inline-block h-3 w-28 rounded bg-gray-200 dark:bg-dark-200 ui-skeleton-pulse"
+                    />
+                  ) : (
+                    `${storageDigimon.length} Digimon in storage`
+                  )}
                   {activePartyCount >= maxActivePartySize && (
                     <span className="ml-2 text-amber-500 dark:text-amber-400">— Party is full</span>
                   )}
@@ -263,7 +290,13 @@ const DigimonPlayground: React.FC = () => {
             </div>
 
             {/* Storage grid — square cards */}
-            {storageDigimon.length === 0 ? (
+            {initialLoading && storageDigimon.length === 0 ? (
+              <ContentSkeleton
+                label="Loading storage…"
+                layout="grid"
+                gridClassName="grid-cols-[repeat(auto-fill,minmax(8rem,1fr))]"
+              />
+            ) : storageDigimon.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-16 text-center">
                 <div className="w-16 h-16 rounded-full bg-gray-100 dark:bg-dark-200 flex items-center justify-center mb-3">
                   <Warehouse className="w-8 h-8 text-gray-500 dark:text-gray-400" />
@@ -300,7 +333,7 @@ const DigimonPlayground: React.FC = () => {
                       <DigimonSprite
                         digimonName={digimon.digimon?.name || ''}
                         fallbackSpriteUrl={digimon.digimon?.sprite_url || ''}
-                        size="xs"
+                        size="sm"
                         showHappinessAnimations={true}
                       />
                     </div>

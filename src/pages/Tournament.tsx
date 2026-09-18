@@ -1,4 +1,4 @@
-import LoadingIndicator from '../components/LoadingIndicator';
+import ContentSkeleton from '../components/ContentSkeleton';
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trophy, Crown, ChevronRight, AlertCircle } from 'lucide-react';
@@ -45,6 +45,7 @@ const Tournament: React.FC = () => {
   } = useTournamentStore();
 
   const [enterLoading, setEnterLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [enterError, setEnterError] = useState<string | null>(null);
   const [devResetting, setDevResetting] = useState(false);
 
@@ -67,7 +68,8 @@ const Tournament: React.FC = () => {
   const partyDigimon = allUserDigimon.filter((d) => !d.is_in_storage);
 
   useEffect(() => {
-    fetchTournament();
+    setInitialLoading(true);
+    void fetchTournament().finally(() => setInitialLoading(false));
     fetchAllUserDigimon();
   }, [user?.id]);
 
@@ -204,7 +206,8 @@ const Tournament: React.FC = () => {
 
   // ─── Render helpers ───────────────────────────────────────────────────────────
 
-  const isNotEntered = !currentTournament && !isCompleted();
+  const waitingForTournament = (initialLoading || loading) && !currentTournament;
+  const isNotEntered = !waitingForTournament && !error && !currentTournament && !isCompleted();
   const isActiveState = isActive() && !arenaBattleActive && !roundResultState && !isSelectingTeam;
   const isFinishedState = isCompleted();
 
@@ -362,15 +365,19 @@ const Tournament: React.FC = () => {
         >
           {/* Bracket */}
           <div className="bg-white dark:bg-dark-300 rounded-2xl border border-gray-200 dark:border-dark-100 p-6 mb-6 relative overflow-hidden">
-            <TournamentBracket
-              tournament={currentTournament}
-              roundResults={currentTournament?.round_results ?? []}
-              currentRound={currentTournament?.current_round ?? 1}
-              finalPlacement={currentTournament?.final_placement ?? null}
-              isCompleted={isFinishedState}
-              userUsername={userProfile?.username}
-              userAvatarUrl={userProfile?.avatar_url}
-            />
+            {waitingForTournament ? (
+              <ContentSkeleton label="Loading tournament bracket…" count={3} />
+            ) : (
+              <TournamentBracket
+                tournament={currentTournament}
+                roundResults={currentTournament?.round_results ?? []}
+                currentRound={currentTournament?.current_round ?? 1}
+                finalPlacement={currentTournament?.final_placement ?? null}
+                isCompleted={isFinishedState}
+                userUsername={userProfile?.username}
+                userAvatarUrl={userProfile?.avatar_url}
+              />
+            )}
           </div>
 
           {/* Free weekly entry */}
@@ -516,7 +523,9 @@ const Tournament: React.FC = () => {
             </div>
           )}
 
-          {loading && !currentTournament && <LoadingIndicator message="Loading tournament…" />}
+          {waitingForTournament && (
+            <ContentSkeleton label="Loading tournament…" count={1} itemClassName="min-h-64" />
+          )}
           {error && !loading && (
             <div className="text-center text-red-500 text-sm py-4">{error}</div>
           )}

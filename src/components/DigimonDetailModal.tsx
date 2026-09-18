@@ -13,6 +13,7 @@ import {
 } from '../utils/digimonStatCalculation';
 import { DigimonAttribute, DigimonType } from '../store/battleStore';
 import { supabase } from '../lib/supabase';
+import { useAuthStore } from '../store/authStore';
 import TypeAttributeIcon from './TypeAttributeIcon';
 import DigimonEvolutionModal from './DigimonEvolutionModal';
 import { StatType, isUnderStatCap } from '../store/petStore';
@@ -49,7 +50,8 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
     spd: 0,
   });
   const [allocating, setAllocating] = useState(false);
-  const [belongsToCurrentUser, setBelongsToCurrentUser] = useState(false);
+  const currentUserId = useAuthStore((state) => state.user?.id);
+  const belongsToCurrentUser = !!currentUserId && currentUserId === localDigimon?.user_id;
   const [showEvolutionModal, setShowEvolutionModal] = useState(false);
   const [showDevolutionModal, setShowDevolutionModal] = useState(false);
   const [evolutionError, setEvolutionError] = useState<string | null>(null);
@@ -60,20 +62,6 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
   useEffect(() => {
     setLocalDigimon(selectedDigimon);
   }, [selectedDigimon]);
-
-  useEffect(() => {
-    // Check if the Digimon belongs to the current user
-    const checkOwnership = async () => {
-      const { data: userData } = await supabase.auth.getUser();
-      if (userData.user && localDigimon) {
-        setBelongsToCurrentUser(userData.user.id === localDigimon.user_id);
-      } else {
-        setBelongsToCurrentUser(false);
-      }
-    };
-
-    checkOwnership();
-  }, [localDigimon]);
 
   useEffect(() => {
     // Load saved stats from localStorage and database

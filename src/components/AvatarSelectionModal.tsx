@@ -1,4 +1,4 @@
-import LoadingIndicator from './LoadingIndicator';
+import ContentSkeleton from './ContentSkeleton';
 import { useState, useEffect } from 'react';
 import { useDigimonStore } from '../store/petStore';
 import { DIGIMON_LOOKUP_TABLE } from '../constants/digimonLookup';
@@ -24,7 +24,7 @@ interface DigimonSprite {
 const AvatarSelectionModal = ({ isOpen, onClose, onSelect }: AvatarSelectionModalProps) => {
   const { discoveredDigimon } = useDigimonStore();
   const [availableSprites, setAvailableSprites] = useState<DigimonSprite[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [unlockedVariants, setUnlockedVariants] = useState<string[]>([]);
   const { user } = useAuthStore();
 
@@ -36,6 +36,7 @@ const AvatarSelectionModal = ({ isOpen, onClose, onSelect }: AvatarSelectionModa
         discoveredDigimon.length === 0
       ) {
         setAvailableSprites([]);
+        setLoading(false);
         return;
       }
 
@@ -156,7 +157,13 @@ const AvatarSelectionModal = ({ isOpen, onClose, onSelect }: AvatarSelectionModa
         </p>
 
         {loading ? (
-          <LoadingIndicator message="Loading avatars…" />
+          <ContentSkeleton
+            label="Loading avatars…"
+            layout="grid"
+            count={12}
+            itemClassName="!h-24"
+            gridClassName="grid-cols-4 sm:grid-cols-5 md:grid-cols-6"
+          />
         ) : (
           <>
             <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-4">

@@ -1,4 +1,4 @@
-import LoadingIndicator from '../components/LoadingIndicator';
+import ContentSkeleton from '../components/ContentSkeleton';
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../store/authStore';
@@ -199,7 +199,7 @@ const AdminReportsPage = () => {
       </div>
 
       {loading ? (
-        <LoadingIndicator message="Loading reports…" />
+        <ContentSkeleton label="Loading reports…" layout="table" className="ui-panel" />
       ) : reports.length === 0 ? (
         <div className="bg-white dark:bg-dark-300 rounded-xl border border-gray-200 dark:border-dark-100 p-12 text-center">
           <p className="text-gray-500 dark:text-gray-400 text-sm">
