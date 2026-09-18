@@ -41,8 +41,7 @@ Use `npm.cmd` in PowerShell if script execution is blocked. `db:start:database` 
 
 ## One-time adoption: completed on 2026-09-16 (arena update 2026-09-17)
 
-The linked `digitask` project now records all ten active migrations in this checkout, from `20260916220000` through `20260918063049`. The four previous March 2026 versions were archived and removed from the active history metadata. The baseline was marked applied, **never executed** on the existing database. The six September 16 follow-ups and the September 17 additive arena migration were deployed without development seeds, role updates or vault updates. The authenticated arena-battle Edge Function is also deployed. The September 18
-Arena reward and tournament achievement/catalog migrations are now applied.
+The linked `digitask` project now records all eleven active migrations in this checkout, from `20260916220000` through `20260918072450`. The four previous March 2026 versions were archived and removed from the active history metadata. The baseline was marked applied, **never executed** on the existing database. The six September 16 follow-ups and the September 17 additive arena migration were deployed without development seeds, role updates or vault updates. The authenticated arena-battle Edge Function is also deployed. The September 18 arena reward, tournament achievement/catalog and lifetime task-progress migrations are now applied.
 
 The complete pre-adoption schema export matched the original capture before repair. Original definitions, grants, cron commands and recorded migration statements, plus manual restoration SQL, are backed up locally under ignored `supabase/.temp/backups/baseline-adoption-20260916/`. These are schema/metadata rollback materials, not a user-data backup. Adoption and the first five follow-ups did not modify production user rows. The achievement/discovery follow-up repaired six missing discovery records for currently owned species without resetting claims. Old checkouts must update before deploying; do not repeat this repair procedure.
 
@@ -62,7 +61,15 @@ See the official [migration guidance](https://supabase.com/docs/guides/deploymen
 
 ## Achievement rewards and discoveries
 
-`titles.reward_bits` and `titles.reward_digimon_ids` define server-owned rewards. When editing `src/constants/titles.ts`, add a new data migration and update `seeds/achievement-catalog.sql`; database tests compare actual catalog rewards and pool IDs with the client definitions. Existing title names and requirements are preserved by reward catalog upserts.
+The deployed migration `20260918072450_restore_lifetime_task_progress.sql` adds
+the missing lifetime task increment to the existing completion trigger. Its
+conservative backfill preserves higher counters and claims; retained tasks,
+today's quota and earned task thresholds establish overlapping lower bounds,
+not an exact historical total. Production verification preserved all 254 existing
+achievement records and raised 16 counters without reducing any. See
+[ACHIEVEMENTS.md](../ACHIEVEMENTS.md) and the local task-progress fixtures.
+
+`titles.reward_bits` and `titles.reward_digimon_ids` define server-owned rewards. When editing `src/constants/titles.ts`, add a new data migration and update `seeds/achievement-catalog.sql`; database tests compare actual catalog rewards and pool IDs with the client definitions. Existing title names and requirements are preserved by reward catalog upserts. See [ACHIEVEMENTS.md](../ACHIEVEMENTS.md) for the complete catalog, earning, backfill, claim and progress-UI checklist.
 
 `claim_achievement` locks the profile and owned earned-title row, validates the selected egg, grants Bits/pets and marks the claim in one transaction. Repeat attempts return the existing confirmation without another reward. Browser inserts into `user_titles` can supply only `user_id/title_id`; browser updates can change only `is_displayed`. Earning remains client-driven and requires a separate server-authorization follow-up.
 

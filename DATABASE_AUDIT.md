@@ -4,6 +4,32 @@ The linked `digitask` database now has **21 public tables, 2 views, 31 applicati
 
 The inspection covered application/scripts, stored-function callers, attached triggers, policies, catalog dependencies and cron commands. All 20 original orphan-function candidates have been removed. The current audit flags three legacy frontend RPCs (`check_and_set_first_win_self`, `grant_energy_self`, `spend_energy_self`) after their callers were replaced. They remain for older deployed clients and should be retired in a separate migration after rollout. Historical migrations still contain original definitions as required for replay; they are not runtime callers.
 
+## Task-progress repair deployed — 2026-09-18
+
+Read-only inspection on 2026-09-18 confirmed that the deployed task completion
+trigger updates today's quota but never increments
+`user_milestones.tasks_completed_count`. Both task achievements and partner task
+progress read this lifetime counter. Sixteen accounts had retained task completion
+evidence exceeding their stored counter; historical recurring resets and deleted
+tasks prevent exact reconstruction.
+
+`20260918072450_restore_lifetime_task_progress.sql` adds a single server-side
+increment in the existing completion trigger and a nondecreasing backfill from
+retained task evidence, today's quota and already-earned task milestone thresholds.
+The repair preserves claims, pins and streaks and does not grant rewards directly.
+It was applied to the linked production project after a reviewed one-migration
+dry run. Production history now ends at `20260918072450`. Read-only post-deployment
+diagnostics verified the function, one active completion writer and recovered
+historical lower bounds. Private before/after snapshots verified all 254 existing
+achievement records and all 41 milestone records were preserved; 16 counters
+increased, none decreased, and streak/claim/pin metadata was unchanged.
+
+Local reset, reference checks, authorization/reward rollback fixtures, repeated
+backfill preservation fixtures, database lint, regenerated types and declarative
+consistency checks passed. All 102 application tests, lint, formatting and build
+passed. Verification used read-only production queries; the migration performed
+the reviewed counter repair. No production test users or task completions were used.
+
 ## Completed and deployed
 
 | Migration | Result |

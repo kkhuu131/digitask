@@ -8,11 +8,12 @@ import { useTitleStore } from './titleStore';
 // Helper: fetch lifetime task count from user_milestones and check task achievements
 async function checkTaskAchievementsAfterCompletion(userId: string): Promise<void> {
   try {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('user_milestones')
       .select('tasks_completed_count')
       .eq('user_id', userId)
       .single();
+    if (error) throw error;
     if (data?.tasks_completed_count != null) {
       await useTitleStore.getState().checkTaskAchievements(data.tasks_completed_count);
     }
@@ -268,7 +269,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
 
       // complete_task_all_triggers is a single RPC that atomically:
       //   1. Marks the task done
-      //   2. Increments daily_quotas.completed_today
+      //   2. Increments daily_quotas.completed_today and the lifetime milestone count
       //   3. Awards EXP to all party Digimon (active: full, reserve: 50%, storage: 0%)
       //   4. Awards a stat point to the active Digimon or saves it to profiles.saved_stats
       // Returns: { exp_points, reserve_exp, stat_points, stat_category, auto_allocated,

@@ -17,8 +17,29 @@ BEGIN
   IF (SELECT array_agg(version ORDER BY version) FROM supabase_migrations.schema_migrations)
     IS DISTINCT FROM ARRAY['20260916220000', '20260916230000', '20260916231000',
       '20260916232000', '20260916233000', '20260916234000', '20260916235000',
-      '20260917000000', '20260918061922', '20260918063049']::text[] THEN
+      '20260917000000', '20260918061922', '20260918063049', '20260918072450']::text[] THEN
     RAISE EXCEPTION 'Unexpected migration history';
+  END IF;
+  IF position('tasks_completed_count = user_milestones.tasks_completed_count + 1'
+    IN pg_get_functiondef('public.update_completed_today()'::regprocedure))=0 THEN
+    RAISE EXCEPTION 'Lifetime task increment missing';
+  END IF;
+  IF (SELECT count(*) FROM pg_trigger WHERE tgrelid='public.tasks'::regclass
+    AND tgfoid='public.update_completed_today()'::regprocedure AND NOT tgisinternal
+    AND tgenabled='O') <> 1 THEN
+    RAISE EXCEPTION 'Task completion must have one active quota/lifetime writer';
+  END IF;
+  IF EXISTS (SELECT 1 FROM (
+    SELECT user_id,count(*)::integer AS total FROM public.tasks
+      WHERE is_completed OR completed_at IS NOT NULL GROUP BY user_id
+    UNION ALL SELECT user_id,completed_today FROM public.daily_quotas
+    UNION ALL SELECT ut.user_id,t.requirement_value::integer
+      FROM public.user_titles ut JOIN public.titles t ON t.id=ut.title_id
+      WHERE t.category='tasks' AND t.requirement_type='tasks_completed'
+        AND t.requirement_value ~ '^[0-9]+$'
+  ) evidence LEFT JOIN public.user_milestones m USING(user_id)
+  WHERE COALESCE(m.tasks_completed_count,0)<evidence.total) THEN
+    RAISE EXCEPTION 'Lifetime task progress is below recoverable historical evidence';
   END IF;
   IF EXISTS (SELECT 1 FROM (VALUES (601,200),(602,500),(603,1000)) expected(id,bits)
     LEFT JOIN public.titles title USING(id)

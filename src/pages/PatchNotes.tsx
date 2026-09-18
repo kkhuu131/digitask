@@ -76,6 +76,14 @@ const PatchNotes = () => {
                 the header.
               </li>
               <li>
+                Partner reward progress is combined with the dashboard Achievements panel and
+                visible on the Achievements page. The dashboard shows DigiEgg paths for tasks,
+                streaks, battle wins and evolution. Locked achievements show their DigiEgg reward.
+                Lifetime task progression now increments on each completion rather than staying
+                unchanged. Recoverable past progress is preserved without resetting claims. Claims
+                update in place without reloading the page or moving the claimed card.
+              </li>
+              <li>
                 Added Contender, Finalist and Champion achievements for weekly tournaments. Past
                 tournament results count. Earned campaign achievements now live under Legacy, with
                 rewards and pinned titles preserved and excluded from active completion totals.

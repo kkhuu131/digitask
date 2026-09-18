@@ -12,6 +12,14 @@ BEGIN
     ON CONFLICT (user_id) DO UPDATE
     SET completed_today = COALESCE(daily_quotas.completed_today, 0) + 1,
         updated_at = now();
+
+    -- One lifetime increment per completion, including later recurring-task cycles.
+    -- Keep this in the task transaction, independent of the three-task daily quota.
+    INSERT INTO public.user_milestones (user_id, tasks_completed_count)
+    VALUES (NEW.user_id, 1)
+    ON CONFLICT (user_id) DO UPDATE
+    SET tasks_completed_count = user_milestones.tasks_completed_count + 1,
+        updated_at = now();
   END IF;
   RETURN NEW;
 END;

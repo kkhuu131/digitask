@@ -1,3 +1,4 @@
+import NextPartnerReward from '../components/NextPartnerReward';
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useDigimonStore } from '../store/petStore';
@@ -18,39 +19,42 @@ const AchievementsCallout: React.FC = () => {
   const { unclaimedCount } = useTitleStore();
   const pending = unclaimedCount();
   return (
-    <Link
-      to="/achievements"
-      className={`card border-l-4 flex items-center gap-3 py-3 px-4 transition-all duration-150 hover:shadow-md ${
-        pending > 0
-          ? 'border-l-accent-500 bg-accent-50 dark:bg-accent-900/20'
-          : 'border-l-gray-300 dark:border-l-gray-600'
-      }`}
-    >
-      <div
-        className={`p-2 rounded-lg shrink-0 ${pending > 0 ? 'bg-accent-100 dark:bg-accent-900/30' : 'bg-gray-100 dark:bg-dark-200'}`}
+    <section className="ui-panel overflow-hidden" aria-label="Achievements">
+      <Link
+        to="/achievements"
+        className={`border-l-4 flex items-center gap-3 py-3 px-4 transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-dark-200 ${
+          pending > 0
+            ? 'border-l-accent-500 bg-accent-50 dark:bg-accent-900/20'
+            : 'border-l-gray-300 dark:border-l-gray-600'
+        }`}
       >
-        <Award
-          className={`w-4 h-4 ${pending > 0 ? 'text-accent-800 dark:text-accent-400' : 'text-gray-500 dark:text-gray-400'}`}
-        />
-      </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-heading font-semibold text-gray-900 dark:text-gray-100">
-          Achievements
-        </p>
-        <p className="text-xs font-body text-gray-500 dark:text-gray-400 truncate">
-          {pending > 0
-            ? `${pending} reward${pending > 1 ? 's' : ''} ready to claim`
-            : 'Track your progress and earn rewards'}
-        </p>
-      </div>
-      {pending > 0 ? (
-        <span className="flex-shrink-0 min-w-[22px] h-5 flex items-center justify-center rounded-full bg-red-500 text-white text-xs font-bold px-1.5">
-          {pending}
-        </span>
-      ) : (
-        <ChevronRight className="w-4 h-4 text-gray-400 shrink-0" />
-      )}
-    </Link>
+        <div
+          className={`p-2 rounded-lg shrink-0 ${pending > 0 ? 'bg-accent-100 dark:bg-accent-900/30' : 'bg-gray-100 dark:bg-dark-200'}`}
+        >
+          <Award
+            className={`w-4 h-4 ${pending > 0 ? 'text-accent-800 dark:text-accent-400' : 'text-gray-500 dark:text-gray-400'}`}
+          />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-heading font-semibold text-gray-900 dark:text-gray-100">
+            Achievements
+          </p>
+          <p className="text-xs font-body text-gray-500 dark:text-gray-400 truncate">
+            {pending > 0
+              ? `${pending} reward${pending > 1 ? 's' : ''} ready to claim`
+              : 'Track your progress and earn rewards'}
+          </p>
+        </div>
+        {pending > 0 ? (
+          <span className="flex-shrink-0 min-w-[22px] h-5 flex items-center justify-center rounded-full bg-red-500 text-white text-xs font-bold px-1.5">
+            {pending}
+          </span>
+        ) : (
+          <ChevronRight className="w-4 h-4 text-gray-400 shrink-0" />
+        )}
+      </Link>
+      <NextPartnerReward compact />
+    </section>
   );
 };
 

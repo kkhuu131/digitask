@@ -54,6 +54,10 @@ on a candidate or restoring an old implementation.
 
 ## Preserve current behavior ownership
 
+- Before achievement changes, read [ACHIEVEMENTS.md](ACHIEVEMENTS.md). It maps
+  catalog/migration/seed updates, earning callers, claims, legacy preservation
+  and DigiEgg progress routes. New reward routes need explicit progress mapping
+  and UI integration; preserve smooth claims and hide fully claimed routes.
 - Active task UI is `Dashboard` → `TaskList` → `CleanTaskList`. The retired
   `TaskLayout`, `TaskFilters`, `TaskItem` and `TaskKanban` are not its implementation.
 - `complete_task_all_triggers` awards task rewards and one battle ticket itself.

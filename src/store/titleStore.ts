@@ -318,15 +318,17 @@ export const useTitleStore = create<TitleState>((set, get) => ({
           type: 'success',
         });
       }
-      const refreshes = await Promise.allSettled([
-        get().fetchUserTitles(),
-        useDigimonStore.getState().fetchAllUserDigimon(),
-        useDigimonStore.getState().fetchStorageDigimon(),
-        useDigimonStore.getState().fetchDiscoveredDigimon(),
-      ]);
-      refreshes.forEach((result) => {
-        if (result.status === 'rejected') console.error('Claim refresh failed:', result.reason);
-      });
+      // The RPC already confirms the claim timestamp; Bits-only claims need no roster refresh.
+      if (data.claimed && data.digimon_id) {
+        const refreshes = await Promise.allSettled([
+          useDigimonStore.getState().fetchAllUserDigimon(),
+          useDigimonStore.getState().fetchStorageDigimon(),
+          useDigimonStore.getState().fetchDiscoveredDigimon(),
+        ]);
+        refreshes.forEach((result) => {
+          if (result.status === 'rejected') console.error('Claim refresh failed:', result.reason);
+        });
+      }
       return true;
     } catch (error) {
       const message =

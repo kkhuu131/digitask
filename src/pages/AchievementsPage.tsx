@@ -1,3 +1,4 @@
+import NextPartnerReward from '../components/NextPartnerReward';
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTitleStore, UserTitle } from '../store/titleStore';
@@ -155,9 +156,9 @@ const AchievementCard: React.FC<AchievementCardProps> = ({
         </div>
 
         {/* Rewards preview */}
-        {earned && title.rewards && (
+        {title.rewards && (
           <div className="flex flex-wrap gap-1 mt-1">
-            {title.rewards.bits && (
+            {earned && title.rewards.bits && (
               <span className="inline-flex items-center gap-1 text-xs font-body bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800/40 rounded-full px-2 py-0.5">
                 <span className="font-semibold">{title.rewards.bits}</span> bits
               </span>
@@ -250,8 +251,8 @@ const AchievementsPage: React.FC = () => {
   const sorted = [...filtered].sort((a, b) => {
     const utA = earnedMap.get(a.id);
     const utB = earnedMap.get(b.id);
-    const scoreA = !utA ? 2 : utA.claimed_at ? 1 : 0;
-    const scoreB = !utB ? 2 : utB.claimed_at ? 1 : 0;
+    const scoreA = !utA ? 1 : 0;
+    const scoreB = !utB ? 1 : 0;
     return scoreA - scoreB;
   });
 
@@ -312,6 +313,8 @@ const AchievementsPage: React.FC = () => {
           )}
         </p>
       </div>
+
+      <NextPartnerReward onClaim={handleClaim} busy={claimingId !== null} />
 
       {/* Pinned to Profile */}
       <div className="mb-6 ui-panel p-4 sm:p-6">

@@ -32,6 +32,12 @@ describe('achievement claims', () => {
       fetchUserTitles: mocks.refresh,
     });
   });
+  it('updates Bits-only claims in place without refreshing titles or the roster', async () => {
+    mocks.rpc.mockResolvedValue({ data: { claimed: true, claimed_at: '2026-09-16', bits: 200 } });
+    expect(await useTitleStore.getState().claimAchievement(1)).toBe(true);
+    expect(mocks.refresh).not.toHaveBeenCalled();
+    expect(useTitleStore.getState().userTitles[0].claimed_at).toBe('2026-09-16');
+  });
   it('keeps failed claims unclaimed and shows the server error', async () => {
     mocks.rpc.mockResolvedValue({ error: { message: 'Reward unavailable' } });
     expect(await useTitleStore.getState().claimAchievement(1)).toBe(false);
@@ -39,7 +45,9 @@ describe('achievement claims', () => {
     expect(mocks.notify).toHaveBeenCalledWith({ message: 'Reward unavailable', type: 'error' });
   });
   it('confirms a committed claim even when subsequent refreshes fail', async () => {
-    mocks.rpc.mockResolvedValue({ data: { claimed: true, claimed_at: '2026-09-16', bits: 200 } });
+    mocks.rpc.mockResolvedValue({
+      data: { claimed: true, claimed_at: '2026-09-16', bits: 200, digimon_id: 'new-partner' },
+    });
     mocks.refresh.mockRejectedValue(new Error('Offline during refresh'));
     const log = vi.spyOn(console, 'error').mockImplementation(() => {});
     expect(await useTitleStore.getState().claimAchievement(1)).toBe(true);

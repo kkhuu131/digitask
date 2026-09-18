@@ -4,6 +4,11 @@ const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 let sql = fs.readFileSync(path.join(__dirname, '../supabase/tests/authorization.sql'), 'utf8');
 sql += '\n' + fs.readFileSync(path.join(__dirname, '../supabase/tests/achievement-claims.sql'), 'utf8');
+const taskProgressMigration = fs.readFileSync(path.join(__dirname, '../supabase/migrations/20260918072450_restore_lifetime_task_progress.sql'), 'utf8');
+const taskProgressBackfill = taskProgressMigration.match(/-- BEGIN TASK PROGRESS BACKFILL([\s\S]*?)-- END TASK PROGRESS BACKFILL/);
+if (!taskProgressBackfill) throw new Error('Task progress backfill section missing');
+sql += '\n' + fs.readFileSync(path.join(__dirname, '../supabase/tests/task-progress.sql'), 'utf8')
+  .replaceAll('__TASK_PROGRESS_BACKFILL__', () => taskProgressBackfill[1]);
 // Check the actual database catalog against the client definitions, not a text snapshot.
 const ts = require('typescript');
 const vm = require('node:vm');

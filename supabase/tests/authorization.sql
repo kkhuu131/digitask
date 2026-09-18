@@ -116,6 +116,9 @@ BEGIN
     IF (r->'daily_quota'->>'completed_today')::integer <> i - 2000 THEN
       RAISE EXCEPTION 'Task completion incremented quota incorrectly: %', r;
     END IF;
+    IF (SELECT tasks_completed_count FROM public.user_milestones WHERE user_id = auth.uid()) IS DISTINCT FROM i - 2000 THEN
+      RAISE EXCEPTION 'Lifetime task count failed before or at the daily quota threshold';
+    END IF;
     IF (r->'daily_quota'->>'quota_completed')::boolean IS DISTINCT FROM (i = 2003) THEN
       RAISE EXCEPTION 'Quota reward signaled incorrectly: %', r;
     END IF;
@@ -125,6 +128,7 @@ BEGIN
     RAISE EXCEPTION 'Repeated task completion was allowed';
   EXCEPTION WHEN invalid_parameter_value THEN NULL; END;
   IF (SELECT completed_today FROM public.daily_quotas WHERE user_id = auth.uid()) <> 3 OR
+    (SELECT tasks_completed_count FROM public.user_milestones WHERE user_id = auth.uid()) IS DISTINCT FROM 3 OR
     (SELECT current_streak FROM public.daily_quotas WHERE user_id = auth.uid()) <> 1 OR
     (SELECT battle_energy FROM public.profiles WHERE id = auth.uid()) <> 3 OR
     (SELECT count(*) FROM public.daily_quotas WHERE user_id = auth.uid()) <> 1 THEN
@@ -158,6 +162,7 @@ BEGIN
   END;
   IF (SELECT is_completed FROM public.tasks WHERE id = '00000000-0000-4000-8000-000000002004') OR
     (SELECT completed_today FROM public.daily_quotas WHERE user_id = auth.uid()) <> 3 OR
+    (SELECT tasks_completed_count FROM public.user_milestones WHERE user_id = auth.uid()) IS DISTINCT FROM 3 OR
     (SELECT experience_points FROM public.user_digimon WHERE id = '00000000-0000-4000-8000-000000001001') <> before_xp THEN
     RAISE EXCEPTION 'Task, quota or experience partially committed';
   END IF;
@@ -175,6 +180,22 @@ BEGIN
   IF (SELECT experience_points FROM public.user_digimon WHERE id = '00000000-0000-4000-8000-000000001001')
     <> before_xp + (r->>'reserve_exp')::integer OR (r->'daily_quota'->>'quota_completed')::boolean THEN
     RAISE EXCEPTION 'Reserve EXP without an active pet or once-daily quota readiness failed';
+  END IF;
+  IF (SELECT tasks_completed_count FROM public.user_milestones WHERE user_id = auth.uid()) IS DISTINCT FROM 4 THEN
+    RAISE EXCEPTION 'Tasks beyond the daily quota did not count';
+  END IF;
+  UPDATE public.tasks SET description = 'edited completed task'
+    WHERE id = '00000000-0000-4000-8000-000000002005';
+  UPDATE public.tasks SET is_completed = false, completed_at = NULL
+    WHERE id = '00000000-0000-4000-8000-000000002005';
+  UPDATE public.daily_quotas SET completed_today = 0 WHERE user_id = auth.uid();
+  IF (SELECT tasks_completed_count FROM public.user_milestones WHERE user_id = auth.uid()) IS DISTINCT FROM 4 THEN
+    RAISE EXCEPTION 'Edits or daily resets changed lifetime progress';
+  END IF;
+  PERFORM public.complete_task_all_triggers('00000000-0000-4000-8000-000000002005', auth.uid(), false);
+  DELETE FROM public.tasks WHERE id = '00000000-0000-4000-8000-000000002005';
+  IF (SELECT tasks_completed_count FROM public.user_milestones WHERE user_id = auth.uid()) IS DISTINCT FROM 5 THEN
+    RAISE EXCEPTION 'Recurring completion or deletion lost lifetime progress';
   END IF;
 END; $$;
 RESET ROLE;

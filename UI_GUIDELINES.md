@@ -62,6 +62,11 @@ Use existing named palette tokens instead of duplicating hex colors.
 On the Achievements page, show tier colors on achievement names instead of
 repeating tier badges on every card or pinned title. Keep tier names available
 to assistive technology and on hover; use a readable color in both themes.
+Show a concise DigiEgg badge on egg-bearing achievements, including locked cards.
+On the dashboard, keep partner reward paths as compact rows inside the Achievements
+panel, with amber progress bars. Evolution milestones use 0/1 progress; hide
+fully claimed routes and keep earned, unclaimed rewards visible. See
+[ACHIEVEMENTS.md](ACHIEVEMENTS.md) for reward and claim behavior.
 
 Task activity uses neutral day cells with subtle amber fills for active days and
 an amber outline for today. Show counts and readable weekday labels rather than

@@ -80,7 +80,7 @@ Routes are defined in `src/App.tsx`. Main features include the dashboard, DigiDe
 - Digimon: `petStore` handles party/storage, evolution and progression. Species, evolution paths and forms are imported from generated constants. `digimonStatCalculation.ts` contains stat interpolation and final-stat calculations.
 - Arena: `Battle` and `BattleTeamSelector` collect teams and behaviors together. The authenticated `arena-battle` Edge Function simulates and settles fights, then `ArenaBattle` plays the saved recording. Ticket spend, Bits, history and counters commit atomically; playback has no reward writes. See [the arena reference](src/engine/ARENA_BATTLE_SYSTEM.md).
 - Tournaments: `Tournament` and `tournamentStore` provide weekly entry, opponent selection, rounds and placement rewards.
-- Achievements: `AchievementsPage` and `titleStore` handle titles, claims and DigiEgg rewards.
+- Achievements: `AchievementsPage` and `titleStore` handle titles, claims and DigiEgg rewards. Read [ACHIEVEMENTS.md](ACHIEVEMENTS.md) before changing achievements, rewards or partner-progress routes.
 - Shop: `DigimonStorePage`, `inventoryStore` and `currencyStore` handle items, effects and balances.
 
 All database access uses the client in `src/lib/supabase.ts`. Some actions use RPCs; others use direct table writes. Deployed policies, triggers and scheduled jobs must be checked against the live Supabase project when changing persistent game behavior.

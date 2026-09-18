@@ -156,7 +156,7 @@ function RequireAuth({
   }
 
   // Show loading while fetching Digimon data
-  if (!allowNoDigimon && digimonLoading && !isHotReload) {
+  if (!allowNoDigimon && !userDigimon && digimonLoading && !isHotReload) {
     return <AppLoader message="Loading your Digimon..." />;
   }
 
