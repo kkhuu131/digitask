@@ -1,4 +1,3 @@
-import NextPartnerReward from '../components/NextPartnerReward';
 import ContentSkeleton from '../components/ContentSkeleton';
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -305,12 +304,6 @@ const AchievementsPage: React.FC = () => {
           </p>
         </div>
         <ContentSkeleton
-          label="Loading achievements…"
-          count={1}
-          itemClassName="min-h-32"
-          className="mb-6"
-        />
-        <ContentSkeleton
           label="Loading pinned titles…"
           layout="grid"
           count={3}
@@ -339,8 +332,6 @@ const AchievementsPage: React.FC = () => {
           Complete challenges to unlock titles, bits, and new Digimon.
         </p>
       </div>
-
-      <NextPartnerReward onClaim={handleClaim} busy={claimingId !== null} />
 
       {/* Pinned to Profile */}
       <div className="mb-6 ui-panel p-4 sm:p-6">
@@ -455,7 +446,11 @@ const AchievementsPage: React.FC = () => {
         </p>
       )}
       {/* Achievement grid */}
-      <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <motion.div
+        id="partner-reward"
+        layout
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+      >
         <AnimatePresence mode="popLayout">
           {sorted.map((title) => (
             <AchievementCard

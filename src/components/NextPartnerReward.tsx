@@ -121,7 +121,7 @@ export default function NextPartnerReward({
           : `Evolve a Digimon to ${next?.title.requirement_value}`;
   if (compact) {
     const routes = [
-      { type: 'tasks_completed', label: 'Tasks', unit: 'tasks' },
+      { type: 'tasks_completed', label: 'Lifetime tasks', unit: 'tasks' },
       { type: 'longest_streak', label: 'Best streak', unit: 'days' },
       { type: 'battle_wins', label: 'Battle wins', unit: 'wins' },
       { type: 'digimon_stage', label: 'Evolution', unit: '' },
@@ -135,7 +135,13 @@ export default function NextPartnerReward({
           const reward = nextPartnerReward(earned, progress, route.type);
           if (!reward) return null;
           const evolution = route.type === 'digimon_stage';
-          const current = evolution ? (reward && !reward.ready ? 0 : 1) : reward?.current;
+          const current = evolution
+            ? reward && !reward.ready
+              ? 0
+              : 1
+            : route.type === 'tasks_completed'
+              ? (progress?.tasks ?? reward?.current)
+              : reward?.current;
           const target = evolution ? 1 : reward?.target;
           const showProgress =
             evolution || (!!reward && !reward.ready && current != null && target != null);
@@ -161,6 +167,9 @@ export default function NextPartnerReward({
                     {current}/{target}
                   </span>
                 )}
+                {route.type === 'tasks_completed' && reward.ready && progress && (
+                  <span className="shrink-0 tabular-nums">{progress.tasks} total</span>
+                )}
               </div>
               {showProgress && (
                 <div
@@ -170,14 +179,14 @@ export default function NextPartnerReward({
                       ? `Reach ${reward?.title.requirement_value ?? 'Ultra'}`
                       : `${route.label}: ${target} ${route.unit} for a DigiEgg`
                   }
-                  aria-valuenow={current ?? 0}
+                  aria-valuenow={Math.min(current ?? 0, target ?? 1)}
                   aria-valuemin={0}
                   aria-valuemax={target ?? 1}
                   className="mt-2 h-1.5 rounded-full overflow-hidden bg-gray-200 dark:bg-dark-100"
                 >
                   <div
                     className="h-full bg-accent-600 dark:bg-accent-500"
-                    style={{ width: `${(100 * (current ?? 0)) / (target ?? 1)}%` }}
+                    style={{ width: `${Math.min(100, (100 * (current ?? 0)) / (target ?? 1))}%` }}
                   />
                 </div>
               )}
@@ -186,14 +195,6 @@ export default function NextPartnerReward({
         })}
         {!progress && (
           <p className="text-xs text-gray-500 dark:text-gray-400">Progress unavailable.</p>
-        )}
-        {next?.ready && (
-          <Link
-            className="ui-link inline-flex min-h-11 items-center"
-            to="/achievements#partner-reward"
-          >
-            Choose your partner
-          </Link>
         )}
       </div>
     );

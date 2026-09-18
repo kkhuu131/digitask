@@ -65,6 +65,16 @@ const PatchNotes = () => {
                 party picker uses the same stat bars as the Digimon detail window. Arena opponent
                 choices use the same animated fighter display, names, levels and icons.
               </li>
+              <li>
+                Profile Digimon use larger animated sprites, consistent names/levels and
+                type/attribute icons. Task activity uses amber day cells and clear summaries,
+                without a daily quota ring or duplicate headings.
+              </li>
+              <li>
+                Profile activity summaries and dashboard partner progress use the same lifetime task
+                total. Historical daily task evidence repairs older undercounted totals without
+                lowering progress. Partner progress appears only on the dashboard.
+              </li>
             </ul>
           </div>
 

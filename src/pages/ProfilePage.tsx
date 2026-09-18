@@ -1,6 +1,7 @@
 import { getDigidexProgress, getDigidexPercentage } from '../utils/digidexProgress';
 import { fetchAllRows } from '../utils/fetchAllRows';
 import { useState, useEffect } from 'react';
+import { useReducedMotion } from 'framer-motion';
 import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import AchievementsPage from './AchievementsPage';
 import { useAuthStore } from '../store/authStore';
@@ -17,6 +18,8 @@ import DigimonSprite from '../components/DigimonSprite';
 import PageTutorial from '../components/PageTutorial';
 import { DialogueStep } from '../components/DigimonDialogue';
 import TaskHeatmap from '../components/TaskHeatmap';
+import DigimonCardIdentity from '../components/DigimonCardIdentity';
+import DigimonStatRow from '../components/DigimonStatRow';
 
 interface ProfileData {
   id: string;
@@ -29,16 +32,8 @@ interface ProfileData {
   discovered_count: number;
 }
 
-const statColors: Record<string, string> = {
-  HP: 'text-red-700 dark:text-red-400',
-  SP: 'text-cyan-700 dark:text-cyan-400',
-  ATK: 'text-orange-700 dark:text-orange-400',
-  DEF: 'text-primary-700 dark:text-primary-400',
-  INT: 'text-accent-800 dark:text-accent-400',
-  SPD: 'text-teal-700 dark:text-teal-400',
-};
-
 const ProfilePage = () => {
+  const reducedMotion = useReducedMotion();
   const { id } = useParams<{ id?: string }>();
   const { username } = useParams<{ username?: string }>();
   const { user, userProfile } = useAuthStore();
@@ -353,6 +348,15 @@ const ProfilePage = () => {
       ]
     : [];
 
+  const favoriteStatReferences: Record<string, number> = {
+    HP: favoriteDigimon?.digimon?.hp_level99 ?? 2000,
+    SP: favoriteDigimon?.digimon?.sp_level99 ?? 600,
+    ATK: favoriteDigimon?.digimon?.atk_level99 ?? 600,
+    DEF: favoriteDigimon?.digimon?.def_level99 ?? 600,
+    INT: favoriteDigimon?.digimon?.int_level99 ?? 600,
+    SPD: favoriteDigimon?.digimon?.spd_level99 ?? 600,
+  };
+
   return (
     <div className="ui-page max-w-4xl space-y-6">
       {isOwnProfile && <PageTutorial tutorialId="profile_intro" steps={profilePageTutorialSteps} />}
@@ -486,34 +490,50 @@ const ProfilePage = () => {
         <>
           {/* Active Digimon */}
           {favoriteDigimon && (
-            <div className="bg-white dark:bg-dark-300 rounded-xl border border-gray-200 dark:border-dark-100 p-4 sm:p-6">
-              <h2 className="font-heading text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">
+            <section className="card" aria-label="Active Digimon">
+              <h2 className="ui-section-title mb-4">
                 {isOwnProfile ? 'Active Digimon' : `${profileData.username}'s Active Digimon`}
               </h2>
-
-              <div className="flex flex-col sm:flex-row items-center gap-5">
-                {/* Sprite */}
-                <div className="w-28 h-28 flex-shrink-0 flex items-center justify-center bg-gray-50 dark:bg-dark-200 rounded-xl border border-gray-100 dark:border-dark-100">
-                  <DigimonSprite
-                    digimonName={favoriteDigimon.digimon?.name || ''}
-                    fallbackSpriteUrl={favoriteDigimon.digimon?.sprite_url || ''}
-                    size="lg"
-                    showHappinessAnimations={true}
-                    happiness={favoriteDigimon.happiness}
+              <div className="flex flex-col sm:flex-row gap-6">
+                <button
+                  onClick={() => handleDigimonClick(favoriteDigimon)}
+                  aria-label={`View ${favoriteDigimon.name || favoriteDigimon.digimon?.name} details`}
+                  className="sm:w-2/5 min-w-0 rounded-xl border border-accent-300 dark:border-accent-700 bg-accent-50/50 dark:bg-accent-900/10 flex flex-col items-center p-4 hover:border-accent-500 transition-colors"
+                >
+                  <div className="h-40 w-full flex items-center justify-center">
+                    <DigimonSprite
+                      digimonName={favoriteDigimon.digimon?.name || ''}
+                      fallbackSpriteUrl={favoriteDigimon.digimon?.sprite_url || ''}
+                      size="lg"
+                      happiness={favoriteDigimon.happiness}
+                      showHappinessAnimations={!reducedMotion}
+                    />
+                  </div>
+                  <DigimonCardIdentity
+                    name={favoriteDigimon.name || favoriteDigimon.digimon?.name || 'Digimon'}
+                    level={favoriteDigimon.current_level}
+                    type={favoriteDigimon.digimon?.type}
+                    attribute={favoriteDigimon.digimon?.attribute}
                   />
-                </div>
-
-                {/* Info */}
-                <div className="flex-1 min-w-0 w-full">
-                  <div className="flex items-center justify-between mb-3">
-                    <div>
-                      <h3 className="font-heading font-bold text-gray-900 dark:text-gray-100">
-                        {favoriteDigimon.name || favoriteDigimon.digimon?.name}
-                      </h3>
-                      <p className="font-body text-xs text-gray-400 dark:text-gray-500">
-                        Lv. {favoriteDigimon.current_level} · {favoriteDigimon.digimon?.stage || ''}
-                      </p>
-                    </div>
+                  {favoriteDigimon.digimon?.stage && (
+                    <p className="mt-2 text-xs text-gray-600 dark:text-gray-400">
+                      {favoriteDigimon.digimon.stage}
+                    </p>
+                  )}
+                </button>
+                <div className="sm:w-3/5 min-w-0 flex flex-col">
+                  <h3 className="ui-section-title mb-3">Stats</h3>
+                  <div className="space-y-3">
+                    {favoriteStatEntries.map(({ key, val }) => (
+                      <DigimonStatRow
+                        key={key}
+                        label={key}
+                        value={val}
+                        maxReference={favoriteStatReferences[key]}
+                      />
+                    ))}
+                  </div>
+                  <div className="mt-4 flex justify-end">
                     <button
                       onClick={() => handleDigimonClick(favoriteDigimon)}
                       className="btn-outline"
@@ -521,33 +541,14 @@ const ProfilePage = () => {
                       View Details
                     </button>
                   </div>
-
-                  {/* Stats grid */}
-                  <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
-                    {favoriteStatEntries.map(({ key, val }) => (
-                      <div
-                        key={key}
-                        className="bg-gray-50 dark:bg-dark-200 rounded-lg py-2 text-center border border-gray-100 dark:border-dark-100"
-                      >
-                        <div
-                          className={`font-body text-xs font-semibold mb-0.5 ${statColors[key]}`}
-                        >
-                          {key}
-                        </div>
-                        <div className="font-heading font-bold text-sm text-gray-900 dark:text-gray-100">
-                          {val}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
                 </div>
               </div>
-            </div>
+            </section>
           )}
 
           {/* Digimon Collection */}
           <div className="bg-white dark:bg-dark-300 rounded-xl border border-gray-200 dark:border-dark-100 p-4 sm:p-6">
-            <h2 className="font-heading text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">
+            <h2 className="ui-section-title mb-4">
               {isOwnProfile ? 'My Digimon' : `${profileData.username}'s Digimon`}
               <span className="ml-2 font-body font-normal text-sm text-gray-400 dark:text-gray-500">
                 ({userDigimon.length})
@@ -559,28 +560,35 @@ const ProfilePage = () => {
                 No Digimon yet
               </div>
             ) : (
-              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                 {userDigimon.map((digimon) => (
-                  <div
+                  <button
                     key={digimon.id}
                     onClick={() => handleDigimonClick(digimon)}
-                    className="bg-gray-50 dark:bg-dark-200 rounded-xl border border-gray-100 dark:border-dark-100 hover:border-purple-300 dark:hover:border-purple-700 cursor-pointer transition-all duration-150 hover:shadow-sm p-3 flex flex-col items-center gap-1"
+                    aria-label={`View ${digimon.name || digimon.digimon?.name}, level ${digimon.current_level}`}
+                    className={`w-full min-w-0 min-h-48 aspect-square rounded-xl border p-2 pb-4 flex flex-col items-center justify-center transition-colors ${digimon.is_active ? 'border-accent-300 dark:border-accent-700 bg-accent-50/50 dark:bg-accent-900/10' : 'border-gray-200 dark:border-dark-100 bg-gray-50 dark:bg-dark-200'} hover:border-accent-500`}
                   >
-                    <div className="w-14 h-14 flex items-center justify-center">
-                      <DigimonSprite
-                        digimonName={digimon.digimon?.name || ''}
-                        fallbackSpriteUrl={digimon.digimon?.sprite_url || ''}
-                        size="sm"
-                        showHappinessAnimations={false}
-                      />
+                    <div
+                      className="h-28 sm:h-32 w-full flex items-center justify-center overflow-hidden"
+                      aria-hidden="true"
+                    >
+                      <div className="scale-75 sm:scale-100">
+                        <DigimonSprite
+                          digimonName={digimon.digimon?.name || ''}
+                          fallbackSpriteUrl={digimon.digimon?.sprite_url || ''}
+                          size="md"
+                          happiness={digimon.happiness}
+                          showHappinessAnimations={!reducedMotion}
+                        />
+                      </div>
                     </div>
-                    <div className="font-body font-semibold text-xs text-gray-800 dark:text-gray-200 truncate max-w-full text-center">
-                      {digimon.name || digimon.digimon?.name}
-                    </div>
-                    <div className="font-body text-xs text-gray-400 dark:text-gray-500">
-                      Lv. {digimon.current_level}
-                    </div>
-                  </div>
+                    <DigimonCardIdentity
+                      name={digimon.name || digimon.digimon?.name || 'Digimon'}
+                      level={digimon.current_level}
+                      type={digimon.digimon?.type}
+                      attribute={digimon.digimon?.attribute}
+                    />
+                  </button>
                 ))}
               </div>
             )}
@@ -589,9 +597,7 @@ const ProfilePage = () => {
           {/* Activity Heatmap — own profile only */}
           {isOwnProfile && (
             <div className="bg-white dark:bg-dark-300 rounded-xl border border-gray-200 dark:border-dark-100 p-4 sm:p-6">
-              <h2 className="font-heading text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">
-                Activity
-              </h2>
+              <h2 className="ui-section-title mb-4">Task activity</h2>
               <TaskHeatmap />
             </div>
           )}

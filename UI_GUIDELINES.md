@@ -71,6 +71,9 @@ fully claimed routes and keep earned, unclaimed rewards visible. See
 Task activity uses neutral day cells with subtle amber fills for active days and
 an amber outline for today. Show counts and readable weekday labels rather than
 relying on color intensity. Reserve purple for experience displays.
+Profile task activity has a single section heading, an amber calendar/count legend
+and compact streak/task summaries. Keep daily quota controls on the dashboard.
+Profile Digimon use `DigimonCardIdentity`, animated sprites and shared stat bars.
 
 ## Typography and interaction
 

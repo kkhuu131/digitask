@@ -1,5 +1,25 @@
 # Database audit and deployed cleanup — 2026-09-17
 
+## Task-history reconciliation - database deployed 2026-09-18
+
+Read-only diagnostics found 18 accounts whose retained daily history exceeded
+lifetime task counters. `20260918204618_reconcile_task_history_progress.sql`
+recovers a nondecreasing lower bound using all past recorded days plus the maximum
+of today's history/quota. It excludes future dates and never adds this overlapping
+lower bound to an existing counter. Completion keeps its existing single writer.
+
+Local reset, reference/authorization fixtures, database lint, regenerated types
+(unchanged) and declarative consistency passed. Exact repair fixtures verify older
+history, today's overlap, future exclusion, higher totals, claims and repeat runs.
+The verified linked target dry run contained only this data migration. It was
+applied to production; post-checks found zero counters below recorded history.
+Private ignored snapshots confirm 16 existing counters increased, none decreased,
+all 41 original milestone rows retained their other metadata, and all 264 existing
+achievement records were preserved. Two previously missing counter rows were added.
+No rewards or claims were directly granted. Compatible frontend changes are local;
+web publication must be verified separately.
+
+
 ## Digimon evolution history — database deployed 2026-09-18
 
 `20260918184219_track_digimon_evolution_history.sql` adds transactional per-pet

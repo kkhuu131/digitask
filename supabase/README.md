@@ -41,7 +41,7 @@ Use `npm.cmd` in PowerShell if script execution is blocked. `db:start:database` 
 
 ## One-time adoption: completed on 2026-09-16 (arena update 2026-09-17)
 
-The linked `digitask` project now records all twelve active migrations in this checkout, from `20260916220000` through `20260918184219`. The four previous March 2026 versions were archived and removed from the active history metadata. The baseline was marked applied, **never executed** on the existing database. The six September 16 follow-ups and the September 17 additive arena migration were deployed without development seeds, role updates or vault updates. The authenticated arena-battle Edge Function is also deployed. The September 18 arena reward, tournament achievement/catalog, lifetime task-progress and evolution-history migrations are now applied.
+The linked `digitask` project now records all thirteen active migrations in this checkout, from `20260916220000` through `20260918204618`. The four previous March 2026 versions were archived and removed from the active history metadata. The baseline was marked applied, **never executed** on the existing database. The six September 16 follow-ups and the September 17 additive arena migration were deployed without development seeds, role updates or vault updates. The authenticated arena-battle Edge Function is also deployed. The September 18 arena reward, tournament achievement/catalog, lifetime task-progress and evolution-history migrations are now applied.
 
 The complete pre-adoption schema export matched the original capture before repair. Original definitions, grants, cron commands and recorded migration statements, plus manual restoration SQL, are backed up locally under ignored `supabase/.temp/backups/baseline-adoption-20260916/`. These are schema/metadata rollback materials, not a user-data backup. Adoption and the first five follow-ups did not modify production user rows. The achievement/discovery follow-up repaired six missing discovery records for currently owned species without resetting claims. Old checkouts must update before deploying; do not repeat this repair procedure.
 
@@ -107,3 +107,13 @@ Recordings sample presentation state every 64ms and preserve combat events; move
 The 120-second simulation limit uses the greater remaining team HP fraction; ties count as defeats. Easy/Medium/Hard victories award 100/200/300 Bits; defeats award 50/50/40. Playback may be interrupted without losing rewards; it performs no database mutation. Tournament settlement remains a separate existing flow.
 
 See the official [Edge Function authentication guide](https://supabase.com/docs/guides/functions/auth-legacy-jwt) and [runtime limits](https://supabase.com/docs/guides/functions/limits). Keep the engine bounded and benchmark it when changing simulation costs.
+
+## Task-history reconciliation (database deployed 2026-09-18)
+
+Data-only migration `20260918204618_reconcile_task_history_progress.sql` reconciles
+lifetime counters with retained daily history without lowering any counter,
+double-counting today's overlapping quota/history, or altering claims. It is
+applied to production; the history/lifetime aggregate reports no remaining gaps.
+Application summaries and partner task progress read the same lifetime source;
+calendar cells still represent only the displayed dates. See `DATABASE_AUDIT.md`
+for preservation checks. No schema or generated-type changes were needed.

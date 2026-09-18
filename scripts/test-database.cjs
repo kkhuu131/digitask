@@ -14,6 +14,11 @@ const taskProgressBackfill = taskProgressMigration.match(/-- BEGIN TASK PROGRESS
 if (!taskProgressBackfill) throw new Error('Task progress backfill section missing');
 sql += '\n' + fs.readFileSync(path.join(__dirname, '../supabase/tests/task-progress.sql'), 'utf8')
   .replaceAll('__TASK_PROGRESS_BACKFILL__', () => taskProgressBackfill[1]);
+const taskHistoryMigration = fs.readFileSync(path.join(__dirname, '../supabase/migrations/20260918204618_reconcile_task_history_progress.sql'), 'utf8');
+const taskHistoryBackfill = taskHistoryMigration.match(/-- BEGIN TASK HISTORY PROGRESS BACKFILL([\s\S]*?)-- END TASK HISTORY PROGRESS BACKFILL/);
+if (!taskHistoryBackfill) throw new Error('Task history progress backfill section missing');
+sql += '\n' + fs.readFileSync(path.join(__dirname, '../supabase/tests/task-history-progress.sql'), 'utf8')
+  .replaceAll('__TASK_HISTORY_PROGRESS_BACKFILL__', () => taskHistoryBackfill[1]);
 // Check the actual database catalog against the client definitions, not a text snapshot.
 const ts = require('typescript');
 const vm = require('node:vm');

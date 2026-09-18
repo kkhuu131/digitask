@@ -12,10 +12,11 @@ interface TaskHistoryEntry {
 const TaskHeatmap: React.FC = () => {
   const [history, setHistory] = useState<TaskHistoryEntry[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
+  const [lifetimeTasks, setLifetimeTasks] = useState<number | null>(null);
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
   const { dailyQuota, getExpMultiplier } = useTaskStore();
-  const DAILY_QUOTA_REQUIREMENT = 3; // keep in sync with taskStore
-  const lastFetchedRef = useRef<number | null>(null);
+  const lastFetchedRef = useRef<string | null>(null);
+  const requestRef = useRef(0);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -29,15 +30,28 @@ const TaskHeatmap: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // Only fetch if the completed_today value has actually changed
+    // Refresh when completed tasks or the visible date range changes.
     const currentCompleted = dailyQuota?.completed_today || 0;
-    if (lastFetchedRef.current !== currentCompleted) {
-      lastFetchedRef.current = currentCompleted;
+    const fetchKey = `${currentCompleted}:${isMobile ? 120 : 365}`;
+    if (lastFetchedRef.current !== fetchKey) {
+      lastFetchedRef.current = fetchKey;
       fetchTaskHistory();
     }
   }, [dailyQuota?.completed_today, isMobile]);
 
+  useEffect(() => {
+    const refresh = () => void fetchTaskHistory();
+    window.addEventListener('focus', refresh);
+    window.addEventListener('task-completed', refresh);
+    return () => {
+      requestRef.current += 1;
+      window.removeEventListener('focus', refresh);
+      window.removeEventListener('task-completed', refresh);
+    };
+  }, [dailyQuota?.completed_today, isMobile]);
+
   const fetchTaskHistory = async () => {
+    const requestId = ++requestRef.current;
     try {
       setLoading(true);
 
@@ -50,18 +64,28 @@ const TaskHeatmap: React.FC = () => {
         return;
       }
 
-      // Get last 365 days on desktop, 30 days on mobile
+      // Get last 365 days on desktop, 120 days on mobile.
       const daysToFetch = isMobile ? 120 : 365;
       const startDate = new Date();
       startDate.setDate(startDate.getDate() - daysToFetch);
       const startDateStr = startDate.toISOString().split('T')[0];
 
-      const { data, error } = await supabase
-        .from('task_history')
-        .select('date, tasks_completed')
-        .eq('user_id', user.id)
-        .gte('date', startDateStr)
-        .order('date', { ascending: true });
+      const [activity, milestone] = await Promise.all([
+        supabase
+          .from('task_history')
+          .select('date, tasks_completed')
+          .eq('user_id', user.id)
+          .gte('date', startDateStr)
+          .order('date', { ascending: true }),
+        supabase
+          .from('user_milestones')
+          .select('tasks_completed_count')
+          .eq('user_id', user.id)
+          .maybeSingle(),
+      ]);
+      if (requestId !== requestRef.current) return;
+      const { data, error } = activity;
+      if (!milestone.error) setLifetimeTasks(milestone.data?.tasks_completed_count ?? 0);
 
       if (error) {
         console.error('Error fetching task history:', error);
@@ -72,7 +96,7 @@ const TaskHeatmap: React.FC = () => {
       const today = new Date().toLocaleDateString('en-CA'); // Use local timezone consistently
       const todayTasksCompleted = dailyQuota?.completed_today || 0;
 
-      const combinedData = [...(data || [])];
+      const combinedData = (data || []).filter((entry) => entry.date !== today);
 
       combinedData.push({
         date: today,
@@ -83,191 +107,108 @@ const TaskHeatmap: React.FC = () => {
     } catch (error) {
       console.error('Error fetching task history:', error);
     } finally {
-      setLoading(false);
+      if (requestId === requestRef.current) setLoading(false);
     }
   };
 
+  const rangeStart = new Date();
+  rangeStart.setDate(rangeStart.getDate() - (isMobile ? 120 : 365));
+  const rangeStartKey = rangeStart.toLocaleDateString('en-CA');
+  const visibleHistory = history.filter((entry) => entry.date >= rangeStartKey);
+
   if (loading && history.length === 0) {
     return (
-      <div className="bg-white dark:bg-dark-200 rounded-lg p-6" role="status">
-        <span className="sr-only">Loading task activity…</span>
-        <div className="ui-skeleton-pulse">
-          <div className="h-4 bg-gray-200 dark:bg-dark-100 rounded w-1/3 mb-4"></div>
-          <div className="h-32 bg-gray-200 dark:bg-dark-100 rounded"></div>
+      <div role="status" aria-busy="true">
+        <span className="sr-only">Loading task activity</span>
+        <div className="ui-skeleton-pulse space-y-4" aria-hidden="true">
+          <div className="h-28 bg-gray-100 dark:bg-dark-200 rounded-lg" />
+          <div className="grid grid-cols-3 gap-3">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="h-20 bg-gray-100 dark:bg-dark-200 rounded-lg" />
+            ))}
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-white dark:bg-dark-200 rounded-lg p-6">
-      {/* Inline styles for SVG fills (can't use Tailwind for SVG fill colors) */}
-      <style>{`
-        .react-calendar-heatmap {
-          width: 100%;
-          margin-bottom: 0 !important;
-          padding-bottom: 0 !important;
-          display: block;
-          line-height: 0; /* remove baseline gap */
-        }
-        .react-calendar-heatmap svg { display: block; }
-        .react-calendar-heatmap .color-empty {
-          fill: #ebedf0;
-        }
-        .react-calendar-heatmap .color-scale-1 {
-          fill: #c6e48b;
-        }
-        .react-calendar-heatmap .color-scale-2 {
-          fill: #7bc96f;
-        }
-        .react-calendar-heatmap .color-scale-3 {
-          fill: #239a3b;
-        }
-        .dark .react-calendar-heatmap .color-empty {
-          fill: #374151;
-        }
-        .dark .react-calendar-heatmap .color-scale-1 {
-          fill: #065f46;
-        }
-        .dark .react-calendar-heatmap .color-scale-2 {
-          fill: #047857;
-        }
-        .dark .react-calendar-heatmap .color-scale-3 {
-          fill: #10b981;
-        }
-        /* Subtle borders and hover */
-        .react-calendar-heatmap .react-calendar-heatmap-day {
-          stroke: rgba(0,0,0,0.06);
-          transition: transform 120ms ease;
-        }
-        .react-calendar-heatmap .react-calendar-heatmap-day:hover {
-          transform: scale(1.06);
-          transform-origin: center;
-        }
-        .dark .react-calendar-heatmap .react-calendar-heatmap-day {
-          stroke: rgba(255,255,255,0.08);
-        }
-        /* Weekday labels – slightly smaller */
-        .react-calendar-heatmap .react-calendar-heatmap-weekday-labels text { font-size: 10px; }
-      `}</style>
-
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Task Activity</h3>
-      </div>
-
-      {/* Calendar Heatmap */}
-      <div className="w-full overflow-x-auto">
-        <div>
-          <CalendarHeatmap
-            startDate={new Date(Date.now() - (isMobile ? 120 : 365) * 24 * 60 * 60 * 1000)}
-            endDate={new Date()}
-            values={history.map((entry) => {
-              const [year, month, day] = entry.date.split('-').map(Number);
-              const dateObj = new Date(year, month - 1, day);
-
-              return {
-                date: dateObj,
-                count: entry.tasks_completed,
-              };
-            })}
-            classForValue={(value) => {
-              if (!value) {
-                return 'color-empty';
-              }
-              if (value.count === 0) {
-                return 'color-empty';
-              }
-              if (value.count <= 2) {
-                return 'color-scale-1';
-              }
-              if (value.count <= 3) {
-                return 'color-scale-2';
-              }
-              return 'color-scale-3';
-            }}
-            gutterSize={2}
-            transformDayElement={(rect: any) => React.cloneElement(rect, { rx: 2, ry: 2 })}
-            showWeekdayLabels={true}
-          />
-        </div>
-      </div>
-
-      {/* Stats + Quota Donut */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center mt-4">
-        {/* Left: Streak stats */}
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
-          <div className="flex items-center gap-2">
-            <span className="text-gray-600 dark:text-gray-400">Current Streak:</span>
-            <span className="font-semibold text-green-600 dark:text-green-400 flex items-center gap-1">
-              {dailyQuota?.current_streak || 0} days
-              {(dailyQuota?.current_streak || 0) > 0 && <span className="ml-1">🔥</span>}
-              {(dailyQuota?.current_streak || 0) > 1 && (
-                <span className="text-[11px] font-semibold text-amber-600 dark:text-amber-300">
-                  ×{getExpMultiplier().toFixed(1)} XP
-                </span>
-              )}
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-gray-600 dark:text-gray-400">Best:</span>
-            <span className="font-semibold text-blue-600 dark:text-blue-400">
-              {dailyQuota?.longest_streak || 0} days
-            </span>
-          </div>
-        </div>
-
-        {/* Right: Donut quota */}
-        <div className="flex justify-start sm:justify-end">
-          {(() => {
-            const completed = dailyQuota?.completed_today || 0;
-            const required = DAILY_QUOTA_REQUIREMENT;
-            const pct = Math.min(100, (completed / required) * 100);
-            const size = 56; // px
-            const stroke = 6; // px
-            const radius = (size - stroke) / 2; // center radius
-            const circumference = 2 * Math.PI * radius;
-            const dash = (pct / 100) * circumference;
-
-            const colorClass =
-              pct >= 100 ? 'text-green-500' : pct >= 66 ? 'text-yellow-500' : 'text-red-500';
-
-            return (
-              <div className="flex items-center gap-3">
-                <div className="relative" style={{ width: size, height: size }}>
-                  <svg width={size} height={size} className="transform -rotate-90">
-                    <circle
-                      cx={size / 2}
-                      cy={size / 2}
-                      r={radius}
-                      fill="none"
-                      strokeWidth={stroke}
-                      className="text-gray-200 dark:text-gray-700"
-                      stroke="currentColor"
-                    />
-                    <circle
-                      cx={size / 2}
-                      cy={size / 2}
-                      r={radius}
-                      fill="none"
-                      strokeWidth={stroke}
-                      strokeLinecap="round"
-                      className={`${colorClass}`}
-                      strokeDasharray={`${dash} ${circumference - dash}`}
-                      stroke="currentColor"
-                    />
-                  </svg>
-                  <div className="absolute inset-0 flex items-center justify-center text-[10px] font-semibold text-gray-700 dark:text-gray-200">
-                    {completed}/{required}
-                  </div>
-                </div>
-                <div className="text-xs text-gray-600 dark:text-gray-300">
-                  <div className="font-semibold">Daily Quota</div>
-                  <div className="text-[11px]">Complete {required} tasks</div>
-                </div>
-              </div>
+    <div className="task-heatmap space-y-4">
+      <p className="text-sm text-gray-600 dark:text-gray-400">
+        Completed tasks over the last {isMobile ? '120 days' : 'year'}.
+      </p>
+      <div className="w-full min-w-0 overflow-x-auto">
+        <CalendarHeatmap
+          startDate={rangeStart}
+          endDate={new Date()}
+          values={visibleHistory.map((entry) => {
+            const [year, month, day] = entry.date.split('-').map(Number);
+            return { date: new Date(year, month - 1, day), count: entry.tasks_completed };
+          })}
+          classForValue={(value) => {
+            const count = value?.count ?? 0;
+            const color =
+              count === 0
+                ? 'color-empty'
+                : count <= 2
+                  ? 'color-scale-1'
+                  : count <= 3
+                    ? 'color-scale-2'
+                    : 'color-scale-3';
+            const today =
+              value?.date &&
+              new Date(value.date).toLocaleDateString('en-CA') ===
+                new Date().toLocaleDateString('en-CA');
+            return `${color}${today ? ' color-today' : ''}`;
+          }}
+          gutterSize={2}
+          transformDayElement={(rect: any, value: any) => {
+            const date = value?.date ?? rect.props['data-date'];
+            const label = `${date ? new Date(date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'Day'}: ${value?.count ?? 0} tasks completed`;
+            return React.cloneElement(
+              rect,
+              { rx: 2, ry: 2, 'aria-label': label },
+              <title>{label}</title>
             );
-          })()}
-        </div>
+          }}
+          showWeekdayLabels
+        />
+      </div>
+      <div
+        className="flex flex-wrap items-center justify-end gap-2 text-xs text-gray-600 dark:text-gray-400"
+        aria-label="Activity legend"
+      >
+        <span>Tasks per day</span>
+        {[
+          { label: '0', color: 'bg-gray-200 dark:bg-dark-100' },
+          { label: '1-2', color: 'bg-amber-100 dark:bg-amber-900' },
+          { label: '3', color: 'bg-amber-300 dark:bg-amber-700' },
+          { label: '4+', color: 'bg-amber-500' },
+        ].map(({ label, color }) => (
+          <span key={label} className="inline-flex items-center gap-1">
+            <span className={`h-3 w-3 rounded-sm ${color}`} aria-hidden="true" />
+            {label}
+          </span>
+        ))}
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 border-t border-gray-200 dark:border-dark-100 pt-4">
+        {[
+          { label: 'Current streak', value: `${dailyQuota?.current_streak ?? 0} days` },
+          { label: 'Best streak', value: `${dailyQuota?.longest_streak ?? 0} days` },
+          { label: 'Lifetime tasks', value: lifetimeTasks?.toLocaleString() ?? 'Unavailable' },
+        ].map(({ label, value }) => (
+          <div key={label} className="rounded-lg bg-gray-50 dark:bg-dark-200 p-3 min-w-0">
+            <p className="text-xs text-gray-600 dark:text-gray-400">{label}</p>
+            <p className="mt-1 font-heading text-lg font-semibold text-gray-900 dark:text-gray-100">
+              {value}
+            </p>
+            {label === 'Current streak' && (dailyQuota?.current_streak ?? 0) > 1 && (
+              <p className="mt-1 text-xs text-accent-800 dark:text-accent-400">
+                {getExpMultiplier().toFixed(1)}x EXP bonus
+              </p>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );

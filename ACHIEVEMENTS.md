@@ -51,7 +51,7 @@ ID. Catalog IDs are persistent identities: do not reuse retired IDs.
    regrant rewards when updating catalog definitions.
 5. Update `AchievementsPage` category labels/filters and `formatRequirement`
    for new categories or requirement types. Review profile title consumers too.
-6. For a DigiEgg achievement, review both partner-progress surfaces below.
+6. For a DigiEgg achievement, review the dashboard partner-progress surface below.
    Existing supported numeric routes pick up new milestones automatically;
    a new route requires counter mapping and a display row. Do not silently
    interpret a new requirement as evolution.
@@ -90,6 +90,12 @@ total. Deleted tasks and past recurring cycles cannot be completely reconstructe
 The migration was deployed on 2026-09-18; consult migration history/audit for
 current deployment status.
 
+Migration `20260918204618_reconcile_task_history_progress.sql` adds retained daily
+history to recovery evidence. It takes the maximum of the existing lifetime count
+and the sum of past recorded days plus the maximum of today's history/quota, never
+summing overlapping totals. Future-dated history is excluded. This data-only repair
+was deployed on 2026-09-18; it preserves claims and metadata and changes no writers.
+
 Tournament progress is the highest contiguous round-win count or historical
 completed placement: semifinals = 1, Grand Final = 2, champion = 3. Contender,
 Finalist and Champion currently grant Bits, not DigiEggs. Do not confuse tournament
@@ -110,10 +116,14 @@ placement payouts with separate achievement rewards. No current checker handles
   claiming Mega, target Ultra; after all evolution egg rewards are claimed,
   hide the row. Do not count currently owned Mega pets or lose earned progress
   after devolution, DNA consumption or other roster changes.
-- The Achievements page uses the same component in its full presentation for
-  one next reward. Across routes, earned unclaimed rewards take priority;
-  otherwise the selector chooses the highest numeric completion fraction.
-  This is progress toward a milestone, not a predicted time to earn it.
+- Partner progress appears only in the dashboard Achievements panel. The full
+  Achievements page and its profile tab show achievement cards and claims without
+  a duplicate next-partner panel. The dashboard's achievement notification provides
+  navigation; progress rows have no separate "Choose your partner" link.
+- The profile activity summary and partner task progress both read
+  `user_milestones.tasks_completed_count` and label it lifetime tasks. The activity
+  calendar remains limited to its displayed date range. Task numerators show the
+  actual lifetime count even above a milestone; fill and ARIA progress stay capped.
 - The selector excludes unearned campaign rewards. Outstanding earned legacy
   rewards remain claimable. Exhausted routes return `null`.
 - Progress reads are display-only; they never award achievements or currency.
@@ -123,8 +133,8 @@ placement payouts with separate achievement rewards. No current checker handles
 - Cards show the concise **DigiEgg** badge whenever their pool is nonempty,
   including locked cards with concealed names. Keep tier color on the name,
   bookmark on the name row, and avoid redundant tier/completion badges.
-- Ready partner actions reuse the Achievements page's claim/selection flow.
-  The dashboard does not need another "View partner rewards" navigation link.
+- Partner claims reuse the Achievements page's claim/selection flow. The dashboard
+  uses its existing achievement navigation instead of a separate partner link.
 - A DigiEgg achievement grants one chosen owned Digimon. The dialog offers up
   to three seeded options from its pool; it does not grant the entire pool.
   Shop armor DigiEggs are evolution items, and Random Digimon Data unlocks a
