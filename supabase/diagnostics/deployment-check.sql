@@ -17,8 +17,18 @@ BEGIN
   IF (SELECT array_agg(version ORDER BY version) FROM supabase_migrations.schema_migrations)
     IS DISTINCT FROM ARRAY['20260916220000', '20260916230000', '20260916231000',
       '20260916232000', '20260916233000', '20260916234000', '20260916235000',
-      '20260917000000']::text[] THEN
+      '20260917000000', '20260918061922', '20260918063049']::text[] THEN
     RAISE EXCEPTION 'Unexpected migration history';
+  END IF;
+  IF EXISTS (SELECT 1 FROM (VALUES (601,200),(602,500),(603,1000)) expected(id,bits)
+    LEFT JOIN public.titles title USING(id)
+    WHERE title.id IS NULL OR title.reward_bits IS DISTINCT FROM expected.bits
+      OR title.category IS DISTINCT FROM 'tournament') THEN
+    RAISE EXCEPTION 'Tournament achievement catalog mismatch';
+  END IF;
+  IF position('WHEN ''hard'' THEN 300 WHEN ''medium'' THEN 200 ELSE 100 END'
+    IN pg_get_functiondef('public.settle_arena_battle(uuid,uuid,jsonb)'::regprocedure))=0 THEN
+    RAISE EXCEPTION 'Arena victory rewards not updated';
   END IF;
   FOREACH f IN ARRAY ARRAY[
     'public.prepare_arena_battle(uuid,uuid,uuid,uuid[],text[])'::regprocedure,

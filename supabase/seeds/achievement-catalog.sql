@@ -35,5 +35,8 @@ INSERT INTO public.titles (id,name,description,category,requirement_type,require
 (505,'Task Adept','Completed 100 tasks.','tasks','tasks_completed','100',750,ARRAY[18,19,23,24,26]::integer[]),
 (506,'Task Master','Completed 250 tasks.','tasks','tasks_completed','250',1000,ARRAY[19,23,24,26,30,32,33,36,41,44,45,47,49,51,55]::integer[]),
 (507,'Digital Legend','Completed 500 tasks.','tasks','tasks_completed','500',1500,ARRAY[18,21,27,29,34,39,46,50,23,24,32,47,48,53,54]::integer[]),
-(508,'One Thousand Tasks','Completed 1000 tasks. You are a true Tamer.','tasks','tasks_completed','1000',3000,ARRAY[66,68,70,71,72,75,76,77,78,79,80,81,82,83]::integer[])
+(508,'One Thousand Tasks','Completed 1000 tasks. You are a true Tamer.','tasks','tasks_completed','1000',3000,ARRAY[66,68,70,71,72,75,76,77,78,79,80,81,82,83]::integer[]),
+(601,'Contender','Reached the semifinals of a weekly tournament.','tournament','tournament_round','1',200,ARRAY[]::integer[]),
+(602,'Finalist','Reached the Grand Final of a weekly tournament.','tournament','tournament_round','2',500,ARRAY[]::integer[]),
+(603,'Champion','Finished first in a weekly tournament.','tournament','tournament_round','3',1000,ARRAY[]::integer[])
 ON CONFLICT (id) DO UPDATE SET reward_bits=EXCLUDED.reward_bits,reward_digimon_ids=EXCLUDED.reward_digimon_ids;

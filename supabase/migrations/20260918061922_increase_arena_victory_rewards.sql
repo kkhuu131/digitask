@@ -1,3 +1,5 @@
+-- Replace the desired function definition to increase Arena victory rewards.
+-- Changes only victory rewards; preserves service-only grants and idempotent atomic settlement.
 CREATE OR REPLACE FUNCTION public.settle_arena_battle(p_user_id uuid,p_request_id uuid,p_replay jsonb)
 RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path = pg_catalog, public AS $$
 DECLARE v_request public.arena_battle_requests%ROWTYPE; v_bits integer; v_battle uuid;

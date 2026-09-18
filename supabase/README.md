@@ -41,7 +41,8 @@ Use `npm.cmd` in PowerShell if script execution is blocked. `db:start:database` 
 
 ## One-time adoption: completed on 2026-09-16 (arena update 2026-09-17)
 
-The linked `digitask` project now records all eight active migrations in this checkout, from `20260916220000` through `20260917000000`. The four previous March 2026 versions were archived and removed from the active history metadata. The baseline was marked applied, **never executed** on the existing database. The six September 16 follow-ups and the September 17 additive arena migration were deployed without development seeds, role updates or vault updates. The authenticated arena-battle Edge Function is also deployed.
+The linked `digitask` project now records all ten active migrations in this checkout, from `20260916220000` through `20260918063049`. The four previous March 2026 versions were archived and removed from the active history metadata. The baseline was marked applied, **never executed** on the existing database. The six September 16 follow-ups and the September 17 additive arena migration were deployed without development seeds, role updates or vault updates. The authenticated arena-battle Edge Function is also deployed. The September 18
+Arena reward and tournament achievement/catalog migrations are now applied.
 
 The complete pre-adoption schema export matched the original capture before repair. Original definitions, grants, cron commands and recorded migration statements, plus manual restoration SQL, are backed up locally under ignored `supabase/.temp/backups/baseline-adoption-20260916/`. These are schema/metadata rollback materials, not a user-data backup. Adoption and the first five follow-ups did not modify production user rows. The achievement/discovery follow-up repaired six missing discovery records for currently owned species without resetting claims. Old checkouts must update before deploying; do not repeat this repair procedure.
 
@@ -77,6 +78,6 @@ For local HTTP testing, build the function before starting the local stack. Star
 
 Recordings sample presentation state every 64ms and preserve combat events; movement is interpolated during playback. A worst-case replay is approximately 1 MiB in the current test. Requests and recordings are retained; monitor database growth and define a retention policy before expanding usage. The battle_id is a historical identifier rather than a foreign key, so the existing team_battles pruning job does not erase or block saved arena results. Replays can show results after the team or reference balance changes. Update replay readers compatibly, and preserve or explicitly migrate uncharged prepared requests when changing engine versions.
 
-The 120-second simulation limit uses the greater remaining team HP fraction; ties count as defeats. Existing easy/medium/hard Bits rewards remain unchanged. Playback may be interrupted without losing rewards; it performs no database mutation. Tournament settlement remains a separate existing flow.
+The 120-second simulation limit uses the greater remaining team HP fraction; ties count as defeats. Easy/Medium/Hard victories award 100/200/300 Bits; defeats award 50/50/40. Playback may be interrupted without losing rewards; it performs no database mutation. Tournament settlement remains a separate existing flow.
 
 See the official [Edge Function authentication guide](https://supabase.com/docs/guides/functions/auth-legacy-jwt) and [runtime limits](https://supabase.com/docs/guides/functions/limits). Keep the engine bounded and benchmark it when changing simulation costs.

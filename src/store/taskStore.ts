@@ -4,7 +4,6 @@ import { useDigimonStore } from './petStore';
 import { useNotificationStore } from './notificationStore';
 import { useAuthStore } from '../store/authStore';
 import { useTitleStore } from './titleStore';
-import { useTournamentStore } from './tournamentStore';
 
 // Helper: fetch lifetime task count from user_milestones and check task achievements
 async function checkTaskAchievementsAfterCompletion(userId: string): Promise<void> {
@@ -327,22 +326,6 @@ export const useTaskStore = create<TaskState>((set, get) => ({
 
       // The task-completion transaction awards one battle ticket server-side.
       window.dispatchEvent(new Event('energy-updated'));
-
-      // Optimistically bump the tournament weekly task counter so the UI
-      // shows the progress bar advancing without waiting for a fetch.
-      // At exactly 10 tasks the weekly tournament bracket becomes available.
-      const tournamentStore = useTournamentStore.getState();
-      const prevWeeklyCount = tournamentStore.weeklyTaskCount;
-      const newWeeklyCount = prevWeeklyCount + 1;
-      tournamentStore.setWeeklyTaskCount(newWeeklyCount);
-      if (prevWeeklyCount < 10 && newWeeklyCount >= 10) {
-        useNotificationStore.getState().addNotification({
-          type: 'success',
-          message:
-            "🏆 Weekly Tournament unlocked! Head to Battle Hub to enter this week's tournament.",
-          duration: 8000,
-        });
-      }
 
       // Fire-and-forget: read lifetime task count from user_milestones and check title unlocks.
       // Non-blocking — a failure here shouldn't fail the task completion.

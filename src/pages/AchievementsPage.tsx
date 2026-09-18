@@ -38,7 +38,8 @@ const CATEGORY_LABELS: Record<FilterCategory, string> = {
   tasks: 'Tasks',
   streak: 'Streaks',
   battle: 'Battles',
-  campaign: 'Campaign',
+  campaign: 'Legacy',
+  tournament: 'Tournaments',
   collection: 'Collection',
   evolution: 'Evolution',
 };
@@ -52,6 +53,10 @@ function formatRequirement(title: Title): string {
       return `Reach a ${v}-day streak`;
     case 'battle_wins':
       return `Win ${v} arena battle${Number(v) > 1 ? 's' : ''}`;
+    case 'tournament_round':
+      return ['Reach the semifinals', 'Reach the Grand Final', 'Win a weekly tournament'][
+        Number(v) - 1
+      ];
     case 'campaign_stage':
       return `Clear Campaign Stage ${v}`;
     case 'digimon_count':
@@ -234,7 +239,14 @@ const AchievementsPage: React.FC = () => {
     .slice(0, 3);
 
   // Filter + sort achievements
-  const filtered = TITLES.filter((t) => activeFilter === 'all' || t.category === activeFilter);
+  const activeTitles = TITLES.filter((title) => title.category !== 'campaign');
+  const legacyTitles = TITLES.filter(
+    (title) => title.category === 'campaign' && earnedMap.has(title.id)
+  );
+  const filtered =
+    activeFilter === 'campaign'
+      ? legacyTitles
+      : activeTitles.filter((title) => activeFilter === 'all' || title.category === activeFilter);
   const sorted = [...filtered].sort((a, b) => {
     const utA = earnedMap.get(a.id);
     const utB = earnedMap.get(b.id);
@@ -368,27 +380,29 @@ const AchievementsPage: React.FC = () => {
 
       {/* Filter tabs */}
       <div className="flex gap-1.5 flex-wrap mb-4">
-        {(Object.entries(CATEGORY_LABELS) as [FilterCategory, string][]).map(([key, label]) => {
-          const isActive = activeFilter === key;
-          return (
-            <button
-              key={key}
-              onClick={() => setActiveFilter(key)}
-              aria-pressed={isActive}
-              className={`ui-tab ${isActive ? 'ui-tab-active' : ''}`}
-            >
-              {label}
-            </button>
-          );
-        })}
+        {(Object.entries(CATEGORY_LABELS) as [FilterCategory, string][])
+          .filter(([key]) => key !== 'campaign' || legacyTitles.length > 0)
+          .map(([key, label]) => {
+            const isActive = activeFilter === key;
+            return (
+              <button
+                key={key}
+                onClick={() => setActiveFilter(key)}
+                aria-pressed={isActive}
+                className={`ui-tab ${isActive ? 'ui-tab-active' : ''}`}
+              >
+                {label}
+              </button>
+            );
+          })}
       </div>
 
       {/* Stats bar */}
       <div className="flex gap-3 mb-6 flex-wrap">
         {(['bronze', 'silver', 'gold', 'platinum'] as const).map((tier) => {
-          const total = TITLES.filter((t) => t.tier === tier).length;
+          const total = activeTitles.filter((t) => t.tier === tier).length;
           const earned = userTitles.filter(
-            (ut) => TITLES.find((t) => t.id === ut.title_id)?.tier === tier
+            (ut) => activeTitles.find((t) => t.id === ut.title_id)?.tier === tier
           ).length;
           const s = TIER_STYLES[tier];
           return (
@@ -405,6 +419,12 @@ const AchievementsPage: React.FC = () => {
         })}
       </div>
 
+      {activeFilter === 'campaign' && (
+        <p className="ui-description mb-4">
+          Legacy achievements were earned in the retired campaign. Your titles, pinned titles and
+          unclaimed rewards are preserved. They do not count toward active achievement completion.
+        </p>
+      )}
       {/* Achievement grid */}
       <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <AnimatePresence mode="popLayout">

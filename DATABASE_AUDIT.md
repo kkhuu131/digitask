@@ -72,3 +72,39 @@ Follow [supabase/README.md](supabase/README.md) for the ongoing migration workfl
 ## Arena operational follow-up
 
 The production migration and arena-battle function are deployed; the website still needs the prepared client commit/deployment. The old client remains compatible with the additive arena migration but retains its old ticket-loss behavior until rollout. Tournament combat/settlement is still separate and has not been converted. Recordings are currently retained indefinitely; define a retention policy and monitor storage before scaling usage. The worst-case local replay is approximately 1 MiB; a bounded 120-second simulation took about 60 ms in the current local test. A schema-only pre-arena backup and rollback notes are under ignored `supabase/.temp/backups/atomic-arena-20260917/`. Do not delete settled records or refund paid fights merely because playback was interrupted.
+
+## Deployed arena reward update - 2026-09-18
+
+The desired `settle_arena_battle` function and a new migration raise Easy/Medium/Hard
+victory rewards to 100/200/300 Bits. Defeat rewards remain 50/50/40. Settled requests
+keep their recorded amounts; retries do not grant another payout. The Arena page,
+SQL reward/rollback fixtures and local HTTP integration expectation are updated.
+Docker was unavailable during preparation. The local reset, reward/authorization
+regressions, database lint, generated types and declarative consistency checks
+subsequently passed. The migration copies only the changed
+function definition; its signature and service-role-only grants are preserved.
+The documented local checks and production deployment dry run passed;
+`20260918061922_increase_arena_victory_rewards` was applied to production.
+
+## Deployed tournament achievements and campaign retirement - 2026-09-18
+
+A new catalog data migration adds Contender/Finalist/Champion (IDs 601?603) with
+200/500/1,000 Bits claim rewards. It backfills earned tournament titles from saved
+round wins or completed final placements, and preserves outstanding campaign
+entitlements from saved highest-stage progress before browser campaign checks
+are retired. Inserts are conflict-safe and grant no immediate currency; prior
+claim timestamps, earned dates and pinned flags remain unchanged. Catalog seeds
+match the client. The website shows only earned campaign titles in Legacy and
+excludes all campaign titles from active completion totals.
+
+Tournament earning remains client-driven from persisted results, consistent with
+the existing earning model; broader earning authorization remains a separate
+follow-up. Claims still use the atomic server RPC. Local database reset, reference integrity, reward/authorization/backfill
+regressions, lint, generated types and declarative consistency checks passed. `20260918063049_tournament_achievements_and_campaign_legacy` was applied to
+production before the frontend release, giving new claims server catalog
+definitions and capturing campaign entitlements before retiring checks. No type signatures changed.
+
+The local authenticated Arena HTTP integration check also passed after these
+changes, including concurrent starts, interrupted-request recovery, saved results,
+resume and role isolation. Both SQL migrations are deployed to the linked `digitask` production project.
+Frontend publication follows through the repository?s Vercel integration.

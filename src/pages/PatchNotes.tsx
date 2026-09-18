@@ -75,6 +75,29 @@ const PatchNotes = () => {
                 Victory and defeat panels have a compact desktop width and use the same Bits icon as
                 the header.
               </li>
+              <li>
+                Added Contender, Finalist and Champion achievements for weekly tournaments. Past
+                tournament results count. Earned campaign achievements now live under Legacy, with
+                rewards and pinned titles preserved and excluded from active completion totals.
+              </li>
+              <li>
+                Arena victory rewards are now 100 Bits on Easy, 200 on Medium and 300 on Hard.
+              </li>
+              <li>
+                Weekly tournaments have free entry with no task requirement and one attempt per
+                week. Placement prizes are 2,000 Bits for Champion, 1,000 for Runner-Up, 500 for Top
+                4 and 250 for Top 8.
+              </li>
+              <li>
+                Tournament opponents now match actual total combat power, including task bonuses,
+                with progressively stronger rounds. The bracket shows every matchup, advancing teams
+                and defeated teams after each round.
+              </li>
+              <li>
+                New tournaments prioritize the existing preset teams, with attribute-themed squads
+                filling gaps to avoid repeated teams. The Grand Final favors higher-stage species
+                while staying matched to the stronger final-round power target.
+              </li>
             </ul>
           </div>
 

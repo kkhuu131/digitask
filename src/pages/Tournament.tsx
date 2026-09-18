@@ -34,13 +34,11 @@ const Tournament: React.FC = () => {
   const { allUserDigimon, fetchAllUserDigimon } = useDigimonStore();
   const {
     currentTournament,
-    weeklyTaskCount,
     loading,
     error,
     fetchTournament,
     enterTournament,
     recordRoundResult,
-    isUnlocked,
     isActive,
     isCompleted,
     getCurrentRoundOpponent,
@@ -206,8 +204,7 @@ const Tournament: React.FC = () => {
 
   // ─── Render helpers ───────────────────────────────────────────────────────────
 
-  const isLockedState = !isUnlocked() && !currentTournament;
-  const isNotEntered = isUnlocked() && !currentTournament && !isCompleted();
+  const isNotEntered = !currentTournament && !isCompleted();
   const isActiveState = isActive() && !arenaBattleActive && !roundResultState && !isSelectingTeam;
   const isFinishedState = isCompleted();
 
@@ -262,7 +259,8 @@ const Tournament: React.FC = () => {
           Weekly Tournament
         </motion.h1>
         <p className="text-sm text-gray-500 dark:text-gray-400">
-          Complete 10 tasks this week to enter · 3 rounds · Prizes up to 1,500 bits
+          Free entry · One attempt per week · 3 rounds · Prizes up to{' '}
+          {PLACEMENT_BITS.champion.toLocaleString()} Bits
         </p>
       </div>
 
@@ -369,100 +367,29 @@ const Tournament: React.FC = () => {
               roundResults={currentTournament?.round_results ?? []}
               currentRound={currentTournament?.current_round ?? 1}
               finalPlacement={currentTournament?.final_placement ?? null}
-              weeklyTaskCount={weeklyTaskCount}
               isCompleted={isFinishedState}
               userUsername={userProfile?.username}
               userAvatarUrl={userProfile?.avatar_url}
             />
           </div>
 
-          {/* State 1: Locked — show "how it works" info */}
-          {isLockedState && (
-            <div className="bg-gray-50 dark:bg-dark-300 rounded-2xl border border-gray-200 dark:border-dark-100 p-6">
-              <h3 className="font-heading font-semibold text-gray-800 dark:text-gray-100 mb-1">
-                How the Weekly Tournament Works
-              </h3>
-              <p className="text-sm font-body text-gray-500 dark:text-gray-400 mb-4">
-                Every week a new tournament opens. Complete tasks to earn your entry, then battle
-                your way through 3 rounds of increasingly tough opponents in the Arena.
-              </p>
-              <div className="space-y-3 text-sm font-body text-gray-600 dark:text-gray-400 mb-5">
-                <div className="flex items-start gap-3">
-                  <span className="mt-0.5 w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xs font-bold shrink-0">
-                    1
-                  </span>
-                  <p>
-                    Complete{' '}
-                    <span className="font-semibold text-gray-800 dark:text-gray-200">10 tasks</span>{' '}
-                    during the week to unlock your entry slot. Your progress resets every Monday.
-                  </p>
-                </div>
-                <div className="flex items-start gap-3">
-                  <span className="mt-0.5 w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xs font-bold shrink-0">
-                    2
-                  </span>
-                  <p>
-                    Pick your team, then fight through{' '}
-                    <span className="font-semibold text-gray-800 dark:text-gray-200">
-                      Quarterfinal → Semifinal → Grand Final
-                    </span>{' '}
-                    using the real-time Arena battle system.
-                  </p>
-                </div>
-                <div className="flex items-start gap-3">
-                  <span className="mt-0.5 w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xs font-bold shrink-0">
-                    3
-                  </span>
-                  <p>
-                    Earn{' '}
-                    <span className="font-semibold text-amber-600 dark:text-amber-400">bits</span>{' '}
-                    for every round you play, plus a{' '}
-                    <span className="font-semibold text-amber-600 dark:text-amber-400">
-                      placement bonus
-                    </span>{' '}
-                    based on how far you go. Tournament rounds are free — no energy cost.
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-2 text-xs font-body">
-                {[
-                  { label: 'QF loss (Top 8)', bits: 100 },
-                  { label: 'SF loss (Top 4)', bits: 300 },
-                  { label: 'GF loss (Runner-Up)', bits: 600 },
-                  { label: '🏆 Champion', bits: 1500 },
-                ].map(({ label, bits }) => (
-                  <div
-                    key={label}
-                    className="flex justify-between bg-white dark:bg-dark-200 rounded-lg px-3 py-2 border border-gray-200 dark:border-dark-100"
-                  >
-                    <span className="text-gray-500 dark:text-gray-400">{label}</span>
-                    <span className="font-semibold text-amber-600 dark:text-amber-400">
-                      {bits.toLocaleString()} bits
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* State 2: Unlocked, not entered */}
+          {/* Free weekly entry */}
           {isNotEntered && (
             <div className="bg-accent-50 dark:bg-accent-900/20 rounded-2xl border border-accent-200 dark:border-accent-700 p-6">
               <h3 className="font-bold text-indigo-800 dark:text-accent-300 text-lg mb-1">
                 Tournament Open!
               </h3>
               <p className="text-sm text-accent-800 dark:text-accent-400 mb-4">
-                You've completed enough tasks to enter. Pick your team and battle through 3 rounds
-                in the Arena — completely free, no energy cost.
+                Entry is free: no task requirement and no battle tickets needed. Pick your team and
+                battle through 3 rounds. You get one attempt each week; a loss ends your run.
               </p>
 
               <div className="grid grid-cols-2 gap-2 mb-5 text-sm">
                 {[
-                  { label: 'QF loss', bits: 100 },
-                  { label: 'SF loss', bits: 300 },
-                  { label: 'GF loss', bits: 600 },
-                  { label: '🏆 Champion', bits: 1500 },
+                  { label: 'Top 8', bits: PLACEMENT_BITS.qf_loss },
+                  { label: 'Top 4', bits: PLACEMENT_BITS.sf_loss },
+                  { label: 'Runner-Up', bits: PLACEMENT_BITS.gf_loss },
+                  { label: 'Champion', bits: PLACEMENT_BITS.champion },
                 ].map(({ label, bits }) => (
                   <div
                     key={label}

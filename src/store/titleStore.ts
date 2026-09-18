@@ -1,3 +1,4 @@
+import { tournamentProgress } from '../utils/achievementProgress';
 import { create } from 'zustand';
 import { supabase } from '../lib/supabase';
 import { Title, TITLES } from '../constants/titles';
@@ -28,7 +29,7 @@ interface TitleState {
 
   // Achievement checks (mark as earned but unclaimed)
   checkForNewTitles: () => Promise<void>;
-  checkCampaignTitles: (stageCleared: number) => Promise<void>;
+  checkTournamentTitles: () => Promise<void>;
   checkCollectionTitles: (digimonCount: number) => Promise<void>;
   checkBattleTitles: (battleWins: number) => Promise<void>;
   checkEvolutionTitles: (digimonStage: string) => Promise<void>;
@@ -123,7 +124,7 @@ export const useTitleStore = create<TitleState>((set, get) => ({
 
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
-        .select('highest_stage_cleared, battles_won')
+        .select('battles_won')
         .eq('id', user.id)
         .single();
 
@@ -136,7 +137,7 @@ export const useTitleStore = create<TitleState>((set, get) => ({
 
       if (digimonError) throw digimonError;
 
-      await get().checkCampaignTitles(profileData.highest_stage_cleared);
+      await get().checkTournamentTitles();
       await get().checkCollectionTitles(digimonCount || 0);
       await get().checkBattleTitles(profileData.battles_won);
 
@@ -157,23 +158,29 @@ export const useTitleStore = create<TitleState>((set, get) => ({
     }
   },
 
-  checkCampaignTitles: async (stageCleared: number) => {
+  checkTournamentTitles: async () => {
     try {
-      const { userTitles, availableTitles } = get();
-      const earnedTitleIds = userTitles.map((ut) => ut.title_id);
       const { user } = useAuthStore.getState();
       if (!user) return;
-
-      const eligible = availableTitles.filter(
-        (title) =>
-          title.category === 'campaign' &&
-          Number(title.requirement_value) <= stageCleared &&
-          !earnedTitleIds.includes(title.id)
+      const { data, error } = await supabase
+        .from('user_tournaments')
+        .select('status, final_placement, round_results')
+        .eq('user_id', user.id);
+      if (error) throw error;
+      const progress = Math.max(0, ...(data ?? []).map(tournamentProgress));
+      const earned = new Set(get().userTitles.map((title) => title.title_id));
+      await awardNewTitles(
+        get().availableTitles.filter(
+          (title) =>
+            title.category === 'tournament' &&
+            Number(title.requirement_value) <= progress &&
+            !earned.has(title.id)
+        ),
+        user.id
       );
-
-      await awardNewTitles(eligible, user.id);
+      await get().fetchUserTitles();
     } catch (error) {
-      console.error('Error checking campaign titles:', error);
+      console.error('Error checking tournament titles:', error);
     }
   },
 

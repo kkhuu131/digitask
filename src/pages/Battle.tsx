@@ -46,8 +46,7 @@ const Battle = () => {
   const navigate = useNavigate();
   const { allUserDigimon, fetchAllUserDigimon } = useDigimonStore();
   const { battleOptions, getBattleOptions, loading, error } = useBattleStore();
-  const { currentTournament, weeklyTaskCount, fetchTournament, isUnlocked, isActive, isCompleted } =
-    useTournamentStore();
+  const { currentTournament, fetchTournament, isActive, isCompleted } = useTournamentStore();
   const { user } = useAuthStore();
 
   useEffect(() => {
@@ -288,7 +287,7 @@ const Battle = () => {
   const difficultyConfig = {
     easy: {
       label: 'Easy',
-      reward: 75,
+      reward: 100,
       accentBorder: 'border-l-emerald-500',
       badge: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300',
       rewardColor: 'text-emerald-600 dark:text-emerald-400',
@@ -296,7 +295,7 @@ const Battle = () => {
     },
     medium: {
       label: 'Medium',
-      reward: 100,
+      reward: 200,
       accentBorder: 'border-l-amber-500',
       badge: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300',
       rewardColor: 'text-amber-600 dark:text-amber-400',
@@ -304,7 +303,7 @@ const Battle = () => {
     },
     hard: {
       label: 'Hard',
-      reward: 200,
+      reward: 300,
       accentBorder: 'border-l-red-500',
       badge: 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300',
       rewardColor: 'text-red-600 dark:text-red-400',
@@ -323,8 +322,7 @@ const Battle = () => {
     if (isActive() && currentTournament) {
       return `Round ${currentTournament.current_round}/3 in progress`;
     }
-    if (isUnlocked()) return 'Ready to enter!';
-    return `${weeklyTaskCount}/10 tasks to unlock`;
+    return 'Free entry this week!';
   })();
 
   return (

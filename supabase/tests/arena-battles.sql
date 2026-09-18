@@ -57,14 +57,14 @@ BEGIN
    'winner','user','durationMs',16,'frames','[{}]'::jsonb);
  settled:=public.settle_arena_battle(u,r,replay);
  IF settled->>'status'<>'settled' OR (SELECT battle_energy FROM public.profiles WHERE id=u)<>2 OR
-   (SELECT bits FROM public.user_currency WHERE user_id=u)<>2075 OR
+   (SELECT bits FROM public.user_currency WHERE user_id=u)<>2100 OR
    (SELECT count(*) FROM public.team_battles WHERE user_id=u)<>1 OR
    (SELECT battles_won FROM public.profiles WHERE id=u)<>1 OR
    (SELECT battles_completed FROM public.profiles WHERE id=u)<>1 THEN
    RAISE EXCEPTION 'Settlement did not commit ticket, currency, history and counters together'; END IF;
  IF public.settle_arena_battle(u,r,replay) IS DISTINCT FROM settled OR
    (SELECT battle_energy FROM public.profiles WHERE id=u)<>2 OR
-   (SELECT bits FROM public.user_currency WHERE user_id=u)<>2075 THEN
+   (SELECT bits FROM public.user_currency WHERE user_id=u)<>2100 THEN
    RAISE EXCEPTION 'Lost-response retry duplicated a charge or reward'; END IF;
  IF public.prepare_arena_battle(u,r,NULL,NULL,NULL) IS DISTINCT FROM settled THEN
    RAISE EXCEPTION 'Resume did not recover committed battle'; END IF;
@@ -85,7 +85,7 @@ BEGIN
  BEGIN PERFORM public.settle_arena_battle(u,r,replay); RAISE EXCEPTION 'Injection did not fail';
  EXCEPTION WHEN raise_exception THEN IF SQLERRM<>'injected arena history failure' THEN RAISE; END IF; END;
  IF (SELECT battle_energy FROM public.profiles WHERE id=u)<>2 OR
-   (SELECT bits FROM public.user_currency WHERE user_id=u)<>2075 OR
+   (SELECT bits FROM public.user_currency WHERE user_id=u)<>2100 OR
    (SELECT status FROM public.arena_battle_requests WHERE id=r)<>'prepared' OR
    (SELECT count(*) FROM public.team_battles WHERE user_id=u)<>1 THEN
    RAISE EXCEPTION 'Failed settlement left partial writes'; END IF;
@@ -100,10 +100,41 @@ BEGIN
  PERFORM public.settle_arena_battle(u,r,jsonb_build_object('version',1,'engineVersion',1,'seed',prepared->'seed',
    'winner','opponent','durationMs',16,'frames','[{}]'::jsonb));
  IF (SELECT battle_energy FROM public.profiles WHERE id=u)<>1 OR
-   (SELECT bits FROM public.user_currency WHERE user_id=u)<>2115 OR
+   (SELECT bits FROM public.user_currency WHERE user_id=u)<>2140 OR
    (SELECT battles_won FROM public.profiles WHERE id=u)<>1 OR
    (SELECT battles_completed FROM public.profiles WHERE id=u)<>2 THEN
    RAISE EXCEPTION 'Loss reward/counters or failed-request retry incorrect'; END IF;
+END $$;
+RESET ROLE;
+-- Verify all difficulty/outcome amounts and repeat-settlement protection.
+SET LOCAL ROLE service_role;
+DO $$ DECLARE u uuid:='00000000-0000-4000-8000-000000000021';
+  fixture record; offer uuid; request uuid; prepared jsonb; replay jsonb; settled jsonb;
+  before_bits integer; before_tickets integer;
+BEGIN
+  UPDATE public.profiles SET battle_energy=10 WHERE id=u;
+  FOR fixture IN SELECT * FROM (VALUES
+    ('easy','user',100),('medium','user',200),('hard','user',300),
+    ('easy','opponent',50),('medium','opponent',50),('hard','opponent',40)
+  ) AS rewards(difficulty,winner,bits) LOOP
+    offer:=gen_random_uuid(); request:=gen_random_uuid();
+    INSERT INTO public.arena_battle_offers(id,user_id,difficulty,opponent_name,opponent_team)
+      VALUES(offer,u,fixture.difficulty,'reward-test','[{"digimon_id":1},{"digimon_id":2},{"digimon_id":3}]');
+    SELECT bits INTO before_bits FROM public.user_currency WHERE user_id=u;
+    SELECT battle_energy INTO before_tickets FROM public.profiles WHERE id=u;
+    prepared:=public.prepare_arena_battle(u,request,offer,
+      ARRAY['00000000-0000-4000-8000-000000021001'::uuid],ARRAY['balanced']);
+    replay:=jsonb_build_object('version',1,'engineVersion',1,'seed',prepared->'seed',
+      'winner',fixture.winner,'durationMs',16,'frames','[{}]'::jsonb);
+    settled:=public.settle_arena_battle(u,request,replay);
+    IF (settled->>'bits_reward')::integer<>fixture.bits OR
+      (SELECT bits FROM public.user_currency WHERE user_id=u)<>before_bits+fixture.bits THEN
+      RAISE EXCEPTION 'Wrong arena reward for % %',fixture.difficulty,fixture.winner; END IF;
+    IF public.settle_arena_battle(u,request,replay) IS DISTINCT FROM settled OR
+      (SELECT bits FROM public.user_currency WHERE user_id=u)<>before_bits+fixture.bits OR
+      (SELECT battle_energy FROM public.profiles WHERE id=u)<>before_tickets-1 THEN
+      RAISE EXCEPTION 'Reward retry duplicated currency or ticket spend'; END IF;
+  END LOOP;
 END $$;
 RESET ROLE;
 SET LOCAL ROLE authenticated;

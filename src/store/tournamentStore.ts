@@ -1,23 +1,14 @@
+import { useTitleStore } from './titleStore';
 import { create } from 'zustand';
 import { supabase } from '../lib/supabase';
 import { useDigimonStore } from './petStore';
 import { useCurrencyStore } from './currencyStore';
 import { useNotificationStore } from './notificationStore';
-import {
-  calculateUserPowerRating,
-  getStageForPower,
-  findLevelForPower,
-  STAGE_MIN_LEVEL,
-  STAGE_MAX_LEVEL,
-} from './battleStore';
-import { TOURNAMENT_TEAM_POOL, TemplateDigimon } from '../constants/tournamentBossTeams';
+import { selectStrongestTeam } from '../utils/selectStrongestTeam';
+import { calculateUserDigimonPowerRating } from '../utils/digimonStatCalculation';
+import { pickTournamentOpponent, createTournamentDraw } from '../utils/tournamentMatching';
 import { DIGIMON_LOOKUP_TABLE } from '../constants/digimonLookup';
-import {
-  UserTournament,
-  TournamentBracket,
-  TournamentOpponentDigimon,
-  RoundDifficulty,
-} from '../types/tournament';
+import { UserTournament, TournamentBracket, RoundDifficulty } from '../types/tournament';
 
 // Returns "YYYY-MM-DD" for the Monday of the current week (local time).
 // Used as the primary key that groups a user's tournament entry with the correct week.
@@ -33,81 +24,20 @@ export function getCurrentWeekStart(): string {
 
 // Exported so the Tournament UI can show expected rewards before the user commits to a round.
 export const PLACEMENT_BITS: Record<string, number> = {
-  qf_loss: 100,
-  sf_loss: 300,
-  gf_loss: 600,
-  champion: 1500,
+  qf_loss: 250,
+  sf_loss: 500,
+  gf_loss: 1000,
+  champion: 2000,
 };
-
-const WEEKLY_TASK_THRESHOLD = 10;
-
-const STAGE_ORDER = ['Baby', 'In-Training', 'Rookie', 'Champion', 'Ultimate', 'Mega', 'Ultra'];
-
-const DIFFICULTY_MULTIPLIER: Record<string, number> = { easy: 0.85, medium: 1.0, hard: 1.2 };
-
-/**
- * Picks a stage-compatible team template for the given player power + difficulty,
- * then binary-searches each member's level so the team matches `userPower * multiplier`.
- * Falls back to `generateBattleOption` if no templates match.
- */
-function pickTournamentOpponent(
-  userPower: number,
-  difficulty: 'easy' | 'medium' | 'hard'
-): { display_name: string; team: TournamentOpponentDigimon[] } {
-  const mult = DIFFICULTY_MULTIPLIER[difficulty] ?? 1.0;
-  const teamTargetPower = userPower * mult;
-  const perMemberTarget = teamTargetPower / 3;
-  const targetStage = getStageForPower(perMemberTarget);
-  const targetIdx = STAGE_ORDER.indexOf(targetStage);
-
-  // Keep templates where at least 2 of 3 members are within ±1 stage of the target.
-  // "Majority" (not all) gives flexibility for thematic teams that mix adjacent stages.
-  // If no templates pass (e.g. power is very high/low), fall back to the entire pool
-  // so the function always returns something rather than crashing.
-  const compatible = TOURNAMENT_TEAM_POOL.filter((t) => {
-    const withinRange = t.digimon.filter((d) => {
-      const s = DIGIMON_LOOKUP_TABLE[d.digimon_id];
-      return s && Math.abs(STAGE_ORDER.indexOf(s.stage) - targetIdx) <= 1;
-    });
-    return withinRange.length >= 2;
-  });
-  const pool = compatible.length > 0 ? compatible : TOURNAMENT_TEAM_POOL;
-  const template = pool[Math.floor(Math.random() * pool.length)];
-
-  const team: TournamentOpponentDigimon[] = template.digimon.map(
-    (d: TemplateDigimon, i: number) => {
-      const species = DIGIMON_LOOKUP_TABLE[d.digimon_id];
-      const stage = species?.stage ?? 'Rookie';
-      const minLvl = STAGE_MIN_LEVEL[stage] ?? 1;
-      const maxLvl = STAGE_MAX_LEVEL[stage] ?? 99;
-      const level = species ? findLevelForPower(species, perMemberTarget, minLvl, maxLvl) : minLvl;
-      return {
-        id: `${d.digimon_id}-${i}`,
-        digimon_id: d.digimon_id,
-        name: species?.name ?? `Digimon #${d.digimon_id}`,
-        current_level: level,
-        sprite_url: species?.sprite_url ?? '',
-        type: species?.type ?? 'Free',
-        attribute: species?.attribute ?? 'Neutral',
-      };
-    }
-  );
-
-  return { display_name: template.name, team };
-}
 
 interface TournamentStore {
   currentTournament: UserTournament | null;
-  weeklyTaskCount: number;
   loading: boolean;
   error: string | null;
 
   fetchTournament(): Promise<void>;
   enterTournament(): Promise<void>;
   recordRoundResult(round: number, result: 'win' | 'loss'): Promise<void>;
-  refreshWeeklyTaskCount(): Promise<number>;
-  setWeeklyTaskCount(count: number): void;
-  isUnlocked(): boolean;
   isActive(): boolean;
   isCompleted(): boolean;
   getCurrentRoundOpponent(): UserTournament['bracket']['rounds']['1']['opponent'] | null;
@@ -115,49 +45,8 @@ interface TournamentStore {
 
 export const useTournamentStore = create<TournamentStore>((set, get) => ({
   currentTournament: null,
-  weeklyTaskCount: 0,
   loading: false,
   error: null,
-
-  setWeeklyTaskCount(count: number) {
-    set({ weeklyTaskCount: count });
-  },
-
-  async refreshWeeklyTaskCount(): Promise<number> {
-    const { data: userData } = await supabase.auth.getUser();
-    if (!userData.user) return 0;
-    const userId = userData.user.id;
-
-    const weekStart = getCurrentWeekStart();
-    const today = new Date().toISOString().split('T')[0];
-
-    // Weekly count requires two sources because they cover different time windows:
-    //   task_history — rows written by the server-side `process_daily_quotas` cron at midnight.
-    //                  Contains completed_count for Mon through *yesterday* (already processed).
-    //   daily_quotas.completed_today — today's in-progress count, not yet archived by the cron.
-    // Combining both gives the true weekly total without waiting for the cron to run.
-    const { data: history } = await supabase
-      .from('task_history')
-      .select('completed_count')
-      .eq('user_id', userId)
-      .gte('created_at', weekStart)
-      .lt('created_at', today);
-
-    const historicalCount = (history ?? []).reduce(
-      (sum: number, row: any) => sum + (row.completed_count ?? 0),
-      0
-    );
-
-    const { data: quota } = await supabase
-      .from('daily_quotas')
-      .select('completed_today')
-      .eq('user_id', userId)
-      .single();
-
-    const total = historicalCount + (quota?.completed_today ?? 0);
-    set({ weeklyTaskCount: total });
-    return total;
-  },
 
   async fetchTournament() {
     set({ loading: true, error: null });
@@ -189,9 +78,6 @@ export const useTournamentStore = create<TournamentStore>((set, get) => ({
       if (error) throw error;
 
       set({ currentTournament: tournament ?? null });
-
-      // Also refresh weekly task count
-      await get().refreshWeeklyTaskCount();
     } catch (err) {
       set({ error: (err as Error).message });
     } finally {
@@ -200,36 +86,43 @@ export const useTournamentStore = create<TournamentStore>((set, get) => ({
   },
 
   async enterTournament() {
-    const { weeklyTaskCount, currentTournament } = get();
+    const { currentTournament } = get();
 
-    if (weeklyTaskCount < WEEKLY_TASK_THRESHOLD) {
-      throw new Error(`Complete ${WEEKLY_TASK_THRESHOLD} tasks this week to enter the tournament.`);
-    }
     if (currentTournament !== null) {
       throw new Error("You have already entered this week's tournament.");
     }
 
     const allDigimon = useDigimonStore.getState().allUserDigimon;
-    const teamDigimon = allDigimon.filter((d) => d.is_on_team && !d.is_in_storage);
+    const teamDigimon = selectStrongestTeam(allDigimon);
     if (teamDigimon.length === 0) {
       throw new Error('Add at least one Digimon to your battle team first.');
     }
 
     set({ loading: true, error: null });
     try {
-      const userPower = calculateUserPowerRating(teamDigimon);
+      const userPower = teamDigimon.reduce(
+        (total, digimon) =>
+          total +
+          calculateUserDigimonPowerRating({
+            ...digimon,
+            digimon: digimon.digimon ?? DIGIMON_LOOKUP_TABLE[digimon.digimon_id],
+          }),
+        0
+      );
 
       // Only 3 opponents are actually fought (rounds 1–3).
       // The remaining 4 (fillerA–D) exist purely to fill out the 8-slot visual bracket
-      // so it looks like a real double-elimination draw. They are never battled.
-      const round1 = pickTournamentOpponent(userPower, 'easy');
-      const round2 = pickTournamentOpponent(userPower, 'medium');
-      const round3 = pickTournamentOpponent(userPower, 'hard');
+      // and advance along the opposite side of the single-elimination bracket.
+      const draw = createTournamentDraw();
+      // Reserve the favorite first so other teams cannot consume its composition.
+      const round3 = pickTournamentOpponent(userPower, 'hard', draw, true);
+      const round1 = pickTournamentOpponent(userPower, 'easy', draw);
+      const round2 = pickTournamentOpponent(userPower, 'medium', draw);
 
-      const fillerA = pickTournamentOpponent(userPower, 'easy');
-      const fillerB = pickTournamentOpponent(userPower, 'medium');
-      const fillerC = pickTournamentOpponent(userPower, 'easy');
-      const fillerD = pickTournamentOpponent(userPower, 'medium');
+      const fillerA = pickTournamentOpponent(userPower, 'easy', draw);
+      const fillerB = pickTournamentOpponent(userPower, 'medium', draw);
+      const fillerC = pickTournamentOpponent(userPower, 'easy', draw);
+      const fillerD = pickTournamentOpponent(userPower, 'medium', draw);
 
       const bracket: TournamentBracket = {
         rounds: {
@@ -350,6 +243,9 @@ export const useTournamentStore = create<TournamentStore>((set, get) => ({
 
     set({ currentTournament: updated });
 
+    // Check only after the persisted result is confirmed. Claims remain server-owned.
+    await useTitleStore.getState().checkTournamentTitles();
+
     // Award placement bits
     if (placementBits > 0) {
       useCurrencyStore.getState().addCurrency('bits', placementBits);
@@ -362,10 +258,6 @@ export const useTournamentStore = create<TournamentStore>((set, get) => ({
         duration: 6000,
       });
     }
-  },
-
-  isUnlocked() {
-    return get().weeklyTaskCount >= WEEKLY_TASK_THRESHOLD;
   },
 
   isActive() {

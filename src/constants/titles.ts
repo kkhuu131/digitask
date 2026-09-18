@@ -2,7 +2,7 @@ export interface Title {
   id: number;
   name: string;
   description: string;
-  category: 'campaign' | 'collection' | 'evolution' | 'battle' | 'streak' | 'tasks';
+  category: 'campaign' | 'collection' | 'evolution' | 'battle' | 'streak' | 'tasks' | 'tournament';
   requirement_type:
     | 'campaign_stage'
     | 'digimon_count'
@@ -10,7 +10,8 @@ export interface Title {
     | 'digimon_stage'
     | 'battle_wins'
     | 'longest_streak'
-    | 'tasks_completed';
+    | 'tasks_completed'
+    | 'tournament_round';
   requirement_value: number | string;
   tier: 'bronze' | 'silver' | 'gold' | 'platinum';
   rewards?: {
@@ -414,5 +415,35 @@ export const TITLES: Title[] = [
     requirement_value: 1000,
     tier: 'platinum',
     rewards: { bits: 3000, digiEggPool: CHAMPION_POOL },
+  },
+  {
+    id: 601,
+    name: 'Contender',
+    description: 'Reached the semifinals of a weekly tournament.',
+    category: 'tournament',
+    requirement_type: 'tournament_round',
+    requirement_value: 1,
+    tier: 'bronze',
+    rewards: { bits: 200 },
+  },
+  {
+    id: 602,
+    name: 'Finalist',
+    description: 'Reached the Grand Final of a weekly tournament.',
+    category: 'tournament',
+    requirement_type: 'tournament_round',
+    requirement_value: 2,
+    tier: 'silver',
+    rewards: { bits: 500 },
+  },
+  {
+    id: 603,
+    name: 'Champion',
+    description: 'Finished first in a weekly tournament.',
+    category: 'tournament',
+    requirement_type: 'tournament_round',
+    requirement_value: 3,
+    tier: 'gold',
+    rewards: { bits: 1000 },
   },
 ];

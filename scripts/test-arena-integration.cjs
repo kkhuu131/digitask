@@ -72,7 +72,7 @@ async function run() {
     const saved = first.battle;
     assert.equal(saved.status, 'settled');
     assert.deepEqual(saved, retry.battle);
-    assert.equal(saved.bits_reward, saved.replay.winner === 'user' ? 100 : 50);
+    assert.equal(saved.bits_reward, saved.replay.winner === 'user' ? 200 : 50);
     const profile = (await json(`rest/v1/profiles?id=eq.${user.id}&select=battle_energy,battles_completed,battles_won`))[0];
     assert.equal(profile.battle_energy, 2);
     assert.equal(profile.battles_completed, 1);
