@@ -17,6 +17,7 @@ import TypeAttributeIcon from './TypeAttributeIcon';
 import DigimonEvolutionModal from './DigimonEvolutionModal';
 import { StatType, isUnderStatCap } from '../store/petStore';
 import DigimonSprite from './DigimonSprite';
+import DigimonEvolutionHistory from './DigimonEvolutionHistory';
 import PageTutorial from './PageTutorial';
 import { DialogueStep } from './DigimonDialogue';
 
@@ -706,9 +707,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
             {/* Right column */}
             <div className="flex flex-col h-full md:w-3/5">
               <div className="flex-grow">
-                <h4 className="font-heading font-semibold text-sm mb-3 text-gray-700 dark:text-gray-200">
-                  Stats
-                </h4>
+                <h4 className="ui-section-title mb-3">Stats</h4>
 
                 {/* Stat cap info */}
                 {belongsToCurrentUser && (
@@ -740,6 +739,10 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                   {renderStatRow('SPD', stats.spd, localDigimon.spd_bonus)}
                   {renderStatRow('ABI', localDigimon.abi, 0)}
                 </div>
+                <DigimonEvolutionHistory
+                  petId={localDigimon.id}
+                  speciesId={localDigimon.digimon_id}
+                />
               </div>
             </div>
           </div>

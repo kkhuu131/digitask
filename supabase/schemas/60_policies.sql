@@ -148,6 +148,10 @@ ALTER TABLE "public"."user_digimon" ENABLE ROW LEVEL SECURITY;
 
 ALTER TABLE "public"."user_discovered_digimon" ENABLE ROW LEVEL SECURITY;
 
+ALTER TABLE public.user_digimon_history ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Read history of visible Digimon" ON public.user_digimon_history FOR SELECT
+USING (EXISTS (SELECT 1 FROM public.user_digimon pet WHERE pet.id = user_digimon_id));
+
 ALTER TABLE "public"."user_inventory" ENABLE ROW LEVEL SECURITY;
 
 ALTER TABLE "public"."user_milestones" ENABLE ROW LEVEL SECURITY;

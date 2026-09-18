@@ -22,3 +22,4 @@ CREATE OR REPLACE TRIGGER "update_streak_trigger" BEFORE UPDATE ON "public"."dai
 
 
 CREATE OR REPLACE TRIGGER record_digimon_discovery_trigger AFTER INSERT OR UPDATE OF digimon_id, user_id ON public.user_digimon FOR EACH ROW EXECUTE FUNCTION public.record_digimon_discovery();
+CREATE OR REPLACE TRIGGER record_digimon_history_trigger AFTER INSERT OR UPDATE OF digimon_id ON public.user_digimon FOR EACH ROW EXECUTE FUNCTION public.record_digimon_history();

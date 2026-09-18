@@ -32,6 +32,27 @@ const PatchNotes = () => {
                 Latest
               </span>
               <h3 className="text-lg font-medium ml-2 dark:text-gray-200">
+                Digimon Evolution History
+              </h3>
+              <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">
+                September 18, 2026
+              </span>
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
+              <li>
+                Each Digimon’s detail window shows its recorded evolution history below the stats,
+                including devolutions and form changes. Small sprites appear oldest to newest with
+                Dex numbers in a minimal section. Longer histories scroll within the section.
+              </li>
+              <li>
+                Existing Digimon start from their current species when history tracking begins.
+              </li>
+            </ul>
+          </div>
+
+          <div className="mb-6">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
+              <h3 className="text-lg font-medium ml-2 dark:text-gray-200">
                 Dashboard & Feedback Improvements
               </h3>
               <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">

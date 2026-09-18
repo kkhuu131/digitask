@@ -215,3 +215,9 @@ CREATE INDEX arena_offers_user_expiry ON public.arena_battle_offers(user_id,expi
 CREATE INDEX arena_requests_user_settled ON public.arena_battle_requests(user_id,settled_at DESC);
 CREATE UNIQUE INDEX arena_one_pending_per_user ON public.arena_battle_requests(user_id) WHERE status='prepared';
 CREATE UNIQUE INDEX arena_offer_settled_once ON public.arena_battle_requests(offer_id) WHERE status='settled';
+
+ALTER TABLE ONLY public.user_digimon_history ADD CONSTRAINT user_digimon_history_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.user_digimon_history ADD CONSTRAINT user_digimon_history_pet_fkey FOREIGN KEY (user_digimon_id) REFERENCES public.user_digimon(id) ON DELETE CASCADE;
+ALTER TABLE ONLY public.user_digimon_history ADD CONSTRAINT user_digimon_history_species_fkey FOREIGN KEY (digimon_id) REFERENCES public.digimon(id);
+CREATE INDEX user_digimon_history_pet_order ON public.user_digimon_history(user_digimon_id, id);
+CREATE UNIQUE INDEX user_digimon_history_one_start ON public.user_digimon_history(user_digimon_id) WHERE is_starting_point;

@@ -438,6 +438,14 @@ REVOKE ALL ON FUNCTION public.update_battle_stats() FROM PUBLIC, anon, authentic
 -- Tables used by active app subscriptions.
 ALTER PUBLICATION supabase_realtime ADD TABLE public.user_digimon, public.daily_quotas;
 
+REVOKE ALL ON TABLE public.user_digimon_history FROM PUBLIC, anon, authenticated;
+GRANT SELECT ON TABLE public.user_digimon_history TO anon, authenticated;
+GRANT ALL ON TABLE public.user_digimon_history TO service_role;
+REVOKE ALL ON SEQUENCE public.user_digimon_history_id_seq FROM PUBLIC, anon, authenticated;
+GRANT ALL ON SEQUENCE public.user_digimon_history_id_seq TO service_role;
+REVOKE ALL ON FUNCTION public.record_digimon_history() FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.record_digimon_history() TO service_role;
+
 REVOKE ALL ON FUNCTION public.record_digimon_discovery() FROM PUBLIC, anon, authenticated;
 GRANT ALL ON FUNCTION public.record_digimon_discovery() TO service_role;
 REVOKE ALL ON FUNCTION public.claim_achievement(integer, integer) FROM PUBLIC, anon;

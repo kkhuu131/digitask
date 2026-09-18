@@ -1,6 +1,28 @@
 # Database audit and deployed cleanup — 2026-09-17
 
-The linked `digitask` database now has **21 public tables, 2 views, 31 application function overloads and 5 scheduled jobs**. The realtime publication contains `user_digimon` and `daily_quotas`, matching the app subscriptions.
+## Digimon evolution history — database deployed 2026-09-18
+
+`20260918184219_track_digimon_evolution_history.sql` adds transactional per-pet
+species history and a current-species-only backfill. Existing paths are unknown
+and not reconstructed. Repeated species remain separate ordered entries. History
+is readable wherever the pet is visible, but browser roles cannot write it.
+Deleted pets cascade their history; DNA evolution continues the surviving pet's
+history without merging the consumed partner's history. The migration was applied
+to the linked production project after migration-history inspection and a
+reviewed one-migration dry run. Read-only post-deployment checks verified all 333
+current pets have a starting point and a latest history entry matching their
+species, exactly one active history trigger, and no browser history writes.
+Production migration history now includes `20260918184219`. The compatible
+frontend is included alongside the migration; website publication follows the
+repository's Vercel integration and requires separate deployment verification.
+
+Local reset, reference integrity, history/authorization/backfill/rollback fixtures,
+database lint, regenerated types and declarative consistency checks passed.
+All 104 app tests, lint, formatting and production build passed. Browser checks
+verified 101-entry histories, bounded vertical scrolling, sprite details and
+error/retry/empty states in both themes at 320px, 768px and 1440px widths.
+
+The linked `digitask` database now has **22 public tables, 2 views, 32 application function overloads and 5 scheduled jobs**. The realtime publication contains `user_digimon` and `daily_quotas`, matching the app subscriptions.
 
 The inspection covered application/scripts, stored-function callers, attached triggers, policies, catalog dependencies and cron commands. All 20 original orphan-function candidates have been removed. The current audit flags three legacy frontend RPCs (`check_and_set_first_win_self`, `grant_energy_self`, `spend_energy_self`) after their callers were replaced. They remain for older deployed clients and should be retired in a separate migration after rollout. Historical migrations still contain original definitions as required for replay; they are not runtime callers.
 

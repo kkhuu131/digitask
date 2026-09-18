@@ -41,7 +41,7 @@ Use `npm.cmd` in PowerShell if script execution is blocked. `db:start:database` 
 
 ## One-time adoption: completed on 2026-09-16 (arena update 2026-09-17)
 
-The linked `digitask` project now records all eleven active migrations in this checkout, from `20260916220000` through `20260918072450`. The four previous March 2026 versions were archived and removed from the active history metadata. The baseline was marked applied, **never executed** on the existing database. The six September 16 follow-ups and the September 17 additive arena migration were deployed without development seeds, role updates or vault updates. The authenticated arena-battle Edge Function is also deployed. The September 18 arena reward, tournament achievement/catalog and lifetime task-progress migrations are now applied.
+The linked `digitask` project now records all twelve active migrations in this checkout, from `20260916220000` through `20260918184219`. The four previous March 2026 versions were archived and removed from the active history metadata. The baseline was marked applied, **never executed** on the existing database. The six September 16 follow-ups and the September 17 additive arena migration were deployed without development seeds, role updates or vault updates. The authenticated arena-battle Edge Function is also deployed. The September 18 arena reward, tournament achievement/catalog, lifetime task-progress and evolution-history migrations are now applied.
 
 The complete pre-adoption schema export matched the original capture before repair. Original definitions, grants, cron commands and recorded migration statements, plus manual restoration SQL, are backed up locally under ignored `supabase/.temp/backups/baseline-adoption-20260916/`. These are schema/metadata rollback materials, not a user-data backup. Adoption and the first five follow-ups did not modify production user rows. The achievement/discovery follow-up repaired six missing discovery records for currently owned species without resetting claims. Old checkouts must update before deploying; do not repeat this repair procedure.
 
@@ -74,6 +74,25 @@ achievement records and raised 16 counters without reducing any. See
 `claim_achievement` locks the profile and owned earned-title row, validates the selected egg, grants Bits/pets and marks the claim in one transaction. Repeat attempts return the existing confirmation without another reward. Browser inserts into `user_titles` can supply only `user_id/title_id`; browser updates can change only `is_displayed`. Earning remains client-driven and requires a separate server-authorization follow-up.
 
 `record_digimon_discovery_trigger` records species on pet insertion and species/owner changes, preserving prior discoveries. The migration backfills currently owned species only; deleted/evolved historical species without records cannot be reconstructed. Deploy the prepared web client to use the new claim flow. Do not reset historical claimed flags based only on a failure report. Account-specific diagnostic SQL belongs in ignored `*.local.sql` files.
+
+## Digimon evolution history (database deployed 2026-09-18)
+
+`20260918184219_track_digimon_evolution_history.sql` adds append-only species
+history for each owned pet. An AFTER INSERT/species-update trigger records the
+initial species and every actual species change in the same transaction, covering
+evolution, devolution, forms and the surviving DNA-evolution pet. Renames, levels
+and same-species updates do not create entries. DNA partner history is not merged;
+deleting a pet cascades its history. The backfill records only each existing pet's
+current species with a tracking-start marker, never reconstructing unknown paths.
+
+History SELECT permissions follow visible `user_digimon` rows; browser roles have
+no history write or trigger-function permissions. The UI fetches all pages and
+renders the complete ordered history inside a bounded scrolling section. Deploy
+the additive SQL migration before the compatible frontend. The migration is
+applied to production; read-only checks confirmed starting points and latest
+species for all 333 current pets, one enabled trigger and browser write protection.
+The compatible frontend is included alongside the migration. Website publication
+follows the repository's Vercel integration; verify it separately from the SQL deployment.
 
 ## Persisted daily arena battles
 

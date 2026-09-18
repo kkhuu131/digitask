@@ -389,3 +389,13 @@ CREATE TABLE IF NOT EXISTS "public"."arena_battle_requests" (
     OR (status='settled' AND replay IS NOT NULL AND bits_reward IS NOT NULL AND battle_id IS NOT NULL AND settled_at IS NOT NULL))
 );
 ALTER TABLE public.arena_battle_requests OWNER TO postgres;
+
+CREATE TABLE IF NOT EXISTS public.user_digimon_history (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  user_digimon_id uuid NOT NULL,
+  digimon_id integer NOT NULL,
+  recorded_at timestamptz NOT NULL DEFAULT clock_timestamp(),
+  is_starting_point boolean NOT NULL DEFAULT false,
+  is_backfilled boolean NOT NULL DEFAULT false
+);
+ALTER TABLE public.user_digimon_history OWNER TO postgres;

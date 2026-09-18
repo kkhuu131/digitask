@@ -730,6 +730,55 @@ export type Database = {
           },
         ];
       };
+      user_digimon_history: {
+        Row: {
+          digimon_id: number;
+          id: number;
+          is_backfilled: boolean;
+          is_starting_point: boolean;
+          recorded_at: string;
+          user_digimon_id: string;
+        };
+        Insert: {
+          digimon_id: number;
+          id?: never;
+          is_backfilled?: boolean;
+          is_starting_point?: boolean;
+          recorded_at?: string;
+          user_digimon_id: string;
+        };
+        Update: {
+          digimon_id?: number;
+          id?: never;
+          is_backfilled?: boolean;
+          is_starting_point?: boolean;
+          recorded_at?: string;
+          user_digimon_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'user_digimon_history_pet_fkey';
+            columns: ['user_digimon_id'];
+            isOneToOne: false;
+            referencedRelation: 'user_digimon';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'user_digimon_history_pet_fkey';
+            columns: ['user_digimon_id'];
+            isOneToOne: false;
+            referencedRelation: 'user_digimon_profiles';
+            referencedColumns: ['user_digimon_id'];
+          },
+          {
+            foreignKeyName: 'user_digimon_history_species_fkey';
+            columns: ['digimon_id'];
+            isOneToOne: false;
+            referencedRelation: 'digimon';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       user_discovered_digimon: {
         Row: {
           digimon_id: number;
