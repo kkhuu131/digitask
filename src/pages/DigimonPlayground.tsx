@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import PageTutorial from '../components/PageTutorial';
 import { DialogueStep } from '../components/DigimonDialogue';
 import DigimonSprite from '../components/DigimonSprite';
-import TypeAttributeIcon from '../components/TypeAttributeIcon';
+import DigimonCardIdentity from '../components/DigimonCardIdentity';
 import DigimonDetailModal from '../components/DigimonDetailModal';
 import { Star, Warehouse, UserPlus, Plus, Users } from 'lucide-react';
 import { LoadingSpinner } from '../components/LoadingIndicator';
@@ -137,9 +137,9 @@ const DigimonPlayground: React.FC = () => {
       </div>
 
       <PageTutorial tutorialId="digifarm_intro" steps={tutorialSteps} />
-      <div className="flex flex-col lg:flex-row gap-4">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 items-start">
         {/* ── Left: Party Panel ── */}
-        <div className="w-full lg:w-[416px] flex-shrink-0">
+        <div className="min-w-0">
           <div className="card">
             {/* Panel header */}
             <div className="flex items-center justify-between mb-4">
@@ -163,22 +163,23 @@ const DigimonPlayground: React.FC = () => {
               </div>
             </div>
 
-            {/* Party grid — always 3 columns */}
+            {/* Match party and storage card widths across breakpoints. */}
             {initialLoading && partyDigimon.length === 0 && (
               <ContentSkeleton
                 label="Loading party…"
                 layout="grid"
                 count={9}
-                gridClassName="grid-cols-3"
+                gridClassName="grid-cols-2 sm:grid-cols-3"
+                itemClassName="!h-auto w-full min-w-0 aspect-square min-h-48"
               />
             )}
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {partyDigimon.map((digimon) => (
                 <motion.div
                   key={digimon.id}
                   whileHover={{ scale: 1.02 }}
                   onClick={() => setSelectedDetailDigimon(digimon)}
-                  className={`relative rounded-xl border cursor-pointer transition-colors min-h-44 flex flex-col overflow-hidden ${
+                  className={`relative rounded-xl border cursor-pointer transition-colors w-full min-w-0 aspect-square min-h-48 flex flex-col overflow-hidden ${
                     digimon.is_active
                       ? 'bg-accent-50 dark:bg-accent-900/20 border-accent-300 dark:border-accent-700'
                       : 'bg-gray-50 dark:bg-dark-200 border-gray-200 dark:border-dark-400 hover:border-accent-400 dark:hover:border-accent-600'
@@ -191,19 +192,8 @@ const DigimonPlayground: React.FC = () => {
                     </div>
                   )}
 
-                  {/* Type icon */}
-                  {digimon.digimon?.type && digimon.digimon?.attribute && (
-                    <div className="absolute top-1 right-1 z-10">
-                      <TypeAttributeIcon
-                        type={digimon.digimon.type as any}
-                        attribute={digimon.digimon.attribute as any}
-                        size="sm"
-                      />
-                    </div>
-                  )}
-
                   {/* Sprite — fills remaining space */}
-                  <div className="flex-1 flex items-center justify-center min-h-0 pt-1">
+                  <div className="flex-1 min-h-16 flex items-center justify-center pt-1">
                     <DigimonSprite
                       digimonName={digimon.digimon?.name || ''}
                       fallbackSpriteUrl={digimon.digimon?.sprite_url || ''}
@@ -213,24 +203,25 @@ const DigimonPlayground: React.FC = () => {
                   </div>
 
                   {/* Bottom info + button */}
-                  <div className="px-2 pb-2">
-                    <p
-                      className="text-xs font-semibold text-gray-900 dark:text-gray-100 truncate"
-                      title={digimon.name || digimon.digimon?.name}
+                  <div className="px-1 sm:px-2 pb-2 mt-auto">
+                    <DigimonCardIdentity
+                      name={digimon.name || digimon.digimon?.name || 'Digimon'}
+                      level={digimon.current_level}
+                      type={digimon.digimon?.type}
+                      attribute={digimon.digimon?.attribute}
+                    />
+                    <div
+                      className="mt-3 mb-2 h-1.5 bg-gray-200 dark:bg-dark-100 rounded-full overflow-hidden"
+                      role="progressbar"
+                      aria-label={`${digimon.name || digimon.digimon?.name} EXP`}
+                      aria-valuemin={0}
+                      aria-valuemax={100}
+                      aria-valuenow={Math.round(getExpProgress(digimon))}
                     >
-                      {digimon.name || digimon.digimon?.name}
-                    </p>
-                    {/* Level + EXP bar */}
-                    <div className="flex items-center gap-1 mt-0.5">
-                      <span className="text-xs font-bold text-gray-600 dark:text-gray-400 flex-shrink-0">
-                        {digimon.current_level}
-                      </span>
-                      <div className="flex-1 bg-gray-200 dark:bg-dark-100 rounded-full h-0.5 overflow-hidden">
-                        <div
-                          className="bg-purple-400 h-full transition-all"
-                          style={{ width: `${getExpProgress(digimon)}%` }}
-                        />
-                      </div>
+                      <div
+                        className="bg-purple-500 h-full rounded-full transition-all motion-reduce:transition-none"
+                        style={{ width: `${getExpProgress(digimon)}%` }}
+                      />
                     </div>
 
                     {/* Send to Farm button */}
@@ -251,7 +242,7 @@ const DigimonPlayground: React.FC = () => {
               }).map((_, i) => (
                 <div
                   key={`empty-${i}`}
-                  className="rounded-xl border-2 border-dashed border-gray-200 dark:border-dark-100 aspect-square flex flex-col items-center justify-center gap-1"
+                  className="rounded-xl border-2 border-dashed border-gray-200 dark:border-dark-100 w-full min-w-0 aspect-square min-h-48 flex flex-col items-center justify-center gap-1"
                 >
                   <Plus className="w-5 h-5 text-gray-500 dark:text-gray-400" />
                   <span className="text-xs font-body text-gray-500 dark:text-gray-400">Empty</span>
@@ -262,7 +253,7 @@ const DigimonPlayground: React.FC = () => {
         </div>
 
         {/* ── Right: DigiFarm Storage Panel ── */}
-        <div className="flex-1">
+        <div className="min-w-0">
           <div className="card">
             {/* Panel header */}
             <div className="flex items-center justify-between mb-4">
@@ -294,7 +285,8 @@ const DigimonPlayground: React.FC = () => {
               <ContentSkeleton
                 label="Loading storage…"
                 layout="grid"
-                gridClassName="grid-cols-[repeat(auto-fill,minmax(8rem,1fr))]"
+                gridClassName="grid-cols-2 sm:grid-cols-3"
+                itemClassName="!h-auto w-full min-w-0 aspect-square min-h-48"
               />
             ) : storageDigimon.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-16 text-center">
@@ -309,27 +301,16 @@ const DigimonPlayground: React.FC = () => {
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-[repeat(auto-fill,minmax(8rem,1fr))] gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {storageDigimon.map((digimon) => (
                   <motion.div
                     key={digimon.id}
                     whileHover={{ scale: 1.02 }}
                     onClick={() => setSelectedDetailDigimon(digimon)}
-                    className="relative bg-gray-50 dark:bg-dark-200 rounded-xl border border-gray-200 dark:border-dark-400 hover:border-accent-400 dark:hover:border-accent-600 cursor-pointer transition-colors min-h-44 flex flex-col overflow-hidden"
+                    className="relative bg-gray-50 dark:bg-dark-200 rounded-xl border border-gray-200 dark:border-dark-400 hover:border-accent-400 dark:hover:border-accent-600 cursor-pointer transition-colors w-full min-w-0 aspect-square min-h-48 flex flex-col overflow-hidden"
                   >
-                    {/* Type icon */}
-                    {digimon.digimon?.type && digimon.digimon?.attribute && (
-                      <div className="absolute top-1 right-1 z-10">
-                        <TypeAttributeIcon
-                          type={digimon.digimon.type as any}
-                          attribute={digimon.digimon.attribute as any}
-                          size="sm"
-                        />
-                      </div>
-                    )}
-
                     {/* Sprite */}
-                    <div className="flex-1 flex items-center justify-center min-h-0 pt-1">
+                    <div className="flex-1 min-h-16 flex items-center justify-center pt-1">
                       <DigimonSprite
                         digimonName={digimon.digimon?.name || ''}
                         fallbackSpriteUrl={digimon.digimon?.sprite_url || ''}
@@ -339,24 +320,25 @@ const DigimonPlayground: React.FC = () => {
                     </div>
 
                     {/* Bottom info + button */}
-                    <div className="px-2 pb-2">
-                      <p
-                        className="text-xs font-semibold text-gray-900 dark:text-gray-100 truncate"
-                        title={digimon.name || digimon.digimon?.name}
+                    <div className="px-1 sm:px-2 pb-2 mt-auto">
+                      <DigimonCardIdentity
+                        name={digimon.name || digimon.digimon?.name || 'Digimon'}
+                        level={digimon.current_level}
+                        type={digimon.digimon?.type}
+                        attribute={digimon.digimon?.attribute}
+                      />
+                      <div
+                        className="mt-3 mb-2 h-1.5 bg-gray-200 dark:bg-dark-100 rounded-full overflow-hidden"
+                        role="progressbar"
+                        aria-label={`${digimon.name || digimon.digimon?.name} EXP`}
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                        aria-valuenow={Math.round(getExpProgress(digimon))}
                       >
-                        {digimon.name || digimon.digimon?.name}
-                      </p>
-                      {/* Level + EXP bar */}
-                      <div className="flex items-center gap-1 mt-0.5">
-                        <span className="text-xs font-bold text-gray-600 dark:text-gray-400 flex-shrink-0">
-                          {digimon.current_level}
-                        </span>
-                        <div className="flex-1 bg-gray-200 dark:bg-dark-100 rounded-full h-0.5 overflow-hidden">
-                          <div
-                            className="bg-purple-500 h-full transition-all"
-                            style={{ width: `${getExpProgress(digimon)}%` }}
-                          />
-                        </div>
+                        <div
+                          className="bg-purple-500 h-full rounded-full transition-all motion-reduce:transition-none"
+                          style={{ width: `${getExpProgress(digimon)}%` }}
+                        />
                       </div>
 
                       {/* Add to Party button */}

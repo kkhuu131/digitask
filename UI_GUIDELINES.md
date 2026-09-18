@@ -101,6 +101,22 @@ relying on color intensity. Reserve purple for experience displays.
 
 ## Arena presentation
 
+Team selection uses equal fighter cards for both teams, with inward-facing idle
+sprites, readable names/levels and shared type/attribute icons. Keep the battle
+action compact beside readiness and cost. Stack teams below the desktop breakpoint
+to preserve room for three fighters; disable idle animation for reduced motion.
+The party picker uses the detail modal's sprite/identity and Stats presentation.
+Use `DigimonStatRow` for matching stat bars, values and bonus text in both dialogs.
+Arena opponent choices share `BattleFighterPreview` sprite and identity presentation
+with team selection; keep levels and type/attribute icons below readable names.
+`DigimonCardIdentity` keeps card names, levels and icons consistent in the arena
+and DigiFarm. Farm cards retain a separate EXP bar below the identity; use
+`bg-purple-500` to match the dashboard's normal EXP fill.
+DigiFarm uses equal columns for party/storage at wide widths and stacks them below
+1280px. Both collections use matching card grids: two columns on phones, three
+from 640px. Cards aim for square proportions with enough minimum height for their
+identity, EXP and transfer control.
+
 Resource balances use `ResourceBalance`: matching neutral controls with amber
 ticket/coin icons, an explicit resource name and a formatted count. The balance
 links to its destination; the separate help button explains earning and spending

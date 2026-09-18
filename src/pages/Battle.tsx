@@ -2,7 +2,7 @@ import ContentSkeleton from '../components/ContentSkeleton';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDigimonStore, UserDigimon } from '../store/petStore';
-import { useBattleStore, DigimonAttribute, DigimonType } from '../store/battleStore';
+import { useBattleStore } from '../store/battleStore';
 
 import { useTournamentStore } from '../store/tournamentStore';
 import { supabase } from '../lib/supabase';
@@ -11,10 +11,8 @@ import ArenaBattle from '../components/ArenaBattle';
 import BattleDigimonSprite from '../components/BattleDigimonSprite';
 import { useAuthStore } from '../store/authStore';
 import { useTitleStore } from '../store/titleStore';
-import TypeAttributeIcon from '../components/TypeAttributeIcon';
 import PageTutorial from '../components/PageTutorial';
 import { DialogueStep } from '../components/DigimonDialogue';
-import DigimonSprite from '@/components/DigimonSprite';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   Trophy,
@@ -30,6 +28,7 @@ import {
   ListChecks,
 } from 'lucide-react';
 import BattleTeamSelector, { OpponentDigimonPreview } from '../components/BattleTeamSelector';
+import BattleFighterPreview from '../components/BattleFighterPreview';
 import { BattleDigimon } from '../types/battle';
 import type { Strategy } from '../engine/arenaTypes';
 import {
@@ -539,7 +538,6 @@ const Battle = () => {
                 }
                 opponentTeam={pendingOption.team.digimon as OpponentDigimonPreview[]}
                 partyDigimon={partyDigimon}
-                contextLabel={`${pendingOption.difficulty.charAt(0).toUpperCase() + pendingOption.difficulty.slice(1)} · ${pendingOption.isWild ? 'Wild' : 'AI'}`}
                 isFree={false}
                 costLabel="1 ticket"
                 confirmLabel="Start battle"
@@ -627,39 +625,20 @@ const Battle = () => {
                               </p>
                             </div>
 
-                            {/* Digimon sprites */}
-                            <div className="order-3 col-span-2 flex min-w-0 flex-wrap items-center justify-center gap-3 sm:order-2 sm:col-span-1 sm:gap-5 min-h-[80px]">
-                              {option.team.digimon.map((digimon: any) => (
-                                <div
-                                  key={`${digimon.id}-${digimon.name}`}
-                                  className="flex flex-col items-center gap-1"
-                                >
-                                  <div className="relative w-16 h-16 flex items-center justify-center">
-                                    <DigimonSprite
-                                      digimonName={digimon.name}
-                                      fallbackSpriteUrl={digimon.sprite_url}
-                                      showHappinessAnimations={true}
-                                      size="sm"
-                                    />
-                                    {digimon.type && digimon.attribute && (
-                                      <div className="absolute -top-1 -right-1">
-                                        <TypeAttributeIcon
-                                          type={digimon.type as DigimonType}
-                                          attribute={digimon.attribute as DigimonAttribute}
-                                          size="sm"
-                                          showLabel={false}
-                                        />
-                                      </div>
-                                    )}
-                                    <span className="absolute bottom-0 left-0 right-0 text-center text-[9px] font-bold text-white bg-black/50 rounded-b px-1 leading-4">
-                                      Lv.{digimon.current_level}
-                                    </span>
-                                  </div>
-                                  <span className="text-[10px] font-body text-gray-400 dark:text-gray-500 truncate max-w-[64px] text-center">
-                                    {digimon.name}
-                                  </span>
-                                </div>
-                              ))}
+                            {/* Opponent fighters */}
+                            <div className="order-3 col-span-2 grid grid-cols-3 min-w-0 gap-2 sm:order-2 sm:col-span-1">
+                              {option.team.digimon.map(
+                                (digimon: OpponentDigimonPreview, index: number) => (
+                                  <BattleFighterPreview
+                                    key={`${index}-${digimon.name}`}
+                                    name={digimon.name}
+                                    spriteUrl={digimon.sprite_url}
+                                    level={digimon.current_level}
+                                    type={digimon.type}
+                                    attribute={digimon.attribute}
+                                  />
+                                )
+                              )}
                             </div>
 
                             {/* Opponent + fight */}

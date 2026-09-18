@@ -19,6 +19,7 @@ import DigimonEvolutionModal from './DigimonEvolutionModal';
 import { StatType, isUnderStatCap } from '../store/petStore';
 import DigimonSprite from './DigimonSprite';
 import DigimonEvolutionHistory from './DigimonEvolutionHistory';
+import DigimonStatRow from './DigimonStatRow';
 import PageTutorial from './PageTutorial';
 import { DialogueStep } from './DigimonDialogue';
 
@@ -184,17 +185,6 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
     }
   };
 
-  // Stat bar color map
-  const statColors: Record<string, string> = {
-    HP: 'bg-red-500',
-    SP: 'bg-cyan-500',
-    ATK: 'bg-orange-500',
-    DEF: 'bg-blue-500',
-    INT: 'bg-purple-500',
-    SPD: 'bg-green-500',
-    ABI: 'bg-amber-500',
-  };
-
   // Max reference values for progress bars (lv99 reference)
   const statMaxRef: Record<string, number> = {
     HP: localDigimon?.digimon?.hp_level99 ?? 2000,
@@ -210,51 +200,27 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
     const upperLabel = label.toUpperCase();
     const lowerLabel = label.toLowerCase();
     const statValue = savedStats[upperLabel] || savedStats[lowerLabel] || 0;
-    const total = baseValue + bonusValue;
-    const maxRef = statMaxRef[upperLabel] ?? 600;
-    const pct = Math.min(100, (total / maxRef) * 100);
-    const barColor = statColors[upperLabel] ?? 'bg-purple-500';
-
     return (
-      <div className="space-y-1">
-        <div className="flex items-center justify-between text-sm">
-          <span className="font-heading font-semibold text-gray-700 dark:text-gray-200 w-10">
-            {label}
-          </span>
-          <div className="flex-1 mx-3">
-            <div className="h-2 bg-gray-200 dark:bg-dark-100 rounded-full overflow-hidden">
-              <div
-                className={`h-full rounded-full transition-all duration-500 ${barColor}`}
-                style={{ width: `${pct}%` }}
-              />
-            </div>
-          </div>
-          <div className="flex items-center gap-1.5 w-20 justify-end">
-            <span className="font-semibold text-gray-800 dark:text-gray-100 tabular-nums">
-              {baseValue}
+      <DigimonStatRow
+        label={label}
+        value={baseValue}
+        bonus={bonusValue}
+        maxReference={statMaxRef[upperLabel] ?? 600}
+      >
+        {belongsToCurrentUser && statValue > 0 && isUnderStatCap(localDigimon) && (
+          <button
+            className="w-5 h-5 bg-amber-100 hover:bg-amber-200 dark:bg-amber-800/30 dark:hover:bg-amber-700/50 text-amber-700 dark:text-amber-300 rounded-full flex items-center justify-center relative flex-shrink-0"
+            onClick={() => allocateStat(lowerLabel as StatType)}
+            disabled={allocating}
+            title={`Allocate ${label} stat point (${statValue} available)`}
+          >
+            <span className="text-[10px] font-bold leading-none">+</span>
+            <span className="absolute -top-1.5 -right-1.5 bg-amber-500 text-white text-[9px] rounded-full w-3.5 h-3.5 flex items-center justify-center leading-none">
+              {statValue}
             </span>
-            {bonusValue > 0 && (
-              <span className="text-green-500 dark:text-green-400 text-xs tabular-nums">
-                +{bonusValue}
-              </span>
-            )}
-            {/* Allocation Button */}
-            {belongsToCurrentUser && statValue > 0 && isUnderStatCap(localDigimon) && (
-              <button
-                className="w-5 h-5 bg-amber-100 hover:bg-amber-200 dark:bg-amber-800/30 dark:hover:bg-amber-700/50 text-amber-700 dark:text-amber-300 rounded-full flex items-center justify-center relative flex-shrink-0"
-                onClick={() => allocateStat(lowerLabel as StatType)}
-                disabled={allocating}
-                title={`Allocate ${label} stat point (${statValue} available)`}
-              >
-                <span className="text-[10px] font-bold leading-none">+</span>
-                <span className="absolute -top-1.5 -right-1.5 bg-amber-500 text-white text-[9px] rounded-full w-3.5 h-3.5 flex items-center justify-center leading-none">
-                  {statValue}
-                </span>
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
+          </button>
+        )}
+      </DigimonStatRow>
     );
   };
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, Plus, Swords, WandSparkles } from 'lucide-react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { X, ChevronLeft, Plus, Swords, WandSparkles, Ticket } from 'lucide-react';
+import { Dialog } from '@headlessui/react';
 import { selectStrongestTeam } from '../utils/selectStrongestTeam';
 import { UserDigimon } from '../store/petStore';
 import { DigimonType, DigimonAttribute } from '../store/battleStore';
@@ -8,6 +9,10 @@ import { calculateFinalStats } from '../utils/digimonStatCalculation';
 import DigimonSprite from './DigimonSprite';
 import TypeAttributeIcon from './TypeAttributeIcon';
 import type { Strategy } from '../engine/arenaTypes';
+import { LoadingSpinner } from './LoadingIndicator';
+import DigimonStatRow from './DigimonStatRow';
+import { ReadySprite } from './BattleFighterPreview';
+import FighterIdentity from './DigimonCardIdentity';
 
 // ─── Shared types ─────────────────────────────────────────────────────────────
 
@@ -38,15 +43,6 @@ export interface BattleTeamSelectorProps {
 
 // ─── Stat pill ────────────────────────────────────────────────────────────────
 
-const StatPill = ({ label, value }: { label: string; value: number | string }) => (
-  <div className="flex flex-col items-center px-2 py-1.5 bg-gray-50 dark:bg-dark-400 rounded-lg text-center min-w-0">
-    <span className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-wider font-semibold">
-      {label}
-    </span>
-    <span className="text-sm font-bold text-gray-800 dark:text-gray-100">{value}</span>
-  </div>
-);
-
 // ─── Digimon Picker Modal ─────────────────────────────────────────────────────
 
 interface PickerModalProps {
@@ -71,173 +67,212 @@ const DigimonPickerModal: React.FC<PickerModalProps> = ({
 
   const isUsedElsewhere = (d: UserDigimon) => alreadySelected.includes(d.id);
   const stats = preview ? calculateFinalStats(preview) : null;
+  const reducedMotion = useReducedMotion();
 
   return (
-    <div className="fixed inset-0 z-modal flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <Dialog
+      open
+      onClose={onClose}
+      className="fixed inset-0 z-modal flex items-center justify-center p-4"
+    >
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/60" onClick={onClose} />
 
       {/* Panel */}
       <motion.div
-        initial={{ opacity: 0, y: 40 }}
+        initial={{ opacity: 0, y: reducedMotion ? 0 : 40 }}
         animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 40 }}
-        className="relative z-10 w-full sm:max-w-3xl bg-white dark:bg-dark-300 rounded-t-2xl sm:rounded-2xl shadow-2xl flex flex-col max-h-[90vh]"
+        exit={{ opacity: 0, y: reducedMotion ? 0 : 40 }}
+        className="relative z-10 w-full sm:max-w-3xl bg-white dark:bg-dark-300 rounded-xl shadow-2xl flex flex-col max-h-[90dvh]"
       >
-        {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-dark-100 flex-shrink-0">
-          <h3 className="font-heading font-semibold text-lg dark:text-gray-100">Choose Digimon</h3>
-          <button
-            onClick={onClose}
-            className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-200 transition-colors"
-          >
-            <X className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-          </button>
-        </div>
+        <Dialog.Panel className="flex flex-col min-h-0">
+          {/* Header */}
+          <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-dark-100 flex-shrink-0">
+            <Dialog.Title className="ui-section-title">Choose Digimon</Dialog.Title>
+            <button onClick={onClose} aria-label="Close Digimon picker" className="ui-icon-button">
+              <X className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+            </button>
+          </div>
 
-        <div className="flex flex-1 min-h-0 flex-col sm:flex-row overflow-hidden">
-          {/* Left: Party grid */}
-          <div className="sm:w-80 flex-shrink-0 border-b sm:border-b-0 sm:border-r border-gray-100 dark:border-dark-100 overflow-y-auto p-3">
-            {partyDigimon.length === 0 ? (
-              <p className="text-sm text-gray-400 dark:text-gray-500 text-center py-6">
-                No Digimon in party
-              </p>
-            ) : (
-              <div className="grid grid-cols-4 sm:grid-cols-3 gap-2">
-                {partyDigimon.map((d) => {
-                  const used = isUsedElsewhere(d);
-                  const isPreviewing = preview?.id === d.id;
-                  return (
-                    <button
-                      key={d.id}
-                      onClick={() => !used && setPreview(d)}
-                      className={`relative flex flex-col items-center gap-0.5 p-1.5 rounded-xl border-2 transition-all ${
-                        isPreviewing
-                          ? 'border-indigo-500 dark:border-accent-500 bg-accent-50 dark:bg-accent-900/20'
-                          : used
-                            ? 'border-gray-200 dark:border-dark-100 opacity-40 cursor-not-allowed bg-gray-50 dark:bg-dark-400'
-                            : 'border-gray-200 dark:border-dark-100 hover:border-accent-300 dark:hover:border-accent-600 bg-white dark:bg-dark-400 cursor-pointer'
-                      }`}
-                    >
-                      {used && (
-                        <div className="absolute inset-0 flex items-end justify-center pb-1 z-10 rounded-xl">
-                          <span className="text-[9px] font-bold text-gray-500 dark:text-gray-400 bg-white/90 dark:bg-dark-300/90 px-1 py-0.5 rounded">
+          <div className="flex-1 min-h-0 overflow-y-auto">
+            {/* Left: Party grid */}
+            <div className="max-h-[30dvh] border-b border-gray-100 dark:border-dark-100 overflow-y-auto p-4">
+              {partyDigimon.length === 0 ? (
+                <p className="text-sm text-gray-400 dark:text-gray-500 text-center py-6">
+                  No Digimon in party
+                </p>
+              ) : (
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
+                  {partyDigimon.map((d) => {
+                    const used = isUsedElsewhere(d);
+                    const isPreviewing = preview?.id === d.id;
+                    return (
+                      <button
+                        key={d.id}
+                        onClick={() => !used && setPreview(d)}
+                        disabled={used}
+                        aria-pressed={isPreviewing}
+                        className={`relative flex flex-col items-center gap-0.5 p-1.5 rounded-xl border-2 transition-all ${
+                          isPreviewing
+                            ? 'border-accent-500 bg-accent-50 dark:bg-accent-900/20'
+                            : used
+                              ? 'border-gray-200 dark:border-dark-100 opacity-40 cursor-not-allowed bg-gray-50 dark:bg-dark-400'
+                              : 'border-gray-200 dark:border-dark-100 hover:border-accent-300 dark:hover:border-accent-600 bg-white dark:bg-dark-400 cursor-pointer'
+                        }`}
+                      >
+                        <div className="h-20 flex items-center justify-center">
+                          <DigimonSprite
+                            digimonName={d.digimon?.name ?? ''}
+                            fallbackSpriteUrl={d.digimon?.sprite_url ?? ''}
+                            size="sm"
+                            showHappinessAnimations={!reducedMotion}
+                          />
+                        </div>
+                        <span className="text-xs font-semibold text-gray-700 dark:text-gray-300 break-words w-full text-center">
+                          {d.name || d.digimon?.name}
+                        </span>
+                        <span className="text-xs text-gray-600 dark:text-gray-400">
+                          Lv.{d.current_level}
+                        </span>
+                        {d.digimon?.type && d.digimon?.attribute && (
+                          <TypeAttributeIcon
+                            type={d.digimon.type as DigimonType}
+                            attribute={d.digimon.attribute as DigimonAttribute}
+                            size="sm"
+                          />
+                        )}
+                        {used && (
+                          <span className="text-xs font-semibold text-gray-600 dark:text-gray-400">
                             In team
                           </span>
-                        </div>
-                      )}
-                      <div className="w-11 h-11 flex items-center justify-center">
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Right: Detail panel */}
+            <div className="p-4 sm:p-6">
+              {preview ? (
+                <>
+                  {/* Identity row */}
+                  <div className="flex flex-col sm:flex-row gap-6">
+                    <div className="sm:w-2/5 flex flex-col items-center text-center min-w-0">
+                      <div className="w-40 h-40 flex-shrink-0 flex items-center justify-center mb-3">
                         <DigimonSprite
-                          digimonName={d.digimon?.name ?? ''}
-                          fallbackSpriteUrl={d.digimon?.sprite_url ?? ''}
-                          size="xs"
-                          showHappinessAnimations={false}
+                          digimonName={preview.digimon?.name ?? ''}
+                          fallbackSpriteUrl={preview.digimon?.sprite_url ?? ''}
+                          happiness={preview.happiness}
+                          size="lg"
+                          showHappinessAnimations={!reducedMotion}
                         />
                       </div>
-                      <span className="text-[10px] font-medium text-gray-700 dark:text-gray-300 truncate w-full text-center leading-tight">
-                        {d.name || d.digimon?.name}
-                      </span>
-                      <span className="text-[9px] text-gray-400 dark:text-gray-500">
-                        Lv.{d.current_level}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-          </div>
+                      <div className="min-w-0">
+                        <div className="font-heading text-xl font-semibold dark:text-gray-100 break-words">
+                          {preview.name || preview.digimon?.name}
+                        </div>
+                        {preview.name &&
+                          preview.digimon?.name &&
+                          preview.name !== preview.digimon.name && (
+                            <div className="text-sm text-gray-500 dark:text-gray-400 truncate">
+                              {preview.digimon.name}
+                            </div>
+                          )}
+                        <div className="flex flex-wrap justify-center gap-2 mt-2">
+                          <span className="text-sm font-semibold text-gray-600 dark:text-gray-300">
+                            Lv. {preview.current_level}
+                          </span>
+                          {preview.personality && (
+                            <span className="text-sm text-gray-600 dark:text-gray-300">
+                              {preview.personality}
+                            </span>
+                          )}
+                        </div>
+                      </div>
 
-          {/* Right: Detail panel */}
-          <div className="flex-1 overflow-y-auto p-4 flex flex-col min-h-0">
-            {preview ? (
-              <>
-                {/* Identity row */}
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-20 h-20 flex-shrink-0 flex items-center justify-center">
-                    <DigimonSprite
-                      digimonName={preview.digimon?.name ?? ''}
-                      fallbackSpriteUrl={preview.digimon?.sprite_url ?? ''}
-                      happiness={preview.happiness}
-                      size="md"
-                      showHappinessAnimations={true}
-                    />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="text-lg font-bold dark:text-gray-100 truncate">
-                      {preview.name || preview.digimon?.name}
-                    </div>
-                    {preview.name &&
-                      preview.digimon?.name &&
-                      preview.name !== preview.digimon.name && (
-                        <div className="text-sm text-gray-500 dark:text-gray-400 truncate">
-                          {preview.digimon.name}
+                      {/* Type / Attribute */}
+                      {preview.digimon?.type && preview.digimon?.attribute && (
+                        <div className="mt-3 flex justify-center">
+                          <TypeAttributeIcon
+                            type={preview.digimon.type as DigimonType}
+                            attribute={preview.digimon.attribute as DigimonAttribute}
+                            size="sm"
+                            showLabel={true}
+                          />
                         </div>
                       )}
-                    <div className="flex flex-wrap gap-1.5 mt-1.5">
-                      <span className="text-xs px-2 py-0.5 bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full font-medium">
-                        Lv. {preview.current_level}
-                      </span>
-                      <span className="text-xs px-2 py-0.5 bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded-full font-medium">
-                        ABI {preview.abi ?? 0}
-                      </span>
-                      {preview.personality && (
-                        <span className="text-xs px-2 py-0.5 bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 rounded-full font-medium">
-                          {preview.personality}
-                        </span>
-                      )}
                     </div>
+
+                    {/* Stats grid */}
+                    {stats && (
+                      <div className="sm:w-3/5 min-w-0">
+                        <h4 className="ui-section-title mb-3">Stats</h4>
+                        <div className="space-y-3">
+                          <DigimonStatRow
+                            label="HP"
+                            value={stats.hp}
+                            bonus={preview.hp_bonus}
+                            maxReference={preview.digimon?.hp_level99 ?? 2000}
+                          />
+                          <DigimonStatRow
+                            label="SP"
+                            value={stats.sp}
+                            bonus={preview.sp_bonus}
+                            maxReference={preview.digimon?.sp_level99 ?? 600}
+                          />
+                          <DigimonStatRow
+                            label="ATK"
+                            value={stats.atk}
+                            bonus={preview.atk_bonus}
+                            maxReference={preview.digimon?.atk_level99 ?? 600}
+                          />
+                          <DigimonStatRow
+                            label="DEF"
+                            value={stats.def}
+                            bonus={preview.def_bonus}
+                            maxReference={preview.digimon?.def_level99 ?? 600}
+                          />
+                          <DigimonStatRow
+                            label="INT"
+                            value={stats.int}
+                            bonus={preview.int_bonus}
+                            maxReference={preview.digimon?.int_level99 ?? 600}
+                          />
+                          <DigimonStatRow
+                            label="SPD"
+                            value={stats.spd}
+                            bonus={preview.spd_bonus}
+                            maxReference={preview.digimon?.spd_level99 ?? 600}
+                          />
+                          <DigimonStatRow label="ABI" value={preview.abi ?? 0} maxReference={200} />
+                        </div>
+                      </div>
+                    )}
                   </div>
+                </>
+              ) : (
+                <div className="flex-1 flex items-center justify-center text-sm text-gray-400 dark:text-gray-500">
+                  Select a Digimon to preview
                 </div>
-
-                {/* Type / Attribute */}
-                {preview.digimon?.type && preview.digimon?.attribute && (
-                  <div className="mb-4 flex">
-                    <TypeAttributeIcon
-                      type={preview.digimon.type as DigimonType}
-                      attribute={preview.digimon.attribute as DigimonAttribute}
-                      size="sm"
-                      showLabel={true}
-                    />
-                  </div>
-                )}
-
-                {/* Stats grid */}
-                {stats && (
-                  <div className="grid grid-cols-3 gap-1.5 mb-4">
-                    <StatPill label="HP" value={stats.hp} />
-                    <StatPill label="SP" value={stats.sp} />
-                    <StatPill label="ATK" value={stats.atk} />
-                    <StatPill label="DEF" value={stats.def} />
-                    <StatPill label="INT" value={stats.int} />
-                    <StatPill label="SPD" value={stats.spd} />
-                  </div>
-                )}
-
-                {/* Confirm */}
-                <div className="mt-auto pt-3">
-                  {isUsedElsewhere(preview) ? (
-                    <button
-                      disabled
-                      className="w-full py-3 rounded-xl bg-gray-200 dark:bg-dark-100 text-gray-400 dark:text-gray-500 font-semibold cursor-not-allowed text-sm"
-                    >
-                      Already on team
-                    </button>
-                  ) : (
-                    <button onClick={() => onSelect(preview)} className="w-full btn-primary">
-                      Add to Team
-                    </button>
-                  )}
-                </div>
-              </>
-            ) : (
-              <div className="flex-1 flex items-center justify-center text-sm text-gray-400 dark:text-gray-500">
-                Select a Digimon to preview
-              </div>
-            )}
+              )}
+            </div>
           </div>
-        </div>
+          {preview && (
+            <div className="shrink-0 border-t border-gray-100 dark:border-dark-100 p-4 flex justify-end">
+              <button
+                onClick={() => onSelect(preview)}
+                disabled={isUsedElsewhere(preview)}
+                className="btn-primary"
+              >
+                {isUsedElsewhere(preview) ? 'Already on team' : 'Add to Team'}
+              </button>
+            </div>
+          )}
+        </Dialog.Panel>
       </motion.div>
-    </div>
+    </Dialog>
   );
 };
 
@@ -305,11 +340,7 @@ const BattleTeamSelector: React.FC<BattleTeamSelectorProps> = ({
     >
       {/* Back + context */}
       <div className="flex items-center gap-3 mb-6 flex-wrap">
-        <button
-          onClick={onBack}
-          disabled={loading}
-          className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
-        >
+        <button onClick={onBack} disabled={loading} className="btn-secondary">
           <ChevronLeft className="w-4 h-4" />
           Back
         </button>
@@ -327,179 +358,181 @@ const BattleTeamSelector: React.FC<BattleTeamSelectorProps> = ({
               Free
             </span>
           ) : costLabel ? (
-            <span className="text-xs px-2.5 py-0.5 bg-amber-100 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 rounded-full font-semibold">
+            <span className="inline-flex items-center gap-1.5 text-sm px-2.5 py-1 bg-amber-100 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 rounded-full font-semibold">
+              <Ticket className="h-4 w-4" aria-hidden="true" />
               {costLabel}
             </span>
           ) : null}
         </div>
       </div>
 
-      {/* VS layout */}
-      <div className="grid grid-cols-1 sm:grid-cols-[1fr_52px_1fr] gap-4 items-stretch mb-6">
-        {/* Your team */}
-        <div className="bg-white dark:bg-dark-300 rounded-2xl border border-gray-200 dark:border-dark-100 p-5">
-          <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-            <h3 className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-widest">
-              Your Team
-            </h3>
-            <button
-              type="button"
-              className="btn-secondary"
-              disabled={loading || selectStrongestTeam(partyDigimon).length === 0}
-              onClick={() => {
-                const team = selectStrongestTeam(partyDigimon);
-                setSlots([team[0] ?? null, team[1] ?? null, team[2] ?? null]);
-                setPickerSlot(null);
-              }}
-            >
-              <WandSparkles className="h-4 w-4" aria-hidden="true" />
-              Auto-fill strongest
-            </button>
-          </div>
-          <p className="mb-4 text-xs text-gray-600 dark:text-gray-400">
-            Auto-fill picks up to three party Digimon by combat stats. You can change any pick.
-          </p>
-          <div className="flex gap-2 justify-center">
-            {slots.map((d, i) => (
-              <div
-                key={i}
-                onClick={() => handleSlotClick(i)}
-                className={`relative w-0 min-w-0 flex-1 max-w-28 min-h-32 py-3 rounded-xl border-2 transition-all cursor-pointer flex flex-col items-center justify-center gap-1 select-none ${
-                  d
-                    ? 'border-accent-300 dark:border-accent-600 bg-accent-50 dark:bg-accent-900/20 hover:border-accent-400 dark:hover:border-accent-500'
-                    : 'border-dashed border-gray-300 dark:border-dark-100 hover:border-accent-300 dark:hover:border-accent-600 hover:bg-accent-50/40 dark:hover:bg-accent-900/10'
-                }`}
-              >
-                {d ? (
-                  <>
-                    <button
-                      aria-label={`Remove ${d.name || d.digimon?.name || 'Digimon'} from team`}
-                      disabled={loading}
-                      onClick={(e) => handleRemoveSlot(i, e)}
-                      className="absolute top-1 right-1 z-10 w-5 h-5 rounded-full bg-gray-200 dark:bg-dark-100 hover:bg-red-100 dark:hover:bg-red-900/40 flex items-center justify-center transition-colors group"
-                    >
-                      <X className="w-3 h-3 text-gray-500 dark:text-gray-400 group-hover:text-red-500 transition-colors" />
-                    </button>
-                    <div className="w-12 h-12 flex items-center justify-center">
-                      <DigimonSprite
-                        digimonName={d.digimon?.name ?? ''}
-                        fallbackSpriteUrl={d.digimon?.sprite_url ?? ''}
-                        size="xs"
-                        showHappinessAnimations={false}
-                      />
-                    </div>
-                    <span className="text-[10px] font-medium text-gray-700 dark:text-gray-300 text-center truncate w-full px-1 leading-tight">
-                      {d.name || d.digimon?.name}
-                    </span>
-                    <span className="text-[9px] text-gray-400 dark:text-gray-500">
-                      Lv.{d.current_level}
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    <Plus className="w-5 h-5 text-gray-300 dark:text-dark-100" />
-                    <span className="text-[10px] text-gray-400 dark:text-gray-500">Add</span>
-                  </>
-                )}
-              </div>
-            ))}
-          </div>
-
-          {teamSize === 0 && (
-            <p className="text-xs text-gray-400 dark:text-gray-500 text-center mt-4">
-              Click a slot to add Digimon
-            </p>
-          )}
-        </div>
-
-        {/* VS divider — desktop */}
-        <div className="hidden sm:flex flex-col items-center justify-center">
-          <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-dark-200 flex items-center justify-center">
-            <Swords className="w-5 h-5 text-gray-400 dark:text-gray-500" />
-          </div>
-          <span className="mt-2 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
-            VS
-          </span>
-        </div>
-
-        {/* VS divider — mobile */}
-        <div className="flex sm:hidden items-center gap-3 -my-1">
-          <div className="flex-1 h-px bg-gray-200 dark:bg-dark-100" />
-          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-100 dark:bg-dark-200">
-            <Swords className="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
-            <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
-              VS
-            </span>
-          </div>
-          <div className="flex-1 h-px bg-gray-200 dark:bg-dark-100" />
-        </div>
-
-        {/* Opponent */}
-        <div className="bg-gray-50 dark:bg-dark-400 rounded-2xl border border-gray-200 dark:border-dark-100 p-5">
-          <h3 className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1">
-            Opponent
-          </h3>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mb-4 truncate font-medium">
-            {opponentName}
-          </p>
-          <div className="flex gap-3 justify-center">
-            {opponentTeam.map((d, i) => (
-              <div key={i} className="flex flex-col items-center gap-1 w-16 sm:w-20">
-                <div className="relative w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center">
-                  <DigimonSprite
-                    digimonName={d.name}
-                    fallbackSpriteUrl={d.sprite_url}
-                    size="sm"
-                    showHappinessAnimations={false}
-                  />
-                  {d.type && d.attribute && (
-                    <div className="absolute top-0 right-0">
-                      <TypeAttributeIcon
-                        type={d.type as DigimonType}
-                        attribute={d.attribute as DigimonAttribute}
-                        size="sm"
-                        showLabel={false}
-                      />
-                    </div>
-                  )}
-                </div>
-                <span className="text-[10px] font-medium text-gray-600 dark:text-gray-400 text-center truncate w-full leading-tight">
-                  {d.name}
-                </span>
-                <span className="text-[9px] text-gray-400 dark:text-gray-500">
-                  Lv.{d.current_level}
-                </span>
-              </div>
-            ))}
-          </div>
+      <div className="ui-page-header">
+        <div>
+          <h2 className="ui-page-title">Ready for battle</h2>
+          <p className="ui-description mt-1">Choose up to three Digimon to face {opponentName}.</p>
         </div>
       </div>
 
-      {/* Fight button */}
-      <button
-        onClick={handleConfirm}
-        disabled={teamSize === 0 || loading}
-        className="w-full btn-primary py-3"
-      >
-        {loading ? (
-          <span>Starting…</span>
-        ) : (
-          <>
-            <Swords className="w-5 h-5" />
-            <span>{confirmLabel}</span>
-            {/* {teamSize > 0 && (
-              <span className="text-indigo-200 dark:text-accent-300 font-normal text-base">
-                ({teamSize} Digimon)
-              </span>
-            )} */}
-            {!isFree && costLabel && (
-              <span className="text-sm font-normal px-2 py-0.5 bg-white/20 rounded-full">
-                {costLabel}
-              </span>
-            )}
-          </>
-        )}
-      </button>
+      <div className="ui-panel mb-4 overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_48px_1fr]">
+          <section className="min-w-0 p-3 sm:p-5" aria-label="Your team">
+            <div className="flex min-h-16 flex-wrap items-center justify-between gap-3 mb-3">
+              <div>
+                <h3 className="ui-section-title">Your team</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  {teamSize} / 3 selected
+                </p>
+              </div>
+              <button
+                type="button"
+                className="btn-secondary"
+                disabled={loading || selectStrongestTeam(partyDigimon).length === 0}
+                title="Pick up to three party Digimon by combat stats"
+                onClick={() => {
+                  const team = selectStrongestTeam(partyDigimon);
+                  setSlots([team[0] ?? null, team[1] ?? null, team[2] ?? null]);
+                  setPickerSlot(null);
+                }}
+              >
+                <WandSparkles className="h-4 w-4" aria-hidden="true" />
+                Auto-fill strongest
+              </button>
+            </div>
+            <div className="grid grid-cols-3 gap-2 sm:gap-3">
+              {slots.map((d, i) => (
+                <div key={i} className="relative min-w-0">
+                  <button
+                    type="button"
+                    onClick={() => handleSlotClick(i)}
+                    disabled={loading}
+                    aria-label={
+                      d
+                        ? `Change ${d.name || d.digimon?.name} in slot ${i + 1}`
+                        : `Add Digimon to slot ${i + 1}`
+                    }
+                    className={`w-full min-h-56 rounded-xl border flex flex-col items-center px-1 sm:px-2 pt-6 pb-4 transition-colors disabled:cursor-wait ${
+                      d
+                        ? 'border-accent-300 dark:border-accent-700 bg-accent-50/50 dark:bg-accent-900/10 hover:border-accent-500'
+                        : 'border-dashed border-gray-300 dark:border-dark-100 bg-gray-50 dark:bg-dark-200 hover:border-accent-500'
+                    }`}
+                  >
+                    {d ? (
+                      <>
+                        <ReadySprite
+                          name={d.digimon?.name ?? ''}
+                          url={d.digimon?.sprite_url ?? ''}
+                        />
+                        <FighterIdentity
+                          name={d.name || d.digimon?.name || 'Digimon'}
+                          level={d.current_level}
+                          type={d.digimon?.type}
+                          attribute={d.digimon?.attribute}
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <div className="flex h-28 sm:h-32 items-center justify-center">
+                          <Plus
+                            className="h-8 w-8 text-gray-400 dark:text-gray-500"
+                            aria-hidden="true"
+                          />
+                        </div>
+                        <span className="text-sm font-semibold text-gray-600 dark:text-gray-300">
+                          Add Digimon
+                        </span>
+                        <span className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                          Slot {i + 1}
+                        </span>
+                      </>
+                    )}
+                  </button>
+                  {d && (
+                    <button
+                      type="button"
+                      aria-label={`Remove ${d.name || d.digimon?.name || 'Digimon'} from team`}
+                      disabled={loading}
+                      onClick={(e) => handleRemoveSlot(i, e)}
+                      className="ui-icon-button absolute right-0 top-0 text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400"
+                    >
+                      <X className="h-4 w-4" aria-hidden="true" />
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-3">
+              Select a slot to choose or change a fighter.
+            </p>
+          </section>
+
+          <div
+            className="flex items-center justify-center gap-3 px-3 lg:px-0 py-2"
+            aria-hidden="true"
+          >
+            <div className="h-px flex-1 bg-gray-200 dark:bg-dark-100 lg:hidden" />
+            <span className="font-heading text-xl font-semibold text-gray-500 dark:text-gray-400">
+              VS
+            </span>
+            <div className="h-px flex-1 bg-gray-200 dark:bg-dark-100 lg:hidden" />
+          </div>
+
+          <section className="min-w-0 p-3 sm:p-5" aria-label="Opponent team">
+            <div className="mb-3 min-h-16 flex flex-col justify-center">
+              <h3 className="ui-section-title">Opponent</h3>
+              <p className="mt-1 text-sm text-gray-600 dark:text-gray-400 break-words">
+                {opponentName}
+              </p>
+            </div>
+            <div className="grid grid-cols-3 gap-2 sm:gap-3">
+              {opponentTeam.map((d, i) => (
+                <div
+                  key={i}
+                  className="min-w-0 min-h-56 rounded-xl border border-gray-200 dark:border-dark-100 bg-gray-50 dark:bg-dark-200 flex flex-col items-center px-1 sm:px-2 pt-6 pb-4"
+                >
+                  <ReadySprite name={d.name} url={d.sprite_url} opponent />
+                  <FighterIdentity
+                    name={d.name}
+                    level={d.current_level}
+                    type={d.type}
+                    attribute={d.attribute}
+                  />
+                </div>
+              ))}
+            </div>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-3">
+              {opponentTeam.length} {opponentTeam.length === 1 ? 'fighter' : 'fighters'} ready
+            </p>
+          </section>
+        </div>
+      </div>
+
+      <div className="ui-panel flex flex-wrap items-center justify-between gap-4 p-4">
+        <div aria-live="polite">
+          <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+            {teamSize === 0 ? 'Choose your fighters' : `${teamSize} Digimon ready to battle`}
+          </p>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+            {isFree
+              ? 'Free battle'
+              : costLabel
+                ? `Battle cost: ${costLabel}`
+                : 'Your team is ready when you are.'}
+          </p>
+        </div>
+        <button
+          onClick={handleConfirm}
+          disabled={teamSize === 0 || loading}
+          aria-busy={loading}
+          className="btn-primary shrink-0"
+        >
+          {loading ? (
+            <LoadingSpinner className="h-4 w-4" />
+          ) : (
+            <Swords className="h-4 w-4" aria-hidden="true" />
+          )}
+          <span>{loading ? 'Starting…' : confirmLabel}</span>
+        </button>
+      </div>
 
       {/* Picker modal */}
       <AnimatePresence>

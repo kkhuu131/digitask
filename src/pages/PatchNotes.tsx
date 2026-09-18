@@ -54,8 +54,16 @@ const PatchNotes = () => {
                 background refreshes.
               </li>
               <li>
-                DigiFarm’s active party uses a three-column grid, with larger sprites on both party
-                and storage cards.
+                DigiFarm’s party and storage share equal-width panels and matching square card grids
+                on wide screens, with two columns on phones and three on larger screens. Larger
+                sprites sit above centered names, levels and type/attribute icons, with EXP bars
+                matching the dashboard’s purple.
+              </li>
+              <li>
+                Battle team selection puts both teams face to face with larger animated sprites,
+                readable names and levels, type/attribute icons, and a compact battle action. The
+                party picker uses the same stat bars as the Digimon detail window. Arena opponent
+                choices use the same animated fighter display, names, levels and icons.
               </li>
             </ul>
           </div>
