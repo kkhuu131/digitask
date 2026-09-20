@@ -48,7 +48,11 @@
   }
 
   .btn-primary {
-    @apply btn bg-accent-700 text-white hover:bg-accent-800 focus:ring-accent-600;
+    @apply btn bg-accent-600 text-gray-950 hover:bg-accent-500 focus:ring-accent-600;
+  }
+
+  .brand-wordmark {
+    @apply font-heading font-bold tracking-wide text-accent-600 dark:text-accent-400;
   }
 
   /* Compact card actions retain a 44px target on touch devices. */
@@ -232,7 +236,8 @@
   }
 }
 @keyframes skeleton-pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
@@ -258,18 +263,44 @@
   }
 }
 
-.task-heatmap .react-calendar-heatmap { width: 100%; display: block; }
-.task-heatmap .react-calendar-heatmap text { @apply fill-gray-600; }
-.task-heatmap .color-empty { @apply fill-gray-200; }
-.task-heatmap .color-scale-1 { @apply fill-amber-100; }
-.task-heatmap .color-scale-2 { @apply fill-amber-300; }
-.task-heatmap .color-scale-3 { @apply fill-amber-500; }
-.task-heatmap .color-today { @apply stroke-amber-700; stroke-width: 1; }
-.dark .task-heatmap .react-calendar-heatmap text { @apply fill-gray-400; }
-.dark .task-heatmap .color-empty { @apply fill-dark-100; }
-.dark .task-heatmap .color-scale-1 { @apply fill-amber-900; }
-.dark .task-heatmap .color-scale-2 { @apply fill-amber-700; }
-.dark .task-heatmap .color-today { @apply stroke-amber-400; }
+.task-heatmap .react-calendar-heatmap {
+  width: 100%;
+  display: block;
+}
+.task-heatmap .react-calendar-heatmap text {
+  @apply fill-gray-600;
+}
+.task-heatmap .color-empty {
+  @apply fill-gray-200;
+}
+.task-heatmap .color-scale-1 {
+  @apply fill-amber-100;
+}
+.task-heatmap .color-scale-2 {
+  @apply fill-amber-300;
+}
+.task-heatmap .color-scale-3 {
+  @apply fill-amber-500;
+}
+.task-heatmap .color-today {
+  @apply stroke-amber-700;
+  stroke-width: 1;
+}
+.dark .task-heatmap .react-calendar-heatmap text {
+  @apply fill-gray-400;
+}
+.dark .task-heatmap .color-empty {
+  @apply fill-dark-100;
+}
+.dark .task-heatmap .color-scale-1 {
+  @apply fill-amber-900;
+}
+.dark .task-heatmap .color-scale-2 {
+  @apply fill-amber-700;
+}
+.dark .task-heatmap .color-today {
+  @apply stroke-amber-400;
+}
 
 /* Container query for Digimon cards */
 .card-container {

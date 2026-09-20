@@ -1413,10 +1413,10 @@ const AdminDigimonManager = () => {
                   <div className="flex justify-end">
                     <button
                       type="submit"
-                      className={`px-4 py-2 text-white rounded-lg text-sm font-medium transition-colors cursor-pointer ${
+                      className={`px-4 py-2 text-gray-950 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
                         isEditingDigimon
-                          ? 'bg-amber-600 hover:bg-amber-700'
-                          : 'bg-accent-700 dark:bg-accent-700 hover:bg-accent-800 dark:hover:bg-accent-800'
+                          ? 'bg-amber-500 hover:bg-amber-400'
+                          : 'bg-accent-600 hover:bg-accent-500 dark:bg-accent-500 dark:hover:bg-accent-400'
                       }`}
                     >
                       {isEditingDigimon ? 'Update Digimon' : 'Add Digimon'}
@@ -1443,7 +1443,7 @@ const AdminDigimonManager = () => {
                           type: 'success',
                         });
                       }}
-                      className="absolute top-4 right-8 px-3 py-1 bg-accent-700 dark:bg-accent-700 text-white rounded-lg text-sm hover:bg-accent-800 dark:hover:bg-accent-800 transition-colors cursor-pointer"
+                      className="absolute top-4 right-8 px-3 py-1 bg-accent-600 text-gray-950 dark:bg-accent-500 rounded-lg text-sm hover:bg-accent-500 dark:hover:bg-accent-400 transition-colors cursor-pointer"
                     >
                       Copy to Clipboard
                     </button>
@@ -1829,10 +1829,10 @@ const AdminDigimonManager = () => {
                   <div className="flex justify-end">
                     <button
                       type="submit"
-                      className={`px-4 py-2 text-white rounded-lg text-sm font-medium transition-colors cursor-pointer ${
+                      className={`px-4 py-2 text-gray-950 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
                         isEditingEvolution
-                          ? 'bg-amber-600 hover:bg-amber-700'
-                          : 'bg-accent-700 dark:bg-accent-700 hover:bg-accent-800 dark:hover:bg-accent-800'
+                          ? 'bg-amber-500 hover:bg-amber-400'
+                          : 'bg-accent-600 hover:bg-accent-500 dark:bg-accent-500 dark:hover:bg-accent-400'
                       }`}
                     >
                       {isEditingEvolution ? 'Update Evolution Path' : 'Add Evolution Path'}
@@ -2119,10 +2119,10 @@ const AdminDigimonManager = () => {
                   <div className="flex justify-end">
                     <button
                       type="submit"
-                      className={`px-4 py-2 text-white rounded-lg text-sm font-medium transition-colors cursor-pointer ${
+                      className={`px-4 py-2 text-gray-950 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
                         isEditingForm
-                          ? 'bg-amber-600 hover:bg-amber-700'
-                          : 'bg-accent-700 dark:bg-accent-700 hover:bg-accent-800 dark:hover:bg-accent-800'
+                          ? 'bg-amber-500 hover:bg-amber-400'
+                          : 'bg-accent-600 hover:bg-accent-500 dark:bg-accent-500 dark:hover:bg-accent-400'
                       }`}
                     >
                       {isEditingForm ? 'Update Digimon Form' : 'Add Digimon Form'}

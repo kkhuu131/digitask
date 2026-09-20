@@ -71,9 +71,7 @@ const Login = () => {
               className="h-16 w-16"
               style={{ imageRendering: 'pixelated' }}
             />
-            <span className="font-heading text-4xl font-bold text-gray-900 dark:text-white">
-              DIGITASK
-            </span>
+            <span className="brand-wordmark text-4xl">Digitask</span>
           </Link>
           <p className="text-gray-500 text-sm tracking-widest uppercase mt-1">
             Sign in to your account

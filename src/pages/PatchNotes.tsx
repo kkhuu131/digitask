@@ -31,6 +31,34 @@ const PatchNotes = () => {
               <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-xs font-medium px-2.5 py-0.5 rounded">
                 Latest
               </span>
+              <h3 className="text-lg font-medium ml-2 dark:text-gray-200">Installable Web App</h3>
+              <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">
+                September 20, 2026
+              </span>
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
+              <li>
+                Digitask can now be installed from a supported browser and launched from a phone,
+                tablet or desktop home screen without a separate app-store download.
+              </li>
+              <li>
+                Installed apps use the familiar Professor Agumon logo, enlarged with crisp pixel
+                edges and mask-safe spacing for phone and desktop icons.
+              </li>
+              <li>
+                The app shell is cached for faster repeat launches and basic offline startup. New
+                releases update automatically while the app is online.
+              </li>
+              <li>
+                Digitask branding now uses the same title-case Fredoka wordmark and brighter amber
+                color throughout navigation, account and landing pages. Light-mode primary actions
+                also use a brighter amber instead of the previous dark orange.
+              </li>
+            </ul>
+          </div>
+
+          <div className="mb-6">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium ml-2 dark:text-gray-200">
                 Digimon Evolution History
               </h3>

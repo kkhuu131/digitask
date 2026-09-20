@@ -383,7 +383,7 @@ const ProfilePage = () => {
               <button
                 onClick={() => setIsAvatarModalOpen(true)}
                 aria-label="Change avatar"
-                className="absolute bottom-0 right-0 w-11 h-11 rounded-full bg-accent-700 hover:bg-accent-800 text-white dark:bg-accent-500 dark:text-gray-950 dark:hover:bg-accent-400 flex items-center justify-center transition-colors shadow-md cursor-pointer"
+                className="absolute bottom-0 right-0 w-11 h-11 rounded-full bg-accent-600 hover:bg-accent-500 text-gray-950 dark:bg-accent-500 dark:hover:bg-accent-400 flex items-center justify-center transition-colors shadow-md cursor-pointer"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

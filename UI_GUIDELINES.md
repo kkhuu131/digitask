@@ -59,6 +59,12 @@ or labels rather than coloring whole cards. Arena scenery, sprite lighting and
 brief XP/evolution effects may use gradients because they depict the game.
 Use existing named palette tokens instead of duplicating hex colors.
 
+The Digitask wordmark always uses title case, the Fredoka heading face, bold weight,
+wide tracking and bright amber through the shared `brand-wordmark` class. Keep this
+treatment consistent in navigation, authentication, marketing and footer surfaces.
+Light-mode primary actions use `accent-600` with near-black text; dark-mode primary
+actions use `accent-500` with near-black text.
+
 On the Achievements page, show tier colors on achievement names instead of
 repeating tier badges on every card or pinned title. Keep tier names available
 to assistive technology and on hover; use a readable color in both themes.

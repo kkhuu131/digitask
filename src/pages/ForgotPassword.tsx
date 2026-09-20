@@ -20,9 +20,7 @@ const ForgotPassword = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-dark-400 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full card space-y-6">
         <div>
-          <h1 className="text-center text-3xl font-heading font-semibold text-accent-800 dark:text-accent-400">
-            Digitask
-          </h1>
+          <h1 className="brand-wordmark text-center text-3xl">Digitask</h1>
           <h2 className="mt-4 text-center ui-page-title">Reset your password</h2>
         </div>
 

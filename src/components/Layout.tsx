@@ -184,10 +184,7 @@ const Layout = ({ children }: LayoutProps) => {
                     alt="Digitask"
                     className="h-8 w-8 mr-2"
                   />
-                  <Link
-                    to="/"
-                    className="text-2xl font-bold font-heading text-accent-800 dark:text-accent-400 tracking-wide"
-                  >
+                  <Link to="/" className="brand-wordmark text-2xl">
                     Digitask
                   </Link>
                 </div>
@@ -355,10 +352,7 @@ const Layout = ({ children }: LayoutProps) => {
                 alt="Digitask"
                 className="h-8 w-8 mr-2"
               />
-              <Link
-                to="/"
-                className="text-xl font-bold font-heading text-accent-800 dark:text-accent-400 tracking-wide"
-              >
+              <Link to="/" className="brand-wordmark text-xl">
                 Digitask
               </Link>
             </div>

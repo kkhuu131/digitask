@@ -92,9 +92,7 @@ const LandingPage: React.FC = () => {
               className="h-8 w-8"
               style={{ imageRendering: 'pixelated' }}
             />
-            <span className="font-heading text-xl font-bold text-gray-900 dark:text-white">
-              Digitask
-            </span>
+            <span className="brand-wordmark text-xl">Digitask</span>
           </div>
           <div className="flex items-center gap-3">
             <ThemeToggle />
@@ -277,7 +275,7 @@ const LandingPage: React.FC = () => {
               className="h-6 w-6 opacity-60"
               style={{ imageRendering: 'pixelated' }}
             />
-            <span className="font-heading text-gray-400 dark:text-gray-500">Digitask</span>
+            <span className="brand-wordmark text-base">Digitask</span>
           </div>
           <p className="text-gray-400 dark:text-gray-600 font-body text-sm">
             Fan project — Digimon™ is owned by Bandai/Toei Animation
