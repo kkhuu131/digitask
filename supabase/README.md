@@ -108,7 +108,7 @@ The 120-second simulation limit uses the greater remaining team HP fraction; tie
 
 See the official [Edge Function authentication guide](https://supabase.com/docs/guides/functions/auth-legacy-jwt) and [runtime limits](https://supabase.com/docs/guides/functions/limits). Keep the engine bounded and benchmark it when changing simulation costs.
 
-## Push reminders (prepared, not deployed)
+## Push reminders (database, function and scheduler deployed 2026-09-20)
 
 Migration `20260921052712_add_push_notification_preferences.sql` adds private,
 owner-scoped notification preferences and browser push subscriptions. The
@@ -118,12 +118,13 @@ and an unused weekly tournament entry. Scheduled-task counts also include
 incomplete daily tasks and recurring tasks assigned to the user's current local
 day. Routine task completion notifications are removed from the client.
 
-Production delivery requires the migration, Edge Function, VAPID secrets and
-the authenticated cron request documented in `operations/scheduled-jobs.sql`.
-These are prepared locally only. Deploy and verify the database and function
-before publishing the compatible frontend. Do not install the reference cron
-SQL automatically or claim notifications are live until all runtime settings
-have been provisioned and tested.
+Migration `20260921052712`, the Edge Function, VAPID secrets and authenticated
+15-minute cron request are deployed to production. An authenticated smoke test
+completed successfully and the cron job is active. The compatible frontend must
+be built with `VITE_VAPID_PUBLIC_KEY`; because Vite embeds this at build time,
+adding or changing it requires a new frontend deployment. The SQL in
+`operations/scheduled-jobs.sql` remains an operational reference and must not be
+installed a second time.
 
 ## Task-history reconciliation (database deployed 2026-09-18)
 
