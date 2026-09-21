@@ -149,7 +149,7 @@ export default function NextPartnerReward({
             <div key={route.type}>
               <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
                 <Egg
-                  className="w-4 h-4 shrink-0 text-accent-700 dark:text-accent-400"
+                  className="w-4 h-4 shrink-0 text-accent-600 dark:text-accent-400"
                   aria-hidden="true"
                 />
                 <span className="flex-1 min-w-0">
@@ -203,7 +203,7 @@ export default function NextPartnerReward({
     <section id="partner-reward" className="card mb-6" aria-label="Next partner reward">
       <div className="flex items-start gap-3">
         <Egg
-          className="w-5 h-5 mt-0.5 shrink-0 text-accent-700 dark:text-accent-400"
+          className="w-5 h-5 mt-0.5 shrink-0 text-accent-600 dark:text-accent-400"
           aria-hidden="true"
         />
         <div className="flex-1 min-w-0">

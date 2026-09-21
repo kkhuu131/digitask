@@ -1,4 +1,4 @@
-export const CURRENT_VERSION = '2.1.1';
+export const CURRENT_VERSION = '2.3.0';
 
 export const UPDATE_CHANGES = {
   '1.0.1': [
@@ -131,5 +131,11 @@ export const UPDATE_CHANGES = {
   '2.2.0': [
     'Nearly all Digimon now have animated sprites! Only Arcadiamon and Sistermon lines and NX Digimon are still static.',
     'Time Stranger Digimon may get added in the near future.',
+  ],
+  '2.3.0': [
+    'Digitask can now be installed on mobile devices, and you can find instructions under Install Digitask in the footer.',
+    'Evolution history tracking now shows the forms each Digimon has previously taken.',
+    'Achievements now show progress bars so you can see how close you are to earning them.',
+    'Weekly tournaments now have free entry with one attempt available each week.',
   ],
 };

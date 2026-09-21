@@ -548,7 +548,7 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({
                   <div className="col-start-2 sm:col-start-auto flex flex-wrap items-center justify-end gap-1">
                     {/* Phase 4.2 — XP reward badge; hidden on completed tasks */}
                     {!task.is_completed && (
-                      <span className="text-xs font-medium px-1.5 py-0.5 rounded-full flex-shrink-0 bg-accent-100 dark:bg-accent-900/40 text-accent-700 dark:text-accent-300">
+                      <span className="text-xs font-medium px-1.5 py-0.5 rounded-full flex-shrink-0 bg-accent-100 dark:bg-accent-900/40 text-accent-600 dark:text-accent-300">
                         +{getExpPoints(task)} XP
                       </span>
                     )}
@@ -556,7 +556,7 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({
                       aria-label={`Edit ${task.description}`}
                       disabled={loading || completingTasks.has(task.id)}
                       onClick={() => setShowEditModal(task.id)}
-                      className="ui-icon-button hover:text-accent-800 dark:hover:text-accent-400"
+                      className="ui-icon-button hover:text-accent-600 dark:hover:text-accent-400"
                     >
                       <svg
                         className="w-4 h-4"
@@ -835,7 +835,7 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({
                         <div className="col-start-2 sm:col-start-auto flex flex-wrap items-center justify-end gap-1">
                           {/* Phase 4.2 — XP reward badge; hidden on completed tasks */}
                           {!task.is_completed && (
-                            <span className="text-xs font-medium px-1.5 py-0.5 rounded-full flex-shrink-0 bg-accent-100 dark:bg-accent-900/40 text-accent-700 dark:text-accent-300">
+                            <span className="text-xs font-medium px-1.5 py-0.5 rounded-full flex-shrink-0 bg-accent-100 dark:bg-accent-900/40 text-accent-600 dark:text-accent-300">
                               +{getExpPoints(task)} XP
                             </span>
                           )}
@@ -843,7 +843,7 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({
                             aria-label={`Edit ${task.description}`}
                             disabled={loading || completingTasks.has(task.id)}
                             onClick={() => setShowEditModal(task.id)}
-                            className="ui-icon-button hover:text-accent-800 dark:hover:text-accent-400"
+                            className="ui-icon-button hover:text-accent-600 dark:hover:text-accent-400"
                           >
                             <svg
                               className="w-4 h-4"

@@ -296,7 +296,7 @@ const ProfilePage = () => {
         <p className="font-body text-red-500 mb-4">{error || 'Profile not found'}</p>
         <Link
           to="/"
-          className="font-body text-accent-800 dark:text-accent-400 hover:underline transition-colors"
+          className="font-body text-accent-600 dark:text-accent-400 hover:underline transition-colors"
         >
           Return to Dashboard
         </Link>
@@ -313,7 +313,7 @@ const ProfilePage = () => {
     {
       label: 'Victories',
       value: profileData.battles_won,
-      color: 'text-accent-800 dark:text-accent-400',
+      color: 'text-accent-600 dark:text-accent-400',
       bg: 'bg-accent-50 dark:bg-accent-900/20 border-accent-200 dark:border-accent-800/40',
     },
     {
@@ -325,7 +325,7 @@ const ProfilePage = () => {
     {
       label: 'Streak',
       value: `${profileData.current_streak}d`,
-      color: 'text-accent-800 dark:text-accent-400',
+      color: 'text-accent-600 dark:text-accent-400',
       bg: 'bg-amber-400/10 border-amber-400/20',
     },
     {

@@ -50,9 +50,17 @@ const PatchNotes = () => {
                 releases update automatically while the app is online.
               </li>
               <li>
+                A new Install Digitask guide in the account menu and footer provides separate iOS
+                and Android home-screen instructions, a supported-browser install button and an
+                installed-app status message. The landing page also highlights mobile installation
+                with quick instructions for both platforms.
+              </li>
+              <li>
                 Digitask branding now uses the same title-case Fredoka wordmark and brighter amber
                 color throughout navigation, account and landing pages. Light-mode primary actions
-                also use a brighter amber instead of the previous dark orange.
+                and amber text also use a brighter shade instead of the previous dark orange. The
+                landing page now follows the device color preference automatically without a
+                separate theme switch.
               </li>
               <li>
                 Arena hits use a lighter effects path on phones and touch devices to keep combat

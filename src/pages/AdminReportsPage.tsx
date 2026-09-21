@@ -26,7 +26,7 @@ const FILTER_TABS: { key: FilterType; label: string; active: string; inactive: s
     key: 'pending',
     label: 'Pending',
     active:
-      'bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-700',
+      'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-300 border-amber-300 dark:border-amber-700',
     inactive: '',
   },
   {
@@ -258,7 +258,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 const STATUS_BADGE: Record<string, string> = {
-  pending: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300',
+  pending: 'bg-amber-100 text-amber-600 dark:bg-amber-900/40 dark:text-amber-300',
   resolved: 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300',
   rejected: 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300',
 };

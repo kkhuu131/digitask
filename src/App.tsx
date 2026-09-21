@@ -36,6 +36,7 @@ const Battle = React.lazy(() => import('./pages/Battle'));
 const Settings = React.lazy(() => import('./pages/Settings'));
 const Tutorial = React.lazy(() => import('./pages/Tutorial'));
 const PatchNotes = React.lazy(() => import('./pages/PatchNotes'));
+const InstallDigitask = React.lazy(() => import('./pages/InstallDigitask'));
 const ProfilePage = React.lazy(() => import('./pages/ProfilePage'));
 const UserSearchPage = React.lazy(() => import('./pages/UserSearchPage'));
 const LeaderboardPage = React.lazy(() => import('./pages/LeaderboardPage'));
@@ -602,6 +603,17 @@ function App() {
                   <ProtectedRoute>
                     <Layout>
                       <PatchNotes />
+                    </Layout>
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/install"
+                element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <InstallDigitask />
                     </Layout>
                   </ProtectedRoute>
                 }

@@ -386,7 +386,7 @@ const Tournament: React.FC = () => {
               <h3 className="font-bold text-indigo-800 dark:text-accent-300 text-lg mb-1">
                 Tournament Open!
               </h3>
-              <p className="text-sm text-accent-800 dark:text-accent-400 mb-4">
+              <p className="text-sm text-accent-600 dark:text-accent-400 mb-4">
                 Entry is free: no task requirement and no battle tickets needed. Pick your team and
                 battle through 3 rounds. You get one attempt each week; a loss ends your run.
               </p>

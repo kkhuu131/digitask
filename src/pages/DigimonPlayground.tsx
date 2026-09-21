@@ -42,7 +42,7 @@ const FarmCardControl = ({
       title={label}
       className="ui-card-action group mt-1 disabled:cursor-wait"
     >
-      <span className="flex h-8 w-full items-center justify-center gap-1 rounded-lg bg-gray-100 text-xs font-medium text-gray-700 transition-colors group-hover:bg-accent-100 group-hover:text-accent-800 group-disabled:opacity-60 dark:bg-dark-100 dark:text-gray-300 dark:group-hover:bg-accent-900/30 dark:group-hover:text-accent-300">
+      <span className="flex h-8 w-full items-center justify-center gap-1 rounded-lg bg-gray-100 text-xs font-medium text-gray-700 transition-colors group-hover:bg-accent-100 group-hover:text-accent-600 group-disabled:opacity-60 dark:bg-dark-100 dark:text-gray-300 dark:group-hover:bg-accent-900/30 dark:group-hover:text-accent-300">
         {busy ? (
           <LoadingSpinner />
         ) : (

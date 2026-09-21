@@ -175,7 +175,7 @@ const Onboarding: React.FC = () => {
             <li
               key={label}
               aria-current={stepNumber === index + 1 ? 'step' : undefined}
-              className={`rounded-lg p-3 text-sm ${stepNumber === index + 1 ? 'bg-accent-50 text-accent-800 dark:bg-accent-900/20 dark:text-accent-300' : 'bg-gray-100 text-gray-600 dark:bg-dark-200 dark:text-gray-400'}`}
+              className={`rounded-lg p-3 text-sm ${stepNumber === index + 1 ? 'bg-accent-50 text-accent-600 dark:bg-accent-900/20 dark:text-accent-300' : 'bg-gray-100 text-gray-600 dark:bg-dark-200 dark:text-gray-400'}`}
             >
               <span className="block font-semibold">{index + 1}</span>
               {label}

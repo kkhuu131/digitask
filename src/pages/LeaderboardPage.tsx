@@ -10,9 +10,9 @@ import { fetchAllRows } from '../utils/fetchAllRows';
 import { getDigidexPercentage } from '../utils/digidexProgress';
 
 const rankColors = [
-  'text-accent-800 dark:text-accent-400',
+  'text-accent-600 dark:text-accent-400',
   'text-gray-600 dark:text-gray-300',
-  'text-accent-800 dark:text-accent-400',
+  'text-accent-600 dark:text-accent-400',
 ];
 const rankBg = [
   'bg-amber-400/10 border-amber-400/30',
@@ -214,7 +214,7 @@ const LeaderboardPage = () => {
                 <div className="flex-1 min-w-0 flex items-center gap-2">
                   <Link
                     to={`/profile/name/${user.username}`}
-                    className="font-body font-semibold text-gray-900 dark:text-gray-100 hover:text-accent-800 dark:hover:text-accent-400 transition-colors truncate text-sm"
+                    className="font-body font-semibold text-gray-900 dark:text-gray-100 hover:text-accent-600 dark:hover:text-accent-400 transition-colors truncate text-sm"
                   >
                     {user.username}
                   </Link>

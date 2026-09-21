@@ -203,7 +203,7 @@ const TaskHeatmap: React.FC = () => {
               {value}
             </p>
             {label === 'Current streak' && (dailyQuota?.current_streak ?? 0) > 1 && (
-              <p className="mt-1 text-xs text-accent-800 dark:text-accent-400">
+              <p className="mt-1 text-xs text-accent-600 dark:text-accent-400">
                 {getExpMultiplier().toFixed(1)}x EXP bonus
               </p>
             )}

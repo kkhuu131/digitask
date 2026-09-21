@@ -191,7 +191,7 @@ const AvatarSelectionModal = ({ isOpen, onClose, onSelect }: AvatarSelectionModa
                         }
                       }}
                     />
-                    <div className="text-xs text-center mt-1 text-amber-800 dark:text-amber-300 font-medium truncate w-full">
+                    <div className="text-xs text-center mt-1 text-amber-600 dark:text-amber-300 font-medium truncate w-full">
                       {sprite.item_id ? sprite.item_id.split('_')[2] : sprite.name}
                     </div>
                   </button>

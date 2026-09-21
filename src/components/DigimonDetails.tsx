@@ -35,7 +35,7 @@ const TYPE_COLORS: Record<string, string> = {
   Vaccine: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300',
   Virus: 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300',
   Data: 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300',
-  Free: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
+  Free: 'bg-amber-100 text-amber-600 dark:bg-amber-900/40 dark:text-amber-300',
 };
 
 const STAGE_COLORS: Record<string, string> = {

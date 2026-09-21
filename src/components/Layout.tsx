@@ -23,6 +23,7 @@ import {
   ChevronDown,
   Heart,
   ShoppingBag,
+  Download,
 } from 'lucide-react';
 
 interface LayoutProps {
@@ -319,7 +320,7 @@ const Layout = ({ children }: LayoutProps) => {
                   title="Settings"
                   className={`p-1.5 rounded-full transition-colors ${
                     isActive('/settings')
-                      ? 'text-accent-800 dark:text-accent-400 bg-gray-100 dark:bg-dark-200'
+                      ? 'text-accent-600 dark:text-accent-400 bg-gray-100 dark:bg-dark-200'
                       : 'text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-dark-200'
                   }`}
                 >
@@ -419,7 +420,7 @@ const Layout = ({ children }: LayoutProps) => {
                 to="/"
                 className={`flex flex-col items-center justify-center py-2 gap-0.5 transition-colors ${
                   isActive('/')
-                    ? 'text-accent-800 dark:text-accent-400'
+                    ? 'text-accent-600 dark:text-accent-400'
                     : 'text-gray-500 dark:text-gray-400'
                 }`}
               >
@@ -438,7 +439,7 @@ const Layout = ({ children }: LayoutProps) => {
                 onClick={() => handleMenuClick('digimon')}
                 className={`w-full flex flex-col items-center justify-center py-2 gap-0.5 transition-colors ${
                   activeMenu === 'digimon' || isAnyActive(['/digifarm', '/digimon-dex'])
-                    ? 'text-accent-800 dark:text-accent-400'
+                    ? 'text-accent-600 dark:text-accent-400'
                     : 'text-gray-500 dark:text-gray-400'
                 }`}
               >
@@ -487,7 +488,7 @@ const Layout = ({ children }: LayoutProps) => {
                 onClick={() => handleMenuClick('battle')}
                 className={`w-full flex flex-col items-center justify-center py-2 gap-0.5 transition-colors ${
                   activeMenu === 'battle' || isAnyActive(['/battle', '/store'])
-                    ? 'text-accent-800 dark:text-accent-400'
+                    ? 'text-accent-600 dark:text-accent-400'
                     : 'text-gray-500 dark:text-gray-400'
                 }`}
               >
@@ -536,7 +537,7 @@ const Layout = ({ children }: LayoutProps) => {
                 onClick={() => handleMenuClick('more')}
                 className={`w-full flex flex-col items-center justify-center py-2 gap-0.5 transition-colors ${
                   activeMenu === 'more' || isProfileActive
-                    ? 'text-accent-800 dark:text-accent-400'
+                    ? 'text-accent-600 dark:text-accent-400'
                     : 'text-gray-500 dark:text-gray-400'
                 }`}
               >
@@ -623,6 +624,14 @@ const Layout = ({ children }: LayoutProps) => {
                         Tutorial
                       </Link>
                       <Link
+                        to="/install"
+                        className={`flex items-center gap-2 px-4 py-2 text-sm font-body ${isActive('/install') ? 'bg-primary-50 text-primary-700 dark:bg-dark-200 dark:text-accent-400' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-200'}`}
+                        onClick={() => setActiveMenu(null)}
+                      >
+                        <Download className="h-4 w-4" />
+                        Install Digitask
+                      </Link>
+                      <Link
                         to="/settings"
                         className={`flex items-center gap-2 px-4 py-2 text-sm font-body ${isActive('/settings') ? 'bg-primary-50 text-primary-700 dark:bg-dark-200 dark:text-accent-400' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-200'}`}
                         onClick={() => setActiveMenu(null)}
@@ -660,6 +669,12 @@ const Layout = ({ children }: LayoutProps) => {
                 className="text-xs font-body text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
               >
                 Patch Notes
+              </Link>
+              <Link
+                to="/install"
+                className="text-xs font-body text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              >
+                Install Digitask
               </Link>
               <a
                 href="https://forms.gle/4geGdXkywwAQcZDt6"

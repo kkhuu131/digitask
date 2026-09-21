@@ -33,7 +33,7 @@ const STAGE_COLORS: Record<string, string> = {
   Champion: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300',
   Ultimate: 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300',
   Mega: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300',
-  Ultra: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
+  Ultra: 'bg-amber-100 text-amber-600 dark:bg-amber-900/40 dark:text-amber-300',
 };
 
 const inputCls = 'input';
@@ -295,7 +295,7 @@ const AdminTournamentTeamsPage = () => {
                   onClick={() => setShowUnusedOnly((v) => !v)}
                   className={`text-xs px-2.5 py-1 rounded-full border font-medium transition-colors cursor-pointer ${
                     showUnusedOnly
-                      ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-700'
+                      ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-300 border-amber-300 dark:border-amber-700'
                       : 'bg-white dark:bg-dark-400 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-dark-100 hover:border-amber-300 dark:hover:border-amber-700'
                   }`}
                 >
@@ -321,7 +321,7 @@ const AdminTournamentTeamsPage = () => {
                         }`}
                     >
                       {useCount > 0 && (
-                        <span className="absolute top-1 right-1 text-[8px] font-bold px-1 py-0.5 rounded bg-indigo-100 dark:bg-accent-900/40 text-accent-800 dark:text-accent-400 leading-none">
+                        <span className="absolute top-1 right-1 text-[8px] font-bold px-1 py-0.5 rounded bg-indigo-100 dark:bg-accent-900/40 text-accent-600 dark:text-accent-400 leading-none">
                           ×{useCount}
                         </span>
                       )}
@@ -586,11 +586,11 @@ const AdminTournamentTeamsPage = () => {
             <div className="p-5">
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
                 Copy this and paste it into{' '}
-                <code className="bg-gray-100 dark:bg-dark-400 px-1.5 py-0.5 rounded text-xs font-mono text-accent-800 dark:text-accent-400">
+                <code className="bg-gray-100 dark:bg-dark-400 px-1.5 py-0.5 rounded text-xs font-mono text-accent-600 dark:text-accent-400">
                   src/constants/tournamentBossTeams.ts
                 </code>{' '}
                 to replace the current{' '}
-                <code className="bg-gray-100 dark:bg-dark-400 px-1.5 py-0.5 rounded text-xs font-mono text-accent-800 dark:text-accent-400">
+                <code className="bg-gray-100 dark:bg-dark-400 px-1.5 py-0.5 rounded text-xs font-mono text-accent-600 dark:text-accent-400">
                   TOURNAMENT_TEAM_POOL
                 </code>{' '}
                 export.

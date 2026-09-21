@@ -358,7 +358,7 @@ const BattleTeamSelector: React.FC<BattleTeamSelectorProps> = ({
               Free
             </span>
           ) : costLabel ? (
-            <span className="inline-flex items-center gap-1.5 text-sm px-2.5 py-1 bg-amber-100 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 rounded-full font-semibold">
+            <span className="inline-flex items-center gap-1.5 text-sm px-2.5 py-1 bg-amber-100 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 rounded-full font-semibold">
               <Ticket className="h-4 w-4" aria-hidden="true" />
               {costLabel}
             </span>

@@ -28,14 +28,15 @@ const UpdateNotification = () => {
           onClick={handleClose}
         >
           <motion.div
-            className="bg-white dark:bg-dark-300 rounded-lg shadow-xl max-w-md w-full p-6"
+            className="max-h-[85dvh] w-full max-w-md overflow-y-auto rounded-lg bg-white p-6 shadow-xl dark:bg-dark-300"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-start mb-4">
               <h2 className="text-xl font-bold dark:text-gray-100">🎉 Update {CURRENT_VERSION}</h2>
               <button
                 onClick={handleClose}
-                className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+                aria-label="Close update summary"
+                className="ui-icon-button -mr-2 -mt-2"
               >
                 ×
               </button>

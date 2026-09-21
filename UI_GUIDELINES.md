@@ -64,6 +64,11 @@ wide tracking and bright amber through the shared `brand-wordmark` class. Keep t
 treatment consistent in navigation, authentication, marketing and footer surfaces.
 Light-mode primary actions use `accent-600` with near-black text; dark-mode primary
 actions use `accent-500` with near-black text.
+Amber text uses `accent-600` or `amber-600` in light mode and the existing
+300â€“400 shades in dark mode. Reserve the darker 700â€“900 amber shades for borders
+and backgrounds rather than text. The public landing page follows the operating
+system color preference and does not expose a separate theme control; authenticated
+screens retain the user's saved app preference.
 
 On the Achievements page, show tier colors on achievement names instead of
 repeating tier badges on every card or pinned title. Keep tier names available

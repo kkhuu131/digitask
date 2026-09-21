@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import DigimonShowcase from '../components/DigimonShowcase';
-import ThemeToggle from '../components/ThemeToggle';
+import { useThemeStore } from '../store/themeStore';
 
 const features = [
   {
@@ -80,6 +80,25 @@ const steps = [
 ];
 
 const LandingPage: React.FC = () => {
+  const appIsDarkMode = useThemeStore((state) => state.isDarkMode);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
+    const applySystemTheme = (isDark: boolean) => root.classList.toggle('dark', isDark);
+    const handleSystemThemeChange = (event: MediaQueryListEvent) => applySystemTheme(event.matches);
+
+    applySystemTheme(systemTheme.matches);
+    const initialThemeTimer = window.setTimeout(() => applySystemTheme(systemTheme.matches), 0);
+    systemTheme.addEventListener('change', handleSystemThemeChange);
+
+    return () => {
+      window.clearTimeout(initialThemeTimer);
+      systemTheme.removeEventListener('change', handleSystemThemeChange);
+      root.classList.toggle('dark', appIsDarkMode);
+    };
+  }, [appIsDarkMode]);
+
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 dark:bg-dark-400 dark:text-white transition-colors duration-200">
       {/* Nav */}
@@ -95,7 +114,6 @@ const LandingPage: React.FC = () => {
             <span className="brand-wordmark text-xl">Digitask</span>
           </div>
           <div className="flex items-center gap-3">
-            <ThemeToggle />
             <Link
               to="/login"
               className="px-4 py-1.5 rounded-lg border border-gray-200 text-gray-600 hover:text-gray-900 hover:border-amber-500 dark:border-dark-100 dark:text-gray-400 dark:hover:text-white dark:hover:border-amber-500 text-sm font-body transition-all duration-150 cursor-pointer"
@@ -115,7 +133,7 @@ const LandingPage: React.FC = () => {
       <main>
         {/* Hero */}
         <section className="container mx-auto px-4 py-24 text-center">
-          <div className="inline-block mb-4 px-3 py-1 rounded-full border border-amber-400/60 bg-amber-50 text-amber-700 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-300 text-xs font-body tracking-widest uppercase">
+          <div className="inline-block mb-4 px-3 py-1 rounded-full border border-amber-400/60 bg-amber-50 text-amber-600 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-300 text-xs font-body tracking-widest uppercase">
             Fan Project — Digimon™ owned by Bandai/Toei Animation
           </div>
           <h1
@@ -124,7 +142,7 @@ const LandingPage: React.FC = () => {
           >
             Raise Digimon.
             <br />
-            <span className="text-accent-800 dark:text-accent-400">Complete Your Goals.</span>
+            <span className="text-accent-600 dark:text-accent-400">Complete Your Goals.</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-10 font-body leading-relaxed">
             Digitask turns real-life productivity into a Digimon adventure. Complete tasks to train,
@@ -231,6 +249,46 @@ const LandingPage: React.FC = () => {
                 alt="Digitask Dashboard Preview"
                 className="w-full h-auto"
               />
+            </div>
+          </div>
+        </section>
+
+        {/* Mobile installation */}
+        <section className="border-t border-gray-200 py-20 dark:border-dark-100">
+          <div className="container mx-auto px-4">
+            <div className="mx-auto max-w-3xl text-center">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-accent-600 dark:text-accent-400">
+                No app store required
+              </p>
+              <h2 className="mb-4 font-heading text-3xl font-bold text-gray-900 dark:text-white">
+                Install Digitask on Your Phone
+              </h2>
+              <p className="mx-auto mb-8 max-w-2xl font-body leading-relaxed text-gray-600 dark:text-gray-400">
+                Add Digitask to your home screen and launch it like a mobile app while keeping the
+                same account and progress.
+              </p>
+              <div className="grid gap-4 text-left sm:grid-cols-2">
+                <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-dark-100 dark:bg-dark-300">
+                  <h3 className="font-heading text-lg font-bold text-gray-900 dark:text-gray-100">
+                    iPhone &amp; iPad
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-400">
+                    Open Digitask in Safari, tap Share, then choose Add to Home Screen.
+                  </p>
+                </div>
+                <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-dark-100 dark:bg-dark-300">
+                  <h3 className="font-heading text-lg font-bold text-gray-900 dark:text-gray-100">
+                    Android
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-400">
+                    Open Digitask in Chrome, open the browser menu, then choose Install app.
+                  </p>
+                </div>
+              </div>
+              <p className="mt-5 text-sm text-gray-500 dark:text-gray-400">
+                After signing in, open <span className="font-semibold">Install Digitask</span> from
+                the account menu or footer for the complete guide.
+              </p>
             </div>
           </div>
         </section>

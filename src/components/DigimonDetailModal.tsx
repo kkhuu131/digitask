@@ -209,7 +209,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
       >
         {belongsToCurrentUser && statValue > 0 && isUnderStatCap(localDigimon) && (
           <button
-            className="w-5 h-5 bg-amber-100 hover:bg-amber-200 dark:bg-amber-800/30 dark:hover:bg-amber-700/50 text-amber-700 dark:text-amber-300 rounded-full flex items-center justify-center relative flex-shrink-0"
+            className="w-5 h-5 bg-amber-100 hover:bg-amber-200 dark:bg-amber-800/30 dark:hover:bg-amber-700/50 text-amber-600 dark:text-amber-300 rounded-full flex items-center justify-center relative flex-shrink-0"
             onClick={() => allocateStat(lowerLabel as StatType)}
             disabled={allocating}
             title={`Allocate ${label} stat point (${statValue} available)`}
@@ -669,7 +669,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                     className={`mb-3 p-2 rounded-lg text-xs font-body ${
                       isUnderStatCap(localDigimon)
                         ? 'bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-700/50 text-purple-800 dark:text-purple-300'
-                        : 'bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 text-amber-800 dark:text-amber-300'
+                        : 'bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 text-amber-600 dark:text-amber-300'
                     }`}
                   >
                     {isUnderStatCap(localDigimon) ? (

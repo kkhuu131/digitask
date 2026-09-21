@@ -33,7 +33,7 @@ const TournamentBracket: React.FC<TournamentBracketProps> = ({
   return (
     <div>
       {finalPlacement && (
-        <div className="mb-4 flex items-center justify-center gap-2 font-bold text-accent-700 dark:text-accent-300">
+        <div className="mb-4 flex items-center justify-center gap-2 font-bold text-accent-600 dark:text-accent-300">
           <Crown className="w-5 h-5" />
           {PLACEMENTS[finalPlacement]}
         </div>
@@ -44,7 +44,7 @@ const TournamentBracket: React.FC<TournamentBracketProps> = ({
             <h3 className="ui-section-title mb-3 flex items-center gap-2">
               {['Quarterfinals', 'Semifinals', 'Grand Final'][roundIndex]}
               {tournament && !isCompleted && currentRound === roundIndex + 1 && (
-                <span className="text-xs font-body text-accent-700 dark:text-accent-300">
+                <span className="text-xs font-body text-accent-600 dark:text-accent-300">
                   Up next
                 </span>
               )}

@@ -296,7 +296,7 @@ const Battle = () => {
       label: 'Medium',
       reward: 200,
       accentBorder: 'border-l-amber-500',
-      badge: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300',
+      badge: 'bg-amber-100 text-amber-600 dark:bg-amber-900/40 dark:text-amber-300',
       rewardColor: 'text-amber-600 dark:text-amber-400',
       button: 'bg-amber-500 hover:bg-amber-400 text-white',
     },
@@ -442,7 +442,7 @@ const Battle = () => {
           <section className="card mb-6" aria-labelledby="last-battle-title">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div className="flex min-w-0 items-center gap-3">
-                <div className="rounded-xl bg-accent-50 p-3 text-accent-800 dark:bg-accent-900/20 dark:text-accent-300">
+                <div className="rounded-xl bg-accent-50 p-3 text-accent-600 dark:bg-accent-900/20 dark:text-accent-300">
                   <Swords className="h-5 w-5" aria-hidden="true" />
                 </div>
                 <div className="min-w-0">
@@ -469,7 +469,7 @@ const Battle = () => {
               </span>
             </div>
             <div className="my-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
-              <span className="inline-flex items-center gap-2 font-semibold text-accent-800 dark:text-accent-300">
+              <span className="inline-flex items-center gap-2 font-semibold text-accent-600 dark:text-accent-300">
                 <Coins className="h-4 w-4" aria-hidden="true" />+{latestBattle.bits_reward} Bits
               </span>
               <span className="inline-flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400">
@@ -766,7 +766,7 @@ const ArenaResultsScreen: React.FC<{
           </h3>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Coins className="h-4 w-4 text-amber-700 dark:text-amber-400" aria-hidden="true" />
+              <Coins className="h-4 w-4 text-amber-600 dark:text-amber-400" aria-hidden="true" />
               <span className="text-sm font-body text-gray-600 dark:text-gray-400">
                 Bits earned
               </span>

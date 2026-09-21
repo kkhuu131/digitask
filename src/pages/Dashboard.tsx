@@ -32,7 +32,7 @@ const AchievementsCallout: React.FC = () => {
           className={`p-2 rounded-lg shrink-0 ${pending > 0 ? 'bg-accent-100 dark:bg-accent-900/30' : 'bg-gray-100 dark:bg-dark-200'}`}
         >
           <Award
-            className={`w-4 h-4 ${pending > 0 ? 'text-accent-800 dark:text-accent-400' : 'text-gray-500 dark:text-gray-400'}`}
+            className={`w-4 h-4 ${pending > 0 ? 'text-accent-600 dark:text-accent-400' : 'text-gray-500 dark:text-gray-400'}`}
           />
         </div>
         <div className="flex-1 min-w-0">
@@ -271,7 +271,7 @@ const Dashboard: React.FC = () => {
                         <div
                           className={`flex h-8 w-full items-center justify-center rounded-lg border text-xs font-semibold ${
                             count > 0
-                              ? 'bg-accent-50 text-accent-800 dark:bg-accent-900/20 dark:text-accent-300'
+                              ? 'bg-accent-50 text-accent-600 dark:bg-accent-900/20 dark:text-accent-300'
                               : 'bg-gray-50 text-gray-500 dark:bg-dark-200 dark:text-gray-400'
                           } ${isToday ? 'border-accent-500' : 'border-transparent'}`}
                           title={daySummary}
@@ -281,7 +281,7 @@ const Dashboard: React.FC = () => {
                           <span aria-hidden="true">{count}</span>
                         </div>
                         <span
-                          className={`text-xs font-body ${isToday ? 'text-accent-800 dark:text-accent-300 font-semibold' : 'text-gray-600 dark:text-gray-400'}`}
+                          className={`text-xs font-body ${isToday ? 'text-accent-600 dark:text-accent-300 font-semibold' : 'text-gray-600 dark:text-gray-400'}`}
                         >
                           {dayLabel}
                         </span>
@@ -291,7 +291,7 @@ const Dashboard: React.FC = () => {
                   {streak > 0 && (
                     <div className="flex flex-col items-center gap-0.5 ml-1 pl-1.5 border-l border-gray-200 dark:border-dark-100">
                       <span className="text-sm leading-none">🔥</span>
-                      <span className="text-xs font-body font-semibold text-accent-800 dark:text-accent-300 whitespace-nowrap">
+                      <span className="text-xs font-body font-semibold text-accent-600 dark:text-accent-300 whitespace-nowrap">
                         {streak}d
                       </span>
                     </div>

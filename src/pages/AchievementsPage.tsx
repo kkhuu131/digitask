@@ -15,8 +15,8 @@ type FilterCategory = 'all' | Title['category'];
 
 const TIER_STYLES: Record<string, { badge: string; text: string }> = {
   bronze: {
-    badge: 'bg-amber-700/20 text-amber-800 dark:text-amber-400 border border-amber-600/30',
-    text: 'text-amber-800 dark:text-amber-400',
+    badge: 'bg-amber-700/20 text-amber-600 dark:text-amber-400 border border-amber-600/30',
+    text: 'text-amber-600 dark:text-amber-400',
   },
   silver: {
     badge: 'bg-slate-400/10 text-slate-500 dark:text-slate-300 border border-slate-400/30',
@@ -137,7 +137,7 @@ const AchievementCard: React.FC<AchievementCardProps> = ({
                 aria-label={`${isPinned ? 'Unpin' : 'Pin'} ${title.name}`}
                 aria-pressed={isPinned}
                 className={`ui-icon-button -my-3.5 -mr-3.5 ${
-                  isPinned ? 'text-accent-800 dark:text-accent-400' : ''
+                  isPinned ? 'text-accent-600 dark:text-accent-400' : ''
                 }`}
               >
                 <Bookmark className={`h-4 w-4 ${isPinned ? 'fill-current' : ''}`} />
@@ -296,7 +296,7 @@ const AchievementsPage: React.FC = () => {
       <div className="ui-page">
         <div className="mb-6">
           <div className="flex items-center gap-3 mb-1">
-            <Medal className="h-6 w-6 text-accent-700 dark:text-accent-400" />
+            <Medal className="h-6 w-6 text-accent-600 dark:text-accent-400" />
             <h1 className="ui-page-title">Achievements</h1>
           </div>
           <p className="ui-description">
@@ -320,10 +320,10 @@ const AchievementsPage: React.FC = () => {
       {/* Page header */}
       <div className="mb-6">
         <div className="flex flex-wrap items-center gap-3 mb-1">
-          <Medal className="h-6 w-6 text-accent-700 dark:text-accent-400" />
+          <Medal className="h-6 w-6 text-accent-600 dark:text-accent-400" />
           <h1 className="ui-page-title">Achievements</h1>
           {pending > 0 && (
-            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-accent-50 dark:bg-accent-900/20 text-accent-800 dark:text-accent-400 border border-accent-200 dark:border-accent-800/40">
+            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-accent-50 dark:bg-accent-900/20 text-accent-600 dark:text-accent-400 border border-accent-200 dark:border-accent-800/40">
               {pending} to claim
             </span>
           )}
@@ -336,7 +336,7 @@ const AchievementsPage: React.FC = () => {
       {/* Pinned to Profile */}
       <div className="mb-6 ui-panel p-4 sm:p-6">
         <div className="flex flex-wrap items-center gap-2 mb-3">
-          <Bookmark className="h-4 w-4 text-accent-700 dark:text-accent-400 fill-current" />
+          <Bookmark className="h-4 w-4 text-accent-600 dark:text-accent-400 fill-current" />
           <span className="text-sm font-heading font-semibold text-gray-900 dark:text-gray-100">
             Pinned to Profile
           </span>
@@ -392,7 +392,7 @@ const AchievementsPage: React.FC = () => {
         </div>
         <p className="text-xs font-body text-gray-500 dark:text-gray-400 mt-3">
           Click the{' '}
-          <Bookmark className="inline h-3 w-3 fill-current text-accent-700 dark:text-accent-400" />{' '}
+          <Bookmark className="inline h-3 w-3 fill-current text-accent-600 dark:text-accent-400" />{' '}
           icon on any claimed title below to pin it here.
           {pinnedTitles.length >= 3 && ' Adding a 4th will replace the oldest.'}
         </p>

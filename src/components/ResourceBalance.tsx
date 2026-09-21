@@ -66,7 +66,7 @@ export default function ResourceBalance({
         className="flex min-h-[44px] min-w-0 items-center gap-1.5 rounded-l-lg px-2 text-xs font-body text-gray-700 transition-colors hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 dark:text-gray-200 dark:hover:bg-dark-100"
       >
         <Icon
-          className="h-4 w-4 shrink-0 text-accent-700 dark:text-accent-400"
+          className="h-4 w-4 shrink-0 text-accent-600 dark:text-accent-400"
           aria-hidden="true"
         />
         <span className="truncate tabular-nums">
@@ -91,7 +91,7 @@ export default function ResourceBalance({
         aria-controls={open ? descriptionId : undefined}
         aria-describedby={open ? descriptionId : undefined}
         onClick={() => setOpen(true)}
-        className="flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-r-lg text-gray-500 transition-colors hover:bg-gray-100 hover:text-accent-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 dark:text-gray-400 dark:hover:bg-dark-100 dark:hover:text-accent-400"
+        className="flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-r-lg text-gray-500 transition-colors hover:bg-gray-100 hover:text-accent-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 dark:text-gray-400 dark:hover:bg-dark-100 dark:hover:text-accent-400"
       >
         <CircleHelp className="h-3.5 w-3.5" aria-hidden="true" />
       </button>

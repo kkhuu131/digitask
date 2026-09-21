@@ -104,7 +104,7 @@ const DigimonSelection: React.FC<DigimonSelectionProps> = ({
       <div className="min-w-0">
         <p className="text-sm text-center text-gray-600 dark:text-gray-400 mb-4">
           Select{' '}
-          <span className="font-semibold text-accent-800 dark:text-accent-400">
+          <span className="font-semibold text-accent-600 dark:text-accent-400">
             {selections.length}/3
           </span>{' '}
           Digimon to start your journey

@@ -980,7 +980,7 @@ const AdminDigimonManager = () => {
             className={({ selected }) =>
               `shrink-0 min-h-11 px-4 py-2 text-sm font-medium transition-colors cursor-pointer ${
                 selected
-                  ? 'text-accent-800 dark:text-accent-400 border-b-2 border-accent-600 dark:border-accent-500'
+                  ? 'text-accent-600 dark:text-accent-400 border-b-2 border-accent-600 dark:border-accent-500'
                   : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
               }`
             }
@@ -991,7 +991,7 @@ const AdminDigimonManager = () => {
             className={({ selected }) =>
               `shrink-0 min-h-11 px-4 py-2 text-sm font-medium transition-colors cursor-pointer ${
                 selected
-                  ? 'text-accent-800 dark:text-accent-400 border-b-2 border-accent-600 dark:border-accent-500'
+                  ? 'text-accent-600 dark:text-accent-400 border-b-2 border-accent-600 dark:border-accent-500'
                   : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
               }`
             }
@@ -1002,7 +1002,7 @@ const AdminDigimonManager = () => {
             className={({ selected }) =>
               `shrink-0 min-h-11 px-4 py-2 text-sm font-medium transition-colors cursor-pointer ${
                 selected
-                  ? 'text-accent-800 dark:text-accent-400 border-b-2 border-accent-600 dark:border-accent-500'
+                  ? 'text-accent-600 dark:text-accent-400 border-b-2 border-accent-600 dark:border-accent-500'
                   : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
               }`
             }
@@ -1953,7 +1953,7 @@ const AdminDigimonManager = () => {
                             <div className="flex space-x-2">
                               <button
                                 onClick={() => handleEditEvolution(path.id)}
-                                className="text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 font-medium text-xs cursor-pointer"
+                                className="text-amber-600 dark:text-amber-400 hover:text-amber-500 dark:hover:text-amber-300 font-medium text-xs cursor-pointer"
                               >
                                 Edit
                               </button>
@@ -2229,7 +2229,7 @@ const AdminDigimonManager = () => {
                             <div className="flex space-x-2">
                               <button
                                 onClick={() => handleEditForm(form.id || 0)}
-                                className="text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 font-medium text-xs cursor-pointer"
+                                className="text-amber-600 dark:text-amber-400 hover:text-amber-500 dark:hover:text-amber-300 font-medium text-xs cursor-pointer"
                               >
                                 Edit
                               </button>
