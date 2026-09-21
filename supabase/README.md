@@ -108,6 +108,23 @@ The 120-second simulation limit uses the greater remaining team HP fraction; tie
 
 See the official [Edge Function authentication guide](https://supabase.com/docs/guides/functions/auth-legacy-jwt) and [runtime limits](https://supabase.com/docs/guides/functions/limits). Keep the engine bounded and benchmark it when changing simulation costs.
 
+## Push reminders (prepared, not deployed)
+
+Migration `20260921052712_add_push_notification_preferences.sql` adds private,
+owner-scoped notification preferences and browser push subscriptions. The
+`send-push-reminders` Edge Function builds at most one local-time summary per
+user each day for incomplete quota tasks, scheduled tasks due within 24 hours
+and an unused weekly tournament entry. Scheduled-task counts also include
+incomplete daily tasks and recurring tasks assigned to the user's current local
+day. Routine task completion notifications are removed from the client.
+
+Production delivery requires the migration, Edge Function, VAPID secrets and
+the authenticated cron request documented in `operations/scheduled-jobs.sql`.
+These are prepared locally only. Deploy and verify the database and function
+before publishing the compatible frontend. Do not install the reference cron
+SQL automatically or claim notifications are live until all runtime settings
+have been provisioned and tested.
+
 ## Task-history reconciliation (database deployed 2026-09-18)
 
 Data-only migration `20260918204618_reconcile_task_history_progress.sql` reconciles

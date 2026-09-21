@@ -12,11 +12,13 @@ const installSteps = {
     'Open Digitask in Safari on your iPhone or iPad.',
     'Tap the Share button in the Safari toolbar.',
     'Scroll down, choose Add to Home Screen, then tap Add.',
+    'Open the installed app, go to Settings, and enable Push Reminders.',
   ],
   android: [
     'Open Digitask in Chrome on your Android phone or tablet.',
     'Tap the three-dot browser menu.',
     'Choose Install app or Add to Home screen, then confirm.',
+    'Open the installed app, go to Settings, and enable Push Reminders.',
   ],
 };
 
@@ -149,7 +151,8 @@ const InstallDigitask = () => {
           />
           <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-400">
             For the smoothest setup, sign in before installing. Digitask will remember your session
-            and open in its own app window from your home screen.
+            and open in its own app window from your home screen. Notifications are optional and
+            must be enabled from Digitask Settings after installation.
           </p>
         </div>
       </div>

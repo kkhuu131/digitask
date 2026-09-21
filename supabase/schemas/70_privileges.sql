@@ -385,6 +385,10 @@ GRANT ALL ON TABLE "public"."user_tournaments" TO "authenticated";
 
 GRANT ALL ON TABLE "public"."user_tournaments" TO "service_role";
 
+REVOKE ALL ON TABLE public.notification_preferences, public.push_subscriptions FROM PUBLIC, anon;
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.notification_preferences, public.push_subscriptions TO authenticated;
+GRANT ALL ON TABLE public.notification_preferences, public.push_subscriptions TO service_role;
+
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "postgres";
 
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "anon";

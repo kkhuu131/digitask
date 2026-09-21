@@ -194,6 +194,33 @@ CREATE TABLE IF NOT EXISTS "public"."tasks" (
 
 ALTER TABLE "public"."tasks" OWNER TO "postgres";
 
+CREATE TABLE IF NOT EXISTS "public"."notification_preferences" (
+    "user_id" "uuid" NOT NULL,
+    "enabled" boolean DEFAULT false NOT NULL,
+    "daily_quota" boolean DEFAULT true NOT NULL,
+    "scheduled_tasks" boolean DEFAULT true NOT NULL,
+    "tournaments" boolean DEFAULT true NOT NULL,
+    "reminder_time" time without time zone DEFAULT '18:00:00'::time NOT NULL,
+    "timezone" "text" DEFAULT 'UTC'::"text" NOT NULL,
+    "last_sent_local_date" "date",
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+ALTER TABLE "public"."notification_preferences" OWNER TO "postgres";
+
+CREATE TABLE IF NOT EXISTS "public"."push_subscriptions" (
+    "id" "uuid" DEFAULT "extensions"."uuid_generate_v4"() NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "endpoint" "text" NOT NULL,
+    "p256dh" "text" NOT NULL,
+    "auth" "text" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+ALTER TABLE "public"."push_subscriptions" OWNER TO "postgres";
+
 CREATE TABLE IF NOT EXISTS "public"."team_battles" (
     "id" "uuid" DEFAULT "extensions"."uuid_generate_v4"() NOT NULL,
     "user_id" "uuid" NOT NULL,

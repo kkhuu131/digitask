@@ -328,6 +328,7 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
 
   // HP bar fill DOM elements in the status panel — mutated on damage events.
   const hpBarFillRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+  const hpTextRefs = useRef<Map<string, HTMLSpanElement>>(new Map());
 
   // Last-pushed sprite states — only call setSpriteStates when something changes.
   const lastSpriteStatesRef = useRef<Record<string, SpriteState>>(
@@ -339,9 +340,6 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
 
   // ── React state (updated only on discrete events) ───────────────────────────
 
-  const [hpSnapshot, setHpSnapshot] = useState<Record<string, { hp: number; maxHp: number }>>(() =>
-    Object.fromEntries(digimonRef.current.map((d) => [d.id, { hp: d.hp, maxHp: d.maxHp }]))
-  );
   const [deadIds, setDeadIds] = useState<Set<string>>(new Set());
   const [spriteStates, setSpriteStates] = useState<Record<string, SpriteState>>(() =>
     Object.fromEntries(digimonRef.current.map((d) => [d.id, 'idle' as SpriteState]))
@@ -504,7 +502,12 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
     timeScale: number,
     zoomScale: number
   ) => {
-    if (reducedMotionRef.current || cinematicRef.current || cinematicCooldownRef.current > 0)
+    if (
+      reducedMotionRef.current ||
+      simplifiedEffectsRef.current ||
+      cinematicRef.current ||
+      cinematicCooldownRef.current > 0
+    )
       return;
     cinematicCooldownRef.current = durationMs + 2200;
     cinematicRef.current = { realRemainingMs: durationMs, timeScale, focusX, focusY };
@@ -548,6 +551,8 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
         const trail = hpTrailRefs.current.get(id);
         if (trail) trail.style.width = `${pct * 100}%`;
       }
+      const hpText = hpTextRefs.current.get(id);
+      if (hpText) hpText.textContent = hp <= 0 ? 'Fainted' : `${Math.max(0, hp)} / ${maxHp}`;
     }
   };
 
@@ -569,27 +574,29 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
             : ev.isCritical
               ? '#fbbf24'
               : '#fff';
-          const cue: AttackEffect = {
-            id: `attack-${++effectSequenceRef.current}`,
-            sourceX: atk.x,
-            sourceY: atk.y,
-            targetX: ev.targetX,
-            targetY: ev.targetY,
-            color,
-            damage: ev.damage,
-            critical: ev.isCritical,
-            miss: ev.isMiss,
-            skill: ev.isSkill,
-            lane: cues.filter((c) => c.targetX === ev.targetX && c.targetY === ev.targetY).length,
-          };
-          cues.push(cue);
+          if (!simplifiedEffectsRef.current) {
+            const cue: AttackEffect = {
+              id: `attack-${++effectSequenceRef.current}`,
+              sourceX: atk.x,
+              sourceY: atk.y,
+              targetX: ev.targetX,
+              targetY: ev.targetY,
+              color,
+              damage: ev.damage,
+              critical: ev.isCritical,
+              miss: ev.isMiss,
+              skill: ev.isSkill,
+              lane: cues.filter((c) => c.targetX === ev.targetX && c.targetY === ev.targetY).length,
+            };
+            cues.push(cue);
+          }
           const facing = facingRefs.current.get(atk.id);
           if (facing) {
             const right = ev.targetX > atk.x;
             lastFacingRef.current.set(atk.id, right);
             facing.style.transform = right ? 'scaleX(-1)' : '';
           }
-          if (!reducedMotionRef.current) {
+          if (!reducedMotionRef.current && !simplifiedEffectsRef.current) {
             const angle = Math.atan2(ev.targetY - atk.y, ev.targetX - atk.x);
             const react = (id: string, distance: number) => {
               const element = reactionRefs.current.get(id);
@@ -661,7 +668,6 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
 
     if (Object.keys(hpUpdates).length > 0) {
       syncHpBarFills(hpUpdates);
-      setHpSnapshot((prev) => ({ ...prev, ...hpUpdates }));
     }
     if (newDeadIds.length > 0) setDeadIds((prev) => new Set([...prev, ...newDeadIds]));
     if (endWinner) {
@@ -871,9 +877,9 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
       <StatusPanel
         userTeam={userTeamList}
         opponentTeam={opponentTeamList}
-        hpSnapshot={hpSnapshot}
         deadIds={deadIds}
         hpBarFillRefs={hpBarFillRefs}
+        hpTextRefs={hpTextRefs}
         skillBarFillRefs={skillBarFillRefs}
         hpTrailRefs={hpTrailRefs}
       />
@@ -1275,16 +1281,15 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
 
 // ─── StatusPanel ──────────────────────────────────────────────────────────────
 // Renders HP and skill bars for both teams above the arena.
-// HP bar fills are driven by React state (hpSnapshot) but also have refs for
-// direct DOM sync on damage events. Skill bar fills are updated via direct DOM
-// from the RAF loop — no React re-renders needed.
+// HP values and bar fills are updated directly on damage events.
+// Skill bar fills are updated directly from the animation loop.
 
 interface StatusPanelProps {
   userTeam: ArenaDigimon[];
   opponentTeam: ArenaDigimon[];
-  hpSnapshot: Record<string, { hp: number; maxHp: number }>;
   deadIds: Set<string>;
   hpBarFillRefs: React.MutableRefObject<Map<string, HTMLDivElement>>;
+  hpTextRefs: React.MutableRefObject<Map<string, HTMLSpanElement>>;
   skillBarFillRefs: React.MutableRefObject<Map<string, HTMLDivElement>>;
   hpTrailRefs: React.MutableRefObject<Map<string, HTMLDivElement>>;
 }
@@ -1292,16 +1297,15 @@ interface StatusPanelProps {
 const StatusPanel: React.FC<StatusPanelProps> = ({
   userTeam,
   opponentTeam,
-  hpSnapshot,
   deadIds,
   hpBarFillRefs,
+  hpTextRefs,
   skillBarFillRefs,
   hpTrailRefs,
 }) => {
   const renderBar = (d: ArenaDigimon, isUser: boolean) => {
-    const snap = hpSnapshot[d.id];
-    const hp = snap?.hp ?? d.hp;
-    const maxHp = snap?.maxHp ?? d.maxHp;
+    const hp = d.hp;
+    const maxHp = d.maxHp;
     const pct = maxHp > 0 ? Math.max(0, Math.min(1, hp / maxHp)) : 0;
     const isDead = deadIds.has(d.id);
 
@@ -1321,7 +1325,13 @@ const StatusPanel: React.FC<StatusPanelProps> = ({
             <span className="text-xs font-extrabold tracking-widest uppercase text-gray-400 dark:text-gray-500 font-heading">
               HP
             </span>
-            <span className="text-xs text-gray-400 dark:text-gray-500 tabular-nums">
+            <span
+              ref={(el) => {
+                if (el) hpTextRefs.current.set(d.id, el);
+                else hpTextRefs.current.delete(d.id);
+              }}
+              className="text-xs text-gray-400 dark:text-gray-500 tabular-nums"
+            >
               {isDead ? 'Fainted' : `${Math.max(0, hp)} / ${maxHp}`}
             </span>
           </div>

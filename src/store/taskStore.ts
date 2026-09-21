@@ -291,28 +291,12 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       useDigimonStore.getState().fetchUserDailyStatGains();
       window.dispatchEvent(new Event('task-completed'));
 
-      // Build the notification message. Three cases based on what the RPC did with stat points:
-      // 1. Task had no stat category (no stat point earned)
-      // 2. Stat was auto-allocated directly to the active Digimon
-      // 3. Stat was saved to profiles.saved_stats (auto-allocate was off, or Digimon hit its cap)
-      let notificationMessage = '';
-      const digimonName = useDigimonStore.getState().userDigimon?.name || 'Active Digimon';
-
-      if (!data.stat_category) {
-        notificationMessage = `${digimonName} gained ${data.exp_points} exp!\nReserve Digimon gained ${data.reserve_exp} exp!`;
-      } else if (data.auto_allocated) {
-        notificationMessage = `${digimonName} gained ${data.exp_points} exp and ${data.stat_points} ${data.stat_category}!\nReserve Digimon gained ${data.reserve_exp} exp!`;
-      } else if (autoAllocate) {
-        // autoAllocate was requested but the Digimon was at its ABI-based stat cap
-        notificationMessage = `Digimon has reached its stat cap, ${data.stat_points} ${data.stat_category} points were saved!\n${digimonName} gained ${data.exp_points} exp!\nReserve Digimon gained ${data.reserve_exp} exp!`;
-      } else {
-        notificationMessage = `${data.stat_points} ${data.stat_category} saved for later!\n${digimonName} gained ${data.exp_points} exp!\nReserve Digimon gained ${data.reserve_exp} exp!`;
+      if (autoAllocate && data.stat_category && !data.auto_allocated) {
+        useNotificationStore.getState().addNotification({
+          message: `Your active Digimon reached its stat cap, so ${data.stat_points} ${data.stat_category} points were saved for later.`,
+          type: 'info',
+        });
       }
-
-      useNotificationStore.getState().addNotification({
-        message: notificationMessage,
-        type: 'success',
-      });
 
       await useDigimonStore.getState().checkLevelUp();
 

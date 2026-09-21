@@ -49,6 +49,15 @@ ALTER TABLE ONLY "public"."task_history"
 ALTER TABLE ONLY "public"."tasks"
     ADD CONSTRAINT "tasks_pkey" PRIMARY KEY ("id");
 
+ALTER TABLE ONLY "public"."notification_preferences"
+    ADD CONSTRAINT "notification_preferences_pkey" PRIMARY KEY ("user_id");
+
+ALTER TABLE ONLY "public"."push_subscriptions"
+    ADD CONSTRAINT "push_subscriptions_pkey" PRIMARY KEY ("id");
+
+ALTER TABLE ONLY "public"."push_subscriptions"
+    ADD CONSTRAINT "push_subscriptions_endpoint_key" UNIQUE ("endpoint");
+
 ALTER TABLE ONLY "public"."team_battles"
     ADD CONSTRAINT "team_battles_pkey" PRIMARY KEY ("id");
 
@@ -105,6 +114,8 @@ CREATE INDEX "idx_evolution_paths_dna_requirement" ON "public"."evolution_paths"
 
 CREATE INDEX "idx_task_history_user_date" ON "public"."task_history" USING "btree" ("user_id", "date");
 
+CREATE INDEX "idx_push_subscriptions_user_id" ON "public"."push_subscriptions" USING "btree" ("user_id");
+
 CREATE INDEX "idx_user_currency_user_id" ON "public"."user_currency" USING "btree" ("user_id");
 
 CREATE INDEX "idx_user_digimon_storage" ON "public"."user_digimon" USING "btree" ("user_id", "is_in_storage");
@@ -119,6 +130,12 @@ CREATE INDEX "team_battles_user_id_idx" ON "public"."team_battles" USING "btree"
 
 ALTER TABLE ONLY "public"."admin_users"
     ADD CONSTRAINT "admin_users_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id");
+
+ALTER TABLE ONLY "public"."notification_preferences"
+    ADD CONSTRAINT "notification_preferences_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
+
+ALTER TABLE ONLY "public"."push_subscriptions"
+    ADD CONSTRAINT "push_subscriptions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
 
 ALTER TABLE ONLY "public"."battle_limits"
     ADD CONSTRAINT "battle_limits_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id");

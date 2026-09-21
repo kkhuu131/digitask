@@ -732,6 +732,8 @@ cooldown after highlights. Specials frame both participants for 900ms at normal
 speed (zoom capped at 1.12); knockouts use a 650ms, 0.7-speed highlight at 1.08 zoom.
 Reduced motion uses a fixed view of the whole world, with static targeting cues
 and damage labels but no camera highlights, sprite recoil or particle bursts.
+Phones and coarse-pointer devices also omit damage labels, attack traces, camera
+highlights, sprite recoil and particle bursts to avoid hit-time frame drops.
 Effect lifetimes and animation handles are cleaned up on unmount; simultaneous
 hit cues and particles are capped. Combat rules, engine version, replay format,
 server settlement and rewards are unchanged.

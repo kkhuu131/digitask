@@ -90,6 +90,10 @@ CREATE POLICY "Users can update their own profile" ON "public"."profiles" FOR UP
 
 CREATE POLICY "Users can update their own tasks" ON "public"."tasks" FOR UPDATE USING (("auth"."uid"() = "user_id"));
 
+CREATE POLICY "Users manage their notification preferences" ON "public"."notification_preferences" TO "authenticated" USING (("auth"."uid"() = "user_id")) WITH CHECK (("auth"."uid"() = "user_id"));
+
+CREATE POLICY "Users manage their push subscriptions" ON "public"."push_subscriptions" TO "authenticated" USING (("auth"."uid"() = "user_id")) WITH CHECK (("auth"."uid"() = "user_id"));
+
 CREATE POLICY "Users can view their own battle limits" ON "public"."battle_limits" FOR SELECT USING (("auth"."uid"() = "user_id"));
 
 CREATE POLICY "Users can view their own reports" ON "public"."reports" FOR SELECT USING (("auth"."uid"() = "reporter_id"));
@@ -135,6 +139,10 @@ CREATE POLICY "select_own_profile" ON "public"."profiles" FOR SELECT TO "authent
 ALTER TABLE "public"."task_history" ENABLE ROW LEVEL SECURITY;
 
 ALTER TABLE "public"."tasks" ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE "public"."notification_preferences" ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE "public"."push_subscriptions" ENABLE ROW LEVEL SECURITY;
 
 ALTER TABLE "public"."team_battles" ENABLE ROW LEVEL SECURITY;
 

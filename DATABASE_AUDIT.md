@@ -176,3 +176,13 @@ The local authenticated Arena HTTP integration check also passed after these
 changes, including concurrent starts, interrupted-request recovery, saved results,
 resume and role isolation. Both SQL migrations are deployed to the linked `digitask` production project.
 Frontend publication follows through the repository?s Vercel integration.
+
+## Prepared push reminders - 2026-09-20
+
+`20260921052712_add_push_notification_preferences.sql` and the
+`send-push-reminders` Edge Function are prepared locally and are not deployed.
+They add owner-scoped preferences and subscriptions for one optional daily
+summary covering quota, scheduled tasks and weekly tournament entry. Production
+also requires VAPID configuration and the authenticated scheduled request in
+`supabase/operations/scheduled-jobs.sql`. Local reset, database tests,
+authorization checks, lint, generated types and declarative consistency passed.

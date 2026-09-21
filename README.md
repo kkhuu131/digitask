@@ -22,12 +22,19 @@ Create `.env` in the project root:
 ```env
 VITE_SUPABASE_URL=https://<project-ref>.supabase.co
 VITE_SUPABASE_ANON_KEY=<your-anon-key>
+VITE_VAPID_PUBLIC_KEY=<your-public-web-push-key>
 
 # Only needed for scripts that read or update Supabase data:
 SUPABASE_SERVICE_ROLE_KEY=<your-service-role-key>
 ```
 
 The `VITE_` variables are browser configuration, validated in `src/lib/supabase.ts`. Keep the service role key in script-only configuration; do not prefix it with `VITE_` or commit credentials. `.env.test` contains dummy configuration for tests.
+
+Push reminders also require the `send-push-reminders` Edge Function. Configure its
+`VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` and `REMINDER_CRON_SECRET`
+secrets, deploy it, and provision the reviewed 15-minute job in
+`supabase/operations/scheduled-jobs.sql`. Store the matching cron secret in Supabase
+Vault. The VAPID private key and cron secret must never use a `VITE_` name or enter Git.
 
 ```bash
 npm run dev

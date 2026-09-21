@@ -1,6 +1,28 @@
 import { useThemeStore } from '../store/themeStore';
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '../store/authStore';
+import { supabase } from '../lib/supabase';
+import {
+  disablePushNotifications,
+  enablePushNotifications,
+  supportsPushNotifications,
+} from '../services/pushNotifications';
+
+interface ReminderPreferences {
+  enabled: boolean;
+  dailyQuota: boolean;
+  scheduledTasks: boolean;
+  tournaments: boolean;
+  reminderTime: string;
+}
+
+const defaultReminderPreferences: ReminderPreferences = {
+  enabled: false,
+  dailyQuota: true,
+  scheduledTasks: true,
+  tournaments: true,
+  reminderTime: '18:00',
+};
 
 const Settings = () => {
   const { isDarkMode, toggleTheme, setDarkMode } = useThemeStore();
@@ -9,6 +31,11 @@ const Settings = () => {
   const [username, setUsername] = useState(() => userProfile?.username || '');
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [profileLoading, setProfileLoading] = useState(false);
+  const [reminders, setReminders] = useState(defaultReminderPreferences);
+  const [reminderLoading, setReminderLoading] = useState(true);
+  const [reminderSaving, setReminderSaving] = useState(false);
+  const [reminderMessage, setReminderMessage] = useState('');
+  const [reminderError, setReminderError] = useState('');
 
   // Load user profile data
   useEffect(() => {
@@ -16,6 +43,68 @@ const Settings = () => {
       setUsername(userProfile.username || '');
     }
   }, [userProfile]);
+
+  useEffect(() => {
+    if (!user) return;
+    let active = true;
+    const loadPreferences = async () => {
+      const { data, error } = await supabase
+        .from('notification_preferences')
+        .select('enabled,daily_quota,scheduled_tasks,tournaments,reminder_time')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      if (!active) return;
+      if (error) setReminderError('Unable to load reminder settings.');
+      if (data) {
+        setReminders({
+          enabled: data.enabled,
+          dailyQuota: data.daily_quota,
+          scheduledTasks: data.scheduled_tasks,
+          tournaments: data.tournaments,
+          reminderTime: data.reminder_time.slice(0, 5),
+        });
+      }
+      setReminderLoading(false);
+    };
+    loadPreferences();
+    return () => {
+      active = false;
+    };
+  }, [user]);
+
+  const saveReminderPreferences = async () => {
+    if (!user) return;
+    setReminderSaving(true);
+    setReminderMessage('');
+    setReminderError('');
+    try {
+      if (reminders.enabled) await enablePushNotifications(user.id);
+      else await disablePushNotifications();
+
+      const { error } = await supabase.from('notification_preferences').upsert({
+        user_id: user.id,
+        enabled: reminders.enabled,
+        daily_quota: reminders.dailyQuota,
+        scheduled_tasks: reminders.scheduledTasks,
+        tournaments: reminders.tournaments,
+        reminder_time: `${reminders.reminderTime}:00`,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC',
+        updated_at: new Date().toISOString(),
+      });
+      if (error) throw error;
+      setReminderMessage(
+        reminders.enabled
+          ? 'Daily reminder settings saved for this device.'
+          : 'Push reminders are turned off.'
+      );
+    } catch (error) {
+      setReminderError(
+        error instanceof Error ? error.message : 'Unable to save reminder settings.'
+      );
+    } finally {
+      setReminderSaving(false);
+    }
+  };
 
   // Handle system theme preference
   const handleSystemPreference = () => {
@@ -150,6 +239,111 @@ const Settings = () => {
           <button onClick={handleSystemPreference} className="btn-outline w-full">
             Use System Preference
           </button>
+        </section>
+
+        <section className="border-t border-gray-200 pt-6 dark:border-dark-100">
+          <h3 className="text-lg font-semibold dark:text-gray-200">Push Reminders</h3>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            Receive one daily summary when enabled goals still need your attention.
+          </p>
+
+          {reminderLoading ? (
+            <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">Loading reminders...</p>
+          ) : (
+            <div className="mt-4 space-y-4">
+              {!supportsPushNotifications() && (
+                <p className="rounded-lg bg-amber-50 p-3 text-sm text-amber-600 dark:bg-amber-900/20 dark:text-amber-300">
+                  Install Digitask and open it from your home screen to enable push notifications on
+                  supported devices.
+                </p>
+              )}
+
+              <label className="flex items-center justify-between gap-4 rounded-lg bg-gray-50 p-4 dark:bg-dark-400">
+                <span>
+                  <span className="block font-medium dark:text-gray-300">Daily push reminder</span>
+                  <span className="block text-sm text-gray-500 dark:text-gray-400">
+                    Permission is requested only when you save this setting.
+                  </span>
+                </span>
+                <input
+                  type="checkbox"
+                  checked={reminders.enabled}
+                  onChange={(event) =>
+                    setReminders((current) => ({ ...current, enabled: event.target.checked }))
+                  }
+                  className="h-5 w-5 rounded border-gray-300 text-accent-600 focus:ring-accent-500"
+                />
+              </label>
+
+              <div className={!reminders.enabled ? 'pointer-events-none opacity-50' : ''}>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Reminder time
+                  <input
+                    type="time"
+                    step="900"
+                    value={reminders.reminderTime}
+                    onChange={(event) =>
+                      setReminders((current) => ({
+                        ...current,
+                        reminderTime: event.target.value,
+                      }))
+                    }
+                    className="input mt-1"
+                    disabled={!reminders.enabled}
+                  />
+                </label>
+
+                <div className="mt-4 space-y-2">
+                  {[
+                    ['dailyQuota', 'Daily quota', 'Remind me how many tasks remain for today.'],
+                    ['scheduledTasks', 'Scheduled tasks', 'Include incomplete tasks due soon.'],
+                    [
+                      'tournaments',
+                      'Weekly tournament',
+                      'Remind me when my weekly entry is unused.',
+                    ],
+                  ].map(([key, label, description]) => (
+                    <label
+                      key={key}
+                      className="flex items-center justify-between gap-4 rounded-lg border border-gray-200 p-3 dark:border-dark-100"
+                    >
+                      <span>
+                        <span className="block text-sm font-medium dark:text-gray-300">
+                          {label}
+                        </span>
+                        <span className="block text-xs text-gray-500 dark:text-gray-400">
+                          {description}
+                        </span>
+                      </span>
+                      <input
+                        type="checkbox"
+                        checked={reminders[key as keyof ReminderPreferences] as boolean}
+                        onChange={(event) =>
+                          setReminders((current) => ({
+                            ...current,
+                            [key]: event.target.checked,
+                          }))
+                        }
+                        disabled={!reminders.enabled}
+                        className="h-5 w-5 rounded border-gray-300 text-accent-600 focus:ring-accent-500"
+                      />
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                type="button"
+                className="btn-primary w-full"
+                onClick={saveReminderPreferences}
+                disabled={reminderSaving}
+              >
+                {reminderSaving ? 'Saving...' : 'Save Reminder Settings'}
+              </button>
+              {reminderMessage && <p className="text-sm text-green-600">{reminderMessage}</p>}
+              {reminderError && <p className="text-sm text-red-600">{reminderError}</p>}
+            </div>
+          )}
         </section>
 
         {/* Battle Speed Settings

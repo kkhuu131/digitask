@@ -426,3 +426,7 @@ enabled = true
 [functions.arena-battle]
 verify_jwt = true
 entrypoint = "./functions/arena-battle/index.js"
+
+[functions.send-push-reminders]
+verify_jwt = false
+entrypoint = "./functions/send-push-reminders/index.ts"

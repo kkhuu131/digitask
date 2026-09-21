@@ -64,12 +64,23 @@ const PatchNotes = () => {
               </li>
               <li>
                 Arena hits use a lighter effects path on phones and touch devices to keep combat
-                smooth while retaining damage numbers and attack cues. Evolution results now name
-                both the previous and new species in a smaller confirmation message. Evolution is
-                now a longer fullscreen event where animated partners become living digital
-                particles, reconstruct into their new form and celebrate the result. During DNA
-                Digivolution, both partners become glowing orbs that visibly merge before their
-                shared particles reconstruct the fused Digimon.
+                smooth without hit particles, damage labels, attack traces or camera effects.
+                Evolution results now name both the previous and new species in a smaller
+                confirmation message. Evolution is now a longer fullscreen event where animated
+                partners become living digital particles, reconstruct into their new form and
+                celebrate the result. During DNA Digivolution, both partners become glowing orbs
+                that visibly merge before their shared particles reconstruct the fused Digimon.
+              </li>
+              <li>
+                Routine task completions no longer create a popup for every task. Notifications are
+                reserved for useful milestones such as completing the daily quota, unlocking an
+                achievement, or reporting an error that needs attention.
+              </li>
+              <li>
+                Optional push reminders can be configured in Settings for daily quota progress,
+                scheduled tasks and unused weekly tournament entries. Enabled reminders arrive as
+                one daily summary at the selected local time. The install guide includes the
+                notification opt-in step.
               </li>
             </ul>
           </div>
