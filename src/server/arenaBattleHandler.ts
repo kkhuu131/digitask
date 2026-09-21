@@ -1,5 +1,10 @@
 import { calculateUserPowerRating, generateBattleOption } from '../engine/arenaOpponents';
-import { simulateArena, ARENA_ENGINE_VERSION } from '../engine/arenaReplay';
+import {
+  simulateArena,
+  simulateArenaV1,
+  ARENA_ENGINE_VERSION,
+  LEGACY_ARENA_ENGINE_VERSION,
+} from '../engine/arenaReplay';
 import { convertToBattleDigimon } from '../utils/convertToBattleDigimon';
 
 export interface ArenaServerDependencies {
@@ -61,9 +66,16 @@ export function createArenaBattleHandler(deps: ArenaServerDependencies) {
         p_offer_id: body.action === 'start' ? body.offerId : null,
         p_team_ids: body.action === 'start' ? body.teamIds : null,
         p_strategies: body.action === 'start' ? body.strategies : null,
+        p_engine_version:
+          body.action === 'start' && body.replayVersion === 2
+            ? ARENA_ENGINE_VERSION
+            : LEGACY_ARENA_ENGINE_VERSION,
       });
       if (prepared.status === 'settled') return respond({ battle: prepared });
-      if (prepared.engine_version !== ARENA_ENGINE_VERSION) {
+      if (
+        prepared.engine_version !== ARENA_ENGINE_VERSION &&
+        prepared.engine_version !== LEGACY_ARENA_ENGINE_VERSION
+      ) {
         return respond(
           { error: 'This pending battle needs its original engine version. No ticket was spent.' },
           409
@@ -72,12 +84,9 @@ export function createArenaBattleHandler(deps: ArenaServerDependencies) {
       const snapshot = prepared.snapshot;
       const userTeam = snapshot.user_team.map((d: any) => convertToBattleDigimon(d, true));
       const opponentTeam = snapshot.opponent_team.map((d: any) => convertToBattleDigimon(d, false));
-      const replay = simulateArena(
-        userTeam,
-        opponentTeam,
-        snapshot.strategies,
-        Number(prepared.seed)
-      );
+      const simulate =
+        prepared.engine_version === ARENA_ENGINE_VERSION ? simulateArena : simulateArenaV1;
+      const replay = simulate(userTeam, opponentTeam, snapshot.strategies, Number(prepared.seed));
       const battle = await deps.rpc('settle_arena_battle', {
         p_user_id: userId,
         p_request_id: prepared.id,

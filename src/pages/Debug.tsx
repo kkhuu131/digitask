@@ -3,6 +3,8 @@ import { supabase } from '../lib/supabase';
 import { useDigimonStore } from '../store/petStore';
 import { useTaskStore } from '../store/taskStore';
 import { useNotificationStore } from '../store/notificationStore';
+import TechniqueSpPrototype from '../components/TechniqueSpPrototype';
+import ArenaReplayFixture from '../components/ArenaReplayFixture';
 
 const Debug = () => {
   const [status, setStatus] = useState<string>('Checking connection...');
@@ -165,6 +167,14 @@ const Debug = () => {
         >
           Reset Daily Battle Limit
         </button>
+      </div>
+
+      <div className="card mt-6">
+        <TechniqueSpPrototype />
+      </div>
+
+      <div className="card mt-6">
+        <ArenaReplayFixture />
       </div>
 
       <button

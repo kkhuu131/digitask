@@ -9,12 +9,12 @@ BEGIN
   IF NOT FOUND THEN RAISE EXCEPTION 'Battle request not found' USING ERRCODE='42501'; END IF;
   IF v_request.status='settled' THEN RETURN to_jsonb(v_request); END IF;
   IF p_replay IS NULL OR p_replay->>'winner' IS NULL OR p_replay->>'winner' NOT IN ('user','opponent')
-    OR (p_replay->>'version')::integer IS DISTINCT FROM 1
+    OR (p_replay->>'version')::integer IS DISTINCT FROM v_request.engine_version
     OR (p_replay->>'engineVersion')::integer IS DISTINCT FROM v_request.engine_version
     OR (p_replay->>'seed')::bigint IS DISTINCT FROM v_request.seed
     OR (p_replay->>'durationMs')::integer IS NULL OR (p_replay->>'durationMs')::integer NOT BETWEEN 16 AND 120000
     OR jsonb_typeof(p_replay->'frames') IS DISTINCT FROM 'array'
-    OR jsonb_array_length(p_replay->'frames') NOT BETWEEN 1 AND 1875 THEN
+    OR jsonb_array_length(p_replay->'frames') NOT BETWEEN 1 AND 4000 THEN
     RAISE EXCEPTION 'Invalid server simulation result' USING ERRCODE='22023'; END IF;
   v_won := p_replay->>'winner'='user';
   v_bits := CASE WHEN v_won THEN CASE v_request.snapshot->>'difficulty'

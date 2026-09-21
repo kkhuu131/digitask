@@ -1,13 +1,15 @@
-import { initArenaDigimon, runFrame } from './arenaEngine';
+import { initArenaDigimon, runFrame, type ArenaEngineMode } from './arenaEngine';
+import { DEFAULT_BATTLE_SP_CAPACITY } from './battleSp';
 import type { ArenaDigimon, ArenaEvent, Strategy } from './arenaTypes';
 import type { BattleDigimon } from '../types/battle';
 
-export const ARENA_ENGINE_VERSION = 1;
+export const ARENA_ENGINE_VERSION = 2;
+export const LEGACY_ARENA_ENGINE_VERSION = 1;
 export const ARENA_STEP_MS = 16;
 export const ARENA_TIME_LIMIT_MS = 120_000;
 const SAMPLE_INTERVAL = 4;
-// Only fields consumed by presentation need to be retained for playback.
-const fields = [
+
+export const ARENA_REPLAY_V1_FIELDS = [
   'x',
   'y',
   'vx',
@@ -19,17 +21,41 @@ const fields = [
   'skillWindupTimerMs',
   'currentTargetId',
 ] as const satisfies readonly (keyof ArenaDigimon)[];
-type Sample = (number | string | boolean | null)[];
-export interface ArenaReplay {
-  version: 1;
+
+export const ARENA_REPLAY_V2_FIELDS = [
+  ...ARENA_REPLAY_V1_FIELDS,
+  'battleSp',
+  'battleSpCapacity',
+  'desiredTechniqueId',
+  'techniqueRecoveryMs',
+  'activeTechniqueEffectId',
+] as const satisfies readonly (keyof ArenaDigimon)[];
+
+type SampleValue = number | string | boolean | null;
+type Sample = SampleValue[];
+interface ReplayFrame {
+  t: number;
+  s: Sample[];
+  e: ArenaEvent[];
+}
+
+interface ArenaReplayBase {
   engineVersion: number;
   seed: number;
   initial: ArenaDigimon[];
-  frames: { t: number; s: Sample[]; e: ArenaEvent[] }[];
+  frames: ReplayFrame[];
   durationMs: number;
   winner: 'user' | 'opponent';
   reason: 'knockout' | 'time_limit';
 }
+export interface ArenaReplayV1 extends ArenaReplayBase {
+  version: 1;
+}
+export interface ArenaReplayV2 extends ArenaReplayBase {
+  version: 2;
+  fieldSchema: typeof ARENA_REPLAY_V2_FIELDS;
+}
+export type ArenaReplay = ArenaReplayV1 | ArenaReplayV2;
 
 export function seededRandom(seed: number): () => number {
   let state = seed >>> 0;
@@ -41,23 +67,26 @@ export function seededRandom(seed: number): () => number {
   };
 }
 
-export function simulateArena(
+function simulate(
   userTeam: BattleDigimon[],
   opponentTeam: BattleDigimon[],
   strategies: Strategy[],
-  seed: number
+  seed: number,
+  mode: ArenaEngineMode
 ): ArenaReplay {
+  const isV2 = mode === 'techniques';
+  const fields = isV2 ? ARENA_REPLAY_V2_FIELDS : ARENA_REPLAY_V1_FIELDS;
   const random = seededRandom(seed);
-  const state = initArenaDigimon(userTeam, opponentTeam, strategies, undefined, random);
+  const state = initArenaDigimon(userTeam, opponentTeam, strategies, undefined, random, mode);
   const initial = structuredClone(state);
-  const frames: ArenaReplay['frames'] = [];
+  const frames: ReplayFrame[] = [];
   let events: ArenaEvent[] = [];
   let winner: ArenaReplay['winner'] | undefined;
   let reason: ArenaReplay['reason'] = 'knockout';
   let t = 0;
-  for (let tick = 1; !winner && t < ARENA_TIME_LIMIT_MS; tick++) {
+  for (let tick = 1; !winner && t < ARENA_TIME_LIMIT_MS; tick += 1) {
     t = tick * ARENA_STEP_MS;
-    const emitted = runFrame(state, ARENA_STEP_MS, random);
+    const emitted = runFrame(state, ARENA_STEP_MS, random, mode, t);
     events.push(...emitted);
     const end = emitted.find((event) => event.type === 'battle_end');
     if (end?.type === 'battle_end') winner = end.winner;
@@ -70,7 +99,7 @@ export function simulateArena(
       reason = 'time_limit';
       events.push({ type: 'battle_end', winner });
     }
-    if (tick % SAMPLE_INTERVAL === 0 || winner) {
+    if (tick % SAMPLE_INTERVAL === 0 || winner || (isV2 && emitted.length > 0)) {
       frames.push({
         t,
         s: state.map((d) =>
@@ -84,22 +113,56 @@ export function simulateArena(
       events = [];
     }
   }
-  return {
-    version: 1,
-    engineVersion: ARENA_ENGINE_VERSION,
-    seed,
-    initial,
-    frames,
-    durationMs: t,
-    winner: winner!,
-    reason,
-  };
+  const common = { seed, initial, frames, durationMs: t, winner: winner!, reason };
+  return isV2
+    ? {
+        version: 2,
+        engineVersion: ARENA_ENGINE_VERSION,
+        fieldSchema: ARENA_REPLAY_V2_FIELDS,
+        ...common,
+      }
+    : { version: 1, engineVersion: LEGACY_ARENA_ENGINE_VERSION, ...common };
+}
+
+export function simulateArenaV1(
+  userTeam: BattleDigimon[],
+  opponentTeam: BattleDigimon[],
+  strategies: Strategy[],
+  seed: number
+): ArenaReplayV1 {
+  return simulate(userTeam, opponentTeam, strategies, seed, 'legacy') as ArenaReplayV1;
+}
+
+export function simulateArena(
+  userTeam: BattleDigimon[],
+  opponentTeam: BattleDigimon[],
+  strategies: Strategy[],
+  seed: number
+): ArenaReplayV2 {
+  return simulate(userTeam, opponentTeam, strategies, seed, 'techniques') as ArenaReplayV2;
+}
+
+function hydrateReplayState(replay: ArenaReplay): ArenaDigimon[] {
+  return structuredClone(replay.initial).map((digimon) => ({
+    ...digimon,
+    battleSp: Number.isFinite(digimon.battleSp) ? digimon.battleSp : 0,
+    battleSpCapacity: Number.isFinite(digimon.battleSpCapacity)
+      ? digimon.battleSpCapacity
+      : DEFAULT_BATTLE_SP_CAPACITY,
+    desiredTechniqueId: digimon.desiredTechniqueId ?? 'impact-strike',
+    techniqueRecoveryMs: Number.isFinite(digimon.techniqueRecoveryMs)
+      ? digimon.techniqueRecoveryMs
+      : 0,
+    techniqueUseCount: Number.isFinite(digimon.techniqueUseCount) ? digimon.techniqueUseCount : 0,
+    activeTechniqueEffectId: digimon.activeTechniqueEffectId ?? null,
+  }));
 }
 
 /** Replays recorded states, independent of current combat rules or randomness. */
 export function createReplayPlayer(replay: ArenaReplay) {
-  if (replay.version !== 1) throw new Error('Unsupported replay format');
-  const state = structuredClone(replay.initial);
+  if (replay.version !== 1 && replay.version !== 2) throw new Error('Unsupported replay format');
+  const fields = replay.version === 2 ? ARENA_REPLAY_V2_FIELDS : ARENA_REPLAY_V1_FIELDS;
+  const state = hydrateReplayState(replay);
   let elapsed = 0;
   let index = -1;
   return {
@@ -126,6 +189,19 @@ export function createReplayPlayer(replay: ArenaReplay) {
           const y = previous ? Number(previous.s[i][1]) : replay.initial[i].y;
           d.x = x + (Number(next.s[i][0]) - x) * fraction;
           d.y = y + (Number(next.s[i][1]) - y) * fraction;
+          if (replay.version === 2) {
+            const spIndex = ARENA_REPLAY_V2_FIELDS.indexOf('battleSp');
+            const previousSp = previous
+              ? Number(previous.s[i][spIndex])
+              : replay.initial[i].battleSp;
+            const nextSp = Number(next.s[i][spIndex]);
+            const commitsAtNextFrame = next.e.some(
+              (event) => event.type === 'technique_commit' && event.attackerId === d.id
+            );
+            d.battleSp = commitsAtNextFrame
+              ? previousSp
+              : previousSp + (nextSp - previousSp) * fraction;
+          }
         });
       }
       return events;

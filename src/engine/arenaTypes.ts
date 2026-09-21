@@ -176,6 +176,14 @@ export interface ArenaDigimon {
   spd: number;
   sp: number;
 
+  // Battle-only technique resource. This is distinct from the persistent SP stat above.
+  battleSp: number;
+  battleSpCapacity: number;
+  desiredTechniqueId: string;
+  techniqueRecoveryMs: number;
+  techniqueUseCount: number;
+  activeTechniqueEffectId: string | null;
+
   // State machine
   state: ArenaDigimonState;
   /** ms remaining before next normal attack is allowed. */
@@ -236,9 +244,31 @@ export type ArenaEvent =
       targetX: number;
       /** World-space Y of the target — for positioning damage number effects. */
       targetY: number;
+      atMs?: number;
+      techniqueId?: string;
+      effectInstanceId?: string;
     }
-  | { type: 'death'; digimonId: string }
-  | { type: 'battle_end'; winner: 'user' | 'opponent' };
+  | {
+      type: 'technique_start' | 'technique_commit' | 'technique_hit' | 'technique_end';
+      atMs: number;
+      effectInstanceId: string;
+      attackerId: string;
+      targetId: string;
+      techniqueId: string;
+      techniqueName: string;
+      element: string;
+      visualId: string;
+      visualVersion: number;
+      sourceX: number;
+      sourceY: number;
+      targetX: number;
+      targetY: number;
+      windupMs: number;
+      presentationSeed: number;
+      outcome?: 'hit' | 'miss' | 'cancelled';
+    }
+  | { type: 'death'; digimonId: string; atMs?: number }
+  | { type: 'battle_end'; winner: 'user' | 'opponent'; atMs?: number };
 
 // ─── Utility ───────────────────────────────────────────────────────────────────
 

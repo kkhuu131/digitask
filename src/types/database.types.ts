@@ -1142,6 +1142,7 @@ export type Database = {
       is_admin: { Args: never; Returns: boolean };
       prepare_arena_battle: {
         Args: {
+          p_engine_version?: number;
           p_offer_id: string;
           p_request_id: string;
           p_strategies: string[];

@@ -30,6 +30,7 @@ const BattleAttackEffects = ({
   <>
     <svg
       aria-hidden="true"
+      data-battle-attack-effects="true"
       width={WORLD_W}
       height={WORLD_H}
       style={{
@@ -42,37 +43,58 @@ const BattleAttackEffects = ({
     >
       {effects.map((effect) => {
         const angle = Math.atan2(effect.targetY - effect.sourceY, effect.targetX - effect.sourceX);
-        const arrow = `${effect.targetX - 16 * Math.cos(angle - 0.5)},${effect.targetY - 16 * Math.sin(angle - 0.5)} ${effect.targetX},${effect.targetY} ${effect.targetX - 16 * Math.cos(angle + 0.5)},${effect.targetY - 16 * Math.sin(angle + 0.5)}`;
+        const angleDegrees = (angle * 180) / Math.PI;
+        const color = effect.miss ? '#d1d5db' : effect.color;
         return (
           <motion.g
             key={effect.id}
             initial={{ opacity: 0.85 }}
             animate={{ opacity: 0 }}
             transition={{ duration: reducedMotion ? 0.35 : effect.skill ? 0.6 : 0.35 }}
+            transform={`rotate(${angleDegrees} ${effect.targetX} ${effect.targetY})`}
           >
-            <line
-              x1={effect.sourceX}
-              y1={effect.sourceY}
-              x2={effect.targetX}
-              y2={effect.targetY}
-              stroke={effect.miss ? '#d1d5db' : effect.color}
-              strokeWidth={effect.skill ? 5 : 2.5}
-              strokeDasharray={effect.miss ? '6 6' : undefined}
+            {effect.skill && !effect.miss && (
+              <ellipse
+                cx={effect.targetX}
+                cy={effect.targetY}
+                rx="38"
+                ry="24"
+                fill={effect.color}
+                opacity="0.2"
+              />
+            )}
+            <path
+              d={`M ${effect.targetX - (effect.skill ? 58 : 32)} ${effect.targetY} Q ${effect.targetX - 20} ${effect.targetY - (effect.skill ? 11 : 6)} ${effect.targetX - 4} ${effect.targetY}`}
+              fill="none"
+              stroke={color}
+              strokeWidth={effect.skill ? 8 : 4}
               strokeLinecap="round"
             />
-            <polyline
-              points={arrow}
+            <path
+              d={`M ${effect.targetX - (effect.skill ? 42 : 24)} ${effect.targetY - 12} Q ${effect.targetX - 17} ${effect.targetY - 4} ${effect.targetX + 8} ${effect.targetY + 13}`}
               fill="none"
-              stroke={effect.color}
-              strokeWidth="3"
-              strokeLinejoin="round"
+              stroke={color}
+              strokeWidth={effect.skill ? 4 : 2.5}
+              strokeLinecap="round"
+              opacity="0.85"
             />
             {!effect.miss && !simplifiedEffects && (
-              <path
-                d={`M ${effect.targetX - 14} ${effect.targetY + 18} L ${effect.targetX + 14} ${effect.targetY - 18}`}
-                stroke={effect.critical ? '#fbbf24' : '#fff'}
-                strokeWidth={effect.critical ? 6 : 3}
-              />
+              <>
+                <path
+                  d={`M ${effect.targetX - 10} ${effect.targetY + 22} Q ${effect.targetX} ${effect.targetY} ${effect.targetX + 15} ${effect.targetY - 20}`}
+                  fill="none"
+                  stroke={effect.critical ? '#fbbf24' : '#fff'}
+                  strokeWidth={effect.critical ? 6 : 3}
+                  strokeLinecap="round"
+                />
+                <circle
+                  cx={effect.targetX}
+                  cy={effect.targetY}
+                  r={effect.skill ? 9 : 5}
+                  fill="#fff"
+                  opacity="0.9"
+                />
+              </>
             )}
           </motion.g>
         );

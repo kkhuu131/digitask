@@ -139,13 +139,18 @@ ticket fill meter that suggests passive regeneration. Compact navigation puts
 resources in a wrapping row below the header. Keep earning/spending explanations
 visible on the Battle and Store pages as well.
 
-Arena playback: show attacker-to-target cues at recorded hit time, target markers
-during special charging, and damage labels that remain readable as the arena
-scales. Use attacker attribute colors for specials, quieter normal impacts and
-short camera highlights with cooldowns. Reduced motion uses a fixed wide view
-with labels and targeting cues, without zooms, recoil or particle bursts. These
-effects must not change recorded combat, rewards or replay format. Keep playback
-focused on the arena: no battle log or behavior captions beneath skill bars.
+Arena playback: communicate attacker-to-target intent through the recorded move
+itself: facing and anticipation for melee, visible travel for projectiles, a solid
+energy body for beams, and soft filled ground light/cracks/ripples for areas. Do
+not use generic dotted/dashed connectors, arrows, crosshairs or target rings.
+Technique effects use their recorded element color, quieter normal impacts and
+short camera highlights with cooldowns. Keep pixel sprites crisp while trails,
+lighting, particles and impact shapes render smoothly at the display resolution.
+Damage labels remain readable as the arena scales. Reduced motion uses a fixed
+wide view with short fades, stable effect shapes and labels, without zooms,
+recoil, shake or particle bursts. These effects must not change recorded combat,
+rewards or replay state. Keep playback focused on the arena: no battle log or
+behavior captions beneath SP bars.
 
 ## Onboarding and contextual help
 

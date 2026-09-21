@@ -557,7 +557,7 @@ Rendered above the arena. Two columns: user team (left, indigo) and opponent tea
 - React state (`hpSnapshot`) — keeps HP numbers correct on re-renders
 - Direct DOM (`hpBarFillRefs`) — provides instant visual response on damage events
 
-**Skill bars** are **direct DOM only** (`skillBarFillRefs`) — updated every frame, no React state.
+**Skill bars** are **direct DOM only** (`skillBarFillRefs`) — updated every frame, no React state. Playback tracks each observed cooldown cycle's actual maximum and passes it through `legacySkillGaugePercent`, which always returns a finite clamped percentage. These are legacy Skill indicators, not the explicit battle SP planned for replay v2.
 
 **Design tokens:**
 
@@ -635,12 +635,12 @@ The shared helper is `src/utils/selectStrongestTeam.ts`.
 2. BattleTeamSelector collects one to three party members, with optional strongest-team auto-fill. New battles use Balanced behavior; setup is free.
 3. Starting creates a UUID request before the HTTP call. The authenticated Edge handler obtains the user from Supabase Auth; client user IDs, stats, winners and reward amounts are not trusted.
 4. prepare_arena_battle locks the profile, validates the private offer, party ownership and behaviors, then saves a seed and immutable species/stat snapshot. No ticket is spent. Only one prepared request per user is allowed.
-5. The shared engine runs headlessly with explicit seeded randomness and 16ms steps. Movement/state samples are retained every 64ms with combat events. The 120-second limit uses remaining team HP fraction to decide; ties are defeats. Cinematic slow motion affects playback only.
+5. The shared engine runs headlessly with explicit seeded randomness and 16ms steps. Movement/state samples are retained every 64ms and at exact v2 semantic-event timestamps. The 120-second limit uses remaining team HP fraction to decide; ties are defeats. Cinematic slow motion affects playback only.
 6. settle_arena_battle commits one ticket spend, the existing win/loss Bits formula, team_battles history, trigger-driven counters and the full recording together. Its profile/request locks and saved status make repeated/concurrent requests idempotent. Errors roll back all settlement writes.
 7. ArenaBattle consumes recorded states/events, interpolates movement and adds existing effects/camera behavior. Completion only changes the screen. No reward or history writes happen in playback.
 8. Returning to the arena retrieves the latest result and replay. Interrupted starts are resumed with the same saved request; a browser cache stores the original intent if the response was lost before confirmation. Requests which fail before settlement do not spend a ticket.
 
-The server bundle is generated from src/server/arenaEdge.ts using npm run arena:build; its build rejects browser-store imports. Damage rules live in engine/battleRules.ts and opponent generation in engine/arenaOpponents.ts. arenaReplay.ts implements seeded simulation and recording playback. Replay format version 1 is independent of engine version 1, so recorded fights do not need to be recalculated after balance updates. Engine changes must retain or explicitly migrate uncharged prepared requests.
+The server bundle is generated from src/server/arenaEdge.ts using npm run arena:build; its build rejects browser-store imports. Damage rules live in engine/battleRules.ts and opponent generation in engine/arenaOpponents.ts. arenaReplay.ts implements seeded simulation and recording playback. Replay v1 preserves the legacy cooldown skill rules. Replay v2 records explicit battle SP plus stable technique start, commit, hit and end events. New clients request engine v2; old clients and pending v1 requests remain supported without charging again. Unknown engine versions stop before settlement.
 
 Tournament callers use the shared team selector and the existing live simulation mode of ArenaBattle. Their lifecycle is a separate follow-up. Sections explaining runFrame describe simulation; daily arena presentation uses createReplayPlayer instead. The browser may choose random cosmetic particles without affecting combat.
 
@@ -714,13 +714,14 @@ Edit the reward formula in `supabase/schemas/functions/settle_arena_battle.sql`,
 
 ## Presentation readability
 
-`BattleAttackEffects.tsx` connects attacker and target at the recorded damage event,
-with directional hit traces and outlined damage numbers, yellow CRIT numbers and
-MISS labels. Damage labels have no box or minus sign; specials use attack effects
-and targeting cues rather than a floating caption. It does not
-simulate projectile flight or delay recorded HP changes. Labels counter-scale to
-stay readable on phones. Special windups show an attribute-colored targeting line
-and target ring. Special-hit particles use the attacker's attribute.
+`BattleAttackEffects.tsx` renders localized directional impact shapes at the recorded
+damage event, with outlined damage numbers, yellow CRIT numbers and MISS labels.
+It does not draw a full attacker-to-target line or arrow. Damage labels have no box
+or minus sign. Labels counter-scale to stay readable on phones. Legacy special
+windups use a soft attribute-colored ground light rather than a dashed connector or
+target ring. Replay-v2 techniques use distinct presentation: Impact Strike compresses
+into a close contact shock, while Ember Burst travels as a smooth fire orb and blooms
+at impact. Neither uses a generic connector.
 
 Sprite anticipation, lunge and recoil animate a separate wrapper, leaving world
 positions and facing transforms independent. HP bars include a delayed amber trail;
@@ -730,10 +731,9 @@ stack the teams to keep names and HP legible.
 The camera uses time-normalized smoothing, small pan/zoom dead zones, and a 2.2-second
 cooldown after highlights. Specials frame both participants for 900ms at normal
 speed (zoom capped at 1.12); knockouts use a 650ms, 0.7-speed highlight at 1.08 zoom.
-Reduced motion uses a fixed view of the whole world, with static targeting cues
+Reduced motion uses a fixed view of the whole world, with a static ground-light cue
 and damage labels but no camera highlights, sprite recoil or particle bursts.
 Phones and coarse-pointer devices also omit damage labels, attack traces, camera
 highlights, sprite recoil and particle bursts to avoid hit-time frame drops.
 Effect lifetimes and animation handles are cleaned up on unmount; simultaneous
-hit cues and particles are capped. Combat rules, engine version, replay format,
-server settlement and rewards are unchanged.
+hit cues and particles are capped. Playback never settles rewards or spends tickets.

@@ -52,7 +52,7 @@ BEGIN
     RAISE EXCEPTION 'Arena victory rewards not updated';
   END IF;
   FOREACH f IN ARRAY ARRAY[
-    'public.prepare_arena_battle(uuid,uuid,uuid,uuid[],text[])'::regprocedure,
+    'public.prepare_arena_battle(uuid,uuid,uuid,uuid[],text[],integer)'::regprocedure,
     'public.settle_arena_battle(uuid,uuid,jsonb)'::regprocedure,
     'public.arena_battle_context(uuid)'::regprocedure
   ] LOOP

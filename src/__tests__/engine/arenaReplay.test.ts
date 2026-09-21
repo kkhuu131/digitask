@@ -1,5 +1,12 @@
 import { describe, expect, it, vi } from 'vitest';
-import { simulateArena, createReplayPlayer, ARENA_TIME_LIMIT_MS } from '../../engine/arenaReplay';
+import {
+  simulateArena,
+  simulateArenaV1,
+  createReplayPlayer,
+  seededRandom,
+  ARENA_TIME_LIMIT_MS,
+} from '../../engine/arenaReplay';
+import { initArenaDigimon, runFrame } from '../../engine/arenaEngine';
 import { convertToBattleDigimon } from '../../utils/convertToBattleDigimon';
 import type { ArenaEvent } from '../../engine/arenaTypes';
 
@@ -50,6 +57,63 @@ describe('saved arena simulation and playback', () => {
     const second = simulateArena(team(true), team(false), ['balanced', 'balanced', 'balanced'], 2);
     expect(first.frames).not.toEqual(second.frames);
   });
+  it('spends battle SP once and emits a stable semantic technique sequence', () => {
+    const random = seededRandom(7);
+    const state = initArenaDigimon(
+      team(true).slice(0, 1),
+      team(false).slice(0, 1),
+      ['balanced'],
+      ['balanced'],
+      random,
+      'techniques'
+    );
+    state[0].x = 600;
+    state[0].y = 350;
+    state[1].x = 650;
+    state[1].y = 350;
+    state[0].battleSp = 80;
+    const events = runFrame(state, 16, random, 'techniques', 16);
+    const start = events.find((event) => event.type === 'technique_start');
+    expect(start).toMatchObject({
+      type: 'technique_start',
+      visualVersion: 1,
+      windupMs: expect.any(Number),
+    });
+    if (start?.type !== 'technique_start') throw new Error('Expected a technique start');
+    expect(state[0].battleSp).toBeLessThan(1);
+    expect(events).toContainEqual(
+      expect.objectContaining({
+        type: 'technique_commit',
+        effectInstanceId: start.effectInstanceId,
+      })
+    );
+    for (let tick = 2; tick < 80; tick += 1) {
+      events.push(...runFrame(state, 16, random, 'techniques', tick * 16));
+    }
+    expect(events).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          type: 'technique_hit',
+          effectInstanceId: start.effectInstanceId,
+        }),
+        expect.objectContaining({
+          type: 'technique_end',
+          effectInstanceId: start.effectInstanceId,
+        }),
+      ])
+    );
+  });
+  it('keeps legacy replay generation and playback available', () => {
+    const replay = simulateArenaV1(
+      team(true),
+      team(false),
+      ['balanced', 'balanced', 'balanced'],
+      21
+    );
+    expect(replay.version).toBe(1);
+    const player = createReplayPlayer(JSON.parse(JSON.stringify(replay)));
+    expect(() => player.advance(replay.durationMs)).not.toThrow();
+  });
   it('replays identical events and final health at different animation frame rates', () => {
     const replay = simulateArena(
       team(true),
@@ -82,7 +146,7 @@ describe('saved arena simulation and playback', () => {
     );
     expect(replay.durationMs).toBe(ARENA_TIME_LIMIT_MS);
     expect(replay.reason).toBe('time_limit');
-    expect(replay.frames.length).toBeLessThanOrEqual(1875);
+    expect(replay.frames.length).toBeLessThanOrEqual(4000);
     expect(replay.frames.at(-1)!.e).toContainEqual({ type: 'battle_end', winner: replay.winner });
   });
 });

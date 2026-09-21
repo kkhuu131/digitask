@@ -1,5 +1,12 @@
 import { BattleDigimon } from '../types/battle';
 import { calculateDamage } from '../utils/battleCalculations';
+import {
+  calculateArenaBasicDamage,
+  calculateTechniqueDamage,
+  getTechnique,
+  selectInitialTechnique,
+} from './techniques';
+import { chargeBattleSp, DEFAULT_BATTLE_SP_CAPACITY, spendBattleSp } from './battleSp';
 import { seek, wander, separation, orbit, flee, dist } from './steeringBehaviors';
 import {
   ArenaDigimon,
@@ -25,6 +32,8 @@ import {
   KNOCKBACK_SKILL_MULTIPLIER,
   KNOCKBACK_DEATH_MULTIPLIER,
 } from './arenaTypes';
+
+export type ArenaEngineMode = 'legacy' | 'techniques';
 
 // ─── Internal adapter ──────────────────────────────────────────────────────────
 
@@ -175,7 +184,8 @@ export const initArenaDigimon = (
   opponentTeam: BattleDigimon[],
   userStrategies: Strategy[],
   opponentStrategies: Strategy[] = opponentTeam.map(() => 'balanced'),
-  random: () => number = Math.random
+  random: () => number = Math.random,
+  mode: ArenaEngineMode = 'legacy'
 ): ArenaDigimon[] => {
   const userSpawns = spawnPositions(userTeam.length, 200, 320, random);
   const opponentSpawns = spawnPositions(opponentTeam.length, 980, 1100, random);
@@ -193,7 +203,7 @@ export const initArenaDigimon = (
     // The full cooldown (attackCooldownBase) only kicks in between subsequent attacks.
     const attackCooldown = random() * 400;
 
-    return {
+    const arenaDigimon: ArenaDigimon = {
       // Identity
       id: bd.id,
       name: bd.name,
@@ -219,6 +229,12 @@ export const initArenaDigimon = (
       int: bd.stats.int,
       spd: bd.stats.spd,
       sp: bd.stats.sp,
+      battleSp: 0,
+      battleSpCapacity: DEFAULT_BATTLE_SP_CAPACITY,
+      desiredTechniqueId: 'impact-strike',
+      techniqueRecoveryMs: 0,
+      techniqueUseCount: 0,
+      activeTechniqueEffectId: null,
 
       // State machine
       state: 'approaching',
@@ -246,6 +262,11 @@ export const initArenaDigimon = (
       spriteState: 'idle',
       spriteTimerMs: 0,
     };
+    if (mode === 'techniques') {
+      arenaDigimon.desiredTechniqueId = selectInitialTechnique(arenaDigimon).id;
+      arenaDigimon.skillCooldownMs = 0;
+    }
+    return arenaDigimon;
   };
 
   return [
@@ -267,7 +288,9 @@ export const initArenaDigimon = (
 export const runFrame = (
   digimon: ArenaDigimon[],
   deltaMs: number,
-  random: () => number = Math.random
+  random: () => number = Math.random,
+  mode: ArenaEngineMode = 'legacy',
+  battleTimeMs = 0
 ): ArenaEvent[] => {
   const events: ArenaEvent[] = [];
 
@@ -276,7 +299,12 @@ export const runFrame = (
     // ── Decrement all timers ──────────────────────────────────────────────────
     d.attackCooldownMs -= deltaMs;
     // SP drives skill charge rate: higher SP = faster charge. SP=0 → 1× rate, SP=300 → 2× rate
-    d.skillCooldownMs -= deltaMs * (1 + d.sp / 300);
+    if (mode === 'legacy') {
+      d.skillCooldownMs -= deltaMs * (1 + d.sp / 300);
+    } else {
+      d.battleSp = chargeBattleSp(d.battleSp, d.battleSpCapacity, d.sp, deltaMs);
+      d.techniqueRecoveryMs -= deltaMs;
+    }
     d.retreatTimerMs -= deltaMs;
     d.wanderTimerMs -= deltaMs;
     d.stunTimerMs -= deltaMs;
@@ -329,7 +357,45 @@ export const runFrame = (
     }
 
     // ── Find nearest enemy ────────────────────────────────────────────────────
-    const target = findNearestEnemy(d, digimon);
+    const lockedTarget =
+      mode === 'techniques' && d.state === 'skill_windup' && d.currentTargetId
+        ? (digimon.find((candidate) => candidate.id === d.currentTargetId) ?? null)
+        : null;
+    if (
+      mode === 'techniques' &&
+      d.state === 'skill_windup' &&
+      d.currentTargetId &&
+      (!lockedTarget || lockedTarget.state === 'dead')
+    ) {
+      const technique = getTechnique(d.desiredTechniqueId);
+      const effectInstanceId = d.activeTechniqueEffectId ?? `${d.id}:${d.techniqueUseCount}`;
+      events.push({
+        type: 'technique_end',
+        atMs: battleTimeMs,
+        effectInstanceId,
+        attackerId: d.id,
+        targetId: d.currentTargetId,
+        techniqueId: technique.id,
+        techniqueName: technique.name,
+        element: technique.element,
+        visualId: technique.visualId,
+        visualVersion: technique.visualVersion,
+        sourceX: d.x,
+        sourceY: d.y,
+        targetX: lockedTarget?.x ?? d.x,
+        targetY: lockedTarget?.y ?? d.y,
+        windupMs: technique.windupMs,
+        presentationSeed: d.techniqueUseCount,
+        outcome: 'cancelled',
+      });
+      d.activeTechniqueEffectId = null;
+      d.techniqueRecoveryMs = technique.recoveryMs;
+      d.state = 'retreating';
+      d.retreatTimerMs = STRATEGY_CONFIGS[d.strategy].fleeDuration;
+      continue;
+    }
+    const target =
+      lockedTarget && lockedTarget.state !== 'dead' ? lockedTarget : findNearestEnemy(d, digimon);
     if (!target) continue; // no enemies left — battle_end check handles this below
 
     d.currentTargetId = target.id;
@@ -341,10 +407,92 @@ export const runFrame = (
     // Priority a: skill_windup — no movement, wait for windup to complete
     if (d.state === 'skill_windup') {
       if (d.skillWindupTimerMs <= 0) {
+        if (mode === 'techniques') {
+          const technique = getTechnique(d.desiredTechniqueId);
+          const effectInstanceId = d.activeTechniqueEffectId ?? `${d.id}:${d.techniqueUseCount}`;
+          const result = calculateTechniqueDamage(d, target, technique, random);
+          target.hp = Math.max(0, target.hp - result.damage);
+
+          const presentation = {
+            atMs: battleTimeMs,
+            effectInstanceId,
+            attackerId: d.id,
+            targetId: target.id,
+            techniqueId: technique.id,
+            techniqueName: technique.name,
+            element: technique.element,
+            visualId: technique.visualId,
+            visualVersion: technique.visualVersion,
+            sourceX: d.x,
+            sourceY: d.y,
+            targetX: target.x,
+            targetY: target.y,
+            windupMs: technique.windupMs,
+            presentationSeed: d.techniqueUseCount,
+          } as const;
+
+          events.push({ type: 'technique_hit', ...presentation });
+          events.push({
+            type: 'damage',
+            attackerId: d.id,
+            targetId: target.id,
+            damage: result.damage,
+            isCritical: result.isCritical,
+            isMiss: result.isMiss,
+            isSkill: true,
+            targetX: target.x,
+            targetY: target.y,
+            atMs: battleTimeMs,
+            techniqueId: technique.id,
+            effectInstanceId,
+          });
+
+          if (!result.isMiss && result.damage > 0) {
+            target.spriteState = 'hit';
+            target.spriteTimerMs = HIT_SPRITE_MS;
+            target.lastAttackerTeam = d.isUserTeam ? 'user' : 'opponent';
+            target.stunTimerMs = 750 + random() * 350;
+            const kbDx = target.x - d.x;
+            const kbDy = target.y - d.y;
+            const kbDist = Math.sqrt(kbDx * kbDx + kbDy * kbDy);
+            if (kbDist > 0.001) {
+              const kbMag = KNOCKBACK_IMPULSE * KNOCKBACK_SKILL_MULTIPLIER;
+              target.knockbackVx = (kbDx / kbDist) * kbMag;
+              target.knockbackVy = (kbDy / kbDist) * kbMag;
+            }
+            const targetConfig = STRATEGY_CONFIGS[target.strategy];
+            if (target.state !== 'dead' && target.state !== 'skill_windup') {
+              target.state = 'retreating';
+              target.retreatTimerMs = targetConfig.fleeDuration;
+            }
+          }
+
+          if (target.hp <= 0) {
+            target.knockbackVx *= KNOCKBACK_DEATH_MULTIPLIER;
+            target.knockbackVy *= KNOCKBACK_DEATH_MULTIPLIER;
+            target.state = 'dead';
+            target.deathBounceVy = DEATH_BOUNCE_VY_INIT;
+            target.deathOriginY = target.y;
+            target.deathLanded = false;
+            events.push({ type: 'death', digimonId: target.id, atMs: battleTimeMs });
+          }
+
+          events.push({
+            type: 'technique_end',
+            ...presentation,
+            outcome: result.isMiss ? 'miss' : 'hit',
+          });
+          d.activeTechniqueEffectId = null;
+          d.techniqueRecoveryMs = technique.recoveryMs;
+          d.state = 'retreating';
+          d.retreatTimerMs = config.fleeDuration;
+          d.spriteState = 'attacking';
+          d.spriteTimerMs = ATTACK_SPRITE_MS;
+          d.attackCooldownMs = config.attackCooldownBase + random() * 2000;
+          continue;
+        }
         // Fire the skill
-        const calcAttacker = toCalcDigimon(d);
-        const calcTarget = toCalcDigimon(target);
-        const result = calculateDamage(calcAttacker, calcTarget, random);
+        const result = calculateDamage(toCalcDigimon(d), toCalcDigimon(target), random);
         const rawDamage = result.isMiss ? 0 : Math.round(result.damage * SKILL_DAMAGE_MULTIPLIER);
 
         target.hp = Math.max(0, target.hp - rawDamage);
@@ -382,7 +530,7 @@ export const runFrame = (
 
           // Force target into retreat (starts after stun expires)
           const targetConfig = STRATEGY_CONFIGS[target.strategy];
-          if (target.state !== 'dead') {
+          if (target.state !== 'dead' && (mode === 'legacy' || target.state !== 'skill_windup')) {
             target.state = 'retreating';
             target.retreatTimerMs = targetConfig.fleeDuration;
           }
@@ -416,14 +564,45 @@ export const runFrame = (
 
     // Priority b: enter skill_windup when cooldown expires AND target is close enough.
     // If out of range, keep the cooldown at 0 and approach — fires the moment they close in.
-    if (d.skillCooldownMs <= 0) {
-      if (distToTarget <= SKILL_RANGE) {
+    const technique = mode === 'techniques' ? getTechnique(d.desiredTechniqueId) : null;
+    const techniqueReady =
+      technique !== null && d.techniqueRecoveryMs <= 0 && d.battleSp >= technique.spCost;
+    if ((mode === 'legacy' && d.skillCooldownMs <= 0) || techniqueReady) {
+      const activationRange = technique?.range ?? SKILL_RANGE;
+      if (distToTarget <= activationRange) {
+        if (technique) {
+          const remainingSp = spendBattleSp(d.battleSp, d.battleSpCapacity, technique.spCost);
+          if (remainingSp === null) continue;
+          d.battleSp = remainingSp;
+          d.techniqueUseCount += 1;
+          d.activeTechniqueEffectId = `${d.id}:${d.techniqueUseCount}`;
+          const presentation = {
+            atMs: battleTimeMs,
+            effectInstanceId: d.activeTechniqueEffectId,
+            attackerId: d.id,
+            targetId: target.id,
+            techniqueId: technique.id,
+            techniqueName: technique.name,
+            element: technique.element,
+            visualId: technique.visualId,
+            visualVersion: technique.visualVersion,
+            sourceX: d.x,
+            sourceY: d.y,
+            targetX: target.x,
+            targetY: target.y,
+            windupMs: technique.windupMs,
+            presentationSeed: d.techniqueUseCount,
+          } as const;
+          events.push({ type: 'technique_start', ...presentation });
+          events.push({ type: 'technique_commit', ...presentation });
+          d.currentTargetId = target.id;
+        }
         d.state = 'skill_windup';
-        d.skillWindupTimerMs = SKILL_WINDUP_MS;
+        d.skillWindupTimerMs = technique?.windupMs ?? SKILL_WINDUP_MS;
         continue;
       }
       // Clamp so it doesn't accumulate into a large negative; re-checks every frame.
-      d.skillCooldownMs = 0;
+      if (mode === 'legacy') d.skillCooldownMs = 0;
     }
 
     // Priority c: finish retreating → enter wandering (recovery) phase
@@ -463,9 +642,10 @@ export const runFrame = (
       }
 
       if (attackerWins) {
-        const calcAttacker = toCalcDigimon(d);
-        const calcTarget = toCalcDigimon(target);
-        const result = calculateDamage(calcAttacker, calcTarget, random);
+        const result =
+          mode === 'techniques'
+            ? calculateArenaBasicDamage(d, target, random)
+            : calculateDamage(toCalcDigimon(d), toCalcDigimon(target), random);
 
         target.hp = Math.max(0, target.hp - result.damage);
 
@@ -503,7 +683,7 @@ export const runFrame = (
           }
 
           // Force target to retreat (starts after stun expires)
-          if (target.state !== 'dead') {
+          if (target.state !== 'dead' && (mode === 'legacy' || target.state !== 'skill_windup')) {
             const targetConfig = STRATEGY_CONFIGS[target.strategy];
             target.state = 'retreating';
             target.retreatTimerMs = targetConfig.fleeDuration;

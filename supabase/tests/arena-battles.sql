@@ -17,8 +17,8 @@ SET LOCAL ROLE authenticated;
 SELECT set_config('request.jwt.claim.sub','00000000-0000-4000-8000-000000000021',true);
 DO $$ BEGIN
  IF has_function_privilege('authenticated','public.settle_arena_battle(uuid,uuid,jsonb)','EXECUTE') OR
-    has_function_privilege('anon','public.prepare_arena_battle(uuid,uuid,uuid,uuid[],text[])','EXECUTE') OR
-    has_function_privilege('authenticated','public.prepare_arena_battle(uuid,uuid,uuid,uuid[],text[])','EXECUTE') OR
+    has_function_privilege('anon','public.prepare_arena_battle(uuid,uuid,uuid,uuid[],text[],integer)','EXECUTE') OR
+    has_function_privilege('authenticated','public.prepare_arena_battle(uuid,uuid,uuid,uuid[],text[],integer)','EXECUTE') OR
     has_table_privilege('authenticated','public.arena_battle_requests','INSERT') OR
     has_table_privilege('authenticated','public.arena_battle_requests','UPDATE') THEN
     RAISE EXCEPTION 'Browser can forge an arena settlement'; END IF;
@@ -33,6 +33,8 @@ DO $$ DECLARE u uuid:='00000000-0000-4000-8000-000000000021';
   pet uuid:='00000000-0000-4000-8000-000000021001';
   prepared jsonb; settled jsonb; replay jsonb;
 BEGIN
+ BEGIN PERFORM public.prepare_arena_battle(u,r,offer,ARRAY[pet],ARRAY['balanced'],3);
+   RAISE EXCEPTION 'Unsupported engine accepted'; EXCEPTION WHEN invalid_parameter_value THEN NULL; END;
  BEGIN PERFORM public.prepare_arena_battle(u,r,offer,ARRAY[pet,pet],ARRAY['balanced','balanced']);
    RAISE EXCEPTION 'Duplicate team accepted'; EXCEPTION WHEN invalid_parameter_value THEN NULL; END;
  BEGIN PERFORM public.prepare_arena_battle(u,r,offer,ARRAY[pet],ARRAY['invalid']);
@@ -110,7 +112,7 @@ RESET ROLE;
 SET LOCAL ROLE service_role;
 DO $$ DECLARE u uuid:='00000000-0000-4000-8000-000000000021';
   fixture record; offer uuid; request uuid; prepared jsonb; replay jsonb; settled jsonb;
-  before_bits integer; before_tickets integer;
+  before_bits integer; before_tickets integer; engine integer;
 BEGIN
   UPDATE public.profiles SET battle_energy=10 WHERE id=u;
   FOR fixture IN SELECT * FROM (VALUES
@@ -122,9 +124,10 @@ BEGIN
       VALUES(offer,u,fixture.difficulty,'reward-test','[{"digimon_id":1},{"digimon_id":2},{"digimon_id":3}]');
     SELECT bits INTO before_bits FROM public.user_currency WHERE user_id=u;
     SELECT battle_energy INTO before_tickets FROM public.profiles WHERE id=u;
+    engine:=CASE WHEN fixture.difficulty='medium' AND fixture.winner='user' THEN 2 ELSE 1 END;
     prepared:=public.prepare_arena_battle(u,request,offer,
-      ARRAY['00000000-0000-4000-8000-000000021001'::uuid],ARRAY['balanced']);
-    replay:=jsonb_build_object('version',1,'engineVersion',1,'seed',prepared->'seed',
+      ARRAY['00000000-0000-4000-8000-000000021001'::uuid],ARRAY['balanced'],engine);
+    replay:=jsonb_build_object('version',engine,'engineVersion',engine,'seed',prepared->'seed',
       'winner',fixture.winner,'durationMs',16,'frames','[{}]'::jsonb);
     settled:=public.settle_arena_battle(u,request,replay);
     IF (settled->>'bits_reward')::integer<>fixture.bits OR

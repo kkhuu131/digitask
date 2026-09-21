@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect, useLayoutEffect } from 'react';
 import { animate, motion, useReducedMotion } from 'framer-motion';
 import BattleAttackEffects, { AttackEffect } from './BattleAttackEffects';
+import TechniqueEffects, { TechniqueEffect } from './TechniqueEffects';
 import { BattleDigimon } from '../types/battle';
 import { initArenaDigimon, runFrame } from '../engine/arenaEngine';
 import { createReplayPlayer } from '../engine/arenaReplay';
@@ -14,10 +15,10 @@ import {
   WORLD_H,
   VIEWPORT_W,
   VIEWPORT_H,
-  STRATEGY_CONFIGS,
 } from '../engine/arenaTypes';
 import BattleDigimonSprite from './BattleDigimonSprite';
 import { ATTRIBUTE_COLORS } from '../constants/battleAttributeColors';
+import { battleSpGaugePercent, finiteNumber, legacySkillGaugePercent } from '../engine/battleSp';
 
 // ─── Cinematic state ──────────────────────────────────────────────────────────
 interface CinematicState {
@@ -279,10 +280,11 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
   const effectSequenceRef = useRef(0);
   const reactionRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const reactionAnimations = useRef<Map<string, ReturnType<typeof animate>>>(new Map());
-  const targetLineRefs = useRef<Map<string, SVGLineElement>>(new Map());
-  const targetRingRefs = useRef<Map<string, SVGCircleElement>>(new Map());
+  const targetCueRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const hpTrailRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const [attackEffects, setAttackEffects] = useState<AttackEffect[]>([]);
+  const [techniqueEffects, setTechniqueEffects] = useState<TechniqueEffect[]>([]);
+  const techniqueMode = replay?.version === 2;
   const [countdown, setCountdown] = useState<string | null>('3');
   const countdownElapsedRef = useRef(0);
   const countdownLabelRef = useRef<string | null>('3');
@@ -325,6 +327,14 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
 
   // Skill bar fill DOM elements — width% mutated directly each frame.
   const skillBarFillRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+  const legacySkillCycleRefs = useRef<Map<string, { remainingMs: number; totalMs: number }>>(
+    new Map(
+      digimonRef.current.map((d) => {
+        const remainingMs = Math.max(0, finiteNumber(d.skillCooldownMs, 0));
+        return [d.id, { remainingMs, totalMs: Math.max(1, remainingMs) }];
+      })
+    )
+  );
 
   // HP bar fill DOM elements in the status panel — mutated on damage events.
   const hpBarFillRefs = useRef<Map<string, HTMLDivElement>>(new Map());
@@ -564,7 +574,39 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
     const cues: AttackEffect[] = [];
 
     for (const ev of events) {
-      if (ev.type === 'damage') {
+      if (ev.type === 'technique_start') {
+        setTechniqueEffects((previous) => [
+          ...previous.filter((effect) => effect.id !== ev.effectInstanceId),
+          {
+            id: ev.effectInstanceId,
+            techniqueId: ev.techniqueId,
+            sourceX: ev.sourceX,
+            sourceY: ev.sourceY,
+            targetX: ev.targetX,
+            targetY: ev.targetY,
+            windupMs: ev.windupMs,
+            phase: 'windup',
+          },
+        ]);
+      } else if (ev.type === 'technique_hit') {
+        setTechniqueEffects((previous) =>
+          previous.map((effect) =>
+            effect.id === ev.effectInstanceId
+              ? { ...effect, targetX: ev.targetX, targetY: ev.targetY, phase: 'hit' }
+              : effect
+          )
+        );
+      } else if (ev.type === 'technique_end') {
+        scheduleCleanup(
+          () =>
+            setTechniqueEffects((previous) =>
+              previous.filter((effect) => effect.id !== ev.effectInstanceId)
+            ),
+          520
+        );
+      } else if (ev.type === 'technique_commit') {
+        // The replay sample owns the exact SP snap at commitment.
+      } else if (ev.type === 'damage') {
         const tgt = digimonRef.current.find((d) => d.id === ev.targetId);
         const atk = digimonRef.current.find((d) => d.id === ev.attackerId);
         if (tgt) hpUpdates[tgt.id] = { hp: tgt.hp, maxHp: tgt.maxHp };
@@ -574,7 +616,7 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
             : ev.isCritical
               ? '#fbbf24'
               : '#fff';
-          if (!simplifiedEffectsRef.current) {
+          if (!ev.techniqueId && !simplifiedEffectsRef.current) {
             const cue: AttackEffect = {
               id: `attack-${++effectSequenceRef.current}`,
               sourceX: atk.x,
@@ -617,7 +659,13 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
         }
 
         // Spawn particle hit effect
-        if (!ev.isMiss && tgt && !reducedMotionRef.current && !simplifiedEffectsRef.current) {
+        if (
+          !ev.techniqueId &&
+          !ev.isMiss &&
+          tgt &&
+          !reducedMotionRef.current &&
+          !simplifiedEffectsRef.current
+        ) {
           const hitType = ev.isSkill ? 'skill' : ev.isCritical ? 'crit' : 'normal';
           const attrColor = ATTRIBUTE_COLORS[atk?.attribute ?? ''] ?? '#ffffff';
           const batchId = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
@@ -753,30 +801,37 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
             facingEl.style.transform = facingRight ? 'scaleX(-1)' : '';
           }
         }
-        const line = targetLineRefs.current.get(d.id);
-        if (line) {
+        const targetCue = targetCueRefs.current.get(d.id);
+        if (targetCue) {
           const target = digimonRef.current.find((o) => o.id === d.currentTargetId);
           if (target) {
-            line.setAttribute('x1', String(d.x));
-            line.setAttribute('y1', String(d.y));
-            line.setAttribute('x2', String(target.x));
-            line.setAttribute('y2', String(target.y));
-            const ring = targetRingRefs.current.get(d.id);
-            ring?.setAttribute('cx', String(target.x));
-            ring?.setAttribute('cy', String(target.y));
+            targetCue.style.transform = `translate(${target.x - 56}px, ${target.y + 18}px)`;
+            targetCue.style.zIndex = String(Math.max(0, Math.round(target.y) - 1));
           }
         }
 
         // Direct DOM: skill bar fill in status panel
         const skillEl = skillBarFillRefs.current.get(d.id);
         if (skillEl && d.state !== 'dead') {
-          const config = STRATEGY_CONFIGS[d.strategy];
-          // SP now affects drain rate, not base value — use raw skillCooldownBase here
-          const skillBase = Math.max(6000, config.skillCooldownBase);
-          const fillPct =
-            d.state === 'skill_windup'
-              ? 100
-              : Math.max(0, Math.min(100, (1 - d.skillCooldownMs / skillBase) * 100));
+          let fillPct: number;
+          if (techniqueMode) {
+            fillPct = battleSpGaugePercent(d.battleSp, d.battleSpCapacity);
+          } else {
+            const previousCycle = legacySkillCycleRefs.current.get(d.id) ?? {
+              remainingMs: 0,
+              totalMs: 1,
+            };
+            const remainingMs = Math.max(
+              0,
+              finiteNumber(d.skillCooldownMs, previousCycle.remainingMs)
+            );
+            const totalMs =
+              remainingMs > previousCycle.remainingMs
+                ? Math.max(1, remainingMs)
+                : previousCycle.totalMs;
+            legacySkillCycleRefs.current.set(d.id, { remainingMs, totalMs });
+            fillPct = legacySkillGaugePercent(remainingMs, totalMs, d.state === 'skill_windup');
+          }
           skillEl.style.width = `${fillPct}%`;
         }
       }
@@ -861,6 +916,10 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
           from { opacity: 0.5; transform: scale(0.92); }
           to   { opacity: 1;   transform: scale(1.08); }
         }
+        @keyframes arenaTargetGlow {
+          from { opacity: 0.42; filter: blur(5px); }
+          to   { opacity: 0.82; filter: blur(2px); }
+        }
         @keyframes particleBurst {
           0%   { transform: translate(0, 0) scale(1.2); opacity: 1; }
           20%  { transform: translate(calc(var(--px)*0.25), calc(var(--py)*0.25)) scale(1); opacity: 1; }
@@ -882,6 +941,7 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
         hpTextRefs={hpTextRefs}
         skillBarFillRefs={skillBarFillRefs}
         hpTrailRefs={hpTrailRefs}
+        techniqueMode={techniqueMode}
       />
 
       {/* ── Arena — scaled to fill container width ── */}
@@ -1129,7 +1189,7 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
                       />
 
                       {/* Skill windup pulsing ring */}
-                      {windupIds.has(d.id) && (
+                      {!techniqueMode && windupIds.has(d.id) && (
                         <div
                           style={{
                             position: 'absolute',
@@ -1146,50 +1206,40 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
                   </div>
                 </div>
               ))}
-              <svg
-                aria-hidden="true"
-                width={WORLD_W}
-                height={WORLD_H}
-                style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1800 }}
-              >
-                {[...windupIds].map((id) => {
+              {!techniqueMode &&
+                [...windupIds].map((id) => {
                   const actor = digimonRef.current.find((d) => d.id === id);
                   const target = digimonRef.current.find((d) => d.id === actor?.currentTargetId);
                   if (!actor || !target) return null;
                   const color = ATTRIBUTE_COLORS[actor.attribute] ?? '#fff';
                   return (
-                    <g key={id}>
-                      <line
-                        ref={(el) => {
-                          if (el) targetLineRefs.current.set(id, el);
-                          else targetLineRefs.current.delete(id);
-                        }}
-                        x1={actor.x}
-                        y1={actor.y}
-                        x2={target.x}
-                        y2={target.y}
-                        stroke={color}
-                        strokeWidth="2"
-                        strokeDasharray="6 8"
-                        opacity="0.8"
-                      />
-                      <circle
-                        ref={(el) => {
-                          if (el) targetRingRefs.current.set(id, el);
-                          else targetRingRefs.current.delete(id);
-                        }}
-                        cx={target.x}
-                        cy={target.y}
-                        r="36"
-                        fill="none"
-                        stroke={color}
-                        strokeWidth="3"
-                        strokeDasharray="12 6"
-                      />
-                    </g>
+                    <div
+                      key={id}
+                      ref={(el) => {
+                        if (el) targetCueRefs.current.set(id, el);
+                        else targetCueRefs.current.delete(id);
+                      }}
+                      aria-hidden="true"
+                      style={{
+                        position: 'absolute',
+                        left: 0,
+                        top: 0,
+                        width: 112,
+                        height: 38,
+                        borderRadius: '50%',
+                        background: `radial-gradient(ellipse, ${color} 0%, color-mix(in srgb, ${color} 55%, transparent) 36%, transparent 72%)`,
+                        boxShadow: `0 0 22px color-mix(in srgb, ${color} 65%, transparent)`,
+                        mixBlendMode: 'screen',
+                        opacity: reducedMotion ? 0.62 : undefined,
+                        animation: reducedMotion
+                          ? undefined
+                          : 'arenaTargetGlow 420ms ease-in-out infinite alternate',
+                        pointerEvents: 'none',
+                        willChange: 'transform, opacity, filter',
+                      }}
+                    />
                   );
                 })}
-              </svg>
               <BattleAttackEffects
                 effects={attackEffects}
                 reducedMotion={!!reducedMotion}
@@ -1204,6 +1254,10 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
                         : autoZoomRef.current)
                   )
                 }
+              />
+              <TechniqueEffects
+                effects={techniqueEffects}
+                reducedMotion={!!reducedMotion || simplifiedEffects}
               />
               {/* Hit particle effects — rendered in world-space, panned by camera */}
               {hitEffects.map((p) => {
@@ -1292,6 +1346,7 @@ interface StatusPanelProps {
   hpTextRefs: React.MutableRefObject<Map<string, HTMLSpanElement>>;
   skillBarFillRefs: React.MutableRefObject<Map<string, HTMLDivElement>>;
   hpTrailRefs: React.MutableRefObject<Map<string, HTMLDivElement>>;
+  techniqueMode: boolean;
 }
 
 const StatusPanel: React.FC<StatusPanelProps> = ({
@@ -1302,6 +1357,7 @@ const StatusPanel: React.FC<StatusPanelProps> = ({
   hpTextRefs,
   skillBarFillRefs,
   hpTrailRefs,
+  techniqueMode,
 }) => {
   const renderBar = (d: ArenaDigimon, isUser: boolean) => {
     const hp = d.hp;
@@ -1368,11 +1424,15 @@ const StatusPanel: React.FC<StatusPanelProps> = ({
 
         {/* Skill bar */}
         <div>
-          <span className="text-xs font-extrabold tracking-widest uppercase text-gray-400 dark:text-gray-500 font-heading">
-            Skill
+          <span
+            data-battle-resource-label={d.id}
+            className="text-xs font-extrabold tracking-widest uppercase text-gray-400 dark:text-gray-500 font-heading"
+          >
+            {techniqueMode ? 'SP' : 'Skill'}
           </span>
           <div className="h-1 rounded-full bg-gray-200 dark:bg-dark-100 overflow-hidden mt-0.5">
             <div
+              data-battle-resource-fill={d.id}
               ref={(el) => {
                 if (el) skillBarFillRefs.current.set(d.id, el);
                 else skillBarFillRefs.current.delete(d.id);

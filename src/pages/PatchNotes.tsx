@@ -31,6 +31,31 @@ const PatchNotes = () => {
               <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-xs font-medium px-2.5 py-0.5 rounded">
                 Latest
               </span>
+              <h3 className="text-lg font-medium ml-2 dark:text-gray-200">
+                Arena Technique Foundation
+              </h3>
+              <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">
+                September 21, 2026
+              </span>
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
+              <li>
+                Arena targeting now uses soft ground lighting and localized impact shapes instead of
+                dotted target lines and attack arrows.
+              </li>
+              <li>
+                Existing Skill meters begin moving through their randomized opening charge and
+                safely handle invalid playback values instead of becoming stuck at 0 or NaN.
+              </li>
+              <li>
+                New arena battles build a dedicated SP meter and unleash the first distinct
+                techniques: the close-range Impact Strike and traveling Ember Burst.
+              </li>
+            </ul>
+          </div>
+
+          <div className="mb-6">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium ml-2 dark:text-gray-200">Installable Web App</h3>
               <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">
                 September 20, 2026

@@ -53,7 +53,7 @@ async function invoke<T>(body: Record<string, unknown>): Promise<T> {
 export const fetchArenaContext = (forceRefresh = false) =>
   invoke<ArenaContext>({ action: 'options', forceRefresh });
 export const startSavedArenaBattle = (intent: ArenaBattleIntent) =>
-  invoke<{ battle: SavedArenaBattle }>({ action: 'start', ...intent });
+  invoke<{ battle: SavedArenaBattle }>({ action: 'start', replayVersion: 2, ...intent });
 export const resumeSavedArenaBattle = (requestId: string) =>
   invoke<{ battle: SavedArenaBattle }>({ action: 'resume', requestId });
 
