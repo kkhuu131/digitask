@@ -129,10 +129,13 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
         <EvolutionAnimation
           oldSpriteUrl={selectedDigimon.digimon?.sprite_url || ''}
           newSpriteUrl={evolutionTarget.sprite_url}
+          oldSpeciesName={selectedDigimon.digimon?.name || selectedDigimon.name}
+          newSpeciesName={evolutionTarget.name}
           onComplete={handleAnimationComplete}
           isDevolution={isDevolution}
           isDNAFusion={!!selectedDNAPartnerId && !!evolutionTarget.dna_requirement}
           dnaPartnerSpriteUrl={dnaPartnerDigimon?.digimon?.sprite_url || ''}
+          dnaPartnerSpeciesName={dnaPartnerDigimon?.digimon?.name}
         />
       </div>
     );

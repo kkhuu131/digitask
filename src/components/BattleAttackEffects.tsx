@@ -19,10 +19,12 @@ export interface AttackEffect {
 const BattleAttackEffects = ({
   effects,
   reducedMotion,
+  simplifiedEffects,
   labelScale,
 }: {
   effects: AttackEffect[];
   reducedMotion: boolean;
+  simplifiedEffects: boolean;
   labelScale: number;
 }) => (
   <>
@@ -65,7 +67,7 @@ const BattleAttackEffects = ({
               strokeWidth="3"
               strokeLinejoin="round"
             />
-            {!effect.miss && (
+            {!effect.miss && !simplifiedEffects && (
               <path
                 d={`M ${effect.targetX - 14} ${effect.targetY + 18} L ${effect.targetX + 14} ${effect.targetY - 18}`}
                 stroke={effect.critical ? '#fbbf24' : '#fff'}
@@ -82,8 +84,8 @@ const BattleAttackEffects = ({
         aria-hidden="true"
         data-battle-damage="true"
         initial={{ opacity: 1, y: 0 }}
-        animate={{ opacity: [1, 1, 0], y: reducedMotion ? 0 : -32 }}
-        transition={{ duration: 0.95, times: [0, 0.7, 1] }}
+        animate={{ opacity: [1, 1, 0], y: reducedMotion ? 0 : simplifiedEffects ? -20 : -32 }}
+        transition={{ duration: simplifiedEffects ? 0.65 : 0.95, times: [0, 0.7, 1] }}
         style={{
           position: 'absolute',
           left: effect.targetX,
@@ -100,9 +102,9 @@ const BattleAttackEffects = ({
             fontSize: effect.critical ? 20 : 16,
             fontWeight: 800,
             whiteSpace: 'nowrap',
-            WebkitTextStroke: '3px #07060f',
+            WebkitTextStroke: `${simplifiedEffects ? 2 : 3}px #07060f`,
             paintOrder: 'stroke fill',
-            textShadow: '0 2px 2px #07060f',
+            textShadow: simplifiedEffects ? 'none' : '0 2px 2px #07060f',
           }}
         >
           {effect.miss ? 'MISS' : `${effect.critical ? 'CRIT ' : ''}${effect.damage}`}

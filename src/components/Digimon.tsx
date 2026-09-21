@@ -14,6 +14,7 @@ import TypeAttributeIcon from './TypeAttributeIcon';
 import EvolutionAnimation from './EvolutionAnimation';
 import { getSpriteUrl } from '../utils/spriteManager';
 import { ANIMATED_DIGIMON } from '../constants/animatedDigimonList';
+import { DIGIMON_LOOKUP_TABLE } from '../constants/digimonLookup';
 import type { SpriteType } from '../utils/spriteManager';
 import {
   calculateFinalStats,
@@ -700,6 +701,11 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
         <EvolutionAnimation
           oldSpriteUrl={evolutionSprites.old}
           newSpriteUrl={evolutionSprites.new}
+          oldSpeciesName={currentDigimon.digimon?.name || currentDigimon.name}
+          newSpeciesName={
+            evolutionOptions.find((option) => option.digimon_id === pendingEvolution?.toDigimonId)
+              ?.name || 'Digimon'
+          }
           onComplete={completeEvolution}
           isDevolution={false}
         />
@@ -710,6 +716,11 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
         <EvolutionAnimation
           oldSpriteUrl={evolutionSprites.old}
           newSpriteUrl={evolutionSprites.new}
+          oldSpeciesName={currentDigimon.digimon?.name || currentDigimon.name}
+          newSpeciesName={
+            (pendingDevolution && DIGIMON_LOOKUP_TABLE[pendingDevolution.toDigimonId]?.name) ||
+            'Digimon'
+          }
           onComplete={completeDevolution}
           isDevolution={true}
         />

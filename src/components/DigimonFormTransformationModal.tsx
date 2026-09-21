@@ -147,6 +147,8 @@ const DigimonFormTransformationModal: React.FC<DigimonFormTransformationModalPro
         <EvolutionAnimation
           oldSpriteUrl={currentDigimon.sprite_url}
           newSpriteUrl={formDigimon.sprite_url}
+          oldSpeciesName={currentDigimon.name}
+          newSpeciesName={formDigimon.name}
           onComplete={completeTransformation}
           isFormTransformation={true}
           formType={formInfo.formType}

@@ -270,6 +270,11 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
   const reducedMotion = useReducedMotion();
   const reducedMotionRef = useRef(!!reducedMotion);
   reducedMotionRef.current = !!reducedMotion;
+  const [simplifiedEffects, setSimplifiedEffects] = useState(
+    () => window.matchMedia('(max-width: 767px), (pointer: coarse)').matches
+  );
+  const simplifiedEffectsRef = useRef(simplifiedEffects);
+  simplifiedEffectsRef.current = simplifiedEffects;
   const cinematicCooldownRef = useRef(0);
   const effectSequenceRef = useRef(0);
   const reactionRefs = useRef<Map<string, HTMLDivElement>>(new Map());
@@ -360,6 +365,13 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
   useEffect(() => {
     const id = setInterval(() => setSpriteToggle((t) => !t), 600);
     return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    const media = window.matchMedia('(max-width: 767px), (pointer: coarse)');
+    const update = () => setSimplifiedEffects(media.matches);
+    media.addEventListener('change', update);
+    return () => media.removeEventListener('change', update);
   }, []);
 
   // ── Auto-advance to results screen after battle ends ──────────────────────────
@@ -598,7 +610,7 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
         }
 
         // Spawn particle hit effect
-        if (!ev.isMiss && tgt && !reducedMotionRef.current) {
+        if (!ev.isMiss && tgt && !reducedMotionRef.current && !simplifiedEffectsRef.current) {
           const hitType = ev.isSkill ? 'skill' : ev.isCritical ? 'crit' : 'normal';
           const attrColor = ATTRIBUTE_COLORS[atk?.attribute ?? ''] ?? '#ffffff';
           const batchId = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
@@ -1175,6 +1187,7 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
               <BattleAttackEffects
                 effects={attackEffects}
                 reducedMotion={!!reducedMotion}
+                simplifiedEffects={simplifiedEffects}
                 labelScale={
                   1 /
                   Math.max(

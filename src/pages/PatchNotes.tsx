@@ -54,6 +54,15 @@ const PatchNotes = () => {
                 color throughout navigation, account and landing pages. Light-mode primary actions
                 also use a brighter amber instead of the previous dark orange.
               </li>
+              <li>
+                Arena hits use a lighter effects path on phones and touch devices to keep combat
+                smooth while retaining damage numbers and attack cues. Evolution results now name
+                both the previous and new species in a smaller confirmation message. Evolution is
+                now a longer fullscreen event where animated partners become living digital
+                particles, reconstruct into their new form and celebrate the result. During DNA
+                Digivolution, both partners become glowing orbs that visibly merge before their
+                shared particles reconstruct the fused Digimon.
+              </li>
             </ul>
           </div>
 
