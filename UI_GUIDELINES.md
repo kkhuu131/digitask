@@ -100,6 +100,10 @@ Profile Digimon use `DigimonCardIdentity`, animated sprites and shared stat bars
 - Bonus stat rows use `ui-stat-button`: a 24px visible button with an invisible
   44px target on phones/touch devices and a 32px target on larger screens with a
   fine pointer. Pair it with `ui-stat-list` so adjacent tap targets do not overlap.
+  Use `ui-stat-adjustments` for paired +/− buttons with nonoverlapping hit targets.
+  Bonus allocations stay in a local preview until Save changes; Cancel and minus
+  undo only unsaved additions. Keep evolution/transfer actions disabled while a
+  draft exists and explain that the changes are unsaved next to Save/Cancel.
 - Give every field a visible associated label or an accessible name. Expose toggle
   state using `aria-pressed` or the native checkbox state. Use native buttons and
   links for keyboard interaction.

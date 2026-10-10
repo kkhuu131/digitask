@@ -1,5 +1,17 @@
 # Database audit and deployed cleanup — 2026-09-17
 
+## Batch bonus stats — prepared locally, not deployed (2026-10-10)
+
+`20261010185632_batch_stat_allocation.sql` adds an owner-scoped atomic batch
+allocation RPC with profile-first row locks, strict stat/count validation,
+saved-point checks and the combined `20 + ABI` cap. Expected current bonuses
+reject stale drafts and retries after a lost response without another spend.
+No historical data is changed; the single-point RPC remains compatible.
+The frontend previews draft +/− adjustments locally and updates shared state
+only from the batch response. Deploy the SQL before the compatible frontend.
+Local authorization fixtures cover exact-cap batches, insufficient balances,
+invalid payloads, stale retries and full rollback after an injected failure.
+
 ## Task-history reconciliation - database deployed 2026-09-18
 
 Read-only diagnostics found 18 accounts whose retained daily history exceeded

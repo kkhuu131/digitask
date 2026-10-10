@@ -8,6 +8,7 @@ import { DIGIMON_LOOKUP_TABLE } from '../constants/digimonLookup';
 import { getDevolutions, getEvolutionPath, getEvolutions } from '@/utils/evolutionsHelper';
 import { useTitleStore } from '../store/titleStore';
 import { useAuthStore } from '../store/authStore';
+import type { BatchAllocationResult, StatAllocation } from '../utils/statAllocation';
 
 export const NON_ACTIVE_DIGIMON_EXP_MULTIPLIER = 0.5;
 
@@ -181,6 +182,11 @@ export interface PetState {
     newName: string
   ) => Promise<{ success: boolean; error?: string }>;
   updateDigimonInStore: (updatedDigimon: UserDigimon) => void;
+  allocateStats: (
+    digimonId: string,
+    allocations: StatAllocation,
+    expectedBonuses: StatAllocation
+  ) => Promise<BatchAllocationResult>;
   evolutionPathsCache: Record<number, EvolutionOption[]>;
   devolutionPathsCache: Record<number, EvolutionOption[]>;
   fetchEvolutionOptions: (digimonId: number) => Promise<EvolutionOption[]>;
@@ -1578,6 +1584,37 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       set({ error: (error as Error).message });
       return { success: false, error: (error as Error).message };
     }
+  },
+
+  allocateStats: async (digimonId, allocations, expectedBonuses) => {
+    const userId = useAuthStore.getState().user?.id;
+    const { data, error } = await supabase.rpc('allocate_stats', {
+      p_digimon_id: digimonId,
+      p_allocations: allocations,
+      p_expected_bonuses: expectedBonuses,
+    });
+    if (error) throw error;
+    if (!data?.digimon || typeof data.success !== 'boolean' || !data.saved_stats) {
+      throw new Error('Unexpected stat allocation response');
+    }
+    const result = data as BatchAllocationResult;
+    if (useAuthStore.getState().user?.id === userId) {
+      const current = get().allUserDigimon.find((pet) => pet.id === digimonId) ?? get().userDigimon;
+      result.digimon = {
+        ...result.digimon,
+        digimon:
+          current?.digimon_id === result.digimon.digimon_id
+            ? current?.digimon
+            : DIGIMON_LOOKUP_TABLE[result.digimon.digimon_id],
+      };
+      get().updateDigimonInStore({ ...current, ...result.digimon });
+      try {
+        localStorage.setItem('savedStats', JSON.stringify(result.saved_stats));
+      } catch {
+        // The server confirmation remains valid when browser storage is unavailable.
+      }
+    }
+    return result;
   },
 
   updateDigimonInStore: (updatedDigimon: UserDigimon) => {

@@ -419,6 +419,8 @@ GRANT EXECUTE ON FUNCTION public.admin_rename_user(uuid, text) TO authenticated,
 
 
 REVOKE ALL ON FUNCTION public.allocate_stat(uuid, text, uuid) FROM PUBLIC, anon;
+REVOKE ALL ON FUNCTION public.allocate_stats(uuid, jsonb, jsonb) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.allocate_stats(uuid, jsonb, jsonb) TO authenticated, service_role;
 GRANT EXECUTE ON FUNCTION public.allocate_stat(uuid, text, uuid) TO authenticated, service_role;
 
 REVOKE ALL ON FUNCTION public.complete_task_all_triggers(uuid, uuid, boolean) FROM PUBLIC, anon;

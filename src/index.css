@@ -146,12 +146,18 @@
   .ui-stat-list {
     @apply space-y-5;
   }
+  .ui-stat-adjustments {
+    @apply flex items-center gap-5;
+  }
   @media (min-width: 640px) and (pointer: fine) {
     .ui-stat-button::before {
       inset: -4px;
     }
     .ui-stat-list {
       @apply space-y-3;
+    }
+    .ui-stat-adjustments {
+      @apply gap-2;
     }
   }
   .ui-link {

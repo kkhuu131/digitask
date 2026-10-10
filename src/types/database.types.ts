@@ -1103,6 +1103,14 @@ export type Database = {
         Args: { p_digimon_id: string; p_stat_type: string; p_user_id: string };
         Returns: boolean;
       };
+      allocate_stats: {
+        Args: {
+          p_allocations: Json;
+          p_digimon_id: string;
+          p_expected_bonuses: Json;
+        };
+        Returns: Json;
+      };
       arena_battle_context: { Args: { p_user_id: string }; Returns: Json };
       check_all_overdue_tasks: { Args: never; Returns: undefined };
       check_and_set_first_win_self: { Args: never; Returns: boolean };

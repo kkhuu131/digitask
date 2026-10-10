@@ -40,7 +40,7 @@ const DigimonStatRow = ({
         />
       </div>
     </div>
-    <div className={`flex items-center gap-1.5 shrink-0 justify-end ${children ? 'w-28' : 'w-20'}`}>
+    <div className={`flex items-center gap-1.5 shrink-0 justify-end ${children ? 'w-40' : 'w-20'}`}>
       <span className="font-semibold text-gray-800 dark:text-gray-100 tabular-nums">{value}</span>
       {bonus > 0 && (
         <span className="text-green-500 dark:text-green-400 text-xs tabular-nums">+{bonus}</span>

@@ -4,6 +4,7 @@ const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 let sql = fs.readFileSync(path.join(__dirname, '../supabase/tests/authorization.sql'), 'utf8');
 sql += '\n' + fs.readFileSync(path.join(__dirname, '../supabase/tests/achievement-claims.sql'), 'utf8');
+sql += '\n' + fs.readFileSync(path.join(__dirname, '../supabase/tests/stat-allocation.sql'), 'utf8');
 const historyMigration = fs.readFileSync(path.join(__dirname, '../supabase/migrations/20260918184219_track_digimon_evolution_history.sql'), 'utf8');
 const historyBackfill = historyMigration.match(/-- BEGIN DIGIMON HISTORY BACKFILL([\s\S]*?)-- END DIGIMON HISTORY BACKFILL/);
 if (!historyBackfill) throw new Error('Digimon history backfill section missing');

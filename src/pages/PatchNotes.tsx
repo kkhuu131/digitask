@@ -45,8 +45,15 @@ const PatchNotes = () => {
                 quicker stat bar transitions.
               </li>
               <li>
-                Controls stay in place as points run out. A saving message explains when an
-                allocation is pending, and failed saves restore the point with a visible error.
+                Allocate multiple bonus points with +/− controls and preview their effects without
+                waiting between taps. Save changes applies the whole draft together; Cancel undoes
+                only the unsaved additions. Saved-point balances and the combined bonus-stat cap
+                limit the preview and are checked again when saving.
+              </li>
+              <li>
+                Closing with unsaved points asks before discarding them. Failed saves keep the draft
+                available to retry; changed server balances refresh the window so you can adjust
+                your allocation safely.
               </li>
             </ul>
           </div>

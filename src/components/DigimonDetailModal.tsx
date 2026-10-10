@@ -22,14 +22,15 @@ import DigimonEvolutionHistory from './DigimonEvolutionHistory';
 import DigimonStatRow from './DigimonStatRow';
 import PageTutorial from './PageTutorial';
 import { DialogueStep } from './DigimonDialogue';
-
-const cacheSavedStats = (stats: Record<string, number>) => {
-  try {
-    localStorage.setItem('savedStats', JSON.stringify(stats));
-  } catch {
-    // Browser storage is optional; it must not prevent saving a stat point.
-  }
-};
+import {
+  EMPTY_ALLOCATION,
+  allocationTotal,
+  adjustAllocation,
+  bonusSnapshot,
+  previewAllocation,
+  type BonusStat,
+  type StatAllocation,
+} from '../utils/statAllocation';
 
 interface DigimonDetailModalProps {
   selectedDigimon: UserDigimon | null;
@@ -58,9 +59,10 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
     int: 0,
     spd: 0,
   });
-  const [allocating, setAllocating] = useState<StatType | null>(null);
+  const [allocating, setAllocating] = useState(false);
+  const [draft, setDraft] = useState<StatAllocation>(EMPTY_ALLOCATION);
+  const expectedBonuses = useRef<StatAllocation | null>(null);
   const allocationPending = useRef(false);
-  const allocationVersion = useRef(0);
   const [statsLoaded, setStatsLoaded] = useState(false);
   const [allocationError, setAllocationError] = useState<string | null>(null);
   const currentUserId = useAuthStore((state) => state.user?.id);
@@ -71,10 +73,18 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
   const [devolutionError, setDevolutionError] = useState<string | null>(null);
   const [devolutionOptions, setDevolutionOptions] = useState<EvolutionOption[]>([]);
   const [evolutionOptions, setEvolutionOptions] = useState<EvolutionOption[]>([]);
+  const pendingPoints = allocationTotal(draft);
+  const previewDigimon = localDigimon ? previewAllocation(localDigimon, draft) : null;
 
   useEffect(() => {
     setLocalDigimon(selectedDigimon);
   }, [selectedDigimon]);
+
+  useEffect(() => {
+    setDraft(EMPTY_ALLOCATION);
+    expectedBonuses.current = null;
+    setAllocationError(null);
+  }, [selectedDigimon?.id, currentUserId]);
 
   useEffect(() => {
     let cancelled = false;
@@ -100,90 +110,76 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
     loadSavedStats();
     return () => {
       cancelled = true;
-      allocationVersion.current++;
     };
   }, [currentUserId]);
 
-  // Function to allocate a stat point
-  const allocateStat = async (statType: StatType) => {
-    // Get the available stat points for this type
-    const upperType = statType.toUpperCase();
-    const availablePoints = savedStats[upperType] ?? savedStats[statType.toLowerCase()] ?? 0;
-
-    if (
-      availablePoints <= 0 ||
-      allocationPending.current ||
-      !statsLoaded ||
-      !localDigimon ||
-      !belongsToCurrentUser ||
-      !isUnderStatCap(localDigimon) ||
-      statType === 'ABI'
-    )
-      return;
-
-    // Lock synchronously, before React renders, so rapid taps cannot submit twice.
-    allocationPending.current = true;
-    const version = ++allocationVersion.current;
-    setAllocating(statType);
+  const adjustStat = (stat: BonusStat, delta: 1 | -1) => {
+    if (!localDigimon || !belongsToCurrentUser || !statsLoaded || allocationPending.current) return;
+    if (!expectedBonuses.current || pendingPoints === 0)
+      expectedBonuses.current = bonusSnapshot(localDigimon);
+    setDraft((current) => adjustAllocation(current, stat, delta, localDigimon, savedStats));
     setAllocationError(null);
-    const statField = `${statType.toLowerCase()}_bonus` as
-      | 'hp_bonus'
-      | 'sp_bonus'
-      | 'atk_bonus'
-      | 'def_bonus'
-      | 'int_bonus'
-      | 'spd_bonus';
-    const updatedDigimon = { ...localDigimon, [statField]: localDigimon[statField] + 1 };
-    const newSavedStats = { ...savedStats, [upperType]: availablePoints - 1 };
-    // Feedback must happen before the first network request.
-    setLocalDigimon(updatedDigimon);
-    useDigimonStore.getState().updateDigimonInStore(updatedDigimon);
-    setSavedStats(newSavedStats);
-    let committed = false;
-
-    try {
-      cacheSavedStats(newSavedStats);
-      const { data, error } = await supabase.rpc('allocate_stat', {
-        p_digimon_id: localDigimon.id,
-        p_stat_type: upperType,
-        p_user_id: currentUserId,
-      });
-
-      if (error || data !== true) {
-        throw (
-          error ||
-          new Error('No saved points are available or this Digimon has reached its stat cap')
-        );
-      }
-      committed = true;
-
-      // Accept the next tap as soon as the save completes. An older background
-      // balance read must not overwrite a newer allocation's optimistic update.
-      void Promise.resolve(
-        supabase.from('profiles').select('saved_stats').eq('id', currentUserId).single()
-      )
-        .then(({ data: profileData }) => {
-          if (allocationVersion.current === version && profileData?.saved_stats) {
-            setSavedStats(profileData.saved_stats);
-            cacheSavedStats(profileData.saved_stats);
-          }
-        })
-        .catch((error) => console.error('Error refreshing saved stat points:', error));
-    } catch (error) {
-      console.error('Error allocating stat:', error);
-      if (!committed) {
-        setLocalDigimon(localDigimon);
-        useDigimonStore.getState().updateDigimonInStore(localDigimon);
-        setSavedStats(savedStats);
-        setAllocationError('Could not save this stat point. Please try again.');
-        cacheSavedStats(savedStats);
-      }
-    } finally {
-      allocationPending.current = false;
-      setAllocating(null);
-    }
   };
 
+  const cancelDraft = () => {
+    if (allocationPending.current) return;
+    setDraft(EMPTY_ALLOCATION);
+    expectedBonuses.current = null;
+    setAllocationError(null);
+  };
+
+  const requestClose = () => {
+    if (allocationPending.current) return;
+    if (pendingPoints > 0 && !window.confirm('Discard your unsaved stat changes?')) return;
+    onClose();
+  };
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && !showEvolutionModal && !showDevolutionModal && !editingName) {
+        event.preventDefault();
+        requestClose();
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  });
+
+  const saveStats = async () => {
+    if (
+      !localDigimon ||
+      !belongsToCurrentUser ||
+      !expectedBonuses.current ||
+      pendingPoints === 0 ||
+      allocationPending.current
+    )
+      return;
+    allocationPending.current = true;
+    setAllocating(true);
+    setAllocationError(null);
+    try {
+      const result = await useDigimonStore
+        .getState()
+        .allocateStats(localDigimon.id, draft, expectedBonuses.current);
+      setLocalDigimon({ ...localDigimon, ...result.digimon });
+      setSavedStats(result.saved_stats);
+      setDraft(EMPTY_ALLOCATION);
+      expectedBonuses.current = null;
+      if (!result.success) {
+        setAllocationError(
+          'Your stats or saved points changed. Current values have been refreshed; review them before adding more points.'
+        );
+      }
+    } catch (error) {
+      console.error('Error saving stat allocation:', error);
+      // Retain the draft. Expected bonuses make retrying safe if the first
+      // request committed but its response was lost.
+      setAllocationError('Could not confirm the save. Your draft is kept; try Save changes again.');
+    } finally {
+      allocationPending.current = false;
+      setAllocating(false);
+    }
+  };
   // Max reference values for progress bars (lv99 reference)
   const statMaxRef: Record<string, number> = {
     HP: localDigimon?.digimon?.hp_level99 ?? 2000,
@@ -197,8 +193,9 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
 
   const renderStatRow = (label: StatType, baseValue: number, bonusValue: number) => {
     const upperLabel = label.toUpperCase();
-    const lowerLabel = label.toLowerCase();
-    const statValue = savedStats[upperLabel] ?? savedStats[lowerLabel] ?? 0;
+    const stat = label as BonusStat;
+    const statValue =
+      label === 'ABI' ? 0 : Math.max(0, (savedStats[upperLabel] ?? 0) - draft[stat]);
     return (
       <DigimonStatRow
         label={label}
@@ -207,27 +204,40 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
         maxReference={statMaxRef[upperLabel] ?? 600}
       >
         {belongsToCurrentUser && label !== 'ABI' && (
-          <button
-            type="button"
-            className="ui-stat-button touch-manipulation bg-amber-100 hover:bg-amber-200 dark:bg-amber-800/30 dark:hover:bg-amber-700/50 text-amber-600 dark:text-amber-300 active:bg-amber-300 dark:active:bg-amber-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
-            onClick={() => allocateStat(label)}
-            disabled={
-              !!allocating || !statsLoaded || statValue <= 0 || !isUnderStatCap(localDigimon)
-            }
-            aria-label={`Allocate ${label} stat point (${statValue} available)`}
-            aria-busy={allocating === label}
-            title={`Allocate ${label} stat point (${statValue} available)`}
-          >
-            <span aria-hidden="true" className="text-base font-bold leading-none">
-              {allocating === label ? '…' : '+'}
-            </span>
-            <span
-              aria-hidden="true"
-              className="absolute -top-1.5 -right-1.5 bg-amber-200 text-amber-900 dark:bg-amber-700 dark:text-amber-100 text-xs rounded-full min-w-4 h-4 px-0.5 flex items-center justify-center tabular-nums leading-none"
+          <div className="ui-stat-adjustments">
+            <button
+              type="button"
+              className="ui-stat-button touch-manipulation bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-dark-200 dark:text-gray-300 dark:hover:bg-dark-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+              onClick={() => adjustStat(stat, -1)}
+              disabled={allocating || draft[stat] <= 0}
+              aria-label={`Undo one pending ${label} point`}
+              title={`Undo one pending ${label} point`}
             >
-              {statValue}
-            </span>
-          </button>
+              <span aria-hidden="true" className="text-base font-bold leading-none">
+                −
+              </span>
+            </button>
+            <button
+              type="button"
+              className="ui-stat-button touch-manipulation bg-amber-100 hover:bg-amber-200 dark:bg-amber-800/30 dark:hover:bg-amber-700/50 text-amber-600 dark:text-amber-300 active:bg-amber-300 dark:active:bg-amber-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+              onClick={() => adjustStat(stat, 1)}
+              disabled={
+                allocating || !statsLoaded || statValue <= 0 || !isUnderStatCap(previewDigimon)
+              }
+              aria-label={`Allocate ${label} stat point (${statValue} available)`}
+              title={`Allocate ${label} stat point (${statValue} available)`}
+            >
+              <span aria-hidden="true" className="text-base font-bold leading-none">
+                +
+              </span>
+              <span
+                aria-hidden="true"
+                className="absolute -top-1.5 -right-1.5 bg-amber-200 text-amber-900 dark:bg-amber-700 dark:text-amber-100 text-xs rounded-full min-w-4 h-4 px-0.5 flex items-center justify-center tabular-nums leading-none"
+              >
+                {statValue}
+              </span>
+            </button>
+          </div>
         )}
       </DigimonStatRow>
     );
@@ -355,7 +365,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
     return discoveredDigimon.includes(digimonId);
   };
 
-  const stats = calculateFinalStats(localDigimon);
+  const stats = calculateFinalStats(previewDigimon);
 
   // Handle evolution
   const handleEvolution = async (toDigimonId: number) => {
@@ -409,7 +419,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
         onClick={(e) => {
           // Only close if clicking the backdrop (not the modal content)
           if (e.target === e.currentTarget) {
-            onClose();
+            requestClose();
           }
         }}
       >
@@ -425,9 +435,11 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
           <button
             onClick={(e) => {
               e.stopPropagation();
-              onClose();
+              requestClose();
             }}
-            className="absolute top-3 right-3 p-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            disabled={allocating}
+            className="absolute top-3 right-3 p-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            aria-label="Close Digimon details"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -680,19 +692,23 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                 {belongsToCurrentUser && (
                   <div
                     className={`mb-3 p-2 rounded-lg text-xs font-body ${
-                      isUnderStatCap(localDigimon)
+                      isUnderStatCap(previewDigimon)
                         ? 'bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-700/50 text-purple-800 dark:text-purple-300'
                         : 'bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 text-amber-600 dark:text-amber-300'
                     }`}
                   >
-                    {isUnderStatCap(localDigimon) ? (
+                    {isUnderStatCap(previewDigimon) ? (
                       <>
                         Bonus stat slots remaining:{' '}
-                        <strong>{getRemainingStatPoints(localDigimon)}</strong>. Tap{' '}
-                        <strong>+</strong> on any stat to allocate.
+                        <strong>{Math.max(0, getRemainingStatPoints(previewDigimon))}</strong>. Use{' '}
+                        <strong>+</strong>/<strong>−</strong> to preview points, then save.
                       </>
                     ) : (
-                      <>Stat cap reached. Increase ABI via evolution/devolution to unlock more.</>
+                      <>
+                        {pendingPoints > 0
+                          ? 'Preview fills the stat cap. Undo points to adjust, or save your changes.'
+                          : 'Stat cap reached. Increase ABI via evolution/devolution to unlock more.'}
+                      </>
                     )}
                   </div>
                 )}
@@ -706,7 +722,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                     {allocationError ? (
                       <span className="text-red-600 dark:text-red-400">{allocationError}</span>
                     ) : allocating ? (
-                      `Saving ${allocating} stat point…`
+                      'Saving stat changes…'
                     ) : !statsLoaded ? (
                       'Loading saved stat points…'
                     ) : (
@@ -715,14 +731,40 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                   </div>
                 )}
                 <div className="ui-stat-list mb-4">
-                  {renderStatRow('HP', stats.hp, localDigimon.hp_bonus)}
-                  {renderStatRow('SP', stats.sp, localDigimon.sp_bonus)}
-                  {renderStatRow('ATK', stats.atk, localDigimon.atk_bonus)}
-                  {renderStatRow('DEF', stats.def, localDigimon.def_bonus)}
-                  {renderStatRow('INT', stats.int, localDigimon.int_bonus)}
-                  {renderStatRow('SPD', stats.spd, localDigimon.spd_bonus)}
+                  {renderStatRow('HP', stats.hp, previewDigimon!.hp_bonus)}
+                  {renderStatRow('SP', stats.sp, previewDigimon!.sp_bonus)}
+                  {renderStatRow('ATK', stats.atk, previewDigimon!.atk_bonus)}
+                  {renderStatRow('DEF', stats.def, previewDigimon!.def_bonus)}
+                  {renderStatRow('INT', stats.int, previewDigimon!.int_bonus)}
+                  {renderStatRow('SPD', stats.spd, previewDigimon!.spd_bonus)}
                   {renderStatRow('ABI', localDigimon.abi, 0)}
                 </div>
+                {belongsToCurrentUser && pendingPoints > 0 && (
+                  <div className="ui-panel p-3 mb-4">
+                    <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">
+                      {pendingPoints} unsaved {pendingPoints === 1 ? 'point' : 'points'}. Minus only
+                      undoes points added here.
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        className="btn-primary"
+                        onClick={saveStats}
+                        disabled={allocating}
+                      >
+                        {allocating ? 'Saving changes…' : 'Save changes'}
+                      </button>
+                      <button
+                        type="button"
+                        className="btn-secondary"
+                        onClick={cancelDraft}
+                        disabled={allocating}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                )}
                 <DigimonEvolutionHistory
                   petId={localDigimon.id}
                   speciesId={localDigimon.digimon_id}
@@ -736,11 +778,12 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
             {/* All the buttons */}
             {!localDigimon.is_active && onSetActive && (
               <button
+                disabled={allocating || pendingPoints > 0}
                 onClick={() => {
                   onSetActive(localDigimon.id);
                   onClose();
                 }}
-                className="flex-1 bg-indigo-100 dark:bg-amber-900/30 text-indigo-800 dark:text-amber-200 rounded hover:bg-indigo-200 dark:hover:bg-amber-800/50 py-2 px-4"
+                className="flex-1 bg-indigo-100 dark:bg-amber-900/30 text-indigo-800 dark:text-amber-200 rounded hover:bg-indigo-200 dark:hover:bg-amber-800/50 py-2 px-4 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Set Active
               </button>
@@ -756,8 +799,9 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
             {/* Digivolve button - only show if evolution options exist */}
             {belongsToCurrentUser && (
               <button
+                disabled={allocating || pendingPoints > 0}
                 onClick={() => setShowEvolutionModal(true)}
-                className="flex-1 bg-indigo-100 dark:bg-amber-900/30 text-indigo-800 dark:text-amber-200 rounded hover:bg-indigo-200 dark:hover:bg-amber-800/50 py-2 px-4"
+                className="flex-1 bg-indigo-100 dark:bg-amber-900/30 text-indigo-800 dark:text-amber-200 rounded hover:bg-indigo-200 dark:hover:bg-amber-800/50 py-2 px-4 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Digivolve
               </button>
@@ -766,8 +810,9 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
             {/* De-Digivolve button */}
             {belongsToCurrentUser && (
               <button
+                disabled={allocating || pendingPoints > 0}
                 onClick={() => setShowDevolutionModal(true)}
-                className="flex-1 bg-indigo-100 dark:bg-amber-900/30 text-indigo-800 dark:text-amber-200 rounded hover:bg-indigo-200 dark:hover:bg-amber-800/50 py-2 px-4"
+                className="flex-1 bg-indigo-100 dark:bg-amber-900/30 text-indigo-800 dark:text-amber-200 rounded hover:bg-indigo-200 dark:hover:bg-amber-800/50 py-2 px-4 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 De-Digivolve
               </button>
