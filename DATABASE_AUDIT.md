@@ -1,17 +1,22 @@
 # Database audit and deployed cleanup — 2026-09-17
 
-## Progression and quota rewards — prepared locally (2026-10-10)
+## Progression and quota rewards — database deployed (2026-10-10)
 
-The prepared progression migration caps costs at 1,000 EXP from level 18 and
+The deployed progression migration caps costs at 1,000 EXP from level 18 and
 moves the streak-multiplied 300 EXP quota bonus into atomic task completion.
 A rounding follow-up aligns half-point EXP with browser previews. The compatible
 frontend removes browser quota/level writes and uses actual task reward values.
 The easy-task reward migration grants one point for categorized easy tasks while
 preserving manual saving, auto-allocation and ABI caps; hard tasks still give two.
-Existing levels and EXP are preserved; neither historical quota repairs nor a
-production deployment have been performed. See `supabase/README.md` for response
-compatibility and deployment order. Local fixtures cover reserve/storage behavior,
-quota retries, rollback, cap boundaries and maximum level.
+Existing levels and EXP are preserved; no historical quota repairs were performed.
+All three migrations were applied after local checks and a reviewed linked-target
+dry run. Read-only production checks confirm the migration versions, both tested
+function bodies, task RPC permissions and one enabled level-up trigger. No account
+was mutated for verification. See `supabase/README.md` for response compatibility
+and the separate GitHub/Vercel frontend release. Local fixtures cover easy-task
+allocation/saving, reserve/storage behavior, quota retries, rollback, cap boundaries
+and maximum level. All 130 application tests and the required database, lint,
+formatting and build checks passed.
 
 
 ## Batch bonus stats — database deployed (2026-10-10)

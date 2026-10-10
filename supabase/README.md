@@ -47,7 +47,7 @@ The complete pre-adoption schema export matched the original capture before repa
 
 New Supabase projects replay the baseline normally. Provisioning the five healthy cron jobs, provider settings, secrets, storage buckets and other project configuration remains a separate reviewed step. The baseline captures public schema and reference data, not a full production backup. The cleanup migration safely unschedules the obsolete job only when its command still matches the captured broken command.
 
-## Progression and daily quota rewards (prepared 2026-10-10; not deployed)
+## Progression and daily quota rewards (database deployed 2026-10-10)
 
 `20261010225044_cap_progression_and_atomic_quota.sql` caps each level-up at
 1,000 EXP from level 18 onward and commits the third-task quota bonus with
@@ -69,12 +69,23 @@ level-up trigger. Displayed total EXP is the current curve's equivalent, not a
 historical lifetime ledger. Missed historical quota bonuses cannot be inferred
 reliably and are not backfilled.
 
-Deploy all three reviewed migrations before the compatible frontend. The response
+All three reviewed migrations are applied to production. The response
 retains `daily_quota.quota_completed = false` so older clients skip their separate
 browser quota grant; `quota_rewarded` and `quota_bonus_exp` confirm the server
 reward for new clients. Older frontend level displays still use the old curve,
-so publish the compatible frontend promptly. Browser level checks now refresh
-server state instead of writing levels. Production has not been changed.
+so the compatible frontend must accompany this database release. Browser level
+checks now refresh server state instead of writing levels. Frontend publication
+uses the repository's GitHub/Vercel production integration and is verified
+separately from the SQL deployment.
+
+Local reset, reference/authorization fixtures, database lint, regenerated types,
+declarative consistency, all 130 application tests, lint, formatting and build
+passed. The linked-target dry run contained exactly these three migrations.
+Read-only `diagnostics/progression-deployment.sql` confirms their applied versions,
+both function bodies matching the tested sources, authenticated-only task RPC
+execution and one enabled level-up trigger. No production account was modified
+for verification. Prior function definitions are backed up in ignored
+`supabase/.temp/progression-before.local.json`.
 
 ## Live verification
 
