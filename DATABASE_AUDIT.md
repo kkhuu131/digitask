@@ -6,6 +6,8 @@ The prepared progression migration caps costs at 1,000 EXP from level 18 and
 moves the streak-multiplied 300 EXP quota bonus into atomic task completion.
 A rounding follow-up aligns half-point EXP with browser previews. The compatible
 frontend removes browser quota/level writes and uses actual task reward values.
+The easy-task reward migration grants one point for categorized easy tasks while
+preserving manual saving, auto-allocation and ABI caps; hard tasks still give two.
 Existing levels and EXP are preserved; neither historical quota repairs nor a
 production deployment have been performed. See `supabase/README.md` for response
 compatibility and deployment order. Local fixtures cover reserve/storage behavior,

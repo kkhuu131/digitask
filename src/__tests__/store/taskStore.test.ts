@@ -61,9 +61,11 @@ describe('task rewards', () => {
     expect(getExpPoints({ difficulty, priority }, streak)).toBe(exp);
   });
 
-  it('defaults missing task settings and excludes easy stat rewards', () => {
+  it('defaults missing task settings and awards easy tasks a stat point', () => {
     expect(getExpPoints({})).toBe(150);
-    expect(getStatPoints({ difficulty: 'easy' })).toBe(0);
+    expect(getStatPoints({ difficulty: 'easy' })).toBe(1);
+    expect(getStatPoints({ difficulty: 'medium' })).toBe(1);
+    expect(getStatPoints({ difficulty: 'hard' })).toBe(2);
   });
 
   it('confirms the committed quota bonus even with stale or missing quota state', async () => {

@@ -32,7 +32,7 @@ const EXP_BY_DIFFICULTY: Record<string, number> = {
   hard: 300,
 };
 const STAT_POINTS_BY_DIFFICULTY: Record<string, number> = {
-  easy: 0, // Easy tasks give XP but no stat point — intentional, low-effort tasks shouldn't train stats
+  easy: 1,
   medium: 1,
   hard: 2,
 };

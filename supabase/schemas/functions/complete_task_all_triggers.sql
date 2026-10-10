@@ -79,11 +79,11 @@ BEGIN
     END IF;
 
     -- Base EXP and stat points by difficulty
-    -- Easy tasks are casual; medium/hard build Digimon meaningfully
+    -- Every categorized task trains stats; hard tasks award two points.
     CASE COALESCE(v_task_record.difficulty, 'medium')
       WHEN 'easy' THEN
         v_exp_points := 75;
-        v_boost_value := 0;  -- easy tasks give no stat points
+        v_boost_value := 1;
       WHEN 'medium' THEN
         v_exp_points := 150;
         v_boost_value := 1;
@@ -243,4 +243,4 @@ $$;
 
 ALTER FUNCTION "public"."complete_task_all_triggers"("p_task_id" "uuid", "p_user_id" "uuid", "p_auto_allocate" boolean) OWNER TO "postgres";
 
-COMMENT ON FUNCTION "public"."complete_task_all_triggers"("p_task_id" "uuid", "p_user_id" "uuid", "p_auto_allocate" boolean) IS 'Task completion handler. EXP: easy=75, medium=150, hard=300 × priority(0.75/1/1.5) × streak(cap 2x). Stats: easy=0, medium=1, hard=2 pts. Cap=20+ABI. Party (non-storage) gets 50% EXP.';
+COMMENT ON FUNCTION "public"."complete_task_all_triggers"("p_task_id" "uuid", "p_user_id" "uuid", "p_auto_allocate" boolean) IS 'Task completion handler. EXP: easy=75, medium=150, hard=300 × priority(0.75/1/1.5) × streak(cap 2x). Stats: easy=1, medium=1, hard=2 pts. Cap=20+ABI. Party (non-storage) gets 50% task EXP and full quota bonus.';

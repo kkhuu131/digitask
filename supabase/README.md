@@ -57,13 +57,19 @@ A follow-up rounding migration uses decimal rounding for half-point rewards,
 matching frontend previews. Profile/quota locks serialize the threshold crossing;
 any later failure rolls back the task, quota, streak, EXP, levels and ticket.
 
+`20261010225953_award_easy_task_stat_points.sql` gives easy tasks one stat point,
+matching medium tasks; hard tasks still give two. A stat category remains required.
+Auto-allocation and saved points retain the existing ABI cap and transaction
+behavior. Local fixtures exercise all categories, manual saving, cap overflow,
+repeat completion and rollback. No prior task rewards are backfilled.
+
 No historical levels, claims or EXP are rewritten by these migrations. Existing
 EXP above the new threshold is consumed on the next pet update by the existing
 level-up trigger. Displayed total EXP is the current curve's equivalent, not a
 historical lifetime ledger. Missed historical quota bonuses cannot be inferred
 reliably and are not backfilled.
 
-Deploy both reviewed migrations before the compatible frontend. The response
+Deploy all three reviewed migrations before the compatible frontend. The response
 retains `daily_quota.quota_completed = false` so older clients skip their separate
 browser quota grant; `quota_rewarded` and `quota_bonus_exp` confirm the server
 reward for new clients. Older frontend level displays still use the old curve,

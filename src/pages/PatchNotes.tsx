@@ -49,6 +49,10 @@ const PatchNotes = () => {
                 current streak bonuses.
               </li>
               <li>
+                Easy tasks now give one stat point, just like medium tasks. Hard tasks give two.
+                Choose a stat category to train your active Digimon or save points for later.
+              </li>
+              <li>
                 Bonus stat buttons in the Digimon detail window stay visually compact with larger
                 invisible touch targets and tighter rows. Stats update immediately when tapped, with
                 quicker stat bar transitions.
