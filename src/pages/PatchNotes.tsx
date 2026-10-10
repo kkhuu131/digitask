@@ -40,8 +40,9 @@ const PatchNotes = () => {
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
               <li>
-                Bonus stat buttons in the Digimon detail window have larger touch targets and update
-                stats immediately when tapped, with quicker stat bar transitions.
+                Bonus stat buttons in the Digimon detail window stay visually compact with larger
+                invisible touch targets and tighter rows. Stats update immediately when tapped, with
+                quicker stat bar transitions.
               </li>
               <li>
                 Controls stay in place as points run out. A saving message explains when an

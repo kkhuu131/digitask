@@ -135,6 +135,25 @@
   .ui-icon-button {
     @apply inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-dark-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
   }
+  .ui-stat-button {
+    @apply relative inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .ui-stat-button::before {
+    content: '';
+    position: absolute;
+    inset: -10px;
+  }
+  .ui-stat-list {
+    @apply space-y-5;
+  }
+  @media (min-width: 640px) and (pointer: fine) {
+    .ui-stat-button::before {
+      inset: -4px;
+    }
+    .ui-stat-list {
+      @apply space-y-3;
+    }
+  }
   .ui-link {
     @apply font-semibold text-accent-600 dark:text-accent-400 hover:underline underline-offset-4;
   }

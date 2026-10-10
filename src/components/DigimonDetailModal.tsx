@@ -209,7 +209,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
         {belongsToCurrentUser && label !== 'ABI' && (
           <button
             type="button"
-            className="ui-icon-button relative touch-manipulation bg-amber-100 hover:bg-amber-200 dark:bg-amber-800/30 dark:hover:bg-amber-700/50 text-amber-600 dark:text-amber-300 active:bg-amber-300 dark:active:bg-amber-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+            className="ui-stat-button touch-manipulation bg-amber-100 hover:bg-amber-200 dark:bg-amber-800/30 dark:hover:bg-amber-700/50 text-amber-600 dark:text-amber-300 active:bg-amber-300 dark:active:bg-amber-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
             onClick={() => allocateStat(label)}
             disabled={
               !!allocating || !statsLoaded || statValue <= 0 || !isUnderStatCap(localDigimon)
@@ -218,12 +218,12 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
             aria-busy={allocating === label}
             title={`Allocate ${label} stat point (${statValue} available)`}
           >
-            <span aria-hidden="true" className="text-xl font-bold leading-none">
+            <span aria-hidden="true" className="text-base font-bold leading-none">
               {allocating === label ? '…' : '+'}
             </span>
             <span
               aria-hidden="true"
-              className="absolute -top-1 -right-1 bg-amber-200 text-amber-900 dark:bg-amber-700 dark:text-amber-100 text-xs rounded-full min-w-5 h-5 px-1 flex items-center justify-center tabular-nums leading-none"
+              className="absolute -top-1.5 -right-1.5 bg-amber-200 text-amber-900 dark:bg-amber-700 dark:text-amber-100 text-xs rounded-full min-w-4 h-4 px-0.5 flex items-center justify-center tabular-nums leading-none"
             >
               {statValue}
             </span>
@@ -714,7 +714,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                     )}
                   </div>
                 )}
-                <div className="space-y-3 mb-4">
+                <div className="ui-stat-list mb-4">
                   {renderStatRow('HP', stats.hp, localDigimon.hp_bonus)}
                   {renderStatRow('SP', stats.sp, localDigimon.sp_bonus)}
                   {renderStatRow('ATK', stats.atk, localDigimon.atk_bonus)}

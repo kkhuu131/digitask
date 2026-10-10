@@ -97,6 +97,9 @@ Profile Digimon use `DigimonCardIdentity`, animated sprites and shared stat bars
 - Dense Digimon cards use `ui-card-action`: a 32px visible action with a 44px
   target on phones/touch devices, and a 32px target on larger screens with a fine
   pointer. Active/Full are compact neutral status badges, not disabled buttons.
+- Bonus stat rows use `ui-stat-button`: a 24px visible button with an invisible
+  44px target on phones/touch devices and a 32px target on larger screens with a
+  fine pointer. Pair it with `ui-stat-list` so adjacent tap targets do not overlap.
 - Give every field a visible associated label or an accessible name. Expose toggle
   state using `aria-pressed` or the native checkbox state. Use native buttons and
   links for keyboard interaction.
