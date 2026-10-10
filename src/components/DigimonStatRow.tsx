@@ -33,14 +33,14 @@ const DigimonStatRow = ({
         aria-hidden="true"
       >
         <div
-          className={`h-full rounded-full transition-all duration-500 motion-reduce:transition-none ${statColors[label] ?? 'bg-purple-500'}`}
+          className={`h-full rounded-full transition-[width] duration-150 ease-out motion-reduce:transition-none ${statColors[label] ?? 'bg-purple-500'}`}
           style={{
             width: `${Math.max(0, Math.min(100, ((value + bonus) / Math.max(1, maxReference)) * 100))}%`,
           }}
         />
       </div>
     </div>
-    <div className="flex items-center gap-1.5 w-20 shrink-0 justify-end">
+    <div className={`flex items-center gap-1.5 shrink-0 justify-end ${children ? 'w-36' : 'w-20'}`}>
       <span className="font-semibold text-gray-800 dark:text-gray-100 tabular-nums">{value}</span>
       {bonus > 0 && (
         <span className="text-green-500 dark:text-green-400 text-xs tabular-nums">+{bonus}</span>

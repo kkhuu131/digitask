@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import {
   EvolutionOption,
@@ -22,6 +22,14 @@ import DigimonEvolutionHistory from './DigimonEvolutionHistory';
 import DigimonStatRow from './DigimonStatRow';
 import PageTutorial from './PageTutorial';
 import { DialogueStep } from './DigimonDialogue';
+
+const cacheSavedStats = (stats: Record<string, number>) => {
+  try {
+    localStorage.setItem('savedStats', JSON.stringify(stats));
+  } catch {
+    // Browser storage is optional; it must not prevent saving a stat point.
+  }
+};
 
 interface DigimonDetailModalProps {
   selectedDigimon: UserDigimon | null;
@@ -50,7 +58,11 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
     int: 0,
     spd: 0,
   });
-  const [allocating, setAllocating] = useState(false);
+  const [allocating, setAllocating] = useState<StatType | null>(null);
+  const allocationPending = useRef(false);
+  const allocationVersion = useRef(0);
+  const [statsLoaded, setStatsLoaded] = useState(false);
+  const [allocationError, setAllocationError] = useState<string | null>(null);
   const currentUserId = useAuthStore((state) => state.user?.id);
   const belongsToCurrentUser = !!currentUserId && currentUserId === localDigimon?.user_id;
   const [showEvolutionModal, setShowEvolutionModal] = useState(false);
@@ -65,123 +77,110 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
   }, [selectedDigimon]);
 
   useEffect(() => {
-    // Load saved stats from localStorage and database
+    let cancelled = false;
+    setStatsLoaded(false);
     const loadSavedStats = async () => {
-      // First try localStorage for immediate display
-      const localStats = localStorage.getItem('savedStats');
-      if (localStats) {
-        setSavedStats(JSON.parse(localStats));
-      }
-
-      // Then fetch from database for accuracy
-      const { data: userData } = await supabase.auth.getUser();
-      if (userData.user) {
-        const { data: profileData } = await supabase
+      if (!currentUserId) return;
+      try {
+        const { data: profileData, error } = await supabase
           .from('profiles')
           .select('saved_stats')
-          .eq('id', userData.user.id)
+          .eq('id', currentUserId)
           .single();
-
-        if (profileData && profileData.saved_stats) {
-          setSavedStats(profileData.saved_stats);
-          localStorage.setItem('savedStats', JSON.stringify(profileData.saved_stats));
-        }
+        if (cancelled) return;
+        if (error) throw error;
+        setSavedStats(profileData?.saved_stats ?? {});
+        setStatsLoaded(true);
+        setAllocationError(null);
+      } catch {
+        if (!cancelled)
+          setAllocationError('Could not load saved stat points. Reopen this window to try again.');
       }
     };
-
     loadSavedStats();
-  }, []);
+    return () => {
+      cancelled = true;
+      allocationVersion.current++;
+    };
+  }, [currentUserId]);
 
   // Function to allocate a stat point
   const allocateStat = async (statType: StatType) => {
     // Get the available stat points for this type
     const upperType = statType.toUpperCase();
-    const availablePoints = savedStats[upperType] || 0;
+    const availablePoints = savedStats[upperType] ?? savedStats[statType.toLowerCase()] ?? 0;
 
-    if (availablePoints <= 0 || allocating || !localDigimon) return;
+    if (
+      availablePoints <= 0 ||
+      allocationPending.current ||
+      !statsLoaded ||
+      !localDigimon ||
+      !belongsToCurrentUser ||
+      !isUnderStatCap(localDigimon) ||
+      statType === 'ABI'
+    )
+      return;
+
+    // Lock synchronously, before React renders, so rapid taps cannot submit twice.
+    allocationPending.current = true;
+    const version = ++allocationVersion.current;
+    setAllocating(statType);
+    setAllocationError(null);
+    const statField = `${statType.toLowerCase()}_bonus` as
+      | 'hp_bonus'
+      | 'sp_bonus'
+      | 'atk_bonus'
+      | 'def_bonus'
+      | 'int_bonus'
+      | 'spd_bonus';
+    const updatedDigimon = { ...localDigimon, [statField]: localDigimon[statField] + 1 };
+    const newSavedStats = { ...savedStats, [upperType]: availablePoints - 1 };
+    // Feedback must happen before the first network request.
+    setLocalDigimon(updatedDigimon);
+    useDigimonStore.getState().updateDigimonInStore(updatedDigimon);
+    setSavedStats(newSavedStats);
+    let committed = false;
 
     try {
-      setAllocating(true);
-
-      // Get current user
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) {
-        setAllocating(false);
-        return;
-      }
-
-      // Calculate the new bonus value
-      const statField = `${statType.toLowerCase()}_bonus`;
-      const currentBonus = (localDigimon as any)[statField] || 0;
-      const newBonus = currentBonus + 1;
-
-      // 1. OPTIMISTIC UPDATE: Immediately update the UI with the new value
-      // Create a copy of the selectedDigimon with the updated stat
-      const updatedDigimon = {
-        ...localDigimon,
-        [statField]: newBonus,
-      };
-
-      // 2. Update the local state immediately
-      setLocalDigimon(updatedDigimon);
-
-      // 3. Update the global store state immediately for UI consistency
-      useDigimonStore.getState().updateDigimonInStore(updatedDigimon);
-
-      // 4. Optimistically update the savedStats display
-      const newSavedStats = { ...savedStats };
-      newSavedStats[upperType] = Math.max(0, (newSavedStats[upperType] || 0) - 1);
-      setSavedStats(newSavedStats);
-      localStorage.setItem('savedStats', JSON.stringify(newSavedStats));
-
-      // 5. Now perform the actual database update in the background
+      cacheSavedStats(newSavedStats);
       const { data, error } = await supabase.rpc('allocate_stat', {
         p_digimon_id: localDigimon.id,
         p_stat_type: upperType,
-        p_user_id: userData.user.id,
+        p_user_id: currentUserId,
       });
 
       if (error || data !== true) {
-        // If error, revert the optimistic update
-        setLocalDigimon(localDigimon);
-
-        // Revert the store update
-        useDigimonStore.getState().updateDigimonInStore(localDigimon);
-
-        // Revert the savedStats
-        const originalSavedStats = { ...savedStats };
-        setSavedStats(originalSavedStats);
-        localStorage.setItem('savedStats', JSON.stringify(originalSavedStats));
-
         throw (
           error ||
           new Error('No saved points are available or this Digimon has reached its stat cap')
         );
       }
+      committed = true;
 
-      // 6. Fetch the updated saved stats from the database (in the background)
-      supabase
-        .from('profiles')
-        .select('saved_stats')
-        .eq('id', userData.user.id)
-        .single()
+      // Accept the next tap as soon as the save completes. An older background
+      // balance read must not overwrite a newer allocation's optimistic update.
+      void Promise.resolve(
+        supabase.from('profiles').select('saved_stats').eq('id', currentUserId).single()
+      )
         .then(({ data: profileData }) => {
-          if (profileData?.saved_stats) {
-            // Only update if different from our optimistic update
-            if (JSON.stringify(profileData.saved_stats) !== JSON.stringify(newSavedStats)) {
-              setSavedStats(profileData.saved_stats);
-              localStorage.setItem('savedStats', JSON.stringify(profileData.saved_stats));
-            }
+          if (allocationVersion.current === version && profileData?.saved_stats) {
+            setSavedStats(profileData.saved_stats);
+            cacheSavedStats(profileData.saved_stats);
           }
-        });
-
-      // 7. In the background, refresh other relevant data
-      useDigimonStore.getState().fetchUserDailyStatGains();
+        })
+        .catch((error) => console.error('Error refreshing saved stat points:', error));
     } catch (error) {
       console.error('Error allocating stat:', error);
-      // Error notification can be added here if needed
+      if (!committed) {
+        setLocalDigimon(localDigimon);
+        useDigimonStore.getState().updateDigimonInStore(localDigimon);
+        setSavedStats(savedStats);
+        setAllocationError('Could not save this stat point. Please try again.');
+        cacheSavedStats(savedStats);
+      }
     } finally {
-      setAllocating(false);
+      allocationPending.current = false;
+      setAllocating(null);
     }
   };
 
@@ -199,7 +198,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
   const renderStatRow = (label: StatType, baseValue: number, bonusValue: number) => {
     const upperLabel = label.toUpperCase();
     const lowerLabel = label.toLowerCase();
-    const statValue = savedStats[upperLabel] || savedStats[lowerLabel] || 0;
+    const statValue = savedStats[upperLabel] ?? savedStats[lowerLabel] ?? 0;
     return (
       <DigimonStatRow
         label={label}
@@ -207,15 +206,25 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
         bonus={bonusValue}
         maxReference={statMaxRef[upperLabel] ?? 600}
       >
-        {belongsToCurrentUser && statValue > 0 && isUnderStatCap(localDigimon) && (
+        {belongsToCurrentUser && label !== 'ABI' && (
           <button
-            className="w-5 h-5 bg-amber-100 hover:bg-amber-200 dark:bg-amber-800/30 dark:hover:bg-amber-700/50 text-amber-600 dark:text-amber-300 rounded-full flex items-center justify-center relative flex-shrink-0"
-            onClick={() => allocateStat(lowerLabel as StatType)}
-            disabled={allocating}
+            type="button"
+            className="ui-icon-button relative touch-manipulation bg-amber-100 hover:bg-amber-200 dark:bg-amber-800/30 dark:hover:bg-amber-700/50 text-amber-600 dark:text-amber-300 active:bg-amber-300 dark:active:bg-amber-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+            onClick={() => allocateStat(label)}
+            disabled={
+              !!allocating || !statsLoaded || statValue <= 0 || !isUnderStatCap(localDigimon)
+            }
+            aria-label={`Allocate ${label} stat point (${statValue} available)`}
+            aria-busy={allocating === label}
             title={`Allocate ${label} stat point (${statValue} available)`}
           >
-            <span className="text-[10px] font-bold leading-none">+</span>
-            <span className="absolute -top-1.5 -right-1.5 bg-amber-500 text-white text-[9px] rounded-full w-3.5 h-3.5 flex items-center justify-center leading-none">
+            <span aria-hidden="true" className="text-xl font-bold leading-none">
+              {allocating === label ? '…' : '+'}
+            </span>
+            <span
+              aria-hidden="true"
+              className="absolute -top-1 -right-1 bg-amber-200 text-amber-900 dark:bg-amber-700 dark:text-amber-100 text-xs rounded-full min-w-5 h-5 px-1 flex items-center justify-center tabular-nums leading-none"
+            >
               {statValue}
             </span>
           </button>
@@ -224,34 +233,38 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
     );
   };
 
-  // Hooks must be called before any early returns (Rules of Hooks)
-  // Add this useEffect to fetch devolution options when the modal opens
+  const speciesId = localDigimon?.digimon_id;
+  // Paths depend on species, not on each allocated bonus point.
   useEffect(() => {
+    let cancelled = false;
     const loadDevolutionOptions = async () => {
-      if (!localDigimon || !localDigimon.digimon_id) return;
+      if (!speciesId) return;
 
-      const options = await useDigimonStore
-        .getState()
-        .fetchDevolutionOptions(localDigimon.digimon_id);
-      setDevolutionOptions(options);
+      const options = await useDigimonStore.getState().fetchDevolutionOptions(speciesId);
+      if (!cancelled) setDevolutionOptions(options);
     };
 
     loadDevolutionOptions();
-  }, [localDigimon]);
+    return () => {
+      cancelled = true;
+    };
+  }, [speciesId]);
 
   // Add this useEffect to fetch evolution options when the modal opens or digimon changes
   useEffect(() => {
+    let cancelled = false;
     const loadEvolutionOptions = async () => {
-      if (!localDigimon || !localDigimon.digimon_id) return;
+      if (!speciesId) return;
 
-      const options = await useDigimonStore
-        .getState()
-        .fetchEvolutionOptions(localDigimon.digimon_id);
-      setEvolutionOptions(options);
+      const options = await useDigimonStore.getState().fetchEvolutionOptions(speciesId);
+      if (!cancelled) setEvolutionOptions(options);
     };
 
     loadEvolutionOptions();
-  }, [localDigimon]);
+    return () => {
+      cancelled = true;
+    };
+  }, [speciesId]);
 
   if (!localDigimon) return null;
 
@@ -684,6 +697,23 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                   </div>
                 )}
 
+                {belongsToCurrentUser && (
+                  <div
+                    className="min-h-6 mb-2 text-xs text-gray-600 dark:text-gray-400"
+                    role="status"
+                    aria-live="polite"
+                  >
+                    {allocationError ? (
+                      <span className="text-red-600 dark:text-red-400">{allocationError}</span>
+                    ) : allocating ? (
+                      `Saving ${allocating} stat point…`
+                    ) : !statsLoaded ? (
+                      'Loading saved stat points…'
+                    ) : (
+                      ''
+                    )}
+                  </div>
+                )}
                 <div className="space-y-3 mb-4">
                   {renderStatRow('HP', stats.hp, localDigimon.hp_bonus)}
                   {renderStatRow('SP', stats.sp, localDigimon.sp_bonus)}

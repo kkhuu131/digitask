@@ -32,6 +32,27 @@ const PatchNotes = () => {
                 Latest
               </span>
               <h3 className="text-lg font-medium ml-2 dark:text-gray-200">
+                Smoother Bonus Stat Allocation
+              </h3>
+              <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">
+                October 10, 2026
+              </span>
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
+              <li>
+                Bonus stat buttons in the Digimon detail window have larger touch targets and update
+                stats immediately when tapped, with quicker stat bar transitions.
+              </li>
+              <li>
+                Controls stay in place as points run out. A saving message explains when an
+                allocation is pending, and failed saves restore the point with a visible error.
+              </li>
+            </ul>
+          </div>
+
+          <div className="mb-6">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
+              <h3 className="text-lg font-medium ml-2 dark:text-gray-200">
                 Arena Technique Foundation
               </h3>
               <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">
