@@ -174,7 +174,12 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
       console.error('Error saving stat allocation:', error);
       // Retain the draft. Expected bonuses make retrying safe if the first
       // request committed but its response was lost.
-      setAllocationError('Could not confirm the save. Your draft is kept; try Save changes again.');
+      const errorCode = (error as { code?: string })?.code;
+      setAllocationError(
+        errorCode === 'PGRST202' || errorCode === '42883'
+          ? 'Stat saving is temporarily unavailable. Your draft is kept; please try again after the server update.'
+          : 'Could not confirm the save. Your draft is kept; try Save changes again.'
+      );
     } finally {
       allocationPending.current = false;
       setAllocating(false);
@@ -202,6 +207,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
         value={baseValue}
         bonus={bonusValue}
         maxReference={statMaxRef[upperLabel] ?? 600}
+        reserveActions={belongsToCurrentUser}
       >
         {belongsToCurrentUser && label !== 'ABI' && (
           <div className="ui-stat-adjustments">

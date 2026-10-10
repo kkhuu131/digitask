@@ -49,7 +49,7 @@ New Supabase projects replay the baseline normally. Provisioning the five health
 
 ## Live verification
 
-### Batch bonus stats (prepared locally, not deployed)
+### Batch bonus stats (database deployed 2026-10-10)
 
 `20261010185632_batch_stat_allocation.sql` adds authenticated `allocate_stats`.
 It locks the caller's profile before the owned Digimon, validates all requested
@@ -57,10 +57,17 @@ integer additions, saved-point balances and the combined `20 + ABI` cap, and
 commits one Digimon update plus one balance update atomically. Expected bonus
 values reject stale drafts and repeated saves without spending more points.
 Success and conflicts return authoritative pet/balance snapshots. The existing
-single-point RPC is retained for compatible older clients. Deploy this additive
-migration before publishing the frontend that uses draft allocation and Save/Cancel.
+single-point RPC is retained for compatible older clients. This additive
+migration is now applied to production. The compatible frontend that uses draft
+allocation and Save/Cancel remains a separate website release.
 `db:test:authorization` includes batch ownership, validation, cap, balance,
 stale-retry and injected-failure rollback fixtures.
+
+The pending arena technique migration `20260921230037` was applied in the same
+reviewed release, followed by the compatible `arena-battle` Edge Function after
+local authenticated integration tests passed. The read-only
+`diagnostics/stat-allocation-deployment.sql` verifies these migration versions,
+RPC signatures, normalized bodies and browser/service execution permissions.
 
 `diagnostics/deployment-check.sql` contains read-only assertions for the September 16-17 deployments. `diagnostics/function-fingerprints.sql` compares normalized stored bodies, authorization attributes and grants. All 31 application overloads match the local schema after normalization; 18 older production bodies retain CRLF while the imported sources use LF. Raw CLI diff treats these as cosmetic replacements, not new functional migrations to apply. Declarative checks against migration history remain clean.
 

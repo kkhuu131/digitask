@@ -55,6 +55,10 @@ const PatchNotes = () => {
                 available to retry; changed server balances refresh the window so you can adjust
                 your allocation safely.
               </li>
+              <li>
+                The ABI bar lines up with the other stat bars, keeping matching spacing without
+                showing allocation buttons for ABI.
+              </li>
             </ul>
           </div>
 

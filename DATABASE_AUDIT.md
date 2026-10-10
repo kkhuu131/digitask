@@ -1,6 +1,6 @@
 # Database audit and deployed cleanup — 2026-09-17
 
-## Batch bonus stats — prepared locally, not deployed (2026-10-10)
+## Batch bonus stats — database deployed (2026-10-10)
 
 `20261010185632_batch_stat_allocation.sql` adds an owner-scoped atomic batch
 allocation RPC with profile-first row locks, strict stat/count validation,
@@ -8,9 +8,18 @@ saved-point checks and the combined `20 + ABI` cap. Expected current bonuses
 reject stale drafts and retries after a lost response without another spend.
 No historical data is changed; the single-point RPC remains compatible.
 The frontend previews draft +/− adjustments locally and updates shared state
-only from the batch response. Deploy the SQL before the compatible frontend.
+only from the batch response. The database migration is now deployed; the compatible
+frontend and ABI alignment improvement remain separate website releases.
 Local authorization fixtures cover exact-cap batches, insufficient balances,
 invalid payloads, stale retries and full rollback after an injected failure.
+
+The reviewed linked-target dry run included the earlier
+`20260921230037_add_arena_technique_replays.sql` migration. Both migrations were
+deployed together with the user's approval, followed by the compatible
+`arena-battle` Edge Function. Local authenticated Edge integration passed before
+deployment. Read-only live checks confirm the batch RPC's authenticated-only
+browser access, service-only arena RPCs, and matching tested function bodies.
+No production account was mutated for verification.
 
 ## Task-history reconciliation - database deployed 2026-09-18
 

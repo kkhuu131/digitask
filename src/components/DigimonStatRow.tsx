@@ -16,12 +16,14 @@ const DigimonStatRow = ({
   bonus = 0,
   maxReference,
   children,
+  reserveActions = false,
 }: {
   label: string;
   value: number;
   bonus?: number;
   maxReference: number;
   children?: ReactNode;
+  reserveActions?: boolean;
 }) => (
   <div className="flex items-center justify-between text-sm">
     <span className="font-heading font-semibold text-gray-700 dark:text-gray-200 w-10 shrink-0">
@@ -40,12 +42,20 @@ const DigimonStatRow = ({
         />
       </div>
     </div>
-    <div className={`flex items-center gap-1.5 shrink-0 justify-end ${children ? 'w-40' : 'w-20'}`}>
+    <div
+      className={`flex items-center gap-1.5 shrink-0 justify-end ${children || reserveActions ? 'w-40' : 'w-20'}`}
+    >
       <span className="font-semibold text-gray-800 dark:text-gray-100 tabular-nums">{value}</span>
       {bonus > 0 && (
         <span className="text-green-500 dark:text-green-400 text-xs tabular-nums">+{bonus}</span>
       )}
       {children}
+      {reserveActions && !children && (
+        <div aria-hidden="true" className="ui-stat-adjustments invisible">
+          <span className="ui-stat-button" />
+          <span className="ui-stat-button" />
+        </div>
+      )}
     </div>
   </div>
 );
