@@ -72,6 +72,10 @@ const PatchNotes = () => {
                 The ABI bar lines up with the other stat bars, keeping matching spacing without
                 showing allocation buttons for ABI.
               </li>
+              <li>
+                Personality names in Digimon details show their stat bonus, such as Fighter (+5%
+                ATK).
+              </li>
             </ul>
           </div>
 

@@ -32,6 +32,15 @@ import {
   type StatAllocation,
 } from '../utils/statAllocation';
 
+const PERSONALITY_STATS: Record<string, BonusStat> = {
+  Durable: 'HP',
+  Lively: 'SP',
+  Fighter: 'ATK',
+  Defender: 'DEF',
+  Brainy: 'INT',
+  Nimble: 'SPD',
+};
+
 interface DigimonDetailModalProps {
   selectedDigimon: UserDigimon | null;
   onClose: () => void;
@@ -372,6 +381,9 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
   };
 
   const stats = calculateFinalStats(previewDigimon);
+  const personalityStat = localDigimon.personality
+    ? PERSONALITY_STATS[localDigimon.personality]
+    : undefined;
 
   // Handle evolution
   const handleEvolution = async (toDigimonId: number) => {
@@ -599,7 +611,15 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                   <p className="text-left">{calculateAgeDays(localDigimon.created_at)} days</p>
 
                   <p className="text-right">Personality:</p>
-                  <p className="text-left">{localDigimon.personality}</p>
+                  <p className="text-left">
+                    {localDigimon.personality}
+                    {personalityStat && (
+                      <>
+                        {' '}
+                        <span className="whitespace-nowrap">(+5% {personalityStat})</span>
+                      </>
+                    )}
+                  </p>
                 </div>
               </div>
 
