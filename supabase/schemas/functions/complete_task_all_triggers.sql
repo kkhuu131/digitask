@@ -10,6 +10,7 @@ DECLARE
   v_exp_points INTEGER;
   v_exp_multiplier FLOAT;
   v_reserve_exp INTEGER;
+  v_quota_bonus_exp INTEGER := 0;
   v_boost_value INTEGER;
   v_adjusted_boost_value INTEGER := 0;
   v_saved_stats JSONB;
@@ -107,7 +108,8 @@ BEGIN
     END CASE;
 
     -- Apply multipliers
-    v_exp_points := ROUND(v_exp_points * v_exp_multiplier * v_priority_exp_multiplier);
+    -- Decimal rounding matches browser previews, including half-point rewards.
+    v_exp_points := ROUND((v_exp_points * v_exp_multiplier * v_priority_exp_multiplier)::numeric);
 
     -- Get the active digimon
     SELECT id INTO v_active_digimon_id
@@ -115,13 +117,19 @@ BEGIN
     WHERE user_id = p_user_id AND is_active = TRUE;
 
     -- Reserve exp (50% for non-active party members)
-    v_reserve_exp := ROUND(v_exp_points * v_non_active_multiplier);
+    v_reserve_exp := ROUND((v_exp_points * v_non_active_multiplier)::numeric);
+
+    -- The threshold crossing is serialized by the profile/quota locks. Award
+    -- this once inside the task transaction, independent of browser timing.
+    IF v_quota_completed THEN
+      v_quota_bonus_exp := ROUND(300 * v_exp_multiplier);
+    END IF;
 
     -- Update active Digimon (full EXP + happiness)
     IF v_active_digimon_id IS NOT NULL THEN
       UPDATE user_digimon
       SET
-        experience_points = experience_points + v_exp_points,
+        experience_points = experience_points + v_exp_points + v_quota_bonus_exp,
         last_fed_tasks_at = v_current_time,
         happiness = LEAST(100, happiness + v_happiness_boost)
       WHERE id = v_active_digimon_id;
@@ -129,7 +137,7 @@ BEGIN
 
     -- Update non-active party Digimon (50% EXP, no happiness, exclude storage)
     UPDATE user_digimon
-    SET experience_points = experience_points + v_reserve_exp,
+    SET experience_points = experience_points + v_reserve_exp + v_quota_bonus_exp,
         last_fed_tasks_at = v_current_time
     WHERE user_id = p_user_id
       AND id IS DISTINCT FROM v_active_digimon_id
@@ -209,13 +217,17 @@ BEGIN
     'task_id', p_task_id,
     'exp_points', v_exp_points,
     'reserve_exp', v_reserve_exp,
+    'quota_bonus_exp', v_quota_bonus_exp,
     'stat_category', v_task_category,
     'stat_points', v_adjusted_boost_value,
     'saved_stats', v_saved_stats,
     'daily_quota', jsonb_build_object(
       'completed_today', v_daily_quota.completed_today,
       'current_streak', v_daily_quota.current_streak,
-      'quota_completed', v_quota_completed
+      -- Older clients use quota_completed to grant a separate bonus. Leave it
+      -- false now that the server owns the grant, preventing double rewards.
+      'quota_completed', FALSE,
+      'quota_rewarded', v_quota_completed
     ),
     'auto_allocated', p_auto_allocate AND v_under_stat_cap AND v_task_category IS NOT NULL AND v_boost_value > 0,
     'difficulty', v_task_record.difficulty,

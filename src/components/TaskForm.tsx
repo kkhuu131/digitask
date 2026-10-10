@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Task, useTaskStore } from '../store/taskStore';
+import { Task, useTaskStore, getExpPoints, getStatPoints } from '../store/taskStore';
 import Select from 'react-select';
 import {
   StatCategory,
@@ -15,7 +15,7 @@ interface TaskFormProps {
 }
 
 const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
-  const { createTask } = useTaskStore();
+  const { createTask, getExpMultiplier } = useTaskStore();
   const [description, setDescription] = useState('');
   const [taskType, setTaskType] = useState<'daily' | 'one-time' | 'recurring'>('daily');
   const [dueDate, setDueDate] = useState<string>('');
@@ -143,11 +143,10 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
     'bg-gray-100 dark:bg-dark-200 text-gray-600 dark:text-gray-400 border-transparent hover:bg-gray-200 dark:hover:bg-dark-100';
 
   // Compute EXP preview values
-  const baseExp = taskType === 'daily' ? 75 : taskType === 'recurring' ? 75 : 100;
-  const difficultyMultiplier = difficulty === 'easy' ? 0.7 : difficulty === 'medium' ? 1.0 : 1.5;
-  const priorityMultiplier = priority === 'low' ? 0.8 : priority === 'medium' ? 1.0 : 1.3;
-  const activeExp = Math.round(baseExp * difficultyMultiplier * priorityMultiplier);
+  const streakMultiplier = getExpMultiplier();
+  const activeExp = getExpPoints({ difficulty, priority }, streakMultiplier);
   const reserveExp = Math.round(activeExp * 0.5);
+  const statPoints = getStatPoints({ difficulty });
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
@@ -507,7 +506,10 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
           {/* EXP reward preview */}
           <div className="pt-1 border-t border-purple-200 dark:border-dark-100 text-xs font-body text-gray-500 dark:text-gray-400 flex flex-wrap gap-3">
             <span>
-              <span className="font-semibold text-amber-500">{activeExp} EXP</span> active
+              <span className="font-semibold text-purple-600 dark:text-purple-400">
+                {activeExp} EXP
+              </span>{' '}
+              active
             </span>
             <span>
               <span className="font-semibold text-gray-400 dark:text-gray-500">
@@ -515,11 +517,10 @@ const TaskForm = ({ onTaskCreated }: TaskFormProps) => {
               </span>{' '}
               reserve
             </span>
-            {(category || detectedCategory) && (
+            <span>Includes your current {streakMultiplier.toFixed(1)}× streak bonus.</span>
+            {(category || detectedCategory) && statPoints > 0 && (
               <span>
-                <span className="font-semibold text-teal-500">
-                  +{difficulty === 'hard' ? 2 : 1}
-                </span>{' '}
+                <span className="font-semibold text-teal-500">+{statPoints}</span>{' '}
                 {category ?? detectedCategory} stat
               </span>
             )}

@@ -32,13 +32,22 @@ const PatchNotes = () => {
                 Latest
               </span>
               <h3 className="text-lg font-medium ml-2 dark:text-gray-200">
-                Smoother Bonus Stat Allocation
+                Smoother Training and Bonus Stat Allocation
               </h3>
               <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">
                 October 10, 2026
               </span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
+              <li>
+                Level-up costs stop increasing at 1,000 EXP from level 18 onward. Early levels keep
+                their existing pace, and existing levels are preserved.
+              </li>
+              <li>
+                Daily quota EXP is awarded once alongside the third task, even if the browser
+                disconnects. Task reward previews now use the actual difficulty, priority and
+                current streak bonuses.
+              </li>
               <li>
                 Bonus stat buttons in the Digimon detail window stay visually compact with larger
                 invisible touch targets and tighter rows. Stats update immediately when tapped, with

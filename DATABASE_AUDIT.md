@@ -1,5 +1,17 @@
 # Database audit and deployed cleanup — 2026-09-17
 
+## Progression and quota rewards — prepared locally (2026-10-10)
+
+The prepared progression migration caps costs at 1,000 EXP from level 18 and
+moves the streak-multiplied 300 EXP quota bonus into atomic task completion.
+A rounding follow-up aligns half-point EXP with browser previews. The compatible
+frontend removes browser quota/level writes and uses actual task reward values.
+Existing levels and EXP are preserved; neither historical quota repairs nor a
+production deployment have been performed. See `supabase/README.md` for response
+compatibility and deployment order. Local fixtures cover reserve/storage behavior,
+quota retries, rollback, cap boundaries and maximum level.
+
+
 ## Batch bonus stats — database deployed (2026-10-10)
 
 `20261010185632_batch_stat_allocation.sql` adds an owner-scoped atomic batch

@@ -17,18 +17,24 @@ describe('xpForNextLevel', () => {
     expect(xpForNextLevel(10)).toBe(600);
   });
 
-  it('returns 2600 for level 50', () => {
-    expect(xpForNextLevel(50)).toBe(2600);
-  });
-
-  it('scales linearly with level', () => {
-    expect(xpForNextLevel(20)).toBe(xpForNextLevel(10) + 10 * 50);
+  it('reaches the cap at level 18 and keeps it through level 98', () => {
+    expect(xpForNextLevel(17)).toBe(950);
+    expect(xpForNextLevel(18)).toBe(1000);
+    expect(xpForNextLevel(29)).toBe(1000);
+    expect(xpForNextLevel(98)).toBe(1000);
   });
 });
 
 // ─── totalCumulativeXp ───────────────────────────────────────────────────────
 
 describe('totalCumulativeXp', () => {
+  it('sums the capped curve across the boundary and at maximum level', () => {
+    expect(totalCumulativeXp(18, 0)).toBe(9350);
+    expect(totalCumulativeXp(19, 75)).toBe(10425);
+    expect(totalCumulativeXp(30, 0)).toBe(21350);
+    expect(totalCumulativeXp(99, 0)).toBe(90350);
+  });
+
   it('returns 0 at level 1 with 0 XP', () => {
     expect(totalCumulativeXp(1, 0)).toBe(0);
   });

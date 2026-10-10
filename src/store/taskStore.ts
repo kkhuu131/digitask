@@ -46,13 +46,13 @@ const PRIORITY_EXP_MULTIPLIER: Record<string, number> = {
 // Phase 3: exported so Dashboard.tsx can reference the canonical quota number
 export const DAILY_QUOTA_AMOUNT = 3;
 
-export const getExpPoints = (task: Task) => {
+export const getExpPoints = (task: Pick<Task, 'difficulty' | 'priority'>, streakMultiplier = 1) => {
   const base = EXP_BY_DIFFICULTY[task.difficulty ?? 'medium'] ?? 150;
   const mult = PRIORITY_EXP_MULTIPLIER[task.priority ?? 'medium'] ?? 1.0;
-  return Math.round(base * mult);
+  return Math.round(base * mult * streakMultiplier);
 };
 
-export const getStatPoints = (task: Task) => {
+export const getStatPoints = (task: Pick<Task, 'difficulty'>) => {
   return STAT_POINTS_BY_DIFFICULTY[task.difficulty ?? 'medium'] ?? 1;
 };
 
@@ -101,11 +101,9 @@ interface TaskState {
   forceCheckOverdueTasks: () => Promise<void>;
   dailyQuota: DailyQuota | null;
   fetchDailyQuota: () => Promise<void>;
-  checkDailyQuota: () => Promise<void>;
   subscribeToQuotaUpdates: () => Promise<() => void>;
   lastOverdueCheck: number;
   setPenalizedTasks: (taskIds: string[]) => void;
-  completeDailyQuota: () => Promise<void>;
   getExpMultiplier: () => number;
   editTask: (id: string, updates: Partial<Task>) => Promise<void>;
 }
@@ -254,6 +252,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
   },
 
   completeTask: async (id: string, autoAllocate: boolean = false) => {
+    let committed = false;
     try {
       const task = get().tasks.find((t) => t.id === id);
       if (!task) return;
@@ -273,7 +272,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       //   3. Awards EXP to all party Digimon (active: full, reserve: 50%, storage: 0%)
       //   4. Awards a stat point to the active Digimon or saves it to profiles.saved_stats
       // Returns: { exp_points, reserve_exp, stat_points, stat_category, auto_allocated,
-      //            saved_stats, daily_quota: { quota_completed } }
+      //            saved_stats, quota_bonus_exp, daily_quota: { quota_rewarded } }
       const { data, error } = await supabase.rpc('complete_task_all_triggers', {
         p_task_id: id,
         p_user_id: userData.user.id,
@@ -281,6 +280,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       });
 
       if (error) throw error;
+      committed = true;
 
       // Mirror the server's saved_stats back to localStorage so the SavedStats UI
       // can read it synchronously without another round-trip.
@@ -298,16 +298,22 @@ export const useTaskStore = create<TaskState>((set, get) => ({
         });
       }
 
-      await useDigimonStore.getState().checkLevelUp();
-
-      // completeDailyQuota rewards the whole team with a streak-multiplied XP bonus.
-      // The RPC signals readiness via daily_quota.quota_completed, not by re-checking
-      // completed_today, so this fires exactly once per day.
-      if (data.daily_quota.quota_completed) {
-        await get().completeDailyQuota();
-      }
-
+      // The server has already committed task EXP, levels and the quota bonus.
+      // Refresh authoritative rows instead of granting EXP from browser state.
+      await Promise.all([
+        useDigimonStore.getState().fetchUserDigimon(),
+        useDigimonStore.getState().fetchAllUserDigimon(),
+      ]);
       await get().fetchDailyQuota();
+
+      if (data.quota_bonus_exp > 0) {
+        useNotificationStore.getState().addNotification({
+          message: `Daily Quota Complete! All party members received ${data.quota_bonus_exp} EXP!`,
+          type: 'success',
+        });
+        const longestStreak = get().dailyQuota?.longest_streak ?? data.daily_quota.current_streak;
+        await useTitleStore.getState().checkStreakTitles(longestStreak);
+      }
 
       // The task-completion transaction awards one battle ticket server-side.
       window.dispatchEvent(new Event('energy-updated'));
@@ -317,6 +323,15 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       checkTaskAchievementsAfterCompletion(userData.user.id);
     } catch (error) {
       console.error('Error completing task:', error);
+
+      // A failed refresh or title check cannot undo a committed task/reward.
+      if (committed) {
+        useNotificationStore.getState().addNotification({
+          message: 'Task completed and rewards saved. Refresh to update your display.',
+          type: 'info',
+        });
+        return;
+      }
 
       // If there's an error, revert the optimistic update
       set((state) => ({
@@ -484,21 +499,6 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     }
   },
 
-  checkDailyQuota: async () => {
-    try {
-      await get().fetchDailyQuota();
-
-      // If daily quota is met
-      const dailyQuota = get().dailyQuota;
-      if (dailyQuota && dailyQuota.completed_today >= DAILY_QUOTA_AMOUNT) {
-        // Complete the daily quota (which will reward the team with EXP)
-        await get().completeDailyQuota();
-      }
-    } catch (error) {
-      console.error('Error in checkDailyQuota:', error);
-    }
-  },
-
   forceCheckOverdueTasks: async () => {
     await get().checkOverdueTasks();
   },
@@ -555,53 +555,6 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     set({ penalizedTasks: taskIds });
   },
 
-  completeDailyQuota: async () => {
-    try {
-      set({ loading: true, error: null });
-
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) {
-        set({ loading: false });
-        return;
-      }
-
-      // Strict equality (=== not >=) so this fires exactly once — at the moment
-      // completed_today hits 3. Extra tasks beyond the quota don't re-trigger the reward.
-      if (get().dailyQuota?.completed_today === DAILY_QUOTA_AMOUNT) {
-        const expMultiplier = get().getExpMultiplier();
-
-        // Apply multiplier to the base reward
-        const BASE_XP_REWARD = 300;
-        const actualXpReward = Math.round(BASE_XP_REWARD * expMultiplier);
-
-        // Reward the whole team with the calculated XP
-        await useDigimonStore.getState().feedAllDigimon(actualXpReward);
-
-        // Show notification about the team reward with multiplier info
-        const multiplierText =
-          expMultiplier > 1
-            ? ` (${BASE_XP_REWARD} × ${expMultiplier.toFixed(1)} streak bonus)`
-            : '';
-
-        useNotificationStore.getState().addNotification({
-          message: `🎉 Daily Quota Complete! All team members received ${actualXpReward} EXP${multiplierText}!`,
-          type: 'success',
-        });
-
-        // Check for streak titles
-        const { longest_streak } = get().dailyQuota || {
-          longest_streak: 0,
-        };
-        await useTitleStore.getState().checkStreakTitles(longest_streak);
-      }
-
-      set({ loading: false });
-    } catch (error) {
-      console.error('Error in completeDailyQuota:', error);
-      set({ loading: false });
-    }
-  },
-
   getExpMultiplier: () => {
     const { dailyQuota } = get();
     if (!dailyQuota) return 1.0;
@@ -610,7 +563,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     if (streak <= 1) return 1.0;
 
     // +10% per streak day beyond the first, capped at 2.0× (hit at 11-day streak).
-    // Applied to the daily quota XP bonus and to per-task feedDigimon calls.
+    // Mirrors the server multiplier for reward previews and legacy feeding calls.
     return Math.min(1.0 + (streak - 1) * 0.1, 2.0);
   },
 

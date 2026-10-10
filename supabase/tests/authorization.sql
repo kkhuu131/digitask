@@ -119,7 +119,7 @@ BEGIN
     IF (SELECT tasks_completed_count FROM public.user_milestones WHERE user_id = auth.uid()) IS DISTINCT FROM i - 2000 THEN
       RAISE EXCEPTION 'Lifetime task count failed before or at the daily quota threshold';
     END IF;
-    IF (r->'daily_quota'->>'quota_completed')::boolean IS DISTINCT FROM (i = 2003) THEN
+    IF (r->'daily_quota'->>'quota_rewarded')::boolean IS DISTINCT FROM (i = 2003) THEN
       RAISE EXCEPTION 'Quota reward signaled incorrectly: %', r;
     END IF;
   END LOOP;
@@ -178,7 +178,7 @@ BEGIN
   SELECT experience_points INTO before_xp FROM public.user_digimon WHERE id = '00000000-0000-4000-8000-000000001001';
   r := public.complete_task_all_triggers('00000000-0000-4000-8000-000000002005', auth.uid(), false);
   IF (SELECT experience_points FROM public.user_digimon WHERE id = '00000000-0000-4000-8000-000000001001')
-    <> before_xp + (r->>'reserve_exp')::integer OR (r->'daily_quota'->>'quota_completed')::boolean THEN
+    <> before_xp + (r->>'reserve_exp')::integer OR (r->'daily_quota'->>'quota_rewarded')::boolean THEN
     RAISE EXCEPTION 'Reserve EXP without an active pet or once-daily quota readiness failed';
   END IF;
   IF (SELECT tasks_completed_count FROM public.user_milestones WHERE user_id = auth.uid()) IS DISTINCT FROM 4 THEN

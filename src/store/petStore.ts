@@ -1100,59 +1100,12 @@ export const useDigimonStore = create<PetState>((set, get) => ({
   },
 
   checkLevelUp: async () => {
-    try {
-      const { userDigimon } = get();
-      if (!userDigimon) return;
-
-      // XP curve: each level costs 100 + (level × 50).
-      // Level 1→2: 150 XP, Level 10→11: 600 XP, Level 50→51: 2,600 XP.
-      // Note: the DB trigger `level_up_digimon` also handles level-ups server-side;
-      // this client-side check provides an immediate UI update without waiting for realtime.
-      const xpNeeded = 100 + userDigimon.current_level * 50;
-
-      // Check if Digimon has enough XP to level up
-      if (userDigimon.experience_points >= xpNeeded) {
-        // Calculate new level and remaining XP
-        const newLevel = userDigimon.current_level + 1;
-        const remainingXP = userDigimon.experience_points - xpNeeded;
-
-        // Update Digimon stats
-        const { error } = await supabase
-          .from('user_digimon')
-          .update({
-            current_level: newLevel,
-            experience_points: remainingXP,
-          })
-          .eq('id', userDigimon.id);
-
-        if (error) {
-          console.error('Error updating level:', error);
-          throw error;
-        }
-
-        // Update local state
-        set({
-          userDigimon: {
-            ...userDigimon,
-            current_level: newLevel,
-            experience_points: remainingXP,
-          },
-        });
-
-        // Recurse to handle multi-level gains in a single task reward.
-        // Each call re-reads fresh state from `get()`, so level and XP are always current.
-        if (remainingXP > 0) {
-          await get().checkLevelUp();
-        }
-
-        return true;
-      } else {
-        return false;
-      }
-    } catch (error) {
-      console.error('Error checking level up:', error);
-      return false;
-    }
+    // Only the database trigger changes levels. Read its committed result so
+    // stale browser EXP cannot overwrite a task reward or level-up.
+    const previousLevel = get().userDigimon?.current_level;
+    await Promise.all([get().fetchUserDigimon(), get().fetchAllUserDigimon()]);
+    const currentLevel = get().userDigimon?.current_level;
+    return previousLevel != null && currentLevel != null && currentLevel > previousLevel;
   },
 
   getDigimonDisplayName: () => {

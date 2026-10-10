@@ -2,20 +2,24 @@ import type { Digimon, UserDigimon } from '@/store/petStore';
 
 /**
  * XP required to advance from `level` to `level + 1`.
- * Formula: 100 + level * 50
- * Level 1→2: 150 XP, Level 10→11: 600 XP, Level 50→51: 2600 XP
+ * Formula: min(100 + level * 50, 1000), capped from level 18 onward.
  */
 export function xpForNextLevel(level: number): number {
-  return 100 + level * 50;
+  return Math.min(100 + level * 50, 1000);
 }
 
 /**
  * Total cumulative XP earned since level 1 to reach the current state.
  * = sum of xpForNextLevel(1..level-1) + currentLevelXp
- * = (level - 1) * (100 + 25 * level) + currentLevelXp
+ * Uses the current curve; this is not a historical lifetime EXP counter.
  */
 export function totalCumulativeXp(level: number, currentLevelXp: number): number {
-  return (level - 1) * (100 + 25 * level) + currentLevelXp;
+  const uncappedLevels = Math.min(level - 1, 17);
+  return (
+    uncappedLevels * (100 + 25 * (uncappedLevels + 1)) +
+    Math.max(0, level - 18) * 1000 +
+    currentLevelXp
+  );
 }
 
 /**

@@ -9,7 +9,7 @@ DECLARE
 BEGIN
     -- Loop in case multiple level-ups are earned at once
     LOOP
-        xp_threshold := 100 + (NEW.current_level * 50);
+        xp_threshold := LEAST(100 + (NEW.current_level * 50), 1000);
 
         EXIT WHEN NEW.experience_points < xp_threshold OR NEW.current_level >= 99;
 

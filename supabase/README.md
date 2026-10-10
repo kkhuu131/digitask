@@ -47,6 +47,29 @@ The complete pre-adoption schema export matched the original capture before repa
 
 New Supabase projects replay the baseline normally. Provisioning the five healthy cron jobs, provider settings, secrets, storage buckets and other project configuration remains a separate reviewed step. The baseline captures public schema and reference data, not a full production backup. The cleanup migration safely unschedules the obsolete job only when its command still matches the captured broken command.
 
+## Progression and daily quota rewards (prepared 2026-10-10; not deployed)
+
+`20261010225044_cap_progression_and_atomic_quota.sql` caps each level-up at
+1,000 EXP from level 18 onward and commits the third-task quota bonus with
+normal task rewards. All non-storage party members receive the full 300 EXP
+quota bonus times the updated streak multiplier; reserve task EXP remains 50%.
+A follow-up rounding migration uses decimal rounding for half-point rewards,
+matching frontend previews. Profile/quota locks serialize the threshold crossing;
+any later failure rolls back the task, quota, streak, EXP, levels and ticket.
+
+No historical levels, claims or EXP are rewritten by these migrations. Existing
+EXP above the new threshold is consumed on the next pet update by the existing
+level-up trigger. Displayed total EXP is the current curve's equivalent, not a
+historical lifetime ledger. Missed historical quota bonuses cannot be inferred
+reliably and are not backfilled.
+
+Deploy both reviewed migrations before the compatible frontend. The response
+retains `daily_quota.quota_completed = false` so older clients skip their separate
+browser quota grant; `quota_rewarded` and `quota_bonus_exp` confirm the server
+reward for new clients. Older frontend level displays still use the old curve,
+so publish the compatible frontend promptly. Browser level checks now refresh
+server state instead of writing levels. Production has not been changed.
+
 ## Live verification
 
 ### Batch bonus stats (database deployed 2026-10-10)

@@ -15,7 +15,7 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({
   showCompleted = false,
   autoAllocateStats = false,
 }) => {
-  const { tasks, completeTask, deleteTask, loading } = useTaskStore();
+  const { tasks, completeTask, deleteTask, loading, getExpMultiplier } = useTaskStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [showEditModal, setShowEditModal] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<SortOption>('due');
@@ -417,7 +417,7 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({
                     onClick={() =>
                       !task.is_completed &&
                       !completingTasks.has(task.id) &&
-                      handleComplete(task.id, getExpPoints(task))
+                      handleComplete(task.id, getExpPoints(task, getExpMultiplier()))
                     }
                     className="w-11 h-11 row-span-2 sm:row-span-1 self-center flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-dark-200 transition-colors disabled:cursor-not-allowed"
                     disabled={task.is_completed || completingTasks.has(task.id)}
@@ -549,7 +549,7 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({
                     {/* Phase 4.2 — XP reward badge; hidden on completed tasks */}
                     {!task.is_completed && (
                       <span className="text-xs font-medium px-1.5 py-0.5 rounded-full flex-shrink-0 bg-accent-100 dark:bg-accent-900/40 text-accent-600 dark:text-accent-300">
-                        +{getExpPoints(task)} XP
+                        +{getExpPoints(task, getExpMultiplier())} XP
                       </span>
                     )}
                     <button
@@ -702,7 +702,7 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({
                           onClick={() =>
                             !task.is_completed &&
                             !completingTasks.has(task.id) &&
-                            handleComplete(task.id, getExpPoints(task))
+                            handleComplete(task.id, getExpPoints(task, getExpMultiplier()))
                           }
                           className="w-11 h-11 row-span-2 sm:row-span-1 self-center flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-dark-200 transition-colors disabled:cursor-not-allowed"
                           disabled={task.is_completed || completingTasks.has(task.id)}
@@ -836,7 +836,7 @@ const CleanTaskList: React.FC<CleanTaskListProps> = ({
                           {/* Phase 4.2 — XP reward badge; hidden on completed tasks */}
                           {!task.is_completed && (
                             <span className="text-xs font-medium px-1.5 py-0.5 rounded-full flex-shrink-0 bg-accent-100 dark:bg-accent-900/40 text-accent-600 dark:text-accent-300">
-                              +{getExpPoints(task)} XP
+                              +{getExpPoints(task, getExpMultiplier())} XP
                             </span>
                           )}
                           <button
