@@ -103,7 +103,8 @@ Profile Digimon use `DigimonCardIdentity`, animated sprites and shared stat bars
   Use `ui-stat-adjustments` for paired +/− buttons with nonoverlapping hit targets.
   Bonus allocations stay in a local preview until Save changes; Cancel and minus
   undo only unsaved additions. Keep evolution/transfer actions disabled while a
-  draft exists and explain that the changes are unsaved next to Save/Cancel.
+  draft exists. Keep Save/Cancel right-aligned without a surrounding panel or
+  explanatory text; the actions appear only when there are unsaved changes.
 - Give every field a visible associated label or an accessible name. Expose toggle
   state using `aria-pressed` or the native checkbox state. Use native buttons and
   links for keyboard interaction.

@@ -740,29 +740,23 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
                   {renderStatRow('ABI', localDigimon.abi, 0)}
                 </div>
                 {belongsToCurrentUser && pendingPoints > 0 && (
-                  <div className="ui-panel p-3 mb-4">
-                    <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">
-                      {pendingPoints} unsaved {pendingPoints === 1 ? 'point' : 'points'}. Minus only
-                      undoes points added here.
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      <button
-                        type="button"
-                        className="btn-primary"
-                        onClick={saveStats}
-                        disabled={allocating}
-                      >
-                        {allocating ? 'Saving changes…' : 'Save changes'}
-                      </button>
-                      <button
-                        type="button"
-                        className="btn-secondary"
-                        onClick={cancelDraft}
-                        disabled={allocating}
-                      >
-                        Cancel
-                      </button>
-                    </div>
+                  <div className="flex flex-wrap justify-end gap-2 mb-4">
+                    <button
+                      type="button"
+                      className="btn-primary"
+                      onClick={saveStats}
+                      disabled={allocating}
+                    >
+                      {allocating ? 'Saving changes…' : 'Save changes'}
+                    </button>
+                    <button
+                      type="button"
+                      className="btn-secondary"
+                      onClick={cancelDraft}
+                      disabled={allocating}
+                    >
+                      Cancel
+                    </button>
                   </div>
                 )}
                 <DigimonEvolutionHistory
