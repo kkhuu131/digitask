@@ -608,22 +608,22 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
             : ev.isCritical
               ? '#fbbf24'
               : '#fff';
-          if (!ev.techniqueId && !simplifiedEffectsRef.current) {
-            const cue: AttackEffect = {
-              id: `attack-${++effectSequenceRef.current}`,
-              sourceX: atk.x,
-              sourceY: atk.y,
-              targetX: ev.targetX,
-              targetY: ev.targetY,
-              color,
-              damage: ev.damage,
-              critical: ev.isCritical,
-              miss: ev.isMiss,
-              skill: ev.isSkill,
-              lane: cues.filter((c) => c.targetX === ev.targetX && c.targetY === ev.targetY).length,
-            };
-            cues.push(cue);
-          }
+          const cue: AttackEffect = {
+            id: `attack-${++effectSequenceRef.current}`,
+            sourceX: atk.x,
+            sourceY: atk.y,
+            targetX: ev.targetX,
+            targetY: ev.targetY,
+            targetId: ev.targetId,
+            showImpact: !ev.techniqueId && !simplifiedEffectsRef.current,
+            color,
+            damage: ev.damage,
+            critical: ev.isCritical,
+            miss: ev.isMiss,
+            skill: ev.isSkill,
+            lane: 0,
+          };
+          cues.push(cue);
           const facing = facingRefs.current.get(atk.id);
           if (facing) {
             const right = ev.targetX > atk.x;
@@ -698,7 +698,18 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
     }
 
     if (cues.length) {
-      setAttackEffects((previous) => [...previous, ...cues].slice(-18));
+      setAttackEffects((previous) => {
+        const next = [...previous];
+        for (const cue of cues) {
+          const occupied = new Set(
+            next.filter((effect) => effect.targetId === cue.targetId).map((effect) => effect.lane)
+          );
+          let lane = 0;
+          while (occupied.has(lane)) lane += 1;
+          next.push({ ...cue, lane });
+        }
+        return next.slice(-18);
+      });
       const ids = new Set(cues.map((c) => c.id));
       scheduleCleanup(
         () => setAttackEffects((previous) => previous.filter((c) => !ids.has(c.id))),

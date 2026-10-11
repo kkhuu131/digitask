@@ -44,7 +44,9 @@ const PatchNotes = () => {
                 and match the attacking Digimon's attribute. A brief pre-skill slowdown emphasizes
                 attacks; overlapping skills share one slowdown, and reduced-motion playback skips
                 it. Already-committed skills complete through hit-stun in new battles, keeping
-                simultaneous attacks and their effects in sync.
+                simultaneous attacks and their effects in sync. Skill hits now show damage numbers,
+                CRIT and MISS labels on desktop and phone, with stacked labels when several hits
+                land on the same Digimon.
               </li>
               <li>
                 Arena technique effects follow the attacking and defending Digimon and stay in sync
