@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect, useLayoutEffect } from 'react';
 import { animate, motion, useReducedMotion } from 'framer-motion';
 import BattleAttackEffects, { AttackEffect } from './BattleAttackEffects';
 import TechniqueEffects, { TechniqueEffect } from './TechniqueEffects';
+import { applyTechniqueEvents } from '../utils/techniquePresentation';
 import { BattleDigimon } from '../types/battle';
 import { initArenaDigimon, runFrame } from '../engine/arenaEngine';
 import { createReplayPlayer } from '../engine/arenaReplay';
@@ -284,6 +285,8 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
   const hpTrailRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const [attackEffects, setAttackEffects] = useState<AttackEffect[]>([]);
   const [techniqueEffects, setTechniqueEffects] = useState<TechniqueEffect[]>([]);
+  const playbackTimeRef = useRef(0);
+  const techniqueFrameUpdatesRef = useRef(new Set<() => void>());
   const techniqueMode = replay?.version === 2;
   const [countdown, setCountdown] = useState<string | null>('3');
   const countdownElapsedRef = useRef(0);
@@ -568,6 +571,7 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
 
   // ── Event handler ─────────────────────────────────────────────────────────────
   const handleEvents = (events: ArenaEvent[]) => {
+    setTechniqueEffects((previous) => applyTechniqueEvents(previous, events));
     const hpUpdates: Record<string, { hp: number; maxHp: number }> = {};
     const newDeadIds: string[] = [];
     let endWinner: 'user' | 'opponent' | null = null;
@@ -575,27 +579,9 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
 
     for (const ev of events) {
       if (ev.type === 'technique_start') {
-        setTechniqueEffects((previous) => [
-          ...previous.filter((effect) => effect.id !== ev.effectInstanceId),
-          {
-            id: ev.effectInstanceId,
-            techniqueId: ev.techniqueId,
-            sourceX: ev.sourceX,
-            sourceY: ev.sourceY,
-            targetX: ev.targetX,
-            targetY: ev.targetY,
-            windupMs: ev.windupMs,
-            phase: 'windup',
-          },
-        ]);
+        // Technique visuals follow the replay clock and live actor positions.
       } else if (ev.type === 'technique_hit') {
-        setTechniqueEffects((previous) =>
-          previous.map((effect) =>
-            effect.id === ev.effectInstanceId
-              ? { ...effect, targetX: ev.targetX, targetY: ev.targetY, phase: 'hit' }
-              : effect
-          )
-        );
+        // The hit phase gets a fresh visual and owns its fade-out.
       } else if (ev.type === 'technique_end') {
         scheduleCleanup(
           () =>
@@ -772,6 +758,7 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
       const events = replayPlayerRef.current
         ? replayPlayerRef.current.advance(gameDelta)
         : runFrame(digimonRef.current, gameDelta);
+      playbackTimeRef.current += gameDelta;
 
       // Direct DOM: sprite positions + facing direction
       for (const d of digimonRef.current) {
@@ -892,6 +879,8 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
       }
 
       if (events.length > 0) handleEvents(events);
+      // Update effects after actor transforms, in the same frame (including knockback).
+      for (const update of techniqueFrameUpdatesRef.current) update();
       if (!battleEndedRef.current) rafId = requestAnimationFrame(loop);
     };
 
@@ -989,6 +978,7 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
           <div
             ref={viewportDivRef}
             style={{
+              transitionProperty: 'none',
               position: 'relative',
               width: VIEWPORT_W,
               height: VIEWPORT_H,
@@ -1001,6 +991,7 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
             <div
               ref={worldDivRef}
               style={{
+                transitionProperty: 'none',
                 position: 'absolute',
                 width: WORLD_W,
                 height: WORLD_H,
@@ -1134,6 +1125,7 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
               {digimonRef.current.map((d) => (
                 <div
                   key={d.id}
+                  data-arena-actor={d.id}
                   ref={(el) => {
                     if (el) spriteContainerRefs.current.set(d.id, el);
                     else spriteContainerRefs.current.delete(d.id);
@@ -1145,6 +1137,7 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
                     width: SPRITE_W,
                     height: SPRITE_H,
                     willChange: 'transform',
+                    transitionProperty: 'none',
                     pointerEvents: 'none',
                   }}
                 >
@@ -1258,6 +1251,12 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
               <TechniqueEffects
                 effects={techniqueEffects}
                 reducedMotion={!!reducedMotion || simplifiedEffects}
+                actorsRef={digimonRef}
+                playbackTimeRef={playbackTimeRef}
+                frameUpdatesRef={techniqueFrameUpdatesRef}
+                onEffectComplete={(id) =>
+                  setTechniqueEffects((previous) => previous.filter((effect) => effect.id !== id))
+                }
               />
               {/* Hit particle effects — rendered in world-space, panned by camera */}
               {hitEffects.map((p) => {

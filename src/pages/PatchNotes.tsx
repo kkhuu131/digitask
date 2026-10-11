@@ -40,6 +40,11 @@ const PatchNotes = () => {
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
               <li>
+                Arena technique effects follow the attacking and defending Digimon and stay in sync
+                with replay speed. Impact rings are circular, and interrupted attacks clear their
+                effects instead of leaving rings behind.
+              </li>
+              <li>
                 Level-up costs stop increasing at 1,000 EXP from level 18 onward. Early levels keep
                 their existing pace, and existing levels are preserved.
               </li>
