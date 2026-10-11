@@ -2,8 +2,10 @@ import { calculateUserPowerRating, generateBattleOption } from '../engine/arenaO
 import {
   simulateArena,
   simulateArenaV1,
+  simulateArenaV2,
   ARENA_ENGINE_VERSION,
   LEGACY_ARENA_ENGINE_VERSION,
+  PREVIOUS_ARENA_ENGINE_VERSION,
 } from '../engine/arenaReplay';
 import { convertToBattleDigimon } from '../utils/convertToBattleDigimon';
 
@@ -74,6 +76,7 @@ export function createArenaBattleHandler(deps: ArenaServerDependencies) {
       if (prepared.status === 'settled') return respond({ battle: prepared });
       if (
         prepared.engine_version !== ARENA_ENGINE_VERSION &&
+        prepared.engine_version !== PREVIOUS_ARENA_ENGINE_VERSION &&
         prepared.engine_version !== LEGACY_ARENA_ENGINE_VERSION
       ) {
         return respond(
@@ -85,7 +88,11 @@ export function createArenaBattleHandler(deps: ArenaServerDependencies) {
       const userTeam = snapshot.user_team.map((d: any) => convertToBattleDigimon(d, true));
       const opponentTeam = snapshot.opponent_team.map((d: any) => convertToBattleDigimon(d, false));
       const simulate =
-        prepared.engine_version === ARENA_ENGINE_VERSION ? simulateArena : simulateArenaV1;
+        prepared.engine_version === ARENA_ENGINE_VERSION
+          ? simulateArena
+          : prepared.engine_version === PREVIOUS_ARENA_ENGINE_VERSION
+            ? simulateArenaV2
+            : simulateArenaV1;
       const replay = simulate(userTeam, opponentTeam, snapshot.strategies, Number(prepared.seed));
       const battle = await deps.rpc('settle_arena_battle', {
         p_user_id: userId,

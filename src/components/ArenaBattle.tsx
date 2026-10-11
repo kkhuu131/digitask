@@ -3,6 +3,11 @@ import { animate, motion, useReducedMotion } from 'framer-motion';
 import BattleAttackEffects, { AttackEffect } from './BattleAttackEffects';
 import TechniqueEffects, { TechniqueEffect } from './TechniqueEffects';
 import { applyTechniqueEvents } from '../utils/techniquePresentation';
+import {
+  advanceSkillEmphasis,
+  createSkillEmphasisState,
+  skillPlaybackScale,
+} from '../utils/skillEmphasis';
 import { BattleDigimon } from '../types/battle';
 import { initArenaDigimon, runFrame } from '../engine/arenaEngine';
 import { createReplayPlayer } from '../engine/arenaReplay';
@@ -286,6 +291,7 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
   const [attackEffects, setAttackEffects] = useState<AttackEffect[]>([]);
   const [techniqueEffects, setTechniqueEffects] = useState<TechniqueEffect[]>([]);
   const playbackTimeRef = useRef(0);
+  const skillEmphasisRef = useRef(createSkillEmphasisState());
   const techniqueFrameUpdatesRef = useRef(new Set<() => void>());
   const techniqueMode = replay?.version === 2;
   const [countdown, setCountdown] = useState<string | null>('3');
@@ -746,9 +752,17 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
       }
 
       // ── Cinematic time scaling ────────────────────────────────────────────────
-      let gameDelta = realDelta;
+      const emphasisEnabled = !reducedMotionRef.current;
+      skillEmphasisRef.current = advanceSkillEmphasis(
+        skillEmphasisRef.current,
+        realDelta,
+        digimonRef.current.filter((d) => d.state === 'skill_windup').map((d) => d.id),
+        emphasisEnabled
+      );
+      let gameDelta = realDelta * skillPlaybackScale(skillEmphasisRef.current);
       if (cinematicRef.current) {
-        gameDelta = realDelta * cinematicRef.current.timeScale;
+        gameDelta =
+          realDelta * skillPlaybackScale(skillEmphasisRef.current, cinematicRef.current.timeScale);
         cinematicRef.current.realRemainingMs -= realDelta;
         if (cinematicRef.current.realRemainingMs <= 0) {
           endCinematic();
@@ -839,6 +853,12 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
       // Windup diff + skill cinematic trigger
       const currentWindups = new Set(
         digimonRef.current.filter((d) => d.state === 'skill_windup').map((d) => d.id)
+      );
+      skillEmphasisRef.current = advanceSkillEmphasis(
+        skillEmphasisRef.current,
+        0,
+        [...currentWindups],
+        emphasisEnabled
       );
       const prevWindups = lastWindupIdsRef.current;
       const windupChanged =

@@ -404,7 +404,7 @@ CREATE TABLE IF NOT EXISTS "public"."arena_battle_requests" (
   "user_id" uuid NOT NULL,
   "offer_id" uuid NOT NULL,
   "seed" bigint NOT NULL CHECK (seed BETWEEN 0 AND 4294967295),
-  "engine_version" integer NOT NULL DEFAULT 1,
+  "engine_version" integer NOT NULL DEFAULT 3,
   "snapshot" jsonb NOT NULL,
   "status" text NOT NULL DEFAULT 'prepared' CHECK (status IN ('prepared','settled')),
   "replay" jsonb,

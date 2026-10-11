@@ -1,9 +1,16 @@
-import { initArenaDigimon, runFrame, type ArenaEngineMode } from './arenaEngine';
+import {
+  initArenaDigimon,
+  runFrame,
+  CURRENT_TECHNIQUE_RULES,
+  PREVIOUS_TECHNIQUE_RULES,
+  type ArenaEngineMode,
+} from './arenaEngine';
 import { DEFAULT_BATTLE_SP_CAPACITY } from './battleSp';
 import type { ArenaDigimon, ArenaEvent, Strategy } from './arenaTypes';
 import type { BattleDigimon } from '../types/battle';
 
-export const ARENA_ENGINE_VERSION = 2;
+export const ARENA_ENGINE_VERSION = 3;
+export const PREVIOUS_ARENA_ENGINE_VERSION = 2;
 export const LEGACY_ARENA_ENGINE_VERSION = 1;
 export const ARENA_STEP_MS = 16;
 export const ARENA_TIME_LIMIT_MS = 120_000;
@@ -72,7 +79,8 @@ function simulate(
   opponentTeam: BattleDigimon[],
   strategies: Strategy[],
   seed: number,
-  mode: ArenaEngineMode
+  mode: ArenaEngineMode,
+  engineVersion: number
 ): ArenaReplay {
   const isV2 = mode === 'techniques';
   const fields = isV2 ? ARENA_REPLAY_V2_FIELDS : ARENA_REPLAY_V1_FIELDS;
@@ -86,7 +94,16 @@ function simulate(
   let t = 0;
   for (let tick = 1; !winner && t < ARENA_TIME_LIMIT_MS; tick += 1) {
     t = tick * ARENA_STEP_MS;
-    const emitted = runFrame(state, ARENA_STEP_MS, random, mode, t);
+    const emitted = runFrame(
+      state,
+      ARENA_STEP_MS,
+      random,
+      mode,
+      t,
+      engineVersion === PREVIOUS_ARENA_ENGINE_VERSION
+        ? PREVIOUS_TECHNIQUE_RULES
+        : CURRENT_TECHNIQUE_RULES
+    );
     events.push(...emitted);
     const end = emitted.find((event) => event.type === 'battle_end');
     if (end?.type === 'battle_end') winner = end.winner;
@@ -117,7 +134,7 @@ function simulate(
   return isV2
     ? {
         version: 2,
-        engineVersion: ARENA_ENGINE_VERSION,
+        engineVersion,
         fieldSchema: ARENA_REPLAY_V2_FIELDS,
         ...common,
       }
@@ -130,7 +147,31 @@ export function simulateArenaV1(
   strategies: Strategy[],
   seed: number
 ): ArenaReplayV1 {
-  return simulate(userTeam, opponentTeam, strategies, seed, 'legacy') as ArenaReplayV1;
+  return simulate(
+    userTeam,
+    opponentTeam,
+    strategies,
+    seed,
+    'legacy',
+    LEGACY_ARENA_ENGINE_VERSION
+  ) as ArenaReplayV1;
+}
+
+/** Resume already-prepared version 2 requests with their original charging rules. */
+export function simulateArenaV2(
+  userTeam: BattleDigimon[],
+  opponentTeam: BattleDigimon[],
+  strategies: Strategy[],
+  seed: number
+): ArenaReplayV2 {
+  return simulate(
+    userTeam,
+    opponentTeam,
+    strategies,
+    seed,
+    'techniques',
+    PREVIOUS_ARENA_ENGINE_VERSION
+  ) as ArenaReplayV2;
 }
 
 export function simulateArena(
@@ -139,7 +180,14 @@ export function simulateArena(
   strategies: Strategy[],
   seed: number
 ): ArenaReplayV2 {
-  return simulate(userTeam, opponentTeam, strategies, seed, 'techniques') as ArenaReplayV2;
+  return simulate(
+    userTeam,
+    opponentTeam,
+    strategies,
+    seed,
+    'techniques',
+    ARENA_ENGINE_VERSION
+  ) as ArenaReplayV2;
 }
 
 function hydrateReplayState(replay: ArenaReplay): ArenaDigimon[] {

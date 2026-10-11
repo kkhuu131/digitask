@@ -332,8 +332,14 @@ When a Digimon dies or enters `skill_windup`, the game triggers a cinematic: slo
 
 **On death:** a 650ms highlight at 0.7 playback speed and 1.08 zoom.
 
-**On skill windup:** frame the attacker/target midpoint for 900ms at normal
-playback speed, with zoom capped at 1.12 and constrained to fit both participants.
+**On skill windup:** frame the attacker/target midpoint for 900ms, with zoom capped
+at 1.12 and constrained to fit both participants. The first 500ms uses half-speed
+playback. Simultaneous skills share one bounded slowdown window, with a 1700ms
+cooldown measured from its start; overlaps never restart it. Independent highlights
+use the lowest playback rate rather than multiplying rates. Cancelled windups clear
+the slowdown when no actor is charging. Reduced motion skips both slowdown and zoom;
+simplified effects skip zoom while retaining the brief slowdown. Combat events remain
+recorded and unchanged by playback.
 Highlights respect a 2.2-second cooldown after the previous highlight and are
 skipped for reduced motion.
 
@@ -640,7 +646,7 @@ The shared helper is `src/utils/selectStrongestTeam.ts`.
 7. ArenaBattle consumes recorded states/events, interpolates movement and adds existing effects/camera behavior. Completion only changes the screen. No reward or history writes happen in playback.
 8. Returning to the arena retrieves the latest result and replay. Interrupted starts are resumed with the same saved request; a browser cache stores the original intent if the response was lost before confirmation. Requests which fail before settlement do not spend a ticket.
 
-The server bundle is generated from src/server/arenaEdge.ts using npm run arena:build; its build rejects browser-store imports. Damage rules live in engine/battleRules.ts and opponent generation in engine/arenaOpponents.ts. arenaReplay.ts implements seeded simulation and recording playback. Replay v1 preserves the legacy cooldown skill rules. Replay v2 records explicit battle SP plus stable technique start, commit, hit and end events. New clients request engine v2; old clients and pending v1 requests remain supported without charging again. Unknown engine versions stop before settlement.
+The server bundle is generated from src/server/arenaEdge.ts using npm run arena:build; its build rejects browser-store imports. Damage rules live in engine/battleRules.ts and opponent generation in engine/arenaOpponents.ts. arenaReplay.ts implements seeded simulation and recording playback. Replay v1 preserves the legacy cooldown skill rules. Replay v2 records explicit battle SP plus stable technique start, commit, hit and end events. New fights use engine v3 with 4 SP/second times the persistent-SP multiplier (capped at 2.5), one-third of engine v2's 12 SP/second. Prepared v2 requests resume with their original rate; v1 requests and recorded v1/v2 playback remain supported. Replay format stays at v2 for engine v3, independently of combat version. Unknown engine versions stop before settlement.
 
 Tournament callers use the shared team selector and the existing live simulation mode of ArenaBattle. Their lifecycle is a separate follow-up. Sections explaining runFrame describe simulation; daily arena presentation uses createReplayPlayer instead. The browser may choose random cosmetic particles without affecting combat.
 
@@ -720,7 +726,7 @@ It does not draw a full attacker-to-target line or arrow. Damage labels have no 
 or minus sign. Labels counter-scale to stay readable on phones. Legacy special
 windups use a soft attribute-colored ground light rather than a dashed connector or
 target ring. Replay-v2 techniques use distinct presentation: Impact Strike compresses
-into a close contact shock, while Ember Burst travels as a smooth fire orb and blooms
+into a close contact shock, while Ember Burst travels as a smooth attribute-colored orb and blooms
 at impact. Neither uses a generic connector.
 
 Sprite anticipation, lunge and recoil animate a separate wrapper, leaving world
@@ -729,8 +735,12 @@ status rows expose charging, attack, retreat and recovery cues. Phone status pan
 stack the teams to keep names and HP legible.
 
 The camera uses time-normalized smoothing, small pan/zoom dead zones, and a 2.2-second
-cooldown after highlights. Specials frame both participants for 900ms at normal
-speed (zoom capped at 1.12); knockouts use a 650ms, 0.7-speed highlight at 1.08 zoom.
+cooldown after highlights. Specials frame both participants for 900ms with a shared
+500ms half-speed windup window (zoom capped at 1.12); knockouts use a 650ms,
+0.7-speed highlight at 1.08 zoom. Orbs are 36 world units wide (50% larger) and
+share the attacker's attribute color with their impact flash and rings. Windups
+use the playback clock and current actor positions; cancelled/dead actors and
+missing end events cannot leave persistent effects.
 Reduced motion uses a fixed view of the whole world, with a static ground-light cue
 and damage labels but no camera highlights, sprite recoil or particle bursts.
 Phones and coarse-pointer devices also omit damage labels, attack traces, camera

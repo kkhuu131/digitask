@@ -1,5 +1,6 @@
 export const DEFAULT_BATTLE_SP_CAPACITY = 100;
-export const BASE_BATTLE_SP_PER_SECOND = 12;
+export const BASE_BATTLE_SP_PER_SECOND = 4;
+export const PREVIOUS_BATTLE_SP_PER_SECOND = 12;
 export const BATTLE_SP_STAT_SCALE = 300;
 export const MAX_BATTLE_SP_CHARGE_MULTIPLIER = 2.5;
 
@@ -40,26 +41,30 @@ export function battleSpGaugePercent(value: unknown, capacity: unknown): number 
   return (normalizeBattleSp(value, safeCapacity) / safeCapacity) * 100;
 }
 
-export function battleSpChargePerSecond(persistentSp: unknown): number {
+export function battleSpChargePerSecond(
+  persistentSp: unknown,
+  basePerSecond = BASE_BATTLE_SP_PER_SECOND
+): number {
   const safePersistentSp = Math.max(0, finiteNumber(persistentSp, 0));
   const multiplier = Math.min(
     MAX_BATTLE_SP_CHARGE_MULTIPLIER,
     1 + safePersistentSp / BATTLE_SP_STAT_SCALE
   );
-  return BASE_BATTLE_SP_PER_SECOND * multiplier;
+  return basePerSecond * multiplier;
 }
 
 export function chargeBattleSp(
   current: unknown,
   capacity: unknown,
   persistentSp: unknown,
-  deltaMs: unknown
+  deltaMs: unknown,
+  basePerSecond = BASE_BATTLE_SP_PER_SECOND
 ): number {
   const safeCapacity = normalizeBattleSpCapacity(capacity);
   const safeDeltaMs = Math.max(0, finiteNumber(deltaMs, 0));
   const next =
     normalizeBattleSp(current, safeCapacity) +
-    battleSpChargePerSecond(persistentSp) * (safeDeltaMs / 1000);
+    battleSpChargePerSecond(persistentSp, basePerSecond) * (safeDeltaMs / 1000);
   return normalizeBattleSp(next, safeCapacity);
 }
 

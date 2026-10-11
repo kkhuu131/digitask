@@ -6,6 +6,7 @@ import {
   legacySkillGaugePercent,
   sampleBattleSp,
   spendBattleSp,
+  PREVIOUS_BATTLE_SP_PER_SECOND,
 } from '../../engine/battleSp';
 
 describe('battle SP normalization', () => {
@@ -29,15 +30,24 @@ describe('battle SP normalization', () => {
   });
 
   it('bounds persistent-SP charge rate and charges monotonically', () => {
-    expect(battleSpChargePerSecond(-100)).toBe(12);
-    expect(battleSpChargePerSecond(Number.NaN)).toBe(12);
-    expect(battleSpChargePerSecond(10_000)).toBe(30);
+    expect(battleSpChargePerSecond(-100)).toBe(4);
+    expect(battleSpChargePerSecond(Number.NaN)).toBe(4);
+    expect(battleSpChargePerSecond(10_000)).toBe(10);
 
     let current = 0;
     for (const deltaMs of [7, 16, 50, 1000]) {
       const next = chargeBattleSp(current, 100, 150, deltaMs);
       expect(next).toBeGreaterThanOrEqual(current);
       current = next;
+    }
+  });
+
+  it('takes three times as long to earn a skill at every persistent SP level', () => {
+    for (const sp of [0, 150, 300, 450, 10_000]) {
+      const oldRate = battleSpChargePerSecond(sp, PREVIOUS_BATTLE_SP_PER_SECOND);
+      expect(battleSpChargePerSecond(sp)).toBeCloseTo(oldRate / 3);
+      expect(chargeBattleSp(0, 100, sp, (80 / oldRate) * 3000)).toBeCloseTo(80);
+      expect(chargeBattleSp(0, 100, sp, (80 / oldRate) * 1000)).toBeCloseTo(80 / 3);
     }
   });
 

@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION public.prepare_arena_battle(
   p_user_id uuid, p_request_id uuid, p_offer_id uuid,
-  p_team_ids uuid[], p_strategies text[], p_engine_version integer DEFAULT 1
+  p_team_ids uuid[], p_strategies text[], p_engine_version integer DEFAULT 3
 ) RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path = pg_catalog, public AS $$
 DECLARE v_request public.arena_battle_requests%ROWTYPE;
   v_offer public.arena_battle_offers%ROWTYPE; v_team jsonb;
@@ -17,7 +17,7 @@ BEGIN
     OR EXISTS (SELECT 1 FROM unnest(p_strategies) s WHERE s IS NULL OR s NOT IN ('aggressive','balanced','defensive'))
     OR (SELECT count(DISTINCT id) FROM unnest(p_team_ids) id) <> cardinality(p_team_ids) THEN
     RAISE EXCEPTION 'Choose one to three distinct Digimon and their behaviors' USING ERRCODE='22023'; END IF;
-  IF p_engine_version NOT IN (1, 2) THEN
+  IF p_engine_version NOT IN (1, 2, 3) THEN
     RAISE EXCEPTION 'Unsupported arena engine version' USING ERRCODE='22023'; END IF;
   IF EXISTS (SELECT 1 FROM public.arena_battle_requests WHERE user_id=p_user_id AND status='prepared') THEN
     RAISE EXCEPTION 'Resume the existing battle request before starting another'; END IF;

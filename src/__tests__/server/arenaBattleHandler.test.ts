@@ -53,6 +53,33 @@ describe('arena server request boundary', () => {
     expect(rpc).toHaveBeenCalledTimes(1);
     expect(rpc).not.toHaveBeenCalledWith('settle_arena_battle', expect.anything());
   });
+  it('starts engine 3 fights and resumes all supported prepared versions without changing their rules', async () => {
+    for (const engineVersion of [1, 2, 3]) {
+      rpc.mockReset();
+      rpc
+        .mockResolvedValueOnce({
+          id: 'pending',
+          status: 'prepared',
+          engine_version: engineVersion,
+          seed: 21,
+          snapshot: {
+            user_team: [{ id: 'a', digimon_id: 18, current_level: 25 }],
+            opponent_team: [{ id: 'b', digimon_id: 23, current_level: 25 }],
+            strategies: ['balanced'],
+          },
+        })
+        .mockImplementationOnce((_name, args) => Promise.resolve({ replay: args.p_replay }));
+      const response = await handler(
+        request({ action: 'start', requestId: 'pending', replayVersion: 2 })
+      );
+      expect(response.status).toBe(200);
+      expect(rpc.mock.calls[0][1].p_engine_version).toBe(3);
+      const { battle } = await response.json();
+      expect(battle.replay.engineVersion).toBe(engineVersion);
+      expect(battle.replay.version).toBe(engineVersion === 1 ? 1 : 2);
+      expect(rpc.mock.calls[1][0]).toBe('settle_arena_battle');
+    }
+  });
   it('reuses server-issued offers without generating replacements', async () => {
     const context = {
       offers: [{ id: 'a' }, { id: 'b' }, { id: 'c' }],

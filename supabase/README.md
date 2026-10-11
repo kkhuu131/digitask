@@ -156,6 +156,24 @@ follows the repository's Vercel integration; verify it separately from the SQL d
 
 ## Persisted daily arena battles
 
+### Arena charging engine v3 (database and Edge Function deployed, 2026-10-10)
+
+`20261011010622_slow_arena_skill_charge.sql` defaults new requests to engine 3
+and accepts engines 1, 2 and 3. The Edge Function uses one-third SP gain for engine
+3 and lets committed skills finish through hit-stun. It preserves engine 2's rate
+and hit-stun rules when resuming an existing prepared request, and retains
+engine 1. Engine 3 continues using replay format 2; settlement checks replay format
+and engine version separately. No existing requests, tickets, rewards or recordings
+are rewritten. The preparation RPC retains service-only execution after its default
+changes. Deploy SQL first, then `npm run arena:deploy`, then the compatible frontend.
+`diagnostics/arena-charge-deployment.sql` checks defaults, normalized function bodies,
+RPC permissions and aggregate request versions without exposing account rows.
+The migration and compatible Edge Function are deployed after local database,
+authorization and authenticated integration checks. Live defaults and RPC body
+hashes match the tested local schema, browser access remains disabled, and existing
+recording counts are preserved. Frontend publication follows the separate
+GitHub/Vercel release.
+
 Daily arena fights call the authenticated arena-battle Edge Function. Its source is in src/server/ and the shared engine; npm run arena:build creates the ignored function bundle. The database migration adds private offers/requests and three service-role-only RPCs. Prepared requests charge nothing. Settlement commits the ticket spend, existing win/loss Bits reward, history, counters and saved playback in one transaction. Browser-supplied user IDs, winners, stats and reward amounts are not trusted.
 
 Deploy the reviewed arena migration first, then run npm run arena:deploy, then deploy the compatible website. The legacy frontend remains compatible with the additive SQL migration, but it keeps its original ticket-loss problem until the new frontend is deployed. Verify the Edge Function and database deployment separately. No additional custom secret is needed: Supabase supplies its URL, anon key and service role key to the Edge runtime.

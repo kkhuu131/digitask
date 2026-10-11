@@ -92,6 +92,15 @@ describe('technique positioning and replay timing', () => {
     expect(sampleTechniqueWindup(effect(), 460, actors, null).progress).toBe(0.75);
     expect(sampleTechniqueWindup(effect(), 644, actors, null).expired).toBe(false);
     expect(sampleTechniqueWindup(effect(), 709, actors, null).expired).toBe(true);
+    // Historical replays can delay committed attacks through hit-stun.
+    expect(
+      sampleTechniqueWindup(
+        effect(),
+        2000,
+        [{ ...actors[0], state: 'skill_windup' }, actors[1]],
+        null
+      ).expired
+    ).toBe(false);
     expect(
       sampleTechniqueWindup(effect(), 340, [{ ...actors[0], state: 'dead' }, actors[1]], null)
         .expired

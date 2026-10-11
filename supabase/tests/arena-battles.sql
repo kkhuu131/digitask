@@ -33,7 +33,7 @@ DO $$ DECLARE u uuid:='00000000-0000-4000-8000-000000000021';
   pet uuid:='00000000-0000-4000-8000-000000021001';
   prepared jsonb; settled jsonb; replay jsonb;
 BEGIN
- BEGIN PERFORM public.prepare_arena_battle(u,r,offer,ARRAY[pet],ARRAY['balanced'],3);
+ BEGIN PERFORM public.prepare_arena_battle(u,r,offer,ARRAY[pet],ARRAY['balanced'],999);
    RAISE EXCEPTION 'Unsupported engine accepted'; EXCEPTION WHEN invalid_parameter_value THEN NULL; END;
  BEGIN PERFORM public.prepare_arena_battle(u,r,offer,ARRAY[pet,pet],ARRAY['balanced','balanced']);
    RAISE EXCEPTION 'Duplicate team accepted'; EXCEPTION WHEN invalid_parameter_value THEN NULL; END;
@@ -44,6 +44,7 @@ BEGIN
  BEGIN PERFORM public.prepare_arena_battle(u,r,offer,ARRAY['00000000-0000-4000-8000-000000021002'::uuid],ARRAY['balanced']);
    RAISE EXCEPTION 'Stored pet accepted'; EXCEPTION WHEN insufficient_privilege THEN NULL; END;
  prepared:=public.prepare_arena_battle(u,r,offer,ARRAY[pet],ARRAY['balanced']);
+ IF (prepared->>'engine_version')::integer <> 3 THEN RAISE EXCEPTION 'New requests must default to engine 3'; END IF;
  IF (SELECT battle_energy FROM public.profiles WHERE id=u)<>3 OR
    EXISTS(SELECT 1 FROM public.team_battles WHERE user_id=u) THEN RAISE EXCEPTION 'Preparation charged a ticket'; END IF;
  IF public.prepare_arena_battle(u,r,NULL,NULL,NULL) IS DISTINCT FROM prepared THEN
@@ -55,8 +56,12 @@ BEGIN
      IF SQLERRM<>'Resume the existing battle request before starting another' THEN RAISE; END IF; END;
  BEGIN PERFORM public.settle_arena_battle(u,r,'{"winner":"other"}');
    RAISE EXCEPTION 'Invalid outcome accepted'; EXCEPTION WHEN invalid_parameter_value THEN NULL; END;
- replay:=jsonb_build_object('version',1,'engineVersion',1,'seed',prepared->'seed',
+ replay:=jsonb_build_object('version',2,'engineVersion',3,'seed',prepared->'seed',
    'winner','user','durationMs',16,'frames','[{}]'::jsonb);
+ BEGIN PERFORM public.settle_arena_battle(u,r,jsonb_set(replay,'{version}','3'));
+   RAISE EXCEPTION 'Invalid replay format accepted'; EXCEPTION WHEN invalid_parameter_value THEN NULL; END;
+ BEGIN PERFORM public.settle_arena_battle(u,r,jsonb_set(replay,'{engineVersion}','2'));
+   RAISE EXCEPTION 'Mismatched engine accepted'; EXCEPTION WHEN invalid_parameter_value THEN NULL; END;
  settled:=public.settle_arena_battle(u,r,replay);
  IF settled->>'status'<>'settled' OR (SELECT battle_energy FROM public.profiles WHERE id=u)<>2 OR
    (SELECT bits FROM public.user_currency WHERE user_id=u)<>2100 OR
@@ -81,7 +86,7 @@ DO $$ DECLARE u uuid:='00000000-0000-4000-8000-000000000021';
  r uuid:='00000000-0000-4000-8000-000000024002'; prepared jsonb; replay jsonb;
 BEGIN
  prepared:=public.prepare_arena_battle(u,r,'00000000-0000-4000-8000-000000023002',
-   ARRAY['00000000-0000-4000-8000-000000021001'::uuid],ARRAY['defensive']);
+   ARRAY['00000000-0000-4000-8000-000000021001'::uuid],ARRAY['defensive'],1);
  replay:=jsonb_build_object('version',1,'engineVersion',1,'seed',prepared->'seed',
    'winner','opponent','durationMs',16,'frames','[{}]'::jsonb);
  BEGIN PERFORM public.settle_arena_battle(u,r,replay); RAISE EXCEPTION 'Injection did not fail';
@@ -124,10 +129,11 @@ BEGIN
       VALUES(offer,u,fixture.difficulty,'reward-test','[{"digimon_id":1},{"digimon_id":2},{"digimon_id":3}]');
     SELECT bits INTO before_bits FROM public.user_currency WHERE user_id=u;
     SELECT battle_energy INTO before_tickets FROM public.profiles WHERE id=u;
-    engine:=CASE WHEN fixture.difficulty='medium' AND fixture.winner='user' THEN 2 ELSE 1 END;
+    engine:=CASE WHEN fixture.difficulty='medium' AND fixture.winner='user' THEN 2
+      WHEN fixture.difficulty='hard' AND fixture.winner='user' THEN 3 ELSE 1 END;
     prepared:=public.prepare_arena_battle(u,request,offer,
       ARRAY['00000000-0000-4000-8000-000000021001'::uuid],ARRAY['balanced'],engine);
-    replay:=jsonb_build_object('version',engine,'engineVersion',engine,'seed',prepared->'seed',
+    replay:=jsonb_build_object('version',CASE WHEN engine=1 THEN 1 ELSE 2 END,'engineVersion',engine,'seed',prepared->'seed',
       'winner',fixture.winner,'durationMs',16,'frames','[{}]'::jsonb);
     settled:=public.settle_arena_battle(u,request,replay);
     IF (settled->>'bits_reward')::integer<>fixture.bits OR

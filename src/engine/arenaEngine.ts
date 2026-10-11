@@ -6,7 +6,13 @@ import {
   getTechnique,
   selectInitialTechnique,
 } from './techniques';
-import { chargeBattleSp, DEFAULT_BATTLE_SP_CAPACITY, spendBattleSp } from './battleSp';
+import {
+  chargeBattleSp,
+  DEFAULT_BATTLE_SP_CAPACITY,
+  BASE_BATTLE_SP_PER_SECOND,
+  PREVIOUS_BATTLE_SP_PER_SECOND,
+  spendBattleSp,
+} from './battleSp';
 import { seek, wander, separation, orbit, flee, dist } from './steeringBehaviors';
 import {
   ArenaDigimon,
@@ -34,6 +40,18 @@ import {
 } from './arenaTypes';
 
 export type ArenaEngineMode = 'legacy' | 'techniques';
+export interface ArenaTechniqueRules {
+  spPerSecond: number;
+  completeWindupWhileStunned: boolean;
+}
+export const CURRENT_TECHNIQUE_RULES: ArenaTechniqueRules = {
+  spPerSecond: BASE_BATTLE_SP_PER_SECOND,
+  completeWindupWhileStunned: true,
+};
+export const PREVIOUS_TECHNIQUE_RULES: ArenaTechniqueRules = {
+  spPerSecond: PREVIOUS_BATTLE_SP_PER_SECOND,
+  completeWindupWhileStunned: false,
+};
 
 // ─── Internal adapter ──────────────────────────────────────────────────────────
 
@@ -290,7 +308,8 @@ export const runFrame = (
   deltaMs: number,
   random: () => number = Math.random,
   mode: ArenaEngineMode = 'legacy',
-  battleTimeMs = 0
+  battleTimeMs = 0,
+  techniqueRules: ArenaTechniqueRules = CURRENT_TECHNIQUE_RULES
 ): ArenaEvent[] => {
   const events: ArenaEvent[] = [];
 
@@ -302,7 +321,13 @@ export const runFrame = (
     if (mode === 'legacy') {
       d.skillCooldownMs -= deltaMs * (1 + d.sp / 300);
     } else {
-      d.battleSp = chargeBattleSp(d.battleSp, d.battleSpCapacity, d.sp, deltaMs);
+      d.battleSp = chargeBattleSp(
+        d.battleSp,
+        d.battleSpCapacity,
+        d.sp,
+        deltaMs,
+        techniqueRules.spPerSecond
+      );
       d.techniqueRecoveryMs -= deltaMs;
     }
     d.retreatTimerMs -= deltaMs;
@@ -343,7 +368,16 @@ export const runFrame = (
     }
 
     // ── Hit-stun: slide on knockback only, no steering ───────────────────────
-    if (d.stunTimerMs > 0) {
+    // Committed techniques complete on time; prepared engine-2 requests retain
+    // the old hit-stun behavior, while new overlapping skills cannot delay each other.
+    if (
+      d.stunTimerMs > 0 &&
+      !(
+        mode === 'techniques' &&
+        d.state === 'skill_windup' &&
+        techniqueRules.completeWindupWhileStunned
+      )
+    ) {
       // Still apply damping + knockback so the slide feels physical
       d.vx *= DAMPING;
       d.vy *= DAMPING;

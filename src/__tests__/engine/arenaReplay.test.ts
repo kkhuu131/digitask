@@ -2,11 +2,17 @@ import { describe, expect, it, vi } from 'vitest';
 import {
   simulateArena,
   simulateArenaV1,
+  simulateArenaV2,
   createReplayPlayer,
   seededRandom,
   ARENA_TIME_LIMIT_MS,
 } from '../../engine/arenaReplay';
-import { initArenaDigimon, runFrame } from '../../engine/arenaEngine';
+import {
+  initArenaDigimon,
+  runFrame,
+  CURRENT_TECHNIQUE_RULES,
+  PREVIOUS_TECHNIQUE_RULES,
+} from '../../engine/arenaEngine';
 import { convertToBattleDigimon } from '../../utils/convertToBattleDigimon';
 import type { ArenaEvent } from '../../engine/arenaTypes';
 
@@ -29,6 +35,48 @@ const team = (isUser: boolean) =>
   );
 
 describe('saved arena simulation and playback', () => {
+  it('finishes simultaneous committed skills on time while preserving engine-2 hit-stun', () => {
+    for (const rules of [CURRENT_TECHNIQUE_RULES, PREVIOUS_TECHNIQUE_RULES]) {
+      const state = initArenaDigimon(
+        team(true).slice(0, 1),
+        team(false).slice(0, 1),
+        ['balanced'],
+        ['balanced'],
+        () => 0.5,
+        'techniques'
+      );
+      state.forEach((actor, index) => {
+        actor.x = 600 + index * 50;
+        actor.y = 350;
+        actor.hp = actor.maxHp = 100000;
+        actor.battleSp = 80;
+        actor.desiredTechniqueId = 'ember-burst';
+      });
+      const events: ArenaEvent[] = [];
+      for (let t = 16; t <= 736; t += 16)
+        events.push(...runFrame(state, 16, () => 0.5, 'techniques', t, rules));
+      const hits = events.filter((event) => event.type === 'technique_hit');
+      expect(events.filter((event) => event.type === 'technique_start')).toHaveLength(2);
+      expect(hits).toHaveLength(rules === CURRENT_TECHNIQUE_RULES ? 2 : 1);
+      expect(hits.every((event) => event.atMs === 736)).toBe(true);
+    }
+  });
+  it('preserves old prepared requests and recorded playback while new SP gain is one-third', () => {
+    const strategies = ['balanced', 'balanced', 'balanced'] as const;
+    const previous = simulateArenaV2(team(true), team(false), [...strategies], 21);
+    const current = simulateArena(team(true), team(false), [...strategies], 21);
+    expect(previous).toMatchObject({ version: 2, engineVersion: 2 });
+    expect(current).toMatchObject({ version: 2, engineVersion: 3 });
+    const spIndex = current.fieldSchema.indexOf('battleSp');
+    expect(current.frames[0].s[0][spIndex] as number).toBeCloseTo(
+      (previous.frames[0].s[0][spIndex] as number) / 3,
+      2
+    );
+    const player = createReplayPlayer(previous);
+    expect(player.advance(previous.durationMs)).toEqual(
+      previous.frames.flatMap((frame) => frame.e)
+    );
+  });
   it('reproduces the entire battle from its seed without ambient randomness', () => {
     const random = vi.spyOn(Math, 'random').mockImplementation(() => {
       throw new Error('Unseeded combat randomness');

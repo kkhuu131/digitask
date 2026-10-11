@@ -67,6 +67,7 @@ export function techniqueAnchors(effect: TechniqueEffect, actors: Actor[]) {
     source: source ?? { x: effect.sourceX, y: effect.sourceY },
     target: target ?? { x: effect.targetX, y: effect.targetY },
     cancelled: source?.state === 'dead' || target?.state === 'dead',
+    windingUp: source?.state === 'skill_windup',
   };
 }
 
@@ -80,7 +81,7 @@ export function sampleTechniqueWindup(
   const age = Math.max(0, elapsedMs - effect.startedAtMs);
   const progress = Math.min(1, age / Math.max(1, effect.windupMs));
   // Replay events are sampled every 64 ms; allow their hit/end event to arrive.
-  const expired = anchors.cancelled || age > effect.windupMs + 128;
+  const expired = anchors.cancelled || (age > effect.windupMs + 128 && !anchors.windingUp);
   if (effect.techniqueId !== 'ember-burst') {
     return { ...anchors.source, progress, launchPoint: null, expired };
   }

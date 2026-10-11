@@ -1,5 +1,26 @@
 # Database audit and deployed cleanup — 2026-09-17
 
+## Arena skill charging — database and Edge Function deployed (2026-10-10)
+
+Engine 3 gains battle SP at one-third the prior rate and allows already-committed
+skills to finish through hit-stun. New requests default to 3;
+prepared engines 1 and 2 retain their original simulation rules. Engine 3 uses the
+existing replay format 2, so settlement validates combat version separately from
+recording format. The migration changes defaults and two service-only RPCs without
+rewriting requests or recordings. Release order is SQL, arena Edge Function, then
+frontend. Read-only preflight confirmed the linked project, all prior migrations,
+service-only RPCs, and no currently prepared requests. Local fixtures cover all
+three engines, rejected version mismatches, retry protection and reward rollback.
+
+The reviewed migration and compatible arena-battle function are deployed. Live
+read-only checks confirm engine 3 defaults, matching local RPC bodies, service-only
+execution and unchanged recording counts. The function is active with JWT
+verification enabled. All 143 application tests, required database checks and local
+authenticated server integration passed. Browser checks cover simultaneous Fire
+and Water skills at phone/desktop sizes, one bounded slowdown, reduced motion,
+36px orbs and complete cleanup. Generated types are unchanged. Frontend publication
+is a separate GitHub/Vercel release; production accounts were not mutated for tests.
+
 ## Progression and quota rewards — database deployed (2026-10-10)
 
 The deployed progression migration caps costs at 1,000 EXP from level 18 and

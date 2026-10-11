@@ -1,6 +1,7 @@
 import React, { useLayoutEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ArenaDigimon } from '../engine/arenaTypes';
+import { ATTRIBUTE_COLORS } from '../constants/battleAttributeColors';
 import {
   EffectPoint,
   TechniqueEffect,
@@ -32,7 +33,10 @@ const TechniqueVisual: React.FC<Omit<Props, 'effects'> & { effect: TechniqueEffe
   const expiredRef = useRef(false);
   const projectile = effect.techniqueId === 'ember-burst';
   const isHit = effect.phase === 'hit';
-  const size = projectile ? (isHit ? 96 : 24) : 88;
+  const size = projectile ? (isHit ? 96 : 36) : 88;
+  const attribute =
+    actorsRef.current.find((actor) => actor.id === effect.attackerId)?.attribute ?? 'Neutral';
+  const color = ATTRIBUTE_COLORS[attribute] ?? ATTRIBUTE_COLORS.Neutral;
   const anchors = techniqueAnchors(effect, actorsRef.current);
   const initialPoint = isHit ? anchors.target : anchors.source;
 
@@ -99,13 +103,13 @@ const TechniqueVisual: React.FC<Omit<Props, 'effects'> & { effect: TechniqueEffe
     ...(projectile
       ? {
           background: isHit
-            ? 'radial-gradient(circle, rgba(255,250,218,.98) 0 8%, rgba(255,174,55,.9) 20%, rgba(239,68,35,.55) 42%, transparent 70%)'
-            : 'radial-gradient(circle at 38% 35%, #fff7cf 0 12%, #ffd166 24%, #ff6b2c 55%, #bd2417 72%, transparent 74%)',
-          boxShadow: isHit ? undefined : '0 0 10px 3px rgba(255,209,102,.9)',
+            ? `radial-gradient(circle, #fffffff5 0 8%, ${color}e6 20%, ${color}8c 42%, transparent 70%)`
+            : `radial-gradient(circle at 38% 35%, #fff 0 12%, ${color} 24%, ${color} 55%, ${color}99 72%, transparent 74%)`,
+          boxShadow: isHit ? undefined : `0 0 15px 4px ${color}e6`,
         }
       : {
-          border: '3px solid rgba(255,245,205,.9)',
-          boxShadow: '0 0 14px rgba(255,196,74,.8), inset 0 0 18px rgba(255,255,255,.55)',
+          border: `3px solid ${color}e6`,
+          boxShadow: `0 0 14px ${color}cc, inset 0 0 18px ${color}8c`,
         }),
     mixBlendMode: 'screen',
   };
@@ -115,6 +119,7 @@ const TechniqueVisual: React.FC<Omit<Props, 'effects'> & { effect: TechniqueEffe
       <motion.div
         ref={elementRef}
         data-technique-effect={effect.techniqueId}
+        data-effect-attribute={attribute}
         data-effect-phase="hit"
         data-effect-target={effect.targetId}
         className="absolute rounded-full"
@@ -129,6 +134,7 @@ const TechniqueVisual: React.FC<Omit<Props, 'effects'> & { effect: TechniqueEffe
     <div
       ref={elementRef}
       data-technique-effect={effect.techniqueId}
+      data-effect-attribute={attribute}
       data-effect-phase="windup"
       data-effect-attacker={effect.attackerId}
       data-effect-target={effect.targetId}

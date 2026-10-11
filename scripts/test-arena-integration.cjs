@@ -122,6 +122,8 @@ async function run() {
     assert.equal(saved.status, 'settled');
     assert.deepEqual(saved, retry.battle);
     assert.equal(saved.bits_reward, saved.replay.winner === 'user' ? 200 : 50);
+    assert.equal(saved.replay.version, 2);
+    assert.equal(saved.replay.engineVersion, 3);
     const profile = (
       await json(
         `rest/v1/profiles?id=eq.${user.id}&select=battle_energy,battles_completed,battles_won`
@@ -199,6 +201,8 @@ async function run() {
     );
     assert.equal(recovered.battle.id, interruptedId);
     assert.equal(recovered.battle.status, 'settled');
+    assert.equal(recovered.battle.replay.version, 2);
+    assert.equal(recovered.battle.replay.engineVersion, 2);
     const afterDisconnect = (
       await json(`rest/v1/profiles?id=eq.${user.id}&select=battle_energy,battles_completed`)
     )[0];

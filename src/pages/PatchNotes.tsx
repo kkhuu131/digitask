@@ -32,13 +32,20 @@ const PatchNotes = () => {
                 Latest
               </span>
               <h3 className="text-lg font-medium ml-2 dark:text-gray-200">
-                Smoother Training and Bonus Stat Allocation
+                Smoother Training, Bonus Stats and Arena Skills
               </h3>
               <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">
                 October 10, 2026
               </span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
+              <li>
+                New arena battles gain SP at one-third the previous rate. Skill orbs are 50% larger
+                and match the attacking Digimon's attribute. A brief pre-skill slowdown emphasizes
+                attacks; overlapping skills share one slowdown, and reduced-motion playback skips
+                it. Already-committed skills complete through hit-stun in new battles, keeping
+                simultaneous attacks and their effects in sync.
+              </li>
               <li>
                 Arena technique effects follow the attacking and defending Digimon and stay in sync
                 with replay speed. Impact rings are circular, and interrupted attacks clear their
