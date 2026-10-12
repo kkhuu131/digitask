@@ -74,6 +74,11 @@ on a candidate or restoring an old implementation.
   without evidence of what failed.
 - Battle counters and level progression each have one database trigger. Do not
   restore duplicate triggers or browser counter increments.
+- Evolution stat checks share `getEvolutionStatRequirements` and the displayed
+  `calculateFinalStats` formula, including trained bonuses, personality and rounding;
+  ABI is checked separately. Validate saved stats before consuming an item. Show
+  evolution/devolution animations only after the mutation confirms success, and
+  keep failed requests visible in the options modal for retry.
 - Daily arena fights use the authenticated `arena-battle` Edge Function. Setup
   includes team selection with optional strongest-team auto-fill. New battles use
   Balanced behavior automatically; recorded replay behaviors remain intact.

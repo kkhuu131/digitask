@@ -391,10 +391,10 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
       setEvolutionError(null);
       if (!localDigimon) return;
       await evolveDigimon(toDigimonId, localDigimon.id);
-      onClose();
     } catch (error) {
       console.error('Evolution error:', error);
       setEvolutionError((error as Error).message);
+      throw error;
     }
   };
 
@@ -402,12 +402,11 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
   const handleDevolution = async (toDigimonId: number) => {
     try {
       setDevolutionError(null);
-      setShowDevolutionModal(false);
-      onClose();
       if (!localDigimon) return;
       await devolveDigimon(toDigimonId, localDigimon.id);
     } catch (error) {
       setDevolutionError((error as Error).message);
+      throw error;
     }
   };
 
@@ -862,6 +861,7 @@ const DigimonDetailModal: React.FC<DigimonDetailModalProps> = ({
         <DigimonEvolutionModal
           isOpen={showDevolutionModal}
           onClose={() => setShowDevolutionModal(false)}
+          onAnimationComplete={onClose}
           selectedDigimon={localDigimon as UserDigimon}
           options={devolutionOptions}
           onEvolve={handleDevolution}

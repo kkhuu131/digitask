@@ -42,6 +42,12 @@ const PatchNotes = () => {
                 appearing as zero or free entry.
               </li>
               <li>
+                Evolution eligibility uses the same final stats as your partner's display, including
+                trained bonuses and personality boosts. Evolution and devolution animations play
+                after the change saves; failed saves keep the options and error visible for retry.
+                Stat checks run before evolution items are consumed.
+              </li>
+              <li>
                 Starting a battle keeps progress on the Start button; interrupted-battle recovery
                 controls appear only when a request needs recovery. Victory and defeat screens no
                 longer show redundant loading-results text.

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { EvolutionOption, UserDigimon, expToBoostPoints } from '../store/petStore';
-import { calculateFinalStats } from '../utils/digimonStatCalculation';
+import { getEvolutionStatRequirements } from '../utils/evolutionRequirements';
 import EvolutionAnimation from './EvolutionAnimation';
 import { DIGIMON_LOOKUP_TABLE } from '@/constants/digimonLookup';
 import DigimonDNASelectionModal from './DigimonDNASelectionModal';
@@ -13,13 +13,15 @@ import ContentSkeleton from './ContentSkeleton';
 import DigimonSprite from './DigimonSprite';
 import { useInventoryStore } from '../store/inventoryStore';
 import { getItemName } from '@/constants/storeItems';
+import LoadingIndicator from './LoadingIndicator';
 
 interface DigimonEvolutionModalProps {
   isOpen: boolean;
   onClose: () => void;
   selectedDigimon: UserDigimon;
   options: EvolutionOption[];
-  onEvolve: (toDigimonId: number) => void;
+  onEvolve: (toDigimonId: number) => Promise<void>;
+  onAnimationComplete?: () => void;
   isDevolution?: boolean;
   error: string | null;
   isDiscovered: (digimonId: number) => boolean;
@@ -32,6 +34,7 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
   selectedDigimon,
   options,
   onEvolve,
+  onAnimationComplete,
   isDevolution = false,
   error,
   isDiscovered,
@@ -47,6 +50,10 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
   const [selectedFormInfo, setSelectedFormInfo] = useState<any>(null);
   const [userHasItems, setUserHasItems] = useState<Record<string, boolean>>({});
   const [itemsLoading, setItemsLoading] = useState(true);
+  const [submittingId, setSubmittingId] = useState<number | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const submitting = useRef(false);
+  const [animationSource, setAnimationSource] = useState(selectedDigimon);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -73,7 +80,39 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
 
   if (!isOpen) return null;
 
+  const submitEvolution = async (target: EvolutionOption, partnerId?: string) => {
+    if (submitting.current) return;
+    submitting.current = true;
+    setSubmittingId(target.digimon_id);
+    setSubmitError(null);
+    const source = selectedDigimon;
+    try {
+      if (partnerId) {
+        const success = await useDigimonStore
+          .getState()
+          .dnaEvolveDigimon(source.id, target.digimon_id, partnerId);
+        if (!success) throw new Error('DNA evolution could not be saved. Please try again.');
+      } else {
+        await onEvolve(target.digimon_id);
+      }
+      setAnimationSource(source);
+      setEvolutionTarget(target);
+      setSelectedDNAPartnerId(partnerId ?? null);
+      setShowAnimation(true);
+    } catch (failure) {
+      setSubmitError(
+        failure instanceof Error
+          ? failure.message
+          : 'Evolution could not be saved. Please try again.'
+      );
+    } finally {
+      submitting.current = false;
+      setSubmittingId(null);
+    }
+  };
+
   const handleEvolve = (toDigimonId: number) => {
+    if (submitting.current) return;
     const target = options.find((option) => option.digimon_id === toDigimonId);
     if (!target) return;
 
@@ -83,26 +122,17 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
       return;
     }
 
-    setEvolutionTarget(target);
-    setShowAnimation(true);
+    void submitEvolution(target);
   };
 
   const handleAnimationComplete = () => {
-    if (evolutionTarget) {
-      if (selectedDNAPartnerId && evolutionTarget.dna_requirement) {
-        useDigimonStore
-          .getState()
-          .dnaEvolveDigimon(selectedDigimon.id, evolutionTarget.digimon_id, selectedDNAPartnerId);
-        setSelectedDNAPartnerId(null);
-      } else {
-        onEvolve(evolutionTarget.digimon_id);
-      }
-    }
+    setSelectedDNAPartnerId(null);
     setShowAnimation(false);
     setEvolutionTarget(null);
 
     // Close the evolution modal
     onClose();
+    onAnimationComplete?.();
   };
 
   const handleDNASelection = async (dnaPartnerDigimonId: string) => {
@@ -114,10 +144,7 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
         setDnaPartnerDigimon(partner);
       }
 
-      setEvolutionTarget(selectedDNAOption);
-      setShowAnimation(true);
-
-      setSelectedDNAPartnerId(dnaPartnerDigimonId);
+      await submitEvolution(selectedDNAOption, dnaPartnerDigimonId);
     }
   };
 
@@ -127,9 +154,9 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
     return (
       <div className="fixed inset-0 z-50">
         <EvolutionAnimation
-          oldSpriteUrl={selectedDigimon.digimon?.sprite_url || ''}
+          oldSpriteUrl={animationSource.digimon?.sprite_url || ''}
           newSpriteUrl={evolutionTarget.sprite_url}
-          oldSpeciesName={selectedDigimon.digimon?.name || selectedDigimon.name}
+          oldSpeciesName={animationSource.digimon?.name || animationSource.name}
           newSpeciesName={evolutionTarget.name}
           onComplete={handleAnimationComplete}
           isDevolution={isDevolution}
@@ -169,7 +196,9 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
     <>
       <div
         className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-modal p-4 overflow-y-auto"
-        onClick={onClose}
+        onClick={() => {
+          if (!submitting.current) onClose();
+        }}
       >
         <div
           className="bg-white dark:bg-dark-300 rounded-lg p-4 sm:p-6 w-full max-w-4xl my-auto relative"
@@ -195,9 +224,12 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
             </p>
           )}
 
-          {error && (
-            <div className="bg-red-50 dark:bg-red-900/30 border-l-4 border-red-500 p-4 mb-4">
-              <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
+          {(submitError || error) && (
+            <div
+              role="alert"
+              className="bg-red-50 dark:bg-red-900/30 border-l-4 border-red-500 p-4 mb-4"
+            >
+              <p className="text-sm text-red-700 dark:text-red-300">{submitError || error}</p>
             </div>
           )}
 
@@ -214,101 +246,17 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {options.map((option) => {
                   let canEvolve = true;
-                  const statRequirementsList: {
-                    name: string;
-                    current: number;
-                    required: number;
-                    meets: boolean;
-                  }[] = [];
+                  const statRequirementsList = isDevolution
+                    ? []
+                    : getEvolutionStatRequirements(selectedDigimon, option.stat_requirements);
 
                   if (!isDevolution) {
-                    const finalStats = calculateFinalStats(selectedDigimon);
-
                     const meetsLevelRequirement =
                       selectedDigimon.current_level >= option.level_required;
 
-                    let meetsStatRequirements = true;
-
-                    if (option.stat_requirements) {
-                      const statReqs = option.stat_requirements;
-
-                      if (statReqs.hp && statReqs.hp > 0) {
-                        const currentHP = finalStats.hp;
-                        if (currentHP < statReqs.hp) meetsStatRequirements = false;
-                        statRequirementsList.push({
-                          name: 'HP',
-                          current: currentHP,
-                          required: statReqs.hp,
-                          meets: currentHP >= statReqs.hp,
-                        });
-                      }
-
-                      if (statReqs.sp && statReqs.sp > 0) {
-                        const currentSP = finalStats.sp;
-                        if (currentSP < statReqs.sp) meetsStatRequirements = false;
-                        statRequirementsList.push({
-                          name: 'SP',
-                          current: currentSP,
-                          required: statReqs.sp,
-                          meets: currentSP >= statReqs.sp,
-                        });
-                      }
-
-                      if (statReqs.atk && statReqs.atk > 0) {
-                        const currentATK = finalStats.atk;
-                        if (currentATK < statReqs.atk) meetsStatRequirements = false;
-                        statRequirementsList.push({
-                          name: 'ATK',
-                          current: currentATK,
-                          required: statReqs.atk,
-                          meets: currentATK >= statReqs.atk,
-                        });
-                      }
-
-                      if (statReqs.def && statReqs.def > 0) {
-                        const currentDEF = finalStats.def;
-                        if (currentDEF < statReqs.def) meetsStatRequirements = false;
-                        statRequirementsList.push({
-                          name: 'DEF',
-                          current: currentDEF,
-                          required: statReqs.def,
-                          meets: currentDEF >= statReqs.def,
-                        });
-                      }
-
-                      if (statReqs.int && statReqs.int > 0) {
-                        const currentINT = finalStats.int;
-                        if (currentINT < statReqs.int) meetsStatRequirements = false;
-                        statRequirementsList.push({
-                          name: 'INT',
-                          current: currentINT,
-                          required: statReqs.int,
-                          meets: currentINT >= statReqs.int,
-                        });
-                      }
-
-                      if (statReqs.spd && statReqs.spd > 0) {
-                        const currentSPD = finalStats.spd;
-                        if (currentSPD < statReqs.spd) meetsStatRequirements = false;
-                        statRequirementsList.push({
-                          name: 'SPD',
-                          current: currentSPD,
-                          required: statReqs.spd,
-                          meets: currentSPD >= statReqs.spd,
-                        });
-                      }
-
-                      if (statReqs.abi && statReqs.abi > 0) {
-                        const currentABI = selectedDigimon.abi || 0;
-                        if (currentABI < statReqs.abi) meetsStatRequirements = false;
-                        statRequirementsList.push({
-                          name: 'ABI',
-                          current: currentABI,
-                          required: statReqs.abi,
-                          meets: currentABI >= statReqs.abi,
-                        });
-                      }
-                    }
+                    const meetsStatRequirements = statRequirementsList.every(
+                      (requirement) => requirement.meets
+                    );
 
                     // Check for item requirement
                     let hasRequiredItem = true;
@@ -321,10 +269,14 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
                   }
 
                   const discovered = isDiscovered(option.digimon_id);
-                  const canProceed = isDevolution ? discovered : canEvolve;
+                  const canProceed =
+                    submittingId === null && (isDevolution ? discovered : canEvolve);
 
                   return (
-                    <div
+                    <button
+                      type="button"
+                      disabled={!canProceed}
+                      aria-busy={submittingId === option.digimon_id}
                       key={option.id}
                       className={`border dark:border-gray-700 rounded-lg p-4 flex flex-col items-center ${
                         canProceed
@@ -334,6 +286,12 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
                     ${option.item_requirement ? 'border-2 border-purple-400 dark:border-purple-500 shadow-lg shadow-purple-200/50 dark:shadow-purple-500/20' : ''}`}
                       onClick={() => canProceed && handleEvolve(option.digimon_id)}
                     >
+                      {submittingId === option.digimon_id && (
+                        <LoadingIndicator
+                          message={isDevolution ? 'Devolving…' : 'Evolving…'}
+                          variant="inline"
+                        />
+                      )}
                       <DigimonSprite
                         digimonName={option.name}
                         fallbackSpriteUrl={option.sprite_url}
@@ -413,7 +371,7 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
                           </div>
                         </div>
                       )}
-                    </div>
+                    </button>
                   );
                 })}
               </div>
@@ -435,7 +393,7 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
                         setShowFormModal(true);
                       }
                     }}
-                    disabled={!canTransformToXAntibody}
+                    disabled={submittingId !== null || !canTransformToXAntibody}
                     className={`px-4 py-2 rounded flex items-center ${
                       canTransformToXAntibody
                         ? 'bg-blue-600 dark:bg-amber-600 text-white hover:bg-blue-700 dark:hover:bg-amber-700'
@@ -452,6 +410,7 @@ const DigimonEvolutionModal: React.FC<DigimonEvolutionModalProps> = ({
             </div>
             <button
               onClick={onClose}
+              disabled={submittingId !== null}
               className="px-4 py-2 bg-gray-200 dark:bg-dark-200 text-gray-800 dark:text-gray-200 rounded hover:bg-gray-300 dark:hover:bg-dark-100"
             >
               Close

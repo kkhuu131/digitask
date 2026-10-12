@@ -3,7 +3,7 @@ import { supabase } from '../lib/supabase';
 import { useNotificationStore } from './notificationStore';
 import { useTaskStore } from './taskStore';
 import { StatCategory } from '../utils/categoryDetection';
-import calculateBaseStat from '../utils/digimonStatCalculation';
+import { getEvolutionStatRequirements } from '../utils/evolutionRequirements';
 import { DIGIMON_LOOKUP_TABLE } from '../constants/digimonLookup';
 import { getDevolutions, getEvolutionPath, getEvolutions } from '@/utils/evolutionsHelper';
 import { useTitleStore } from '../store/titleStore';
@@ -673,80 +673,10 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         // Check level requirement
         const meetsLevelRequirement = userDigimon.current_level >= path.level_required;
 
-        // Check stat requirements if they exist
-        let meetsStatRequirements = true;
-        if (path.stat_requirements) {
-          const statReqs = path.stat_requirements;
-
-          // Calculate base stats for current level
-          const baseHP = calculateBaseStat(
-            userDigimon.current_level,
-            userDigimon.digimon?.hp_level1 || 0,
-            userDigimon.digimon?.hp || 0,
-            userDigimon.digimon?.hp_level99 || 0
-          );
-
-          const baseSP = calculateBaseStat(
-            userDigimon.current_level,
-            userDigimon.digimon?.sp_level1 || 0,
-            userDigimon.digimon?.sp || 0,
-            userDigimon.digimon?.sp_level99 || 0
-          );
-
-          const baseATK = calculateBaseStat(
-            userDigimon.current_level,
-            userDigimon.digimon?.atk_level1 || 0,
-            userDigimon.digimon?.atk || 0,
-            userDigimon.digimon?.atk_level99 || 0
-          );
-
-          const baseDEF = calculateBaseStat(
-            userDigimon.current_level,
-            userDigimon.digimon?.def_level1 || 0,
-            userDigimon.digimon?.def || 0,
-            userDigimon.digimon?.def_level99 || 0
-          );
-
-          const baseINT = calculateBaseStat(
-            userDigimon.current_level,
-            userDigimon.digimon?.int_level1 || 0,
-            userDigimon.digimon?.int || 0,
-            userDigimon.digimon?.int_level99 || 0
-          );
-
-          const baseSPD = calculateBaseStat(
-            userDigimon.current_level,
-            userDigimon.digimon?.spd_level1 || 0,
-            userDigimon.digimon?.spd || 0,
-            userDigimon.digimon?.spd_level99 || 0
-          );
-
-          // Check each stat requirement.
-          // HP is special: each hp_bonus point is worth 10 HP in actual display value,
-          // matching the rendering logic in digimonStatCalculation. All other bonus fields are 1:1.
-          if (statReqs.hp && baseHP + 10 * (userDigimon.hp_bonus || 0) < statReqs.hp) {
-            meetsStatRequirements = false;
-          }
-          if (statReqs.sp && baseSP + (userDigimon.sp_bonus || 0) < statReqs.sp) {
-            meetsStatRequirements = false;
-          }
-          if (statReqs.atk && baseATK + (userDigimon.atk_bonus || 0) < statReqs.atk) {
-            meetsStatRequirements = false;
-          }
-          if (statReqs.def && baseDEF + (userDigimon.def_bonus || 0) < statReqs.def) {
-            meetsStatRequirements = false;
-          }
-          if (statReqs.int && baseINT + (userDigimon.int_bonus || 0) < statReqs.int) {
-            meetsStatRequirements = false;
-          }
-          if (statReqs.spd && baseSPD + (userDigimon.spd_bonus || 0) < statReqs.spd) {
-            meetsStatRequirements = false;
-          }
-
-          if (statReqs.abi && (userDigimon.abi || 0) < statReqs.abi) {
-            meetsStatRequirements = false;
-          }
-        }
+        const meetsStatRequirements = getEvolutionStatRequirements(
+          userDigimon,
+          path.stat_requirements
+        ).every((requirement) => requirement.meets);
 
         // For the evolution check, we don't need to check if the user has the item yet
         // We just want to show available evolutions, and will check for the item when evolving
@@ -767,30 +697,25 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       // Get the Digimon to evolve (either active or specified)
       const { data: userData } = await supabase.auth.getUser();
       if (!userData.user) {
-        set({ loading: false });
-        return;
+        throw new Error('Your session has expired. Please sign in again.');
       }
 
-      let digimonToEvolve;
-      if (specificDigimonId) {
-        const { data, error } = await supabase
-          .from('user_digimon')
-          .select('*')
-          .eq('id', specificDigimonId)
-          .single();
-
-        if (error) throw error;
-        digimonToEvolve = {
-          ...data,
-          digimon: DIGIMON_LOOKUP_TABLE[data.digimon_id],
-        };
-      } else {
-        digimonToEvolve = get().userDigimon;
-      }
-
-      if (!digimonToEvolve) {
+      const digimonId = specificDigimonId ?? get().userDigimon?.id;
+      if (!digimonId) {
         throw new Error('No Digimon found to evolve');
       }
+      const { data: savedDigimon, error: readError } = await supabase
+        .from('user_digimon')
+        .select('*')
+        .eq('id', digimonId)
+        .eq('user_id', userData.user.id)
+        .single();
+      if (readError) throw readError;
+      if (!savedDigimon) throw new Error('No Digimon found to evolve');
+      const digimonToEvolve = {
+        ...savedDigimon,
+        digimon: DIGIMON_LOOKUP_TABLE[savedDigimon.digimon_id],
+      };
 
       // Get the evolution path
       const evolutionPath = getEvolutionPath(digimonToEvolve.digimon_id, toDigimonId);
@@ -812,6 +737,19 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         );
       }
 
+      const unmetStats = getEvolutionStatRequirements(
+        digimonToEvolve,
+        enrichedEvolutionPath.stat_requirements
+      ).filter((requirement) => !requirement.meets);
+      if (unmetStats.length > 0) {
+        throw new Error(
+          "Your Digimon doesn't meet the stat requirements: " +
+            unmetStats
+              .map(({ name, current, required }) => name + ': ' + current + '/' + required)
+              .join(', ')
+        );
+      }
+
       // Check for item requirement
       if (enrichedEvolutionPath.item_requirement) {
         const { useInventoryStore } = await import('./inventoryStore');
@@ -828,86 +766,13 @@ export const useDigimonStore = create<PetState>((set, get) => ({
         }
 
         // Use the item by removing it from inventory
-        await useInventoryStore.getState().useItem(enrichedEvolutionPath.item_requirement);
-      }
-
-      // Check stat requirements if they exist
-      if (enrichedEvolutionPath.stat_requirements) {
-        const statReqs = enrichedEvolutionPath.stat_requirements;
-        const statErrors = [];
-
-        // Calculate base stats for current level
-        const baseHP = calculateBaseStat(
-          digimonToEvolve.current_level,
-          digimonToEvolve.digimon?.hp_level1 || 0,
-          digimonToEvolve.digimon?.hp || 0,
-          digimonToEvolve.digimon?.hp_level99 || 0
-        );
-
-        const baseSP = calculateBaseStat(
-          digimonToEvolve.current_level,
-          digimonToEvolve.digimon?.sp_level1 || 0,
-          digimonToEvolve.digimon?.sp || 0,
-          digimonToEvolve.digimon?.sp_level99 || 0
-        );
-
-        const baseATK = calculateBaseStat(
-          digimonToEvolve.current_level,
-          digimonToEvolve.digimon?.atk_level1 || 0,
-          digimonToEvolve.digimon?.atk || 0,
-          digimonToEvolve.digimon?.atk_level99 || 0
-        );
-
-        const baseDEF = calculateBaseStat(
-          digimonToEvolve.current_level,
-          digimonToEvolve.digimon?.def_level1 || 0,
-          digimonToEvolve.digimon?.def || 0,
-          digimonToEvolve.digimon?.def_level99 || 0
-        );
-
-        const baseINT = calculateBaseStat(
-          digimonToEvolve.current_level,
-          digimonToEvolve.digimon?.int_level1 || 0,
-          digimonToEvolve.digimon?.int || 0,
-          digimonToEvolve.digimon?.int_level99 || 0
-        );
-
-        const baseSPD = calculateBaseStat(
-          digimonToEvolve.current_level,
-          digimonToEvolve.digimon?.spd_level1 || 0,
-          digimonToEvolve.digimon?.spd || 0,
-          digimonToEvolve.digimon?.spd_level99 || 0
-        );
-
-        // Check each stat requirement
-        if (statReqs.hp && baseHP + 10 * (digimonToEvolve.hp_bonus || 0) < statReqs.hp) {
-          statErrors.push(`HP: ${baseHP + 10 * (digimonToEvolve.hp_bonus || 0)}/${statReqs.hp}`);
-        }
-        if (statReqs.sp && baseSP + (digimonToEvolve.sp_bonus || 0) < statReqs.sp) {
-          statErrors.push(`SP: ${baseSP + (digimonToEvolve.sp_bonus || 0)}/${statReqs.sp}`);
-        }
-        if (statReqs.atk && baseATK + (digimonToEvolve.atk_bonus || 0) < statReqs.atk) {
-          statErrors.push(`ATK: ${baseATK + (digimonToEvolve.atk_bonus || 0)}/${statReqs.atk}`);
-        }
-        if (statReqs.def && baseDEF + (digimonToEvolve.def_bonus || 0) < statReqs.def) {
-          statErrors.push(`DEF: ${baseDEF + (digimonToEvolve.def_bonus || 0)}/${statReqs.def}`);
-        }
-        if (statReqs.int && baseINT + (digimonToEvolve.int_bonus || 0) < statReqs.int) {
-          statErrors.push(`INT: ${baseINT + (digimonToEvolve.int_bonus || 0)}/${statReqs.int}`);
-        }
-        if (statReqs.spd && baseSPD + (digimonToEvolve.spd_bonus || 0) < statReqs.spd) {
-          statErrors.push(`SPD: ${baseSPD + (digimonToEvolve.spd_bonus || 0)}/${statReqs.spd}`);
-        }
-
-        if (statReqs.abi && (digimonToEvolve.abi || 0) < statReqs.abi) {
-          statErrors.push(`ABI: ${digimonToEvolve.abi || 0}/${statReqs.abi}`);
-        }
-
-        if (statErrors.length > 0) {
+        const used = await useInventoryStore
+          .getState()
+          .useItem(enrichedEvolutionPath.item_requirement);
+        if (!used)
           throw new Error(
-            `Your Digimon doesn't meet the stat requirements: ${statErrors.join(', ')}`
+            'The required evolution item could not be used. Please refresh and try again.'
           );
-        }
       }
 
       // Convert the pre-evolution level into ABI before resetting.
@@ -915,7 +780,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       // bonus stat cap, rewarding the training investment in this life cycle.
       const boostPoints = expToBoostPoints(digimonToEvolve.current_level, true);
 
-      const { error } = await supabase
+      const { data: evolved, error } = await supabase
         .from('user_digimon')
         .update({
           digimon_id: toDigimonId,
@@ -923,9 +788,15 @@ export const useDigimonStore = create<PetState>((set, get) => ({
           experience_points: 0,
           abi: digimonToEvolve.abi + boostPoints,
         })
-        .eq('id', digimonToEvolve.id);
+        .eq('id', digimonToEvolve.id)
+        .eq('user_id', userData.user.id)
+        .eq('digimon_id', digimonToEvolve.digimon_id)
+        .select('digimon_id')
+        .single();
 
       if (error) throw error;
+      if (evolved?.digimon_id !== toDigimonId)
+        throw new Error('Evolution was not saved. Please refresh and try again.');
 
       // Add the new Digimon to discovered list
       await get().addDiscoveredDigimon(toDigimonId);
@@ -960,8 +831,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       // Get the Digimon to evolve (either active or specified)
       const { data: userData } = await supabase.auth.getUser();
       if (!userData.user) {
-        set({ loading: false });
-        return;
+        throw new Error('Your session has expired. Please sign in again.');
       }
 
       let digimonToDevolve;
@@ -1003,7 +873,7 @@ export const useDigimonStore = create<PetState>((set, get) => ({
       // This makes the devolve→re-evolve loop the primary ABI grind mechanic.
       const boostPoints = expToBoostPoints(digimonToDevolve.current_level, false);
 
-      const { error } = await supabase
+      const { data: devolved, error } = await supabase
         .from('user_digimon')
         .update({
           digimon_id: fromDigimonId,
@@ -1011,9 +881,13 @@ export const useDigimonStore = create<PetState>((set, get) => ({
           experience_points: 0,
           abi: digimonToDevolve.abi + boostPoints,
         })
-        .eq('id', digimonToDevolve.id);
+        .eq('id', digimonToDevolve.id)
+        .select('digimon_id')
+        .single();
 
       if (error) throw error;
+      if (devolved?.digimon_id !== fromDigimonId)
+        throw new Error('Devolution was not saved. Please refresh and try again.');
 
       // Always refresh all user Digimon to update the UI
       await get().fetchAllUserDigimon();

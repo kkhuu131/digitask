@@ -1,4 +1,5 @@
 import ContentSkeleton from './ContentSkeleton';
+import { getEvolutionStatRequirements } from '../utils/evolutionRequirements';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Laugh, Smile, Meh, Frown, Moon } from 'lucide-react';
 import {
@@ -17,7 +18,6 @@ import { ANIMATED_DIGIMON } from '../constants/animatedDigimonList';
 import { DIGIMON_LOOKUP_TABLE } from '../constants/digimonLookup';
 import type { SpriteType } from '../utils/spriteManager';
 import {
-  calculateFinalStats,
   xpForNextLevel as calcXpForNextLevel,
   totalCumulativeXp,
 } from '@/utils/digimonStatCalculation';
@@ -297,13 +297,12 @@ const Digimon: React.FC<DigimonProps> = ({ userDigimon, digimonData, evolutionOp
     if (userDigimon.current_level < option.level_required) return false;
 
     // Then check stat requirements if they exist
-    if (option.stat_requirements) {
-      const stats = calculateFinalStats(userDigimon);
-      // Check each stat requirement
-      for (const [stat, value] of Object.entries(option.stat_requirements)) {
-        if (stats[stat as keyof typeof stats] < value) return false;
-      }
-    }
+    if (
+      getEvolutionStatRequirements(userDigimon, option.stat_requirements).some(
+        (requirement) => !requirement.meets
+      )
+    )
+      return false;
 
     // If all requirements are met
     return true;

@@ -115,6 +115,9 @@ Profile Digimon use `DigimonCardIdentity`, animated sprites and shared stat bars
   focus containment/restoration and Escape/backdrop dismissal when safe. Prefer
   the installed Headless UI dialog primitives for new dialogs. Avoid dismissing a
   dialog while its irreversible submission is pending.
+  Evolution, devolution and DNA fusion save before their success animation starts.
+  Keep the options open with an error on failed saves, disable duplicate submissions
+  and dismissal while saving, and preserve the original sprites for the animation.
 - Use `ui-empty` for empty states and explain the next useful action. Loading
   skeletons should resemble the real layout. Do not communicate state by color
   alone. Respect reduced-motion preferences.
