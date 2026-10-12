@@ -723,10 +723,37 @@ const DigimonStorePage: React.FC = () => {
 
                       {/* Item Info */}
                       <div className="flex flex-1 flex-col gap-2">
-                        <div className="flex items-start justify-between gap-2">
-                          <h3 className="font-bold text-gray-900 dark:text-gray-100 text-base leading-tight">
-                            {card.name}
-                          </h3>
+                        <div className="flex h-11 min-w-0 items-center justify-between gap-2">
+                          {card.variants.length > 1 ? (
+                            <>
+                              <h3 className="sr-only">{card.name}</h3>
+                              <label htmlFor={`shop-${card.id}`} className="sr-only">
+                                {card.label}
+                              </label>
+                              <select
+                                id={`shop-${card.id}`}
+                                value={item.id}
+                                disabled={processingPurchase !== null}
+                                onChange={(event) =>
+                                  setSelectedVariants((current) => ({
+                                    ...current,
+                                    [card.id]: event.target.value,
+                                  }))
+                                }
+                                className="h-11 w-full min-w-0 flex-1 rounded-lg border-gray-200 bg-white text-sm font-semibold text-gray-900 dark:border-dark-100 dark:bg-dark-300 dark:text-gray-100"
+                              >
+                                {card.variants.map((variant) => (
+                                  <option key={variant.id} value={variant.id}>
+                                    {variant.name}
+                                  </option>
+                                ))}
+                              </select>
+                            </>
+                          ) : (
+                            <h3 className="line-clamp-2 font-bold text-gray-900 dark:text-gray-100 text-base leading-tight">
+                              {card.name}
+                            </h3>
+                          )}
                           {item.applyType === ItemApplyType.INVENTORY &&
                             itemQuantities[item.id] > 0 && (
                               <span
@@ -742,36 +769,7 @@ const DigimonStorePage: React.FC = () => {
                           {item.category}
                         </p>
 
-                        {card.variants.length > 1 && (
-                          <div>
-                            <label
-                              htmlFor={`shop-${card.id}`}
-                              className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1"
-                            >
-                              {card.label}
-                            </label>
-                            <select
-                              id={`shop-${card.id}`}
-                              value={item.id}
-                              disabled={processingPurchase !== null}
-                              onChange={(event) =>
-                                setSelectedVariants((current) => ({
-                                  ...current,
-                                  [card.id]: event.target.value,
-                                }))
-                              }
-                              className="w-full min-w-0 min-h-11 rounded-lg border-gray-200 bg-white text-sm text-gray-900 dark:border-dark-100 dark:bg-dark-300 dark:text-gray-100"
-                            >
-                              {card.variants.map((variant) => (
-                                <option key={variant.id} value={variant.id}>
-                                  {variant.name}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-                        )}
-
-                        <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 min-h-[2.5rem]">
+                        <p className="h-10 text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
                           {item.description}
                         </p>
 

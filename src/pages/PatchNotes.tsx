@@ -52,8 +52,9 @@ const PatchNotes = () => {
                 immediately.
               </li>
               <li>
-                Stat boosters, personality discs and Digi-Eggs each share one shop card. Choose a
-                variant from its dropdown to see its effect, price and owned quantity before buying.
+                Stat boosters, personality discs and Digi-Eggs each share one shop card. Compact
+                dropdowns replace the item name so grouped cards keep the same height as other
+                items. Choose a variant to see its effect, price and owned quantity before buying.
               </li>
             </ul>
           </div>

@@ -176,7 +176,9 @@ behavior captions beneath SP bars.
 - Neemon's Store pairs the shopkeeper sprite with a quietly typed greeting. Reserve
   the complete text's space, expose the full line to screen readers and show it
   immediately for reduced motion. Related boosters, discs and Digi-Eggs share
-  cards with labeled variant selectors; effect, price, owned count and purchase
+  cards with accessible variant selectors in the item-name row, rather than an
+  extra form section. Reserve matching name and description heights across cards
+  so selections do not resize the row. Effect, price, owned count and purchase
   action must all refer to the selected catalog item.
 
 ## Loading states
