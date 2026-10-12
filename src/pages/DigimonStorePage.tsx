@@ -1,5 +1,6 @@
 import ResourceBalance from '../components/ResourceBalance';
 import ContentSkeleton from '../components/ContentSkeleton';
+import NeemonShopGreeting from '../components/NeemonShopGreeting';
 import { Coins } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useCurrencyStore } from '../store/currencyStore';
@@ -34,6 +35,40 @@ const NEEMON_DIALOGUE = [
 
 const AVATAR_VARIANTS = ['intimidate', 'happy', 'sad1', 'sleeping1'] as const;
 
+// These are display groups only; each variant retains its catalog item and purchase flow.
+const ITEM_GROUPS = [
+  {
+    id: 'stat-boosters',
+    name: 'Stat Boosters',
+    label: 'Stat',
+    variants: STORE_ITEMS.filter((item) =>
+      ['hp_bonus', 'sp_bonus', 'atk_bonus', 'def_bonus', 'int_bonus', 'spd_bonus'].includes(
+        item.effect?.type ?? ''
+      )
+    ),
+  },
+  {
+    id: 'personality-discs',
+    name: 'Personality Discs',
+    label: 'Personality',
+    variants: STORE_ITEMS.filter((item) => item.effect?.type === ItemEffectType.PERSONALITY),
+  },
+  {
+    id: 'digi-eggs',
+    name: 'Digi-Eggs',
+    label: 'Digi-Egg',
+    variants: STORE_ITEMS.filter((item) => item.id.startsWith('digi_egg_of_')),
+  },
+];
+
+const STORE_CARDS = STORE_ITEMS.flatMap((item) => {
+  const group = ITEM_GROUPS.find((entry) =>
+    entry.variants.some((variant) => variant.id === item.id)
+  );
+  if (group) return group.variants[0].id === item.id ? [group] : [];
+  return [{ id: item.id, name: item.name, label: '', variants: [item] }];
+});
+
 const generateRandomAvatarUnlock = () => {
   const randomDigimon = ANIMATED_DIGIMON[Math.floor(Math.random() * ANIMATED_DIGIMON.length)];
   const randomVariant = AVATAR_VARIANTS[Math.floor(Math.random() * AVATAR_VARIANTS.length)];
@@ -47,6 +82,7 @@ const DigimonStorePage: React.FC = () => {
   const { user } = useAuthStore();
   const [processingPurchase, setProcessingPurchase] = useState<string | null>(null);
   const [filterCategory, setFilterCategory] = useState<ItemCategory | 'all'>('all');
+  const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
   const [userStats, setUserStats] = useState<Record<string, number>>({
     HP: 0,
     SP: 0,
@@ -55,7 +91,7 @@ const DigimonStorePage: React.FC = () => {
     INT: 0,
     SPD: 0,
   });
-  const [neeemonDialogue] = useState(
+  const [neemonDialogue] = useState(
     () => NEEMON_DIALOGUE[Math.floor(Math.random() * NEEMON_DIALOGUE.length)]
   );
   const [initialLoading, setInitialLoading] = useState(true);
@@ -127,8 +163,8 @@ const DigimonStorePage: React.FC = () => {
   };
 
   // Filter items based on selected category
-  const filteredItems = STORE_ITEMS.filter(
-    (item) => filterCategory === 'all' || item.category === filterCategory
+  const filteredCards = STORE_CARDS.filter(
+    (card) => filterCategory === 'all' || card.variants[0].category === filterCategory
   );
 
   // Update the discoverRandomDigimon function to ensure authentication is handled properly
@@ -611,7 +647,6 @@ const DigimonStorePage: React.FC = () => {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <h1 className="ui-page-title">Neemon's Store</h1>
-            <p className="text-gray-600 dark:text-gray-400 text-sm">{neeemonDialogue}</p>
             <p className="ui-description mt-2">
               Spend Bits on items and upgrades for your Digimon. Earn them through arena battles,
               tournaments and achievements.
@@ -627,6 +662,8 @@ const DigimonStorePage: React.FC = () => {
           />
         </div>
       </div>
+
+      <NeemonShopGreeting text={neemonDialogue} />
 
       {/* Store Items */}
       <div className="bg-white dark:bg-dark-300 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
@@ -662,78 +699,117 @@ const DigimonStorePage: React.FC = () => {
               />
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {filteredItems.map((item) => (
-                  <div
-                    key={item.id}
-                    className="group bg-white dark:bg-dark-200 rounded-xl p-4 border border-gray-200 dark:border-gray-700 hover:border-amber-400 dark:hover:border-amber-500/60 hover:shadow-md transition-all duration-200"
-                  >
-                    {/* Item Image */}
-                    <div className="flex items-center justify-center mb-4 bg-gray-50 dark:bg-dark-100 rounded-lg p-3 h-20">
-                      <img
-                        src={item.imageUrl}
-                        alt={item.name}
-                        className="w-16 h-16 object-contain"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = '/assets/items/default.png';
-                        }}
-                      />
-                    </div>
-
-                    {/* Item Info */}
-                    <div className="space-y-2">
-                      <div className="flex items-start justify-between gap-2">
-                        <h3 className="font-bold text-gray-900 dark:text-gray-100 text-base leading-tight">
-                          {item.name}
-                        </h3>
-                        {item.applyType === ItemApplyType.INVENTORY &&
-                          itemQuantities[item.id] > 0 && (
-                            <span className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0">
-                              {itemQuantities[item.id]}
-                            </span>
-                          )}
+                {filteredCards.map((card) => {
+                  const item =
+                    card.variants.find((variant) => variant.id === selectedVariants[card.id]) ??
+                    card.variants[0];
+                  return (
+                    <div
+                      key={card.id}
+                      className="group flex flex-col bg-white dark:bg-dark-200 rounded-xl p-4 border border-gray-200 dark:border-gray-700 hover:border-amber-400 dark:hover:border-amber-500/60 hover:shadow-md transition-all duration-200"
+                    >
+                      {/* Item Image */}
+                      <div className="flex items-center justify-center mb-4 bg-gray-50 dark:bg-dark-100 rounded-lg p-3 h-20">
+                        <img
+                          src={item.imageUrl}
+                          alt={item.name}
+                          className="w-16 h-16 object-contain"
+                          style={{ imageRendering: 'pixelated' }}
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = '/assets/items/default.png';
+                          }}
+                        />
                       </div>
 
-                      <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                        {item.category}
-                      </p>
-
-                      <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 min-h-[2.5rem]">
-                        {item.description}
-                      </p>
-
-                      {/* Price and Buy Button */}
-                      <div className="flex items-center justify-between pt-2 border-t border-gray-100 dark:border-gray-700">
-                        <div className="flex items-baseline gap-1">
-                          <span className="font-bold text-lg text-gray-900 dark:text-gray-100">
-                            {item.price}
-                          </span>
-                          <span className="text-xs text-gray-500 dark:text-gray-400 uppercase">
-                            {item.currency}
-                          </span>
+                      {/* Item Info */}
+                      <div className="flex flex-1 flex-col gap-2">
+                        <div className="flex items-start justify-between gap-2">
+                          <h3 className="font-bold text-gray-900 dark:text-gray-100 text-base leading-tight">
+                            {card.name}
+                          </h3>
+                          {item.applyType === ItemApplyType.INVENTORY &&
+                            itemQuantities[item.id] > 0 && (
+                              <span
+                                aria-label={`${itemQuantities[item.id]} ${item.name} owned`}
+                                className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0"
+                              >
+                                {itemQuantities[item.id]}
+                              </span>
+                            )}
                         </div>
-                        <button
-                          onClick={() => handlePurchase(item)}
-                          disabled={
-                            processingPurchase === item.id ||
-                            (item.currency === 'bits'
-                              ? bits < item.price
-                              : digicoins < item.price) ||
-                            (item.id === 'abi_enhancer' && !userDigimon)
-                          }
-                          className="btn-primary"
-                        >
-                          {processingPurchase === item.id ? 'Processing...' : 'Buy'}
-                        </button>
-                      </div>
 
-                      {item.id === 'abi_enhancer' && !userDigimon && (
-                        <p className="text-xs text-red-500 dark:text-red-400 mt-1">
-                          Requires active Digimon
+                        <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                          {item.category}
                         </p>
-                      )}
+
+                        {card.variants.length > 1 && (
+                          <div>
+                            <label
+                              htmlFor={`shop-${card.id}`}
+                              className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1"
+                            >
+                              {card.label}
+                            </label>
+                            <select
+                              id={`shop-${card.id}`}
+                              value={item.id}
+                              disabled={processingPurchase !== null}
+                              onChange={(event) =>
+                                setSelectedVariants((current) => ({
+                                  ...current,
+                                  [card.id]: event.target.value,
+                                }))
+                              }
+                              className="w-full min-w-0 min-h-11 rounded-lg border-gray-200 bg-white text-sm text-gray-900 dark:border-dark-100 dark:bg-dark-300 dark:text-gray-100"
+                            >
+                              {card.variants.map((variant) => (
+                                <option key={variant.id} value={variant.id}>
+                                  {variant.name}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        )}
+
+                        <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 min-h-[2.5rem]">
+                          {item.description}
+                        </p>
+
+                        {/* Price and Buy Button */}
+                        <div className="mt-auto flex items-center justify-between gap-2 pt-2 border-t border-gray-100 dark:border-gray-700">
+                          <div className="flex items-baseline gap-1">
+                            <span className="font-bold text-lg text-gray-900 dark:text-gray-100">
+                              {item.price.toLocaleString()}
+                            </span>
+                            <span className="text-xs text-gray-500 dark:text-gray-400 uppercase">
+                              {item.currency}
+                            </span>
+                          </div>
+                          <button
+                            onClick={() => handlePurchase(item)}
+                            aria-label={`Buy ${item.name}`}
+                            disabled={
+                              processingPurchase !== null ||
+                              (item.currency === 'bits'
+                                ? bits < item.price
+                                : digicoins < item.price) ||
+                              (item.id === 'abi_enhancer' && !userDigimon)
+                            }
+                            className="btn-primary"
+                          >
+                            {processingPurchase === item.id ? 'Processing...' : 'Buy'}
+                          </button>
+                        </div>
+
+                        {item.id === 'abi_enhancer' && !userDigimon && (
+                          <p className="text-xs text-red-500 dark:text-red-400 mt-1">
+                            Requires active Digimon
+                          </p>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>

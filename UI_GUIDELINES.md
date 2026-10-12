@@ -173,6 +173,11 @@ behavior captions beneath SP bars.
   such as DNA partner consumption must remain visible outside dismissible help.
 - Keep Bokomon/Neemon as concise guides, with small sprites rather than large
   blocking character overlays. Help must not prevent users from using the page.
+- Neemon's Store pairs the shopkeeper sprite with a quietly typed greeting. Reserve
+  the complete text's space, expose the full line to screen readers and show it
+  immediately for reduced motion. Related boosters, discs and Digi-Eggs share
+  cards with labeled variant selectors; effect, price, owned count and purchase
+  action must all refer to the selected catalog item.
 
 ## Loading states
 

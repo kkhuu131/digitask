@@ -28,7 +28,9 @@ const PatchNotes = () => {
 
           <div className="mb-6">
             <div className="flex flex-wrap items-center gap-y-2 mb-2">
-              <h3 className="text-lg font-medium dark:text-gray-200">Smoother Arena Loading</h3>
+              <h3 className="text-lg font-medium dark:text-gray-200">
+                Smoother Arena and Neemon's Store
+              </h3>
               <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">
                 October 12, 2026
               </span>
@@ -43,6 +45,15 @@ const PatchNotes = () => {
                 Starting a battle keeps progress on the Start button; interrupted-battle recovery
                 controls appear only when a request needs recovery. Victory and defeat screens no
                 longer show redundant loading-results text.
+              </li>
+              <li>
+                Neemon greets you beside his pixel sprite with a gentle typing animation that keeps
+                the shop layout steady. Reduced-motion preferences show the full greeting
+                immediately.
+              </li>
+              <li>
+                Stat boosters, personality discs and Digi-Eggs each share one shop card. Choose a
+                variant from its dropdown to see its effect, price and owned quantity before buying.
               </li>
             </ul>
           </div>
