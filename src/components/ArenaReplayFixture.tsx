@@ -48,15 +48,7 @@ const ArenaReplayFixture = () => {
           Replay fixture
         </button>
       </div>
-      <ArenaBattle
-        key={playbackKey}
-        userTeam={userTeam}
-        opponentTeam={opponentTeam}
-        userStrategies={['balanced', 'balanced']}
-        opponentStrategies={['balanced', 'balanced']}
-        replay={replay}
-        onBattleComplete={() => undefined}
-      />
+      <ArenaBattle key={playbackKey} replay={replay} onBattleComplete={() => undefined} />
     </div>
   );
 };

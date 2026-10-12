@@ -8,14 +8,11 @@ import {
   createSkillEmphasisState,
   skillPlaybackScale,
 } from '../utils/skillEmphasis';
-import { BattleDigimon } from '../types/battle';
-import { initArenaDigimon, runFrame } from '../engine/arenaEngine';
 import { createReplayPlayer } from '../engine/arenaReplay';
 import type { ArenaReplay } from '../engine/arenaReplay';
 import {
   ArenaDigimon,
   ArenaEvent,
-  Strategy,
   SpriteState,
   WORLD_W,
   WORLD_H,
@@ -30,7 +27,7 @@ import { battleSpGaugePercent, finiteNumber, legacySkillGaugePercent } from '../
 interface CinematicState {
   /** Remaining real-time milliseconds (counts down at normal speed regardless of timeScale). */
   realRemainingMs: number;
-  /** Fraction of real deltaMs passed to runFrame — e.g. 0.2 = 5× slow-motion. */
+  /** Fraction of real deltaMs passed to playback — e.g. 0.2 = 5× slow-motion. */
   timeScale: number;
   /** World X to pan camera toward. */
   focusX: number;
@@ -256,24 +253,13 @@ const hpBarColor = (pct: number) => (pct > 0.5 ? '#4ade80' : pct > 0.25 ? '#facc
 // ─── Props ────────────────────────────────────────────────────────────────────
 
 export interface ArenaBattleProps {
-  userTeam: BattleDigimon[];
-  opponentTeam: BattleDigimon[];
-  userStrategies: Strategy[];
-  opponentStrategies?: Strategy[];
-  replay?: ArenaReplay;
+  replay: ArenaReplay;
   onBattleComplete: (result: { winner: 'user' | 'opponent'; turns: any[] }) => void;
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-const ArenaBattle: React.FC<ArenaBattleProps> = ({
-  userTeam,
-  opponentTeam,
-  userStrategies,
-  opponentStrategies,
-  onBattleComplete,
-  replay,
-}) => {
+const ArenaBattle: React.FC<ArenaBattleProps> = ({ onBattleComplete, replay }) => {
   const reducedMotion = useReducedMotion();
   const reducedMotionRef = useRef(!!reducedMotion);
   reducedMotionRef.current = !!reducedMotion;
@@ -293,24 +279,17 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
   const playbackTimeRef = useRef(0);
   const skillEmphasisRef = useRef(createSkillEmphasisState());
   const techniqueFrameUpdatesRef = useRef(new Set<() => void>());
-  const techniqueMode = replay?.version === 2;
+  const techniqueMode = replay.version === 2;
   const [countdown, setCountdown] = useState<string | null>('3');
   const countdownElapsedRef = useRef(0);
   const countdownLabelRef = useRef<string | null>('3');
   // ── Game-state refs (never trigger re-renders) ──────────────────────────────
 
   const replayPlayerRef = useRef<ReturnType<typeof createReplayPlayer> | null>(null);
-  if (replay && !replayPlayerRef.current) replayPlayerRef.current = createReplayPlayer(replay);
+  if (!replayPlayerRef.current) replayPlayerRef.current = createReplayPlayer(replay);
   const digimonRef = useRef<ArenaDigimon[]>(null!);
   if (!digimonRef.current) {
-    digimonRef.current =
-      replayPlayerRef.current?.state ??
-      initArenaDigimon(
-        userTeam,
-        opponentTeam,
-        userStrategies,
-        opponentStrategies ?? opponentTeam.map(() => 'balanced' as Strategy)
-      );
+    digimonRef.current = replayPlayerRef.current.state;
   }
 
   const lastTsRef = useRef<number>(0);
@@ -739,7 +718,7 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
       if (reducedMotionRef.current && cinematicRef.current) endCinematic();
       lastTsRef.current = ts;
 
-      // Hold the initial scene before advancing either live combat or recorded playback.
+      // Hold the initial scene before advancing recorded playback.
       if (countdownLabelRef.current !== null) {
         countdownElapsedRef.current += realDelta;
         const elapsed = countdownElapsedRef.current;
@@ -780,9 +759,7 @@ const ArenaBattle: React.FC<ArenaBattleProps> = ({
         }
       }
 
-      const events = replayPlayerRef.current
-        ? replayPlayerRef.current.advance(gameDelta)
-        : runFrame(digimonRef.current, gameDelta);
+      const events = replayPlayerRef.current!.advance(gameDelta);
       playbackTimeRef.current += gameDelta;
 
       // Direct DOM: sprite positions + facing direction

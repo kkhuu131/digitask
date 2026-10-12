@@ -68,8 +68,6 @@ const Battle = () => {
   // Arena-specific state
   const [arenaBattleActive, setArenaBattleActive] = useState(false);
   const [preparedUserTeam, setPreparedUserTeam] = useState<BattleDigimon[] | null>(null);
-  const [preparedOpponentTeam, setPreparedOpponentTeam] = useState<BattleDigimon[] | null>(null);
-  const [userStrategies, setUserStrategies] = useState<Strategy[]>([]);
   // After arena battle ends: holds winner + bits reward for the results screen
   const [arenaResult, setArenaResult] = useState<{
     winner: 'user' | 'opponent';
@@ -200,8 +198,6 @@ const Battle = () => {
           isOnUserTeam: isUser,
         }));
     setPreparedUserTeam(team(true));
-    setPreparedOpponentTeam(team(false));
-    setUserStrategies(battle.snapshot.strategies);
     setSavedBattle(battle);
     setPendingOption(null);
     setArenaResult(
@@ -286,8 +282,6 @@ const Battle = () => {
   const handleArenaResultsContinue = () => {
     setArenaResult(null);
     setPreparedUserTeam(null);
-    setPreparedOpponentTeam(null);
-    setUserStrategies([]);
     setPendingOption(null);
     setSavedBattle(null);
   };
@@ -561,13 +555,10 @@ const Battle = () => {
             userTeam={preparedUserTeam}
             onContinue={handleArenaResultsContinue}
           />
-        ) : arenaBattleActive && preparedUserTeam && preparedOpponentTeam ? (
+        ) : arenaBattleActive && savedBattle?.replay ? (
           <ArenaBattle
             key={savedBattle?.id}
-            replay={savedBattle?.replay ?? undefined}
-            userTeam={preparedUserTeam}
-            opponentTeam={preparedOpponentTeam}
-            userStrategies={userStrategies}
+            replay={savedBattle.replay}
             onBattleComplete={handleArenaBattleComplete}
           />
         ) : (

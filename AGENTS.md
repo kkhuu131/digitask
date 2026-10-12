@@ -90,8 +90,14 @@ on a candidate or restoring an old implementation.
   rules change. Preserve support for existing
   prepared requests or migrate them deliberately without charging. Replays retain
   sampled states/events and do not depend on current engine rules. Keep replay
-  format readers compatible with stored data. Tournament combat remains its
-  separate existing flow; it is not covered by daily arena settlement.
+  format readers compatible with stored data.
+- Daily arena and weekly tournament battles must use the same current combat
+  simulator (`simulateArena`) and recorded playback (`ArenaBattle`). Keep SP,
+  techniques, timing, effects, time limits and future combat changes consistent
+  across both modes; never restore a separate or legacy live tournament engine.
+  Legacy recordings retain their recorded rules. Tournament entry, brackets and
+  reward settlement remain their existing separate flow; tournament battles must
+  not call daily arena settlement or spend arena tickets.
 - Realtime uses published `user_digimon` and `daily_quotas`. Delete payloads must
   not be treated as complete new rows.
 

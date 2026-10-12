@@ -34,7 +34,7 @@
 
 ## 1. Overview
 
-The Arena Battle system is a physics-driven simulation with animated React playback. Daily arena combat is calculated on the server and recorded before playback; tournament combat still uses the live browser mode. Digimon move autonomously using steering behaviors, attack each other based on configurable strategies, and the result is displayed with cinematics, HP and skill bars, and an animated results screen.
+The Arena Battle system is a physics-driven simulation with animated React playback. Daily arena and weekly tournaments use the same current simulator and recorded playback. Daily arena combat is calculated on the server; tournament recordings are calculated in the browser before playback. Digimon move autonomously using steering behaviors, attack each other based on configurable strategies, and the result is displayed with cinematics, HP and skill bars, and an animated results screen.
 
 **Key design principle:** The game loop runs at ~60fps using `requestAnimationFrame`. To avoid React re-renders on every frame, all per-frame visual updates (sprite positions, HP/skill bar widths, camera panning, sprite facing, zoom) are applied by **directly mutating DOM element styles** via refs. React state is only updated on discrete events (attack hit, death, battle end).
 
@@ -648,7 +648,7 @@ The shared helper is `src/utils/selectStrongestTeam.ts`.
 
 The server bundle is generated from src/server/arenaEdge.ts using npm run arena:build; its build rejects browser-store imports. Damage rules live in engine/battleRules.ts and opponent generation in engine/arenaOpponents.ts. arenaReplay.ts implements seeded simulation and recording playback. Replay v1 preserves the legacy cooldown skill rules. Replay v2 records explicit battle SP plus stable technique start, commit, hit and end events. New fights use engine v3 with 4 SP/second times the persistent-SP multiplier (capped at 2.5), one-third of engine v2's 12 SP/second. Prepared v2 requests resume with their original rate; v1 requests and recorded v1/v2 playback remain supported. Replay format stays at v2 for engine v3, independently of combat version. Unknown engine versions stop before settlement.
 
-Tournament callers use the shared team selector and the existing live simulation mode of ArenaBattle. Their lifecycle is a separate follow-up. Sections explaining runFrame describe simulation; daily arena presentation uses createReplayPlayer instead. The browser may choose random cosmetic particles without affecting combat.
+Tournament callers use the shared team selector, `prepareTournamentBattle` and the current `simulateArena` entry point with a random seed and Balanced teams. `ArenaBattle` requires a recording and uses `createReplayPlayer` for both modes; there is no live-combat fallback. Combat changes must stay consistent across arena and tournament battles. Existing v1/v2 recordings preserve their original rules. Tournament entry, brackets and rewards remain a separate lifecycle and do not use daily arena ticket settlement. Sections explaining `runFrame` describe headless simulation. The browser may choose random cosmetic particles without affecting combat.
 
 Local SQL tests cover permissions, ownership, one pending request, repeat settlement, win/loss rewards and injected rollback. HTTP tests exercise actual local Auth/API/Edge Runtime, concurrent starts, mid-request abort, recovery, saved results without watching and cross-user isolation. Replay tests compare seeded results, event streams and final health across playback frame rates.
 

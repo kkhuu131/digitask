@@ -5,7 +5,7 @@ import { Trophy, Crown, ChevronRight, AlertCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../store/authStore';
 import { useDigimonStore, UserDigimon } from '../store/petStore';
-import { convertToBattleDigimon } from '../utils/convertToBattleDigimon';
+import { prepareTournamentBattle } from '../utils/prepareTournamentBattle';
 import { useCurrencyStore } from '../store/currencyStore';
 import { useTitleStore } from '../store/titleStore';
 import { useTournamentStore, PLACEMENT_BITS } from '../store/tournamentStore';
@@ -14,8 +14,7 @@ import ArenaBattle from '../components/ArenaBattle';
 import DigimonSprite from '@/components/DigimonSprite';
 import TournamentBracket from '../components/TournamentBracket';
 import BattleTeamSelector, { OpponentDigimonPreview } from '../components/BattleTeamSelector';
-import { BattleDigimon } from '../types/battle';
-import { Strategy } from '../engine/arenaTypes';
+import type { ArenaReplay } from '../engine/arenaReplay';
 
 const PLACEMENT_LABELS: Record<string, string> = {
   qf_loss: 'Top 8',
@@ -52,9 +51,7 @@ const Tournament: React.FC = () => {
   // Arena battle state
   const [isSelectingTeam, setIsSelectingTeam] = useState(false);
   const [arenaBattleActive, setArenaBattleActive] = useState(false);
-  const [preparedUserTeam, setPreparedUserTeam] = useState<BattleDigimon[] | null>(null);
-  const [preparedOpponentTeam, setPreparedOpponentTeam] = useState<BattleDigimon[] | null>(null);
-  const [userStrategies, setUserStrategies] = useState<Strategy[]>([]);
+  const [battleReplay, setBattleReplay] = useState<ArenaReplay | null>(null);
   const [battleTeam, setBattleTeam] = useState<UserDigimon[]>([]);
 
   const [roundResultState, setRoundResultState] = useState<{
@@ -114,22 +111,12 @@ const Tournament: React.FC = () => {
     const roundKey = String(currentTournament.current_round) as '1' | '2' | '3';
     const roundData = currentTournament.bracket.rounds[roundKey];
 
-    const userTeamData = selectedTeam.map((d) => ({
-      ...d,
-      digimon: DIGIMON_LOOKUP_TABLE[d.digimon_id as keyof typeof DIGIMON_LOOKUP_TABLE],
-    }));
-
-    const opponentTeamData = roundData.opponent.team.map((d: any) => ({
-      ...d,
-      digimon_id: d.digimon_id,
-      digimon: DIGIMON_LOOKUP_TABLE[d.digimon_id as keyof typeof DIGIMON_LOOKUP_TABLE],
-    }));
-
-    const userBattle = userTeamData.map((d) => convertToBattleDigimon(d, true));
-    const opponentBattle = opponentTeamData.map((d) => convertToBattleDigimon(d, false));
-    setPreparedUserTeam(userBattle);
-    setPreparedOpponentTeam(opponentBattle);
-    setUserStrategies(selectedTeam.map(() => 'balanced'));
+    const battle = prepareTournamentBattle(
+      selectedTeam,
+      roundData.opponent.team,
+      crypto.getRandomValues(new Uint32Array(1))[0]
+    );
+    setBattleReplay(battle.replay);
     setArenaBattleActive(true);
   };
 
@@ -198,8 +185,7 @@ const Tournament: React.FC = () => {
 
     setRoundResultState({ round, winner: result.winner, bits: bitsReward, placementBits });
     setBattleTeam([]);
-    setPreparedUserTeam(null);
-    setPreparedOpponentTeam(null);
+    setBattleReplay(null);
   };
 
   const handleContinue = () => setRoundResultState(null);
@@ -229,15 +215,8 @@ const Tournament: React.FC = () => {
   })();
 
   // Full-page takeover: Arena Battle
-  if (arenaBattleActive && preparedUserTeam && preparedOpponentTeam) {
-    return (
-      <ArenaBattle
-        userTeam={preparedUserTeam}
-        opponentTeam={preparedOpponentTeam}
-        userStrategies={userStrategies}
-        onBattleComplete={handleArenaBattleComplete}
-      />
-    );
+  if (arenaBattleActive && battleReplay) {
+    return <ArenaBattle replay={battleReplay} onBattleComplete={handleArenaBattleComplete} />;
   }
 
   return (

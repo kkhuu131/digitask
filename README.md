@@ -86,7 +86,7 @@ Routes are defined in `src/App.tsx`. Main features include the dashboard, DigiDe
 - Tasks: `Dashboard` → `TaskList` → `CleanTaskList`; mutations go through `taskStore` and Supabase. Task completion calls `complete_task_all_triggers`, which awards one battle ticket within the same database transaction.
 - Digimon: `petStore` handles party/storage, evolution and progression. Species, evolution paths and forms are imported from generated constants. `digimonStatCalculation.ts` contains stat interpolation and final-stat calculations.
 - Arena: `Battle` and `BattleTeamSelector` collect teams and behaviors together. The authenticated `arena-battle` Edge Function simulates and settles fights, then `ArenaBattle` plays the saved recording. Ticket spend, Bits, history and counters commit atomically; playback has no reward writes. See [the arena reference](src/engine/ARENA_BATTLE_SYSTEM.md).
-- Tournaments: `Tournament` and `tournamentStore` provide weekly entry, opponent selection, rounds and placement rewards.
+- Tournaments: `Tournament` and `tournamentStore` provide weekly entry, opponent selection, rounds and placement rewards. `prepareTournamentBattle` uses the same current `simulateArena` engine and `ArenaBattle` recorded playback as daily arena battles. Tournament recordings are calculated in the browser; tournament reward settlement remains its existing separate flow.
 - Achievements: `AchievementsPage` and `titleStore` handle titles, claims and DigiEgg rewards. Read [ACHIEVEMENTS.md](ACHIEVEMENTS.md) before changing achievements, rewards or partner-progress routes.
 - Shop: `DigimonStorePage`, `inventoryStore` and `currencyStore` handle items, effects and balances.
 

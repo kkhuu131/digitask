@@ -47,6 +47,11 @@ const PatchNotes = () => {
                 longer show redundant loading-results text.
               </li>
               <li>
+                Weekly tournament fights now use the current arena combat engine and recorded
+                playback, including matching SP charging, techniques, effects and battle time
+                limits. Tournament entry remains free, with its existing rounds and prizes.
+              </li>
+              <li>
                 Neemon greets you beside his pixel sprite with a gentle typing animation that keeps
                 the shop layout steady. Reduced-motion preferences show the full greeting
                 immediately.
