@@ -1,4 +1,4 @@
-import ContentSkeleton from '../components/ContentSkeleton';
+import { ArenaLobbySkeleton, LastArenaBattleSkeleton } from '../components/ArenaLobbySkeleton';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDigimonStore, UserDigimon } from '../store/petStore';
@@ -47,10 +47,19 @@ const Battle = () => {
   const { battleOptions, getBattleOptions, loading, error } = useBattleStore();
   const { currentTournament, fetchTournament, isActive, isCompleted } = useTournamentStore();
   const { user } = useAuthStore();
+  const [partyLoading, setPartyLoading] = useState(true);
+  const [tournamentLoading, setTournamentLoading] = useState(true);
+  const [arenaContextLoading, setArenaContextLoading] = useState(true);
 
   useEffect(() => {
-    fetchAllUserDigimon();
-    fetchTournament();
+    let active = true;
+    setPartyLoading(true);
+    setTournamentLoading(true);
+    void fetchAllUserDigimon().finally(() => active && setPartyLoading(false));
+    void fetchTournament().finally(() => active && setTournamentLoading(false));
+    return () => {
+      active = false;
+    };
   }, [user?.id]);
 
   const [pendingOption, setPendingOption] = useState<(typeof battleOptions)[0] | null>(null);
@@ -78,7 +87,10 @@ const Battle = () => {
   }, []);
 
   const [energy, setEnergy] = useState<{ current: number; max: number }>({ current: 0, max: 10 });
+  const [energyLoading, setEnergyLoading] = useState(true);
   useEffect(() => {
+    let active = true;
+    setEnergyLoading(true);
     const fetchEnergy = async () => {
       const { data: userData } = await supabase.auth.getUser();
       if (!userData.user) return;
@@ -87,14 +99,19 @@ const Battle = () => {
         .select('battle_energy, max_battle_energy')
         .eq('id', userData.user.id)
         .single();
-      if (profile)
+      if (profile && active) {
         setEnergy({ current: profile.battle_energy ?? 0, max: profile.max_battle_energy ?? 10 });
+        setEnergyLoading(false);
+      }
     };
     fetchEnergy();
     const onEnergyUpdated = () => fetchEnergy();
     window.addEventListener('energy-updated', onEnergyUpdated);
-    return () => window.removeEventListener('energy-updated', onEnergyUpdated);
-  }, []);
+    return () => {
+      active = false;
+      window.removeEventListener('energy-updated', onEnergyUpdated);
+    };
+  }, [user?.id]);
 
   const [savedBattle, setSavedBattle] = useState<SavedArenaBattle | null>(null);
   const [pendingBattle, setPendingBattle] = useState<SavedArenaBattle | null>(null);
@@ -143,10 +160,17 @@ const Battle = () => {
     setArenaBattleActive(false);
     setArenaResult(null);
     setPendingOption(null);
+    setArenaContextLoading(true);
     useBattleStore.setState({ loading: true, error: null });
-    loadArenaContext().catch((error) =>
-      useBattleStore.setState({ loading: false, error: String(error.message) })
-    );
+    let active = true;
+    void loadArenaContext()
+      .catch((error) => {
+        if (active) useBattleStore.setState({ loading: false, error: String(error.message) });
+      })
+      .finally(() => active && setArenaContextLoading(false));
+    return () => {
+      active = false;
+    };
   }, [user?.id]);
 
   const displaySavedBattle = (battle: SavedArenaBattle, play: boolean) => {
@@ -355,9 +379,13 @@ const Battle = () => {
                 <p className="text-sm font-heading font-semibold text-gray-900 dark:text-gray-100">
                   Arena
                 </p>
-                <p className="text-xs font-body text-gray-500 dark:text-gray-400 truncate">
-                  {energy.current}/{energy.max} tickets remaining
-                </p>
+                {energyLoading ? (
+                  <StatusSkeleton label="Loading tickets…" />
+                ) : (
+                  <p className="text-xs font-body text-gray-500 dark:text-gray-400 truncate">
+                    {energy.current}/{energy.max} tickets remaining
+                  </p>
+                )}
               </div>
             </div>
 
@@ -373,9 +401,13 @@ const Battle = () => {
                 <p className="text-sm font-heading font-semibold text-gray-900 dark:text-gray-100">
                   Weekly Tournament
                 </p>
-                <p className="text-xs font-body text-gray-500 dark:text-gray-400 truncate">
-                  {tournamentStatusLabel}
-                </p>
+                {tournamentLoading ? (
+                  <StatusSkeleton label="Loading tournament…" />
+                ) : (
+                  <p className="text-xs font-body text-gray-500 dark:text-gray-400 truncate">
+                    {tournamentStatusLabel}
+                  </p>
+                )}
               </div>
               <ChevronRight className="w-4 h-4 text-gray-400 shrink-0" />
             </button>
@@ -410,102 +442,112 @@ const Battle = () => {
             {startError}
           </p>
         )}
-        {!arenaBattleActive && !arenaResult && (pendingBattle || retryIntent) && (
-          <div className="card mb-4">
-            <p className="text-sm mb-3">
-              A battle start was interrupted. Retry it to confirm the result; the same request
-              cannot spend another ticket.
-            </p>
-            <button
-              className="btn-primary"
-              disabled={localLoading}
-              onClick={() => void runStart(pendingBattle ? undefined : retryIntent!)}
-            >
-              {localLoading ? 'Confirming battle...' : 'Retry saved battle'}
-            </button>
-            {!pendingBattle && retryIntent && (
-              <button
-                className="ml-3 text-sm underline"
-                disabled={localLoading}
-                onClick={() => {
-                  if (user) forgetArenaIntent(user.id);
-                  setRetryIntent(null);
-                  setPendingOption(null);
-                }}
-              >
-                Back to setup
-              </button>
-            )}
-          </div>
-        )}
-        {!arenaBattleActive && !arenaResult && !pendingOption && latestBattle?.replay && (
-          <section className="card mb-6" aria-labelledby="last-battle-title">
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div className="flex min-w-0 items-center gap-3">
-                <div className="rounded-xl bg-accent-50 p-3 text-accent-600 dark:bg-accent-900/20 dark:text-accent-300">
-                  <Swords className="h-5 w-5" aria-hidden="true" />
-                </div>
-                <div className="min-w-0">
-                  <h2
-                    id="last-battle-title"
-                    className="text-xs font-semibold text-gray-600 dark:text-gray-400"
-                  >
-                    Last arena battle
-                  </h2>
-                  <p className="mt-1 break-words font-heading text-lg font-semibold text-gray-900 dark:text-gray-100">
-                    {latestBattle.snapshot.opponent_name}
-                  </p>
-                </div>
-              </div>
-              <span
-                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${latestBattle.replay.winner === 'user' ? 'bg-green-50 text-green-800 dark:bg-green-900/20 dark:text-green-300' : 'bg-red-50 text-red-800 dark:bg-red-900/20 dark:text-red-300'}`}
-              >
-                {latestBattle.replay.winner === 'user' ? (
-                  <Trophy className="h-3.5 w-3.5" aria-hidden="true" />
-                ) : (
-                  <Shield className="h-3.5 w-3.5" aria-hidden="true" />
-                )}
-                {latestBattle.replay.winner === 'user' ? 'Victory' : 'Defeat'}
-              </span>
-            </div>
-            <div className="my-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
-              <span className="inline-flex items-center gap-2 font-semibold text-accent-600 dark:text-accent-300">
-                <Coins className="h-4 w-4" aria-hidden="true" />+{latestBattle.bits_reward} Bits
-              </span>
-              <span className="inline-flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400">
-                <CircleCheck
-                  className="h-3.5 w-3.5 text-green-700 dark:text-green-400"
-                  aria-hidden="true"
-                />
-                Rewards already awarded
-              </span>
-              {latestBattle.replay.reason === 'time_limit' && (
-                <span className="inline-flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400">
-                  <Timer className="h-3.5 w-3.5" aria-hidden="true" />
-                  Time limit reached
-                </span>
-              )}
-            </div>
-            <div className="flex flex-wrap gap-2 border-t border-gray-200 pt-4 dark:border-dark-100">
+        {!arenaBattleActive &&
+          !arenaResult &&
+          (!localLoading || !pendingOption) &&
+          (pendingBattle || retryIntent) && (
+            <div className="card mb-4">
+              <p className="text-sm mb-3">
+                A battle start was interrupted. Retry it to confirm the result; the same request
+                cannot spend another ticket.
+              </p>
               <button
                 className="btn-primary"
                 disabled={localLoading}
-                onClick={() => displaySavedBattle(latestBattle, true)}
+                onClick={() => void runStart(pendingBattle ? undefined : retryIntent!)}
               >
-                <Play className="h-4 w-4" aria-hidden="true" />
-                Watch replay
+                {localLoading ? 'Confirming battle...' : 'Retry saved battle'}
               </button>
-              <button
-                className="btn-secondary"
-                disabled={localLoading}
-                onClick={() => displaySavedBattle(latestBattle, false)}
-              >
-                <ListChecks className="h-4 w-4" aria-hidden="true" />
-                View result
-              </button>
+              {!pendingBattle && retryIntent && (
+                <button
+                  className="ml-3 text-sm underline"
+                  disabled={localLoading}
+                  onClick={() => {
+                    if (user) forgetArenaIntent(user.id);
+                    setRetryIntent(null);
+                    setPendingOption(null);
+                  }}
+                >
+                  Back to setup
+                </button>
+              )}
             </div>
-          </section>
+          )}
+        {!arenaBattleActive && !arenaResult && !pendingOption && arenaContextLoading && (
+          <LastArenaBattleSkeleton />
         )}
+        {!arenaBattleActive &&
+          !arenaResult &&
+          !pendingOption &&
+          !arenaContextLoading &&
+          latestBattle?.replay && (
+            <section className="card mb-6" aria-labelledby="last-battle-title">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="flex min-w-0 items-center gap-3">
+                  <div className="rounded-xl bg-accent-50 p-3 text-accent-600 dark:bg-accent-900/20 dark:text-accent-300">
+                    <Swords className="h-5 w-5" aria-hidden="true" />
+                  </div>
+                  <div className="min-w-0">
+                    <h2
+                      id="last-battle-title"
+                      className="text-xs font-semibold text-gray-600 dark:text-gray-400"
+                    >
+                      Last arena battle
+                    </h2>
+                    <p className="mt-1 break-words font-heading text-lg font-semibold text-gray-900 dark:text-gray-100">
+                      {latestBattle.snapshot.opponent_name}
+                    </p>
+                  </div>
+                </div>
+                <span
+                  className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${latestBattle.replay.winner === 'user' ? 'bg-green-50 text-green-800 dark:bg-green-900/20 dark:text-green-300' : 'bg-red-50 text-red-800 dark:bg-red-900/20 dark:text-red-300'}`}
+                >
+                  {latestBattle.replay.winner === 'user' ? (
+                    <Trophy className="h-3.5 w-3.5" aria-hidden="true" />
+                  ) : (
+                    <Shield className="h-3.5 w-3.5" aria-hidden="true" />
+                  )}
+                  {latestBattle.replay.winner === 'user' ? 'Victory' : 'Defeat'}
+                </span>
+              </div>
+              <div className="my-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
+                <span className="inline-flex items-center gap-2 font-semibold text-accent-600 dark:text-accent-300">
+                  <Coins className="h-4 w-4" aria-hidden="true" />+{latestBattle.bits_reward} Bits
+                </span>
+                <span className="inline-flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400">
+                  <CircleCheck
+                    className="h-3.5 w-3.5 text-green-700 dark:text-green-400"
+                    aria-hidden="true"
+                  />
+                  Rewards already awarded
+                </span>
+                {latestBattle.replay.reason === 'time_limit' && (
+                  <span className="inline-flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400">
+                    <Timer className="h-3.5 w-3.5" aria-hidden="true" />
+                    Time limit reached
+                  </span>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-2 border-t border-gray-200 pt-4 dark:border-dark-100">
+                <button
+                  className="btn-primary"
+                  disabled={localLoading}
+                  onClick={() => displaySavedBattle(latestBattle, true)}
+                >
+                  <Play className="h-4 w-4" aria-hidden="true" />
+                  Watch replay
+                </button>
+                <button
+                  className="btn-secondary"
+                  disabled={localLoading}
+                  onClick={() => displaySavedBattle(latestBattle, false)}
+                >
+                  <ListChecks className="h-4 w-4" aria-hidden="true" />
+                  View result
+                </button>
+              </div>
+            </section>
+          )}
         {arenaBattleActive && (
           <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
             Your result and rewards are saved. You can leave and watch the replay later.
@@ -580,8 +622,8 @@ const Battle = () => {
                   </div>
                 )}
 
-                {loading && battleOptions.length === 0 ? (
-                  <ContentSkeleton label="Loading opponents…" itemClassName="min-h-32" />
+                {arenaContextLoading || (loading && battleOptions.length === 0) ? (
+                  <ArenaLobbySkeleton />
                 ) : battleOptions.length === 0 ? (
                   <div className="text-center py-12 text-gray-500 dark:text-gray-400 font-body text-sm">
                     No battle options available. Try adding Digimon to your party.
@@ -594,6 +636,8 @@ const Battle = () => {
                         difficultyConfig.easy;
                       const canBattle =
                         !loading &&
+                        !partyLoading &&
+                        !energyLoading &&
                         !localLoading &&
                         !pendingBattle &&
                         !retryIntent &&
@@ -658,11 +702,13 @@ const Battle = () => {
                                     : `${cfg.button}`
                                 }`}
                               >
-                                {partyDigimon.length < 1
-                                  ? 'Need Digimon'
-                                  : energy.current < 1
-                                    ? 'No Tickets'
-                                    : 'Fight!'}
+                                {partyLoading || energyLoading
+                                  ? 'Loading…'
+                                  : partyDigimon.length < 1
+                                    ? 'Need Digimon'
+                                    : energy.current < 1
+                                      ? 'No Tickets'
+                                      : 'Fight!'}
                               </button>
                             </div>
                           </div>
@@ -794,3 +840,13 @@ const ArenaResultsScreen: React.FC<{
 };
 
 export default Battle;
+
+const StatusSkeleton = ({ label }: { label: string }) => (
+  <span role="status" aria-busy="true" className="block h-4 py-0.5">
+    <span className="sr-only">{label}</span>
+    <span
+      aria-hidden="true"
+      className="ui-skeleton-pulse block h-3 w-28 max-w-full rounded bg-gray-200 dark:bg-dark-100"
+    />
+  </span>
+);

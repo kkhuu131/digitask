@@ -1561,16 +1561,6 @@ const WinnerOverlay: React.FC<{ winner: 'user' | 'opponent' }> = ({ winner }) =>
       >
         {won ? 'Your team won the battle!' : 'Your team fought bravely.'}
       </motion.p>
-
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.6, duration: 0.4 }}
-        style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', marginTop: 4 }}
-        className="font-body"
-      >
-        Loading results…
-      </motion.p>
     </motion.div>
   );
 };

@@ -28,6 +28,27 @@ const PatchNotes = () => {
 
           <div className="mb-6">
             <div className="flex flex-wrap items-center gap-y-2 mb-2">
+              <h3 className="text-lg font-medium dark:text-gray-200">Smoother Arena Loading</h3>
+              <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">
+                October 12, 2026
+              </span>
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
+              <li>
+                Arena loading placeholders reserve space for the last battle, replay actions and
+                opponent cards. Ticket and tournament status placeholders keep unknown values from
+                appearing as zero or free entry.
+              </li>
+              <li>
+                Starting a battle keeps progress on the Start button; interrupted-battle recovery
+                controls appear only when a request needs recovery. Victory and defeat screens no
+                longer show redundant loading-results text.
+              </li>
+            </ul>
+          </div>
+
+          <div className="mb-6">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-xs font-medium px-2.5 py-0.5 rounded">
                 Latest
               </span>
