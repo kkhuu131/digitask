@@ -65,7 +65,8 @@ const PatchNotes = () => {
               <li>
                 Arena and tournament team selection include compact type and attribute matchup
                 charts with pixel icons and circular advantage arrows. Free and Neutral appear
-                separately, and Light and Dark show their mutual advantage.
+                separately, and Light and Dark show their mutual advantage. Matchup icons retain
+                crisp pixels through exact 2× sprite scaling.
               </li>
             </ul>
           </div>

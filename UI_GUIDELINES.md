@@ -135,6 +135,9 @@ Team selection includes a compact matchup guide below the battle action in both
 arena and tournaments. Use existing pixel type/attribute icons, labeled circular
 arrows based on the combat advantage maps, and separate Free/Neutral islands.
 Light and Dark have advantages against each other; keep that pair bidirectional.
+Matchup icons use native 16px HTML images scaled exactly 2× with pixelated rendering;
+keep them outside SVG image elements and avoid fractional resizing. Arrows and text
+remain smooth SVG artwork.
 `DigimonCardIdentity` keeps card names, levels and icons consistent in the arena
 and DigiFarm. Farm cards retain a separate EXP bar below the identity; use
 `bg-purple-500` to match the dashboard's normal EXP fill.
