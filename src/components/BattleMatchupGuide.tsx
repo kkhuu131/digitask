@@ -136,26 +136,23 @@ const Island = ({ name, typeChart = false }: { name: string; typeChart?: boolean
 
 const BattleMatchupGuide = () => (
   <section aria-label="Battle matchup guide" className="ui-panel mt-4 p-3 sm:p-4">
-    <p className="mb-3 text-xs text-gray-600 dark:text-gray-400">
-      Arrows point to the type or attribute you have an advantage against.
-    </p>
-    <div className="grid gap-4 lg:grid-cols-[auto_1fr] lg:gap-6">
+    <div className="mx-auto grid w-fit max-w-full grid-cols-1 gap-4 lg:grid-cols-[auto_auto] lg:gap-6">
       <div>
-        <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+        <h3 className="text-center text-sm font-semibold text-gray-900 dark:text-gray-100">
           Type advantages{' '}
           <span className="font-normal text-xs text-gray-500 dark:text-gray-400">2× damage</span>
         </h3>
-        <div className="mt-2 flex items-center gap-2">
+        <div className="mt-2 flex items-center justify-center gap-2">
           <Cycle names={['Vaccine', 'Virus', 'Data']} typeChart />
           <Island name="Free" typeChart />
         </div>
       </div>
       <div className="min-w-0">
-        <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+        <h3 className="text-center text-sm font-semibold text-gray-900 dark:text-gray-100">
           Attribute advantages{' '}
           <span className="font-normal text-xs text-gray-500 dark:text-gray-400">1.5× damage</span>
         </h3>
-        <div className="mt-2 flex flex-wrap items-center gap-2">
+        <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
           <Cycle names={['Fire', 'Plant', 'Water']} />
           <Cycle names={['Wind', 'Earth', 'Electric']} />
           <Cycle names={['Light', 'Dark']} />
