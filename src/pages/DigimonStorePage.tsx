@@ -59,6 +59,18 @@ const ITEM_GROUPS = [
     label: 'Digi-Egg',
     variants: STORE_ITEMS.filter((item) => item.id.startsWith('digi_egg_of_')),
   },
+  {
+    id: 'human-spirits',
+    name: 'Human Spirits',
+    label: 'Human Spirit',
+    variants: STORE_ITEMS.filter((item) => item.id.startsWith('human_spirit_of_')),
+  },
+  {
+    id: 'beast-spirits',
+    name: 'Beast Spirits',
+    label: 'Beast Spirit',
+    variants: STORE_ITEMS.filter((item) => item.id.startsWith('beast_spirit_of_')),
+  },
 ];
 
 const STORE_CARDS = STORE_ITEMS.flatMap((item) => {

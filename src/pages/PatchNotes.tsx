@@ -57,9 +57,15 @@ const PatchNotes = () => {
                 immediately.
               </li>
               <li>
-                Stat boosters, personality discs and Digi-Eggs each share one shop card. Compact
-                dropdowns replace the item name so grouped cards keep the same height as other
-                items. Choose a variant to see its effect, price and owned quantity before buying.
+                Stat boosters, personality discs, Digi-Eggs, Human Spirits and Beast Spirits each
+                share one shop card. Compact dropdowns replace the item name so grouped cards keep
+                the same height as other items. Choose a variant to see its effect, price and owned
+                quantity before buying.
+              </li>
+              <li>
+                Arena and tournament team selection include compact type and attribute matchup
+                charts with pixel icons and circular advantage arrows. Free and Neutral appear
+                separately, and Light and Dark show their mutual advantage.
               </li>
             </ul>
           </div>

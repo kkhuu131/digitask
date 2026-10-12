@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import BattleMatchupGuide from './BattleMatchupGuide';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { X, ChevronLeft, Plus, Swords, WandSparkles, Ticket } from 'lucide-react';
 import { Dialog } from '@headlessui/react';
@@ -533,6 +534,8 @@ const BattleTeamSelector: React.FC<BattleTeamSelectorProps> = ({
           <span>{loading ? 'Starting…' : confirmLabel}</span>
         </button>
       </div>
+
+      <BattleMatchupGuide />
 
       {/* Picker modal */}
       <AnimatePresence>

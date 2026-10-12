@@ -131,6 +131,10 @@ The party picker uses the detail modal's sprite/identity and Stats presentation.
 Use `DigimonStatRow` for matching stat bars, values and bonus text in both dialogs.
 Arena opponent choices share `BattleFighterPreview` sprite and identity presentation
 with team selection; keep levels and type/attribute icons below readable names.
+Team selection includes a compact matchup guide below the battle action in both
+arena and tournaments. Use existing pixel type/attribute icons, labeled circular
+arrows based on the combat advantage maps, and separate Free/Neutral islands.
+Light and Dark have advantages against each other; keep that pair bidirectional.
 `DigimonCardIdentity` keeps card names, levels and icons consistent in the arena
 and DigiFarm. Farm cards retain a separate EXP bar below the identity; use
 `bg-purple-500` to match the dashboard's normal EXP fill.
@@ -175,7 +179,7 @@ behavior captions beneath SP bars.
   blocking character overlays. Help must not prevent users from using the page.
 - Neemon's Store pairs the shopkeeper sprite with a quietly typed greeting. Reserve
   the complete text's space, expose the full line to screen readers and show it
-  immediately for reduced motion. Related boosters, discs and Digi-Eggs share
+  immediately for reduced motion. Related boosters, discs, Digi-Eggs and spirits share
   cards with accessible variant selectors in the item-name row, rather than an
   extra form section. Reserve matching name and description heights across cards
   so selections do not resize the row. Effect, price, owned count and purchase
