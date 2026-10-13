@@ -30,7 +30,6 @@ interface BranchProps {
   target: Digimon;
   ancestors: readonly number[];
   discoveredIds: ReadonlySet<number>;
-  depth?: number;
 }
 
 export default function DigivolutionPlannerBranch({
@@ -38,7 +37,6 @@ export default function DigivolutionPlannerBranch({
   target,
   ancestors,
   discoveredIds,
-  depth = 0,
 }: BranchProps) {
   const [expanded, setExpanded] = useState(false);
   const branchId = useId();
@@ -68,7 +66,7 @@ export default function DigivolutionPlannerBranch({
   );
 
   return (
-    <li className="min-w-0 space-y-3">
+    <li className="min-w-[220px] space-y-3">
       <div className="ui-panel overflow-hidden">
         {canExpand ? (
           <button
@@ -122,7 +120,7 @@ export default function DigivolutionPlannerBranch({
         <ul
           id={branchId}
           aria-label={`Earlier evolutions for ${species.name}`}
-          className={`space-y-3 ${depth < 2 ? 'ml-3 border-l border-gray-200 pl-3 sm:ml-5 sm:pl-4 dark:border-dark-100' : ''}`}
+          className="ml-2 space-y-3 border-l border-gray-200 pl-2 sm:ml-3 sm:pl-3 dark:border-dark-100"
         >
           {earlierRoutes.map((earlierRoute) => (
             <DigivolutionPlannerBranch
@@ -131,7 +129,6 @@ export default function DigivolutionPlannerBranch({
               target={species}
               ancestors={lineage}
               discoveredIds={discoveredIds}
-              depth={depth + 1}
             />
           ))}
         </ul>

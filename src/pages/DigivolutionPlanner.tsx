@@ -131,17 +131,24 @@ export default function DigivolutionPlanner() {
               <p className="ui-description mb-4">
                 These Digimon evolve into {target.name}. Expand a branch to see earlier evolutions.
               </p>
-              <ul className="space-y-3" aria-label={`Evolution routes to ${target.name}`}>
-                {routes.map((route) => (
-                  <DigivolutionPlannerBranch
-                    key={route.path.id}
-                    route={route}
-                    target={target}
-                    ancestors={[target.id]}
-                    discoveredIds={discoveredIds}
-                  />
-                ))}
-              </ul>
+              <div
+                className="overflow-x-auto rounded-lg pb-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent-500"
+                role="region"
+                aria-label="Evolution route tree"
+                tabIndex={0}
+              >
+                <ul className="space-y-3" aria-label={`Evolution routes to ${target.name}`}>
+                  {routes.map((route) => (
+                    <DigivolutionPlannerBranch
+                      key={route.path.id}
+                      route={route}
+                      target={target}
+                      ancestors={[target.id]}
+                      discoveredIds={discoveredIds}
+                    />
+                  ))}
+                </ul>
+              </div>
             </>
           ) : (
             <div className="ui-empty">

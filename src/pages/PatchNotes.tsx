@@ -40,6 +40,8 @@ const PatchNotes = () => {
                 Digivolution Planner is available from the Digimon menu. Search any species and
                 expand its incoming evolution routes recursively, with level, stat, item and DNA
                 partner requirements. Names stay visible while undiscovered sprites are silhouetted.
+                Every expanded generation stays visually nested, including single-predecessor
+                routes.
               </li>
               <li>
                 Arena and tournament battles share the same result screen, with animated team
