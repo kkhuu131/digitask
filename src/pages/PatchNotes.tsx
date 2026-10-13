@@ -29,6 +29,31 @@ const PatchNotes = () => {
           <div className="mb-6">
             <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium dark:text-gray-200">
+                Arena Setup and Quota Rewards
+              </h3>
+              <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">
+                October 13, 2026
+              </span>
+            </div>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
+              <li>
+                Arena opponents always appear in Easy, Medium, Hard order, with a ticket icon and
+                Fight button.
+              </li>
+              <li>
+                Team Selection shows a single centered Start button with its one-ticket cost,
+                removing repeated cost labels and the extra readiness panel.
+              </li>
+              <li>
+                Completing the daily quota awards 500 base EXP to each party member, scaling up to
+                1,000 EXP with your streak. Storage Digimon receive no quota EXP.
+              </li>
+            </ul>
+          </div>
+
+          <div className="mb-6">
+            <div className="flex flex-wrap items-center gap-y-2 mb-2">
+              <h3 className="text-lg font-medium dark:text-gray-200">
                 Smoother Arena and Neemon's Store
               </h3>
               <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">

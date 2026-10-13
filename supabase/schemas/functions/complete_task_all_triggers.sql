@@ -122,7 +122,7 @@ BEGIN
     -- The threshold crossing is serialized by the profile/quota locks. Award
     -- this once inside the task transaction, independent of browser timing.
     IF v_quota_completed THEN
-      v_quota_bonus_exp := ROUND(300 * v_exp_multiplier);
+      v_quota_bonus_exp := ROUND(500 * v_exp_multiplier);
     END IF;
 
     -- Update active Digimon (full EXP + happiness)

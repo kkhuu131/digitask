@@ -32,10 +32,10 @@ export interface BattleTeamSelectorProps {
   partyDigimon: UserDigimon[];
   /** e.g. "Round 1 · Quarterfinal" or "Hard · Wild Digimon" */
   contextLabel?: string;
-  /** When true, shows a "Free" badge and hides costLabel */
+  /** When true, shows a "Free" badge and hides the ticket cost */
   isFree?: boolean;
-  /** e.g. "1 ticket" — shown as a cost badge when isFree is false */
-  costLabel?: string;
+  /** Ticket cost shown within the start button when isFree is false */
+  ticketCost?: number;
   confirmLabel?: string;
   onConfirm: (team: UserDigimon[], strategies: Strategy[]) => void;
   onBack: () => void;
@@ -285,7 +285,7 @@ const BattleTeamSelector: React.FC<BattleTeamSelectorProps> = ({
   partyDigimon,
   contextLabel,
   isFree = false,
-  costLabel,
+  ticketCost,
   confirmLabel = 'Fight',
   onConfirm,
   onBack,
@@ -358,18 +358,13 @@ const BattleTeamSelector: React.FC<BattleTeamSelectorProps> = ({
             <span className="text-xs px-2.5 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full font-semibold">
               Free
             </span>
-          ) : costLabel ? (
-            <span className="inline-flex items-center gap-1.5 text-sm px-2.5 py-1 bg-amber-100 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 rounded-full font-semibold">
-              <Ticket className="h-4 w-4" aria-hidden="true" />
-              {costLabel}
-            </span>
           ) : null}
         </div>
       </div>
 
       <div className="ui-page-header">
         <div>
-          <h2 className="ui-page-title">Ready for battle</h2>
+          <h2 className="ui-page-title">Team Selection</h2>
           <p className="ui-description mt-1">Choose up to three Digimon to face {opponentName}.</p>
         </div>
       </div>
@@ -507,27 +502,39 @@ const BattleTeamSelector: React.FC<BattleTeamSelectorProps> = ({
         </div>
       </div>
 
-      <div className="ui-panel flex flex-wrap items-center justify-between gap-4 p-4">
-        <div aria-live="polite">
-          <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-            {teamSize === 0 ? 'Choose your fighters' : `${teamSize} Digimon ready to battle`}
-          </p>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-            {isFree
-              ? 'Free battle'
-              : costLabel
-                ? `Battle cost: ${costLabel}`
-                : 'Your team is ready when you are.'}
-          </p>
-        </div>
+      <div
+        className={
+          !isFree && ticketCost !== undefined
+            ? 'flex justify-center'
+            : 'ui-panel flex flex-wrap items-center justify-between gap-4 p-4'
+        }
+      >
+        {(isFree || ticketCost === undefined) && (
+          <div aria-live="polite">
+            <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+              {teamSize === 0 ? 'Choose your fighters' : `${teamSize} Digimon ready to battle`}
+            </p>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+              {isFree ? 'Free battle' : 'Your team is ready when you are.'}
+            </p>
+          </div>
+        )}
         <button
           onClick={handleConfirm}
           disabled={teamSize === 0 || loading}
           aria-busy={loading}
+          aria-label={
+            !isFree && ticketCost !== undefined
+              ? `${loading ? 'Starting' : confirmLabel} battle, costs ${ticketCost} ${ticketCost === 1 ? 'ticket' : 'tickets'}`
+              : undefined
+          }
           className="btn-primary shrink-0"
         >
+          {!isFree && ticketCost !== undefined && <span>-{ticketCost}</span>}
           {loading ? (
             <LoadingSpinner className="h-4 w-4" />
+          ) : !isFree && ticketCost !== undefined ? (
+            <Ticket className="h-4 w-4" aria-hidden="true" />
           ) : (
             <Swords className="h-4 w-4" aria-hidden="true" />
           )}

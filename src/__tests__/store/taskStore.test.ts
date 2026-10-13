@@ -71,14 +71,14 @@ describe('task rewards', () => {
   it('confirms the committed quota bonus even with stale or missing quota state', async () => {
     mocks.rpc.mockResolvedValue({
       data: {
-        quota_bonus_exp: 600,
+        quota_bonus_exp: 1000,
         daily_quota: { completed_today: 3, current_streak: 11, quota_rewarded: true },
       },
     });
     await useTaskStore.getState().completeTask('third-task');
     expect(mocks.rpc).toHaveBeenCalledTimes(1);
     expect(mocks.notify).toHaveBeenCalledWith({
-      message: 'Daily Quota Complete! All party members received 600 EXP!',
+      message: 'Daily Quota Complete! All party members received 1000 EXP!',
       type: 'success',
     });
     expect(mocks.streakTitles).toHaveBeenCalledWith(11);

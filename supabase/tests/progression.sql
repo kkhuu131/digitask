@@ -64,16 +64,16 @@ DO $$
 DECLARE r jsonb;
 BEGIN
   r := public.complete_task_all_triggers('00000000-0000-4000-8000-000000004103', auth.uid(), false);
-  IF (r->>'quota_bonus_exp')::integer <> 600
+  IF (r->>'quota_bonus_exp')::integer <> 1000
     OR (r->>'exp_points')::integer <> 300
     OR (r->'daily_quota'->>'quota_completed')::boolean
     OR NOT (r->'daily_quota'->>'quota_rewarded')::boolean THEN
     RAISE EXCEPTION 'Quota bonus or legacy double-grant protection incorrect: %', r;
   END IF;
   IF (SELECT current_level FROM public.user_digimon WHERE name = 'active' AND user_id = auth.uid()) <> 30
-    OR (SELECT experience_points FROM public.user_digimon WHERE name = 'active' AND user_id = auth.uid()) <> 470
+    OR (SELECT experience_points FROM public.user_digimon WHERE name = 'active' AND user_id = auth.uid()) <> 870
     OR (SELECT current_level FROM public.user_digimon WHERE name = 'reserve' AND user_id = auth.uid()) <> 30
-    OR (SELECT experience_points FROM public.user_digimon WHERE name = 'reserve' AND user_id = auth.uid()) <> 36
+    OR (SELECT experience_points FROM public.user_digimon WHERE name = 'reserve' AND user_id = auth.uid()) <> 436
     OR (SELECT experience_points FROM public.user_digimon WHERE name = 'storage' AND user_id = auth.uid()) <> 0 THEN
     RAISE EXCEPTION 'Active/reserve quota levels or storage exclusion incorrect';
   END IF;
@@ -83,7 +83,8 @@ BEGIN
   EXCEPTION WHEN invalid_parameter_value THEN NULL; END;
   r := public.complete_task_all_triggers('00000000-0000-4000-8000-000000004104', auth.uid(), false);
   IF (r->>'quota_bonus_exp')::integer <> 0
-    OR (SELECT experience_points FROM public.user_digimon WHERE name = 'active' AND user_id = auth.uid()) <> 770 THEN
+    OR (SELECT current_level FROM public.user_digimon WHERE name = 'active' AND user_id = auth.uid()) <> 31
+    OR (SELECT experience_points FROM public.user_digimon WHERE name = 'active' AND user_id = auth.uid()) <> 170 THEN
     RAISE EXCEPTION 'Fourth task granted another quota bonus';
   END IF;
 END; $$;
@@ -105,5 +106,30 @@ DO $$ BEGIN
     RAISE EXCEPTION 'Maximum level or remaining EXP incorrect';
   END IF;
 END; $$;
+-- Verify the unmultiplied quota independently of difficulty and priority.
+UPDATE public.daily_quotas SET completed_today = 2, current_streak = 0
+  WHERE user_id = '00000000-0000-4000-8000-000000000041';
+UPDATE public.user_digimon SET current_level = 29, experience_points = 0
+  WHERE user_id = '00000000-0000-4000-8000-000000000041' AND is_active = true;
+UPDATE public.user_digimon SET current_level = 29, experience_points = 0
+  WHERE user_id = '00000000-0000-4000-8000-000000000041' AND is_active = false;
+INSERT INTO public.tasks (id, user_id, description, difficulty, priority)
+VALUES ('00000000-0000-4000-8000-000000004105',
+  '00000000-0000-4000-8000-000000000041', 'base quota reward', 'easy', 'low');
+SET LOCAL ROLE authenticated;
+DO $$
+DECLARE r jsonb;
+BEGIN
+  r := public.complete_task_all_triggers('00000000-0000-4000-8000-000000004105', auth.uid(), false);
+  IF (r->>'quota_bonus_exp')::integer <> 500
+    OR (r->>'exp_points')::integer <> 56
+    OR (r->>'reserve_exp')::integer <> 28
+    OR (SELECT experience_points FROM public.user_digimon WHERE name = 'active' AND user_id = auth.uid()) <> 556
+    OR (SELECT experience_points FROM public.user_digimon WHERE name = 'reserve' AND user_id = auth.uid()) <> 528
+    OR (SELECT experience_points FROM public.user_digimon WHERE name = 'storage' AND user_id = auth.uid()) <> 0 THEN
+    RAISE EXCEPTION 'Base quota must award 500 EXP to active/reserve only, independent of task settings: %', r;
+  END IF;
+END; $$;
+RESET ROLE;
 ROLLBACK;
 SELECT 'Progression cap and atomic quota rewards passed; fixtures rolled back' AS result;

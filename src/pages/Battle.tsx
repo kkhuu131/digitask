@@ -76,6 +76,11 @@ const Battle = () => {
 
   // Non-storage party Digimon available for selection
   const partyDigimon = allUserDigimon.filter((d) => !d.is_in_storage);
+  const sortedBattleOptions = [...battleOptions].sort(
+    (a, b) =>
+      ['easy', 'medium', 'hard'].indexOf(a.difficulty) -
+      ['easy', 'medium', 'hard'].indexOf(b.difficulty)
+  );
 
   useEffect(() => {
     const loadBattleData = async () => {
@@ -349,10 +354,12 @@ const Battle = () => {
       >
         <div className="ui-page-header">
           <h1 className="ui-page-title">Battle</h1>
-          <p className="ui-description">
-            Each arena battle costs one ticket. Complete tasks to earn tickets; battles award Bits
-            you can spend in the shop.
-          </p>
+          {!pendingOption && (
+            <p className="ui-description">
+              Each arena battle costs one ticket. Complete tasks to earn tickets; battles award Bits
+              you can spend in the shop.
+            </p>
+          )}
         </div>
 
         {!arenaBattleActive && !arenaResult && !pendingOption && (
@@ -572,8 +579,8 @@ const Battle = () => {
                 opponentTeam={pendingOption.team.digimon as OpponentDigimonPreview[]}
                 partyDigimon={partyDigimon}
                 isFree={false}
-                costLabel="1 ticket"
-                confirmLabel="Start battle"
+                ticketCost={1}
+                confirmLabel="Start"
                 onConfirm={handleConfirmTeam}
                 onBack={() => setPendingOption(null)}
                 loading={localLoading}
@@ -621,7 +628,7 @@ const Battle = () => {
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    {battleOptions.map((option, idx) => {
+                    {sortedBattleOptions.map((option, idx) => {
                       const cfg =
                         difficultyConfig[option.difficulty as keyof typeof difficultyConfig] ??
                         difficultyConfig.easy;
@@ -687,19 +694,20 @@ const Battle = () => {
                               <button
                                 onClick={() => handleSelectOption(option)}
                                 disabled={!canBattle}
-                                className={`mt-2.5 w-full py-2 rounded-lg text-sm font-semibold font-body transition-colors cursor-pointer ${
+                                className={`mt-2.5 w-full min-h-11 inline-flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-semibold font-body transition-colors cursor-pointer ${
                                   !canBattle
                                     ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
                                     : `${cfg.button}`
                                 }`}
                               >
+                                <Ticket className="h-4 w-4" aria-hidden="true" />
                                 {partyLoading || energyLoading
                                   ? 'Loading…'
                                   : partyDigimon.length < 1
                                     ? 'Need Digimon'
                                     : energy.current < 1
                                       ? 'No Tickets'
-                                      : 'Fight!'}
+                                      : 'Fight'}
                               </button>
                             </div>
                           </div>

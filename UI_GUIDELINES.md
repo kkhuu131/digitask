@@ -128,7 +128,10 @@ Profile Digimon use `DigimonCardIdentity`, animated sprites and shared stat bars
 
 Team selection uses equal fighter cards for both teams, with inward-facing idle
 sprites, readable names/levels and shared type/attribute icons. Keep the battle
-action compact beside readiness and cost. Stack teams below the desktop breakpoint
+action centered below the teams, with the ticket cost inside the Start button and
+no repeated cost badges or explanatory panel. Keep the earning/spending explanation
+in the arena lobby. Free tournament battles retain their readiness panel.
+Stack teams below the desktop breakpoint
 to preserve room for three fighters; disable idle animation for reduced motion.
 The party picker uses the detail modal's sprite/identity and Stats presentation.
 Use `DigimonStatRow` for matching stat bars, values and bonus text in both dialogs.

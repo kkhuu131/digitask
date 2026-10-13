@@ -271,7 +271,7 @@ const Tutorial = () => {
               <div>
                 <p className="mb-4">
                   Each day, you have a daily quota of 3 tasks. Completing your daily quota will
-                  reward each party member with 300 experience points, multiplied by your streak
+                  reward each party member with 500 experience points, multiplied by your streak
                   bonus. Continuing to complete your daily quota builds a streak: each day after the
                   first adds 10% EXP, up to 2× at an 11-day streak. Digimon in storage receive no
                   task or quota EXP. Level-up costs rise by 50 EXP per level, then stay at 1,000 EXP

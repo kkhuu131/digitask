@@ -49,6 +49,15 @@ New Supabase projects replay the baseline normally. Provisioning the five health
 
 ## Progression and daily quota rewards (database deployed 2026-10-10)
 
+**Database deployed (2026-10-13):** the desired schema raises the
+quota bonus base to 500 EXP per non-storage party member, up to 1,000 EXP at the
+existing 2× streak cap. Migration `20261013090108_increase_daily_quota_exp.sql`
+is applied to production; read-only `diagnostics/quota-reward-deployment.sql`
+confirms the reward, permissions and function body matching the tested local
+database. The updated tutorial accompanies the GitHub/Vercel frontend release.
+No historical bonuses are backfilled; normal task rewards are unchanged.
+The 300 EXP behavior below describes the October 10 deployed release.
+
 `20261010225044_cap_progression_and_atomic_quota.sql` caps each level-up at
 1,000 EXP from level 18 onward and commits the third-task quota bonus with
 normal task rewards. All non-storage party members receive the full 300 EXP

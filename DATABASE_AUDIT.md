@@ -1,5 +1,29 @@
 # Database audit and deployed cleanup — 2026-09-17
 
+## Daily quota increase — database deployed (2026-10-13)
+
+The desired task-completion function now awards a 500 EXP base quota bonus
+instead of 300. The existing streak multiplier still applies, capped at 2×
+(1,000 EXP), and every non-storage party member receives the full quota bonus.
+Normal task rewards, quota threshold, storage exclusion, atomic rollback and
+repeat-completion protection are unchanged. No historical EXP is backfilled.
+Tutorial copy and local reward fixtures accompany the migration. Production
+migration history and read-only progression diagnostics were checked before
+preparing this change. The migration is now applied to production.
+
+Generated migration: `20261013090108_increase_daily_quota_exp.sql`. The linked
+production dry run contains only this function replacement, preserving its
+signature, authenticated execution grant, definer/search-path settings and
+existing data. Local reset, reference/authorization fixtures, database lint,
+regenerated types (unchanged), declarative consistency, all 160 application
+tests, lint, formatting and build passed. Fixtures verify 500 base/1,000 capped
+quota EXP, full active/reserve bonuses, unchanged task EXP, storage exclusion,
+repeat protection and rollback. Read-only `diagnostics/quota-reward-deployment.sql`
+confirms the applied version, 500 base EXP, 2× cap, full party bonus, storage
+exclusion, retained permissions and production/local normalized function-body
+hashes matching. The compatible frontend follows through the GitHub/Vercel
+production release flow.
+
 ## Arena skill charging — database and Edge Function deployed (2026-10-10)
 
 Engine 3 gains battle SP at one-third the prior rate and allows already-committed
