@@ -37,10 +37,10 @@ const PatchNotes = () => {
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
               <li>
-                The dashboard highlights available arena tickets, maxed tickets and unfinished
-                weekly tournaments. Amber Battle indicators and direct Tournament links appear in
-                desktop and mobile navigation. Tournament reminders clear when your weekly attempt
-                ends.
+                Amber Battle indicators highlight available arena tickets and unfinished weekly
+                tournaments in desktop and mobile navigation. The Battle menu shows ticket and
+                tournament hints with a direct Tournament link. Tournament reminders clear when your
+                weekly attempt ends.
               </li>
               <li>
                 Arena opponents always appear in Easy, Medium, Hard order, with a ticket icon and

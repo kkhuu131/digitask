@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../store/authStore';
@@ -17,11 +17,7 @@ const emptyReminders: BattleReminders = {
   tournamentLoaded: false,
 };
 
-export const BattleRemindersContext = createContext<BattleReminders>(emptyReminders);
-
-export const useBattleReminders = () => useContext(BattleRemindersContext);
-
-// The shell owns these read-only reminders so the dashboard and navigation agree.
+// The shell owns the read-only ticket and tournament reminders for navigation.
 export function useBattleReminderData(): BattleReminders {
   const userId = useAuthStore((state) => state.user?.id);
   const currentTournament = useTournamentStore((state) => state.currentTournament);

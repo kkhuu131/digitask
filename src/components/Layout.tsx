@@ -1,6 +1,6 @@
 import ResourceBalance from './ResourceBalance';
 import BattleReminderIndicator from './BattleReminderIndicator';
-import { BattleRemindersContext, useBattleReminderData } from '../hooks/useBattleReminders';
+import { useBattleReminderData } from '../hooks/useBattleReminders';
 import { ReactNode, Suspense, useState, useRef, useEffect } from 'react';
 import LoadingIndicator from './LoadingIndicator';
 import { useAuthStore } from '../store/authStore';
@@ -440,9 +440,7 @@ const Layout = ({ children }: LayoutProps) => {
         className="flex-grow bg-gray-50 dark:bg-dark-400 transition-colors duration-200 pb-[calc(5rem+env(safe-area-inset-bottom))] lg:pb-0"
       >
         <div className="max-w-7xl min-w-0 mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          <BattleRemindersContext.Provider value={reminders}>
-            <Suspense fallback={<LoadingIndicator message="Loading page…" />}>{children}</Suspense>
-          </BattleRemindersContext.Provider>
+          <Suspense fallback={<LoadingIndicator message="Loading page…" />}>{children}</Suspense>
         </div>
       </main>
 
