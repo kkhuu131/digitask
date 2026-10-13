@@ -12,6 +12,7 @@ import {
   Home,
   Sprout,
   BookMarked,
+  GitBranch,
   Sword,
   Users,
   Trophy,
@@ -87,7 +88,7 @@ const NavDropdown = ({
 
       {isOpen && (
         <div
-          className={`absolute left-0 top-full mt-1 ${label === 'Battle' ? 'w-72' : 'w-48'} rounded-md shadow-lg bg-white dark:bg-dark-200 ring-1 ring-black ring-opacity-5 z-dropdown`}
+          className={`absolute left-0 top-full mt-1 ${label === 'Battle' ? 'w-72' : label === 'Digimon' ? 'w-64' : 'w-48'} rounded-md shadow-lg bg-white dark:bg-dark-200 ring-1 ring-black ring-opacity-5 z-dropdown`}
         >
           <div className="py-1">{children}</div>
         </div>
@@ -220,7 +221,7 @@ const Layout = ({ children }: LayoutProps) => {
                   {/* Digimon dropdown */}
                   <NavDropdown
                     label="Digimon"
-                    isActive={isAnyActive(['/digifarm', '/digimon-dex'])}
+                    isActive={isAnyActive(['/digifarm', '/digimon-dex', '/digivolution-planner'])}
                   >
                     <Link
                       to="/digifarm"
@@ -237,6 +238,14 @@ const Layout = ({ children }: LayoutProps) => {
                     >
                       <BookMarked className="h-4 w-4" />
                       DigiDex
+                    </Link>
+                    <Link
+                      to="/digivolution-planner"
+                      className={dropdownLinkClass}
+                      onClick={() => setActiveMenu(null)}
+                    >
+                      <GitBranch className="h-4 w-4 shrink-0" />
+                      Digivolution Planner
                     </Link>
                   </NavDropdown>
 
@@ -472,14 +481,16 @@ const Layout = ({ children }: LayoutProps) => {
                 aria-expanded={activeMenu === 'digimon'}
                 onClick={() => handleMenuClick('digimon')}
                 className={`w-full flex flex-col items-center justify-center py-2 gap-0.5 transition-colors ${
-                  activeMenu === 'digimon' || isAnyActive(['/digifarm', '/digimon-dex'])
+                  activeMenu === 'digimon' ||
+                  isAnyActive(['/digifarm', '/digimon-dex', '/digivolution-planner'])
                     ? 'text-accent-600 dark:text-accent-400'
                     : 'text-gray-500 dark:text-gray-400'
                 }`}
               >
                 <Heart className="h-5 w-5" />
                 <span className="text-xs font-body">Digimon</span>
-                {(activeMenu === 'digimon' || isAnyActive(['/digifarm', '/digimon-dex'])) && (
+                {(activeMenu === 'digimon' ||
+                  isAnyActive(['/digifarm', '/digimon-dex', '/digivolution-planner'])) && (
                   <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full bg-accent-600 dark:bg-accent-500" />
                 )}
               </button>
@@ -490,7 +501,7 @@ const Layout = ({ children }: LayoutProps) => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 20 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute bottom-full mb-2 left-0 bg-white dark:bg-dark-300 rounded-lg shadow-lg border border-gray-200 dark:border-dark-200 w-48 overflow-hidden z-dropdown"
+                    className="fixed bottom-[calc(4.5rem+env(safe-area-inset-bottom))] left-4 right-4 sm:absolute sm:bottom-full sm:mb-2 sm:left-0 sm:right-auto sm:w-64 bg-white dark:bg-dark-300 rounded-lg shadow-lg border border-gray-200 dark:border-dark-200 overflow-hidden z-dropdown"
                   >
                     <div className="py-1">
                       <Link
@@ -508,6 +519,14 @@ const Layout = ({ children }: LayoutProps) => {
                       >
                         <BookMarked className="h-4 w-4" />
                         DigiDex
+                      </Link>
+                      <Link
+                        to="/digivolution-planner"
+                        className={`flex items-center gap-2 px-4 py-2 text-sm font-body ${isActive('/digivolution-planner') ? 'bg-accent-50 text-accent-600 dark:bg-dark-200 dark:text-accent-400' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-200'}`}
+                        onClick={() => setActiveMenu(null)}
+                      >
+                        <GitBranch className="h-4 w-4 shrink-0" />
+                        Digivolution Planner
                       </Link>
                     </div>
                   </motion.div>

@@ -88,6 +88,12 @@ Profile Digimon use `DigimonCardIdentity`, animated sprites and shared stat bars
 
 ## Typography and interaction
 
+Digivolution Planner shows all species names and evolution requirements, using
+silhouettes for undiscovered sprites without separate discovery or ownership
+labels. Use searchable species selection and lazy, collapsible incoming evolution
+branches. Cap nested indentation on phones; each step names its destination so deep
+routes remain clear. Keep DNA partners beside the required evolution step.
+
 - Nunito is the body font; Fredoka is the display font. Use `ui-section-title` for
   section headings, `ui-description` for page descriptions. Normal copy is 14–16px
   with comfortable line height; readable metadata is 12px. Tiny sprite-overlay

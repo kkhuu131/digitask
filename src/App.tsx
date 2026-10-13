@@ -29,6 +29,7 @@ const Dashboard = React.lazy(() => import('./pages/Dashboard'));
 const ForgotPassword = React.lazy(() => import('./pages/ForgotPassword'));
 const CreatePet = React.lazy(() => import('./pages/CreatePet'));
 const DigimonDexPage = React.lazy(() => import('./pages/DigimonDexPage'));
+const DigivolutionPlanner = React.lazy(() => import('./pages/DigivolutionPlanner'));
 const Debug = React.lazy(() => import('./pages/Debug'));
 const ResetPassword = React.lazy(() => import('./pages/ResetPassword'));
 const AuthCallback = React.lazy(() => import('./pages/AuthCallback'));
@@ -518,6 +519,16 @@ function App() {
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/auth/callback" element={<AuthCallback />} />
 
+              <Route
+                path="/digivolution-planner"
+                element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <DigivolutionPlanner />
+                    </Layout>
+                  </ProtectedRoute>
+                }
+              />
               <Route
                 path="/digimon-dex"
                 element={

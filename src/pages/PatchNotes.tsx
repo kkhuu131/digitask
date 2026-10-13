@@ -29,13 +29,18 @@ const PatchNotes = () => {
           <div className="mb-6">
             <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium dark:text-gray-200">
-                Arena Reminders, Setup and Quota Rewards
+                Digivolution Planner, Arena and Quota Rewards
               </h3>
               <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">
                 October 13, 2026
               </span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
+              <li>
+                Digivolution Planner is available from the Digimon menu. Search any species and
+                expand its incoming evolution routes recursively, with level, stat, item and DNA
+                partner requirements. Names stay visible while undiscovered sprites are silhouetted.
+              </li>
               <li>
                 Arena and tournament battles share the same result screen, with animated team
                 sprites for victories and defeats. Tournament results show each battle's Bits,
