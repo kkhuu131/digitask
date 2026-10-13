@@ -42,7 +42,9 @@ const PatchNotes = () => {
                 partner requirements. Names stay visible while undiscovered sprites are silhouetted.
                 Every expanded generation stays visually nested, including single-predecessor
                 routes. Base-to-form transformations are included, so targets such as Agumon X show
-                the X-Antibody route from Agumon. Return-to-base transformations are omitted.
+                the X-Antibody route from Agumon. Return-to-base transformations are omitted. Target
+                search groups species by stage from highest to lowest, with alphabetical names
+                beneath nonselectable stage headers.
               </li>
               <li>
                 Arena and tournament battles share the same result screen, with animated team

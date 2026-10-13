@@ -97,6 +97,10 @@ to the route list. Each step names its destination. Keep DNA partners beside the
 required evolution step.
 Include incoming base-to-form changes alongside evolution routes, with the required
 item or capability and any form unlock condition. Omit return-to-base changes.
+Group target search options by descending stage, alphabetically within each group.
+Stage headers are noninteractive and stay visible while scrolling through their
+group. Keep Armor beside Champion and species without a stage under Other. Search
+hides groups with no matches.
 
 - Nunito is the body font; Fredoka is the display font. Use `ui-section-title` for
   section headings, `ui-description` for page descriptions. Normal copy is 14–16px

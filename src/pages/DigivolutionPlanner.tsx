@@ -16,6 +16,17 @@ import DigivolutionPlannerBranch, { PlannerSprite } from '../components/Digivolu
 const speciesCatalog = Object.values(DIGIMON_LOOKUP_TABLE).sort((a, b) =>
   a.name.localeCompare(b.name)
 );
+const stageOrder = [
+  'Ultra',
+  'Mega',
+  'Ultimate',
+  'Champion',
+  'Armor',
+  'Rookie',
+  'In-Training',
+  'Baby',
+  'Other',
+];
 
 export default function DigivolutionPlanner() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -23,9 +34,22 @@ export default function DigivolutionPlanner() {
   const discoveredDigimon = useDigimonStore((state) => state.discoveredDigimon);
   const discoveredIds = useMemo(() => new Set(discoveredDigimon), [discoveredDigimon]);
   const target = DIGIMON_LOOKUP_TABLE[Number(searchParams.get('target'))] ?? null;
-  const filteredSpecies = speciesCatalog.filter((species) =>
-    species.name.toLowerCase().includes(query.trim().toLowerCase())
-  );
+  const stageGroups = useMemo(() => {
+    const search = query.trim().toLowerCase();
+    const groups = new Map<string, Digimon[]>();
+    for (const species of speciesCatalog) {
+      if (!species.name.toLowerCase().includes(search)) continue;
+      const stage = species.stage && species.stage !== 'None' ? species.stage : 'Other';
+      const group = groups.get(stage) ?? [];
+      group.push(species);
+      groups.set(stage, group);
+    }
+    const rank = (stage: string) => {
+      const index = stageOrder.indexOf(stage);
+      return index === -1 ? stageOrder.length : index;
+    };
+    return [...groups.entries()].sort(([a], [b]) => rank(a) - rank(b) || a.localeCompare(b));
+  }, [query]);
   const routes = target ? getPlannerPredecessors(target.id) : [];
 
   const selectTarget = (species: Digimon | null) => {
@@ -81,19 +105,33 @@ export default function DigivolutionPlanner() {
                 </ComboboxButton>
               </div>
               <ComboboxOptions className="absolute left-0 right-0 z-dropdown mt-2 max-h-72 overflow-y-auto rounded-lg border border-gray-200 bg-white p-1 shadow-lg empty:hidden dark:border-dark-100 dark:bg-dark-200">
-                {filteredSpecies.length === 0 ? (
+                {stageGroups.length === 0 ? (
                   <div className="px-3 py-4 text-sm text-gray-600 dark:text-gray-400">
                     No species match your search.
                   </div>
                 ) : (
-                  filteredSpecies.map((species) => (
-                    <ComboboxOption
-                      key={species.id}
-                      value={species}
-                      className="min-h-11 cursor-pointer rounded-md px-3 py-3 text-sm text-gray-900 data-[focus]:bg-accent-50 data-[selected]:font-semibold dark:text-gray-100 dark:data-[focus]:bg-accent-900/30"
+                  stageGroups.map(([stage, species]) => (
+                    <div
+                      key={stage}
+                      role="group"
+                      aria-labelledby={`planner-stage-${stage.replace(/\s+/g, '-')}`}
                     >
-                      {species.name}
-                    </ComboboxOption>
+                      <div
+                        id={`planner-stage-${stage.replace(/\s+/g, '-')}`}
+                        className="sticky top-0 z-sticky bg-gray-100 px-3 py-2 text-xs font-heading font-semibold text-gray-600 dark:bg-dark-100 dark:text-gray-300"
+                      >
+                        {stage}
+                      </div>
+                      {species.map((digimon) => (
+                        <ComboboxOption
+                          key={digimon.id}
+                          value={digimon}
+                          className="min-h-11 cursor-pointer rounded-md px-3 py-3 text-sm text-gray-900 data-[focus]:bg-accent-50 data-[selected]:font-semibold dark:text-gray-100 dark:data-[focus]:bg-accent-900/30"
+                        >
+                          {digimon.name}
+                        </ComboboxOption>
+                      ))}
+                    </div>
                   ))
                 )}
               </ComboboxOptions>
