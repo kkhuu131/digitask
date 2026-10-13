@@ -126,9 +126,14 @@ export default function DigivolutionPlanner() {
                         <ComboboxOption
                           key={digimon.id}
                           value={digimon}
-                          className="min-h-11 cursor-pointer rounded-md px-3 py-3 text-sm text-gray-900 data-[focus]:bg-accent-50 data-[selected]:font-semibold dark:text-gray-100 dark:data-[focus]:bg-accent-900/30"
+                          className="flex min-h-11 cursor-pointer items-center gap-3 rounded-md px-3 py-2 text-sm text-gray-900 data-[focus]:bg-accent-50 data-[selected]:font-semibold dark:text-gray-100 dark:data-[focus]:bg-accent-900/30"
                         >
-                          {digimon.name}
+                          <PlannerSprite
+                            species={digimon}
+                            discovered={discoveredIds.has(digimon.id)}
+                            compact
+                          />
+                          <span className="min-w-0 break-words">{digimon.name}</span>
                         </ComboboxOption>
                       ))}
                     </div>

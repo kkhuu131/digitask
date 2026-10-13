@@ -101,6 +101,9 @@ Group target search options by descending stage, alphabetically within each grou
 Stage headers are noninteractive and stay visible while scrolling through their
 group. Keep Armor beside Champion and species without a stage under Other. Search
 hides groups with no matches.
+Target options pair names with a 32px sprite area and at least a 44px tap target.
+Constrain the sprite image to its area and silhouette undiscovered species; the
+decorative option image should not duplicate the accessible species name.
 
 - Nunito is the body font; Fredoka is the display font. Use `ui-section-title` for
   section headings, `ui-description` for page descriptions. Normal copy is 14–16px

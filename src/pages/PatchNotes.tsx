@@ -44,7 +44,8 @@ const PatchNotes = () => {
                 routes. Base-to-form transformations are included, so targets such as Agumon X show
                 the X-Antibody route from Agumon. Return-to-base transformations are omitted. Target
                 search groups species by stage from highest to lowest, with alphabetical names
-                beneath nonselectable stage headers.
+                beneath nonselectable stage headers. Each selection includes a compact sprite,
+                silhouetted for undiscovered species.
               </li>
               <li>
                 Arena and tournament battles share the same result screen, with animated team

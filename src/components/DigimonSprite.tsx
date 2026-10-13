@@ -14,6 +14,7 @@ interface DigimonSpriteProps {
   showHappinessAnimations?: boolean;
   enableHopping?: boolean;
   currentSpriteType?: SpriteType;
+  loading?: 'eager' | 'lazy';
 }
 
 const DigimonSprite: React.FC<DigimonSpriteProps> = ({
@@ -26,6 +27,7 @@ const DigimonSprite: React.FC<DigimonSpriteProps> = ({
   showHappinessAnimations = true,
   enableHopping = false,
   currentSpriteType: externalSpriteType,
+  loading,
 }) => {
   const [internalSpriteType, setInternalSpriteType] = useState<SpriteType>('idle1');
   const [hasAnimatedSprites, setHasAnimatedSprites] = useState(false);
@@ -185,6 +187,7 @@ const DigimonSprite: React.FC<DigimonSpriteProps> = ({
           <motion.div animate={isAnimating ? 'hop' : undefined} variants={hoppingVariants}>
             <img
               draggable="false"
+              loading={loading}
               src={getCurrentSpriteUrl()}
               alt={digimonName}
               className="w-auto h-auto cursor-pointer"

@@ -9,17 +9,22 @@ import { getPlannerPredecessors, type PlannerRoute } from '../utils/digivolution
 interface PlannerSpriteProps {
   species: Digimon;
   discovered: boolean;
+  compact?: boolean;
 }
 
-export function PlannerSprite({ species, discovered }: PlannerSpriteProps) {
+export function PlannerSprite({ species, discovered, compact = false }: PlannerSpriteProps) {
   return (
-    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-200">
+    <div
+      aria-hidden={compact || undefined}
+      className={`flex shrink-0 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-200 ${compact ? 'h-8 w-8 [&_img]:max-h-8 [&_img]:max-w-8' : 'h-12 w-12'}`}
+    >
       <DigimonSprite
         digimonName={species.name}
         fallbackSpriteUrl={species.sprite_url}
         size="xs"
         silhouette={!discovered}
         showHappinessAnimations={false}
+        loading={compact ? 'lazy' : undefined}
       />
     </div>
   );
