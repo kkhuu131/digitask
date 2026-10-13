@@ -126,6 +126,12 @@ Profile Digimon use `DigimonCardIdentity`, animated sprites and shared stat bars
 
 ## Arena presentation
 
+Arena and tournament results use `BattleResultsScreen`: the same victory/defeat
+heading, animated team sprites, reward rows and amber continuation action. Preserve
+the fighters from the completed battle for the result display. Tournament context
+and placement bonuses extend this screen rather than introducing another modal.
+Reduced motion keeps result sprites static and disables entrance animations.
+
 Team selection uses equal fighter cards for both teams, with inward-facing idle
 sprites, readable names/levels and shared type/attribute icons. Keep the battle
 action centered below the teams, with the ticket cost inside the Start button and

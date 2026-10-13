@@ -1,7 +1,7 @@
 import ContentSkeleton from '../components/ContentSkeleton';
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, Crown, ChevronRight, AlertCircle } from 'lucide-react';
+import { Trophy, Crown, AlertCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../store/authStore';
 import { useDigimonStore, UserDigimon } from '../store/petStore';
@@ -11,6 +11,7 @@ import { useTitleStore } from '../store/titleStore';
 import { useTournamentStore, PLACEMENT_BITS } from '../store/tournamentStore';
 import { DIGIMON_LOOKUP_TABLE } from '../constants/digimonLookup';
 import ArenaBattle from '../components/ArenaBattle';
+import BattleResultsScreen, { type BattleResultFighter } from '../components/BattleResultsScreen';
 import DigimonSprite from '@/components/DigimonSprite';
 import TournamentBracket from '../components/TournamentBracket';
 import BattleTeamSelector, { OpponentDigimonPreview } from '../components/BattleTeamSelector';
@@ -59,6 +60,8 @@ const Tournament: React.FC = () => {
     winner: 'user' | 'opponent';
     bits: number;
     placementBits: number;
+    userTeam: BattleResultFighter[];
+    timeLimit: boolean;
   } | null>(null);
 
   // Non-storage party Digimon available for selection
@@ -183,7 +186,14 @@ const Tournament: React.FC = () => {
 
     await recordRoundResult(round, isWin ? 'win' : 'loss');
 
-    setRoundResultState({ round, winner: result.winner, bits: bitsReward, placementBits });
+    setRoundResultState({
+      round,
+      winner: result.winner,
+      bits: bitsReward,
+      placementBits,
+      userTeam: battleReplay?.initial.filter((fighter) => fighter.isUserTeam) ?? [],
+      timeLimit: battleReplay?.reason === 'time_limit',
+    });
     setBattleTeam([]);
     setBattleReplay(null);
   };
@@ -263,77 +273,29 @@ const Tournament: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* Inter-round result modal */}
-      <AnimatePresence>
-        {roundResultState && (
-          <motion.div
-            key="round-result"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="fixed inset-0 bg-black/60 flex items-center justify-center z-modal p-4"
-          >
-            <div className="bg-white dark:bg-dark-300 rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl">
-              {roundResultState.winner === 'user' ? (
-                <>
-                  <div className="text-5xl mb-3">{roundResultState.round === 3 ? '🏆' : '⚔️'}</div>
-                  <h2 className="text-2xl font-bold text-green-600 dark:text-green-400 mb-1">
-                    {roundResultState.round === 3 ? 'Champion!' : 'Victory!'}
-                  </h2>
-                  <p className="text-gray-500 dark:text-gray-400 mb-4 text-sm">
-                    {roundResultState.round < 3
-                      ? `Advancing to ${ROUND_NAMES[roundResultState.round + 1] ?? 'next round'}`
-                      : 'You conquered the tournament!'}
-                  </p>
-                </>
-              ) : (
-                <>
-                  <div className="text-5xl mb-3">💔</div>
-                  <h2 className="text-2xl font-bold text-red-500 dark:text-red-400 mb-1">
-                    Defeated
-                  </h2>
-                  <p className="text-gray-500 dark:text-gray-400 mb-4 text-sm">
-                    You reached{' '}
-                    {
-                      PLACEMENT_LABELS[
-                        ['', 'qf_loss', 'sf_loss', 'gf_loss'][roundResultState.round]!
-                      ]
-                    }
-                  </p>
-                </>
-              )}
-
-              <div className="bg-gray-50 dark:bg-dark-400 rounded-xl p-4 mb-6 text-sm space-y-1">
-                <div className="flex justify-between">
-                  <span className="text-gray-500 dark:text-gray-400">Battle reward</span>
-                  <span className="font-semibold text-gray-800 dark:text-gray-200">
-                    +{roundResultState.bits} bits
-                  </span>
-                </div>
-                {roundResultState.placementBits > 0 && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-500 dark:text-gray-400">Placement bonus</span>
-                    <span className="font-semibold text-amber-600 dark:text-amber-400">
-                      +{roundResultState.placementBits} bits
-                    </span>
-                  </div>
-                )}
-              </div>
-
-              <button onClick={handleContinue} className="w-full btn-primary">
-                {roundResultState.winner === 'user' && roundResultState.round < 3 ? (
-                  <>
-                    <span>Continue</span>
-                    <ChevronRight className="w-4 h-4" />
-                  </>
-                ) : (
-                  'Close'
-                )}
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {roundResultState && (
+        <BattleResultsScreen
+          winner={roundResultState.winner}
+          bitsReward={roundResultState.bits}
+          placementBits={roundResultState.placementBits}
+          userTeam={roundResultState.userTeam}
+          timeLimit={roundResultState.timeLimit}
+          contextLabel={`Round ${roundResultState.round}/3: ${ROUND_NAMES[roundResultState.round]}`}
+          description={
+            roundResultState.winner === 'user'
+              ? roundResultState.round < 3
+                ? `Advancing to ${ROUND_NAMES[roundResultState.round + 1]}`
+                : 'Champion! You conquered the tournament!'
+              : `You reached ${PLACEMENT_LABELS[['qf_loss', 'sf_loss', 'gf_loss'][roundResultState.round - 1]]}.`
+          }
+          continueLabel={
+            roundResultState.winner === 'user' && roundResultState.round < 3
+              ? 'Continue Tournament'
+              : 'Back to Tournament'
+          }
+          onContinue={handleContinue}
+        />
+      )}
 
       {/* Main content — hidden while selector/result active */}
       {!isSelectingTeam && !roundResultState && (

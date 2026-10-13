@@ -37,6 +37,11 @@ const PatchNotes = () => {
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
               <li>
+                Arena and tournament battles share the same result screen, with animated team
+                sprites for victories and defeats. Tournament results show each battle's Bits,
+                placement bonuses and the next round or final placement.
+              </li>
+              <li>
                 Amber Battle indicators highlight available arena tickets and unfinished weekly
                 tournaments in desktop and mobile navigation. The Battle menu shows ticket and
                 tournament hints with a direct Tournament link. Tournament reminders clear when your

@@ -8,7 +8,7 @@ import { useTournamentStore } from '../store/tournamentStore';
 import { supabase } from '../lib/supabase';
 import ArenaBattle from '../components/ArenaBattle';
 
-import BattleDigimonSprite from '../components/BattleDigimonSprite';
+import BattleResultsScreen from '../components/BattleResultsScreen';
 import { useAuthStore } from '../store/authStore';
 import { useTitleStore } from '../store/titleStore';
 import PageTutorial from '../components/PageTutorial';
@@ -555,7 +555,7 @@ const Battle = () => {
           </p>
         )}
         {arenaResult && preparedUserTeam ? (
-          <ArenaResultsScreen
+          <BattleResultsScreen
             winner={arenaResult.winner}
             bitsReward={arenaResult.bitsReward}
             timeLimit={savedBattle?.replay?.reason === 'time_limit'}
@@ -726,115 +726,6 @@ const Battle = () => {
         )}
       </div>
     </>
-  );
-};
-
-// ─── ArenaResultsScreen ───────────────────────────────────────────────────────
-
-const ArenaResultsScreen: React.FC<{
-  winner: 'user' | 'opponent';
-  bitsReward: number;
-  timeLimit?: boolean;
-  userTeam: BattleDigimon[];
-  onContinue: () => void;
-}> = ({ winner, bitsReward, timeLimit, userTeam, onContinue }) => {
-  const won = winner === 'user';
-  const [spriteToggle, setSpriteToggle] = useState(false);
-
-  useEffect(() => {
-    const id = setInterval(() => setSpriteToggle((t) => !t), 700);
-    return () => clearInterval(id);
-  }, []);
-
-  return (
-    <motion.div
-      className="card !p-0 w-full max-w-lg mx-auto overflow-hidden"
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35 }}
-    >
-      {/* Coloured header band */}
-      <div
-        className={`px-6 pt-8 pb-6 text-center ${
-          won ? 'bg-white dark:bg-dark-300' : 'bg-white dark:bg-dark-300'
-        }`}
-      >
-        <motion.p
-          className={`font-heading text-5xl font-semibold mb-1 ${
-            won ? 'text-indigo-600 dark:text-indigo-400' : 'text-red-500 dark:text-red-400'
-          }`}
-          initial={{ scale: 0.7, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.1, type: 'spring', damping: 12, stiffness: 200 }}
-        >
-          {won ? 'Victory!' : 'Defeated'}
-        </motion.p>
-        <p className="font-body text-sm text-gray-500 dark:text-gray-400">
-          {won ? 'Your team emerged victorious!' : 'Your team fought bravely.'}
-          {timeLimit && ' Time limit reached; the result was decided by remaining team HP.'}
-        </p>
-      </div>
-
-      <div className="px-6 pb-6">
-        {/* Digimon team celebration / mourning */}
-        <div
-          className={`flex justify-center gap-6 py-5 mb-4 rounded-xl ${
-            won ? 'bg-indigo-50/50 dark:bg-indigo-950/20' : 'bg-red-50/50 dark:bg-red-950/20'
-          }`}
-        >
-          {userTeam.map((d, i) => (
-            <motion.div
-              key={d.id}
-              className="flex flex-col items-center gap-1.5"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.18 + i * 0.08, duration: 0.35 }}
-            >
-              <BattleDigimonSprite
-                digimonName={d.digimon_name}
-                fallbackSpriteUrl={d.sprite_url}
-                size="xl"
-                animationState={won ? 'victory' : 'defeat'}
-                spriteToggle={spriteToggle}
-              />
-              <span className="text-xs font-heading font-semibold text-gray-700 dark:text-gray-300">
-                {d.name}
-              </span>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Rewards */}
-        <div className="rounded-xl border border-gray-200 dark:border-dark-100 bg-gray-50 dark:bg-dark-200 p-4 mb-5">
-          <h3 className="text-xs font-heading font-extrabold tracking-widest uppercase text-gray-400 dark:text-gray-500 mb-3">
-            Rewards
-          </h3>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Coins className="h-4 w-4 text-amber-600 dark:text-amber-400" aria-hidden="true" />
-              <span className="text-sm font-body text-gray-600 dark:text-gray-400">
-                Bits earned
-              </span>
-            </div>
-            <span className="text-sm font-heading font-semibold text-amber-600 dark:text-amber-400">
-              +{bitsReward}
-            </span>
-          </div>
-          {!won && (
-            <p className="text-xs font-body text-gray-400 dark:text-gray-500 mt-2">
-              Win next time for a bigger reward!
-            </p>
-          )}
-        </div>
-
-        <button
-          onClick={onContinue}
-          className="w-full btn-primary py-3 text-base font-heading font-semibold rounded-xl"
-        >
-          Continue
-        </button>
-      </div>
-    </motion.div>
   );
 };
 

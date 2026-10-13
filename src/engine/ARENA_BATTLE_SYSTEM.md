@@ -25,7 +25,7 @@
 16. [StatusPanel — HP/Skill Bars](#16-statuspanel--hpskill-bars)
 17. [Playback information](#17-playback-information)
 18. [WinnerOverlay & Auto-Advance](#18-winneroverlay--auto-advance)
-19. [ArenaResultsScreen (Battle.tsx)](#19-arenaresultsscreen-battletsx)
+19. [Shared battle results (BattleResultsScreen.tsx)](#19-shared-battle-results-battleresultsscreentsx)
 20. [Team selection](#20-team-selection)
 21. [Battle.tsx — Full Flow Wiring](#21-battletsx--full-flow-wiring)
 22. [How to Extend / Tune](#22-how-to-extend--tune)
@@ -596,29 +596,25 @@ A `useEffect` auto-calls `onBattleComplete({ winner, turns: [] })` after **2500m
 
 ---
 
-## 19. ArenaResultsScreen (Battle.tsx)
+## 19. Shared battle results (BattleResultsScreen.tsx)
 
-Rendered in `Battle.tsx` when `arenaResult` state is set (after `handleArenaBattleComplete` completes DB work). `preparedUserTeam` is intentionally kept alive until the user clicks Continue — it powers the sprite display.
+Daily arena and weekly tournament results render `src/components/BattleResultsScreen.tsx`.
+The pages retain the fighters from the completed battle until Continue, including
+species names and sprite fallbacks. Tournament fighters come from the recording's
+initial user team, so advancing the bracket cannot change the displayed fighters.
 
 **Layout:**
 
-- Gradient header band (indigo for win, red for loss)
-- `font-heading` 5xl victory/defeat title with Framer Motion spring entrance
-- User Digimon displayed with staggered `motion.div` per sprite
-  - Win: `animationState='victory'` → `BattleDigimonSprite` toggles cheer/happy sprites
-  - Loss: `animationState='defeat'` → toggles sad1/sad2 sprites
-  - Toggle driven by a 700ms `spriteToggle` interval
-- Rewards row: amber indicator dot + bits amount in `text-amber-600 dark:text-amber-400`
+- Shared victory/defeat heading and result card, with tournament round and placement context
+- User Digimon in equal columns, with cheer/happy sprites for victory and sad1/sad2 for defeat
+- A shared 700ms sprite toggle; reduced motion disables toggling and entrance animations
+- Amber coin icons and Bits amounts, with a separate tournament placement bonus when awarded
+- Time-limit explanation when the recording reports a result decided by remaining team HP
+- An amber continuation action, labeled for the next step in each mode
 
-**Bits reward amounts:**
-
-| Outcome | Difficulty  | Reward   |
-| ------- | ----------- | -------- |
-| Win     | Hard        | 200 bits |
-| Win     | Medium      | 100 bits |
-| Win     | Easy        | 75 bits  |
-| Loss    | Hard        | 40 bits  |
-| Loss    | Easy/Medium | 50 bits  |
+This component only displays result data. Daily arena rewards remain settled by
+the server before playback. Tournament round recording and reward settlement
+remain owned by the existing tournament page and store.
 
 ---
 
