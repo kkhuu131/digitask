@@ -19,6 +19,7 @@ export enum ItemEffectType {
   AVATAR = 'avatar_variant',
   X_ANTIBODY = 'x_antibody',
   STAT_RESET = 'stat_reset', // New type for stat reset
+  ABI_BOOST = 'abi',
 }
 
 // Personality types
@@ -134,20 +135,20 @@ export const STORE_ITEMS: StoreItem[] = [
       value: 4,
     },
   },
-  // {
-  //   id: "abi_boost",
-  //   name: "ABI Boost",
-  //   description: "Increases Active Digimon's ABI by 2 points",
-  //   category: ItemCategory.STAT_BOOSTER,
-  //   price: 1000,
-  //   currency: "bits",
-  //   imageUrl: "/assets/items/boost.png",
-  //   applyType: ItemApplyType.IMMEDIATE,
-  //   effect: {
-  //     type: "abi",
-  //     value: 2,
-  //   },
-  // },
+  {
+    id: 'miracle_meat',
+    name: 'Miracle Meat',
+    description: '+5 ABI for a Digimon of your choice',
+    category: ItemCategory.STAT_BOOSTER,
+    price: 2500,
+    currency: 'bits',
+    imageUrl: '/assets/items/miracle_meat.png',
+    applyType: ItemApplyType.IMMEDIATE,
+    effect: {
+      type: ItemEffectType.ABI_BOOST,
+      value: 5,
+    },
+  },
 
   {
     id: 'brave_point',

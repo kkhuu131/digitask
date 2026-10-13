@@ -98,6 +98,19 @@ for verification. Prior function definitions are backed up in ignored
 
 ## Live verification
 
+### Miracle Meat (database deployed 2026-10-13)
+
+Migration `20261013093021_add_miracle_meat_purchase.sql` adds
+`purchase_miracle_meat(p_digimon_id uuid, p_expected_abi integer)`: authenticated
+owners pay 2,500 Bits for +5 ABI on the selected party or storage pet. Payment
+and ABI commit together; expected ABI rejects stale requests before payment.
+The shop catalog is client-authored, while this RPC fixes the price and reward
+server-side. No inventory entry or reference-data seed is needed. Local-only
+`tests/miracle-meat.sql` runs through `db:test:authorization`. The migration is
+applied to production. Read-only `diagnostics/miracle-meat-deployment.sql` confirms
+the migration, tested function body, price/reward, ownership/retry guards and
+permissions. The compatible shop UI follows through GitHub/Vercel publication.
+
 ### Batch bonus stats (database deployed 2026-10-10)
 
 `20261010185632_batch_stat_allocation.sql` adds authenticated `allocate_stats`.

@@ -2,7 +2,7 @@ import ResourceBalance from '../components/ResourceBalance';
 import ContentSkeleton from '../components/ContentSkeleton';
 import NeemonShopGreeting from '../components/NeemonShopGreeting';
 import { Coins } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useCurrencyStore } from '../store/currencyStore';
 import {
   STORE_ITEMS,
@@ -13,7 +13,7 @@ import {
 } from '../constants/storeItems';
 import { useDigimonStore } from '../store/petStore';
 import { useNotificationStore } from '../store/notificationStore';
-import { Tab } from '@headlessui/react';
+import { Dialog, DialogPanel, DialogTitle, Tab } from '@headlessui/react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../store/authStore';
 import { ANIMATED_DIGIMON } from '../constants/animatedDigimonList';
@@ -89,7 +89,7 @@ const generateRandomAvatarUnlock = () => {
 
 const DigimonStorePage: React.FC = () => {
   const { bits, digicoins, fetchCurrency, spendCurrency } = useCurrencyStore();
-  const { userDigimon, allUserDigimon, fetchUserDigimon } = useDigimonStore();
+  const { userDigimon, allUserDigimon, fetchUserDigimon, fetchAllUserDigimon } = useDigimonStore();
   const { fetchInventory, items } = useInventoryStore();
   const { user } = useAuthStore();
   const [processingPurchase, setProcessingPurchase] = useState<string | null>(null);
@@ -111,6 +111,8 @@ const DigimonStorePage: React.FC = () => {
     null
   );
   const [showStatResetModal, setShowStatResetModal] = useState<StoreItem | null>(null);
+  const miraclePurchaseInFlight = useRef(false);
+  const [selectionError, setSelectionError] = useState<string | null>(null);
   const [selectedDigimonForStatReset, setSelectedDigimonForStatReset] = useState<any>(null);
   const [statBonusFields] = useState<string[]>([
     'hp_bonus',
@@ -148,10 +150,11 @@ const DigimonStorePage: React.FC = () => {
     void Promise.all([
       fetchCurrency(),
       fetchUserDigimon(),
+      fetchAllUserDigimon(),
       fetchUserStats(),
       fetchInventory(),
     ]).finally(() => setInitialLoading(false));
-  }, [fetchCurrency, fetchUserDigimon, fetchInventory]);
+  }, [fetchCurrency, fetchUserDigimon, fetchAllUserDigimon, fetchInventory]);
 
   // Fetch user stats from profile
   const fetchUserStats = async () => {
@@ -264,6 +267,54 @@ const DigimonStorePage: React.FC = () => {
     }
   };
 
+  const applyMiracleMeat = async (digimon: UserDigimon) => {
+    if (!user || miraclePurchaseInFlight.current) return;
+    miraclePurchaseInFlight.current = true;
+    setProcessingPurchase('miracle_meat');
+    setSelectionError(null);
+    try {
+      const { data, error } = await supabase.rpc('purchase_miracle_meat', {
+        p_digimon_id: digimon.id,
+        p_expected_abi: digimon.abi ?? 0,
+      });
+      if (error) throw error;
+      if (
+        !data ||
+        data.digimon_id !== digimon.id ||
+        !Number.isInteger(data.abi) ||
+        !Number.isInteger(data.bits)
+      ) {
+        throw new Error('Could not confirm the purchase. Refresh before trying again.');
+      }
+      if (useAuthStore.getState().user?.id !== user.id) return;
+      useCurrencyStore.setState({ bits: data.bits });
+      useDigimonStore.setState((state) => ({
+        allUserDigimon: state.allUserDigimon.map((pet) =>
+          pet.id === digimon.id ? { ...pet, abi: data.abi } : pet
+        ),
+        storageDigimon: state.storageDigimon.map((pet) =>
+          pet.id === digimon.id ? { ...pet, abi: data.abi } : pet
+        ),
+        userDigimon:
+          state.userDigimon?.id === digimon.id
+            ? { ...state.userDigimon, abi: data.abi }
+            : state.userDigimon,
+      }));
+      setShowDigimonSelectionModal(null);
+      useNotificationStore.getState().addNotification({
+        type: 'success',
+        message: `Applied Miracle Meat to ${digimon.name || digimon.digimon?.name || 'Digimon'}! +5 ABI`,
+      });
+    } catch (error) {
+      setSelectionError(
+        (error as Error).message || 'Failed to purchase Miracle Meat. Please try again.'
+      );
+    } finally {
+      miraclePurchaseInFlight.current = false;
+      setProcessingPurchase(null);
+    }
+  };
+
   // Handle purchase of an item
   const handlePurchase = async (item: StoreItem) => {
     if (item.id === 'x_antibody') {
@@ -295,10 +346,11 @@ const DigimonStorePage: React.FC = () => {
         return;
       }
 
-      // Check if the item is a personality changer
-      if (item.effect?.type === ItemEffectType.PERSONALITY) {
+      // These immediate items need a chosen Digimon before purchase.
+      if (item.effect?.type === ItemEffectType.PERSONALITY || item.id === 'miracle_meat') {
         // Show Digimon selection modal instead of immediate purchase
         setShowDigimonSelectionModal(item);
+        setSelectionError(null);
         setProcessingPurchase(null);
         return;
       }
@@ -828,58 +880,97 @@ const DigimonStorePage: React.FC = () => {
 
       {/* Modals */}
       {showDigimonSelectionModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-modal p-4">
-          <div className="bg-white dark:bg-dark-300 rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
-            <div className="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
-              <div>
-                <h2 className="text-2xl font-bold dark:text-gray-100">Select Digimon</h2>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                  Change personality to {showDigimonSelectionModal.effect?.value}
-                </p>
+        <Dialog
+          open
+          onClose={() => {
+            if (!miraclePurchaseInFlight.current) setShowDigimonSelectionModal(null);
+          }}
+          className="relative z-modal"
+        >
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" aria-hidden="true" />
+          <div className="fixed inset-0 flex items-center justify-center p-4">
+            <DialogPanel className="bg-white dark:bg-dark-300 rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+              <div className="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
+                <div>
+                  <DialogTitle className="text-2xl font-bold dark:text-gray-100">
+                    Select Digimon
+                  </DialogTitle>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                    {showDigimonSelectionModal.id === 'miracle_meat'
+                      ? 'Apply Miracle Meat: +5 ABI · 2,500 Bits'
+                      : `Change personality to ${showDigimonSelectionModal.effect?.value}`}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowDigimonSelectionModal(null)}
+                  disabled={processingPurchase !== null}
+                  aria-label="Close Digimon selection"
+                  className="ui-icon-button text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-2xl"
+                >
+                  ×
+                </button>
               </div>
-              <button
-                onClick={() => setShowDigimonSelectionModal(null)}
-                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-2xl leading-none w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-dark-200 transition-colors"
-              >
-                ×
-              </button>
-            </div>
 
-            <div className="p-6 overflow-y-auto flex-1">
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                {allUserDigimon.map((digimon) => (
-                  <button
-                    key={digimon.id}
-                    onClick={() => {
-                      applyPersonalityToDigimon(showDigimonSelectionModal, digimon.id);
-                      setShowDigimonSelectionModal(null);
-                    }}
-                    className="cursor-pointer p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-amber-400 dark:hover:border-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/10 transition-all bg-white dark:bg-dark-200"
-                  >
-                    <div className="flex flex-col items-center">
-                      <div className="w-16 h-16 flex items-center justify-center mb-2">
-                        <DigimonSprite
-                          digimonName={digimon.digimon?.name || ''}
-                          fallbackSpriteUrl={digimon.digimon?.sprite_url || ''}
-                          size="sm"
-                          showHappinessAnimations={false}
-                        />
-                      </div>
-                      <div className="text-xs font-semibold text-center truncate w-full dark:text-gray-200 mb-1">
-                        {digimon.name || digimon.digimon?.name}
-                      </div>
-                      {digimon.personality && (
-                        <div className="text-xs text-amber-600 dark:text-amber-400 font-medium">
-                          {digimon.personality}
+              <div className="p-6 overflow-y-auto flex-1">
+                {selectionError && (
+                  <p role="alert" className="mb-4 text-sm text-red-600 dark:text-red-400">
+                    {selectionError}
+                  </p>
+                )}
+                {processingPurchase === 'miracle_meat' && (
+                  <p role="status" className="mb-4 text-sm text-gray-600 dark:text-gray-400">
+                    Applying Miracle Meat…
+                  </p>
+                )}
+                {allUserDigimon.length === 0 && (
+                  <p className="ui-empty">You need a Digimon before applying this item.</p>
+                )}
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                  {allUserDigimon.map((digimon) => (
+                    <button
+                      key={digimon.id}
+                      onClick={() => {
+                        if (showDigimonSelectionModal.id === 'miracle_meat') {
+                          void applyMiracleMeat(digimon);
+                          return;
+                        }
+                        applyPersonalityToDigimon(showDigimonSelectionModal, digimon.id);
+                        setShowDigimonSelectionModal(null);
+                      }}
+                      disabled={processingPurchase !== null}
+                      className="cursor-pointer p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-amber-400 dark:hover:border-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/10 transition-all bg-white dark:bg-dark-200 disabled:opacity-50 disabled:cursor-wait"
+                    >
+                      <div className="flex flex-col items-center">
+                        <div className="w-16 h-16 flex items-center justify-center mb-2">
+                          <DigimonSprite
+                            digimonName={digimon.digimon?.name || ''}
+                            fallbackSpriteUrl={digimon.digimon?.sprite_url || ''}
+                            size="sm"
+                            showHappinessAnimations={false}
+                          />
                         </div>
-                      )}
-                    </div>
-                  </button>
-                ))}
+                        <div className="text-xs font-semibold text-center truncate w-full dark:text-gray-200 mb-1">
+                          {digimon.name || digimon.digimon?.name}
+                        </div>
+                        {showDigimonSelectionModal.id === 'miracle_meat' ? (
+                          <div className="text-xs text-amber-600 dark:text-amber-400 font-medium">
+                            ABI {digimon.abi ?? 0} → {(digimon.abi ?? 0) + 5}
+                          </div>
+                        ) : (
+                          digimon.personality && (
+                            <div className="text-xs text-amber-600 dark:text-amber-400 font-medium">
+                              {digimon.personality}
+                            </div>
+                          )
+                        )}
+                      </div>
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            </DialogPanel>
           </div>
-        </div>
+        </Dialog>
       )}
 
       {/* Stat Reset Digimon Selection Modal */}

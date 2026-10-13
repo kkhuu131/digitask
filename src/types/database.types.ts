@@ -1160,6 +1160,10 @@ export type Database = {
         Returns: Json;
       };
       process_daily_quotas: { Args: never; Returns: undefined };
+      purchase_miracle_meat: {
+        Args: { p_digimon_id: string; p_expected_abi: number };
+        Returns: Json;
+      };
       reset_all_battle_limits: { Args: never; Returns: undefined };
       reset_daily_tasks: { Args: never; Returns: undefined };
       settle_arena_battle: {

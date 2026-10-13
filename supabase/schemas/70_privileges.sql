@@ -436,6 +436,9 @@ GRANT EXECUTE ON FUNCTION public.grant_energy_self(integer) TO authenticated, se
 -- New functions must opt into browser execution explicitly. Existing grants are unchanged.
 ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public REVOKE EXECUTE ON FUNCTIONS FROM PUBLIC, anon, authenticated;
 
+REVOKE ALL ON FUNCTION public.purchase_miracle_meat(uuid, integer) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.purchase_miracle_meat(uuid, integer) TO authenticated, service_role;
+
 -- Counter columns belong to the battle trigger; old browser increments are rejected.
 REVOKE INSERT, UPDATE ON TABLE public.profiles FROM anon, authenticated;
 GRANT INSERT (id, username, display_name, avatar_url, created_at, updated_at, saved_stats, highest_stage_cleared, has_completed_onboarding, battle_energy, max_battle_energy, last_arena_first_win), UPDATE (id, username, display_name, avatar_url, created_at, updated_at, saved_stats, highest_stage_cleared, has_completed_onboarding, battle_energy, max_battle_energy, last_arena_first_win) ON TABLE public.profiles TO authenticated;

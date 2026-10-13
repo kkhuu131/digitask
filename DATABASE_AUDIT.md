@@ -1,5 +1,29 @@
 # Database audit and deployed cleanup — 2026-09-17
 
+## Miracle Meat — database deployed (2026-10-13)
+
+`20261013093021_add_miracle_meat_purchase.sql` adds authenticated-only browser
+RPC `purchase_miracle_meat(uuid, integer)`. It locks the caller's profile and
+owned selected Digimon, validates expected ABI, charges a fixed 2,500 Bits and
+adds exactly 5 ABI in one transaction. Both party and storage pets are eligible.
+Stale retries, missing/foreign pets and insufficient funds spend nothing; an ABI
+update failure rolls back payment. No inventory row or historical data change is
+needed. The shop catalog and shared personality/item picker use the new RPC for
+Miracle Meat; older shop items keep their existing purchase paths. Production
+history and function diagnostics were inspected before preparation. The reviewed
+migration is now applied to production, before the compatible frontend release.
+
+Local reset, reference/authorization fixtures, database lint, regenerated types,
+declarative consistency, all 160 application tests, lint, formatting and build
+passed. Browser fixtures cover image loading, cost, selection/cancellation,
+party/storage state updates, busy dismissal protection, error/retry and responsive
+layouts at 320–1440px in both themes. The linked production dry run contains only
+this additive RPC and its authenticated/service-role execution grants.
+Read-only `diagnostics/miracle-meat-deployment.sql` confirms the applied migration,
+fixed price, +5 ABI, ownership lock, stale-retry guard, permissions and normalized
+production function body matching the tested local database. The compatible
+frontend follows through the GitHub/Vercel production release flow.
+
 ## Daily quota increase — database deployed (2026-10-13)
 
 The desired task-completion function now awards a 500 EXP base quota bonus

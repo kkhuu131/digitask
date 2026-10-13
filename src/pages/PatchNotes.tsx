@@ -48,6 +48,10 @@ const PatchNotes = () => {
                 Completing the daily quota awards 500 base EXP to each party member, scaling up to
                 1,000 EXP with your streak. Storage Digimon receive no quota EXP.
               </li>
+              <li>
+                Miracle Meat costs 2,500 Bits and gives a chosen Digimon +5 ABI. Choose a party or
+                storage Digimon before paying.
+              </li>
             </ul>
           </div>
 
