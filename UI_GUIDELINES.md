@@ -95,6 +95,8 @@ branches. Indent every generation, including single-predecessor branches, with
 compact spacing on phones. Keep cards readable and confine any horizontal scrolling
 to the route list. Each step names its destination. Keep DNA partners beside the
 required evolution step.
+Include incoming base-to-form changes alongside evolution routes, with the required
+item or capability and any form unlock condition. Omit return-to-base changes.
 
 - Nunito is the body font; Fredoka is the display font. Use `ui-section-title` for
   section headings, `ui-description` for page descriptions. Normal copy is 14–16px

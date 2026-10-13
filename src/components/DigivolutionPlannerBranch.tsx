@@ -4,7 +4,7 @@ import DigimonSprite from './DigimonSprite';
 import EvolutionRequirements from './EvolutionRequirements';
 import { DIGIMON_LOOKUP_TABLE } from '../constants/digimonLookup';
 import type { Digimon } from '../store/petStore';
-import { getPlannerPredecessors, type PlannerEvolution } from '../utils/digivolutionPlanner';
+import { getPlannerPredecessors, type PlannerRoute } from '../utils/digivolutionPlanner';
 
 interface PlannerSpriteProps {
   species: Digimon;
@@ -26,23 +26,25 @@ export function PlannerSprite({ species, discovered }: PlannerSpriteProps) {
 }
 
 interface BranchProps {
-  route: PlannerEvolution;
+  route: PlannerRoute;
   target: Digimon;
   ancestors: readonly number[];
   discoveredIds: ReadonlySet<number>;
 }
 
 export default function DigivolutionPlannerBranch({
-  route: { path, species, repeatsInRoute },
+  route,
   target,
   ancestors,
   discoveredIds,
 }: BranchProps) {
+  const { species, repeatsInRoute } = route;
+  const path = route.kind === 'evolution' ? route.path : null;
   const [expanded, setExpanded] = useState(false);
   const branchId = useId();
   const lineage = [...ancestors, species.id];
   const earlierRoutes = repeatsInRoute ? [] : getPlannerPredecessors(species.id, lineage);
-  const partner = path.dna_requirement ? DIGIMON_LOOKUP_TABLE[path.dna_requirement] : null;
+  const partner = path?.dna_requirement ? DIGIMON_LOOKUP_TABLE[path.dna_requirement] : null;
   const canExpand = earlierRoutes.length > 0;
 
   const identity = (
@@ -53,7 +55,7 @@ export default function DigivolutionPlannerBranch({
           {species.name}
         </span>
         <span className="block text-xs text-gray-600 dark:text-gray-400 [overflow-wrap:anywhere]">
-          Evolves into {target.name}
+          {route.kind === 'form' ? 'Transforms into' : 'Evolves into'} {target.name}
         </span>
       </span>
       {canExpand && (
@@ -84,19 +86,40 @@ export default function DigivolutionPlannerBranch({
         )}
 
         <div className="space-y-2 border-t border-gray-200 px-3 py-3 dark:border-dark-100">
-          <div
-            className="flex flex-wrap items-baseline gap-x-3 gap-y-1"
-            aria-label={`Requirements to evolve ${species.name} into ${target.name}`}
-          >
-            <span className="text-xs text-gray-600 dark:text-gray-400">
-              Level {path.level_required}
-            </span>
-            <EvolutionRequirements
-              statRequirements={path.stat_requirements}
-              itemRequirement={path.item_requirement}
-            />
-          </div>
-          {path.dna_requirement && (
+          {path ? (
+            <div
+              className="flex flex-wrap items-baseline gap-x-3 gap-y-1"
+              aria-label={`Requirements to evolve ${species.name} into ${target.name}`}
+            >
+              <span className="text-xs text-gray-600 dark:text-gray-400">
+                Level {path.level_required}
+              </span>
+              <EvolutionRequirements
+                statRequirements={path.stat_requirements}
+                itemRequirement={path.item_requirement}
+              />
+            </div>
+          ) : route.kind === 'form' ? (
+            <div className="space-y-1">
+              <p className="text-xs text-gray-600 dark:text-gray-400">
+                {route.form.formType} transformation
+              </p>
+              {route.form.formType === 'X-Antibody' && (
+                <>
+                  <EvolutionRequirements statRequirements={{}} itemRequirement="x_antibody" />
+                  <p className="text-xs text-gray-600 dark:text-gray-400">
+                    Apply once to this Digimon to unlock form changes.
+                  </p>
+                </>
+              )}
+              {route.form.unlockCondition && (
+                <p className="text-xs text-gray-600 dark:text-gray-400 [overflow-wrap:anywhere]">
+                  {route.form.unlockCondition}
+                </p>
+              )}
+            </div>
+          ) : null}
+          {path?.dna_requirement && (
             <div className="flex items-center gap-3">
               {partner && (
                 <PlannerSprite species={partner} discovered={discoveredIds.has(partner.id)} />
@@ -111,7 +134,9 @@ export default function DigivolutionPlannerBranch({
               This species already appears in this route.
             </p>
           ) : !canExpand ? (
-            <p className="text-xs text-gray-600 dark:text-gray-400">No earlier evolutions.</p>
+            <p className="text-xs text-gray-600 dark:text-gray-400">
+              No earlier evolution or form-change routes.
+            </p>
           ) : null}
         </div>
       </div>
@@ -124,7 +149,7 @@ export default function DigivolutionPlannerBranch({
         >
           {earlierRoutes.map((earlierRoute) => (
             <DigivolutionPlannerBranch
-              key={earlierRoute.path.id}
+              key={earlierRoute.key}
               route={earlierRoute}
               target={species}
               ancestors={lineage}

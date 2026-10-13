@@ -41,7 +41,8 @@ const PatchNotes = () => {
                 expand its incoming evolution routes recursively, with level, stat, item and DNA
                 partner requirements. Names stay visible while undiscovered sprites are silhouetted.
                 Every expanded generation stays visually nested, including single-predecessor
-                routes.
+                routes. Base-to-form transformations are included, so targets such as Agumon X show
+                the X-Antibody route from Agumon. Return-to-base transformations are omitted.
               </li>
               <li>
                 Arena and tournament battles share the same result screen, with animated team

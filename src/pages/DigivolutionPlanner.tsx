@@ -39,7 +39,7 @@ export default function DigivolutionPlanner() {
         <div>
           <h1 className="ui-page-title">Digivolution Planner</h1>
           <p className="ui-description">
-            Choose a target Digimon and trace its evolution routes backward.
+            Choose a target Digimon and trace its evolution and form-change routes backward.
           </p>
         </div>
       </div>
@@ -129,7 +129,7 @@ export default function DigivolutionPlanner() {
           {routes.length > 0 ? (
             <>
               <p className="ui-description mb-4">
-                These Digimon evolve into {target.name}. Expand a branch to see earlier evolutions.
+                These Digimon can become {target.name}. Expand a branch to see earlier steps.
               </p>
               <div
                 className="overflow-x-auto rounded-lg pb-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent-500"
@@ -140,7 +140,7 @@ export default function DigivolutionPlanner() {
                 <ul className="space-y-3" aria-label={`Evolution routes to ${target.name}`}>
                   {routes.map((route) => (
                     <DigivolutionPlannerBranch
-                      key={route.path.id}
+                      key={route.key}
                       route={route}
                       target={target}
                       ancestors={[target.id]}
@@ -152,8 +152,8 @@ export default function DigivolutionPlanner() {
             </>
           ) : (
             <div className="ui-empty">
-              No evolution routes lead to {target.name} in the current catalog. Choose another
-              target to explore its routes.
+              No evolution or form-change routes lead to {target.name} in the current catalog.
+              Choose another target to explore its routes.
             </div>
           )}
         </section>
