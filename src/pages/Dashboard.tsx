@@ -1,4 +1,5 @@
 import NextPartnerReward from '../components/NextPartnerReward';
+import BattlesEventsCallout from '../components/BattlesEventsCallout';
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useDigimonStore } from '../store/petStore';
@@ -219,6 +220,7 @@ const Dashboard: React.FC = () => {
           <PartyMembersGrid />
 
           <AchievementsCallout />
+          <BattlesEventsCallout />
         </div>
 
         {/* ── Right column: task list ── */}

@@ -160,6 +160,13 @@ ticket fill meter that suggests passive regeneration. Compact navigation puts
 resources in a wrapping row below the header. Keep earning/spending explanations
 visible on the Battle and Store pages as well.
 
+Battle opportunities use a steady amber navigation dot with accessible status text,
+plus ticket and tournament labels in the Battle menu. Reserve numbered red badges
+for claimable achievement rewards. The dashboard Battles & Events panel uses quiet
+rows for available tickets and amber emphasis for maxed tickets or an unfinished
+weekly tournament. Hide reminders for unavailable or unknown states and completed
+weekly attempts; keep tasks as the dashboard's main action.
+
 Arena playback: communicate attacker-to-target intent through the recorded move
 itself: facing and anticipation for melee, visible travel for projectiles, a solid
 energy body for beams, and soft filled ground light/cracks/ripples for areas. Do

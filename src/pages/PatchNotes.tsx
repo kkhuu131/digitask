@@ -29,13 +29,19 @@ const PatchNotes = () => {
           <div className="mb-6">
             <div className="flex flex-wrap items-center gap-y-2 mb-2">
               <h3 className="text-lg font-medium dark:text-gray-200">
-                Arena Setup and Quota Rewards
+                Arena Reminders, Setup and Quota Rewards
               </h3>
               <span className="text-sm text-gray-500 dark:text-gray-400 ml-auto">
                 October 13, 2026
               </span>
             </div>
             <ul className="list-disc pl-5 space-y-1 text-gray-600 dark:text-gray-300">
+              <li>
+                The dashboard highlights available arena tickets, maxed tickets and unfinished
+                weekly tournaments. Amber Battle indicators and direct Tournament links appear in
+                desktop and mobile navigation. Tournament reminders clear when your weekly attempt
+                ends.
+              </li>
               <li>
                 Arena opponents always appear in Easy, Medium, Hard order, with a ticket icon and
                 Fight button.

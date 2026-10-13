@@ -1,4 +1,6 @@
 import ResourceBalance from './ResourceBalance';
+import BattleReminderIndicator from './BattleReminderIndicator';
+import { BattleRemindersContext, useBattleReminderData } from '../hooks/useBattleReminders';
 import { ReactNode, Suspense, useState, useRef, useEffect } from 'react';
 import LoadingIndicator from './LoadingIndicator';
 import { useAuthStore } from '../store/authStore';
@@ -6,7 +8,6 @@ import { useCurrencyStore } from '../store/currencyStore';
 import { useTitleStore } from '../store/titleStore';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { supabase } from '../lib/supabase';
 import {
   Home,
   Sprout,
@@ -34,10 +35,12 @@ const NavDropdown = ({
   label,
   isActive,
   children,
+  reminder,
 }: {
   label: string;
   isActive: boolean;
   children: React.ReactNode;
+  reminder?: string;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -78,11 +81,14 @@ const NavDropdown = ({
         onClick={() => setIsOpen(!isOpen)}
       >
         {label}
+        {reminder && <BattleReminderIndicator label={reminder} />}
         <ChevronDown className="h-3.5 w-3.5" />
       </button>
 
       {isOpen && (
-        <div className="absolute left-0 top-full mt-1 w-48 rounded-md shadow-lg bg-white dark:bg-dark-200 ring-1 ring-black ring-opacity-5 z-dropdown">
+        <div
+          className={`absolute left-0 top-full mt-1 ${label === 'Battle' ? 'w-72' : 'w-48'} rounded-md shadow-lg bg-white dark:bg-dark-200 ring-1 ring-black ring-opacity-5 z-dropdown`}
+        >
           <div className="py-1">{children}</div>
         </div>
       )}
@@ -96,7 +102,24 @@ const Layout = ({ children }: LayoutProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeMenu, setActiveMenu] = useState<'digimon' | 'battle' | 'more' | null>(null);
-  const [energy, setEnergy] = useState<{ current: number; max: number }>({ current: 0, max: 10 });
+  const reminders = useBattleReminderData();
+  const energy = reminders.tickets ?? { current: 0, max: 10 };
+  const ticketsAvailable = !!reminders.tickets && energy.current > 0;
+  const ticketsFull = ticketsAvailable && energy.max > 0 && energy.current >= energy.max;
+  const tournamentAvailable =
+    reminders.tournamentLoaded &&
+    (!reminders.tournament || reminders.tournament.status === 'active');
+  const arenaLabel = ticketsAvailable
+    ? ticketsFull
+      ? 'Tickets full'
+      : `${energy.current} ticket${energy.current === 1 ? '' : 's'}`
+    : undefined;
+  const tournamentLabel = tournamentAvailable
+    ? reminders.tournament
+      ? 'Continue tournament'
+      : 'Free entry'
+    : undefined;
+  const battleReminder = [arenaLabel, tournamentLabel].filter(Boolean).join('. ');
   const [resourcesLoadedFor, setResourcesLoadedFor] = useState<string | null>(null);
   const resourcesLoading = !!user && resourcesLoadedFor !== user.id;
   const pendingAchievements = unclaimedCount();
@@ -125,22 +148,11 @@ const Layout = ({ children }: LayoutProps) => {
 
   useEffect(() => {
     let cancelled = false;
-    const fetchEnergy = async () => {
-      if (!user) return;
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('battle_energy, max_battle_energy')
-        .eq('id', user.id)
-        .single();
-      if (profile && !cancelled)
-        setEnergy({ current: profile.battle_energy ?? 0, max: profile.max_battle_energy ?? 10 });
-    };
-    void Promise.all([fetchEnergy(), fetchCurrency()]).finally(() => {
+    void fetchCurrency().finally(() => {
       if (!cancelled) setResourcesLoadedFor(user?.id ?? null);
     });
 
     const onUpdate = () => {
-      fetchEnergy();
       fetchCurrency();
     };
     window.addEventListener('task-completed', onUpdate);
@@ -229,7 +241,11 @@ const Layout = ({ children }: LayoutProps) => {
                   </NavDropdown>
 
                   {/* Battle dropdown */}
-                  <NavDropdown label="Battle" isActive={isAnyActive(['/battle', '/store'])}>
+                  <NavDropdown
+                    label="Battle"
+                    isActive={isAnyActive(['/battle', '/tournament', '/store'])}
+                    reminder={battleReminder || undefined}
+                  >
                     <Link
                       to="/battle"
                       className={dropdownLinkClass}
@@ -237,6 +253,24 @@ const Layout = ({ children }: LayoutProps) => {
                     >
                       <Sword className="h-4 w-4" />
                       Arena
+                      {arenaLabel && (
+                        <span className="ml-auto text-xs text-accent-600 dark:text-accent-400">
+                          {arenaLabel}
+                        </span>
+                      )}
+                    </Link>
+                    <Link
+                      to="/tournament"
+                      className={dropdownLinkClass}
+                      onClick={() => setActiveMenu(null)}
+                    >
+                      <Trophy className="h-4 w-4" />
+                      Tournament
+                      {tournamentLabel && (
+                        <span className="ml-auto text-xs text-accent-600 dark:text-accent-400">
+                          {tournamentLabel}
+                        </span>
+                      )}
                     </Link>
                     <Link
                       to="/store"
@@ -301,7 +335,7 @@ const Layout = ({ children }: LayoutProps) => {
                   icon={Ticket}
                   label="Tickets"
                   value={`${energy.current}/${energy.max}`}
-                  loading={resourcesLoading}
+                  loading={!reminders.tickets}
                   to="/battle"
                   description="Used to start arena battles. Complete tasks to earn tickets. Each arena battle costs one ticket."
                 />
@@ -384,7 +418,7 @@ const Layout = ({ children }: LayoutProps) => {
               icon={Ticket}
               label="Tickets"
               value={`${energy.current}/${energy.max}`}
-              loading={resourcesLoading}
+              loading={!reminders.tickets}
               to="/battle"
               description="Used to start arena battles. Complete tasks to earn tickets. Each arena battle costs one ticket."
             />
@@ -406,7 +440,9 @@ const Layout = ({ children }: LayoutProps) => {
         className="flex-grow bg-gray-50 dark:bg-dark-400 transition-colors duration-200 pb-[calc(5rem+env(safe-area-inset-bottom))] lg:pb-0"
       >
         <div className="max-w-7xl min-w-0 mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          <Suspense fallback={<LoadingIndicator message="Loading page…" />}>{children}</Suspense>
+          <BattleRemindersContext.Provider value={reminders}>
+            <Suspense fallback={<LoadingIndicator message="Loading page…" />}>{children}</Suspense>
+          </BattleRemindersContext.Provider>
         </div>
       </main>
 
@@ -487,14 +523,21 @@ const Layout = ({ children }: LayoutProps) => {
                 aria-expanded={activeMenu === 'battle'}
                 onClick={() => handleMenuClick('battle')}
                 className={`w-full flex flex-col items-center justify-center py-2 gap-0.5 transition-colors ${
-                  activeMenu === 'battle' || isAnyActive(['/battle', '/store'])
+                  activeMenu === 'battle' || isAnyActive(['/battle', '/tournament', '/store'])
                     ? 'text-accent-600 dark:text-accent-400'
                     : 'text-gray-500 dark:text-gray-400'
                 }`}
               >
-                <Sword className="h-5 w-5" />
+                <span className="relative">
+                  <Sword className="h-5 w-5" />
+                  {battleReminder && (
+                    <span className="absolute -right-1 -top-1">
+                      <BattleReminderIndicator label={battleReminder} />
+                    </span>
+                  )}
+                </span>
                 <span className="text-xs font-body">Battle</span>
-                {(activeMenu === 'battle' || isAnyActive(['/battle', '/store'])) && (
+                {(activeMenu === 'battle' || isAnyActive(['/battle', '/tournament', '/store'])) && (
                   <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full bg-accent-600 dark:bg-accent-500" />
                 )}
               </button>
@@ -505,7 +548,7 @@ const Layout = ({ children }: LayoutProps) => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 20 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-white dark:bg-dark-300 rounded-lg shadow-lg border border-gray-200 dark:border-dark-200 w-48 overflow-hidden z-dropdown"
+                    className="fixed bottom-[calc(4.5rem+env(safe-area-inset-bottom))] left-4 right-4 sm:absolute sm:bottom-full sm:mb-2 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 sm:w-72 bg-white dark:bg-dark-300 rounded-lg shadow-lg border border-gray-200 dark:border-dark-200 max-w-[calc(100vw-2rem)] overflow-hidden z-dropdown"
                   >
                     <div className="py-1">
                       <Link
@@ -515,6 +558,24 @@ const Layout = ({ children }: LayoutProps) => {
                       >
                         <Sword className="h-4 w-4" />
                         Arena
+                        {arenaLabel && (
+                          <span className="ml-auto text-xs text-accent-600 dark:text-accent-400">
+                            {arenaLabel}
+                          </span>
+                        )}
+                      </Link>
+                      <Link
+                        to="/tournament"
+                        className={`flex items-center gap-2 px-4 py-2 text-sm font-body ${isActive('/tournament') ? 'bg-accent-50 text-accent-600 dark:bg-dark-200 dark:text-accent-400' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-200'}`}
+                        onClick={() => setActiveMenu(null)}
+                      >
+                        <Trophy className="h-4 w-4" />
+                        Tournament
+                        {tournamentLabel && (
+                          <span className="ml-auto text-xs text-accent-600 dark:text-accent-400">
+                            {tournamentLabel}
+                          </span>
+                        )}
                       </Link>
                       <Link
                         to="/store"
